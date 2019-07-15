@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc004;
 
-import java.util.*;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc004common.Skf3010Sc004CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -17,8 +16,7 @@ public class Skf3010Sc004InitDto extends Skf3010Sc004CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 	
-
-		
-	
+	// リストテーブルの１ページ最大表示行数
+	private String listTableMaxRowCount;
 
 }
