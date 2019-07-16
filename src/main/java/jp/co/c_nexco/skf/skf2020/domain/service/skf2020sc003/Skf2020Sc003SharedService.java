@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinShinseiInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinShinseiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetMaxCycleBillingYYMMExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetParkingRirekiDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetParkingRirekiDataExpParameter;
@@ -19,6 +21,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinShinseiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetMaxCycleBillingYYMMExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetParkingRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNameListExpRepository;
@@ -37,6 +40,8 @@ public class Skf2020Sc003SharedService {
 	private Skf2020Sc003GetShatakuNameListExpRepository skf2020Sc003GetShatakuNameListExpRepository;
 	@Autowired
 	private Skf2020Sc003GetBihinInfoExpRepository skf2020Sc003GetBihinInfoExpRepository;
+	@Autowired
+	private Skf2020Sc003GetBihinShinseiInfoExpRepository skf2020Sc003GetBihinShinseiInfoExpRepository;
 	@Autowired
 	private Skf2020Sc003GetTeijiDataInfoExpRepository skf2020Sc003GetTeijiDataInfoExpRepository;
 	@Autowired
@@ -175,5 +180,21 @@ public class Skf2020Sc003SharedService {
 		param.setYearMonth(yearMonth);
 		returnList = skf2020Sc003GetParkingRirekiDataExpRepository.getParkingRirekiData(param);
 		return returnList;
+	}
+
+	/**
+	 * 備品希望申請情報を取得します
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @return
+	 */
+	public List<Skf2020Sc003GetBihinShinseiInfoExp> getBihinShinseiInfo(String companyCd, String applNo) {
+		List<Skf2020Sc003GetBihinShinseiInfoExp> bihinShinseiList = new ArrayList<Skf2020Sc003GetBihinShinseiInfoExp>();
+		Skf2020Sc003GetBihinShinseiInfoExpParameter param = new Skf2020Sc003GetBihinShinseiInfoExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setApplNo(applNo);
+		bihinShinseiList = skf2020Sc003GetBihinShinseiInfoExpRepository.getBihinShinseiInfo(param);
+		return bihinShinseiList;
 	}
 }
