@@ -27,6 +27,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
 
 /**
@@ -42,6 +43,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -56,6 +59,9 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC002_TITLE);
+
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 
 		// セッション情報の取得(申請書情報)
 		List<Map<String, String>> resultApplList = null;
@@ -86,6 +92,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		initDto.setLevel2Open(displayLevelMap.get("level2Open").toString());
 		initDto.setLevel3Open(displayLevelMap.get("level3Open").toString());
 		initDto.setMaskPattern(displayLevelMap.get("mask").toString());
+		initDto.setCommentDisplayLevel(Integer.parseInt(displayLevelMap.get("commentDisplayLevel").toString()));
 
 		// 画面内容の設定
 		setDisplayData(initDto);
@@ -254,6 +261,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level1Open", "true");
 			result.put("level2Open", "false");
 			result.put("level3Open", "false");
+			result.put("commentDisplayLevel", 1);
 			break;
 		case FunctionIdConstant.SKF2020_SC003:
 			result.put("level", 2);
@@ -261,6 +269,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level1Open", "false");
 			result.put("level2Open", "true");
 			result.put("level3Open", "false");
+			result.put("commentDisplayLevel", 2);
 			break;
 		case FunctionIdConstant.SKF2040_SC001:
 			result.put("level", 3);
@@ -268,6 +277,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level1Open", "false");
 			result.put("level2Open", "false");
 			result.put("level3Open", "true");
+			result.put("commentDisplayLevel", 1);
 			break;
 
 		}

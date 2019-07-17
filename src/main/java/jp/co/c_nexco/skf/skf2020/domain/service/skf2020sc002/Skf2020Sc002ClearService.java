@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ClearDto;
 
 /**
@@ -20,9 +22,14 @@ public class Skf2020Sc002ClearService extends BaseServiceAbstract<Skf2020Sc002Cl
 
 	@Autowired
 	private Skf2020Sc002SharedService skf2020Sc002SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Override
 	protected BaseDto index(Skf2020Sc002ClearDto clearDto) throws Exception {
+
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("申請内容をクリアする", CodeConstant.C001, clearDto.getPageId());
 
 		// クリア処理を呼び出す。
 		clearDisp(clearDto);

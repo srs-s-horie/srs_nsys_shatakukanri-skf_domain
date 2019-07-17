@@ -22,6 +22,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002SaveDto;
@@ -36,6 +37,8 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
@@ -52,12 +55,14 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 	@Override
 	public BaseDto index(Skf2020Sc002SaveDto saveDto) throws Exception {
 
-		// if (NfwStringUtils.isEmpty(saveDto.getTel())) {
-		// ServiceHelper.addErrorResultMessage(saveDto, null,
-		// MessageIdConstant.E_SKF_1048, "勤務先のTEL");
-		// saveDto.setTelErr(validationErrorCode);
-		// return saveDto;
-		// }
+		if (NfwStringUtils.isEmpty(saveDto.getTel())) {
+			ServiceHelper.addErrorResultMessage(saveDto, new String[] { "tel" }, MessageIdConstant.E_SKF_1048,
+					"勤務先のTEL");
+			return saveDto;
+		}
+
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, saveDto.getPageId());
 
 		// ステータスの設定
 		Map<String, String> applInfo = new HashMap<String, String>();

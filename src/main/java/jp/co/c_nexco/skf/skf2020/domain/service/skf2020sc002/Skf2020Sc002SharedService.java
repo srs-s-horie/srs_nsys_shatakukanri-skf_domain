@@ -21,13 +21,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetB
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinItemToBeReturnExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinItemToBeReturnExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetCommentListExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetCommentListExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetDdlNowShatakuNameByCdExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetDdlNowShatakuNameByCdExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShainInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetNowShatakuNameExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetNowShatakuNameExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
@@ -37,8 +35,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetApplInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinItemToBeReturnExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetCommentListExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetDdlNowShatakuNameByCdExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetNowShatakuNameExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
@@ -53,13 +50,14 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
 
 /**
- * Skf2020Sc002 申請書類確認の共通処理クラス。
+ * Skf2020Sc002 社宅入居希望等調書（申請者用） 共通処理クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -76,8 +74,10 @@ public class Skf2020Sc002SharedService {
 
 	public static final String FALSE = "false";
 	public static final String TRUE = "true";
-
+	// 更新フラグ
 	public static final String UPDATE_FLG = "1";
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	// 最終更新日付のキャッシュキー
 	public static final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf1010_t_appl_history_UpdateDate";
@@ -85,11 +85,13 @@ public class Skf2020Sc002SharedService {
 	public static final String BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE = "skf2050_t_bihin_henkyaku_UpdateDate";
 
 	@Autowired
+	private SkfCommentUtils skfCommentUtils;
+	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
-	private SkfHtmlCreateUtils SkfHtmlCreationUtils;
+	private SkfHtmlCreateUtils skfHtmlCreationUtils;
 	@Autowired
 	private CodeCacheUtils codeCacheUtils;
 	@Autowired
@@ -97,7 +99,7 @@ public class Skf2020Sc002SharedService {
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
 	@Autowired
-	private Skf2020Sc002GetDdlNowShatakuNameByCdExpRepository skf2020Sc002GetDdlNowShatakuNameByCdExpRepository;
+	private Skf2020Sc002GetNowShatakuNameExpRepository skf2020Sc002GetNowShatakuNameExpRepository;
 	@Autowired
 	private Skf2020Sc002GetShatakuInfoExpRepository skf2020Sc002GetShatakuInfoExpRepository;
 	@Autowired
@@ -108,8 +110,6 @@ public class Skf2020Sc002SharedService {
 	private Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExpRepository skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExpRepository;
 	@Autowired
 	private Skf2050TBihinHenkyakuShinseiRepository skf2050TBihinHenkyakuShinseiRepository;
-	@Autowired
-	private Skf2020Sc002GetCommentListExpRepository skf2020Sc002GetCommentListExpRepository;
 	@Autowired
 	private Skf2020Sc002GetAgensyCdExpRepository skf2020Sc002GetAgensyCdExpRepository;
 	@Autowired
@@ -136,7 +136,7 @@ public class Skf2020Sc002SharedService {
 	 * 
 	 * 画面初期表示（社員情報、社宅情報まで）
 	 * 
-	 * @param initDto
+	 * @param Skf2020Sc002CommonDto
 	 */
 	protected void initializeDisp(Skf2020Sc002CommonDto dto) {
 
@@ -145,12 +145,13 @@ public class Skf2020Sc002SharedService {
 
 		// 申請書管理番号の有無
 		if (dto.getApplNo() != null) {
-			// ある場合社宅入居希望等調書情報の設定
+			// ある場合は社宅入居希望等調書の申請情報から初期表示項目を設定する。
 			setSinseiInfo(dto);
 		} else {
-			// 社員情報が取得できた場合は申請者情報の設定
+			// 無い場合
 			if (dto.getShainList() != null && dto.getShainList().size() > 0) {
-				setShainList(dto, dto.getShainList());
+				// 社員情報がある場合は申請者情報からの設定
+				setShainList(dto);
 			}
 		}
 		// 社宅情報の設定
@@ -158,16 +159,16 @@ public class Skf2020Sc002SharedService {
 	}
 
 	/**
-	 * 社宅入居希望等調書情報の設定
+	 * 社宅入居希望等調書の申請情報から初期表示項目を設定。
 	 * 
 	 * @param dto
 	 */
 	private void setSinseiInfo(Skf2020Sc002CommonDto dto) {
 
-		// 社宅入居希望等調査情報の取得
+		// 社宅入居希望等調査・入居決定通知テーブル情報の取得
 		Skf2020TNyukyoChoshoTsuchi nyukyoChoshoList = new Skf2020TNyukyoChoshoTsuchi();
 		Skf2020TNyukyoChoshoTsuchiKey setValue = new Skf2020TNyukyoChoshoTsuchiKey();
-		// 更新条件項目をセット
+		// 条件項目をセット
 		setValue.setCompanyCd(CodeConstant.C001);
 		setValue.setApplNo(dto.getApplNo());
 		nyukyoChoshoList = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setValue);
@@ -535,52 +536,50 @@ public class Skf2020Sc002SharedService {
 	}
 
 	/**
-	 * 初期表示エラー時の処理 更新処理を行わせないようボタンを使用不可に
+	 * 初期表示エラー時の処理 更新処理を行わせないようボタンを使用不可にする。
 	 * 
-	 * @param dto
-	 * @return
+	 * @param dto Skf2020Sc002CommonDto
 	 */
 	protected void setInitializeError(Skf2020Sc002CommonDto dto) {
 		// 更新処理を行わせないよ う一時保存、申請要件を確認ボタンを使用不可に
 		// 一時保存
 		dto.setBtnSaveDisabeld(TRUE);
-		// 申請要件を確認
+		// 申請内容を確認
 		dto.setBtnCheckDisabled(TRUE);
 		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
 	}
 
 	/**
-	 * 社員情報の設定(設定)
+	 * 社員情報の設定
 	 * 
 	 * @param dto
-	 * @param shainList
 	 */
-	private void setShainList(Skf2020Sc002CommonDto dto, List<Skf2020Sc002GetShainInfoExp> shainList) {
+	private void setShainList(Skf2020Sc002CommonDto dto) {
 
 		// 機関
-		String agencyName = shainList.get(0).getAgencyName();
+		String agencyName = dto.getShainList().get(0).getAgencyName();
 		dto.setAgencyName(agencyName);
 		// 部等
-		String affiliation1Name = shainList.get(0).getAffiliation1Name();
+		String affiliation1Name = dto.getShainList().get(0).getAffiliation1Name();
 		dto.setAffiliation1Name(affiliation1Name);
 		// 室、チームまたは課
-		String affiliation2Name = shainList.get(0).getAffiliation2Name();
+		String affiliation2Name = dto.getShainList().get(0).getAffiliation2Name();
 		dto.setAffiliation2Name(affiliation2Name);
 		// 勤務先のTEL
-		String tel = shainList.get(0).getTel();
+		String tel = dto.getShainList().get(0).getTel();
 		dto.setTel(tel);
 
 		// 社員番号
-		dto.setShainNo(shainList.get(0).getShainNo());
+		dto.setShainNo(dto.getShainList().get(0).getShainNo());
 		// 社員名
-		String name = shainList.get(0).getName();
+		String name = dto.getShainList().get(0).getName();
 		dto.setName(name);
 		// 等級
-		String tokyuName = shainList.get(0).getTokyuName();
+		String tokyuName = dto.getShainList().get(0).getTokyuName();
 		dto.setTokyuName(tokyuName);
 		// 性別
-		dto.setGender(shainList.get(0).getGender());
-		switch (shainList.get(0).getGender()) {
+		dto.setGender(dto.getShainList().get(0).getGender());
+		switch (dto.getShainList().get(0).getGender()) {
 		case CodeConstant.MALE:
 			dto.setGenderName(CodeConstant.OUTPUT_MALE);
 			break;
@@ -595,25 +594,23 @@ public class Skf2020Sc002SharedService {
 
 	/**
 	 * 
-	 * 社宅情報の設定
+	 * 現居社宅情報の設定
 	 * 
 	 * @param dto
 	 */
 	protected void setShatakuInfo(Skf2020Sc002CommonDto dto) {
 
 		// Hidden
-		Long hdnShatakuRoomKanriNo = CodeConstant.LONG_ZERO;
-		Long hdnShatakuKanriNo = CodeConstant.LONG_ZERO;
 		Long hdnNowShatakuRoomKanriNo = CodeConstant.LONG_ZERO;// 現居住社宅部屋管理番号
 		Long hdnNowShatakuKanriNo = CodeConstant.LONG_ZERO;// 現居住社宅管理番号
 		String hdnShatakuKikakuKbn = "";// 規格(間取り)
 
-		// 社宅管理台帳の取得
-		List<Skf2020Sc002GetDdlNowShatakuNameByCdExp> resultNowShatakuNameList = new ArrayList<Skf2020Sc002GetDdlNowShatakuNameByCdExp>();
-		Skf2020Sc002GetDdlNowShatakuNameByCdExpParameter param = new Skf2020Sc002GetDdlNowShatakuNameByCdExpParameter();
+		// 現保有社宅の全量取得
+		List<Skf2020Sc002GetNowShatakuNameExp> resultNowShatakuNameList = new ArrayList<Skf2020Sc002GetNowShatakuNameExp>();
+		Skf2020Sc002GetNowShatakuNameExpParameter param = new Skf2020Sc002GetNowShatakuNameExpParameter();
 		param.setShainNo(dto.getShainNo());
 		param.setNyukyoDate(dto.getYearMonthDay());
-		resultNowShatakuNameList = skf2020Sc002GetDdlNowShatakuNameByCdExpRepository.getDdlNowShatakuNameByCd(param);
+		resultNowShatakuNameList = skf2020Sc002GetNowShatakuNameExpRepository.getNowShatakuName(param);
 
 		long shatakuKanriId = CodeConstant.LONG_ZERO;
 		dto.setShatakuKanriId(shatakuKanriId);
@@ -623,7 +620,7 @@ public class Skf2020Sc002SharedService {
 			dto.setHdnSelectedNowShatakuName(resultNowShatakuNameList.get(0).getShatakuName());
 		}
 
-		// 現居住宅の情報取得
+		// 現居住宅の選択された情報の取得
 		List<Skf2020Sc002GetShatakuInfoExp> shatakuList = new ArrayList<Skf2020Sc002GetShatakuInfoExp>();
 		shatakuList = getShatakuInfo(shatakuKanriId, dto.getShainNo(), shatakuList);
 
@@ -741,7 +738,7 @@ public class Skf2020Sc002SharedService {
 				bihinItemNameList.add(bihinItemList);
 			}
 			// HTMLの作成
-			String bihinItem = SkfHtmlCreationUtils.htmlBihinCreateTable(bihinItemNameList, 2);
+			String bihinItem = skfHtmlCreationUtils.htmlBihinCreateTable(bihinItemNameList, 2);
 			dto.setReturnEquipment(bihinItem);
 		}
 	}
@@ -921,9 +918,6 @@ public class Skf2020Sc002SharedService {
 	 */
 	protected void setControlValue(Skf2020Sc002CommonDto dto) {
 
-		// ドロップダウンリスト
-		// setControlDdl(dto);
-
 		// 必要とする社宅初期表示制御
 		dto.setRdoKikonDisabled(TRUE);
 		dto.setRdoHitsuyoSetaiDisabled(TRUE);
@@ -1025,12 +1019,12 @@ public class Skf2020Sc002SharedService {
 			// 退居予定の場合、カレンダーを活性
 			if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
 				dto.setTaikyoYoteiDateClDisabled(FALSE);
-				// 退居届を促すメッセージを非表示
-				dto.setLblShatakuFuyouMsgRemove(FALSE);
-			} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
-				dto.setTaikyoYoteiDateClDisabled(TRUE);
 				// 退居届を促すメッセージを表示
 				dto.setLblShatakuFuyouMsgRemove(TRUE);
+			} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
+				dto.setTaikyoYoteiDateClDisabled(TRUE);
+				// 退居届を促すメッセージを非表示
+				dto.setLblShatakuFuyouMsgRemove(FALSE);
 			}
 
 		} else {
@@ -1063,6 +1057,8 @@ public class Skf2020Sc002SharedService {
 
 	/**
 	 * ラジオボタンのチェック状態をセットする
+	 *
+	 * @param dto
 	 */
 	protected void setCheckRadio(Skf2020Sc002CommonDto dto) {
 
@@ -1262,10 +1258,10 @@ public class Skf2020Sc002SharedService {
 	}
 
 	/**
-	 * ドロップダウンリストの取得
+	 * ドロップダウンリストの値を取得
 	 * 
 	 * @param dto
-	 * @return
+	 * @return Map
 	 */
 	private Map<String, Object> getDropDownLists(Skf2020Sc002CommonDto dto) {
 
@@ -1362,144 +1358,147 @@ public class Skf2020Sc002SharedService {
 
 		String Msg = "クリア処理　：";
 
-		// TEL
-		dto.setTel(null);
-		LogUtils.debugByMsg(Msg + "新所属-機関" + dto.getTel());
+		// 前画面が申請内容確認以外の場合はクリア
+		if (!dto.getPrePageId().equals(FunctionIdConstant.SKF2010_SC002)) {
 
-		// 社宅を必要としますか？
-		dto.setTaiyoHituyo(null);
-		LogUtils.debugByMsg(Msg + "社宅を必要としますか？" + dto.getTaiyoHituyo());
+			// TEL
+			dto.setTel(null);
+			LogUtils.debugByMsg(Msg + "新所属-機関" + dto.getTel());
 
-		// 社宅を必要とする理由
-		dto.setHitsuyoRiyu(null);
-		LogUtils.debugByMsg(Msg + "社宅を必要とする理由" + dto.getHitsuyoRiyu());
+			// 社宅を必要としますか？
+			dto.setTaiyoHituyo(null);
+			LogUtils.debugByMsg(Msg + "社宅を必要としますか？" + dto.getTaiyoHituyo());
 
-		// 社宅を必要としない理由
-		dto.setFuhitsuyoRiyu(null);
-		LogUtils.debugByMsg(Msg + "社宅を必要としない理由" + dto.getFuhitsuyoRiyu());
+			// 社宅を必要とする理由
+			dto.setHitsuyoRiyu(null);
+			LogUtils.debugByMsg(Msg + "社宅を必要とする理由" + dto.getHitsuyoRiyu());
 
-		// 新所属-機関
-		dto.setDdlAgencyList(null);
-		LogUtils.debugByMsg(Msg + "新所属-機関" + dto.getDdlAgencyList());
+			// 社宅を必要としない理由
+			dto.setFuhitsuyoRiyu(null);
+			LogUtils.debugByMsg(Msg + "社宅を必要としない理由" + dto.getFuhitsuyoRiyu());
 
-		// 新所属-機関 その他
-		dto.setNewAgencyOther(null);
-		LogUtils.debugByMsg(Msg + " 新所属-機関 その他" + dto.getNewAgencyOther());
+			// 新所属-機関
+			dto.setDdlAgencyList(null);
+			LogUtils.debugByMsg(Msg + "新所属-機関" + dto.getDdlAgencyList());
 
-		// 新所属-部等
-		dto.setDdlAffiliation1List(null);
-		LogUtils.debugByMsg(Msg + "新所属-部等" + dto.getDdlAffiliation1List());
+			// 新所属-機関 その他
+			dto.setNewAgencyOther(null);
+			LogUtils.debugByMsg(Msg + " 新所属-機関 その他" + dto.getNewAgencyOther());
 
-		// 新所属-部等 その他
-		dto.setNewAffiliation1Other(null);
-		LogUtils.debugByMsg(Msg + "新所属-部等 その他" + dto.getNewAffiliation1Other());
+			// 新所属-部等
+			dto.setDdlAffiliation1List(null);
+			LogUtils.debugByMsg(Msg + "新所属-部等" + dto.getDdlAffiliation1List());
 
-		// 新所属-室、チーム又は課
-		dto.setDdlAffiliation2List(null);
-		LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課" + dto.getDdlAffiliation2List());
+			// 新所属-部等 その他
+			dto.setNewAffiliation1Other(null);
+			LogUtils.debugByMsg(Msg + "新所属-部等 その他" + dto.getNewAffiliation1Other());
 
-		// 新所属-室、チーム又は課 その他
-		dto.setNewAffiliation2Other(null);
-		LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課 その他" + dto.getNewAffiliation2Other());
+			// 新所属-室、チーム又は課
+			dto.setDdlAffiliation2List(null);
+			LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課" + dto.getDdlAffiliation2List());
 
-		// 必要とする社宅
-		dto.setHitsuyoShataku(null);
-		LogUtils.debugByMsg(Msg + "必要とする社宅" + dto.getHitsuyoShataku());
+			// 新所属-室、チーム又は課 その他
+			dto.setNewAffiliation2Other(null);
+			LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課 その他" + dto.getNewAffiliation2Other());
 
-		// 続柄
-		dto.setDokyoRelation1(null);
-		dto.setDokyoRelation2(null);
-		dto.setDokyoRelation3(null);
-		dto.setDokyoRelation4(null);
-		dto.setDokyoRelation5(null);
-		dto.setDokyoRelation6(null);
-		LogUtils.debugByMsg(Msg + "続柄" + dto.getDokyoRelation1() + dto.getDokyoRelation2() + dto.getDokyoRelation3()
-				+ dto.getDokyoRelation4() + dto.getDokyoRelation5() + dto.getDokyoRelation6());
+			// 必要とする社宅
+			dto.setHitsuyoShataku(null);
+			LogUtils.debugByMsg(Msg + "必要とする社宅" + dto.getHitsuyoShataku());
 
-		// 氏名
-		dto.setDokyoName1(null);
-		dto.setDokyoName2(null);
-		dto.setDokyoName3(null);
-		dto.setDokyoName4(null);
-		dto.setDokyoName5(null);
-		dto.setDokyoName6(null);
-		LogUtils.debugByMsg(Msg + "氏名" + dto.getDokyoName1() + dto.getDokyoName1() + dto.getDokyoName1()
-				+ dto.getDokyoName1() + dto.getDokyoName1() + dto.getDokyoName1());
+			// 続柄
+			dto.setDokyoRelation1(null);
+			dto.setDokyoRelation2(null);
+			dto.setDokyoRelation3(null);
+			dto.setDokyoRelation4(null);
+			dto.setDokyoRelation5(null);
+			dto.setDokyoRelation6(null);
+			LogUtils.debugByMsg(Msg + "続柄" + dto.getDokyoRelation1() + dto.getDokyoRelation2() + dto.getDokyoRelation3()
+					+ dto.getDokyoRelation4() + dto.getDokyoRelation5() + dto.getDokyoRelation6());
 
-		// 年齢
-		dto.setDokyoAge1(null);
-		dto.setDokyoAge2(null);
-		dto.setDokyoAge3(null);
-		dto.setDokyoAge4(null);
-		dto.setDokyoAge5(null);
-		dto.setDokyoAge6(null);
+			// 氏名
+			dto.setDokyoName1(null);
+			dto.setDokyoName2(null);
+			dto.setDokyoName3(null);
+			dto.setDokyoName4(null);
+			dto.setDokyoName5(null);
+			dto.setDokyoName6(null);
+			LogUtils.debugByMsg(Msg + "氏名" + dto.getDokyoName1() + dto.getDokyoName1() + dto.getDokyoName1()
+					+ dto.getDokyoName1() + dto.getDokyoName1() + dto.getDokyoName1());
 
-		// 入居希望日
-		dto.setNyukyoYoteiDate(null);
+			// 年齢
+			dto.setDokyoAge1(null);
+			dto.setDokyoAge2(null);
+			dto.setDokyoAge3(null);
+			dto.setDokyoAge4(null);
+			dto.setDokyoAge5(null);
+			dto.setDokyoAge6(null);
 
-		// 自動車の保管場所
-		dto.setParkingUmu(null);
+			// 入居希望日
+			dto.setNyukyoYoteiDate(null);
 
-		// 自動車の保有
-		dto.setCarNoInputFlg(null);
+			// 自動車の保管場所
+			dto.setParkingUmu(null);
 
-		// １台目-車名
-		dto.setCarName(null);
-		// １台目-自動車の登録番号
-		dto.setCarNo(null);
-		// 1台目-車検の有効期間満了日
-		dto.setCarExpirationDate(null);
-		// １台目-自動車の使用者
-		dto.setCarUser(null);
-		// １台目-駐車場の使用開始日
-		dto.setParkingUseDate(null);
+			// 自動車の保有
+			dto.setCarNoInputFlg(null);
 
-		// 自動車の保有
-		dto.setCarNoInputFlg2(null);
+			// １台目-車名
+			dto.setCarName(null);
+			// １台目-自動車の登録番号
+			dto.setCarNo(null);
+			// 1台目-車検の有効期間満了日
+			dto.setCarExpirationDate(null);
+			// １台目-自動車の使用者
+			dto.setCarUser(null);
+			// １台目-駐車場の使用開始日
+			dto.setParkingUseDate(null);
 
-		// ２台目-車名
-		dto.setCarName2(null);
-		// ２台目-自動車の登録番号
-		dto.setCarNo2(null);
-		// ２台目-車検の有効期間満了日
-		dto.setCarExpirationDate2(null);
-		// ２台目-自動車の使用者
-		dto.setCarUser2(null);
-		// ２台目-駐車場の使用開始日
-		dto.setParkingUseDate2(null);
+			// 自動車の保有
+			dto.setCarNoInputFlg2(null);
 
-		// 現居住宅
-		dto.setNowShataku(null);
+			// ２台目-車名
+			dto.setCarName2(null);
+			// ２台目-自動車の登録番号
+			dto.setCarNo2(null);
+			// ２台目-車検の有効期間満了日
+			dto.setCarExpirationDate2(null);
+			// ２台目-自動車の使用者
+			dto.setCarUser2(null);
+			// ２台目-駐車場の使用開始日
+			dto.setParkingUseDate2(null);
 
-		// 現居住宅-保有社宅名
+			// 現居住宅
+			dto.setNowShataku(null);
 
-		// 特殊事情等
-		dto.setTokushuJijo(null);
+			// 現居住宅-保有社宅名
 
-		// 現保有の社宅
-		dto.setTaikyoYotei(null);
+			// 特殊事情等
+			dto.setTokushuJijo(null);
 
-		// 退居予定日
-		dto.setTaikyoYoteiDate(null);
+			// 現保有の社宅
+			dto.setTaikyoYotei(null);
 
-		// 社宅の状態
-		dto.setShatakuJyotai(null);
+			// 退居予定日
+			dto.setTaikyoYoteiDate(null);
 
-		// 退居理由
-		dto.setTaikyoRiyu(null);
+			// 社宅の状態
+			dto.setShatakuJyotai(null);
 
-		// 退居後の連絡先
-		dto.setTaikyogoRenrakuSaki(null);
-		// 返却備品情報のクリア
-		dto.setReturnEquipment(null);
+			// 退居理由
+			dto.setTaikyoRiyu(null);
 
-		// 返却立会希望日
-		dto.setSessionDay(null);
-		dto.setSessionTime(null);
+			// 退居後の連絡先
+			dto.setTaikyogoRenrakuSaki(null);
+			// 返却備品情報のクリア
+			dto.setReturnEquipment(null);
 
-		// 連絡先
-		dto.setRenrakuSaki(null);
+			// 返却立会希望日
+			dto.setSessionDay(null);
+			dto.setSessionTime(null);
 
+			// 連絡先
+			dto.setRenrakuSaki(null);
+		}
 	}
 
 	/**
@@ -1680,7 +1679,7 @@ public class Skf2020Sc002SharedService {
 		}
 
 		// 申請書類履歴テーブル登録処理
-		insertApplHistory(dto, applInfo, applInfo.get("applTacFlg"));
+		insertApplHistory(dto, applInfo);
 		// 入居希望等調書申請テーブル登録処理
 		int registCount = 0;
 		applInfo.put("updateFlg", "0");
@@ -1722,7 +1721,6 @@ public class Skf2020Sc002SharedService {
 				bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getApplNo();
 			}
 		}
-
 		return bihinHenkaykuShinseiApplNo;
 	}
 
@@ -1800,7 +1798,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setNowShatakuNo(dto.getNowShatakuNo());
 		// 本来規格
 		setValue.setNowShatakuKikaku(dto.getHdnShatakuKikakuKbn());
-		// setValue
+		// 面積
 		setValue.setNowShatakuMenseki(dto.getNowShatakuMenseki().replace("㎡", ""));
 		// 返却立会希望日
 		setValue.setSessionDay(dto.getSessionDay().replace("/", ""));
@@ -1814,7 +1812,7 @@ public class Skf2020Sc002SharedService {
 	}
 
 	/**
-	 * 入居希望等調書決定通知テーブルの更新値を設定
+	 * 入居希望等調査・入居決定通知テーブルの更新値を設定
 	 * 
 	 * @param dto
 	 * @param setValue
@@ -2036,14 +2034,6 @@ public class Skf2020Sc002SharedService {
 		setValue.setSessionTime(dto.getSessionTime());
 		// 連絡先
 		setValue.setRenrakuSaki(dto.getRenrakuSaki());
-		// 自動車の保管場所2
-
-		// 自動車の位置番号2
-
-		// 保管場所使用料2
-
-		// 保管場所使用開始可能日2
-
 		// 現在の保管場所
 		setValue.setNowParkingArea(dto.getParking1stPlace());
 		// 現在の位置番号
@@ -2068,7 +2058,7 @@ public class Skf2020Sc002SharedService {
 	 * @param applInfo
 	 * @param applTacFlg
 	 */
-	private void insertApplHistory(Skf2020Sc002CommonDto dto, Map<String, String> applInfo, String applTacFlg) {
+	private void insertApplHistory(Skf2020Sc002CommonDto dto, Map<String, String> applInfo) {
 
 		// 申請書類履歴テーブルの設定
 		Skf2010TApplHistory setValue = new Skf2010TApplHistory();
@@ -2081,7 +2071,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setApplNo(applInfo.get("applNo"));
 		setValue.setApplId(FunctionIdConstant.R0100);
 		setValue.setApplStatus(applInfo.get("newStatus"));
-		setValue.setApplTacFlg(applTacFlg);
+		setValue.setApplTacFlg(applInfo.get("applTacFlg"));
 		setValue.setComboFlg("1");
 		// 登録
 		int registCount = 0;
@@ -2159,8 +2149,8 @@ public class Skf2020Sc002SharedService {
 	 */
 	protected void setCommentBtnDisabled(Skf2020Sc002CommonDto dto) {
 		// コメントの設定
-		List<Skf2020Sc002GetCommentListExp> commentList = new ArrayList<Skf2020Sc002GetCommentListExp>();
-		commentList = getApplCommentList(dto.getApplNo());
+		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+		commentList = skfCommentUtils.getCommentInfo(companyCd, dto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
 			dto.setCommentViewFlag(FALSE);
@@ -2168,22 +2158,6 @@ public class Skf2020Sc002SharedService {
 			// コメントがあれば表示
 			dto.setCommentViewFlag(TRUE);
 		}
-	}
-
-	/**
-	 * 申請コメントの一覧を取得します
-	 * 
-	 * @param applNo
-	 * @return コメントリスト
-	 */
-	public List<Skf2020Sc002GetCommentListExp> getApplCommentList(String applNo) {
-		List<Skf2020Sc002GetCommentListExp> returnList = new ArrayList<Skf2020Sc002GetCommentListExp>();
-		Skf2020Sc002GetCommentListExpParameter param = new Skf2020Sc002GetCommentListExpParameter();
-		param.setCompanyCd(CodeConstant.C001);
-		param.setApplNo(applNo);
-		returnList = skf2020Sc002GetCommentListExpRepository.getCommentList(param);
-
-		return returnList;
 	}
 
 }

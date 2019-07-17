@@ -18,6 +18,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002InitDto;
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
@@ -38,6 +39,8 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	private Skf2020Sc002GetShainInfoExpRepository skf2020Sc002GetShainInfoExpRepository;
 	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -52,10 +55,13 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC002_TITLE);
 
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+
 		// フォントカラーをデフォルトに設定
 		skf2020Sc002SharedService.setDefultColor(initDto);
 		// 情報の初期化
-		skf2020Sc002SharedService.setClearInfo(initDto);
+		// skf2020Sc002SharedService.setClearInfo(initDto);
 
 		// 必要情報の取得
 		setInfo(initDto);
