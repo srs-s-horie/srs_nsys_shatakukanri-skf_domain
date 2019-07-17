@@ -31,6 +31,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ConfirmDto;
@@ -59,22 +60,24 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 	private Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
 
 	@Override
-	public BaseDto index(Skf2020Sc002ConfirmDto checkDto) throws Exception {
+	public BaseDto index(Skf2020Sc002ConfirmDto dto) throws Exception {
 
-		// ServiceHelper.addErrorResultMessage(checkDto, null,
-		// MessageIdConstant.E_SKF_1077);
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("申請内容を確認する", CodeConstant.C001, dto.getPageId());
 
 		// バイトカット処理
-		skf2020Sc002SharedService.cutByte(checkDto);
+		skf2020Sc002SharedService.cutByte(dto);
 
 		// 登録処理
-		confirmClickProcess(checkDto);
-		return checkDto;
+		confirmClickProcess(dto);
+		return dto;
 	}
 
 	/**
@@ -85,15 +88,15 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
 	 */
-	public void confirmClickProcess(Skf2020Sc002ConfirmDto checkDto)
+	public void confirmClickProcess(Skf2020Sc002ConfirmDto dto)
 			throws IllegalAccessException, InvocationTargetException {
 
 		// ステータスの設定
-		Map<String, String> applInfo = skf2020Sc002SharedService.getSkfApplInfo(checkDto);
+		Map<String, String> applInfo = skf2020Sc002SharedService.getSkfApplInfo(dto);
 		// 申請者用のステータスをデフォルト設定
 		String newStatus = CodeConstant.STATUS_ICHIJIHOZON;
 		// 申請対象区分の取得
-		String applKbn = checkDto.getApplKbn();
+		String applKbn = dto.getApplKbn();
 		// 申請対象区分の判定
 		if (CodeConstant.OUT_INPUT.equals(applKbn)) {
 			// アウトソース用の場合、ステータスを変更しない
@@ -103,35 +106,35 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		applInfo.put("newStatus", newStatus);
 
 		// 一時保存処理を実行
-		saveInfo(applInfo, checkDto);
+		saveInfo(applInfo, dto);
 
 		// 申請書類確認に遷移
 		List<Map<String, Object>> resultApplList = null;
 		// 次の画面に渡すパラメータをセッションに格納
 		resultApplList = new ArrayList<Map<String, Object>>();
 		Map<String, Object> applMap = new HashMap<String, Object>();
-		applMap.put(SkfCommonConstant.KEY_STATUS, checkDto.getStatus());
-		applMap.put(SkfCommonConstant.KEY_APPL_NO, checkDto.getApplNo());
+		applMap.put(SkfCommonConstant.KEY_STATUS, dto.getStatus());
+		applMap.put(SkfCommonConstant.KEY_APPL_NO, dto.getApplNo());
 		resultApplList.add(applMap);
 		menuScopeSessionBean.put(SessionCacheKeyConstant.APPL_INFO_SESSION_KEY, resultApplList);
 
 		// フォームデータを設定
-		checkDto.setPrePageId(checkDto.getPageId());
+		dto.setPrePageId(dto.getPageId());
 		BaseForm form = new BaseForm();
-		CopyUtils.copyProperties(form, checkDto);
+		CopyUtils.copyProperties(form, dto);
 		FormHelper.setFormBean(FunctionIdConstant.SKF2010_SC002, form);
 
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC002);
-		checkDto.setTransferPageInfo(nextPage);
+		dto.setTransferPageInfo(nextPage);
 	}
 
 	/**
 	 * 一時保存処理
 	 * 
 	 * @param applInfo
-	 * @param checkDto
+	 * @param dto
 	 */
-	private void saveInfo(Map<String, String> applInfo, Skf2020Sc002ConfirmDto checkDto) {
+	private void saveInfo(Map<String, String> applInfo, Skf2020Sc002ConfirmDto dto) {
 
 		// 頻出データをセッションから変数に取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
@@ -144,33 +147,33 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 
 		if (CodeConstant.STATUS_MISAKUSEI.equals(applInfo.get("status"))) {
 			// 指定なし（新規）の場合
-			checkDto.setHdnStatus(CodeConstant.STATUS_MISAKUSEI);
+			dto.setHdnStatus(CodeConstant.STATUS_MISAKUSEI);
 			// 新規登録処理
-			if (skf2020Sc002SharedService.saveNewData(checkDto, applInfo)) {
+			if (skf2020Sc002SharedService.saveNewData(dto, applInfo)) {
 
-				if (checkDto.getShatakuList() != null
-						&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(checkDto.getHdnBihinHenkyakuUmu())
-						&& CodeConstant.LEAVE.equals(checkDto.getTaikyoYotei())) {
+				if (dto.getShatakuList() != null
+						&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(dto.getHdnBihinHenkyakuUmu())
+						&& CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
 					// 退居社宅かつ返却備品ががある場合は備品返却の作成
-					if (checkDto.getNowShatakuNo() != null || NfwStringUtils.isNotEmpty(checkDto.getNowShatakuNo())) {
+					if (dto.getNowShatakuNo() != null || NfwStringUtils.isNotEmpty(dto.getNowShatakuNo())) {
 						// 備品返却申請テーブルから備品返却申請の書類管理番号を取得
-						String bihinHenkaykuShinseiApplNo = skf2020Sc002SharedService.getBihinHenkyaku(checkDto);
+						String bihinHenkaykuShinseiApplNo = skf2020Sc002SharedService.getBihinHenkyaku(dto);
 						// なければ備品返却申請の書類管理番号を新規発行
-						if (checkDto.getNowShatakuNo() == null || NfwStringUtils.isEmpty(bihinHenkaykuShinseiApplNo)) {
+						if (dto.getNowShatakuNo() == null || NfwStringUtils.isEmpty(bihinHenkaykuShinseiApplNo)) {
 							// 備品返却申請用の申請書類管理番号を取得
 							bihinHenkaykuShinseiApplNo = skfShinseiUtils
-									.getBihinHenkyakuShinseiNewApplNo(CodeConstant.C001, checkDto.getShainNo());
+									.getBihinHenkyakuShinseiNewApplNo(CodeConstant.C001, dto.getShainNo());
 							// 備品返却申請テーブルを新規発行
-							skf2020Sc002SharedService.insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, checkDto,
+							skf2020Sc002SharedService.insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, dto,
 									applInfo);
 						} else {
 							// 備品返却申請テーブルを更新
 							int registBihinCount = 0;
 							applInfo.put("dateUpdateFlg", "1");
 							Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
-							setValue.setLastUpdateDate(checkDto
+							setValue.setLastUpdateDate(dto
 									.getLastUpdateDate(Skf2020Sc002SharedService.BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE));
-							registBihinCount = updateBihinHenkyakuInfo(setValue, checkDto, applInfo,
+							registBihinCount = updateBihinHenkyakuInfo(setValue, dto, applInfo,
 									bihinHenkaykuShinseiApplNo);
 							LogUtils.debugByMsg("申請書類履歴テーブル更新件数：" + registBihinCount + "件");
 						}
@@ -180,7 +183,7 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 
 		} else {
 			// 新規以外
-			checkDto.setHdnStatus(applInfo.get("status"));
+			dto.setHdnStatus(applInfo.get("status"));
 			// 申請履歴テーブルの更新
 			int registHistoryCount = 0;
 			Skf2010TApplHistory setApplValue = new Skf2010TApplHistory();
@@ -190,8 +193,8 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 				applInfo.put("dateUpdateFlg", "1");
 
 				setApplValue.setLastUpdateDate(
-						checkDto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
-				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, checkDto, applInfo);
+						dto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
+				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, dto, applInfo);
 				LogUtils.debugByMsg("申請書類履歴テーブル更新件数：" + registHistoryCount + "件");
 				break;
 			case CodeConstant.STATUS_HININ:
@@ -202,19 +205,18 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 				// 申請日時を更新しない
 				applInfo.put("dateUpdateFlg", "");
 				setApplValue.setLastUpdateDate(
-						checkDto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
-				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, checkDto, applInfo);
+						dto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
+				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, dto, applInfo);
 			}
 
 			// 入居希望等調書申請テーブルの設定
 			int registNyukyoCount = 0;
 			Skf2020TNyukyoChoshoTsuchi setValue = new Skf2020TNyukyoChoshoTsuchi();
-			setValue.setLastUpdateDate(
-					checkDto.getLastUpdateDate(Skf2020Sc002SharedService.NYUKYO_KEY_LAST_UPDATE_DATE));
-			registNyukyoCount = updateNyukyoChoshoTsuchi(setValue, checkDto);
+			setValue.setLastUpdateDate(dto.getLastUpdateDate(Skf2020Sc002SharedService.NYUKYO_KEY_LAST_UPDATE_DATE));
+			registNyukyoCount = updateNyukyoChoshoTsuchi(setValue, dto);
 			LogUtils.debugByMsg("入居希望等調書申請テーブル更新件数：" + registNyukyoCount + "件");
 			// ステータスを更新
-			checkDto.setStatus(applInfo.get("newStatus"));
+			dto.setStatus(applInfo.get("newStatus"));
 		}
 
 	}

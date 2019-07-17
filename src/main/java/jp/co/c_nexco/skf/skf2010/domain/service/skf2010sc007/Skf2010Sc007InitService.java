@@ -4,11 +4,13 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc007;
 
 import java.text.MessageFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007InitDto;
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
@@ -27,8 +29,12 @@ public class Skf2010Sc007InitService extends BaseServiceAbstract<Skf2010Sc007Ini
 	private static final String NYUKYO = "1";
 	// 画面表示判定 退居（自動車の保管場所返還）届
 	private static final String TAIKYO = "2";
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
 	// 画面メッセージ
 	private static final String MES = "{0}の申請に必要な要件や添付書類を確認する場合は、以下のボタンから確認してください。";
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -43,6 +49,9 @@ public class Skf2010Sc007InitService extends BaseServiceAbstract<Skf2010Sc007Ini
 
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC007_TITLE);
+
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 
 		// 申請条件内容の設定を行う
 		setApplTac(initDto);
