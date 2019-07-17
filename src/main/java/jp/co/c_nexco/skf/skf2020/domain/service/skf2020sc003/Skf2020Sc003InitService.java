@@ -150,8 +150,10 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 					shatakuRoomKanriNo, yearMonth);
 			// 備品状態が会社保有またはレンタルの場合にドロップボックスの初期値を選択不可にするための処理
 			if (bihinInfoList != null && bihinInfoList.size() > 0) {
-
 				for (Skf2020Sc003GetBihinInfoExp bihinInfo : bihinInfoList) {
+					switch (bihinInfo.getBihinCd()) {
+					case "11":
+					}
 					if (bihinInfo.getBihinState().equals(CodeConstant.BIHIN_STATE_HOYU)
 							|| bihinInfo.getBihinState().equals(CodeConstant.BIHIN_STATE_RENTAL)) {
 

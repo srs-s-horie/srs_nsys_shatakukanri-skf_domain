@@ -98,6 +98,35 @@ public class Skf2020Sc003InitDto extends Skf202010CommonDto {
 	// 駐車場情報 １台目 使用開始可能日
 	private String parking2StartDate;
 
+	// 備品希望設定
+	// 洗濯機
+	private String bihinItem11;
+	private String bihinState11;
+	// 冷蔵庫
+	private String bihinItem12;
+	private String bihinState12;
+	// オーブンレンジ
+	private String bihinItem13;
+	private String bihinState13;
+	// 掃除機
+	private String bihinItem14;
+	private String bihinState14;
+	// 電子炊飯ジャー
+	private String bihinItem15;
+	private String bihinState15;
+	// テレビ
+	private String bihinItem16;
+	private String bihinState16;
+	// テレビ台
+	private String bihinItem17;
+	private String bihinState17;
+	// 座卓（こたつ）
+	private String bihinItem18;
+	private String bihinState18;
+	// キッチンキャビネット
+	private String bihinItem19;
+	private String bihinState19;
+
 	// 表示フラグ類
 	// 編集ボタン非表示フラグ
 	private String editBtnVisible;
