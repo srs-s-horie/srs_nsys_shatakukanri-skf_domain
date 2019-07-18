@@ -48,15 +48,15 @@ public class Skf3010Sc001SharedService {
 	public static List<Skf3010Sc001GetListTableDataExp> resultList;
 	/** 単位 */
 	// 経年
-	private String AGING_YEAR = "年";
+	private final String AGING_YEAR = "年";
 	// 部屋数
-	private String ROOM = "室";
+	private final String ROOM = "室";
 	// 駐車場数
-	private String PARKING = "台";
+	private final String PARKING = "台";
 	// 都道府県コード(その他)
-	private String CD_PREF_OTHER = "48";
+	private final String CD_PREF_OTHER = "48";
 	// 借上(社宅区分)
-	private String KARIAGE = "2";
+	private final String KARIAGE = "2";
 
 	/**
 	 * ドロップダウンリストに設定するリストを取得する。<br>
@@ -242,6 +242,7 @@ public class Skf3010Sc001SharedService {
 			if (tmpData.getBuildDate() != null) {
 				buildDate = tmpData.getBuildDate();
 			}
+			// 経年取得
 			keinen = skfBaseBusinessLogicUtils.GetAging(buildDate, areaKbn, tmpData.getStructureKbn(),
 					xmlKeinenTaishouTsukihi);
 			tmpMap.put("aging", Long.toString(keinen) + AGING_YEAR);
