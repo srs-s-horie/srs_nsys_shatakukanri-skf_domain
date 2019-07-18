@@ -63,8 +63,8 @@ public class Skf3010Sc004SharedService {
 	 * 
 	 * @param originalAuse 本来用途
 	 * @param auseList 本来用途リスト
-	 * @param lendKbn 機関
-	 * @param lendList 機関リスト
+	 * @param lendKbn 貸与区分
+	 * @param lendList 貸与区分リスト
 	 */
 	public void getDoropDownList(String originalAuse, List<Map<String, Object>> auseList, String lendKbn,
 			List<Map<String, Object>> lendList) {
@@ -76,7 +76,7 @@ public class Skf3010Sc004SharedService {
 		auseList.addAll(ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_AUSE_KBN, originalAuse,
 				isFirstRowEmpty));
 
-		// 機関リスト
+		// 貸与区分リスト
 		lendList.clear();
 		lendList.addAll(ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_LEND_KBN, lendKbn,
 				isFirstRowEmpty));
