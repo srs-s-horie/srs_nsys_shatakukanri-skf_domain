@@ -48,15 +48,15 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 
 		// ドロップダウンリストの値を設定
 		skf3010Sc001SharedService.getDoropDownList(searchDto.getSelectedCompanyCd(), manageCompanyList,
-				searchDto.getAgencyCd(), manageAgencyList, searchDto.getShatakuKbn(), shatakuKbnList,
-				searchDto.getEmptyRoom(), emptyRoomList, searchDto.getUseKbn(), useKbnList, searchDto.getEmptyParking(),
+				searchDto.getAgencyCd(), manageAgencyList, searchDto.getShatakuKbnCd(), shatakuKbnList,
+				searchDto.getEmptyRoomCd(), emptyRoomList, searchDto.getUseKbnCd(), useKbnList, searchDto.getEmptyParkingCd(),
 				emptyParkingList);
 
 		// 社宅一覧表示
 		// リストテーブルの情報を取得
 		int listCount = skf3010Sc001SharedService.getListTableData(searchDto.getSelectedCompanyCd(),
-				searchDto.getAgencyCd(), searchDto.getShatakuKbn(), searchDto.getEmptyRoom(), searchDto.getUseKbn(),
-				searchDto.getEmptyParking(), searchDto.getShatakuName(), searchDto.getShatakuAddress(), listTableData);
+				searchDto.getAgencyCd(), searchDto.getShatakuKbnCd(), searchDto.getEmptyRoomCd(), searchDto.getUseKbnCd(),
+				searchDto.getEmptyParkingCd(), searchDto.getShatakuName(), searchDto.getShatakuAddress(), listTableData);
 
 		// エラーメッセージ設定
 		if (listCount == 0) {
@@ -103,17 +103,21 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 			// // 管理機関の選択値を設定
 			// searchDto.setAgencyCd(searchDto.getHdnAgencyCd());
 		}
-		// 社宅区分選択値設定
-		searchDto.setHdnShatakuKbn(searchDto.getAgencyCd());
-		// 利用区分選択値設定
-		searchDto.setHdnUseKbn(searchDto.getUseKbn());
-		// 空き部屋選択値設定
-		searchDto.setHdnEmptyRoom(searchDto.getEmptyRoom());
-		// 空き駐車場選択値設定
-		searchDto.setHdnEmptyParking(searchDto.getEmptyParking());
-		// 社宅名設定
+		// 管理会社選択値設定(検索キー)
+		searchDto.setHdnSelectedCompanyCd(searchDto.getSelectedCompanyCd());
+		// 管理機関選択値設定(検索キー)
+		searchDto.setHdnAgencyCd(searchDto.getAgencyCd());
+		// 社宅区分選択値設定(検索キー)
+		searchDto.setHdnShatakuKbnCd(searchDto.getShatakuKbnCd());
+		// 利用区分選択値設定(検索キー)
+		searchDto.setHdnUseKbnCd(searchDto.getUseKbnCd());
+		// 空き部屋選択値設定(検索キー)
+		searchDto.setHdnEmptyRoomCd(searchDto.getEmptyRoomCd());
+		// 空き駐車場選択値設定(検索キー)
+		searchDto.setHdnEmptyParkingCd(searchDto.getEmptyParkingCd());
+		// 社宅名設定(検索キー)
 		searchDto.setHdnShatakuName(searchDto.getShatakuName());
-		// 社宅住所設定
+		// 社宅住所設定(検索キー)
 		searchDto.setHdnShatakuAddress(searchDto.getShatakuAddress());
 
 		return searchDto;

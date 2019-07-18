@@ -53,12 +53,22 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 		List<Map<String, Object>> emptyRoomList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> shatakuKbnList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> useKbnList = new ArrayList<Map<String, Object>>();
-		List<Map<String, Object>> emptyParkingList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> emptyParkingList = new ArrayList<Map<String, Object>>();		
 
 		// 利用区分を「使用中」に設定
-		initDto.setUseKbn("2");
+		initDto.setUseKbnCd("2");
 		// 管理機関プルダウンを活性
 		initDto.setAgencyDispFlg(true);
+
+		String hdnSelectedCompanyCd = initDto.getHdnSelectedCompanyCd();
+		String hdnAgencyCd = initDto.getHdnAgencyCd();
+		String hdnShatakuKbnCd = initDto.getHdnShatakuKbnCd();
+		String hdnUseKbnCd = initDto.getHdnUseKbnCd();
+		String hdnEmptyRoomCd = initDto.getHdnEmptyRoomCd();
+		String hdnEmptyParkingCd = initDto.getHdnEmptyParkingCd();
+		String hdnShatakuName = initDto.getHdnShatakuName();
+		String hdnShatakuAddress = initDto.getHdnShatakuAddress();
+
 		// セッション情報存在判定
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
 				&& initDto.getPrePageId().equals(FunctionIdConstant.SKF3010_SC001)) {
@@ -66,9 +76,9 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 			// 初期表示フラグをfalseに設定
 			initializeFlg = false;
 			// 管理会社の選択値を設定
-			initDto.setSelectedCompanyCd(initDto.getHdnSelectedCompanyCd());
+			initDto.setSelectedCompanyCd(hdnSelectedCompanyCd);
 			// 管理会社選択値判定
-			if (initDto.getSelectedCompanyCd() != null && initDto.getSelectedCompanyCd().equals("ZZZZ")) {
+			if (hdnSelectedCompanyCd != null && hdnSelectedCompanyCd.equals("ZZZZ")) {
 				// 外部機関の場合
 				// 管理機関コードを空文字に設定
 				initDto.setAgencyCd(null);
@@ -79,42 +89,43 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 				// 外部機関選択時は管理機関プルダウンを活性
 				initDto.setAgencyDispFlg(true);
 				// 管理機関の選択値を設定
-				initDto.setAgencyCd(initDto.getHdnAgencyCd());
+				initDto.setAgencyCd(hdnAgencyCd);
 			}
-			// 社宅区分選択値設定
-			initDto.setShatakuKbn(initDto.getHdnAgencyCd());
-			// 利用区分選択値設定
-			initDto.setUseKbn(initDto.getHdnUseKbn());
-			// 空き部屋選択値設定
-			initDto.setEmptyRoom(initDto.getHdnEmptyRoom());
-			// 空き駐車場選択値設定
-			initDto.setEmptyParking(initDto.getHdnEmptyParking());
-			// 社宅名設定
-			initDto.setShatakuName(initDto.getHdnShatakuName());
-			// 社宅住所設定
-			initDto.setShatakuAddress(initDto.getHdnShatakuAddress());
+			// 社宅区分選択値設定(検索キー)
+			initDto.setShatakuKbnCd(hdnShatakuKbnCd);
+			// 利用区分選択値設定(検索キー)
+			initDto.setUseKbnCd(hdnUseKbnCd);
+			// 空き部屋選択値設定(検索キー)
+			initDto.setEmptyRoomCd(hdnEmptyRoomCd);
+			// 空き駐車場選択値設定(検索キー)
+			initDto.setEmptyParkingCd(hdnEmptyParkingCd);
+			// 社宅名設定(検索キー)
+			initDto.setShatakuName(hdnShatakuName);
+			// 社宅住所設定(検索キー)
+			initDto.setShatakuAddress(hdnShatakuAddress);
 		} else {
 			// 画面連携のhidden項目を初期化
 			initDto.setHdnAgencyCd(null);
-			initDto.setHdnEmptyParking(null);
-			initDto.setHdnEmptyRoom(null);
+			initDto.setHdnEmptyParkingCd(null);
+			initDto.setHdnEmptyRoomCd(null);
 			initDto.setHdnSelectedCompanyCd(null);
 			initDto.setHdnShatakuAddress(null);
-			initDto.setHdnShatakuKbn(null);
+			initDto.setHdnShatakuKbnCd(null);
 			initDto.setHdnShatakuName(null);
-			initDto.setHdnUseKbn(null);
+//			initDto.setHdnUseKbn(null);
+			initDto.setHdnUseKbnCd(initDto.getUseKbnCd());
 		}
 		// ドロップダウンリストの値を設定
 		skf3010Sc001SharedService.getDoropDownList(initDto.getSelectedCompanyCd(), manageCompanyList,
-				initDto.getAgencyCd(), manageAgencyList, initDto.getShatakuKbn(), shatakuKbnList,
-				initDto.getEmptyRoom(), emptyRoomList, initDto.getUseKbn(), useKbnList, initDto.getEmptyParking(),
+				initDto.getAgencyCd(), manageAgencyList, initDto.getShatakuKbnCd(), shatakuKbnList,
+				initDto.getEmptyRoomCd(), emptyRoomList, initDto.getUseKbnCd(), useKbnList, initDto.getEmptyParkingCd(),
 				emptyParkingList);
 
 		// 社宅一覧表示
 		// リストテーブルの情報を取得
 		int listCount = skf3010Sc001SharedService.getListTableData(initDto.getSelectedCompanyCd(),
-				initDto.getAgencyCd(), initDto.getShatakuKbn(), initDto.getEmptyRoom(), initDto.getUseKbn(),
-				initDto.getEmptyParking(), initDto.getShatakuName(), initDto.getShatakuAddress(), listTableData);
+				initDto.getAgencyCd(), initDto.getShatakuKbnCd(), initDto.getEmptyRoomCd(), initDto.getUseKbnCd(),
+				initDto.getEmptyParkingCd(), initDto.getShatakuName(), initDto.getShatakuAddress(), listTableData);
 
 		// 初期表示に限り、0件メッセージは表示しない
 		if (!initializeFlg && listCount == 0) {

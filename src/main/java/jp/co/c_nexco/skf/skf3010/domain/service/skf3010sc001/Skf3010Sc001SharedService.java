@@ -71,9 +71,9 @@ public class Skf3010Sc001SharedService {
 	 * @param affiliation3List ※利用区分ドロップダウンリスト
 	 */
 	public void getDoropDownList(String selectedCompanyCd, List<Map<String, Object>> manageCompanyList, String agencyCd,
-			List<Map<String, Object>> manageAgencyList, String shatakuKbn, List<Map<String, Object>> shatakuKbnList,
-			String emptyRoom, List<Map<String, Object>> emptyRoomList, String useKbn,
-			List<Map<String, Object>> useKbnList, String emptyParking, List<Map<String, Object>> emptyParkingList) {
+			List<Map<String, Object>> manageAgencyList, String shatakuKbnCd, List<Map<String, Object>> shatakuKbnList,
+			String emptyRoomCd, List<Map<String, Object>> emptyRoomList, String useKbnCd,
+			List<Map<String, Object>> useKbnList, String emptyParkingCd, List<Map<String, Object>> emptyParkingList) {
 
 		boolean isFirstRowEmpty = true;
 
@@ -88,48 +88,49 @@ public class Skf3010Sc001SharedService {
 		// 社宅区分リスト
 		shatakuKbnList.clear();
 		shatakuKbnList.addAll(ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN,
-				shatakuKbn, isFirstRowEmpty));
+				shatakuKbnCd, isFirstRowEmpty));
 
 		// 空き部屋リスト
 		emptyRoomList.clear();
-		emptyRoomList.addAll(ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_AKIROOM_KBN, emptyRoom,
+		emptyRoomList.addAll(ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_AKIROOM_KBN, emptyRoomCd,
 				isFirstRowEmpty));
 
 		// 利用区分リスト
 		useKbnList.clear();
 		useKbnList.addAll(
-				ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_RIYO_KBN, useKbn, isFirstRowEmpty));
+				ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_RIYO_KBN, useKbnCd, isFirstRowEmpty));
 
 		// 空き駐車場リスト
 		emptyParkingList.clear();
 		emptyParkingList.addAll(ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_AKIPARKING_KBN,
-				emptyParking, isFirstRowEmpty));
+				emptyParkingCd, isFirstRowEmpty));
 
 	}
 
 	/**
 	 * リストテーブルを取得する。 <br>
+	 * パラメータの検索キーでDBを検索し、結果を戻り値のリストテーブルに設定する
 	 * 「※」項目はアドレスとして戻り値になる。
 	 * 
 	 * @param selectedCompanyCd 会社コード
 	 * @param agencyCd 機関コード
-	 * @param shatakuKbn 社宅区分
-	 * @param emptyRoom 空き部屋
-	 * @param useKbn 利用区分
-	 * @param emptyParking 空き駐車場
+	 * @param shatakuKbnCd 社宅区分
+	 * @param emptyRoomCd 空き部屋
+	 * @param useKbnCd 利用区分
+	 * @param emptyParkingCd 空き駐車場
 	 * @param shatakuName 社宅名
 	 * @param shatakuAddress 社宅住所
-	 * @param listTableData リストデータ
+	 * @param *listTableData リストデータ
 	 * @return
 	 * @throws ParseException
 	 */
-	public int getListTableData(String selectedCompanyCd, String agencyCd, String shatakuKbn, String emptyRoom,
-			String useKbn, String emptyParking, String shatakuName, String shatakuAddress,
+	public int getListTableData(String selectedCompanyCd, String agencyCd, String shatakuKbnCd, String emptyRoomCd,
+			String useKbnCd, String emptyParkingCd, String shatakuName, String shatakuAddress,
 			List<Map<String, Object>> listTableData) throws ParseException {
 
 		LogUtils.debugByMsg("リストテーブルデータ取得処理開始");
-		LogUtils.debugByMsg("引数から取得した値：" + "会社コード：" + selectedCompanyCd + "　機関コード：" + agencyCd + "　社宅区分：" + shatakuKbn
-				+ "　空き部屋：" + emptyRoom + "　利用区分：" + useKbn + "　空き駐車場：" + emptyParking + "　社宅名：" + shatakuName + " 社宅住所:"
+		LogUtils.debugByMsg("引数から取得した値：" + "会社コード：" + selectedCompanyCd + "　機関コード：" + agencyCd + "　社宅区分コード：" + shatakuKbnCd
+				+ "　空き部屋コード：" + emptyRoomCd + "　利用区分コード：" + useKbnCd + "　空き駐車場コード：" + emptyParkingCd + "　社宅名：" + shatakuName + " 社宅住所:"
 				+ shatakuAddress);
 
 		// リストテーブルに格納するデータを取得する
@@ -138,10 +139,10 @@ public class Skf3010Sc001SharedService {
 		Skf3010Sc001GetListTableDataExpParameter param = new Skf3010Sc001GetListTableDataExpParameter();
 		param.setSelectedCompanyCd(selectedCompanyCd);
 		param.setAgencyCd(agencyCd);
-		param.setShatakuKbn(shatakuKbn);
-		param.setEmptyRoom(emptyRoom);
-		param.setUseKbn(useKbn);
-		param.setEmptyParking(emptyParking);
+		param.setShatakuKbnCd(shatakuKbnCd);
+		param.setEmptyRoomCd(emptyRoomCd);
+		param.setUseKbnCd(useKbnCd);
+		param.setEmptyParkingCd(emptyParkingCd);
 		param.setShatakuName(shatakuName);
 		param.setShatakuAddress(shatakuAddress);
 		resultListTableData = skf3010Sc001GetListTableDataExpRepository.getListTableData(param);
