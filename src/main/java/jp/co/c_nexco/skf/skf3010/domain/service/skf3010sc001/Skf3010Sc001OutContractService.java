@@ -24,7 +24,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001OutContract
 import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
- * Skf3010Sc001 社宅一覧の契約情報出力ボタン処理クラス。
+ * Skf3010Sc001OutContractService 社宅一覧の契約情報出力ボタン処理クラス。
  * 
  * @author NEXCOシステムズ
  */

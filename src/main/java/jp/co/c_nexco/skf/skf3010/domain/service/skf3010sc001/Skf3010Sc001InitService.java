@@ -17,8 +17,9 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001InitDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
+ * Skf3010Sc001InitService 社宅一覧画面のInitサービス処理クラス。
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001InitDto> {
@@ -121,7 +122,7 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 				initDto.getEmptyRoomCd(), emptyRoomList, initDto.getUseKbnCd(), useKbnList, initDto.getEmptyParkingCd(),
 				emptyParkingList);
 
-		// 社宅一覧表示
+		// 社宅一覧取得
 		// リストテーブルの情報を取得
 		int listCount = skf3010Sc001SharedService.getListTableData(initDto.getSelectedCompanyCd(),
 				initDto.getAgencyCd(), initDto.getShatakuKbnCd(), initDto.getEmptyRoomCd(), initDto.getUseKbnCd(),
