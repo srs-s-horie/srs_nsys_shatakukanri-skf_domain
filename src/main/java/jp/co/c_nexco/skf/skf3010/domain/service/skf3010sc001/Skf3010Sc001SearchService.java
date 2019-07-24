@@ -100,8 +100,6 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 			// 外部機関以外の場合
 			// 外部機関選択時は管理機関プルダウンを活性
 			searchDto.setAgencyDispFlg(true);
-			// // 管理機関の選択値を設定
-			// searchDto.setAgencyCd(searchDto.getHdnAgencyCd());
 		}
 		// 管理会社選択値設定(検索キー)
 		searchDto.setHdnSelectedCompanyCd(searchDto.getSelectedCompanyCd());

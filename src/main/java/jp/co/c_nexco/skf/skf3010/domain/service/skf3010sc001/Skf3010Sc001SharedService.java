@@ -243,7 +243,7 @@ public class Skf3010Sc001SharedService {
 				buildDate = tmpData.getBuildDate();
 			}
 			// 経年取得
-			keinen = skfBaseBusinessLogicUtils.GetAging(buildDate, areaKbn, tmpData.getStructureKbn(),
+			keinen = skfBaseBusinessLogicUtils.getAging(buildDate, areaKbn, tmpData.getStructureKbn(),
 					xmlKeinenTaishouTsukihi);
 			tmpMap.put("aging", Long.toString(keinen) + AGING_YEAR);
 

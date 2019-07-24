@@ -39,6 +39,8 @@ public class Skf3010Sc001OutContractService extends BaseServiceAbstract<Skf3010S
 	 */
 	// 社宅区分
 	private static final String SHATAKU_KBN_KARIAGE = "2";
+	// 社宅区分
+	private static final String SHATAKU_KBN_ITTO = "4";
 
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
@@ -47,52 +49,53 @@ public class Skf3010Sc001OutContractService extends BaseServiceAbstract<Skf3010S
 	private String validationErrorCode;
 
 	@Override
-	public BaseDto index(Skf3010Sc001OutContractDto copyRentalDto) throws Exception {
+	public BaseDto index(Skf3010Sc001OutContractDto outContraDto) throws Exception {
 		// 社宅区分(選択行)
-		String hdnRowShatakuKbn = copyRentalDto.getHdnRowShatakuKbn();
+		String hdnRowShatakuKbn = outContraDto.getHdnRowShatakuKbn();
 		// 社宅管理番号(選択行)
-		String hdnRowShatakuKanriNo = copyRentalDto.getHdnRowShatakuKanriNo();
-		String hdnRowShatakuName = copyRentalDto.getHdnRowShatakuName();
-		String hdnRowAreaKbn = copyRentalDto.getHdnRowAreaKbn();
-		String hdnRowEmptyRoomCount = copyRentalDto.getHdnRowEmptyRoomCount();
-		String hdnRowEmptyParkingCount = copyRentalDto.getHdnRowEmptyParkingCount();
+		String hdnRowShatakuKanriNo = outContraDto.getHdnRowShatakuKanriNo();
+		String hdnRowShatakuName = outContraDto.getHdnRowShatakuName();
+		String hdnRowAreaKbn = outContraDto.getHdnRowAreaKbn();
+		String hdnRowEmptyRoomCount = outContraDto.getHdnRowEmptyRoomCount();
+		String hdnRowEmptyParkingCount = outContraDto.getHdnRowEmptyParkingCount();
 		// 管理会社コード
-		String hdnSelectedCompanyCd = copyRentalDto.getHdnSelectedCompanyCd();
+		String hdnSelectedCompanyCd = outContraDto.getHdnSelectedCompanyCd();
 		// 機関コード 
-		String hdnAgencyCd = copyRentalDto.getHdnAgencyCd();
+		String hdnAgencyCd = outContraDto.getHdnAgencyCd();
 		// 社宅区分コード 
-		String hdnShatakuKbnCd = copyRentalDto.getHdnShatakuKbnCd();
+		String hdnShatakuKbnCd = outContraDto.getHdnShatakuKbnCd();
 		// 空き部屋コード
-		String hdnEmptyRoomCd = copyRentalDto.getHdnEmptyRoomCd();
+		String hdnEmptyRoomCd = outContraDto.getHdnEmptyRoomCd();
 		// 利用区分コード
-		String hdnUseKbnCd = copyRentalDto.getHdnUseKbnCd();
+		String hdnUseKbnCd = outContraDto.getHdnUseKbnCd();
 		// 空き駐車場コード
-		String hdnEmptyParkingCd = copyRentalDto.getHdnEmptyParkingCd();
+		String hdnEmptyParkingCd = outContraDto.getHdnEmptyParkingCd();
 		// 社宅名
-		String hdnShatakuName = copyRentalDto.getHdnShatakuName();
+		String hdnShatakuName = outContraDto.getHdnShatakuName();
 		// 社宅住所
-		String hdnShatakuAddress = copyRentalDto.getHdnShatakuAddress();
+		String hdnShatakuAddress = outContraDto.getHdnShatakuAddress();
 		
 		// 社宅管理番号の有無チェック
-		if (hdnRowShatakuKanriNo == null || hdnRowShatakuKanriNo.length() < 1) {
-			logger.warn("社宅が選択されていません。");
-			ServiceHelper.addWarnResultMessage(copyRentalDto, MessageIdConstant.W_SKF_3003);
-			return copyRentalDto;
-		}
-		// 社宅区分判定
-		if (!hdnRowShatakuKbn.equals(SHATAKU_KBN_KARIAGE)) {
-			logger.warn("借上以外が選択されています。");
-			ServiceHelper.addWarnResultMessage(copyRentalDto, MessageIdConstant.W_SKF_3002);
-			return copyRentalDto;
-		}
+//		if (hdnRowShatakuKanriNo == null || hdnRowShatakuKanriNo.length() < 1) {
+//			logger.warn("社宅が選択されていません。");
+//			ServiceHelper.addWarnResultMessage(outContraDto, MessageIdConstant.W_SKF_3003);
+//			return outContraDto;
+//		}
+//		// 社宅区分判定
+//		if (!hdnRowShatakuKbn.equals(SHATAKU_KBN_KARIAGE)) {
+//			logger.warn("借上以外が選択されています。");
+//			ServiceHelper.addWarnResultMessage(outContraDto, MessageIdConstant.W_SKF_3002);
+//			return outContraDto;
+//		}
 
-		// 画面遷移（申請条件一覧へ）
+		// 正常終了メッセージ設定
+		ServiceHelper.addResultMessage(outContraDto, MessageIdConstant.I_SKF_2047);
 //		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF3010_SC006, "init");
-		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF3010_SC001, "init");
+//		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF3010_SC001, "init");
 //		ServiceHelper.addResultMessage(copyRentalDto, MessageIdConstant.I_SKF_2047);
-		nextPage.addResultMessage(MessageIdConstant.I_SKF_2047);
-		copyRentalDto.setTransferPageInfo(nextPage);
+//		nextPage.addResultMessage(MessageIdConstant.I_SKF_2047);
+//		copyRentalDto.setTransferPageInfo(nextPage);
 
-		return copyRentalDto;
+		return outContraDto;
 	}
 }
