@@ -39,4 +39,6 @@ public class Skf2010Sc002InitDto extends Skf2010CommonDto {
 	private String level3Open;
 	private String level4Open;
 
+	// コメント表示レベル
+	private int commentDisplayLevel;
 }

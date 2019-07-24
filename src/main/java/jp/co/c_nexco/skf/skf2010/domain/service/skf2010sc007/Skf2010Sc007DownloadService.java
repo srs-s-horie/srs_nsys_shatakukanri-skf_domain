@@ -3,10 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc007;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007DownloadDto;
 
 /**
@@ -27,9 +30,16 @@ public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	 * @throws Exception 例外
 	 */
 
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+
 	@Override
 	protected BaseDto index(Skf2010Sc007DownloadDto dto) throws Exception {
-		// TODO 自動生成されたメソッド・スタブ
+
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("申請要件を確認する", companyCd, dto.getPageId());
 
 		// ダウンロードファイル名
 		String downloadFileName = "skf2010.skf2010_sc007.FileId";

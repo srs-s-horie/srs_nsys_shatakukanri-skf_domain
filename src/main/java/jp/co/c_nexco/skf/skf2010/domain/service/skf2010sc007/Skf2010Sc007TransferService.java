@@ -17,6 +17,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007TransferDto;
 
@@ -30,8 +31,12 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007TransferDto
 @Service
 public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc007TransferDto> {
 
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf2010Sc007GetApplHistoryInfoExpRepository skf2010Sc007GetApplHistoryInfoExpRepository;
 
@@ -45,6 +50,9 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public BaseDto index(Skf2010Sc007TransferDto transferDto) throws Exception {
 
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("申請書を作成する", companyCd, transferDto.getPageId());
+
 		// 画面遷移前のチェック処理
 		setRedirectAppl(transferDto);
 
@@ -55,7 +63,6 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	 * 遷移前チェック処理
 	 * 
 	 * @param transferDto
-	 * @return false:遷移しない、true:遷移する
 	 */
 	private void setRedirectAppl(Skf2010Sc007TransferDto transferDto) {
 
@@ -69,21 +76,6 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 		if (applHistoryList.size() > 0) {
 			transferDto.setShainNo(applHistoryList.get(0).getShainNo());
 		}
-
-		// パラメータの設定
-		// List<Skf2010Sc007GetApplNoExp> applNoList = new
-		// ArrayList<Skf2010Sc007GetApplNoExp>();
-		// Skf2010Sc007GetApplNoExpParameter param = new
-		// Skf2010Sc007GetApplNoExpParameter();
-		// param.setCompanyCd(CodeConstant.C001);
-		// param.setApplId(applID);
-		// param.setShainNo(transferDto.getShainNo());
-		// // 申請書類番号の取得
-		// applNoList = skf2010Sc007GetApplNoExpRepository.getApplNo(param);
-		// String applNo = CodeConstant.DOUBLE_QUOTATION;
-		// if (applNoList.size() > 0) {
-		// applNo = applNoList.get(0).getApplNo();
-		// }
 
 		// 入退居については、申請前に申請可能か判定を行う。
 		switch (applID) {
@@ -109,7 +101,7 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 				// 申請不可の場合、申請条件確認画面にメッセージを表示する。
 				transferDto.setResultMessages(null);
 				ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-						"「申請書類を確認する」から確認", "");
+						"「社宅申請状況一覧」から確認", "");
 				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
 				break;
 			}
@@ -135,27 +127,11 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 				// 申請不可の場合、申請条件確認画面にメッセージを表示する。
 				transferDto.setResultMessages(null);
 				ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-						"「申請書類を確認する」から確認", "");
+						"「社宅申請状況一覧」から確認", "");
 				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
 				break;
 			}
 
-			// if (skfShinseiUtils.checkSKSTeijiStatus(transferDto.getShainNo(),
-			// applID, transferDto.getApplNo())) {
-			// // 申請可能な場合は次の処理へ
-			// TransferPageInfo nextPage =
-			// TransferPageInfo.nextPage(FunctionIdConstant.SKF2040_SC001);
-			// transferDto.setTransferPageInfo(nextPage);
-			// break;
-			// } else {
-			// // 申請不可の場合、申請条件確認画面にメッセージを表示する。
-			// transferDto.setResultMessages(null);
-			// ServiceHelper.addErrorResultMessage(transferDto, null,
-			// MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-			// "「申請書類を確認する」から確認", "");
-			// throwBusinessExceptionIfErrors(transferDto.getResultMessages());
-			// break;
-			// }
 		}
 	}
 
