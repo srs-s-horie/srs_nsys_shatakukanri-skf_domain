@@ -2,36 +2,40 @@ package jp.co.c_nexco.skf.skf3090.domain.dto.common;
 
 import java.util.List;
 import java.util.Map;
-
-import jp.co.c_nexco.nfw.webcore.app.DownloadFile;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf309040CommonDto Skf309040同期処理共通Dto
  * 
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
 public class Skf309040CommonDto extends BaseDto {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-	
-	/** エラーコード関係 */
-	private String nameErr;
-	private String nameKkErr;
-	private String shainNoErr;
-	private String companyCdErr;
 
-	
+	// 会社コード
+	private String companyCd;
+	// 機関コード
+	private String agencyCd;
+	// 部等コード
+	private String affiliation1Cd;
+	// 室、チーム又は課コード
+	private String affiliation2Cd;
+	// 事業領域コード
+	private String businessAreaCd;
 
-	private List<DownloadFile> dlFile;
-	
-	private String preOpenPage;
+	/** ドロップダウン系 */
+	// 会社ドロップダウンリスト
+	List<Map<String, Object>> companyList;
+	// 機関ドロップダウンリスト
+	List<Map<String, Object>> agencyList;
+	// 部等ドロップダウンリスト
+	List<Map<String, Object>> affiliation1List;
+	// 室、チーム又は課ドロップダウンリスト
+	List<Map<String, Object>> affiliation2List;
+	// 事業領域ドロップダウンリスト
+	List<Map<String, Object>> businessAreaList;
 
-	private Integer limit;
-	private Integer offset;
-	private Integer page;
 }
