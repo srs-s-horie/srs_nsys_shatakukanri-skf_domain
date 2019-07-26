@@ -18,6 +18,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005InitDto;
 
 /**
@@ -32,6 +33,8 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
 	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -44,7 +47,8 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		// 初期化処理
 		init(initDto);
 
-		// 操作ログ出力
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, initDto.getPageId());
 
 		// ドロップダウン作成
 		setDropDown(initDto);
