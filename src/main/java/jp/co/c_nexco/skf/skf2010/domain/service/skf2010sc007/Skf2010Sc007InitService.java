@@ -12,9 +12,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007InitDto;
-import jp.co.intra_mart.foundation.context.Contexts;
-import jp.co.intra_mart.foundation.user_context.model.UserContext;
-import jp.co.intra_mart.foundation.user_context.model.UserProfile;
 
 /**
  * Skf2010Sc007InitService 申請条件確認初期表示処理クラス.
@@ -60,21 +57,14 @@ public class Skf2010Sc007InitService extends BaseServiceAbstract<Skf2010Sc007Ini
 	}
 
 	/**
-	 * 申請条件内容の設定を行う
+	 * 申請条件の表示内容設定を行う
 	 * 
 	 * @param initDto
 	 */
 	private void setApplTac(Skf2010Sc007InitDto initDto) {
 
-		// ユーザコンテキストを取得
-		UserContext userContext = Contexts.get(UserContext.class);
-		UserProfile profile = userContext.getUserProfile();
-		initDto.setUserId(profile.getUserCd()); // ユーザID
-
 		// 表示名称の設定
 		String applName = CodeConstant.DOUBLE_QUOTATION;
-		// 申請書IDの設定
-		String applId = CodeConstant.DOUBLE_QUOTATION;
 
 		if (NYUKYO.equals(initDto.getConfirmationKbn())) {
 			// 区分が入居だった場合

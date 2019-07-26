@@ -98,6 +98,8 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	private String hdnSelectedNowShatakuName;
 	// 可否フラグ
 	private String hdnConfirmFlg;
+	// 申請書類履歴テーブル 申請日hidden値
+	private Date hdnApplHistroyApplDate;
 	// ステータス
 	private String hdnStatus;
 
@@ -311,6 +313,16 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	// 社宅を必要としますか？ 駐車場のみ
 	private String rdoParkingOnlyDisabled;
 
+	// 必要とする理由
+	private String rdoHitsuyoIdoDisabled;
+	private String rdoHitsuyoKekkonDisabled;
+	private String rdoHitsuyoSonotaDisabled;
+
+	// 必要としない理由
+	private String rdoFuyouJitakuTsuukinnDisabled;
+	private String rdoFuyouJikoKariageDisabled;
+	private String rdoFuyouSonotaDisabled;
+
 	// 既婚
 	private String rdoKikonDisabled;
 	// 必要とする社宅 世帯
@@ -320,6 +332,18 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	// 必要とする社宅 独身
 	private String rdoHitsuyoDokushinDisabled;
 
+	// 駐車場を必要とするか？
+	private String rdoCarHitsuyoDisabled;
+	private String rdoCarFuyoDisabled;
+
+	// 自動車の保有（1台目）
+	private String rdo1stCarHoyuDisabled;
+	private String rdo1stCarYoteiDisabled;
+
+	// 自動車の保有（2台目）
+	private String rdo2stCarHoyuDisabled;
+	private String rdo2stCarYoteiDisabled;
+
 	// 現居住宅 保有(会社借上を含む)
 	private String rdoNowJutakuHoyuDisabled;
 	// 現居住宅 自宅
@@ -328,6 +352,10 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	private String rdoNowJutakuKariageDisabled;
 	// 現居住宅 保有(会社借上を含む)
 	private String rdoNowJutakuSonotaDisabled;
+
+	// 現保有の社宅（退居予定）
+	private String rdoNowHoyuShatakuTaikyoDisabled;
+	private String rdoNowHoyuShatakuKeizokuDisabled;
 
 	// 返却立会希望日
 	private String sessionTimeDisabled;
@@ -360,8 +388,14 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	 */
 	// 申請区分
 	private String applKbn;
-	// 申請日
+	// 申請書類履歴テーブル受け取り用申請日
 	private Date applDate;
+	// 申請書類履歴テーブル申請日
+	private Date applHistroyApplDate;
+	// 入居希望等調書テーブル申請日
+	private String nyukyoApplDate;
+	// 備品返却申請テーブル申請日
+	private String bihinHenkyakuApplDate;
 	// 申請書番号
 	private String applNo;
 	// 申請ID

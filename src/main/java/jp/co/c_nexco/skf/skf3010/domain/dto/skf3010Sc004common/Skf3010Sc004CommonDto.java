@@ -61,7 +61,7 @@ public class Skf3010Sc004CommonDto extends Skf301010CommonDto {
 	private String emptyParkingCount;
 	// 社宅管理番号
 	private Long shatakuKanriNo;
-
+    
 	/** 部屋登録画面hidden項目連携用 */
 	// 社宅管理番号
 	private String hdnShatakuKanriNo;

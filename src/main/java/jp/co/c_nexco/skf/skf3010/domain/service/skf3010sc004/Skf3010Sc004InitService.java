@@ -79,8 +79,14 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 			// 画面連携のhidden項目を初期化
 			initDto.setHdnRoomKanriNo(null);
 			// 呼び出し元のhidden項目をinitDtoに詰める
-			initDto.setShatakuKanriNo(Long.parseLong(initDto.getHdnShatakuKanriNo()));
-			initDto.setShatakuName(initDto.getHdnShatakuName());
+			initDto.setShatakuKanriNo(Long.parseLong(initDto.getHdnRowShatakuKanriNo()));
+			initDto.setShatakuName(initDto.getHdnRowShatakuName());
+			initDto.setHdnShatakuKanriNo(initDto.getHdnRowShatakuKanriNo());
+			initDto.setHdnShatakuName(initDto.getHdnRowShatakuName());
+			initDto.setHdnShatakuKbn(initDto.getHdnRowShatakuKbn());
+			initDto.setHdnAreaKbn(initDto.getHdnRowAreaKbn());
+			initDto.setHdnEmptyRoomCount(initDto.getHdnRowEmptyRoomCount());
+			initDto.setHdnEmptyParkingCount(initDto.getHdnRowEmptyParkingCount());
 
 			// 検索部をセット
 			SetSearchInfo(initDto);
