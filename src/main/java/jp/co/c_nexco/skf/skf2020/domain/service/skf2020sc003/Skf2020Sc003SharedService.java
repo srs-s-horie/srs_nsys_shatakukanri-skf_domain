@@ -150,6 +150,36 @@ public class Skf2020Sc003SharedService {
 	}
 
 	/**
+	 * コメント欄の入力チェック
+	 * 
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean checkValidation(Skf2020Sc003CommonDto dto) throws Exception {
+		List<String> errorTarget = new ArrayList<String>();
+		errorTarget.add("commentNote");
+
+		// コメント欄入力チェック
+		String commentNote = StringUtils.trim(dto.getCommentNote());
+
+		if (NfwStringUtils.isEmpty(dto.getCommentNote())) {
+			ServiceHelper.addErrorResultMessage(dto, errorTarget.toArray(new String[errorTarget.size()]),
+					MessageIdConstant.E_SKF_1048, "修正依頼/差戻し理由");
+
+			return false;
+		}
+		if (4000 < commentNote.getBytes("UTF-8").length) {
+			ServiceHelper.addErrorResultMessage(dto, errorTarget.toArray(new String[errorTarget.size()]),
+					MessageIdConstant.E_SKF_1049, "修正依頼/差戻し理由", "4000");
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * 初期情報を設定します
 	 * 
 	 * @param dto
@@ -259,8 +289,8 @@ public class Skf2020Sc003SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			String commentName = userInfo.get("userName");
-			String commentNote = dto.getCommentNote();
+			String commentName = StringUtils.trim(userInfo.get("userName"));
+			String commentNote = StringUtils.trim(dto.getCommentNote());
 
 			boolean commentErrorMessage = skfCommentUtils.insertComment(companyCd, applNo, newStatus, commentName,
 					commentNote, errorMsg);

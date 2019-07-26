@@ -59,6 +59,12 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		Map<String, String> errorMsg = new HashMap<String, String>();
+
+		boolean validate = skf2020sc003SharedService.checkValidation(rmdDto);
+		if (!validate) {
+			throwBusinessExceptionIfErrors(rmdDto.getResultMessages());
+		}
+
 		boolean result = skf2020sc003SharedService.saveApplInfo(CodeConstant.STATUS_HININ, rmdDto, errorMsg);
 		if (result) {
 			// 差戻し（否認）通知メール送信
