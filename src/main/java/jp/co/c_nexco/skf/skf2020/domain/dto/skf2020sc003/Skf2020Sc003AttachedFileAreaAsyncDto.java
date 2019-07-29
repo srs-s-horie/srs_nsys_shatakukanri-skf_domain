@@ -1,0 +1,19 @@
+package jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003;
+
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
+import lombok.EqualsAndHashCode;
+
+@lombok.Data
+@EqualsAndHashCode(callSuper = true)
+public class Skf2020Sc003AttachedFileAreaAsyncDto extends AsyncBaseDto {
+
+	/**
+	 * シリアルナンバー
+	 */
+	private static final long serialVersionUID = -1902278406295003652L;
+
+	private String applNo;
+	private String attachedType;
+	private String attachedFileArea;
+
+}
