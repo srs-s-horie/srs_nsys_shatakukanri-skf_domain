@@ -16,6 +16,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc004.Skf3010Sc004SearchDto;
 
 /**
@@ -31,7 +32,9 @@ public class Skf3010Sc004SearchService extends BaseServiceAbstract<Skf3010Sc004S
 	private Skf3010Sc004SharedService skf3010Sc004SharedService;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
-
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3010.skf3010_sc004.max_row_count}")
 	private String listTableMaxRowCount;
@@ -48,6 +51,9 @@ public class Skf3010Sc004SearchService extends BaseServiceAbstract<Skf3010Sc004S
 
 		searchDto.setPageTitleKey(MessageIdConstant.SKF3010_SC004_TITLE);
 
+		// 操作ログを出力する
+		//skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
+				
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 
@@ -106,14 +112,14 @@ public class Skf3010Sc004SearchService extends BaseServiceAbstract<Skf3010Sc004S
 	private void SetSearchInfo(Skf3010Sc004SearchDto searchDto) {
 
 		// 駐車場総数を取得する
-		int parkingCouunt = skf3010Sc004SharedService.GetParkingCount(searchDto.getShatakuKanriNo());
+		int parkingCouunt = skf3010Sc004SharedService.getParkingCount(searchDto.getShatakuKanriNo());
 
 		// 「空き駐車場数」を設定する
 		String emptyParkingCount = searchDto.getHdnEmptyParkingCount() + CodeConstant.SLASH + parkingCouunt;
 		searchDto.setEmptyParkingCount(emptyParkingCount);
 
 		// 社宅部屋総数を取得する
-		int roomCount = skf3010Sc004SharedService.GetRoomCount(searchDto.getShatakuKanriNo());
+		int roomCount = skf3010Sc004SharedService.getRoomCount(searchDto.getShatakuKanriNo());
 		String emptyRoomCount = searchDto.getHdnEmptyRoomCount() + CodeConstant.SLASH + roomCount;
 		searchDto.setEmptyRoomCount(emptyRoomCount);
 

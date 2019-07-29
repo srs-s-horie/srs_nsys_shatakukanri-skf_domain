@@ -17,6 +17,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc004.Skf3010Sc004InitDto;
 
 /**
@@ -32,11 +33,13 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 	private Skf3010Sc004SharedService skf3010Sc004SharedService;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
-
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3010.skf3010_sc004.max_row_count}")
 	private String listTableMaxRowCount;
-
+		
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -49,6 +52,9 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 		
 		initDto.setPageTitleKey(MessageIdConstant.SKF3010_SC004_TITLE);
 
+		// 操作ログを出力する
+		//skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+				
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
@@ -66,7 +72,7 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 			// 画面連携のhidden項目を初期化
 			initDto.setHdnRoomKanriNo(null);
 
-			SetSearchInfoBack(initDto);
+			setSearchInfoBack(initDto);
 
 			// リストテーブルの情報を取得
 			skf3010Sc004SharedService.getListTableData(initDto.getShatakuKanriNo(), initDto.getOriginalAuse(),
@@ -89,7 +95,7 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 			initDto.setHdnEmptyParkingCount(initDto.getHdnRowEmptyParkingCount());
 
 			// 検索部をセット
-			SetSearchInfo(initDto);
+			setSearchInfo(initDto);
 
 			// // リストテーブルの情報を取得
 			int listCount = skf3010Sc004SharedService.getListTableData(initDto.getShatakuKanriNo(), "", "",
@@ -130,20 +136,20 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 	 * 
 	 * @param initDto
 	 */
-	private void SetSearchInfo(Skf3010Sc004InitDto initDto) {
+	private void setSearchInfo(Skf3010Sc004InitDto initDto) {
 
 		// 駐車場総数を取得する
-		int parkingCouunt = skf3010Sc004SharedService.GetParkingCount(initDto.getShatakuKanriNo());
+		int parkingCouunt = skf3010Sc004SharedService.getParkingCount(initDto.getShatakuKanriNo());
 
 		// 「空き駐車場数」を設定する
 		String emptyParkingCount = initDto.getHdnEmptyParkingCount() + CodeConstant.SLASH + parkingCouunt;
 		initDto.setEmptyParkingCount(emptyParkingCount);
 
 		// 社宅部屋総数を取得する
-		int roomCount = skf3010Sc004SharedService.GetRoomCount(initDto.getShatakuKanriNo());
+		int roomCount = skf3010Sc004SharedService.getRoomCount(initDto.getShatakuKanriNo());
 
 		// 空き社宅部屋総数を取得する
-		int emptyRoomCount = skf3010Sc004SharedService.GetEmptyRoomCount(initDto.getShatakuKanriNo());
+		int emptyRoomCount = skf3010Sc004SharedService.getEmptyRoomCount(initDto.getShatakuKanriNo());
 
 		String emptyRoomStr = emptyRoomCount + CodeConstant.SLASH + roomCount;
 		initDto.setEmptyRoomCount(emptyRoomStr);
@@ -175,17 +181,10 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 	 * 
 	 * @param initDto
 	 */
-	private void SetSearchInfoBack(Skf3010Sc004InitDto initDto) {
-
-		// 駐車場総数を取得する
-		int parkingCouunt = skf3010Sc004SharedService.GetParkingCount(initDto.getShatakuKanriNo());
-
-		// 「空き駐車場数」を設定する
-		String emptyParkingCount = initDto.getHdnEmptyParkingCount() + CodeConstant.SLASH + parkingCouunt;
-		initDto.setEmptyParkingCount(emptyParkingCount);
+	private void setSearchInfoBack(Skf3010Sc004InitDto initDto) {
 
 		// 社宅部屋総数を取得する
-		int roomCount = skf3010Sc004SharedService.GetRoomCount(initDto.getShatakuKanriNo());
+		int roomCount = skf3010Sc004SharedService.getRoomCount(initDto.getShatakuKanriNo());
 		String emptyRoomCount = initDto.getHdnEmptyRoomCount() + CodeConstant.SLASH + roomCount;
 		initDto.setEmptyRoomCount(emptyRoomCount);
 
