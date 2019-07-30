@@ -33,12 +33,19 @@ public class Skf2010Sc002InitDto extends Skf2010CommonDto {
 
 	/** 画面表示用 **/
 	private int displayLevel; // 表示レベル（１～３）
+	// アコーディオン
+	//社宅入居希望等調書
+	private String level1;
+	//貸与社宅などのご案内
+	private String level2;
+	// 退居届
+	private String level3;
+
 	// アコーディオン初期表示用フラグ
 	private String level1Open;
 	private String level2Open;
 	private String level3Open;
-	private String level4Open;
 
 	// コメント表示レベル
-	private int commentDisplayLevel;
+	private String commentDisplayLevel;
 }

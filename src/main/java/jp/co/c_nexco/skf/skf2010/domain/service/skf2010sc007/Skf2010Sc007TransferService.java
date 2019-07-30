@@ -20,6 +20,9 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007TransferDto;
+import jp.co.intra_mart.foundation.context.Contexts;
+import jp.co.intra_mart.foundation.user_context.model.UserContext;
+import jp.co.intra_mart.foundation.user_context.model.UserProfile;
 
 /**
  * 
@@ -68,6 +71,11 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 
 		// 申請書類Idの設定
 		String applID = transferDto.getApplId();
+
+		// ユーザコンテキストを取得
+		UserContext userContext = Contexts.get(UserContext.class);
+		UserProfile profile = userContext.getUserProfile();
+		transferDto.setUserId(profile.getUserCd()); // ユーザID
 
 		// 社員番号の設定
 		List<Skf2010Sc007GetApplHistoryInfoExp> applHistoryList = new ArrayList<Skf2010Sc007GetApplHistoryInfoExp>();

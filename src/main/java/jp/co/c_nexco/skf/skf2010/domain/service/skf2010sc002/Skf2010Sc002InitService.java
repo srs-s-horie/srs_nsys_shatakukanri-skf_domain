@@ -73,10 +73,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 前画面IDの取得
 		String pageId = initDto.getPageId();
 		BaseForm beforeForm = FormHelper.getFormBean(pageId, CommonConstant.C_PAGEMODE_STANDARD);
-		// BaseForm beforeForm =
-		// FormHelper.getFormBean(FunctionIdConstant.SKF2020_SC002,
-		// CommonConstant.C_PAGEMODE_STANDARD);
-
 		String prePageId = beforeForm.getPrePageId();
 		initDto.setPrePageId(prePageId);
 		// 申請状況の設定
@@ -84,15 +80,24 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		initDto.setApplStatusText(changeApplStatusText(applStatus));
 
 		// アコーディオン初期表示指定
-
 		Map<String, Object> displayLevelMap = new HashMap<String, Object>();
 		displayLevelMap = checkDisplayLevel(prePageId);
-		initDto.setDisplayLevel(Integer.parseInt(displayLevelMap.get("level").toString()));
+		initDto.setLevel1(displayLevelMap.get("level1").toString());
+		initDto.setLevel2(displayLevelMap.get("level2").toString());
+		initDto.setLevel3(displayLevelMap.get("level3").toString());
 		initDto.setLevel1Open(displayLevelMap.get("level1Open").toString());
 		initDto.setLevel2Open(displayLevelMap.get("level2Open").toString());
 		initDto.setLevel3Open(displayLevelMap.get("level3Open").toString());
 		initDto.setMaskPattern(displayLevelMap.get("mask").toString());
-		initDto.setCommentDisplayLevel(Integer.parseInt(displayLevelMap.get("commentDisplayLevel").toString()));
+		initDto.setCommentDisplayLevel(displayLevelMap.get("commentDisplayLevel").toString());
+		// Map<String, Object> displayLevelMap = new HashMap<String, Object>();
+		// displayLevelMap = checkDisplayLevel(prePageId);
+		// initDto.setDisplayLevel(Integer.parseInt(displayLevelMap.get("level").toString()));
+		// initDto.setLevel1Open(displayLevelMap.get("level1Open").toString());
+		// initDto.setLevel2Open(displayLevelMap.get("level2Open").toString());
+		// initDto.setLevel3Open(displayLevelMap.get("level3Open").toString());
+		// initDto.setMaskPattern(displayLevelMap.get("mask").toString());
+		// initDto.setCommentDisplayLevel(Integer.parseInt(displayLevelMap.get("commentDisplayLevel").toString()));
 
 		// 画面内容の設定
 		setDisplayData(initDto);
@@ -248,37 +253,69 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * @return
 	 */
 	private Map<String, Object> checkDisplayLevel(String prePageId) {
-		/**
-		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
-		 * level3→退居（自動車の保管場所返還）届の申請画面 level2→社宅入居希望等調書（アウトソース用）から遷移）
-		 * level1→社宅入居希望等調書の申請画面
-		 */
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		switch (prePageId) {
 		case FunctionIdConstant.SKF2020_SC002:
-			result.put("level", 1);
-			result.put("mask", "LV1");
-			result.put("level1Open", "true");
-			result.put("level2Open", "false");
-			result.put("level3Open", "false");
-			result.put("commentDisplayLevel", 1);
+			// 社宅入居希望等調書(申請者）
+			result.put("level1", "true"); // 入居希望等調書
+			result.put("level2", "false"); // 貸与社宅などのご案内
+			result.put("level3", "false");// 退居届
+			result.put("mask", "LV1"); // 申請ボタン表示
+			result.put("level1Open", "true"); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", "false");// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", "false");// 退居届のアコーディオン初期表示
+			result.put("commentDisplayLevel", "1"); // 申請者から承認者へ
 			break;
 		case FunctionIdConstant.SKF2020_SC003:
-			result.put("level", 2);
-			result.put("mask", "LV2");
-			result.put("level1Open", "false");
-			result.put("level2Open", "true");
-			result.put("level3Open", "false");
-			result.put("commentDisplayLevel", 2);
+			// 社宅入居希望等調書（アウトソース用）
+			result.put("level1", "true"); // 入居希望等調書
+			result.put("level2", "true"); // 貸与社宅などのご案内
+			result.put("level3", "false");// 退居届
+			result.put("mask", "LV2"); // 提示ボタン表示
+			result.put("level1Open", "false"); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", "true");// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", "false");// 退居届のアコーディオン初期表示
+			result.put("commentDisplayLevel", "2");// 承認者者から申請者へ
 			break;
 		case FunctionIdConstant.SKF2040_SC001:
-			result.put("level", 3);
-			result.put("mask", "LV1");
-			result.put("level1Open", "false");
-			result.put("level2Open", "false");
-			result.put("level3Open", "true");
-			result.put("commentDisplayLevel", 1);
+			// 退居（自動車の保管場所返還）届
+			result.put("level1", "false"); // 入居希望等調書
+			result.put("level2", "false"); // 貸与社宅などのご案内
+			result.put("level3", "true");// 退居届
+			result.put("mask", "LV1"); // 申請ボタン表示
+			result.put("level1Open", "false"); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", "false");// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", "true");// 退居届のアコーディオン初期表示
+			result.put("commentDisplayLevel", "1");// 申請者から承認者へ
 			break;
+
+		// Map<String, Object> result = new HashMap<String, Object>();
+		// switch (prePageId) {
+		// case FunctionIdConstant.SKF2020_SC002:
+		// result.put("level", 1);
+		// result.put("mask", "LV1");
+		// result.put("level1Open", "true");
+		// result.put("level2Open", "false");
+		// result.put("level3Open", "false");
+		// result.put("commentDisplayLevel", 1);
+		// break;
+		// case FunctionIdConstant.SKF2020_SC003:
+		// result.put("level", 2);
+		// result.put("mask", "LV2");
+		// result.put("level1Open", "false");
+		// result.put("level2Open", "true");
+		// result.put("level3Open", "false");
+		// result.put("commentDisplayLevel", 2);
+		// break;
+		// case FunctionIdConstant.SKF2040_SC001:
+		// result.put("level", 3);
+		// result.put("mask", "LV1");
+		// result.put("level1Open", "false");
+		// result.put("level2Open", "false");
+		// result.put("level3Open", "true");
+		// result.put("commentDisplayLevel", 1);
+		// break;
 
 		}
 		return result;

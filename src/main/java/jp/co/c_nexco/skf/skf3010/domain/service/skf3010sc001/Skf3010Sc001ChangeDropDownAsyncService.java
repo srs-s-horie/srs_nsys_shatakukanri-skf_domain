@@ -55,8 +55,7 @@ public class Skf3010Sc001ChangeDropDownAsyncService
 		asyncDto.setEmptyParkingList(emptyParkingList);
 
 		// 返却するリストをDebugログで出力
-		LogUtils.debugByMsg(
-				"外部機関表示フラグ：" + asyncDto.getAgencyDispFlg().toString() + ", 管理会社コード:" + asyncDto.getSelectedCompanyCd());
+		LogUtils.debugByMsg("管理会社コード:" + asyncDto.getSelectedCompanyCd());
 		return asyncDto;
 	}
 

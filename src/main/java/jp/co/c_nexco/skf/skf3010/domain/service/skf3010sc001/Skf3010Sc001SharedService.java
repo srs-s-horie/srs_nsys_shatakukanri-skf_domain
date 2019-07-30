@@ -18,7 +18,9 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
+import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc001SharedService 社宅一覧内共通クラス
@@ -44,6 +46,8 @@ public class Skf3010Sc001SharedService {
 	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	/** ロガー。 */
+	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	public static List<Skf3010Sc001GetListTableDataExp> resultList;
 	/** 単位 */
@@ -128,8 +132,7 @@ public class Skf3010Sc001SharedService {
 			String useKbnCd, String emptyParkingCd, String shatakuName, String shatakuAddress,
 			List<Map<String, Object>> listTableData) throws ParseException {
 
-		LogUtils.debugByMsg("リストテーブルデータ取得処理開始");
-		LogUtils.debugByMsg("引数から取得した値：" + "会社コード：" + selectedCompanyCd + "　機関コード：" + agencyCd + "　社宅区分コード：" + shatakuKbnCd
+		logger.debug("社宅検索キー：" + "会社コード：" + selectedCompanyCd + "　機関コード：" + agencyCd + "　社宅区分コード：" + shatakuKbnCd
 				+ "　空き部屋コード：" + emptyRoomCd + "　利用区分コード：" + useKbnCd + "　空き駐車場コード：" + emptyParkingCd + "　社宅名：" + shatakuName + " 社宅住所:"
 				+ shatakuAddress);
 
@@ -173,6 +176,8 @@ public class Skf3010Sc001SharedService {
 	 */
 	private List<Map<String, Object>> getListTableDataViewColumn(List<Skf3010Sc001GetListTableDataExp> originList)
 			throws ParseException {
+
+		logger.debug("社宅一覧リスト作成");
 
 		// 社宅区分コード取得
 		Map<String, String> genericCodeMapShatakuKbn = new HashMap<String, String>();
@@ -243,7 +248,7 @@ public class Skf3010Sc001SharedService {
 				buildDate = tmpData.getBuildDate();
 			}
 			// 経年取得
-			keinen = skfBaseBusinessLogicUtils.GetAging(buildDate, areaKbn, tmpData.getStructureKbn(),
+			keinen = skfBaseBusinessLogicUtils.getAging(buildDate, areaKbn, tmpData.getStructureKbn(),
 					xmlKeinenTaishouTsukihi);
 			tmpMap.put("aging", Long.toString(keinen) + AGING_YEAR);
 

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001SearchDto;
 
 /**
@@ -32,9 +34,13 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 
 	@Autowired
 	private Skf3010Sc001SharedService skf3010Sc001SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Override
 	public BaseDto index(Skf3010Sc001SearchDto searchDto) throws Exception {
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
 
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
@@ -100,8 +106,6 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 			// 外部機関以外の場合
 			// 外部機関選択時は管理機関プルダウンを活性
 			searchDto.setAgencyDispFlg(true);
-			// // 管理機関の選択値を設定
-			// searchDto.setAgencyCd(searchDto.getHdnAgencyCd());
 		}
 		// 管理会社選択値設定(検索キー)
 		searchDto.setHdnSelectedCompanyCd(searchDto.getSelectedCompanyCd());
