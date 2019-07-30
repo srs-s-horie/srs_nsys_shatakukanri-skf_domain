@@ -38,19 +38,19 @@ public class Skf3090Sc999ExecuteService extends BaseServiceAbstract<Skf3090Sc999
 		String applNoNyukyo = dto.getApplNoNyukyo();
 		String applNoTaikyo = dto.getApplNoTaikyo();
 		String applStatus = dto.getApplStatus();
-		if (companyCd.equals("null")) {
+		if (companyCd != null && companyCd.equals("null")) {
 			companyCd = null;
 		}
-		if (shainNo.equals("null")) {
+		if (shainNo != null && shainNo.equals("null")) {
 			shainNo = null;
 		}
-		if (applNoNyukyo.equals("null")) {
+		if (applNoNyukyo != null && applNoNyukyo.equals("null")) {
 			applNoNyukyo = null;
 		}
-		if (applNoTaikyo.equals("null")) {
+		if (applNoTaikyo != null && applNoTaikyo.equals("null")) {
 			applNoTaikyo = null;
 		}
-		if (applStatus.equals("null")) {
+		if (applStatus != null && applStatus.equals("null")) {
 			applStatus = null;
 		}
 

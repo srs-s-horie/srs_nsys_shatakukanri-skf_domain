@@ -7,5 +7,5 @@
 	<buildpathentry kind="src" path="src/test/jssp/src"/>
 	<buildpathentry kind="src" path="src/main/public"/>
 	<buildpathentry kind="src" path="src/main/jssp/src"/>
-	<buildpathentry external="true" kind="lib" path="D:/iap/resin-pro-4.0.53/lib/javax.faces-2.1.24.jar"/>
+	<buildpathentry external="true" kind="lib" path="C:/iap/resin-pro-4.0.53/lib/javax.faces-2.1.24.jar"/>
 </buildpath>
