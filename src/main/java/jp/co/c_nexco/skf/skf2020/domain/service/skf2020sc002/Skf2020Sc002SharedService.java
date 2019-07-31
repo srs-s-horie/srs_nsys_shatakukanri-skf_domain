@@ -1079,17 +1079,21 @@ public class Skf2020Sc002SharedService {
 
 		// 現保有の社宅
 		if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
-
 			dto.setTaikyoYoteiDateClDisabled(FALSE);
+			//現保有の社宅を活性にする
+			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 			// 退居届を促すメッセージを表示
 			dto.setLblShatakuFuyouMsgRemove(TRUE);
 
 		} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
 			dto.setTaikyoYoteiDateClDisabled(TRUE);
+			//現保有の社宅を活性にする
+			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 			// 退居届を促すメッセージを非表示
 			dto.setLblShatakuFuyouMsgRemove(FALSE);
 		} else {
-
 			LogUtils.debugByMsg("保有社宅が存在する場合" + dto.getShatakuList());
 			if (dto.getShatakuList() != null) {
 				// 現居住宅 保有(会社借上を含む)をチェック状態にする
@@ -1098,7 +1102,9 @@ public class Skf2020Sc002SharedService {
 				dto.setRdoNowJutakuJitakuDisabeld(TRUE);
 				dto.setRdoNowJutakuKariageDisabled(TRUE);
 				dto.setRdoNowJutakuSonotaDisabled(TRUE);
-
+				//現保有の社宅を活性にする
+				dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
+				dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 				// 退居予定の場合、カレンダーを活性
 				if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
 					dto.setTaikyoYoteiDateClDisabled(FALSE);
@@ -1111,12 +1117,17 @@ public class Skf2020Sc002SharedService {
 				}
 
 			} else {
+				
+		
 				// 現居住社宅が無い場合は駐車場のみ、現居住宅を非活性にする
 				dto.setRdoParkingOnlyDisabled(TRUE);
 				dto.setRdoNowJutakuHoyuDisabled(TRUE);
-				dto.setRdoNowJutakuJitakuDisabeld(TRUE);
-				dto.setRdoNowJutakuKariageDisabled(TRUE);
-				dto.setRdoNowJutakuSonotaDisabled(TRUE);
+				dto.setRdoNowJutakuJitakuDisabeld(FALSE);
+				dto.setRdoNowJutakuKariageDisabled(FALSE);
+				dto.setRdoNowJutakuSonotaDisabled(FALSE);				
+				//現保有の社宅を非活性にする
+				dto.setRdoNowHoyuShatakuTaikyoDisabled(TRUE);
+				dto.setRdoNowHoyuShatakuKeizokuDisabled(TRUE);
 				// 退居項目のカレンダーは非活性化させる
 				dto.setTaikyoYoteiDateClDisabled(TRUE);
 			}
