@@ -103,7 +103,7 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 
 		// TODO 送信メールにコメントが表示されないようになっている（メール本文に表記箇所が無い）
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-				CodeConstant.NONE, shainNo, CodeConstant.NONE, urlBase);
+				shainNo, CodeConstant.NONE, urlBase);
 
 		// TODO 社宅管理データ連携処理実行
 
