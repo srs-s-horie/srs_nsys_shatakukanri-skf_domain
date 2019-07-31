@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf1010.domain.service.skf1010sc001;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +38,6 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		
 		initDto.setPageTitleKey(MessageIdConstant.SKF1010_SC001_TITLE);
 
-        //セッションから代行ログイン状態を取得
-        String sessionVal = (String) sessionBean.get(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY);
-        initDto.setAlterLoginFlg(sessionVal);
 		return initDto;
 	}
 	

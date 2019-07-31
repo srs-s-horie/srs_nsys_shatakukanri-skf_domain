@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -258,6 +259,10 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		}
 		// 申請書類種別
 		param.setApplCtgryId(dto.getApplCtgry());
+		// 申請書類名
+		if (NfwStringUtils.isNotEmpty(dto.getApplName())) {
+			param.setApplName(dto.getApplName());
+		}
 		// 申請状況
 		if (dto.getApplStatus() != null && dto.getApplStatus().length > 0) {
 			List<String> applStatusList = new ArrayList<String>();
