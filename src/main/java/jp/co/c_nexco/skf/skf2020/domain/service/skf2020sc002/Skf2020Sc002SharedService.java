@@ -1079,17 +1079,21 @@ public class Skf2020Sc002SharedService {
 
 		// 現保有の社宅
 		if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
-
 			dto.setTaikyoYoteiDateClDisabled(FALSE);
+			//現保有の社宅を活性にする
+			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 			// 退居届を促すメッセージを表示
 			dto.setLblShatakuFuyouMsgRemove(TRUE);
 
 		} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
 			dto.setTaikyoYoteiDateClDisabled(TRUE);
+			//現保有の社宅を活性にする
+			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 			// 退居届を促すメッセージを非表示
 			dto.setLblShatakuFuyouMsgRemove(FALSE);
 		} else {
-
 			LogUtils.debugByMsg("保有社宅が存在する場合" + dto.getShatakuList());
 			if (dto.getShatakuList() != null) {
 				// 現居住宅 保有(会社借上を含む)をチェック状態にする
@@ -1098,7 +1102,9 @@ public class Skf2020Sc002SharedService {
 				dto.setRdoNowJutakuJitakuDisabeld(TRUE);
 				dto.setRdoNowJutakuKariageDisabled(TRUE);
 				dto.setRdoNowJutakuSonotaDisabled(TRUE);
-
+				//現保有の社宅を活性にする
+				dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
+				dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 				// 退居予定の場合、カレンダーを活性
 				if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
 					dto.setTaikyoYoteiDateClDisabled(FALSE);
@@ -1111,12 +1117,17 @@ public class Skf2020Sc002SharedService {
 				}
 
 			} else {
+				
+		
 				// 現居住社宅が無い場合は駐車場のみ、現居住宅を非活性にする
 				dto.setRdoParkingOnlyDisabled(TRUE);
 				dto.setRdoNowJutakuHoyuDisabled(TRUE);
-				dto.setRdoNowJutakuJitakuDisabeld(TRUE);
-				dto.setRdoNowJutakuKariageDisabled(TRUE);
-				dto.setRdoNowJutakuSonotaDisabled(TRUE);
+				dto.setRdoNowJutakuJitakuDisabeld(FALSE);
+				dto.setRdoNowJutakuKariageDisabled(FALSE);
+				dto.setRdoNowJutakuSonotaDisabled(FALSE);				
+				//現保有の社宅を非活性にする
+				dto.setRdoNowHoyuShatakuTaikyoDisabled(TRUE);
+				dto.setRdoNowHoyuShatakuKeizokuDisabled(TRUE);
 				// 退居項目のカレンダーは非活性化させる
 				dto.setTaikyoYoteiDateClDisabled(TRUE);
 			}
@@ -2192,6 +2203,42 @@ public class Skf2020Sc002SharedService {
 		resultUpdateDate = skf2050TBihinHenkyakuShinseiRepository.selectByPrimaryKey(keyValue);
 
 		return resultUpdateDate;
+	}
+
+	/**
+	 * 備品返却申請テーブル登録or更新処理
+	 * 
+	 * @param dto
+	 * @param applInfo
+	 */
+	protected void registrationBihinShinsei(Skf2020Sc002CommonDto dto, Map<String, String> applInfo) {
+
+		// 備品返却申請テーブルから備品返却申請情報を取得
+		Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo = new Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp();
+		bihinHenkyakuInfo = getBihinHenkyaku(dto);
+
+		// 情報が取得できた場合は、備品返却申請書番号の設定
+		String bihinHenkaykuShinseiApplNo = null;
+		if (bihinHenkyakuInfo != null) {
+			bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getTaikyoApplNo();
+		}
+
+		// 備品返却申請書番号がなければ備品返却申請の書類管理番号を新規発行
+		if (NfwStringUtils.isEmpty(bihinHenkaykuShinseiApplNo)) {
+			// 備品返却申請用の申請書類管理番号を取得
+			bihinHenkaykuShinseiApplNo = skfShinseiUtils.getBihinHenkyakuShinseiNewApplNo(CodeConstant.C001,
+					dto.getShainNo());
+			// 備品返却申請テーブルへ新規登録
+			insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, dto, applInfo);
+		} else {
+			// 備品返却申請テーブルを更新
+			int registBihinCount = 0;
+			// 項目の値設定
+			Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
+			// 更新処理
+			registBihinCount = updateBihinHenkyakuInfo(setValue, dto, applInfo, bihinHenkyakuInfo);
+			LogUtils.debugByMsg("備品返却申請テーブル更新件数：" + registBihinCount + "件");
+		}
 
 	}
 

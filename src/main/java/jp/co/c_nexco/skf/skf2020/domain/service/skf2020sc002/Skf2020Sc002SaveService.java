@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinsei;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -64,29 +62,23 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		applInfo = skf2020Sc002SharedService.getSkfApplInfo(saveDto);
 		// 次のステータスをデフォルト設定
 		String newStatus = CodeConstant.STATUS_ICHIJIHOZON;
-		// 申請対象区分の取得
-		String applKbn = saveDto.getApplKbn();
-		// 申請対象区分の判定
-		if (CodeConstant.OUT_INPUT.equals(applKbn)) {
-			// アウトソース用の場合、ステータスを変更しない
-			// 頻出データをセッションから変数に取得
-			newStatus = applInfo.get("status");
-		}
 		applInfo.put("newStatus", newStatus);
 
-		// 画面情報の保持
+		// 画面表示項目の保持
 		// ドロップダウンの設定
 		skf2020Sc002SharedService.setControlDdl(saveDto);
-		// 画面表示制御再設定
-		skf2020Sc002SharedService.setControlValue(saveDto);
 		// 返却備品の設定
 		skf2020Sc002SharedService.setReturnBihinInfo(saveDto);
+		// 画面表示制御再設定
+		skf2020Sc002SharedService.setControlValue(saveDto);
 
 		// バイトカット処理
 		skf2020Sc002SharedService.cutByte(saveDto);
 
 		// 一時保存処理
-		saveInfo(applInfo, saveDto);
+		if (!saveInfo(applInfo, saveDto)) {
+			return saveDto;
+		}
 
 		// 正常終了
 		if (CodeConstant.STATUS_MISAKUSEI.equals(saveDto.getHdnStatus())) {
@@ -104,11 +96,12 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 	 * @param applInfo
 	 * @param saveDto
 	 */
-	private void saveInfo(Map<String, String> applInfo, Skf2020Sc002SaveDto saveDto) {
+	private boolean saveInfo(Map<String, String> applInfo, Skf2020Sc002SaveDto saveDto) {
 
-		// 頻出データをセッションから変数に取得
+		boolean ret = true;
+
+		// 社員番号を設定
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		// 更新者情報取得
 		applInfo.put("shainNo", loginUserInfoMap.get("shainNo"));
 		// 添付ファイルの有無
 		Map<String, String> applTacInfoMap = skfShinseiUtils.getApplAttachFlg(applInfo.get("shainNo"),
@@ -118,46 +111,20 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		if (CodeConstant.STATUS_MISAKUSEI.equals(applInfo.get("status"))) {
 			// 指定なし（新規）の場合
 			saveDto.setHdnStatus(CodeConstant.STATUS_MISAKUSEI);
-			// 新規登録処理
+			// 更新フラグを「0」に設定する
 			applInfo.put("updateFlg", NO_UPDATE_FLG);
+			// 新規登録処理
 			if (skf2020Sc002SharedService.saveNewData(saveDto, applInfo)) {
-
 				// 退居社宅がある場合は備品返却の作成
 				if (NfwStringUtils.isNotEmpty(saveDto.getNowShatakuNo())) {
-					if (saveDto.getTaikyoYotei() != null
-							&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(saveDto.getHdnBihinHenkyakuUmu())
-							&& CodeConstant.LEAVE.equals(saveDto.getTaikyoYotei())) {
-
-						// 備品返却申請テーブルから備品返却申請情報を取得
-						Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo = new Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp();
-						bihinHenkyakuInfo = skf2020Sc002SharedService.getBihinHenkyaku(saveDto);
-
-						// 情報が取得できた場合は、備品返却申請書番号の設定
-						String bihinHenkaykuShinseiApplNo = null;
-						if (bihinHenkyakuInfo != null) {
-							bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getTaikyoApplNo();
-						}
-
-						// 備品返却申請書番号がなければ備品返却申請の書類管理番号を新規発行
-						if (NfwStringUtils.isEmpty(bihinHenkaykuShinseiApplNo)) {
-							// 備品返却申請用の申請書類管理番号を取得
-							bihinHenkaykuShinseiApplNo = skfShinseiUtils
-									.getBihinHenkyakuShinseiNewApplNo(CodeConstant.C001, saveDto.getShainNo());
-							// 備品返却申請テーブルを新規発行
-							skf2020Sc002SharedService.insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, saveDto,
-									applInfo);
-						} else {
-							// 備品返却申請テーブルを更新
-							int registBihinCount = 0;
-							// 項目の値設定
-							Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
-							// 更新処理
-							registBihinCount = skf2020Sc002SharedService.updateBihinHenkyakuInfo(setValue, saveDto,
-									applInfo, bihinHenkyakuInfo);
-							LogUtils.debugByMsg("備品返却申請テーブル更新件数：" + registBihinCount + "件");
-						}
+					if (saveDto.getTaikyoYotei() != null && CodeConstant.LEAVE.equals(saveDto.getTaikyoYotei())
+							&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(saveDto.getHdnBihinHenkyakuUmu())) {
+						// 備品返却申請テーブル登録処理
+						skf2020Sc002SharedService.registrationBihinShinsei(saveDto, applInfo);
 					}
 				}
+			} else {
+				ret = false;
 			}
 		} else {
 			// 新規以外
@@ -197,41 +164,14 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 
 			// 退居社宅がある場合は備品返却の作成
 			if (NfwStringUtils.isNotEmpty(saveDto.getNowShatakuNo())) {
-				if (saveDto.getTaikyoYotei() != null
-						&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(saveDto.getHdnBihinHenkyakuUmu())
-						&& CodeConstant.LEAVE.equals(saveDto.getTaikyoYotei())) {
-
-					// 備品返却申請テーブルから備品返却申請情報を取得
-					Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo = new Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp();
-					bihinHenkyakuInfo = skf2020Sc002SharedService.getBihinHenkyaku(saveDto);
-
-					// 情報が取得できた場合は、備品返却申請書番号の設定
-					String bihinHenkaykuShinseiApplNo = null;
-					if (bihinHenkyakuInfo != null) {
-						bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getTaikyoApplNo();
-					}
-
-					// 備品返却申請書番号がなければ備品返却申請の書類管理番号を新規発行
-					if (NfwStringUtils.isEmpty(bihinHenkaykuShinseiApplNo)) {
-						// 備品返却申請用の申請書類管理番号を取得
-						bihinHenkaykuShinseiApplNo = skfShinseiUtils.getBihinHenkyakuShinseiNewApplNo(CodeConstant.C001,
-								saveDto.getShainNo());
-						// 備品返却申請テーブルを新規発行
-						skf2020Sc002SharedService.insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, saveDto,
-								applInfo);
-					} else {
-						// 備品返却申請テーブルを更新
-						int registBihinCount = 0;
-						// 項目の値設定
-						Skf2050TBihinHenkyakuShinsei setBihinValue = new Skf2050TBihinHenkyakuShinsei();
-						// 更新処理
-						registBihinCount = skf2020Sc002SharedService.updateBihinHenkyakuInfo(setBihinValue, saveDto,
-								applInfo, bihinHenkyakuInfo);
-						LogUtils.debugByMsg("備品返却申請テーブル更新件数：" + registBihinCount + "件");
-					}
+				if (saveDto.getTaikyoYotei() != null && CodeConstant.LEAVE.equals(saveDto.getTaikyoYotei())
+						&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(saveDto.getHdnBihinHenkyakuUmu())) {
+					// 備品返却申請テーブル登録処理
+					skf2020Sc002SharedService.registrationBihinShinsei(saveDto, applInfo);
 				}
 			}
 		}
+		return ret;
 	}
 
 	/**
