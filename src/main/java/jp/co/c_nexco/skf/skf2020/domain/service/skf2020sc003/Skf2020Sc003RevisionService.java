@@ -74,9 +74,11 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 
 			String commentNote = rvsDto.getCommentNote();
 
+			// メールの記載URLは「申請状況一覧画面」
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI, applInfo, commentNote,
-					CodeConstant.NONE, CodeConstant.NONE, loginUserInfo.get("shainNo"), CodeConstant.NONE,
-					CodeConstant.NONE);
+					CodeConstant.NONE, loginUserInfo.get("shainNo"), CodeConstant.NONE, urlBase);
 			;
 		}
 

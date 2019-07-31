@@ -29,10 +29,6 @@ public class Skf2020Sc003DownloadService extends BaseServiceAbstract<Skf2020Sc00
 	@Value("${skf.common.attached_file_session_key}")
 	private String sessionKeyDefault;
 
-	private final String ATTACHED_TYPE_SHATAKU = "shataku";
-	private final String ATTACHED_TYPE_PARKING = "parking";
-	private final String ATTACHED_TYPE_HOSOKU = "hosoku";
-
 	@SuppressWarnings("unchecked")
 	@Override
 	protected BaseDto index(Skf2020Sc003DownloadDto dlDto) throws Exception {
@@ -53,18 +49,12 @@ public class Skf2020Sc003DownloadService extends BaseServiceAbstract<Skf2020Sc00
 			shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
 		}
 
-		// 申請情報の取得を行う
 		if (attachedFileList == null || attachedFileList.size() <= 0) {
 			ServiceHelper.addErrorResultMessage(dlDto, null, MessageIdConstant.E_SKF_1067, "添付資料");
 		}
+		shatakuAttachedFileList.addAll(attachedFileList);
 
-		/*
-		 * for (Map<String, Object> attachedFileMap : shatakuAttachedFileList) {
-		 * String nowAttachedNo = attachedFileMap.get("attachedNo").toString();
-		 * if (attachedNo.equals(nowAttachedNo)) { fileName =
-		 * attachedFileMap.get("attachedName").toString(); fileData = (byte[])
-		 * attachedFileMap.get("fileStream"); break; } }
-		 */
+		// ダウンロード対象ファイルデータを設定する
 		int target = Integer.parseInt(attachedNo);
 		Map<String, Object> attachedFileMap = shatakuAttachedFileList.get(target);
 		fileName = attachedFileMap.get("attachedName").toString();

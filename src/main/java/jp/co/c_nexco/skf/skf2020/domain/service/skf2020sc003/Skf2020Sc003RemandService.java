@@ -76,7 +76,7 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 			String commentNote = rmdDto.getCommentNote();
 
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-					CodeConstant.NONE, loginUserInfo.get("shainNo"), CodeConstant.NONE, CodeConstant.NONE);
+					loginUserInfo.get("shainNo"), CodeConstant.NONE, CodeConstant.NONE);
 			;
 		}
 

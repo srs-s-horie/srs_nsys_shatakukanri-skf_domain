@@ -43,27 +43,27 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 	@Override
 	public AsyncBaseDto index(Skf2020Sc003AttachedFileAreaAsyncDto dto) {
 
+		// 申請書類番号
 		String applNo = dto.getApplNo();
 
-		List<Map<String, Object>> viewAttachedFileList = new ArrayList<Map<String, Object>>();
-
+		// 社宅向け添付資料取得
 		List<Map<String, Object>> shatakuAttachedFileList = skfAttachedFileUtiles
 				.getAttachedFileInfo(menuScopeSessionBean, applNo, sessionKeyAttachedShataku);
+		// 一般添付資料取得
 		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
 				applNo, sessionKeyAttached);
+		// 社宅向け添付資料が無い場合配列のインスタンス化だけ行う
 		if (shatakuAttachedFileList == null) {
 			shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
 		}
 
-		// viewAttachedFileList.addAll(shatakuAttachedFileList);
-		viewAttachedFileList.addAll(attachedFileList);
-
 		String baseLinkTag = "<a id=\"attached_$ATTACHEDNO$\">$ATTACHEDNAME$</a>";
 		List<String> listTagList = new ArrayList<String>();
 
-		if (viewAttachedFileList != null && viewAttachedFileList.size() > 0) {
-			int attachedNo = 0;
-			for (Map<String, Object> attachedFileMap : viewAttachedFileList) {
+		// 添付ファイルがあればリンクタグを生成する
+		if (attachedFileList != null && attachedFileList.size() > 0) {
+			int attachedNo = shatakuAttachedFileList.size();
+			for (Map<String, Object> attachedFileMap : attachedFileList) {
 				String linkTag = baseLinkTag;
 				linkTag = linkTag.replace("$ATTACHEDNO$", String.valueOf(attachedNo));
 				linkTag = linkTag.replace("$ATTACHEDNAME$", attachedFileMap.get("attachedName").toString());
