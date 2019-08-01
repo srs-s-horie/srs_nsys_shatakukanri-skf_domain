@@ -103,6 +103,20 @@ public class Skf3010Sc001SharedService {
 		useKbnList.clear();
 		useKbnList.addAll(
 				ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_RIYO_KBN, useKbnCd, isFirstRowEmpty));
+//		Map<String, Object> m = new HashMap<String, Object>();
+//		int index = -1;
+//		for (Map<String, Object> m1 : useKbnList) {
+//			if (m1.containsValue("解約済")) {
+//				index = useKbnList.indexOf(m1);
+//				break;
+//			}
+//		}
+		
+//		if (index != -1) {
+//			m = useKbnList.get(index);
+//			useKbnList.remove(index);
+//			useKbnList.add(m);
+//		}
 
 		// 空き駐車場リスト
 		emptyParkingList.clear();
@@ -185,6 +199,7 @@ public class Skf3010Sc001SharedService {
 		// 利用区分コード取得
 		Map<String, String> genericCodeMapUseKbn = new HashMap<String, String>();
 		genericCodeMapUseKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_RIYO_KBN);
+		
 		// 構造区分
 		Map<String, String> genericCodeMapStructure = new HashMap<String, String>();
 		genericCodeMapStructure = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STRUCTURE_KBN);

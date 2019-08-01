@@ -28,8 +28,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryAgreeStatusExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryApplTacFlgExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
@@ -44,14 +43,14 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNameListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryAgreeStatusExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryApplTacFlgExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -114,9 +113,7 @@ public class Skf2020Sc003SharedService {
 	@Autowired
 	private Skf2020Sc003GetApplHistoryInfoForUpdateExpRepository skf2020Sc003GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
-	private Skf2020Sc003UpdateApplHistoryAgreeStatusExpRepository skf2020Sc003UpdateApplHistoryAgreeStatusExpRepository;
-	@Autowired
-	private Skf2020Sc003UpdateApplHistoryApplTacFlgExpRepository skf2020Sc003UpdateApplHistoryApplTacFlgExpRepository;
+	private Skf2020Sc003UpdateApplHistoryExpRepository skf2020Sc003UpdateApplHistoryExpRepository;
 	@Autowired
 	private Skf2020Sc003GetBihinItemExpRepository skf2020Sc003GetBihinItemExpRepository;
 	@Autowired
@@ -163,13 +160,14 @@ public class Skf2020Sc003SharedService {
 		// コメント欄入力チェック
 		String commentNote = StringUtils.trim(dto.getCommentNote());
 
-		if (NfwStringUtils.isEmpty(dto.getCommentNote())) {
+		if (NfwStringUtils.isEmpty(commentNote)) {
 			ServiceHelper.addErrorResultMessage(dto, errorTarget.toArray(new String[errorTarget.size()]),
 					MessageIdConstant.E_SKF_1048, "修正依頼/差戻し理由");
 
 			return false;
 		}
-		if (4000 < commentNote.getBytes("UTF-8").length) {
+		int commentMaxLength = Integer.parseInt(PropertyUtils.getValue("skf2020.skf2020_sc003.commentMaxLength"));
+		if (commentMaxLength < commentNote.getBytes("UTF-8").length) {
 			ServiceHelper.addErrorResultMessage(dto, errorTarget.toArray(new String[errorTarget.size()]),
 					MessageIdConstant.E_SKF_1049, "修正依頼/差戻し理由", "4000");
 
@@ -202,10 +200,12 @@ public class Skf2020Sc003SharedService {
 
 		// 提示情報の設定
 		String shainNo = dto.getShainNo();
+		dto.setMaskPattern(CodeConstant.NONE);
 		if (!setTeijiDataInfo(shainNo, applNo, dto)) {
 			// 備品申請要否の非活性制御
 			// 備品非表示制御
 			bihinVisible = false;
+			dto.setMaskPattern("TeijiNG");
 		}
 		dto.setBihinVisible(bihinVisible);
 
@@ -881,50 +881,49 @@ public class Skf2020Sc003SharedService {
 		List<Map<String, Object>> shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
 
 		// 社宅補足ファイル1
-		if (StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementFile1())
+		if (teijiDataInfo.getShatakuSupplementFile1() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName1())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize1())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName1(), teijiDataInfo.getShatakuSupplementFile1(),
 					teijiDataInfo.getShatakuSupplementSize1(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
 		}
 		// 社宅補足ファイル2
-		if (StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementFile2())
+		if (teijiDataInfo.getShatakuSupplementFile2() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName2())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize2())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName2(), teijiDataInfo.getShatakuSupplementFile2(),
 					teijiDataInfo.getShatakuSupplementSize2(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
 		}
 		// 社宅補足ファイル3
-		if (StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementFile3())
+		if (teijiDataInfo.getShatakuSupplementFile3() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName3())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize3())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName3(), teijiDataInfo.getShatakuSupplementFile3(),
 					teijiDataInfo.getShatakuSupplementSize3(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル1
-		if (StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementFile1())
+		if (teijiDataInfo.getParkingSupplementFile1() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName1())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize1())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName1(), teijiDataInfo.getParkingSupplementFile1(),
 					teijiDataInfo.getParkingSupplementSize1(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル2
-		if (StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementFile2())
+		if (teijiDataInfo.getParkingSupplementFile2() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName2())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize2())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName2(), teijiDataInfo.getParkingSupplementFile2(),
 					teijiDataInfo.getParkingSupplementSize2(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル3
-		if (StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementFile3())
+		if (teijiDataInfo.getParkingSupplementFile3() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName3())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize3())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName3(), teijiDataInfo.getParkingSupplementFile3(),
 					teijiDataInfo.getParkingSupplementSize3(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
 		}
 		// 資料補足ファイル
-		if (StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuFile())
-				&& StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuName())
+		if (teijiDataInfo.getShiryoHosokuFile() != null && StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuName())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuSize())) {
 			addShatakuAttachedFile(teijiDataInfo.getShiryoHosokuName(), teijiDataInfo.getShiryoHosokuFile(),
 					teijiDataInfo.getShiryoHosokuSize(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
@@ -938,10 +937,10 @@ public class Skf2020Sc003SharedService {
 				sessionKeyAttached);
 		if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
 			int defaultAttachedNo = Integer.parseInt(
-					shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString());
+					shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString()) + 1;
 			for (Map<String, Object> tmpAttachedFileMap : tmpAttachedFileList) {
 				addShatakuAttachedFile(tmpAttachedFileMap.get("attachedName").toString(),
-						tmpAttachedFileMap.get("fileStream").toString(), tmpAttachedFileMap.get("fileSize").toString(),
+						(byte[]) tmpAttachedFileMap.get("fileStream"), tmpAttachedFileMap.get("fileSize").toString(),
 						defaultAttachedNo, attachedFileList);
 			}
 		}
@@ -964,6 +963,7 @@ public class Skf2020Sc003SharedService {
 
 		String applNo = dto.getApplNo();
 
+		// 備品申請情報と提示データ情報を取得する
 		getSinseiInfo(applNo, dto);
 		setTeijiDataInfo(dto.getShainNo(), applNo, dto);
 
@@ -987,8 +987,6 @@ public class Skf2020Sc003SharedService {
 
 		// なければ備品希望申請の書類管理番号を新規発行
 		if (NfwStringUtils.isEmpty(bihinShinseiApplNo)) {
-			Date operationDate = new Date();
-
 			// 備品希望申請用の申請書類管理番号を取得
 			bihinShinseiApplNo = skfShinseiUtils.getApplNo(companyCd, dto.getShainNo(), dto.getApplId());
 
@@ -1086,14 +1084,14 @@ public class Skf2020Sc003SharedService {
 
 				if (bihinShinseiCount > 0) {
 					// 備品申請テーブルの更新
-					getColumnInfoListForBihin(true, bihinShinseiApplNo, applDate, bihinKbn, bihinCd, bihinName,
-							bihinState, bihinHope, record);
+					getColumnInfoListForBihin(true, bihinShinseiApplNo, bihinKbn, bihinCd, bihinName, bihinState,
+							bihinHope, record);
 					returnValue = skf2030TBihinRepository.updateByPrimaryKeySelective(record);
 
 				} else {
 					// 備品申請テーブルの新規追加
-					getColumnInfoListForBihin(false, bihinShinseiApplNo, applDate, bihinKbn, bihinCd, bihinName,
-							bihinState, bihinHope, record);
+					getColumnInfoListForBihin(false, bihinShinseiApplNo, bihinKbn, bihinCd, bihinName, bihinState,
+							bihinHope, record);
 					returnValue = skf2030TBihinRepository.insertSelective(record);
 				}
 
@@ -1119,7 +1117,6 @@ public class Skf2020Sc003SharedService {
 	 * 備品情報テーブルへのマッピングを行います
 	 * 
 	 * @param applNo
-	 * @param applDate
 	 * @param bihinKbn
 	 * @param bihinCd
 	 * @param bihinName
@@ -1127,8 +1124,8 @@ public class Skf2020Sc003SharedService {
 	 * @param bihinHope
 	 * @param bihinInfo
 	 */
-	private void getColumnInfoListForBihin(boolean updateFlg, String applNo, Date applDate, String bihinKbn,
-			String bihinCd, String bihinName, String bihinState, String bihinHope, Skf2030TBihin bihinInfo) {
+	private void getColumnInfoListForBihin(boolean updateFlg, String applNo, String bihinKbn, String bihinCd,
+			String bihinName, String bihinState, String bihinHope, Skf2030TBihin bihinInfo) {
 		// 会社コード
 		bihinInfo.setCompanyCd(companyCd);
 		// 申請書類番号
@@ -1227,7 +1224,7 @@ public class Skf2020Sc003SharedService {
 	 */
 	private boolean updateApplHistoryAgreeStatus(String newStatus, String shainNo, String applNo, String shonin1,
 			String shonin2, Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo) {
-		Skf2020Sc003UpdateApplHistoryAgreeStatusExp record = new Skf2020Sc003UpdateApplHistoryAgreeStatusExp();
+		Skf2020Sc003UpdateApplHistoryExp record = new Skf2020Sc003UpdateApplHistoryExp();
 		if (NfwStringUtils.isNotEmpty(shonin1)) {
 			record.setAgreName1(shonin1);
 		}
@@ -1243,7 +1240,7 @@ public class Skf2020Sc003SharedService {
 		record.setShainNo(shainNo);
 		record.setApplId(applInfo.getApplId());
 
-		int result = skf2020Sc003UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(record);
+		int result = skf2020Sc003UpdateApplHistoryExpRepository.updateApplHistory(record);
 		if (result <= 0) {
 			return false;
 		}
@@ -1275,14 +1272,14 @@ public class Skf2020Sc003SharedService {
 		}
 		// 申請書類履歴テーブルの添付書類有無を更新
 		String applId = applInfo.getApplId();
-		Skf2020Sc003UpdateApplHistoryApplTacFlgExp updateData = new Skf2020Sc003UpdateApplHistoryApplTacFlgExp();
+		Skf2020Sc003UpdateApplHistoryExp updateData = new Skf2020Sc003UpdateApplHistoryExp();
 		updateData.setApplTacFlg(String.valueOf(applTacFlg));
 		// 条件項目
 		updateData.setCompanyCd(companyCd);
 		updateData.setApplNo(applNo);
 		updateData.setApplId(applId);
 		updateData.setShainNo(shainNo);
-		int result = skf2020Sc003UpdateApplHistoryApplTacFlgExpRepository.updateApplHistoryApplTacFlg(updateData);
+		int result = skf2020Sc003UpdateApplHistoryExpRepository.updateApplHistory(updateData);
 		if (result <= 0) {
 			errorMsg.put("error", MessageIdConstant.E_SKF_1075);
 			return false;
@@ -1344,8 +1341,14 @@ public class Skf2020Sc003SharedService {
 
 		if (bihinShinseiInfoList == null || bihinShinseiInfoList.size() <= 0 || isShonin) {
 
-			Long shatakuKanriNo = Long.parseLong(dto.getNewShatakuKanriNo());
-			Long shatakuRoomKanriNo = Long.parseLong(dto.getNewShatakuRoomKanriNo());
+			Long shatakuKanriNo = CodeConstant.LONG_ZERO;
+			if (dto.getNewShatakuKanriNo() != null) {
+				Long.parseLong(dto.getNewShatakuKanriNo());
+			}
+			Long shatakuRoomKanriNo = CodeConstant.LONG_ZERO;
+			if (dto.getNewShatakuRoomKanriNo() != null) {
+				shatakuRoomKanriNo = Long.parseLong(dto.getNewShatakuRoomKanriNo());
+			}
 
 			List<Skf2020Sc003GetBihinInfoOutExp> bihinInfoList = getBihinInfoOut(shatakuKanriNo, shatakuRoomKanriNo,
 					applNo, CodeConstant.NYUTAIKYO_KBN_NYUKYO);
@@ -1387,7 +1390,7 @@ public class Skf2020Sc003SharedService {
 	 * @param fileSize
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
-	private void addShatakuAttachedFile(String fileName, String file, String fileSize, int defaultAttachedNo,
+	private void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int defaultAttachedNo,
 			List<Map<String, Object>> shatakuAttachedFileList) {
 		// 添付資料のコレクションをSessionより取得
 
@@ -1412,9 +1415,9 @@ public class Skf2020Sc003SharedService {
 			if (shatakuAttachedFileList.size() > 0) {
 				// 添付資料番号
 				attachedNo = Integer.parseInt(
-						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString())
-						+ defaultAttachedNo;
+						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString());
 			}
+			attachedNo = attachedNo + defaultAttachedNo;
 
 			addAttachedFileInfo.put("attachedNo", attachedNo);
 

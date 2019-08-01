@@ -56,9 +56,7 @@ public class Skf2020Sc003ConfirmService extends BaseServiceAbstract<Skf2020Sc003
 		// 操作ログ出力メソッドを呼び出す
 		skfOperationLogUtils.setAccessLog("掲示内容を確認処理開始", companyCd, confDto.getPageId());
 
-		confDto.getApplNo();
-
-		ConfirmClickProcess(confDto);
+		confirmClickProcess(confDto);
 
 		// 送信用データリストを作成し、セッションに保存する。
 		List<Map<String, String>> sendDataList = new ArrayList<Map<String, String>>();
@@ -80,7 +78,7 @@ public class Skf2020Sc003ConfirmService extends BaseServiceAbstract<Skf2020Sc003
 		return confDto;
 	}
 
-	private void ConfirmClickProcess(Skf2020Sc003ConfirmDto confDto) {
+	private void confirmClickProcess(Skf2020Sc003ConfirmDto confDto) {
 		// 頻出データを変数に取得
 		String newStatus = confDto.getApplStatus();
 
