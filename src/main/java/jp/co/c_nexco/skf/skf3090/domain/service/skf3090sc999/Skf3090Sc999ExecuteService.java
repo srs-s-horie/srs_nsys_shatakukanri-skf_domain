@@ -1,8 +1,11 @@
 /*
+ * 
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
 package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc999;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,13 +57,31 @@ public class Skf3090Sc999ExecuteService extends BaseServiceAbstract<Skf3090Sc999
 			applStatus = null;
 		}
 
-		List<String> resultList = b2001.doProc(companyCd, shainNo, applNoNyukyo, applNoTaikyo, applStatus);
+		try {
+			List<String> resultList = b2001.doProc(companyCd, shainNo, applNoNyukyo, applNoTaikyo, applStatus);
 
-		if (resultList != null) {
-			dto.setErrorCodeID(resultList.get(B2001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID));
-			if (resultList.size() > 1) {
-				dto.setErrorStrings(resultList.get(B2001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_PARAMETER));
+			if (resultList != null) {
+				String errorMessage = "";
+				for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
+					if (listIndex == B2001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID) {
+						dto.setErrorCodeID(
+								resultList.get(B2001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID));
+					} else {
+						if (errorMessage.equals("") == false) {
+							errorMessage += "/";
+						}
+						errorMessage += resultList.get(listIndex);
+					}
+				}
+				dto.setErrorStrings(errorMessage);
 			}
+		} catch (Exception e) {
+			dto.setErrorCodeID("何かの理由で異常終了");
+			// stackTrace出力
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			LogUtils.debugByMsg(sw.toString());
 		}
 
 		LogUtils.debugByMsg("B001-UTTest：テスト実行クラス処理終了");
