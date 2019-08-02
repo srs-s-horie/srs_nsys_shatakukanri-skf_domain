@@ -901,7 +901,7 @@ public class Skf2020Sc002SharedService {
 			}
 
 			// 入居希望日（予定日）
-			dto.setNyukyoYoteiDateClDisabled(FALSE);
+			//dto.setNyukyoYoteiDateClDisabled(FALSE);
 
 			/*
 			 * 自動車の保管場所
@@ -1034,10 +1034,10 @@ public class Skf2020Sc002SharedService {
 		// 保管場所を必要とするか
 		if (CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())) {
 			// 必要の場合、カレンダーを活性
-			dto.setCarExpirationDateClDisabled(FALSE);
-			dto.setParkingUseDateClDisabled(FALSE);
-			dto.setCarExpirationDate2ClDisabled(FALSE);
-			dto.setParkingUseDate2ClDisabled(FALSE);
+			//dto.setCarExpirationDateClDisabled(FALSE);
+			//dto.setParkingUseDateClDisabled(FALSE);
+			//dto.setCarExpirationDate2ClDisabled(FALSE);
+			//dto.setParkingUseDate2ClDisabled(FALSE);
 
 			// 1台目
 			dto.setRdo1stCarHoyuDisabled(FALSE);
@@ -1047,22 +1047,23 @@ public class Skf2020Sc002SharedService {
 			dto.setRdo2stCarHoyuDisabled(FALSE);
 			dto.setRdo2stCarYoteiDisabled(FALSE);
 
-			if (CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg())) {
-				dto.setCarExpirationDateClDisabled(FALSE);
-				dto.setParkingUseDateClDisabled(FALSE);
-
-			} else if (CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg())) {
-				dto.setCarExpirationDateClDisabled(TRUE);
-				dto.setParkingUseDateClDisabled(FALSE);
-			}
-
-			if (CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg2())) {
-				dto.setCarExpirationDate2ClDisabled(FALSE);
-				dto.setParkingUseDate2ClDisabled(FALSE);
-			} else if (CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg2())) {
-				dto.setCarExpirationDate2ClDisabled(TRUE);
-				dto.setParkingUseDate2ClDisabled(FALSE);
-			}
+//			if (CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg())) {
+//				dto.setCarExpirationDateClDisabled(FALSE);
+//				dto.setParkingUseDateClDisabled(FALSE);
+//
+//			} else if (CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg())) {
+//				dto.setCarExpirationDateClDisabled(TRUE);
+//				dto.setParkingUseDateClDisabled(FALSE);
+//			}
+//
+//			if (CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg2())) {
+//				dto.setCarExpirationDate2ClDisabled(FALSE);
+//				dto.setParkingUseDate2ClDisabled(FALSE);
+//			} else if (CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg2())) {
+//				dto.setCarExpirationDate2ClDisabled(TRUE);
+//				dto.setParkingUseDate2ClDisabled(FALSE);
+//			}
+			
 		} else {
 			// 1台目
 			dto.setRdo1stCarHoyuDisabled(TRUE);
@@ -1071,10 +1072,10 @@ public class Skf2020Sc002SharedService {
 			// 2台目
 			dto.setRdo2stCarHoyuDisabled(TRUE);
 			dto.setRdo2stCarYoteiDisabled(TRUE);
-			dto.setCarExpirationDateClDisabled(TRUE);
-			dto.setParkingUseDateClDisabled(TRUE);
-			dto.setCarExpirationDate2ClDisabled(TRUE);
-			dto.setParkingUseDate2ClDisabled(TRUE);
+			//dto.setCarExpirationDateClDisabled(TRUE);
+			//dto.setParkingUseDateClDisabled(TRUE);
+			//dto.setCarExpirationDate2ClDisabled(TRUE);
+			//dto.setParkingUseDate2ClDisabled(TRUE);
 		}
 
 		// 現保有の社宅
@@ -1107,11 +1108,11 @@ public class Skf2020Sc002SharedService {
 				dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 				// 退居予定の場合、カレンダーを活性
 				if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
-					dto.setTaikyoYoteiDateClDisabled(FALSE);
+					//dto.setTaikyoYoteiDateClDisabled(FALSE);
 					// 退居届を促すメッセージを表示
 					dto.setLblShatakuFuyouMsgRemove(TRUE);
 				} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
-					dto.setTaikyoYoteiDateClDisabled(TRUE);
+					//dto.setTaikyoYoteiDateClDisabled(TRUE);
 					// 退居届を促すメッセージを非表示
 					dto.setLblShatakuFuyouMsgRemove(FALSE);
 				}
@@ -1129,7 +1130,7 @@ public class Skf2020Sc002SharedService {
 				dto.setRdoNowHoyuShatakuTaikyoDisabled(TRUE);
 				dto.setRdoNowHoyuShatakuKeizokuDisabled(TRUE);
 				// 退居項目のカレンダーは非活性化させる
-				dto.setTaikyoYoteiDateClDisabled(TRUE);
+				//dto.setTaikyoYoteiDateClDisabled(TRUE);
 			}
 		}
 
@@ -1137,12 +1138,12 @@ public class Skf2020Sc002SharedService {
 		if (NfwStringUtils.isNotEmpty(dto.getReturnEquipment())) {
 			dto.setSessionTimeDisabled(FALSE);
 			dto.setSessionDayDisabled(FALSE);
-			dto.setSessionDayClDisabled(FALSE);
+			//dto.setSessionDayClDisabled(FALSE);
 			dto.setRenrakuSakiDisabled(FALSE);
 		} else {
 			dto.setSessionTimeDisabled(TRUE);
 			dto.setSessionDayDisabled(TRUE);
-			dto.setSessionDayClDisabled(TRUE);
+			//dto.setSessionDayClDisabled(TRUE);
 			dto.setRenrakuSakiDisabled(TRUE);
 		}
 	}
