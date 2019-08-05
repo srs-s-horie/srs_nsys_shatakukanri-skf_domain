@@ -4,6 +4,12 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc005;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +17,25 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetB
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetHeyaHistoryCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetTeijiDataCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihin;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihinKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc005.Skf3010Sc005GetBihinInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc005.Skf3010Sc005GetHeyaHistoryCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc005.Skf3010Sc005GetTeijiDataCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomBihinRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005DeleteDto;
+import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
  * Skf3010Sc005DeleteService 社宅部屋削除ボタン押下時処理クラス.
@@ -46,19 +57,22 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 	@Autowired
 	private Skf3010Sc005GetBihinInfoExpRepository skf3010Sc005GetBihinInfoExpRepository;
 	@Autowired
+	private Skf3010MShatakuRoomBihinRepository skf3010MShatakuRoomBihinRepository;
+	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	
 	/**
 	 * 社宅部屋登録画面、削除処理メインメソッド.
 	 */
 	@Override
+	@Transactional
 	protected BaseDto index(Skf3010Sc005DeleteDto deleteDto) throws Exception {
 
 		deleteDto.setPageTitleKey(MessageIdConstant.SKF3010_SC005_TITLE);
 		int result = 0;
 		
 		// 操作ログを出力する
-		//skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());
 
 		/** 利用実績チェック */
 		// 社宅管理台帳存在チェック
@@ -91,6 +105,7 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 				deleteDto.setTransferPageInfo(TransferPageInfo.prevPage(FunctionIdConstant.SKF3010_SC004));
 			}
 
+			throwBusinessExceptionIfErrors(deleteDto.getResultMessages());
 		}
 
 		return deleteDto;
@@ -156,6 +171,11 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 		//排他チェック
 		Skf3010Sc005GetRoomInfoExp resultValue = new Skf3010Sc005GetRoomInfoExp();
 		resultValue = skf3010Sc005SharedService.getRoomInfo(dto.getHdnShatakuKanriNo(),	dto.getHdnRoomKanriNo());
+		if(resultValue == null){
+			LogUtils.debugByMsg("社宅部屋情報取得結果NULL");
+			//取得エラー時は排他エラーとして終了
+			return -1;
+		}
 		LogUtils.debugByMsg("setValueLastUpdateDate：" + dto.getLastUpdateDate("Skf3010Sc005GetRoomInfoUpdateDate"));
 		LogUtils.debugByMsg("resultValueUpdateDate：" + resultValue.getLastUpdateDate());
 		super.checkLockException(dto.getLastUpdateDate("Skf3010Sc005GetRoomInfoUpdateDate"), resultValue.getLastUpdateDate());
@@ -169,12 +189,11 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 			return 0;
 		}
 		
-		
 		//備品削除
 		//排他チェック処理
-		boolean checkResult = skf3010Sc005SharedService.checkRoomBihinInfoForUpdate(Long.parseLong(dto.getHdnShatakuKanriNo()),
+		boolean checkResult = checkRoomBihinInfoForUpdate(Long.parseLong(dto.getHdnShatakuKanriNo()),
 				Long.parseLong(dto.getHdnRoomKanriNo()),dto.getBihinListData());
-		boolean checkResultHdn = skf3010Sc005SharedService.checkRoomBihinInfoForUpdate(Long.parseLong(dto.getHdnShatakuKanriNo()),
+		boolean checkResultHdn = checkRoomBihinInfoForUpdate(Long.parseLong(dto.getHdnShatakuKanriNo()),
 				Long.parseLong(dto.getHdnRoomKanriNo()),dto.getHdnBihinStatusList());
 		
 		if(!checkResult || !checkResultHdn){
@@ -194,6 +213,48 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 		}
 		
 		return deleteCount + deleteCount;
+	}
+	
+	/**
+	 * 社宅部屋備品情報の更新日を一括でチェックする.
+	 * 不一致がある場合はfalseを返却する.
+	 * @param bihinInfoList
+	 * @return
+	 */
+	private boolean checkRoomBihinInfoForUpdate(Long shatakuKanriNo,Long shatakuRoomKanriNo,List<Map<String,Object>> bihinInfoList){
+		
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
+		
+		//備品
+		for(Map<String,Object> map : bihinInfoList){
+			
+			//更新処理を行う。
+			//排他チェック
+			Skf3010MShatakuRoomBihinKey bihinKey = new Skf3010MShatakuRoomBihinKey();
+			bihinKey.setShatakuKanriNo(shatakuKanriNo);
+			bihinKey.setShatakuRoomKanriNo(shatakuRoomKanriNo);
+			bihinKey.setBihinCd(map.get("bihinCode").toString());
+			Skf3010MShatakuRoomBihin bihinInfo = skf3010MShatakuRoomBihinRepository.selectByPrimaryKey(bihinKey);
+			if(bihinInfo == null){
+				LogUtils.debugByMsg("部屋備品情報取得結果NULL");
+				return false;
+			}
+			try{
+				Date mapDate = dateFormat.parse(map.get("updateDate").toString());	
+				LogUtils.debugByMsg("mapUpdateDate：" + mapDate);
+				LogUtils.debugByMsg("bihinInfoUpdateDate：" + bihinInfo.getUpdateDate());
+				super.checkLockException(mapDate, bihinInfo.getUpdateDate());
+			}	
+			catch(ParseException ex){
+				LogUtils.debugByMsg("部屋備品情報-更新日時変換エラー :" + map.get("updateDate").toString());
+				return false;
+			}			
+
+		}
+		
+		//更新OK
+		return true;
 	}
 
 }

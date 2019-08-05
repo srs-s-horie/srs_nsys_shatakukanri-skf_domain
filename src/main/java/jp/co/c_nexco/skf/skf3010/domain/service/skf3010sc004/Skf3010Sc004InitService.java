@@ -53,7 +53,7 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF3010_SC004_TITLE);
 
 		// 操作ログを出力する
-		//skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 				
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
@@ -98,14 +98,9 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 			setSearchInfo(initDto);
 
 			// // リストテーブルの情報を取得
-			int listCount = skf3010Sc004SharedService.getListTableData(initDto.getShatakuKanriNo(), "", "",
+			skf3010Sc004SharedService.getListTableData(initDto.getShatakuKanriNo(), "", "",
 					listTableData);
-
-			// エラーメッセージ設定
-			if (listCount == 0) {
-				// 取得レコード0件のワーニング
-				ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
-			}
+			// 初期表示に限り、0件メッセージは表示しない			
 
 		}
 

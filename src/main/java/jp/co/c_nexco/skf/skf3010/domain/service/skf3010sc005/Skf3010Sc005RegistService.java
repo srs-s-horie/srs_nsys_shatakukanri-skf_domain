@@ -31,6 +31,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005RegistDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc004.Skf3010Sc004SharedService;
+import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 
 /**
@@ -65,12 +66,13 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
+	@Transactional
 	protected BaseDto index(Skf3010Sc005RegistDto registDto) throws Exception {
 
-		registDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
+		registDto.setPageTitleKey(MessageIdConstant.SKF3010_SC005_TITLE);
 		
 		// 操作ログを出力する
-		//skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
 
 		// エラー系のDto値を初期化
 		registDto.setRoomNoError(CodeConstant.DOUBLE_QUOTATION);
@@ -92,24 +94,25 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 		List<Map<String, Object>> lendKbnList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> originalKikakuList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> coldExemptionKbnList = new ArrayList<Map<String, Object>>();
-
+		
+		registDto.setBarnMensekiAdjust(registDto.getHdnBarnMensekiAdjust());
+		registDto.setHdnBarnMensekiAdjust(registDto.getHdnBarnMensekiAdjust());
+		
 		// 入力値チェック
 		if (isValidateInput(registDto) == false) {
 			// 入力チェックエラーの場合、ドロップダウンリストを再検索して処理を終了する
-
 			// ドロップダウンリスト取得
 			//ドロップダウンリストの設定
 			skf3010Sc005SharedService.getDoropDownList(registDto.getOriginalKikaku(), originalKikakuList, 
 					registDto.getOriginalAuse(), originalAuseList,
 					registDto.getLendKbn(), lendKbnList, 
 					registDto.getColdExemptionKbn(), coldExemptionKbnList);
-
-			// DTOにセット
+			// 一旦DTOにリストセット（エラー時用）
 			registDto.setOriginalKikakuList(originalKikakuList);
 			registDto.setOriginalAuseList(originalAuseList);
 			registDto.setLendKbnList(lendKbnList);
 			registDto.setColdExemptionKbnList(coldExemptionKbnList);
-
+			
 			return registDto;
 		}
 
@@ -119,7 +122,12 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			
 			int resultCount = registHoyuuSyatakuHeyaInfo(registDto);
 			
-			if(resultCount <= 0){
+			if(resultCount < 0){
+				//件数が0未満（排他エラー）
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
+				throwBusinessExceptionIfErrors(registDto.getResultMessages());
+			}
+			else if(resultCount == 0){
 				//登録エラー
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1073);
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -137,7 +145,12 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 						
 			int resultCount = registHoyuuSyatakuHeyaInfo(registDto);
 			
-			if(resultCount <= 0){
+			if(resultCount < 0){
+				//件数が0未満（排他エラー）
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
+				throwBusinessExceptionIfErrors(registDto.getResultMessages());
+			}
+			else if(resultCount == 0){
 				//更新エラー
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1075);
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -316,17 +329,17 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			
 			// 本来規格（補助）（任意入力項目なので、空の場合チェック不要）
 			if (NfwStringUtils.isNotEmpty(registDto.getOriginalKikakuHosoku())
-					&& CheckUtils.isMoreThanByteSize(registDto.getOriginalKikakuHosoku().trim(), 5)) {
+					&& CheckUtils.isMoreThanSize(registDto.getOriginalKikakuHosoku().trim(), 5)) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1049, "本来規格補足", "5");
-				registDto.setOriginalKikakuError(CodeConstant.NFW_VALIDATION_ERROR);
+				registDto.setOriginalKikakuHosokuError(CodeConstant.NFW_VALIDATION_ERROR);
 				debugMessage += "　桁数チェック - " + "本来規格補足 - " + registDto.getOriginalKikakuHosoku();
 			} else {
-				debugMessage += "　本来規格補足 入力バイト数 - ";
+				debugMessage += "　本来規格補足 入力桁数 - ";
 				if (registDto.getOriginalKikakuHosoku() == null) {
 					debugMessage += "入力なし";
 				} else {
-					debugMessage += registDto.getOriginalKikakuHosoku().trim().getBytes("MS932").length;
+					debugMessage += registDto.getOriginalKikakuHosoku().trim().length();
 				}
 			}
 			
@@ -342,17 +355,17 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			
 			// 本来用途（補助）（任意入力項目なので、空の場合チェック不要）
 			if (NfwStringUtils.isNotEmpty(registDto.getOriginalAuseHosoku())
-					&& CheckUtils.isMoreThanByteSize(registDto.getOriginalAuseHosoku().trim(), 5)) {
+					&& CheckUtils.isMoreThanSize(registDto.getOriginalAuseHosoku().trim(), 5)) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1049, "本来用途補足", "5");
 				registDto.setOriginalAuseHosokuError(CodeConstant.NFW_VALIDATION_ERROR);
 				debugMessage += "　桁数チェック - " + "本来用途補足 - " + registDto.getOriginalAuseHosoku();
 			} else {
-				debugMessage += "　本来用途補足 入力バイト数 - ";
+				debugMessage += "　本来用途補足 入力桁数 - ";
 				if (registDto.getOriginalAuseHosoku() == null) {
 					debugMessage += "入力なし";
 				} else {
-					debugMessage += registDto.getOriginalAuseHosoku().trim().getBytes("MS932").length;
+					debugMessage += registDto.getOriginalAuseHosoku().trim().length();
 				}
 			}
 			
@@ -374,17 +387,17 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			
 			// 貸与区分（補助）（任意入力項目なので、空の場合チェック不要）
 			if (NfwStringUtils.isNotEmpty(registDto.getLendKbnHosoku())
-					&& CheckUtils.isMoreThanByteSize(registDto.getLendKbnHosoku().trim(), 5)) {
+					&& CheckUtils.isMoreThanSize(registDto.getLendKbnHosoku().trim(), 5)) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1049, "貸与区分補足", "5");
 				registDto.setLendKbnHosokuError(CodeConstant.NFW_VALIDATION_ERROR);
 				debugMessage += "　桁数チェック - " + "貸与区分補足 - " + registDto.getLendKbnHosoku();
 			} else {
-				debugMessage += "　貸与区分補足 入力バイト数 - ";
+				debugMessage += "　貸与区分補足 入力桁数 - ";
 				if (registDto.getLendKbnHosoku() == null) {
 					debugMessage += "入力なし";
 				} else {
-					debugMessage += registDto.getLendKbnHosoku().trim().getBytes("MS932").length;
+					debugMessage += registDto.getLendKbnHosoku().trim().length();
 				}
 			}
 			
@@ -421,17 +434,17 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			
 			// 備考（任意入力項目なので、空の場合チェック不要）
 			if (NfwStringUtils.isNotEmpty(registDto.getBiko())
-					&& CheckUtils.isMoreThanByteSize(registDto.getBiko().trim(), 100)) {
+					&& CheckUtils.isMoreThanSize(registDto.getBiko().trim(), 100)) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1049, "備考", "100");
 				registDto.setBikoError(CodeConstant.NFW_VALIDATION_ERROR);
 				debugMessage += "　桁数チェック - " + "備考 - " + registDto.getBiko();
 			} else {
-				debugMessage += "　備考 入力バイト数 - ";
+				debugMessage += "　備考 入力桁数 - ";
 				if (registDto.getBiko() == null) {
 					debugMessage += "入力なし";
 				} else {
-					debugMessage += registDto.getBiko().trim().getBytes("MS932").length;
+					debugMessage += registDto.getBiko().trim().length();
 				}
 			}
 
@@ -496,6 +509,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 	private int registHoyuuSyatakuHeyaInfo(Skf3010Sc005RegistDto dto) {
 
 		Skf3010MShatakuRoom  setValue = new Skf3010MShatakuRoom();
+		
 
 		/** 登録項目をセット */
 		//社宅管理番号
@@ -634,6 +648,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 
 		int registCount=0;
 		int registBihinCount = 0;
+		
 		//登録処理
 		registCount = skf3010MShatakuRoomRepository.insertSelective(setValue);
 		
@@ -662,7 +677,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			//登録件数0以下の場合エラーとして終了
 			return 0;
 		}
-		
+	
 		return registCount + registBihinCount;
 
 	}
@@ -680,9 +695,15 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 		int updateCount = 0;
 		int updateRoomBihinCount = 0;
 		Skf3010Sc005GetRoomInfoExp resultValue = new Skf3010Sc005GetRoomInfoExp();
+		
 		// 排他チェック
 		resultValue = skf3010Sc005SharedService.getRoomInfo(setValue.getShatakuKanriNo().toString(),
 				setValue.getShatakuRoomKanriNo().toString());
+		if(resultValue == null){
+			LogUtils.debugByMsg("社宅部屋情報取得結果NULL");
+			//取得件数0はエラーとして終了
+			return -1;
+		}
 		LogUtils.debugByMsg("setValueLastUpdateDate：" + setValue.getLastUpdateDate());
 		LogUtils.debugByMsg("resultValueUpdateDate：" + resultValue.getLastUpdateDate());
 		super.checkLockException(setValue.getLastUpdateDate(), resultValue.getLastUpdateDate());
@@ -709,7 +730,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 				//更新日が存在しない場合（欠損レコード）、登録処理を行う。
 				if(!bihinSetValue.getBihinCd().isEmpty() && !bihinSetValue.getBihinStatusKbn().isEmpty()){
 					updateRoomBihinCount += insertShatakuRoomBihin(bihinSetValue);
-				}			
+				}
 				
 			}else{
 				//更新処理を行う。
@@ -719,6 +740,10 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 				bihinKey.setShatakuRoomKanriNo(setValue.getShatakuRoomKanriNo());
 				bihinKey.setBihinCd(map.get("bihinCode").toString());
 				Skf3010MShatakuRoomBihin bihinInfo = skf3010MShatakuRoomBihinRepository.selectByPrimaryKey(bihinKey);
+				if(bihinInfo == null){
+					LogUtils.debugByMsg("部屋備品情報取得結果NULL");
+					return -1;
+				}
 				LogUtils.debugByMsg("setValueUpdateDate：" + (Date) map.get("updateDate"));
 				LogUtils.debugByMsg("bihinInfoUpdateDate：" + bihinInfo.getUpdateDate());
 				super.checkLockException((Date) map.get("updateDate"), bihinInfo.getUpdateDate());
@@ -729,12 +754,12 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 		}
 		
 		LogUtils.debugByMsg("部屋備品情報更新件数：" + updateRoomBihinCount);
+		
 		if(updateRoomBihinCount <= 0){
 			//更新件数0以下の場合エラーとして終了
 			return 0;
 		}
-		
-		
+			
 		return updateCount + updateRoomBihinCount;
 	}
 	
@@ -748,7 +773,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 		int insertCount=0;
 		
 		insertCount = skf3010MShatakuRoomBihinRepository.insertSelective(setValue);
-		
+				
 		return insertCount;
 		
 	}
