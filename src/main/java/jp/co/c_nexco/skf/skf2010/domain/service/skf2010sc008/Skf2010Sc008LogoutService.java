@@ -7,6 +7,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc008.Skf2010Sc008LogoutDto;
 
 /**
@@ -19,7 +20,12 @@ public class Skf2010Sc008LogoutService extends BaseServiceAbstract<Skf2010Sc008L
 
 	@Autowired
 	private MenuScopeSessionBean sessionBean;
-
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
+	
 	/**
 	 * 代行ログイン画面 ログアウトサービス処理を行う。
 	 * 
@@ -31,6 +37,10 @@ public class Skf2010Sc008LogoutService extends BaseServiceAbstract<Skf2010Sc008L
 	public Skf2010Sc008LogoutDto index(Skf2010Sc008LogoutDto logoutDto) throws Exception {
 
 		logoutDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("代行ログアウト", companyCd, logoutDto.getPageId());
+		
 		// ログアウト処理
 		sessionBean.put(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY, CodeConstant.NONLOGIN);
 
