@@ -9,6 +9,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc008.Skf2010Sc008InitDto;
 
 /**
@@ -21,6 +23,13 @@ public class Skf2010Sc008InitService extends BaseServiceAbstract<Skf2010Sc008Ini
 
 	@Autowired
 	private MenuScopeSessionBean sessionBean;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfOperationGuideUtils skfOperationGuideUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	/**
 	 * 代行ログイン画面 初期表示サービス処理を行う。
@@ -33,6 +42,13 @@ public class Skf2010Sc008InitService extends BaseServiceAbstract<Skf2010Sc008Ini
 	public Skf2010Sc008InitDto index(Skf2010Sc008InitDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		
+		// 操作ガイドの設定
+		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+		
 		// セッションから代行ログイン状態を取得
 		String sessionVal = (String) sessionBean.get(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY);
 		Map<String, Object> alterLoginUserInfoMap = (Map<String, Object>) sessionBean.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP);

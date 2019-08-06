@@ -7,7 +7,9 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUti
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc008.Skf2010Sc008SelectDto;
 
 /**
@@ -23,6 +25,11 @@ public class Skf2010Sc008SelectService extends BaseServiceAbstract<Skf2010Sc008S
 	 */
 	@Autowired
 	private Skf2010Sc008SharedService skf2010Sc008SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	/**
 	 * 代行ログイン画面 対象社員選択処理を行う。
@@ -35,6 +42,9 @@ public class Skf2010Sc008SelectService extends BaseServiceAbstract<Skf2010Sc008S
 	public Skf2010Sc008SelectDto index(Skf2010Sc008SelectDto selectDto) throws Exception {
 
 		selectDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("選択する", companyCd, selectDto.getPageId());
 
 		// 入力チェックを行う。社員番号の未入力チェック、半角数値チェック
 		// 未入力チェック
