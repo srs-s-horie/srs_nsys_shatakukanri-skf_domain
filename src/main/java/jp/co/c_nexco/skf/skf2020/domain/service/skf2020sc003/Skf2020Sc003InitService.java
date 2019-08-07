@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUti
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
@@ -67,7 +68,7 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 		initDto.setCommentViewFlag(commentFlg);
 
 		// オペレーションガイド取得
-		String operationGuide = skfOperationGuideUtils.getOperationGuide(initDto.getPageId());
+		String operationGuide = skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2020_SC003);
 		initDto.setOperationGuide(operationGuide);
 
 		return initDto;

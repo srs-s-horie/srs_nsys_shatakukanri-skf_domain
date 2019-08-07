@@ -83,9 +83,7 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);
-		Map<String, Object> attribute = new HashMap<String, Object>();
-		tpi.addResultMessage(MessageIdConstant.I_SKF_2033);
-		tpi.setTransferAttributes(attribute);
+		tpi.addResultMessage(MessageIdConstant.I_SKF_2030);
 		rvsDto.setTransferPageInfo(tpi);
 
 		return rvsDto;
