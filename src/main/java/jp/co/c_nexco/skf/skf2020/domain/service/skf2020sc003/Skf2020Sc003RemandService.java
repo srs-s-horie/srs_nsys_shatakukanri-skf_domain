@@ -81,9 +81,7 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);
-		Map<String, Object> attribute = new HashMap<String, Object>();
 		tpi.addResultMessage(MessageIdConstant.I_SKF_2033);
-		tpi.setTransferAttributes(attribute);
 		rmdDto.setTransferPageInfo(tpi);
 
 		return rmdDto;

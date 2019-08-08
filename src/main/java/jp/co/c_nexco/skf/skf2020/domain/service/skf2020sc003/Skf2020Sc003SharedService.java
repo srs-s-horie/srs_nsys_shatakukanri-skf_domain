@@ -289,7 +289,14 @@ public class Skf2020Sc003SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			String commentName = StringUtils.trim(userInfo.get("userName"));
+			String commentName = CodeConstant.NONE;
+			// 室、チームまたは課名を追記
+			List<String> tmpNameList = new ArrayList<String>();
+			if (userInfo.get("affiliation2Name") != null) {
+				tmpNameList.add(userInfo.get("affiliation2Name"));
+			}
+			tmpNameList.add(StringUtils.trim(userInfo.get("userName")));
+			commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
 			String commentNote = StringUtils.trim(dto.getCommentNote());
 
 			boolean commentErrorMessage = skfCommentUtils.insertComment(companyCd, applNo, newStatus, commentName,
@@ -467,7 +474,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 入居希望日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNyukyoYoteiDate())) {
-			dto.setNyukyoYoteiDate(shatakuNyukyoKiboInfo.getNyukyoYoteiDate());
+			dto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getNyukyoYoteiDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// １台目
 		// 自動者の保管場所
@@ -488,7 +495,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 車検の有効期間満了日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarExpirationDate())) {
-			dto.setCarExpirationDate(shatakuNyukyoKiboInfo.getCarExpirationDate());
+			dto.setCarExpirationDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getCarExpirationDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 自動車の使用者
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarUser())) {
@@ -496,7 +503,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 自動車の保管場所 使用開始日(予定日)
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingUseDate())) {
-			dto.setParkingUseDate(shatakuNyukyoKiboInfo.getParkingUseDate());
+			dto.setParkingUseDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// ２台目
 		// 自動車の登録番号の入力フラグ
@@ -513,7 +520,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 車検の有効期間満了日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarExpirationDate2())) {
-			dto.setCarExpirationDate2(shatakuNyukyoKiboInfo.getCarExpirationDate2());
+			dto.setCarExpirationDate2(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getCarExpirationDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 自動車の使用者
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarUser2())) {
@@ -521,7 +528,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 自動車の保管場所 使用開始日(予定日)
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingUseDate2())) {
-			dto.setParkingUseDate2(shatakuNyukyoKiboInfo.getParkingUseDate2());
+			dto.setParkingUseDate2(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 現居住宅
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNowShataku())) {
@@ -649,7 +656,7 @@ public class Skf2020Sc003SharedService {
 				ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1001, SHATAKU_TEIJI_MSG,
 						SHATAKU_TEIJI_COMP);
 				// 未作成は提示不可で継続
-
+				dto.setMaskPattern("TeijiNG");
 				break;
 			}
 		}
