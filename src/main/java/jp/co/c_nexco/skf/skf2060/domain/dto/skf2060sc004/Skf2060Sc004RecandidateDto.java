@@ -16,5 +16,4 @@ public class Skf2060Sc004RecandidateDto extends Skf2060Sc004CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 	
-	
 }

@@ -43,4 +43,10 @@ public class Skf2060Sc004CommonDto extends Skf206010CommonDto {
     private String shatakuAddressName;
     // 提示状況
     private String[] candidateStatus;
+
+    /**
+     * 操作ガイド
+     */
+    // 操作ガイド
+    private String operationGuide;
 }

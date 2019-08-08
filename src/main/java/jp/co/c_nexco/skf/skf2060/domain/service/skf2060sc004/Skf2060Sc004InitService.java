@@ -3,22 +3,25 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc004;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc004.Skf2060Sc004GetKariageListExpParameter;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004InitDto;
-import jp.co.intra_mart.system.repackage.bouncycastle_1_44.org.bouncycastle.asn1.ocsp.Request;
 
 /**
  * TestPrjTop画面のInitサービス処理クラス。　 
@@ -28,53 +31,61 @@ import jp.co.intra_mart.system.repackage.bouncycastle_1_44.org.bouncycastle.asn1
 public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004InitDto> {
 	
     @Autowired
-    Skf2060Sc004SharedService skf2060Sc004SharedService;
+    private SkfOperationGuideUtils skfOperationGuideUtils;
     @Autowired
-    private SkfDateFormatUtils skfDateFormatUtils;
+    private Skf2060Sc004SharedService skf2060Sc004SharedService;
+    @Autowired
+    private SkfOperationLogUtils skfOperationLogUtils;
+    
+    @Value("${skf2060.skf2060_sc004.search_max_count}")
+    private String searchMaxCount;
     
 	/**
 	 * サービス処理を行う。　
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception  例外
 	 */
 	@Override
 	public Skf2060Sc004InitDto index(Skf2060Sc004InitDto initDto) throws Exception {
 		
 		initDto.setPageTitleKey(MessageIdConstant.SKF2060_SC004_TITLE);
 		
+		// 操作ログを出力する
+        skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
         // リストチェック状態を解除
         initDto.setCompleteChkVal(null);
         initDto.setReminderChkVal(null);
 
-        
-        
-        
-        initDto.setListTableMaxRowCount("50"); //TODO
-		return initDto;
+        // 初期表示情報を取得
+        this.setInitInfo(initDto);
+
+        // 初期検索実行
+        initDto.setListTableData(skf2060Sc004SharedService.getListTableData(setParam(initDto)));
+        initDto.setListTableMaxRowCount(searchMaxCount);
+        return initDto;
 	}
 	
+	/**
+	 * 初期表示時の画面情報をDtoに設定する
+	 * @param initDto
+	 */
 	private void setInitInfo(Skf2060Sc004InitDto initDto){
 	    // 提示日From
-	    String currentMonthFirstDate = skfDateFormatUtils.dateFormatFromDate(new Date(), "yyyyMMdd");
-	    initDto.setCandidateDateFrom(currentMonthFirstDate);
+	    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+	    LocalDate currentMonthFirstDate = LocalDate.now().withDayOfMonth(1); //当月初日を初期選択
+	    initDto.setCandidateDateFrom(currentMonthFirstDate.format(format));
 	    // 提示状況
-	    // チェックボックスの初期値セット
-        List<String> defaultStatusList = getDefaultCandidateStatusList();
+        List<String> defaultStatusList = getDefaultCandidateStatusList(); // チェックボックスの初期値セット
 	    initDto.setCandidateStatus(defaultStatusList.toArray(new String[defaultStatusList.size()]));
-	    // 
-	    // 
-	    // 
-	    // 
-	    // 
-	    // 
-	    // 
-	    // 
-	    // 
 	    
+	    // 操作ガイド取得
+	    initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+
+        // 画面ID保持
+	    initDto.setPrePageId(FunctionIdConstant.SKF2060_SC004);
+
 	}
 	
 	/**
@@ -90,5 +101,28 @@ public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004Ini
 	    // ステータス：選択しない
 	    initStats.add(CodeConstant.STATUS_SENTAKU_SHINAI);
 	    return initStats;
+	}
+	
+	/**
+	 * 初期表示時 検索条件設定
+	 * @param dto 初期表示時検索条件Dto
+	 * @return 借上社宅一覧データ取得SQLパラメータクラス
+	 */
+	private Skf2060Sc004GetKariageListExpParameter setParam(Skf2060Sc004InitDto dto){
+	    Skf2060Sc004GetKariageListExpParameter param = new Skf2060Sc004GetKariageListExpParameter();
+//	    
+//	    String candidateDateFrom = dto.getCandidateDateFrom();
+//	    if(!StringUtils.isEmpty(candidateDateFrom)){
+//	        candidateDateFrom = candidateDateFrom.replace("/", "");
+//	    }
+//	    
+	    param.setCandidateDateFrom( dto.getCandidateDateFrom());
+	    param.setCandidateDateTo(dto.getCandidateDateTo());
+	    param.setCandidatePersonNo(dto.getCandidatePersonName());
+	    param.setShatakuName(dto.getShatakuName());
+	    param.setShatakuAddressName(dto.getShatakuAddressName());
+	    param.setApplStatus(Arrays.asList(dto.getCandidateStatus()));
+	    
+	    return param;
 	}
 }

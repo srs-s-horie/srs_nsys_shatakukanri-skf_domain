@@ -1,4 +1,5 @@
 /*
+
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc004;
