@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003AttachedFileAreaAsyncDto;
 
@@ -25,11 +26,6 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 
 	@Autowired
 	private SkfAttachedFileUtiles skfAttachedFileUtiles;
-
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKeyAttached;
-	@Value("${skf.common.shataku_attached_file_session_key}")
-	private String sessionKeyAttachedShataku;
 
 	/**
 	 * サービス処理を行う。
@@ -48,15 +44,15 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 
 		// 社宅向け添付資料取得
 		List<Map<String, Object>> shatakuAttachedFileList = skfAttachedFileUtiles
-				.getAttachedFileInfo(menuScopeSessionBean, applNo, sessionKeyAttachedShataku);
+				.getAttachedFileInfo(menuScopeSessionBean, applNo, SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
 		// 一般添付資料取得
 		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
-				applNo, sessionKeyAttached);
+				applNo, SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 		// 社宅向け添付資料が無い場合配列のインスタンス化だけ行う
 		if (shatakuAttachedFileList == null) {
 			shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
 		}
-
+		
 		String baseLinkTag = "<a id=\"attached_$ATTACHEDNO$\">$ATTACHEDNAME$</a>";
 		List<String> listTagList = new ArrayList<String>();
 

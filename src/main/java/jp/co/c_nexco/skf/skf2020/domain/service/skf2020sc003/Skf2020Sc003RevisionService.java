@@ -37,9 +37,6 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
-	@Autowired
-	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
-
 	// カンマ区切りフォーマット
 	NumberFormat nfNum = NumberFormat.getNumberInstance();
 
@@ -59,7 +56,9 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 
 		boolean validate = skf2020sc003SharedService.checkValidation(rvsDto);
 		if (!validate) {
-			throwBusinessExceptionIfErrors(rvsDto.getResultMessages());
+			// 添付資料だけはセッションから再取得の必要あり
+			skf2020sc003SharedService.setAttachedFileList(rvsDto);
+			return rvsDto;
 		}
 
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
