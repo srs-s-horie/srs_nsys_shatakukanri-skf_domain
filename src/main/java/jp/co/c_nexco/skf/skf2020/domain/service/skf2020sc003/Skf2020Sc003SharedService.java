@@ -910,48 +910,48 @@ public class Skf2020Sc003SharedService {
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName1())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize1())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName1(), teijiDataInfo.getShatakuSupplementFile1(),
-					teijiDataInfo.getShatakuSupplementSize1(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShatakuSupplementSize1(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 社宅補足ファイル2
 		if (teijiDataInfo.getShatakuSupplementFile2() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName2())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize2())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName2(), teijiDataInfo.getShatakuSupplementFile2(),
-					teijiDataInfo.getShatakuSupplementSize2(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShatakuSupplementSize2(), shatakuAttachedFileList.size() , shatakuAttachedFileList);
 		}
 		// 社宅補足ファイル3
 		if (teijiDataInfo.getShatakuSupplementFile3() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName3())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize3())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName3(), teijiDataInfo.getShatakuSupplementFile3(),
-					teijiDataInfo.getShatakuSupplementSize3(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShatakuSupplementSize3(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル1
 		if (teijiDataInfo.getParkingSupplementFile1() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName1())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize1())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName1(), teijiDataInfo.getParkingSupplementFile1(),
-					teijiDataInfo.getParkingSupplementSize1(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getParkingSupplementSize1(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル2
 		if (teijiDataInfo.getParkingSupplementFile2() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName2())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize2())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName2(), teijiDataInfo.getParkingSupplementFile2(),
-					teijiDataInfo.getParkingSupplementSize2(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getParkingSupplementSize2(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル3
 		if (teijiDataInfo.getParkingSupplementFile3() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName3())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize3())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName3(), teijiDataInfo.getParkingSupplementFile3(),
-					teijiDataInfo.getParkingSupplementSize3(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getParkingSupplementSize3(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 資料補足ファイル
 		if (teijiDataInfo.getShiryoHosokuFile() != null && StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuName())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuSize())) {
 			addShatakuAttachedFile(teijiDataInfo.getShiryoHosokuName(), teijiDataInfo.getShiryoHosokuFile(),
-					teijiDataInfo.getShiryoHosokuSize(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShiryoHosokuSize(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		menuScopeSessionBean.put(SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY, shatakuAttachedFileList);
 
@@ -1418,7 +1418,7 @@ public class Skf2020Sc003SharedService {
 	 * @param fileSize
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
-	private void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int defaultAttachedNo,
+	private void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
 			List<Map<String, Object>> shatakuAttachedFileList) {
 		// 添付資料のコレクションをSessionより取得
 
@@ -1438,14 +1438,6 @@ public class Skf2020Sc003SharedService {
 		// 添付ファイルリストに無い場合
 		if (!findFlg) {
 			Map<String, Object> addAttachedFileInfo = new HashMap<String, Object>();
-			int attachedNo = 0;
-
-			if (shatakuAttachedFileList.size() > 0) {
-				// 添付資料番号
-				attachedNo = Integer.parseInt(
-						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString());
-			}
-			attachedNo = attachedNo + defaultAttachedNo;
 
 			addAttachedFileInfo.put("attachedNo", attachedNo);
 
