@@ -126,7 +126,7 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 		param.setShatakuRoomKanriNo(Long.parseLong(shatakuRoomKanriNo));
 
 		// SQL実行
-		long resultCount = skf3010Sc005GetHeyaHistoryCountExpRepository.GetHeyaHistoryCount(param).size();
+		long resultCount = skf3010Sc005GetHeyaHistoryCountExpRepository.getHeyaHistoryCount(param).size();
 		LogUtils.debugByMsg("社宅管理台帳テーブル存在レコード数 = " + resultCount + "件");
 
 		return resultCount;
