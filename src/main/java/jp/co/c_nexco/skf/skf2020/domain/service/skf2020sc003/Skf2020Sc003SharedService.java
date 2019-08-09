@@ -163,7 +163,7 @@ public class Skf2020Sc003SharedService {
 		errorTarget.add("commentNote");
 
 		// コメント欄入力チェック
-		String commentNote = StringUtils.trim(dto.getCommentNote());
+		String commentNote = StringUtils.strip(dto.getCommentNote());
 
 		if (NfwStringUtils.isEmpty(commentNote)) {
 			ServiceHelper.addErrorResultMessage(dto, errorTarget.toArray(new String[errorTarget.size()]),
