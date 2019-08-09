@@ -16,6 +16,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003UpdateDto;
 
 /**
@@ -31,6 +32,8 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 
 	@Autowired
 	private Skf2020Sc003SharedService skf2020sc003SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
@@ -49,7 +52,9 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 	 */
 	@Override
 	public BaseDto index(Skf2020Sc003UpdateDto updDto) throws Exception {
-
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("修正依頼処理開始", CodeConstant.C001, updDto.getPageId());
+		
 		updDto.setPageTitleKey(MessageIdConstant.SKF2020_SC003_TITLE);
 
 		// 必要とする社宅理由更新メソッド

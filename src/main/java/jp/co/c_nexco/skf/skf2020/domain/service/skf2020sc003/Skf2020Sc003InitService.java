@@ -28,10 +28,6 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003InitDto;
 @Service
 public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003InitDto> {
 
-	// セッションキー
-	@Value("${skf.common.shataku_attached_file_session_key}")
-	private String sessionKey;
-
 	@Autowired
 	private Skf2020Sc003SharedService skf2020sc003SharedService;
 	@Autowired
@@ -56,12 +52,15 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 	@Override
 	public BaseDto index(Skf2020Sc003InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示処理開始", CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC003_TITLE);
 
-		// 初期表示
+		// セッション情報引き渡し
 		skf2020sc003SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
+		// セッション情報初期化
+		skf2020sc003SharedService.clearMenuScopeSessionBean();
+		// 初期情報セット
 		skf2020sc003SharedService.setDispInfo(initDto);
 		// コメントボタン表示チェック
 		boolean commentFlg = checkComment(initDto);
@@ -77,7 +76,8 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 	private boolean checkComment(Skf2020Sc003InitDto initDto) {
 		// コメント取得
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), initDto.getApplStatus());
+		//commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), initDto.getApplStatus());
+		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), null);
 		if (commentList != null && commentList.size() > 0) {
 			return true;
 		}

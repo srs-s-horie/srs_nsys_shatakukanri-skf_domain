@@ -57,7 +57,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 	 */
 	private boolean checkDispInfo(Skf2020Sc002CheckAsyncDto checkDto) throws Exception {
 
-		Boolean ret = true;
+		boolean ret = true;
 		// コントロールをデフォルト色に戻す
 		// setDefultColor(checkDto);
 
