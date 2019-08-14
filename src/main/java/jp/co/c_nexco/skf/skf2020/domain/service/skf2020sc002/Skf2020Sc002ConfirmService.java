@@ -67,11 +67,6 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 	public static final String UPDATE_FLG = "1";
 	public static final String NO_UPDATE_FLG = "0";
 
-	// 最終更新日付のキャッシュキー
-	public static final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf1010_t_appl_history_UpdateDate";
-	public static final String NYUKYO_KEY_LAST_UPDATE_DATE = "skf2020_t_nyukyo_chosho_UpdateDate";
-	public static final String BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE = "skf2050_t_bihin_henkyaku_UpdateDate";
-
 	@Override
 	public BaseDto index(Skf2020Sc002ConfirmDto dto) throws Exception {
 
@@ -171,6 +166,15 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			// 新規以外
 			dto.setHdnStatus(applInfo.get("status"));
 			applInfo.put("updateFlg", UPDATE_FLG);
+
+			// 排他制御の比較用更新日を設定
+			Skf2020TNyukyoChoshoTsuchi key = new Skf2020TNyukyoChoshoTsuchi();
+			// 条件項目をセット
+			key.setCompanyCd(CodeConstant.C001);
+			key.setApplNo(dto.getApplNo());
+			Skf2020TNyukyoChoshoTsuchi reUpdateDate = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
+			dto.addLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE, reUpdateDate.getUpdateDate());
+
 			// 申請履歴テーブルの更新
 			int registHistoryCount = 0;
 			Skf2010TApplHistory setApplValue = new Skf2010TApplHistory();
@@ -178,8 +182,6 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			case CodeConstant.STATUS_ICHIJIHOZON:
 				// 一時保存の場合
 				applInfo.put("dateUpdateFlg", "1");
-				setApplValue.setLastUpdateDate(
-						dto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
 				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, dto, applInfo);
 				LogUtils.debugByMsg("申請情報履歴テーブル更新件数：" + registHistoryCount + "件");
 				break;
@@ -189,8 +191,7 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			default:
 				// 申請日時を更新しない
 				applInfo.put("dateUpdateFlg", "0");
-				setApplValue.setLastUpdateDate(
-						dto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
+				setApplValue.setLastUpdateDate(dto.getLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE));
 				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, dto, applInfo);
 			}
 
@@ -231,8 +232,10 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		// 排他制御用更新日取得
 		// 更新日付を取得する
 		Skf2010TApplHistory resultUpdateDate = skf2020Sc002SharedService.selectByApplHistoryPrimaryKey(setValue, dto);
+		setValue.setLastUpdateDate(dto.getLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE));
+		setValue.setUpdateDate(resultUpdateDate.getUpdateDate());
 		// 排他チェック
-		super.checkLockException(dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE),
+		super.checkLockException(dto.getLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE),
 				resultUpdateDate.getUpdateDate());
 
 		// 更新値の設定
@@ -240,73 +243,6 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		// 更新
 		resultCnt = skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(setValue);
 
-		// 排他制御の比較用更新日を再設定
-		// 更新日付を取得する
-		Skf2010TApplHistory reResultUpdateDate = skf2020Sc002SharedService.selectByApplHistoryPrimaryKey(setValue, dto);
-		dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, reResultUpdateDate.getUpdateDate());
-
 		return resultCnt;
 	}
-	//
-	// /**
-	// * 入居希望等調書テーブルの更新処理
-	// *
-	// * @param setValue
-	// * @param Skf2020Sc002CommonDto
-	// * @param applInfo
-	// * @return 登録件数
-	// */
-	// private int updateNyukyoChoshoTsuchi(Skf2020TNyukyoChoshoTsuchi setValue,
-	// Skf2020Sc002CommonDto dto,
-	// Map<String, String> applInfo) {
-	//
-	// // 社宅入居希望等調査・入居決定通知テーブル情報の取得
-	// Skf2020TNyukyoChoshoTsuchi nyukyoChoshoList = new
-	// Skf2020TNyukyoChoshoTsuchi();
-	// Skf2020TNyukyoChoshoTsuchiKey setKey = new
-	// Skf2020TNyukyoChoshoTsuchiKey();
-	// // 条件項目をセット
-	// setKey.setCompanyCd(CodeConstant.C001);
-	// setKey.setApplNo(dto.getApplNo());
-	// nyukyoChoshoList =
-	// skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setKey);
-	// LogUtils.debugByMsg("社宅入居希望等調査情報： " + nyukyoChoshoList);
-	//
-	// // 設定値
-	// setValue = skf2020Sc002SharedService.setNyukyoChoshoTsuchi(dto, setValue,
-	// applInfo);
-	// // 排他チェック
-	// super.checkLockException(dto.getLastUpdateDate(NYUKYO_KEY_LAST_UPDATE_DATE),
-	// nyukyoChoshoList.getUpdateDate());
-	// return
-	// skf2020Sc002UpdateNyukyoKiboInfoExpRepository.updateNyukyoKiboInfo(setValue);
-	// }
-	//
-	// /**
-	// * 備品返却申請テーブルの更新処理
-	// *
-	// * @param setValue
-	// * @param dto
-	// * @param applInfo
-	// * @param bihinHenkyakuInfo
-	// * @return
-	// */
-	// private int updateBihinHenkyakuInfo(Skf2050TBihinHenkyakuShinsei
-	// setValue, Skf2020Sc002CommonDto dto,
-	// Map<String, String> applInfo,
-	// Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo) {
-	//
-	// // 備品返却申請テーブルの設定
-	// // 設定値
-	// setValue = skf2020Sc002SharedService.setColumnInfoBihinList(setValue,
-	// dto, applInfo,
-	// bihinHenkyakuInfo.getTaikyoApplNo());
-	// // 排他チェック
-	// super.checkLockException(dto.getLastUpdateDate(BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE),
-	// bihinHenkyakuInfo.getUpdateDate());
-	// return
-	// skf2020Sc002UpdateBihinHenkyakuInfoExpRepository.updateBihinHenkyakuInfo(setValue);
-	//
-	// }
-
 }

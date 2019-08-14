@@ -73,7 +73,6 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 		if (newAgencyCd != null && !CheckUtils.isEmpty(newAgencyCd)) {
 			affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, newAgencyCd, null, true);
 			// その他を追加
-			dto.getNewAgencyErr();
 			Map<String, Object> soshikiMap = new HashMap<String, Object>();
 			soshikiMap.put("value", "99");
 			soshikiMap.put("label", "その他");

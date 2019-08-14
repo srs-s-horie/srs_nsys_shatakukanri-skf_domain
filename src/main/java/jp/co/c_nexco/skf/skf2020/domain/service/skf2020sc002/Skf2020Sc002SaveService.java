@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -35,11 +36,6 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 	public static final String UPDATE_FLG = "1";
 	public static final String NO_UPDATE_FLG = "0";
 
-	// 最終更新日付のキャッシュキー
-	public static final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf1010_t_appl_history_UpdateDate";
-	public static final String NYUKYO_KEY_LAST_UPDATE_DATE = "skf2020_t_nyukyo_chosho_UpdateDate";
-	public static final String BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE = "skf2050_t_bihin_henkyaku_UpdateDate";
-
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
@@ -48,6 +44,8 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private Skf2020Sc002SharedService skf2020Sc002SharedService;
+	@Autowired
+	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
 	@Autowired
 	private Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
 
@@ -130,6 +128,15 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 			// 新規以外
 			saveDto.setHdnStatus(applInfo.get("status"));
 			applInfo.put("updateFlg", UPDATE_FLG);
+
+			// 排他制御の比較用更新日を設定
+			Skf2020TNyukyoChoshoTsuchi key = new Skf2020TNyukyoChoshoTsuchi();
+			// 条件項目をセット
+			key.setCompanyCd(CodeConstant.C001);
+			key.setApplNo(saveDto.getApplNo());
+			Skf2020TNyukyoChoshoTsuchi reUpdateDate = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
+			saveDto.addLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE, reUpdateDate.getUpdateDate());
+
 			// 申請履歴テーブルの更新
 			int registHistoryCount = 0;
 			Skf2010TApplHistory setApplValue = new Skf2010TApplHistory();
@@ -137,8 +144,6 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 			case CodeConstant.STATUS_ICHIJIHOZON:
 				// 一時保存の場合
 				applInfo.put("dateUpdateFlg", "1");
-				setApplValue.setLastUpdateDate(
-						saveDto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
 				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, saveDto, applInfo);
 				LogUtils.debugByMsg("申請情報履歴テーブル更新件数：" + registHistoryCount + "件");
 				break;
@@ -148,8 +153,6 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 			default:
 				// 申請日時を更新しない
 				applInfo.put("dateUpdateFlg", "0");
-				setApplValue.setLastUpdateDate(
-						saveDto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
 				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, saveDto, applInfo);
 			}
 
@@ -189,20 +192,15 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		// 排他制御用更新日取得
 		// 更新日付を取得する
 		Skf2010TApplHistory resultUpdateDate = skf2020Sc002SharedService.selectByApplHistoryPrimaryKey(setValue, dto);
+		setValue.setLastUpdateDate(dto.getLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE));
 		// 排他チェック
-		super.checkLockException(dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE),
+		super.checkLockException(dto.getLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE),
 				resultUpdateDate.getUpdateDate());
 
 		// 更新値の設定
 		setValue = skf2020Sc002SharedService.setUpdateApplHistoryAgreeStatusIchiji(setValue, dto, applInfo);
 		// 更新
 		resultCnt = skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(setValue);
-
-		// 排他制御の比較用更新日を再設定
-		// 更新日付を取得する
-		Skf2010TApplHistory reResultUpdateDate = skf2020Sc002SharedService.selectByApplHistoryPrimaryKey(setValue, dto);
-		dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, reResultUpdateDate.getUpdateDate());
-
 		return resultCnt;
 	}
 }

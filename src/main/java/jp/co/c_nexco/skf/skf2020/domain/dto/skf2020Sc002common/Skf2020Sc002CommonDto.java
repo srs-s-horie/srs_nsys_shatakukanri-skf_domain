@@ -74,18 +74,16 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	 * Hidden
 	 */
 
-	// 社宅管理部屋番号
-	private long hdnShatakuRoomKanriNo;
-	// 社宅管理番号
-	private long hdnShatakuKanriNo;
-	// 現居住社宅部屋管理番号
-	private long hdnNowShatakuRoomKanriNo;
-	// 現居住社宅管理番号
-	private long hdnNowShatakuKanriNo;
+	// 社宅管理ID
+	private long hdnShatakuKanriId;
+	// 選択された社宅名
+	private String hdnSelectedNowShatakuName;
+	// 室番号
+	private String hdnNowShatakuNo;
 	// 規格(間取り)
 	private String hdnShatakuKikakuKbn;
-	// 備品返却有無
-	private String hdnBihinHenkyakuUmu;
+	// 面積
+	private String hdnNowShatakuMenseki;
 	// 現在の位置番号
 	private String hdnParking1stNumber;
 	// 現在の保管場所
@@ -94,12 +92,21 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	private String hdnParking2stNumber;
 	// 現在の保管場所2
 	private String hdnParking2stPlace;
-	// 選択された社宅名
-	private String hdnSelectedNowShatakuName;
+	// 社宅管理番号
+	private long hdnShatakuKanriNo;
+	// 現居住社宅管理番号
+	private long hdnNowShatakuKanriNo;
+	// 社宅管理部屋番号
+	private long hdnShatakuRoomKanriNo;
+	// 現居住社宅部屋管理番号
+	private long hdnNowShatakuRoomKanriNo;
+	// 備品返却有無
+	private String hdnBihinHenkyakuUmu;
+
 	// 可否フラグ
 	private String hdnConfirmFlg;
 	// 申請書類履歴テーブル 申請日hidden値
-	private Date hdnApplHistroyApplDate;
+	// private Date hdnApplHistroyApplDate;
 	// ステータス
 	private String hdnStatus;
 
