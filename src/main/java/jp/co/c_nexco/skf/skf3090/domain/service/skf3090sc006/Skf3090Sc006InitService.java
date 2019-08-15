@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -33,6 +34,9 @@ public class Skf3090Sc006InitService extends BaseServiceAbstract<Skf3090Sc006Ini
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
+	@Value("${skf3090.skf3090_sc006.max_row_count}")
+	private String listTableMaxRowCount;
+
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -52,6 +56,8 @@ public class Skf3090Sc006InitService extends BaseServiceAbstract<Skf3090Sc006Ini
 
 		// 初期表示設定
 		setInitDisp(initDto);
+
+		initDto.setListTableMaxRowCount(listTableMaxRowCount);
 
 		return initDto;
 	}
