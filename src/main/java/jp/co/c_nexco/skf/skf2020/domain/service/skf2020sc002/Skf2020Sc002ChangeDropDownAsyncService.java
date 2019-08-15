@@ -33,17 +33,6 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ChangeDropD
 public class Skf2020Sc002ChangeDropDownAsyncService
 		extends AsyncBaseServiceAbstract<Skf2020Sc002ChangeDropDownAsyncDto> {
 
-	// 戻り値Map用定数
-	public static final String KEY_AGENCY_LIST = "AGENCY_LIST";
-	public static final String KEY_AFFILIATION1_LIST = "AFFILIATION1_LIST";
-	public static final String KEY_AFFILIATION2_LIST = "AFFILIATION2_LIST";
-	public static final String KEY_NOW_SHATAKU_NAME_LIST = "NOW_SHATAKU_NAME";
-	public static final String KEY_TAIKYO_RIYU_KBN_LIST = "TAIKYO_RIYU_KBN";
-	public static final String KEY_SESSION_TIME_LIST = "SESSION_TIME_LIST";
-
-	public static final String FALSE = "false";
-	public static final String TRUE = "true";
-
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
@@ -123,6 +112,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 		long shatakuKanriId = CodeConstant.LONG_ZERO;
 		if (dto.getShatakuKanriId() > 0) {
 			shatakuKanriId = dto.getShatakuKanriId();
+			dto.setHdnShatakuKanriId(dto.getShatakuKanriId());
 		}
 
 		// 現居住宅の情報取得
@@ -140,6 +130,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 			// 室番号
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getRoomNo())) {
 				dto.setNowShatakuNo(shatakuList.get(0).getRoomNo());
+				dto.setHdnNowShatakuNo(shatakuList.get(0).getRoomNo());
 			}
 			// 規格(間取り)
 			// 規格があった場合は、貸与規格。それ以外は本来規格
@@ -160,6 +151,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 			// 面積
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getLendMenseki())) {
 				dto.setNowShatakuMenseki(shatakuList.get(0).getLendMenseki());
+				dto.setHdnNowShatakuMenseki(shatakuList.get(0).getLendMenseki());
 			}
 
 			// 駐車場 都道府県コード（保有社宅のみ設定される）
@@ -202,7 +194,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 			if (shatakuList.get(0).getShatakuRoomKanriNo() != null) {
 				hdnNowShatakuRoomKanriNo = shatakuList.get(0).getShatakuRoomKanriNo();
 				dto.setHdnShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
-				dto.setHdnShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
+				dto.setHdnNowShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
 			}
 
 		}

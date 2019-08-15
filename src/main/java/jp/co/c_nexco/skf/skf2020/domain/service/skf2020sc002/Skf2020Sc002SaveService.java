@@ -32,10 +32,6 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002SaveDto;
 @Service
 public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002SaveDto> {
 
-	// 更新フラグ
-	public static final String UPDATE_FLG = "1";
-	public static final String NO_UPDATE_FLG = "0";
-
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
@@ -63,8 +59,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		applInfo.put("newStatus", newStatus);
 
 		// 画面表示項目の保持
-		// ドロップダウンの設定
-		skf2020Sc002SharedService.setControlDdl(saveDto);
+		skf2020Sc002SharedService.setInfo(saveDto);
 		// 返却備品の設定
 		skf2020Sc002SharedService.setReturnBihinInfo(saveDto);
 		// 画面表示制御再設定
@@ -77,6 +72,13 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		if (!saveInfo(applInfo, saveDto)) {
 			return saveDto;
 		}
+
+		// 画面表示項目の保持
+		skf2020Sc002SharedService.setInfo(saveDto);
+		// 返却備品の設定
+		skf2020Sc002SharedService.setReturnBihinInfo(saveDto);
+		// 画面表示制御再設定
+		skf2020Sc002SharedService.setControlValue(saveDto);
 
 		// 正常終了
 		if (CodeConstant.STATUS_MISAKUSEI.equals(saveDto.getHdnStatus())) {
@@ -110,7 +112,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 			// 指定なし（新規）の場合
 			saveDto.setHdnStatus(CodeConstant.STATUS_MISAKUSEI);
 			// 更新フラグを「0」に設定する
-			applInfo.put("updateFlg", NO_UPDATE_FLG);
+			applInfo.put("updateFlg", Skf2020Sc002SharedService.NO_UPDATE_FLG);
 			// 新規登録処理
 			if (skf2020Sc002SharedService.saveNewData(saveDto, applInfo)) {
 				// 退居社宅がある場合は備品返却の作成
@@ -127,7 +129,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		} else {
 			// 新規以外
 			saveDto.setHdnStatus(applInfo.get("status"));
-			applInfo.put("updateFlg", UPDATE_FLG);
+			applInfo.put("updateFlg", Skf2020Sc002SharedService.UPDATE_FLG);
 
 			// 排他制御の比較用更新日を設定
 			Skf2020TNyukyoChoshoTsuchi key = new Skf2020TNyukyoChoshoTsuchi();
@@ -203,4 +205,5 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		resultCnt = skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(setValue);
 		return resultCnt;
 	}
+
 }

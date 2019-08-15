@@ -370,21 +370,6 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	// 連絡先
 	private String renrakuSakiDisabled;
 
-	// 入居希望日カレンダー
-	private String nyukyoYoteiDateClDisabled;
-	// 自動社の有効期間満了日 1台目カレンダー
-	private String carExpirationDateClDisabled;
-	// 自動車の使用開始日 1台目カレンダー
-	private String parkingUseDateClDisabled;
-	// 自動社の有効期間満了日 2台目カレンダー
-	private String carExpirationDate2ClDisabled;
-	// 自動車の使用開始日 2台目カレンダー
-	private String parkingUseDate2ClDisabled;
-	// 退居予定日 2台目カレンダー
-	private String taikyoYoteiDateClDisabled;
-	// 返却予定日カレンダー
-	private String sessionDayClDisabled;
-
 	// 申請内容を確認ボタン
 	private String btnCheckDisabled;
 	// 一時保存ボタン
@@ -393,8 +378,7 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	/**
 	 * 申請情報
 	 */
-	// 申請区分
-	private String applKbn;
+
 	// 申請書類履歴テーブル受け取り用申請日
 	private Date applDate;
 	// 申請書類履歴テーブル申請日
