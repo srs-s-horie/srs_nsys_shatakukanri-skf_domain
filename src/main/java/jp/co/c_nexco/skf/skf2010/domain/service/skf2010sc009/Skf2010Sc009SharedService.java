@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc009.Skf2010Sc009GetA
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc009.Skf2010Sc009GetApplInfoExpRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
 @Service
@@ -26,9 +27,6 @@ public class Skf2010Sc009SharedService {
 	private MenuScopeSessionBean menuScopeSessionBean;
 
 	private String companyCd = CodeConstant.C001;
-
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
 
 	/**
 	 * 申請書名を取得します

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShainInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShainInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetShainInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -17,8 +18,10 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002InitDto;
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
@@ -34,13 +37,21 @@ import jp.co.intra_mart.foundation.user_context.model.UserProfile;
 public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002InitDto> {
 
 	@Autowired
-	private Skf2020Sc002SharedService skf2020Sc002SharedService;
+	private SkfCommentUtils skfCommentUtils;
 	@Autowired
-	private Skf2020Sc002GetShainInfoExpRepository skf2020Sc002GetShainInfoExpRepository;
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
 	@Autowired
-	private SkfOperationLogUtils skfOperationLogUtils;
+	private Skf2020Sc002SharedService skf2020Sc002SharedService;
+	@Autowired
+	private Skf2020Sc002GetShainInfoExpRepository skf2020Sc002GetShainInfoExpRepository;
+
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
+	// 判定用定数
+	public static final String FALSE = "false";
+	public static final String TRUE = "true";
 
 	/**
 	 * サービス処理を行う。
@@ -55,43 +66,43 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC002_TITLE);
 
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 
 		// フォントカラーをデフォルトに設定
-		skf2020Sc002SharedService.setDefultColor(initDto);
-		// 情報の初期化
-		// skf2020Sc002SharedService.setClearInfo(initDto);
+		// skf2020Sc002SharedService.setDefultColor(initDto);
+		// 入力情報のクリア
+		skf2020Sc002SharedService.setClearInfo(initDto);
 
-		// 必要情報の取得
-		setInfo(initDto);
+		// ユーザ情報の設定
+		setUserInfo(initDto);
 
-		// 画面初期表示
+		// 初期表示設定
 		skf2020Sc002SharedService.initializeDisp(initDto);
 
 		// 返却備品の設定
 		skf2020Sc002SharedService.setReturnBihinInfo(initDto);
 
-		// デフォルトの選択状態を設定
+		// 表示項目の活性制御または表示制御
 		skf2020Sc002SharedService.setControlValue(initDto);
 
 		// 操作ガイドの設定
 		LogUtils.debugByMsg("操作ガイド" + initDto.getPageId());
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
 
-		// コメント設定の有無)
-		skf2020Sc002SharedService.setCommentBtnDisabled(initDto);
+		// コメント設定の有無
+		setCommentBtnDisabled(initDto);
 
 		return initDto;
 
 	}
 
 	/**
-	 * ユーザ情報の取得
+	 * ユーザ情報の取得し、設定する。
 	 * 
 	 * @param initDto
 	 */
-	private void setInfo(Skf2020Sc002InitDto initDto) {
+	private void setUserInfo(Skf2020Sc002InitDto initDto) {
 		// ユーザコンテキストを取得
 		UserContext userContext = Contexts.get(UserContext.class);
 		UserProfile profile = userContext.getUserProfile();
@@ -103,24 +114,21 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 
 		// 社員マスタから社員情報取得
 		List<Skf2020Sc002GetShainInfoExp> shainList = new ArrayList<Skf2020Sc002GetShainInfoExp>();
-		shainList = getShainInfo(CodeConstant.C001, userId, shainList);
+		shainList = getShainInfo(companyCd, userId, shainList);
 		if (shainList.size() > 0) {
 			// リストに値を格納
 			initDto.setShainList(shainList);
 			// 社員番号の設定
-			String shainNo = shainList.get(0).getShainNo();
-			if (NfwStringUtils.isNotEmpty(shainNo)) {
-				initDto.setShainNo(shainNo);
-			}
+			initDto.setShainNo(shainList.get(0).getShainNo());
 		}
 
 		// 現在日付の設定
 		initDto.setYearMonthDay(DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 
-		// 可否区分の設定
+		// 申請の可否区分を可に設定
 		initDto.setHdnConfirmFlg(CodeConstant.YES);
 		LogUtils.debugByMsg("可否区分の設定" + initDto.getHdnConfirmFlg());
-		// 申請区分の設定
+		// 申請区分を申請入力用に設定
 		initDto.setApplKbn(CodeConstant.SINSE_INPUT);
 		LogUtils.debugByMsg("申請区分の設定" + initDto.getApplKbn());
 	}
@@ -141,6 +149,24 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		param.setUserId(userId);
 		shainList = skf2020Sc002GetShainInfoExpRepository.getShainInfo(param);
 		return shainList;
+	}
+
+	/**
+	 * コメントボタンの表示非表示
+	 * 
+	 * @param dto
+	 */
+	protected void setCommentBtnDisabled(Skf2020Sc002CommonDto dto) {
+		// コメントの設定
+		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+		commentList = skfCommentUtils.getCommentInfo(companyCd, dto.getApplNo(), null);
+		if (commentList == null || commentList.size() <= 0) {
+			// コメントが無ければ非表示
+			dto.setCommentViewFlag(FALSE);
+		} else {
+			// コメントがあれば表示
+			dto.setCommentViewFlag(TRUE);
+		}
 	}
 
 }

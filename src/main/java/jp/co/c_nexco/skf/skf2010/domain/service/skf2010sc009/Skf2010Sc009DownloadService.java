@@ -11,6 +11,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DownloadDto;
 
 /**
@@ -24,8 +25,7 @@ public class Skf2010Sc009DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
 	@SuppressWarnings("unchecked")
 	@Override

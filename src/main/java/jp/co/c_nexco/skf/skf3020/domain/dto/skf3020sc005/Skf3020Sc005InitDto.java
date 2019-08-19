@@ -16,7 +16,6 @@ import lombok.EqualsAndHashCode;
 public class Skf3020Sc005InitDto extends Skf3020Sc005CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
-	
 
 		
 	

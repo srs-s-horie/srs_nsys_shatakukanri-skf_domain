@@ -45,7 +45,7 @@ public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		String downloadFileName = "skf2010.skf2010_sc007.FileId";
 
 		// 機能ID
-		String functionId = "skf201000007";
+		String functionId = "skf201040007";
 
 		// DTOに値をセット
 		dto.setDownloadFileName(downloadFileName);

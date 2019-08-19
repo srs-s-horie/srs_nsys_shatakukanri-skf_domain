@@ -20,32 +20,36 @@ public class Skf3010Sc001CommonDto extends Skf301010CommonDto {
 	
 	// リストテーブルデータ
 	private List<Map<String, Object>> listTableData;
-	// 会社コード
+	// 管理会社コード
 	private String hdnSelectedCompanyCd;
-	// 機関コード
+	// 管理機関コード
 	private String hdnAgencyCd;
-	// 空き部屋
-	private String hdnEmptyRoom;
-	// 利用区分
-	private String hdnUseKbn;
-	// 空き駐車場
-	private String hdnEmptyParking;
+	// 社宅区分コード
+	private String hdnShatakuKbnCd;
+	// 空き部屋コード
+	private String hdnEmptyRoomCd;
+	// 利用区分コード
+	private String hdnUseKbnCd;
+	// 空き駐車場コード
+	private String hdnEmptyParkingCd;
+	// 社宅名
+	private String hdnShatakuName;
 	// 社宅住所
 	private String hdnShatakuAddress;
 
 	/** 画面連携用 */
 	// 対象行の社宅区分
-	private String hdnShatakuKbn;
+	private String hdnRowShatakuKbn;
 	// 対象行の社宅管理番号
-	private String hdnShatakuKanriNo;
+	private String hdnRowShatakuKanriNo;
 	// 対象行の社宅名
-	private String hdnShatakuName;
+	private String hdnRowShatakuName;
 	// 対象行の地域区分
-	private String hdnAreaKbn;
+	private String hdnRowAreaKbn;
 	// 対象行の空き部屋数
-	private String hdnEmptyRoomCount;
+	private String hdnRowEmptyRoomCount;
 	// 対象行の空き駐車場数
-	private String hdnEmptyParkingCount;
+	private String hdnRowEmptyParkingCount;
 	// 戻るURL
 	// private String backUrl;
 

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001SearchDto;
 
 /**
@@ -32,9 +34,13 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 
 	@Autowired
 	private Skf3010Sc001SharedService skf3010Sc001SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Override
 	public BaseDto index(Skf3010Sc001SearchDto searchDto) throws Exception {
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
 
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
@@ -48,15 +54,15 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 
 		// ドロップダウンリストの値を設定
 		skf3010Sc001SharedService.getDoropDownList(searchDto.getSelectedCompanyCd(), manageCompanyList,
-				searchDto.getAgencyCd(), manageAgencyList, searchDto.getShatakuKbn(), shatakuKbnList,
-				searchDto.getEmptyRoom(), emptyRoomList, searchDto.getUseKbn(), useKbnList, searchDto.getEmptyParking(),
+				searchDto.getAgencyCd(), manageAgencyList, searchDto.getShatakuKbnCd(), shatakuKbnList,
+				searchDto.getEmptyRoomCd(), emptyRoomList, searchDto.getUseKbnCd(), useKbnList, searchDto.getEmptyParkingCd(),
 				emptyParkingList);
 
 		// 社宅一覧表示
 		// リストテーブルの情報を取得
 		int listCount = skf3010Sc001SharedService.getListTableData(searchDto.getSelectedCompanyCd(),
-				searchDto.getAgencyCd(), searchDto.getShatakuKbn(), searchDto.getEmptyRoom(), searchDto.getUseKbn(),
-				searchDto.getEmptyParking(), searchDto.getShatakuName(), searchDto.getShatakuAddress(), listTableData);
+				searchDto.getAgencyCd(), searchDto.getShatakuKbnCd(), searchDto.getEmptyRoomCd(), searchDto.getUseKbnCd(),
+				searchDto.getEmptyParkingCd(), searchDto.getShatakuName(), searchDto.getShatakuAddress(), listTableData);
 
 		// エラーメッセージ設定
 		if (listCount == 0) {
@@ -100,20 +106,22 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 			// 外部機関以外の場合
 			// 外部機関選択時は管理機関プルダウンを活性
 			searchDto.setAgencyDispFlg(true);
-			// // 管理機関の選択値を設定
-			// searchDto.setAgencyCd(searchDto.getHdnAgencyCd());
 		}
-		// 社宅区分選択値設定
-		searchDto.setHdnShatakuKbn(searchDto.getAgencyCd());
-		// 利用区分選択値設定
-		searchDto.setHdnUseKbn(searchDto.getUseKbn());
-		// 空き部屋選択値設定
-		searchDto.setHdnEmptyRoom(searchDto.getEmptyRoom());
-		// 空き駐車場選択値設定
-		searchDto.setHdnEmptyParking(searchDto.getEmptyParking());
-		// 社宅名設定
+		// 管理会社選択値設定(検索キー)
+		searchDto.setHdnSelectedCompanyCd(searchDto.getSelectedCompanyCd());
+		// 管理機関選択値設定(検索キー)
+		searchDto.setHdnAgencyCd(searchDto.getAgencyCd());
+		// 社宅区分選択値設定(検索キー)
+		searchDto.setHdnShatakuKbnCd(searchDto.getShatakuKbnCd());
+		// 利用区分選択値設定(検索キー)
+		searchDto.setHdnUseKbnCd(searchDto.getUseKbnCd());
+		// 空き部屋選択値設定(検索キー)
+		searchDto.setHdnEmptyRoomCd(searchDto.getEmptyRoomCd());
+		// 空き駐車場選択値設定(検索キー)
+		searchDto.setHdnEmptyParkingCd(searchDto.getEmptyParkingCd());
+		// 社宅名設定(検索キー)
 		searchDto.setHdnShatakuName(searchDto.getShatakuName());
-		// 社宅住所設定
+		// 社宅住所設定(検索キー)
 		searchDto.setHdnShatakuAddress(searchDto.getShatakuAddress());
 
 		return searchDto;

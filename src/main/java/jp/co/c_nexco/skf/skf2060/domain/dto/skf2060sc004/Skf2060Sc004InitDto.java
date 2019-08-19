@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004;
 
-import java.util.*;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060Sc004common.Skf2060Sc004CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -17,8 +16,5 @@ public class Skf2060Sc004InitDto extends Skf2060Sc004CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 	
-
-		
 	
-
 }
