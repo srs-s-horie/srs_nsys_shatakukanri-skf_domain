@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc007.Skf3090Sc007InitDto;
 import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309040CommonSharedService;
@@ -43,9 +42,6 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-
-	@Autowired
-	private SkfDropDownUtils skfDropDownUtils;
 
 	@Autowired
 	private Skf3090Sc007SharedService skf3090Sc007SharedService;
@@ -91,6 +87,7 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 
 		if (Skf309040CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
+			// ドロップダウンを選択
 			Map<String, Object> returnMap = skf3090Sc007SharedService.getDropDownLists(initDto.getCompanyCd(),
 					initDto.getAgencyCd(), initDto.getBusinessAreaCd());
 

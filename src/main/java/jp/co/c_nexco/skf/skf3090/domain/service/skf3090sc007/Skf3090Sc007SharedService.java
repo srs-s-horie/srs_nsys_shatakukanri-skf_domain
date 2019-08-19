@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.caucho.config.Service;
+import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 
@@ -15,11 +15,12 @@ import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
  * @author NEXCOシステムズ
  *
  */
+// @Component
 @Service
 public class Skf3090Sc007SharedService {
 
 	@Autowired
-	private SkfDropDownUtils ddlUtils;
+	private SkfDropDownUtils skfDropDownUtils;
 
 	// 戻り値用Map用定数
 	public static final String KEY_COMPANY_LIST = "COMPANY_LIST";
@@ -42,17 +43,18 @@ public class Skf3090Sc007SharedService {
 		/** ドロップダウンの取得 */
 		// 会社ドロップダウンリスト
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();
-		companyList.addAll(ddlUtils.getDdlCompanyByCd(CodeConstant.C001, true));
+		companyList.addAll(skfDropDownUtils.getDdlCompanyByCd(CodeConstant.C001, true));
 		returnMap.put(KEY_COMPANY_LIST, companyList);
 
 		// 機関ドロップダウンリスト
 		List<Map<String, Object>> agencyList = new ArrayList<Map<String, Object>>();
-		agencyList.addAll(ddlUtils.getDdlAgencyByCd(CodeConstant.C001, agencyCd, true));
+		agencyList.addAll(skfDropDownUtils.getDdlAgencyByCd(CodeConstant.C001, agencyCd, true));
 		returnMap.put(KEY_AGENCY_LIST, agencyList);
 
 		// 事業領域ドロップダウンリスト
 		List<Map<String, Object>> businessAreaList = new ArrayList<Map<String, Object>>();
-		businessAreaList.addAll(ddlUtils.getDdlBusinessAreaByCd(CodeConstant.C001, agencyCd, businessAreaCd, true));
+		businessAreaList
+				.addAll(skfDropDownUtils.getDdlBusinessAreaByCd(CodeConstant.C001, agencyCd, businessAreaCd, true));
 		returnMap.put(KEY_BUSINESS_AREA_LIST, businessAreaList);
 
 		return returnMap;
