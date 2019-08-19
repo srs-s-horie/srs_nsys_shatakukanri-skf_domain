@@ -61,7 +61,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC002_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", Skf2020Sc002SharedService.companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
 		// 入力情報のクリア
 		skf2020Sc002SharedService.setClearInfo(initDto);
@@ -106,7 +106,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 
 		// 社員マスタから社員情報取得
 		List<Skf2020Sc002GetShainInfoExp> shainList = new ArrayList<Skf2020Sc002GetShainInfoExp>();
-		shainList = getShainInfo(Skf2020Sc002SharedService.companyCd, userId, shainList);
+		shainList = getShainInfo(CodeConstant.C001, userId, shainList);
 		if (shainList.size() > 0) {
 			// リストに値を格納
 			initDto.setShainList(shainList);
@@ -148,7 +148,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	protected void setCommentBtnDisabled(Skf2020Sc002CommonDto dto) {
 		// コメントの設定
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-		commentList = skfCommentUtils.getCommentInfo(Skf2020Sc002SharedService.companyCd, dto.getApplNo(), null);
+		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, dto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
 			dto.setCommentViewFlag(Skf2020Sc002SharedService.FALSE);

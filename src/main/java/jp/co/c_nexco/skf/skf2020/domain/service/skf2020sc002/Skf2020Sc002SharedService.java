@@ -80,8 +80,6 @@ public class Skf2020Sc002SharedService {
 	// 更新フラグ
 	public static final String NO_UPDATE_FLG = "0";
 	public static final String UPDATE_FLG = "1";
-	// 会社コード
-	public static final String companyCd = CodeConstant.C001;
 
 	// 最終更新日付のキャッシュキー
 	public static final String KEY_LAST_UPDATE_DATE = "skf2020_t_nyukyo_chosho_tsuchi";
@@ -2046,7 +2044,7 @@ public class Skf2020Sc002SharedService {
 			Skf2020Sc002CommonDto dto, Map<String, String> applInfo) {
 
 		// キー項目をセット
-		setValue.setCompanyCd(companyCd);
+		setValue.setCompanyCd(CodeConstant.C001);
 		setValue.setApplNo(dto.getApplNo());
 
 		// 更新項目をセット
@@ -2069,7 +2067,7 @@ public class Skf2020Sc002SharedService {
 			Skf2020Sc002CommonDto dto) {
 
 		// キー項目をセット
-		keyValue.setCompanyCd(companyCd);
+		keyValue.setCompanyCd(CodeConstant.C001);
 		keyValue.setShainNo(dto.getShainNo());
 		keyValue.setApplDate(dto.getApplDate());
 		keyValue.setApplNo(dto.getApplNo());
@@ -2129,7 +2127,7 @@ public class Skf2020Sc002SharedService {
 
 		Skf2050TBihinHenkyakuShinsei keyValue = new Skf2050TBihinHenkyakuShinsei();
 		// キー項目をセット
-		keyValue.setCompanyCd(companyCd);
+		keyValue.setCompanyCd(CodeConstant.C001);
 		keyValue.setApplNo(dto.getApplNo());
 
 		Skf2050TBihinHenkyakuShinsei resultUpdateDate = new Skf2050TBihinHenkyakuShinsei();

@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc002;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,25 +16,26 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetCommentListExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetCommentListExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplComment;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetCommentListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc002common.Skf2010Sc002CommonDto;
 
 /**
  * Skf2010Sc002 申請書類確認の共通処理クラス。
@@ -42,8 +44,6 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
  */
 @Service
 public class Skf2010Sc002SharedService {
-
-	private String companyCd = CodeConstant.C001;
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
@@ -63,11 +63,12 @@ public class Skf2010Sc002SharedService {
 	private Skf2010Sc002GetApplHistoryInfoByParameterExpRepository skf2010Sc002GetApplHistoryInfoByParameterExpRepository;
 	@Autowired
 	private Skf2010Sc002GetAttachedFileInfoExpRepository skf2010Sc002GetAttachedFileInfoExpRepository;
-	@Autowired
-	private Skf2010Sc002GetCommentListExpRepository skf2010Sc002GetCommentListExpRepository;
 
 	@Value("${skf.common.attached_file_session_key}")
 	private String sessionKey;
+
+	@Value("${skf.common.validate_error}")
+	private String validationErrorCode;
 
 	/**
 	 * 社宅入居希望等申請情報を取得する
@@ -96,7 +97,7 @@ public class Skf2010Sc002SharedService {
 	 */
 	public Skf2010Sc002GetApplHistoryInfoByParameterExp getApplHistoryInfo(String applNo) {
 		Skf2010Sc002GetApplHistoryInfoByParameterExpParameter param = new Skf2010Sc002GetApplHistoryInfoByParameterExpParameter();
-		param.setCompanyCd(companyCd);
+		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(applNo);
 		// 更新対象の申請情報を取得
 		Skf2010Sc002GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc002GetApplHistoryInfoByParameterExp();
@@ -124,7 +125,7 @@ public class Skf2010Sc002SharedService {
 		// 添付ファイル管理テーブルから添付ファイル情報を取得
 		List<Skf2010Sc002GetAttachedFileInfoExp> attachedFileList = new ArrayList<Skf2010Sc002GetAttachedFileInfoExp>();
 		Skf2010Sc002GetAttachedFileInfoExpParameter param = new Skf2010Sc002GetAttachedFileInfoExpParameter();
-		param.setCompanyCd(companyCd);
+		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(applNo);
 		attachedFileList = skf2010Sc002GetAttachedFileInfoExpRepository.getAttachedFileInfo(param);
 		if (attachedFileList != null && attachedFileList.size() > 0) {
@@ -145,7 +146,7 @@ public class Skf2010Sc002SharedService {
 				// 添付資料
 				attachedFileMap.put("fileStream", attachedFileInfo.getFileStream());
 				// ファイルタイプ
-				String fileType = skfAttachedFileUtiles.getFileTypeInfo(attachedFileInfo.getAttachedName());
+				String fileType = SkfAttachedFileUtiles.getFileTypeInfo(attachedFileInfo.getAttachedName());
 				attachedFileMap.put("fileType", fileType);
 
 				resultAttachedFileList.add(attachedFileMap);
@@ -157,26 +158,6 @@ public class Skf2010Sc002SharedService {
 			menuScopeSessionBean.put(sessionKey, resultAttachedFileList);
 		}
 		return resultAttachedFileList;
-	}
-
-	/**
-	 * 申請コメントの一覧を取得します
-	 * 
-	 * @param applNo
-	 * @param applStatus
-	 * @return
-	 */
-	public List<Skf2010Sc002GetCommentListExp> getApplCommentList(String applNo, String applStatus) {
-		List<Skf2010Sc002GetCommentListExp> returnList = new ArrayList<Skf2010Sc002GetCommentListExp>();
-		Skf2010Sc002GetCommentListExpParameter param = new Skf2010Sc002GetCommentListExpParameter();
-		param.setCompanyCd(companyCd);
-		param.setApplNo(applNo);
-		if (applStatus != null && !CheckUtils.isEmpty(applStatus)) {
-			param.setApplStatus(applStatus);
-		}
-		returnList = skf2010Sc002GetCommentListExpRepository.getCommentList(param);
-
-		return returnList;
 	}
 
 	/**
@@ -194,7 +175,7 @@ public class Skf2010Sc002SharedService {
 		// 更新処理
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 		// プライマリキー設定
-		updateData.setCompanyCd(companyCd);
+		updateData.setCompanyCd(CodeConstant.C001);
 		updateData.setShainNo(tApplHistoryData.getShainNo());
 		updateData.setApplDate(tApplHistoryData.getApplDate());
 		updateData.setApplId(tApplHistoryData.getApplId());
@@ -253,7 +234,7 @@ public class Skf2010Sc002SharedService {
 		// コメントを更新する
 		if (comment != null && !CheckUtils.isEmpty(comment)) {
 			Skf2010TApplComment skf2010TApplComment = new Skf2010TApplComment();
-			skf2010TApplComment.setCompanyCd(companyCd);
+			skf2010TApplComment.setCompanyCd(CodeConstant.C001);
 			skf2010TApplComment.setApplNo(applInfo.get("applNo"));
 			skf2010TApplComment.setApplStatus(applInfo.get("status"));
 			skf2010TApplComment.setCommentDate(commentDate);
@@ -266,6 +247,35 @@ public class Skf2010Sc002SharedService {
 			}
 		}
 
+		return true;
+	}
+
+	/**
+	 * コメントエラーチェック
+	 * 
+	 * @param applyDto
+	 * @throws UnsupportedEncodingException
+	 */
+	protected boolean validateComment(Skf2010Sc002CommonDto dto) throws UnsupportedEncodingException {
+		// コメント
+		LogUtils.debugByMsg("桁数チェック " + "コメント - " + dto.getCommentNote());
+
+		String commentMes = "";
+
+		if (CodeConstant.COMMENT_DISPLAY_LEVEL_1.equals(dto.getCommentDisplayLevel())) {
+			// 申請者から承認者へ
+			commentMes = "承認者へのコメント";
+
+		} else if (CodeConstant.COMMENT_DISPLAY_LEVEL_2.equals(dto.getCommentDisplayLevel())) {
+			// 承認者から申請者へ
+			commentMes = "申請者へのコメント";
+		}
+
+		if (dto.getCommentNote() != null && CheckUtils.isMoreThanByteSize(dto.getCommentNote().trim(), 4000)) {
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1071, commentMes, "2000");
+			dto.setCommentNote(validationErrorCode);
+			return false;
+		}
 		return true;
 	}
 
