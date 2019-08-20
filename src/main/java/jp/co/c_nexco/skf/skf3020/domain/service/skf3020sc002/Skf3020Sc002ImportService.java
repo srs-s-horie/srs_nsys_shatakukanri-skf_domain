@@ -179,7 +179,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		}
 
 		SheetDataBean sheetDataBean = sheetDataBeanList.get(0);
-		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();
+		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();		
 		Map<String, Integer> posMap = createColumnNoMap(rowDataBeanList); // 対象のデータ格納position
 		int shimeiEmptyCnt = 0; // 空の社員氏名カウント
 		List<String> shainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト
@@ -214,7 +214,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 					// 社員番号重複チェック
 					if (shainNo.equals(listShainNo)) {
 						ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-								MessageIdConstant.E_SKF_3045, shainNo);
+								MessageIdConstant.E_SKF_3045, String.valueOf(shainNo));
 						return false;
 					}
 				}
@@ -234,7 +234,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 
 			if (importData.size() > IMPORT_DATA_CNT_UPPER) {
 				ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-						MessageIdConstant.E_SKF_1043, MSG_SHEET_COUNT);
+						MessageIdConstant.E_SKF_1065, IMPORT_DATA_CNT_UPPER);
 				return false;
 			}
 
@@ -244,7 +244,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 
 		if (importData.size() == 0) {
 			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-					MessageIdConstant.E_SKF_1043, MSG_SHEET_COUNT);
+					MessageIdConstant.E_SKF_1064);
 			return false;
 		}
 
@@ -343,25 +343,6 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 
 		return outMap;
 	}
-
-//	/**
-//	 * 存在する社員番号かチェックする。
-//	 * 
-//	 * @param shainNo
-//	 * @return チェック結果
-//	 */
-//	private boolean checkShainExists(String shainNo) {
-//		Skf3020Sc002GetShainNoCountExpParameter param = new Skf3020Sc002GetShainNoCountExpParameter();
-//		param.setShainNo(shainNo);
-//		// 存在する社員番号件数
-//		int count = skf3020Sc002GetShainNoCountExpRepository.getShainNoCount(param);
-//
-//		if (count > 0) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
 
 	/**
 	 * 読込んだデータを保持しておく為のDTOを作成する。
