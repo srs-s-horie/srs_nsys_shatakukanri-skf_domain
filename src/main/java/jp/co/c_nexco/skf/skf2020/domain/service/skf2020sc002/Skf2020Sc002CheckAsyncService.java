@@ -247,7 +247,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 			// 駐車場1申請可能の場合
 			if (bCheckNeedCar1 == true) {
 				// 自動車の保有ラジオボタン「保有している」を選択している場合
-				if (NfwStringUtils.isBlank(checkDto.getCarNoInputFlg())
+				if (NfwStringUtils.isNotBlank(checkDto.getCarNoInputFlg())
 						&& CodeConstant.CAR_HOYU.equals(checkDto.getCarNoInputFlg())) {
 
 					LogUtils.debugByMsg(msg + "自動車の保管場所" + checkDto.getTaiyoHituyo() + checkDto.getParkingUmu());
@@ -294,7 +294,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 						result = false;
 					}
 
-				} else if (NfwStringUtils.isBlank(checkDto.getCarNoInputFlg())
+				} else if (NfwStringUtils.isNotBlank(checkDto.getCarNoInputFlg())
 						&& CodeConstant.CAR_YOTEI.equals(checkDto.getCarNoInputFlg())) {
 					// 自動車の保有ラジオボタン「購入を予定している」を選択している場合
 

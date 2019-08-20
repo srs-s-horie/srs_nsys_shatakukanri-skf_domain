@@ -76,7 +76,7 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		// 画面表示項目の保持
 		skf2020Sc002SharedService.setInfo(dto);
 		// 返却備品の設定
-		skf2020Sc002SharedService.setReturnBihinInfo(dto);
+		skf2020Sc002SharedService.setReturnBihinInfo(dto, Skf2020Sc002SharedService.UPDATE_FLG);
 		// 画面表示制御再設定
 		skf2020Sc002SharedService.setControlValue(dto);
 

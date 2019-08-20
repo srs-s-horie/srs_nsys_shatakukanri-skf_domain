@@ -73,7 +73,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		skf2020Sc002SharedService.initializeDisp(initDto);
 
 		// 返却備品の設定
-		skf2020Sc002SharedService.setReturnBihinInfo(initDto);
+		skf2020Sc002SharedService.setReturnBihinInfo(initDto, Skf2020Sc002SharedService.NO_UPDATE_FLG);
 
 		// 表示項目の活性制御または表示制御
 		skf2020Sc002SharedService.setControlValue(initDto);

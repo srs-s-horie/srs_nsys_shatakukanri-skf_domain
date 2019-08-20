@@ -151,8 +151,10 @@ public class Skf2010CommonDto extends BaseDto {
 	private String nowShatakuName;
 	// 保有社宅号室
 	private String nowShatakuNo;
-	// 保有社宅企画
+	// 保有社宅規格
 	private String nowShatakuKikaku;
+	// 保有社宅規格名称
+	private String nowShatakuKikakuName;
 	// 保有社宅面積
 	private String nowShatakuMenseki;
 	// 現入居社宅：退居する

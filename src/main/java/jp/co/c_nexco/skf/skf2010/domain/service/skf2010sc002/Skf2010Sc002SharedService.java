@@ -272,8 +272,8 @@ public class Skf2010Sc002SharedService {
 		}
 
 		if (dto.getCommentNote() != null && CheckUtils.isMoreThanByteSize(dto.getCommentNote().trim(), 4000)) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1071, commentMes, "2000");
-			dto.setCommentNote(validationErrorCode);
+			ServiceHelper.addErrorResultMessage(dto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1071,
+					commentMes, "2000");
 			return false;
 		}
 		return true;

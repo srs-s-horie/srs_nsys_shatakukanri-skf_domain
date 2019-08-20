@@ -184,7 +184,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		String applNo = CodeConstant.DOUBLE_QUOTATION;
 		if (NfwStringUtils.isNotEmpty(initDto.getApplNo())) {
-			applNo = initDto.getPrePageId();
+			applNo = initDto.getApplNo();
 		}
 
 		String prePageId = CodeConstant.DOUBLE_QUOTATION;
@@ -608,7 +608,14 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 保有社宅号室
 		initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
 		// 保有社宅規格
-		initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
+		if (tNyukyoChoshoTsuchi.getNowShatakuKikaku() != null) {
+			initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
+			// 規格名称取得
+			String kikakuName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_LAYOUT_KBN,
+					initDto.getNowShatakuKikaku());
+			initDto.setNowShatakuKikakuName(kikakuName);
+		}
+
 		// 保有社宅面積
 		initDto.setNowShatakuMenseki(tNyukyoChoshoTsuchi.getNowShatakuMenseki());
 
