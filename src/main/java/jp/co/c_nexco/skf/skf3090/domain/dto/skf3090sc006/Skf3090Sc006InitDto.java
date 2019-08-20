@@ -16,4 +16,7 @@ public class Skf3090Sc006InitDto extends Skf3090Sc006CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
+	// リストテーブルの1ページの最大表示件数
+	private String listTableMaxRowCount;
+
 }

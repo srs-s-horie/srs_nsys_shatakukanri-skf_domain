@@ -17,6 +17,8 @@ public class Skf2010Sc008InitDto extends Skf2010Sc008CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 	
+	// 操作ガイド
+	private String operationGuide;
 
 		
 	

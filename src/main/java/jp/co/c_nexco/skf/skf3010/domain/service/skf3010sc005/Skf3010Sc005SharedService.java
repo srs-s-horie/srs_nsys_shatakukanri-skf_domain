@@ -44,8 +44,7 @@ public class Skf3010Sc005SharedService {
 	private Skf3010Sc005GetRoomInfoExpRepository skf3010Sc005GetRoomInfoExpRepository;
 	@Autowired
 	private Skf3010Sc005GetBihinInfoExpRepository skf3010Sc005GetBihinInfoExpRepository;
-	@Autowired
-	private Skf3010MShatakuRoomBihinRepository skf3010MShatakuRoomBihinRepository;
+
 
 	/**
 	 * ドロップダウンリストに設定するリストを取得する.
@@ -230,13 +229,16 @@ public class Skf3010Sc005SharedService {
 					//未指定時は「なし(0)」を選択
 					bihinStatus = "0";
 				}
-				//tmpMap.put("bihinStatus","<imui:select id='bihinStatusList' name='bihinStatusList' list='${form.bihinStatusList}' width='110'/>");
-				//tmpMap.put("bihinStatus","<select id='bihinStatus" + i + "' name='bihinStatus" + i + "'> <option value='0'>なし</option> <option value='1'>備付</option><option value='2' selected>レンタル</option></select>");
-				
+
 				String statusListCode = createBihinStatusSelect(bihinStatus,statusList);
 				tmpMap.put("bihinStatus","<select id='bihinStatus" + i + "' name='bihinStatus" + i + "'>" + statusListCode + "</select>");
 				tmpMap.put("bihinLatestStatus", HtmlUtils.htmlEscape(tmpData.getBihinLatestStatusKbn()));
-				tmpMap.put("updateDate", HtmlUtils.htmlEscape(dateFormat.format(tmpData.getUpdateDate())));
+				if(tmpData.getUpdateDate() != null){
+					tmpMap.put("updateDate", HtmlUtils.htmlEscape(dateFormat.format(tmpData.getUpdateDate())));
+				}else{
+					tmpMap.put("updateDate", HtmlUtils.htmlEscape(""));
+				}
+				
 
 				setViewList.add(tmpMap);
 			}
@@ -326,13 +328,13 @@ public class Skf3010Sc005SharedService {
 		for(String info : infoList){
 			//行データを項目ごとに分割
 			String[] bihin = info.split(",");
-			if(bihin.length >= 5){
+			if(bihin.length >= 4){
 				Map<String, Object> forListMap = new HashMap<String, Object>();
 				forListMap.put("bihinCode", bihin[0]);
 				forListMap.put("bihinName", bihin[1]);
 				forListMap.put("bihinStatus", bihin[2]);
 				forListMap.put("bihinLatestStatus", bihin[3]);
-				if(!bihin[4].isEmpty()){
+				if(bihin.length >=5 && !bihin[4].isEmpty()){
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
 					try{
 						forListMap.put("updateDate", dateFormat.parse(bihin[4]));	
@@ -373,46 +375,6 @@ public class Skf3010Sc005SharedService {
 		}
 		
 		return resultList;
-	}
-	
-	/**
-	 * 社宅部屋備品情報の更新日を一括でチェックする.
-	 * 不一致がある場合はfalseを返却する.
-	 * @param bihinInfoList
-	 * @return
-	 */
-	public boolean checkRoomBihinInfoForUpdate(Long shatakuKanriNo,Long shatakuRoomKanriNo,List<Map<String,Object>> bihinInfoList){
-		
-		try{
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
-			
-			//備品
-			for(Map<String,Object> map : bihinInfoList){
-				
-				//更新処理を行う。
-				//排他チェック
-				Skf3010MShatakuRoomBihinKey bihinKey = new Skf3010MShatakuRoomBihinKey();
-				bihinKey.setShatakuKanriNo(shatakuKanriNo);
-				bihinKey.setShatakuRoomKanriNo(shatakuRoomKanriNo);
-				bihinKey.setBihinCd(map.get("bihinCode").toString());
-				Skf3010MShatakuRoomBihin bihinInfo = skf3010MShatakuRoomBihinRepository.selectByPrimaryKey(bihinKey);
-				
-				Date mapDate = dateFormat.parse(map.get("updateDate").toString());	
-				LogUtils.debugByMsg("mapUpdateDate：" + mapDate);
-				LogUtils.debugByMsg("bihinInfoUpdateDate：" + bihinInfo.getUpdateDate());
-				if(mapDate.compareTo(bihinInfo.getUpdateDate()) != 0){
-					//更新日時が不一致の場合、false返却
-					return false;
-				}
-			}
-		}
-		catch(Exception ex){
-			LogUtils.debugByMsg("exception：" + ex.getMessage());
-			return false;
-		}
-		
-		//更新OK
-		return true;
 	}
 	
 }

@@ -37,9 +37,6 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
-	@Autowired
-	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
-
 	// カンマ区切りフォーマット
 	NumberFormat nfNum = NumberFormat.getNumberInstance();
 
@@ -59,7 +56,9 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 
 		boolean validate = skf2020sc003SharedService.checkValidation(rvsDto);
 		if (!validate) {
-			throwBusinessExceptionIfErrors(rvsDto.getResultMessages());
+			// 添付資料だけはセッションから再取得の必要あり
+			skf2020sc003SharedService.setAttachedFileList(rvsDto);
+			return rvsDto;
 		}
 
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
@@ -74,16 +73,16 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 
 			String commentNote = rvsDto.getCommentNote();
 
+			// メールの記載URLは「申請状況一覧画面」
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI, applInfo, commentNote,
-					CodeConstant.NONE, CodeConstant.NONE, loginUserInfo.get("shainNo"), CodeConstant.NONE,
-					CodeConstant.NONE);
+					CodeConstant.NONE, loginUserInfo.get("shainNo"), CodeConstant.NONE, urlBase);
 			;
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);
-		Map<String, Object> attribute = new HashMap<String, Object>();
-		tpi.addResultMessage(MessageIdConstant.I_SKF_2033);
-		tpi.setTransferAttributes(attribute);
+		tpi.addResultMessage(MessageIdConstant.I_SKF_2030);
 		rvsDto.setTransferPageInfo(tpi);
 
 		return rvsDto;

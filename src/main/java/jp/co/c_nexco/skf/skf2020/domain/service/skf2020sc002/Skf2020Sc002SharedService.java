@@ -1180,6 +1180,7 @@ public class Skf2020Sc002SharedService {
 					// 退居届を促すメッセージを表示
 					dto.setLblShatakuFuyouMsgRemove(TRUE);
 				} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
+
 					// 退居届を促すメッセージを非表示
 					dto.setLblShatakuFuyouMsgRemove(FALSE);
 				}

@@ -123,8 +123,8 @@ public class Skf3010Sc004SharedService {
 		resultCount = resultListTableData.size();
 
 		// 取得データレコード数判定
-		if (resultCount == 0 || resultCount > maxGetRecordCount) {
-			// 取得データレコード数が0件または3000件より多い場合、何もせず処理終了
+		if (resultCount <= 0) {
+			// 取得データレコード数が0件場合、何もせず処理終了
 			return resultCount;
 		}
 

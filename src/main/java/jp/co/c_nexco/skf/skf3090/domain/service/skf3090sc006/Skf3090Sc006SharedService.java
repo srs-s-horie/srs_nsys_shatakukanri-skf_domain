@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExpRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 
 @Service
 public class Skf3090Sc006SharedService {
@@ -37,6 +38,9 @@ public class Skf3090Sc006SharedService {
 		param.setAffiliation2Cd(affiliation2Cd);
 		param.setBusinessAreaCd(businessAreaCd);
 
+		LogUtils.debugByMsg("組織マスタ一覧-組織情報取得SQL");
+
+		// SQL実行
 		soshikiInfoList = skf3090Sc006GetSoshikiInfoExpRepository.getSoshikiInfo(param);
 		return soshikiInfoList;
 
