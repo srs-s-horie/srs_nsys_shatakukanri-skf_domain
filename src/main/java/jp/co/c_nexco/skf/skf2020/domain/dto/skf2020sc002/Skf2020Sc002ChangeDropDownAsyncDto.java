@@ -15,8 +15,8 @@ public class Skf2020Sc002ChangeDropDownAsyncDto extends Skf2020Sc002CommonAsyncD
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// 新機関
-	private String newAgencyErr;
+	// 駐車場2台フラグ
+	private String parkingFullFlg;
 
 	/**
 	 * ドロップダウン
@@ -99,26 +99,33 @@ public class Skf2020Sc002ChangeDropDownAsyncDto extends Skf2020Sc002CommonAsyncD
 	 * Hidden
 	 */
 
-	// 社宅管理部屋番号
-	private long hdnShatakuRoomKanriNo;
-	// 社宅管理番号
-	private long hdnShatakuKanriNo;
-	// 現居住社宅部屋管理番号
-	private long hdnNowShatakuRoomKanriNo;
-	// 現居住社宅管理番号
-	private long hdnNowShatakuKanriNo;
+	// 社宅管理ID
+	// private long hdnShatakuKanriId;
+	// 選択された社宅名
+	private String hdnSelectedNowShatakuName;
+	// 室番号
+	// private String hdnNowShatakuNo;
 	// 規格(間取り)
 	private String hdnShatakuKikakuKbn;
-
+	// 規格(間取り) 名称
+	// private String hdnNowShatakuKikakuName;
+	// 面積
+	// private String hdnNowShatakuMenseki;
 	// 現在の位置番号
 	private String hdnParking1stNumber;
 	// 現在の保管場所
-	private String hdnParking1stPlace;
+	// private String hdnParking1stPlace;
 	// 現在の位置番号2
 	private String hdnParking2stNumber;
 	// 現在の保管場所2
-	private String hdnParking2stPlace;
-	// 選択された社宅名
-	private String hdnSelectedNowShatakuName;
+	// private String hdnParking2stPlace;
+	// 社宅管理番号
+	// private long hdnShatakuKanriNo;
+	// 現居住社宅管理番号
+	private long hdnNowShatakuKanriNo;
+	// 現居住社宅部屋管理番号
+	private long hdnNowShatakuRoomKanriNo;
+	// 備品返却有無
+	private String hdnBihinHenkyakuUmu;
 
 }

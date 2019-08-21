@@ -25,6 +25,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetN
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetNowShatakuNameExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuKanriIdExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuKanriIdExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
@@ -36,6 +38,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinItemToBeReturnExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetNowShatakuNameExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuKanriIdExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateBihinHenkyakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateNyukyoKiboInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
@@ -75,14 +78,11 @@ public class Skf2020Sc002SharedService {
 	public static final String FALSE = "false";
 	public static final String TRUE = "true";
 	// 更新フラグ
+	public static final String NO_UPDATE_FLG = "0";
 	public static final String UPDATE_FLG = "1";
-	// 会社コード
-	private String companyCd = CodeConstant.C001;
 
 	// 最終更新日付のキャッシュキー
-	public static final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf1010_t_appl_history_UpdateDate";
-	public static final String NYUKYO_KEY_LAST_UPDATE_DATE = "skf2020_t_nyukyo_chosho_UpdateDate";
-	public static final String BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE = "skf2050_t_bihin_henkyaku_UpdateDate";
+	public static final String KEY_LAST_UPDATE_DATE = "skf2020_t_nyukyo_chosho_tsuchi";
 
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
@@ -115,6 +115,8 @@ public class Skf2020Sc002SharedService {
 	private Skf2050TBihinHenkyakuShinseiRepository skf2050TBihinHenkyakuShinseiRepository;
 	@Autowired
 	private Skf2020Sc002UpdateNyukyoKiboInfoExpRepository skf2020Sc002UpdateNyukyoKiboInfoExpRepository;
+	@Autowired
+	private Skf2020Sc002GetShatakuKanriIdExpRepository skf2020Sc002GetShatakuKanriIdExpRepository;
 	@Autowired
 	private Skf2020Sc002UpdateBihinHenkyakuInfoExpRepository skf2020Sc002UpdateBihinHenkyakuInfoExpRepository;
 
@@ -163,40 +165,15 @@ public class Skf2020Sc002SharedService {
 			}
 		}
 		// 社宅情報の設定
-		setShatakuInfo(dto);
+		setShatakuInfo(dto, NO_UPDATE_FLG);
 	}
 
 	/**
-	 * 申請書類履歴テーブル、備品返却申請テーブルから更新日を取得 社宅入居希望等調書の申請情報から初期表示項目を設定。
+	 * 社宅入居希望等調書の申請情報から初期表示項目を設定。
 	 * 
 	 * @param dto
 	 */
-	private void setSinseiInfo(Skf2020Sc002CommonDto dto) {
-
-		/**
-		 * 申請書類履歴テーブルから更新日付の取得
-		 */
-		Skf2010TApplHistory setApplValue = new Skf2010TApplHistory();
-		// 会社コード
-		setApplValue.setCompanyCd(CodeConstant.C001);
-		// 社員番号
-		setApplValue.setShainNo(dto.getShainNo());
-		// 申請日
-		setApplValue.setApplDate(dto.getApplHistroyApplDate());
-		// 申請書番号
-		setApplValue.setApplNo(dto.getApplNo());
-		// 申請書ID
-		setApplValue.setApplId(FunctionIdConstant.R0100);
-
-		Skf2010TApplHistory applHistoryData = new Skf2010TApplHistory();
-		applHistoryData = skf2010TApplHistoryRepository.selectByPrimaryKey(setApplValue);
-
-		// 排他制御の比較用更新日を設定
-		LogUtils.debugByMsg("更新日時" + applHistoryData.getUpdateDate());
-		dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, applHistoryData.getUpdateDate());
-
-		// 申請日をhidden値に格納
-		dto.setHdnApplHistroyApplDate(dto.getApplDate());
+	protected void setSinseiInfo(Skf2020Sc002CommonDto dto) {
 
 		/**
 		 * 社宅入居希望等調査・入居決定通知テーブル情報の取得
@@ -525,9 +502,9 @@ public class Skf2020Sc002SharedService {
 		if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getTaikyoRiyuKbn())) {
 			LogUtils.debugByMsg("退居理由" + nyukyoChoshoList.getTaikyoRiyuKbn() + nyukyoChoshoList.getTaikyoRiyu());
 			// 退居理由ドロップダウンリストの設定
-
-			dto.setDdlTaikyoRiyuKbnList(
-					skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, "", true));
+			dto.setTaikyoRiyuKbn(nyukyoChoshoList.getTaikyoRiyuKbn());
+			dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils.getGenericForDoropDownList(
+					FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
 		}
 		// 退居後の連絡先
 		if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getTaikyogoRenrakusaki())) {
@@ -543,6 +520,8 @@ public class Skf2020Sc002SharedService {
 		if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getSessionTime())) {
 			LogUtils.debugByMsg("返却立会希望日(時)" + nyukyoChoshoList.getSessionTime());
 			dto.setSessionTime(nyukyoChoshoList.getSessionTime());
+			dto.setDdlReturnWitnessRequestDateList(skfDropDownUtils.getGenericForDoropDownList(
+					FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), true));
 		}
 		// 連絡先
 		if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getRenrakuSaki())) {
@@ -552,31 +531,24 @@ public class Skf2020Sc002SharedService {
 
 		// 社宅管理IDの取得
 		if (nyukyoChoshoList.getNowShatakuKanriNo() > 0) {
-
+			// 社宅管理IDの取得
+			Skf2020Sc002GetShatakuKanriIdExp nowShatakuNameList = new Skf2020Sc002GetShatakuKanriIdExp();
+			// DB検索処理
+			Skf2020Sc002GetShatakuKanriIdExpParameter par = new Skf2020Sc002GetShatakuKanriIdExpParameter();
+			par.setShatakuName(nyukyoChoshoList.getNowShatakuName());
+			par.setShainNo(nyukyoChoshoList.getShainNo());
+			par.setShatakuKanriNo(nyukyoChoshoList.getNowShatakuKanriNo());
+			par.setShatakuRoomKanriNo(nyukyoChoshoList.getNowRoomKanriNo());
+			nowShatakuNameList = skf2020Sc002GetShatakuKanriIdExpRepository.getShatakuKanriId(par);
+			if (nowShatakuNameList.getShatakuKanriId() > 0) {
+				dto.setDdlNowShatakuNameList(skfDropDownUtils.getDdlNowShatakuNameByCd(dto.getShainNo(),
+						dto.getYearMonthDay(), nowShatakuNameList.getShatakuKanriId(), false));
+			}
 		}
 
 		// 更新日時
 		LogUtils.debugByMsg("更新日時" + nyukyoChoshoList.getUpdateDate());
-		dto.addLastUpdateDate(NYUKYO_KEY_LAST_UPDATE_DATE, nyukyoChoshoList.getUpdateDate());
-
-		/**
-		 * 備品返却申請テーブルから更新日付の取得
-		 */
-
-		Skf2050TBihinHenkyakuShinsei setBihinValue = new Skf2050TBihinHenkyakuShinsei();
-		// 会社コード
-		setBihinValue.setCompanyCd(CodeConstant.C001);
-		// 申請書番号
-		setBihinValue.setApplNo(dto.getApplNo());
-
-		// 備品返却申請情報の最終更新日付を取得
-		Skf2050TBihinHenkyakuShinsei resultBihinHenkyakuData = new Skf2050TBihinHenkyakuShinsei();
-		resultBihinHenkyakuData = skf2050TBihinHenkyakuShinseiRepository.selectByPrimaryKey(setBihinValue);
-		// 排他制御の比較用更新日を設定
-		if (resultBihinHenkyakuData != null) {
-			LogUtils.debugByMsg("更新日時" + resultBihinHenkyakuData.getUpdateDate());
-			dto.addLastUpdateDate(BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE, resultBihinHenkyakuData.getUpdateDate());
-		}
+		dto.addLastUpdateDate(KEY_LAST_UPDATE_DATE, nyukyoChoshoList.getUpdateDate());
 	}
 
 	/**
@@ -641,107 +613,223 @@ public class Skf2020Sc002SharedService {
 	 * 現居社宅情報の設定
 	 * 
 	 * @param dto
+	 * @param updateFlg
 	 */
-	protected void setShatakuInfo(Skf2020Sc002CommonDto dto) {
+	protected void setShatakuInfo(Skf2020Sc002CommonDto dto, String updateFlg) {
 
 		// Hidden
 		Long hdnNowShatakuRoomKanriNo = CodeConstant.LONG_ZERO;// 現居住社宅部屋管理番号
 		Long hdnNowShatakuKanriNo = CodeConstant.LONG_ZERO;// 現居住社宅管理番号
 		String hdnShatakuKikakuKbn = "";// 規格(間取り)
 
-		// 現保有社宅の全量取得
-		List<Skf2020Sc002GetNowShatakuNameExp> resultNowShatakuNameList = new ArrayList<Skf2020Sc002GetNowShatakuNameExp>();
-		Skf2020Sc002GetNowShatakuNameExpParameter param = new Skf2020Sc002GetNowShatakuNameExpParameter();
-		param.setShainNo(dto.getShainNo());
-		param.setNyukyoDate(dto.getYearMonthDay());
-		resultNowShatakuNameList = skf2020Sc002GetNowShatakuNameExpRepository.getNowShatakuName(param);
-
 		long shatakuKanriId = CodeConstant.LONG_ZERO;
-		dto.setShatakuKanriId(shatakuKanriId);
-		if (resultNowShatakuNameList.size() > 0) {
-			shatakuKanriId = resultNowShatakuNameList.get(0).getShatakuKanriId();
+		if (updateFlg.equals(NO_UPDATE_FLG)) {
+			// 現保有社宅の全量取得
+			List<Skf2020Sc002GetNowShatakuNameExp> resultNowShatakuNameList = new ArrayList<Skf2020Sc002GetNowShatakuNameExp>();
+			Skf2020Sc002GetNowShatakuNameExpParameter param = new Skf2020Sc002GetNowShatakuNameExpParameter();
+			param.setShainNo(dto.getShainNo());
+			param.setNyukyoDate(dto.getYearMonthDay());
+			resultNowShatakuNameList = skf2020Sc002GetNowShatakuNameExpRepository.getNowShatakuName(param);
+
 			dto.setShatakuKanriId(shatakuKanriId);
-			dto.setHdnSelectedNowShatakuName(resultNowShatakuNameList.get(0).getShatakuName());
-		}
-
-		// 現居住宅の選択された情報の取得
-		List<Skf2020Sc002GetShatakuInfoExp> shatakuList = new ArrayList<Skf2020Sc002GetShatakuInfoExp>();
-		shatakuList = getShatakuInfo(shatakuKanriId, dto.getShainNo(), shatakuList);
-
-		// 取得できた場合は現居住社宅の情報設定
-		if (shatakuList.size() > 0) {
-
-			// 室番号
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getRoomNo())) {
-				dto.setNowShatakuNo(shatakuList.get(0).getRoomNo());
+			if (resultNowShatakuNameList.size() > 0) {
+				shatakuKanriId = resultNowShatakuNameList.get(0).getShatakuKanriId();
+				dto.setShatakuKanriId(shatakuKanriId);
+				// dto.setHdnSelectedNowShatakuName(resultNowShatakuNameList.get(0).getShatakuName());
 			}
-			// 規格(間取り)
-			// 規格があった場合は、貸与規格。それ以外は本来規格
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getKikaku())) {
-				hdnShatakuKikakuKbn = shatakuList.get(0).getKikaku();// 貸与規格
-				dto.setHdnShatakuKikakuKbn(hdnShatakuKikakuKbn);
-				dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
-				dto.setNowShatakuKikakuName(shatakuList.get(0).getKikakuName());
-			} else {
-				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getOriginalKikaku())) {
-					hdnShatakuKikakuKbn = shatakuList.get(0).getOriginalKikaku();// 本来規格
-					dto.setHdnShatakuKikakuKbn(hdnShatakuKikakuKbn);
-					dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
-					dto.setNowShatakuKikakuName(shatakuList.get(0).getOriginalKikakuName());
+
+			// 現居住宅の選択された情報の取得
+			List<Skf2020Sc002GetShatakuInfoExp> shatakuList = new ArrayList<Skf2020Sc002GetShatakuInfoExp>();
+			shatakuList = getSelectShatakuInfo(shatakuKanriId, dto.getShainNo(), shatakuList);
+
+			// 取得できた場合は現居住社宅の情報設定
+			if (shatakuList.size() > 0) {
+
+				// 社宅名
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getShatakuName())) {
+					dto.setHdnSelectedNowShatakuName(shatakuList.get(0).getShatakuName());
+					LogUtils.debugByMsg("社宅名" + dto.getHdnSelectedNowShatakuName());
 				}
+
+				// 室番号
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getRoomNo())) {
+					dto.setNowShatakuNo(shatakuList.get(0).getRoomNo());
+					LogUtils.debugByMsg("室番号" + dto.getNowShatakuNo());
+				}
+				// 規格(間取り)
+				// 規格があった場合は、貸与規格。それ以外は本来規格
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getKikaku())) {
+					hdnShatakuKikakuKbn = shatakuList.get(0).getKikaku();// 貸与規格
+					dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
+					dto.setNowShatakuKikakuName(shatakuList.get(0).getKikakuName());
+					LogUtils.debugByMsg("規格(間取り)" + dto.getNowShatakuKikaku());
+					LogUtils.debugByMsg("規格(間取り)名称" + dto.getNowShatakuKikakuName());
+				} else {
+					if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getOriginalKikaku())) {
+						hdnShatakuKikakuKbn = shatakuList.get(0).getOriginalKikaku();// 本来規格
+						dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
+						dto.setNowShatakuKikakuName(shatakuList.get(0).getOriginalKikakuName());
+						LogUtils.debugByMsg("規格(間取り)" + dto.getNowShatakuKikaku());
+						LogUtils.debugByMsg("規格(間取り)名称" + dto.getNowShatakuKikakuName());
+					}
+				}
+
+				// 面積
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getLendMenseki())) {
+					dto.setNowShatakuMenseki(shatakuList.get(0).getLendMenseki() + SkfCommonConstant.SQUARE_MASTER);
+					LogUtils.debugByMsg("現居社宅-面積" + dto.getNowShatakuMenseki());
+				}
+
+				// 駐車場 都道府県コード（保有社宅のみ設定される）
+				String wkPrefName = CodeConstant.DOUBLE_QUOTATION;
+				String prefCode = CodeConstant.DOUBLE_QUOTATION;
+				// 取得できたら汎用コードマスタから名称を取得
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getPrefCdParking())) {
+					prefCode = shatakuList.get(0).getPrefCdParking();
+					wkPrefName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_PREFCD, prefCode);
+				}
+
+				// 駐車場 １台目 保管場所
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress1())) {
+					dto.setParking1stPlace(wkPrefName + shatakuList.get(0).getParkingAddress1());
+					LogUtils.debugByMsg("現在の保管場所" + dto.getParking1stPlace());
+
+				}
+
+				// 駐車場 １台目 位置番号
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock1())) {
+					dto.setHdnParking1stNumber(shatakuList.get(0).getParkingBlock1());
+					LogUtils.debugByMsg("駐車場 １台目 位置番号" + dto.getHdnParking1stNumber());
+				}
+
+				// 駐車場 ２台目 保管場所
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress2())) {
+					dto.setParking2stPlace(wkPrefName + shatakuList.get(0).getParkingAddress2());
+					LogUtils.debugByMsg("現在の保管場所2" + dto.getParking2stPlace());
+				}
+
+				// 駐車場 ２台目 位置番号
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock2())) {
+					dto.setHdnParking2stNumber(shatakuList.get(0).getParkingBlock2());
+					LogUtils.debugByMsg("駐車場 2台目 位置番号" + dto.getHdnParking2stNumber());
+				}
+
+				// 現在の社宅管理番号
+				if (shatakuList.get(0).getShatakuKanriNo() != null) {
+					hdnNowShatakuKanriNo = shatakuList.get(0).getShatakuKanriNo();
+					dto.setHdnNowShatakuKanriNo(hdnNowShatakuKanriNo);
+				}
+
+				// 現在の部屋管理番号
+				if (shatakuList.get(0).getShatakuRoomKanriNo() != null) {
+					hdnNowShatakuRoomKanriNo = shatakuList.get(0).getShatakuRoomKanriNo();
+					dto.setHdnNowShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
+				}
+
+				// リストに格納
+				dto.setShatakuList(shatakuList);
 			}
 
-			// 面積
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getLendMenseki())) {
-				dto.setNowShatakuMenseki(shatakuList.get(0).getLendMenseki() + "㎡");
+		} else {
+			// 更新
+
+			shatakuKanriId = Long.parseLong(dto.getNowShatakuName());
+			if (shatakuKanriId > 0) {
+				dto.setShatakuKanriId(shatakuKanriId);
+				LogUtils.debugByMsg("社宅管理ID" + shatakuKanriId);
 			}
 
-			// 駐車場 都道府県コード（保有社宅のみ設定される）
-			String wkPrefName = CodeConstant.DOUBLE_QUOTATION;
-			String prefCode = CodeConstant.DOUBLE_QUOTATION;
-			// 取得できたら汎用コードマスタから名称を取得
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getPrefCdParking())) {
-				prefCode = shatakuList.get(0).getPrefCdParking();
-				wkPrefName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_PREFCD, prefCode);
-			}
+			// 現居住宅の選択された情報の取得
+			List<Skf2020Sc002GetShatakuInfoExp> shatakuList = new ArrayList<Skf2020Sc002GetShatakuInfoExp>();
+			shatakuList = getSelectShatakuInfo(shatakuKanriId, dto.getShainNo(), shatakuList);
 
-			// 駐車場 １台目 保管場所
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress1())) {
-				dto.setParking1stPlace(wkPrefName + shatakuList.get(0).getParkingAddress1());
-			}
+			// 取得できた場合は現居住社宅の情報設定
+			if (shatakuList.size() > 0) {
 
-			// 駐車場 １台目 位置番号
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock1())) {
-				dto.setHdnParking1stNumber(shatakuList.get(0).getParkingBlock1());
-			}
+				// 社宅名
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getShatakuName())) {
+					dto.setHdnSelectedNowShatakuName(shatakuList.get(0).getShatakuName());
+					LogUtils.debugByMsg("社宅名" + dto.getHdnSelectedNowShatakuName());
+				}
 
-			// 駐車場 ２台目 保管場所
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress2())) {
-				dto.setParking2stPlace(wkPrefName + shatakuList.get(0).getParkingAddress2());
-			}
+				// 室番号
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getRoomNo())) {
+					dto.setNowShatakuNo(shatakuList.get(0).getRoomNo());
+					LogUtils.debugByMsg("室番号" + dto.getNowShatakuNo());
+				}
+				// 規格(間取り)
+				// 規格があった場合は、貸与規格。それ以外は本来規格
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getKikaku())) {
+					hdnShatakuKikakuKbn = shatakuList.get(0).getKikaku();// 貸与規格
+					dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
+					dto.setNowShatakuKikakuName(shatakuList.get(0).getKikakuName());
+					LogUtils.debugByMsg("規格(間取り)" + dto.getNowShatakuKikaku());
+					LogUtils.debugByMsg("規格(間取り)名称" + dto.getNowShatakuKikakuName());
+				} else {
+					if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getOriginalKikaku())) {
+						hdnShatakuKikakuKbn = shatakuList.get(0).getOriginalKikaku();// 本来規格
+						dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
+						dto.setNowShatakuKikakuName(shatakuList.get(0).getOriginalKikakuName());
+						LogUtils.debugByMsg("規格(間取り)" + dto.getNowShatakuKikaku());
+						LogUtils.debugByMsg("規格(間取り)名称" + dto.getNowShatakuKikakuName());
+					}
+				}
 
-			// 駐車場 ２台目 位置番号
-			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock2())) {
-				dto.setHdnParking2stNumber(shatakuList.get(0).getParkingBlock2());
-			}
+				// 面積
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getLendMenseki())) {
+					dto.setNowShatakuMenseki(shatakuList.get(0).getLendMenseki() + SkfCommonConstant.SQUARE_MASTER);
+					LogUtils.debugByMsg("現居社宅-面積" + dto.getNowShatakuMenseki());
+				}
 
-			// 現在の社宅管理番号
-			if (shatakuList.get(0).getShatakuKanriNo() != null) {
-				hdnNowShatakuKanriNo = shatakuList.get(0).getShatakuKanriNo();
-				dto.setHdnNowShatakuKanriNo(hdnNowShatakuKanriNo);
-				dto.setHdnShatakuKanriNo(hdnNowShatakuKanriNo);
-			}
+				// 駐車場 都道府県コード（保有社宅のみ設定される）
+				String wkPrefName = CodeConstant.DOUBLE_QUOTATION;
+				String prefCode = CodeConstant.DOUBLE_QUOTATION;
+				// 取得できたら汎用コードマスタから名称を取得
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getPrefCdParking())) {
+					prefCode = shatakuList.get(0).getPrefCdParking();
+					wkPrefName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_PREFCD, prefCode);
+				}
 
-			// 現在の部屋管理番号
-			if (shatakuList.get(0).getShatakuRoomKanriNo() != null) {
-				hdnNowShatakuRoomKanriNo = shatakuList.get(0).getShatakuRoomKanriNo();
-				dto.setHdnShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
-				dto.setHdnShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
-			}
+				// 駐車場 １台目 保管場所
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress1())) {
+					dto.setParking1stPlace(wkPrefName + shatakuList.get(0).getParkingAddress1());
+					LogUtils.debugByMsg("現在の保管場所" + dto.getParking1stPlace());
 
-			// リストに格納
-			dto.setShatakuList(shatakuList);
+				}
+
+				// 駐車場 １台目 位置番号
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock1())) {
+					dto.setHdnParking1stNumber(shatakuList.get(0).getParkingBlock1());
+					LogUtils.debugByMsg("駐車場 １台目 位置番号" + dto.getHdnParking1stNumber());
+				}
+
+				// 駐車場 ２台目 保管場所
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress2())) {
+					dto.setParking2stPlace(wkPrefName + shatakuList.get(0).getParkingAddress2());
+					LogUtils.debugByMsg("現在の保管場所2" + dto.getParking2stPlace());
+				}
+
+				// 駐車場 ２台目 位置番号
+				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock2())) {
+					dto.setHdnParking2stNumber(shatakuList.get(0).getParkingBlock2());
+					LogUtils.debugByMsg("駐車場 2台目 位置番号" + dto.getHdnParking2stNumber());
+				}
+
+				// 現在の社宅管理番号
+				if (shatakuList.get(0).getShatakuKanriNo() != null) {
+					hdnNowShatakuKanriNo = shatakuList.get(0).getShatakuKanriNo();
+					dto.setHdnNowShatakuKanriNo(hdnNowShatakuKanriNo);
+				}
+
+				// 現在の部屋管理番号
+				if (shatakuList.get(0).getShatakuRoomKanriNo() != null) {
+					hdnNowShatakuRoomKanriNo = shatakuList.get(0).getShatakuRoomKanriNo();
+					dto.setHdnNowShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
+				}
+
+			}
 		}
+
 	}
 
 	/**
@@ -756,14 +844,23 @@ public class Skf2020Sc002SharedService {
 	 * 
 	 * @param initDto
 	 */
-	protected void setReturnBihinInfo(Skf2020Sc002CommonDto dto) {
+	protected void setReturnBihinInfo(Skf2020Sc002CommonDto dto, String updateFlg) {
 
 		// 返却備品有無に「0:備品返却しない」を設定
 		dto.setHdnBihinHenkyakuUmu(CodeConstant.BIHIN_HENKYAKU_SHINAI);
 
 		// 備品状態が2:保有備品または3:レンタルの表示
+		long shatakuKanriId = CodeConstant.LONG_ZERO;
+		if (updateFlg.equals(NO_UPDATE_FLG)) {
+			shatakuKanriId = dto.getShatakuKanriId();
+		} else {
+			// 選択したプルダウンの値
+			shatakuKanriId = Long.parseLong(dto.getNowShatakuName());
+		}
 		List<Skf2020Sc002GetBihinItemToBeReturnExp> resultBihinItemList = new ArrayList<Skf2020Sc002GetBihinItemToBeReturnExp>();
-		resultBihinItemList = getBihinItemToBeReturn(dto.getShatakuKanriId(), dto.getShainNo(), resultBihinItemList);
+		resultBihinItemList =
+
+				getBihinItemToBeReturn(shatakuKanriId, dto.getShainNo(), resultBihinItemList);
 
 		// 件数が取得できた場合
 		if (resultBihinItemList.size() > 0 && CollectionUtils.isNotEmpty(resultBihinItemList)) {
@@ -793,10 +890,9 @@ public class Skf2020Sc002SharedService {
 	 * @param shatakuKanriId
 	 * @param shainNo
 	 * @param shatakuList
-	 * @param yearMonth
-	 * @return
+	 * @return List<Skf2020Sc002GetShatakuInfoExp>
 	 */
-	protected List<Skf2020Sc002GetShatakuInfoExp> getShatakuInfo(long shatakuKanriId, String shainNo,
+	protected List<Skf2020Sc002GetShatakuInfoExp> getSelectShatakuInfo(long shatakuKanriId, String shainNo,
 			List<Skf2020Sc002GetShatakuInfoExp> shatakuList) {
 
 		String yearMonth = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMM_FLAT);
@@ -900,9 +996,6 @@ public class Skf2020Sc002SharedService {
 				dto.setRdoHitsuyoDokushinDisabled(FALSE);
 			}
 
-			// 入居希望日（予定日）
-			//dto.setNyukyoYoteiDateClDisabled(FALSE);
-
 			/*
 			 * 自動車の保管場所
 			 */
@@ -949,7 +1042,6 @@ public class Skf2020Sc002SharedService {
 			// 2台目 自動車の保有
 			dto.setRdo2stCarHoyuDisabled(FALSE);
 			dto.setRdo2stCarYoteiDisabled(FALSE);
-			dto.setTaikyoViewFlag(FALSE);
 
 			/*
 			 * 退居時必要項目表示フラグと退居届を促すメッセージの設定
@@ -980,7 +1072,7 @@ public class Skf2020Sc002SharedService {
 			/*
 			 * 自動車の保管場所
 			 */
-			dto.setRdoCarHitsuyoDisabled(TRUE);
+			dto.setRdoCarHitsuyoDisabled(FALSE);
 			dto.setRdoCarFuyoDisabled(TRUE);
 
 			// 1台目 自動車の保有
@@ -990,6 +1082,9 @@ public class Skf2020Sc002SharedService {
 			// 2台目 自動車の保有
 			dto.setRdo2stCarHoyuDisabled(TRUE);
 			dto.setRdo2stCarYoteiDisabled(TRUE);
+
+			// 現保有の社宅「継続利用する」
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(TRUE);
 
 			/*
 			 * 退居時必要項目表示フラグと退居届を促すメッセージの設定
@@ -1033,11 +1128,6 @@ public class Skf2020Sc002SharedService {
 
 		// 保管場所を必要とするか
 		if (CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())) {
-			// 必要の場合、カレンダーを活性
-			//dto.setCarExpirationDateClDisabled(FALSE);
-			//dto.setParkingUseDateClDisabled(FALSE);
-			//dto.setCarExpirationDate2ClDisabled(FALSE);
-			//dto.setParkingUseDate2ClDisabled(FALSE);
 
 			// 1台目
 			dto.setRdo1stCarHoyuDisabled(FALSE);
@@ -1047,23 +1137,6 @@ public class Skf2020Sc002SharedService {
 			dto.setRdo2stCarHoyuDisabled(FALSE);
 			dto.setRdo2stCarYoteiDisabled(FALSE);
 
-//			if (CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg())) {
-//				dto.setCarExpirationDateClDisabled(FALSE);
-//				dto.setParkingUseDateClDisabled(FALSE);
-//
-//			} else if (CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg())) {
-//				dto.setCarExpirationDateClDisabled(TRUE);
-//				dto.setParkingUseDateClDisabled(FALSE);
-//			}
-//
-//			if (CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg2())) {
-//				dto.setCarExpirationDate2ClDisabled(FALSE);
-//				dto.setParkingUseDate2ClDisabled(FALSE);
-//			} else if (CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg2())) {
-//				dto.setCarExpirationDate2ClDisabled(TRUE);
-//				dto.setParkingUseDate2ClDisabled(FALSE);
-//			}
-			
 		} else {
 			// 1台目
 			dto.setRdo1stCarHoyuDisabled(TRUE);
@@ -1072,24 +1145,18 @@ public class Skf2020Sc002SharedService {
 			// 2台目
 			dto.setRdo2stCarHoyuDisabled(TRUE);
 			dto.setRdo2stCarYoteiDisabled(TRUE);
-			//dto.setCarExpirationDateClDisabled(TRUE);
-			//dto.setParkingUseDateClDisabled(TRUE);
-			//dto.setCarExpirationDate2ClDisabled(TRUE);
-			//dto.setParkingUseDate2ClDisabled(TRUE);
 		}
 
 		// 現保有の社宅
 		if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
-			dto.setTaikyoYoteiDateClDisabled(FALSE);
-			//現保有の社宅を活性にする
+			// 現保有の社宅を活性にする
 			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
 			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 			// 退居届を促すメッセージを表示
 			dto.setLblShatakuFuyouMsgRemove(TRUE);
 
 		} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
-			dto.setTaikyoYoteiDateClDisabled(TRUE);
-			//現保有の社宅を活性にする
+			// 現保有の社宅を活性にする
 			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
 			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
 			// 退居届を促すメッセージを非表示
@@ -1099,51 +1166,49 @@ public class Skf2020Sc002SharedService {
 			if (dto.getShatakuList() != null) {
 				// 現居住宅 保有(会社借上を含む)をチェック状態にする
 				dto.setNowShataku(CodeConstant.GENNYUKYO_SHATAKU_KBN_HOYU);
+				dto.setRdoNowJutakuHoyuDisabled(FALSE);
 				// その他項目を非活性にする
 				dto.setRdoNowJutakuJitakuDisabeld(TRUE);
 				dto.setRdoNowJutakuKariageDisabled(TRUE);
 				dto.setRdoNowJutakuSonotaDisabled(TRUE);
-				//現保有の社宅を活性にする
+				// 現保有の社宅を活性にする
 				dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
 				dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
-				// 退居予定の場合、カレンダーを活性
+
 				if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
-					//dto.setTaikyoYoteiDateClDisabled(FALSE);
+					// 退居予定の場合
 					// 退居届を促すメッセージを表示
 					dto.setLblShatakuFuyouMsgRemove(TRUE);
 				} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
-					//dto.setTaikyoYoteiDateClDisabled(TRUE);
+
 					// 退居届を促すメッセージを非表示
 					dto.setLblShatakuFuyouMsgRemove(FALSE);
 				}
 
 			} else {
-				
-		
+
 				// 現居住社宅が無い場合は駐車場のみ、現居住宅を非活性にする
 				dto.setRdoParkingOnlyDisabled(TRUE);
 				dto.setRdoNowJutakuHoyuDisabled(TRUE);
 				dto.setRdoNowJutakuJitakuDisabeld(FALSE);
 				dto.setRdoNowJutakuKariageDisabled(FALSE);
-				dto.setRdoNowJutakuSonotaDisabled(FALSE);				
-				//現保有の社宅を非活性にする
+				dto.setRdoNowJutakuSonotaDisabled(FALSE);
+				// 現保有の社宅を非活性にする
 				dto.setRdoNowHoyuShatakuTaikyoDisabled(TRUE);
 				dto.setRdoNowHoyuShatakuKeizokuDisabled(TRUE);
-				// 退居項目のカレンダーは非活性化させる
-				//dto.setTaikyoYoteiDateClDisabled(TRUE);
 			}
 		}
 
 		// 備品制御
 		if (NfwStringUtils.isNotEmpty(dto.getReturnEquipment())) {
+			// 返却立会希望日、連絡先を活性にする
 			dto.setSessionTimeDisabled(FALSE);
 			dto.setSessionDayDisabled(FALSE);
-			//dto.setSessionDayClDisabled(FALSE);
 			dto.setRenrakuSakiDisabled(FALSE);
 		} else {
+			// 返却立会希望日、連絡先を非活性にする
 			dto.setSessionTimeDisabled(TRUE);
 			dto.setSessionDayDisabled(TRUE);
-			//dto.setSessionDayClDisabled(TRUE);
 			dto.setRenrakuSakiDisabled(TRUE);
 		}
 	}
@@ -1607,12 +1672,15 @@ public class Skf2020Sc002SharedService {
 		// 申請書類履歴テーブル登録処理
 		insertApplHistory(dto, applInfo);
 		// 入居希望等調書申請テーブル登録処理
-		applInfo.put("updateFlg", "0");
+		applInfo.put("updateFlg", NO_UPDATE_FLG);
 		// 入居希望等調書申請テーブルの設定
 		Skf2020TNyukyoChoshoTsuchi setValue = new Skf2020TNyukyoChoshoTsuchi();
 		setValue = setNyukyoChoshoTsuchi(dto, setValue, applInfo);
 		// 登録
 		insertNyukyoChoshoTsuchi(dto, setValue);
+
+		// 申請日をdtoに設定
+		dto.setApplDate(dto.getApplHistroyApplDate());
 		// ステータスを更新
 		dto.setStatus(applInfo.get("newStatus"));
 		// 申請書番号を設定
@@ -1637,13 +1705,17 @@ public class Skf2020Sc002SharedService {
 		// 登録項目をセット
 		String msg = "入力項目　：";
 
+		// 会社コード
+		setValue.setCompanyCd(CodeConstant.C001);// 会社コード
 		// 新規の場合セット
 		if (CodeConstant.STRING_ZERO.equals(applInfo.get("updateFlg"))) {
-			// 会社コード
-			setValue.setCompanyCd(CodeConstant.C001);// 会社コード
 			// 申請書番号の設定
 			setValue.setApplNo(applInfo.get("applNo"));
 			LogUtils.debugByMsg(msg + applInfo.get("applNo"));
+		} else {
+			// 申請書番号の設定
+			setValue.setApplNo(dto.getApplNo());
+			LogUtils.debugByMsg(msg + dto.getApplNo());
 		}
 		// 入居希望等調書申請テーブルの設定
 		// 登録項目をセット
@@ -1751,7 +1823,8 @@ public class Skf2020Sc002SharedService {
 
 		// 入居予定日
 		if (NfwStringUtils.isNotEmpty(dto.getNyukyoYoteiDate())) {
-			setValue.setNyukyoYoteiDate(dto.getNyukyoYoteiDate().replace("/", ""));
+			setValue.setNyukyoYoteiDate(
+					dto.getNyukyoYoteiDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			LogUtils.debugByMsg(dto.getNyukyoYoteiDate());
 		}
 		// 保管場所を必要とするか
@@ -1764,25 +1837,27 @@ public class Skf2020Sc002SharedService {
 		setValue.setCarNo(dto.getCarNo());
 		// 車検の有効期間満了日(１台目)
 		if (NfwStringUtils.isNotEmpty(dto.getCarExpirationDate())) {
-			setValue.setCarExpirationDate(dto.getCarExpirationDate().replace("/", ""));
+			setValue.setCarExpirationDate(
+					dto.getCarExpirationDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			LogUtils.debugByMsg(dto.getCarExpirationDate());
 		}
 		// 自動車の使用者(１台目)
 		setValue.setCarUser(dto.getCarUser());
 		// 保管場所使用開始日(１台目)
 		if (NfwStringUtils.isNotEmpty(dto.getParkingUseDate())) {
-			setValue.setParkingUseDate(dto.getParkingUseDate().replace("/", ""));
+			setValue.setParkingUseDate(
+					dto.getParkingUseDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			LogUtils.debugByMsg(dto.getParkingUseDate());
 		}
 		// 自動車の登録番号入力フラグ2
 		setValue.setCarNoInputFlg2(dto.getCarNoInputFlg2());
+
 		// 自動車の登録番号入力フラグだけで、2台目の車両情報が入っていない場合
-		if ((dto.getCarName2() == null && CheckUtils.isEmpty(dto.getCarName2()))
-				|| (dto.getCarNo2() != null && !CheckUtils.isEmpty(dto.getCarNo2()))
-				|| (dto.getCarExpirationDate2() != null && !CheckUtils.isEmpty(dto.getCarExpirationDate2()))
-				|| (dto.getCarUser2() != null && !CheckUtils.isEmpty(dto.getCarUser2()))
-				|| (dto.getParkingUseDate2() != null && !CheckUtils.isEmpty(dto.getParkingUseDate2()))) {
+		if (CheckUtils.isEmpty(dto.getCarName2()) && CheckUtils.isEmpty(dto.getCarNo2())
+				&& CheckUtils.isEmpty(dto.getCarExpirationDate2()) && CheckUtils.isEmpty(dto.getCarUser2())
+				&& CheckUtils.isEmpty(dto.getParkingUseDate2())) {
 			setValue.setCarNoInputFlg2(null);
+
 		}
 		// 自動車の車名(2台目)
 		setValue.setCarName2(dto.getCarName2());
@@ -1790,34 +1865,41 @@ public class Skf2020Sc002SharedService {
 		setValue.setCarNo2(dto.getCarNo2());
 		// 車検の有効期間満了日(2台目)
 		if (NfwStringUtils.isNotEmpty(dto.getCarExpirationDate2())) {
-			setValue.setCarExpirationDate2(dto.getCarExpirationDate2().replace("/", ""));
+			setValue.setCarExpirationDate2(
+					dto.getCarExpirationDate2().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			LogUtils.debugByMsg(dto.getCarExpirationDate2());
 		}
 		// 自動車の使用者(2台目)
 		setValue.setCarUser2(dto.getCarUser2());
 		// 保管場所使用開始日(2台目)
 		if (NfwStringUtils.isNotEmpty(dto.getParkingUseDate2())) {
-			setValue.setParkingUseDate2(dto.getParkingUseDate2().replace("/", ""));
+			setValue.setParkingUseDate2(
+					dto.getParkingUseDate2().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			LogUtils.debugByMsg(dto.getParkingUseDate2());
 		}
 		// 現居社宅
 		setValue.setNowShataku(dto.getNowShataku());
 		// 現居社宅-保有社宅名
 		setValue.setNowShatakuName(dto.getHdnSelectedNowShatakuName());
+		LogUtils.debugByMsg("現居社宅-保有社宅名" + dto.getHdnSelectedNowShatakuName());
 		// 現居社宅-室番号
 		setValue.setNowShatakuNo(dto.getNowShatakuNo());
+		LogUtils.debugByMsg("現居社宅-室番号" + dto.getNowShatakuNo());
 		// 現居社宅-規格(間取り)
 		setValue.setNowShatakuKikaku(dto.getNowShatakuKikaku());
+		LogUtils.debugByMsg("現居社宅-規格(間取り)" + dto.getNowShatakuKikaku());
 		// 現居社宅-面積
 		if (NfwStringUtils.isNotEmpty(dto.getNowShatakuMenseki())) {
-			setValue.setNowShatakuMenseki(dto.getNowShatakuMenseki().replace("㎡", ""));
-			LogUtils.debugByMsg(dto.getNowShatakuMenseki());
+			setValue.setNowShatakuMenseki(
+					dto.getNowShatakuMenseki().replace(SkfCommonConstant.SQUARE_MASTER, CodeConstant.DOUBLE_QUOTATION));
+			LogUtils.debugByMsg("現居社宅-面積" + dto.getNowShatakuMenseki());
 		}
 		// 現保有の社宅
 		setValue.setTaikyoYotei(dto.getTaikyoYotei());
 		// 退居予定日
 		if (NfwStringUtils.isNotEmpty(dto.getTaikyoYoteiDate())) {
-			setValue.setTaikyoYoteiDate(dto.getTaikyoYoteiDate().replace("/", ""));
+			setValue.setTaikyoYoteiDate(
+					dto.getTaikyoYoteiDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			LogUtils.debugByMsg(dto.getTaikyoYoteiDate());
 		}
 		// 退居理由
@@ -1833,12 +1915,12 @@ public class Skf2020Sc002SharedService {
 		// 社宅管理番号
 		setValue.setShatakuNo(dto.getHdnNowShatakuKanriNo());
 		// 部屋管理番号
-		setValue.setRoomKanriNo(dto.getHdnShatakuRoomKanriNo());
+		setValue.setRoomKanriNo(dto.getHdnNowShatakuRoomKanriNo());
 		// 社宅の状態
 		setValue.setShatakuJotai(dto.getShatakuJyotai());
 		// 返却立会希望日
 		if (NfwStringUtils.isNotEmpty(dto.getSessionDay())) {
-			setValue.setSessionDay(dto.getSessionDay().replace("/", ""));
+			setValue.setSessionDay(dto.getSessionDay().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 		}
 		// 返却立会希望日(時間)
 		setValue.setSessionTime(dto.getSessionTime());
@@ -1846,22 +1928,29 @@ public class Skf2020Sc002SharedService {
 		setValue.setRenrakuSaki(dto.getRenrakuSaki());
 		// 現在の保管場所
 		setValue.setNowParkingArea(dto.getParking1stPlace());
+		;
+		LogUtils.debugByMsg("現在の保管場所" + dto.getParking1stPlace());
 		// 現在の位置番号
 		setValue.setNowCarIchiNo(dto.getHdnParking1stNumber());
+		LogUtils.debugByMsg("現在の位置番号" + dto.getHdnParking1stNumber());
 		// 現在の保管場所2
 		setValue.setNowParkingArea2(dto.getParking2stPlace());
+		LogUtils.debugByMsg("現在の保管場所2" + dto.getParking2stPlace());
 		// 現在の位置番号2
 		setValue.setNowParkingArea2(dto.getHdnParking2stNumber());
+		LogUtils.debugByMsg("現在の位置番号2" + dto.getHdnParking2stNumber());
 		// 現在の社宅管理番号
 		setValue.setNowShatakuKanriNo(dto.getHdnNowShatakuKanriNo());
+		LogUtils.debugByMsg("現在の社宅管理番号" + dto.getHdnNowShatakuKanriNo());
 		// 現在の部屋管理番号
-		setValue.setNowRoomKanriNo(dto.getHdnShatakuRoomKanriNo());
+		setValue.setNowRoomKanriNo(dto.getHdnNowShatakuRoomKanriNo());
+		LogUtils.debugByMsg("現在の部屋管理番号" + dto.getHdnNowShatakuRoomKanriNo());
 
 		return setValue;
 	}
 
 	/**
-	 * 入居希望等調書申請の登録処理
+	 * 入居希望等調査・入居決定通知テーブルの登録処理
 	 * 
 	 * @param dto
 	 * @param setValue
@@ -1873,22 +1962,15 @@ public class Skf2020Sc002SharedService {
 		registCount = skf2020TNyukyoChoshoTsuchiRepository.insertSelective(setValue);
 		LogUtils.debugByMsg("入居希望等調書決定通知テーブル登録件数：" + registCount + "件");
 
-		// 排他制御の比較用更新日を設定
-		Skf2020TNyukyoChoshoTsuchi ｔNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
-		ｔNyukyoChoshoTsuchi = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setValue);
-
-		LogUtils.debugByMsg("更新日時" + ｔNyukyoChoshoTsuchi.getUpdateDate());
-		dto.addLastUpdateDate(NYUKYO_KEY_LAST_UPDATE_DATE, ｔNyukyoChoshoTsuchi.getUpdateDate());
-
 	}
 
 	/**
-	 * 入居希望等調書テーブルの更新処理
+	 * 入居希望等調査・入居決定通知テーブルの更新処理
 	 *
 	 * @param setValue
 	 * @param Skf2020Sc002CommonDto
 	 * @param applInfo
-	 * @return 登録件数
+	 * @return 更新件数
 	 */
 	protected int updateNyukyoChoshoTsuchi(Skf2020TNyukyoChoshoTsuchi setValue, Skf2020Sc002CommonDto dto,
 			Map<String, String> applInfo) {
@@ -1909,15 +1991,11 @@ public class Skf2020Sc002SharedService {
 		// 更新処理
 		updateCnt = skf2020Sc002UpdateNyukyoKiboInfoExpRepository.updateNyukyoKiboInfo(setValue);
 
-		// 排他制御の比較用更新日を再設定
-		Skf2020TNyukyoChoshoTsuchi reNyukyoChoshoList = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setKey);
-		dto.addLastUpdateDate(NYUKYO_KEY_LAST_UPDATE_DATE, reNyukyoChoshoList.getUpdateDate());
-
 		return updateCnt;
 	}
 
 	/**
-	 * 備品返却申請の種類管理番号の情報取得情報取得
+	 * 備品返却申請の申請書類管理番号の情報取得
 	 * 
 	 * @param dto
 	 * @return 備品返却申請の情報
@@ -1936,7 +2014,7 @@ public class Skf2020Sc002SharedService {
 	}
 
 	/**
-	 * 備品返却申請テーブルの更新値を設定
+	 * 備品返却申請テーブルの登録値の設定
 	 * 
 	 * @param setValue 備品返却申請テーブル
 	 * @param dto Skf2020Sc002CommonDto
@@ -1949,13 +2027,13 @@ public class Skf2020Sc002SharedService {
 
 		String applDate = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
 
+		// 会社コード
+		setValue.setCompanyCd(CodeConstant.C001);
+		// 申請書類番号
+		setValue.setApplNo(dto.getApplNo());
 		// 更新SQLでは不要
 		if (!UPDATE_FLG.equals(applInfo.get("dateUpdateFlg"))) {
 
-			// 会社コード
-			setValue.setCompanyCd(CodeConstant.C001);
-			// 申請書類番号
-			setValue.setApplNo(dto.getApplNo());
 			// 社員番号
 			setValue.setShainNo(dto.getShainNo());
 			// 所属 機関
@@ -1974,7 +2052,6 @@ public class Skf2020Sc002SharedService {
 			setValue.setGender(dto.getGender());
 
 		}
-
 		// 退居届書類管理番号
 		setValue.setTaikyoApplNo(bihinHenkaykuShinseiApplNo);
 		// 申請年月日
@@ -1988,11 +2065,12 @@ public class Skf2020Sc002SharedService {
 		// 号室
 		setValue.setNowShatakuNo(dto.getNowShatakuNo());
 		// 本来規格
-		setValue.setNowShatakuKikaku(dto.getHdnShatakuKikakuKbn());
+		setValue.setNowShatakuKikaku(dto.getNowShatakuKikaku());
 		// 面積
-		setValue.setNowShatakuMenseki(dto.getNowShatakuMenseki().replace("㎡", ""));
+		setValue.setNowShatakuMenseki(
+				dto.getNowShatakuMenseki().replace(SkfCommonConstant.SQUARE_MASTER, CodeConstant.DOUBLE_QUOTATION));
 		// 返却立会希望日
-		setValue.setSessionDay(dto.getSessionDay().replace("/", ""));
+		setValue.setSessionDay(dto.getSessionDay().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 		// 返却立会希望日(時間)
 		setValue.setSessionTime(dto.getSessionTime());
 		// 連絡先
@@ -2020,13 +2098,6 @@ public class Skf2020Sc002SharedService {
 		int registCount = 0;
 		registCount = skf2050TBihinHenkyakuShinseiRepository.insertSelective(setValue);
 		LogUtils.debugByMsg("備品返却申請テーブル登録件数：" + registCount + "件");
-
-		// 排他制御の比較用更新日を設定
-		Skf2050TBihinHenkyakuShinsei tUpdateDate = new Skf2050TBihinHenkyakuShinsei();
-		tUpdateDate = skf2050TBihinHenkyakuShinseiRepository.selectByPrimaryKey(setValue);
-
-		LogUtils.debugByMsg("更新日時" + tUpdateDate.getUpdateDate());
-		dto.addLastUpdateDate(BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE, tUpdateDate.getUpdateDate());
 	}
 
 	/**
@@ -2038,23 +2109,15 @@ public class Skf2020Sc002SharedService {
 	 * @param bihinHenkyakuInfo
 	 * @return
 	 */
-	protected int updateBihinHenkyakuInfo(Skf2050TBihinHenkyakuShinsei setValue, Skf2020Sc002CommonDto dto,
+	protected void updateBihinHenkyakuInfo(Skf2050TBihinHenkyakuShinsei setValue, Skf2020Sc002CommonDto dto,
 			Map<String, String> applInfo, Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo) {
 
 		int updateCnt = 0;
-
 		// 備品返却申請テーブルの更新項目設定
 		setValue = setColumnInfoBihinList(setValue, dto, applInfo, bihinHenkyakuInfo.getTaikyoApplNo());
 		// 更新
-		updateCnt = skf2050TBihinHenkyakuShinseiRepository.updateByPrimaryKeySelective(setValue);
-
-		// 排他制御の比較用更新日を再設定
-		Skf2050TBihinHenkyakuShinsei tUpdateDate = skf2050TBihinHenkyakuShinseiRepository.selectByPrimaryKey(setValue);
-		LogUtils.debugByMsg("更新日時" + tUpdateDate.getUpdateDate());
-		dto.addLastUpdateDate(BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE, tUpdateDate.getUpdateDate());
-
-		return updateCnt;
-
+		updateCnt = skf2020Sc002UpdateBihinHenkyakuInfoExpRepository.updateBihinHenkyakuInfo(setValue);
+		LogUtils.debugByMsg("備品返却申請テーブル更新件数：" + updateCnt + "件");
 	}
 
 	/**
@@ -2082,21 +2145,11 @@ public class Skf2020Sc002SharedService {
 		setValue.setApplId(FunctionIdConstant.R0100);
 		setValue.setApplStatus(applInfo.get("newStatus"));
 		setValue.setApplTacFlg(applInfo.get("applTacFlg"));
-		setValue.setComboFlg("1");
+		setValue.setComboFlg(UPDATE_FLG);
 		// 登録
 		int registCount = 0;
 		registCount = skf2010TApplHistoryRepository.insertSelective(setValue);
 		LogUtils.debugByMsg("申請書類履歴テーブル登録件数：" + registCount + "件");
-
-		// 排他制御の比較用更新日を設定
-		Skf2010TApplHistory tUpdateDate = new Skf2010TApplHistory();
-		tUpdateDate = skf2010TApplHistoryRepository.selectByPrimaryKey(setValue);
-
-		LogUtils.debugByMsg("更新日時" + tUpdateDate.getUpdateDate());
-		dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, tUpdateDate.getUpdateDate());
-
-		// 申請書類履歴テーブルの申請日をhidden値に設定
-		dto.setHdnApplHistroyApplDate(dto.getApplHistroyApplDate());
 
 		// ステータスを設定
 		dto.setStatus(applInfo.get("newStatus"));
@@ -2114,7 +2167,7 @@ public class Skf2020Sc002SharedService {
 			Skf2020Sc002CommonDto dto, Map<String, String> applInfo) {
 
 		// キー項目をセット
-		setValue.setCompanyCd(companyCd);
+		setValue.setCompanyCd(CodeConstant.C001);
 		setValue.setApplNo(dto.getApplNo());
 
 		// 更新項目をセット
@@ -2137,16 +2190,16 @@ public class Skf2020Sc002SharedService {
 			Skf2020Sc002CommonDto dto) {
 
 		// キー項目をセット
-		keyValue.setCompanyCd(companyCd);
+		keyValue.setCompanyCd(CodeConstant.C001);
 		keyValue.setShainNo(dto.getShainNo());
-		keyValue.setApplDate(dto.getHdnApplHistroyApplDate());
+		keyValue.setApplDate(dto.getApplDate());
 		keyValue.setApplNo(dto.getApplNo());
 		keyValue.setApplId(FunctionIdConstant.R0100);
 
-		Skf2010TApplHistory resultUpdateDate = new Skf2010TApplHistory();
-		resultUpdateDate = skf2010TApplHistoryRepository.selectByPrimaryKey(keyValue);
+		Skf2010TApplHistory resultInfo = new Skf2010TApplHistory();
+		resultInfo = skf2010TApplHistoryRepository.selectByPrimaryKey(keyValue);
 
-		return resultUpdateDate;
+		return resultInfo;
 
 	}
 
@@ -2176,7 +2229,7 @@ public class Skf2020Sc002SharedService {
 			applInfoMap.put("applNo", applInfo.getApplNo());
 			// 申請ステータス
 			applInfoMap.put("status", applInfo.getStatus());
-			// 申請書類有無フラグ
+			// 添付ファイル有無フラグ
 			applInfoMap.put("applTacFlg", applInfo.getApplTacFlg());
 		} else {
 			// 申請ステータス
@@ -2197,7 +2250,7 @@ public class Skf2020Sc002SharedService {
 
 		Skf2050TBihinHenkyakuShinsei keyValue = new Skf2050TBihinHenkyakuShinsei();
 		// キー項目をセット
-		keyValue.setCompanyCd(companyCd);
+		keyValue.setCompanyCd(CodeConstant.C001);
 		keyValue.setApplNo(dto.getApplNo());
 
 		Skf2050TBihinHenkyakuShinsei resultUpdateDate = new Skf2050TBihinHenkyakuShinsei();
@@ -2218,13 +2271,13 @@ public class Skf2020Sc002SharedService {
 		Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo = new Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp();
 		bihinHenkyakuInfo = getBihinHenkyaku(dto);
 
-		// 情報が取得できた場合は、備品返却申請書番号の設定
+		// 情報が取得できた場合は、退居（自動車の保管場所返還）届管理番号を設定
 		String bihinHenkaykuShinseiApplNo = null;
 		if (bihinHenkyakuInfo != null) {
 			bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getTaikyoApplNo();
 		}
 
-		// 備品返却申請書番号がなければ備品返却申請の書類管理番号を新規発行
+		// 備品返却申請書番号がなければ居（自動車の保管場所返還）届管理番号を新規発行
 		if (NfwStringUtils.isEmpty(bihinHenkaykuShinseiApplNo)) {
 			// 備品返却申請用の申請書類管理番号を取得
 			bihinHenkaykuShinseiApplNo = skfShinseiUtils.getBihinHenkyakuShinseiNewApplNo(CodeConstant.C001,
@@ -2232,15 +2285,179 @@ public class Skf2020Sc002SharedService {
 			// 備品返却申請テーブルへ新規登録
 			insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, dto, applInfo);
 		} else {
-			// 備品返却申請テーブルを更新
-			int registBihinCount = 0;
 			// 項目の値設定
 			Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
 			// 更新処理
-			registBihinCount = updateBihinHenkyakuInfo(setValue, dto, applInfo, bihinHenkyakuInfo);
-			LogUtils.debugByMsg("備品返却申請テーブル更新件数：" + registBihinCount + "件");
+			updateBihinHenkyakuInfo(setValue, dto, applInfo, bihinHenkyakuInfo);
 		}
 
+	}
+
+	/**
+	 * 画面表示項目再設定
+	 * 
+	 * @param dto
+	 */
+	protected void setInfo(Skf2020Sc002CommonDto dto) {
+
+		String Msg = "保存　：";
+
+		// TEL
+		dto.setTel(dto.getTel());
+		LogUtils.debugByMsg(Msg + "勤務先のTEL" + dto.getTel());
+
+		// 社宅を必要としますか？
+		dto.setTaiyoHituyo(dto.getTaiyoHituyo());
+		LogUtils.debugByMsg(Msg + "社宅を必要としますか？" + dto.getTaiyoHituyo());
+
+		// 社宅を必要とする理由
+		dto.setHitsuyoRiyu(dto.getHitsuyoRiyu());
+		LogUtils.debugByMsg(Msg + "社宅を必要とする理由" + dto.getHitsuyoRiyu());
+
+		// 社宅を必要としない理由
+		dto.setFuhitsuyoRiyu(null);
+		LogUtils.debugByMsg(Msg + "社宅を必要としない理由" + dto.getFuhitsuyoRiyu());
+
+		// 新所属-機関
+		// 機関ドロップダウンリストの設定
+		dto.setDdlAgencyList(skfDropDownUtils.getDdlAgencyByCd(CodeConstant.C001, dto.getAgencyCd(), true));
+
+		// 新所属-部等
+		// 部等ドロップダウンリストの設定
+		List<Map<String, Object>> afflication1List = new ArrayList<Map<String, Object>>();
+		afflication1List = skfDropDownUtils.getDdlAffiliation1ByCd(CodeConstant.C001, dto.getAgencyCd(),
+				dto.getAffiliation1Cd(), true);
+		// その他を追加
+		if (afflication1List.size() > 0) {
+			Map<String, Object> soshikiMap = new HashMap<String, Object>();
+			soshikiMap.put("value", "99");
+			soshikiMap.put("label", "その他");
+			afflication1List.add(soshikiMap);
+		}
+
+		// 新所属-部等 その他
+		dto.setNewAffiliation1Other(dto.getNewAffiliation1Other());
+		LogUtils.debugByMsg(Msg + "新所属-部等 その他" + dto.getNewAffiliation1Other());
+
+		// 新所属-室、チーム又は課
+		// 室、チーム又は課ドロップダウンをセット
+		List<Map<String, Object>> afflication2List = new ArrayList<Map<String, Object>>();
+		afflication2List = skfDropDownUtils.getDdlAffiliation2ByCd(CodeConstant.C001, dto.getAgencyCd(),
+				dto.getAffiliation1Cd(), dto.getAffiliation2Cd(), true);
+		// その他を追加
+		if (afflication2List.size() > 0) {
+			Map<String, Object> teamMap = new HashMap<String, Object>();
+			teamMap.put("value", "99");
+			teamMap.put("label", "その他");
+			afflication2List.add(teamMap);
+		}
+
+		// 新所属-室、チーム又は課 その他
+		dto.setNewAffiliation2Other(dto.getNewAffiliation2Other());
+		LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課 その他" + dto.getNewAffiliation2Other());
+
+		// 必要とする社宅
+		dto.setHitsuyoShataku(dto.getHitsuyoShataku());
+		LogUtils.debugByMsg(Msg + "必要とする社宅" + dto.getHitsuyoShataku());
+
+		// 続柄
+		dto.setDokyoRelation1(dto.getDokyoRelation1());
+		dto.setDokyoRelation2(dto.getDokyoRelation2());
+		dto.setDokyoRelation3(dto.getDokyoRelation3());
+		dto.setDokyoRelation4(dto.getDokyoRelation4());
+		dto.setDokyoRelation5(dto.getDokyoRelation5());
+		dto.setDokyoRelation6(dto.getDokyoRelation6());
+
+		// 氏名
+		dto.setDokyoName1(dto.getDokyoName1());
+		dto.setDokyoName2(dto.getDokyoName2());
+		dto.setDokyoName3(dto.getDokyoName3());
+		dto.setDokyoName4(dto.getDokyoName4());
+		dto.setDokyoName5(dto.getDokyoName5());
+		dto.setDokyoName6(dto.getDokyoName6());
+
+		// 年齢
+		dto.setDokyoAge1(dto.getDokyoAge1());
+		dto.setDokyoAge2(dto.getDokyoAge2());
+		dto.setDokyoAge3(dto.getDokyoAge3());
+		dto.setDokyoAge4(dto.getDokyoAge4());
+		dto.setDokyoAge5(dto.getDokyoAge5());
+		dto.setDokyoAge6(dto.getDokyoAge6());
+
+		// 入居希望日
+		dto.setNyukyoYoteiDate(dto.getNyukyoYoteiDate());
+
+		// 自動車の保管場所
+		dto.setParkingUmu(dto.getParkingUmu());
+
+		// 自動車の保有
+		dto.setCarNoInputFlg(dto.getCarNoInputFlg());
+
+		// １台目-車名
+		dto.setCarName(dto.getCarName());
+		// １台目-自動車の登録番号
+		dto.setCarNo(dto.getCarNo());
+		// 1台目-車検の有効期間満了日
+		dto.setCarExpirationDate(dto.getCarExpirationDate());
+		// １台目-自動車の使用者
+		dto.setCarUser(dto.getCarUser());
+		// １台目-駐車場の使用開始日
+		dto.setParkingUseDate(dto.getParkingUseDate());
+
+		// 自動車の保有
+		dto.setCarNoInputFlg2(dto.getCarNoInputFlg2());
+
+		// ２台目-車名
+		dto.setCarName2(dto.getCarName2());
+		// ２台目-自動車の登録番号
+		dto.setCarNo2(dto.getCarNo2());
+		// ２台目-車検の有効期間満了日
+		dto.setCarExpirationDate2(dto.getCarExpirationDate2());
+		// ２台目-自動車の使用者
+		dto.setCarUser2(dto.getCarUser2());
+		// ２台目-駐車場の使用開始日
+		dto.setParkingUseDate2(dto.getParkingUseDate2());
+
+		// 現居住宅
+		dto.setNowShataku(dto.getNowShataku());
+
+		// 社宅管理IDの取得
+		long shatakuKanriId = CodeConstant.LONG_ZERO;
+		shatakuKanriId = Long.parseLong(dto.getNowShatakuName());
+		if (shatakuKanriId > 0) {
+			dto.setDdlNowShatakuNameList(skfDropDownUtils.getDdlNowShatakuNameByCd(dto.getShainNo(),
+					dto.getYearMonthDay(), shatakuKanriId, false));
+			// 社宅情報の設定
+			setShatakuInfo(dto, Skf2020Sc002SharedService.UPDATE_FLG);
+		}
+
+		// 特殊事情等
+		dto.setTokushuJijo(dto.getTokushuJijo());
+
+		// 現保有の社宅
+		dto.setTaikyoYotei(dto.getTaikyoYotei());
+
+		// 退居予定日
+		dto.setTaikyoYoteiDate(dto.getTaikyoYoteiDate());
+
+		// 社宅の状態
+		dto.setShatakuJyotai(dto.getShatakuJyotai());
+
+		// 退居理由
+		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils
+				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
+		dto.setTaikyoRiyu(dto.getTaikyoRiyu());
+
+		// 退居後の連絡先
+		dto.setTaikyogoRenrakuSaki(dto.getTaikyogoRenrakuSaki());
+
+		// 返却立会希望日
+		dto.setSessionDay(dto.getSessionDay());
+		dto.setDdlReturnWitnessRequestDateList(skfDropDownUtils.getGenericForDoropDownList(
+				FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), true));
+
+		// 連絡先
+		dto.setRenrakuSaki(dto.getRenrakuSaki());
 	}
 
 }
