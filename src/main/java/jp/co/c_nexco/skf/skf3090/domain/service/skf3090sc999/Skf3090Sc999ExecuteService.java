@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
-import jp.co.c_nexco.skf.common.util.datalinkage.B2001NyukyoKiboSinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc999.Skf3090Sc999ExecuteDto;
 
 /**
@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc999.Skf3090Sc999ExecuteDto;
 public class Skf3090Sc999ExecuteService extends BaseServiceAbstract<Skf3090Sc999ExecuteDto> {
 
 	@Autowired
-	B2001NyukyoKiboSinseiDataImport b2001;
+	Skf2020Fc001NyukyoKiboSinseiDataImport b2001;
 
 	/**
 	 * 画面初期表示のメイン処理
@@ -63,9 +63,9 @@ public class Skf3090Sc999ExecuteService extends BaseServiceAbstract<Skf3090Sc999
 			if (resultList != null) {
 				String errorMessage = "";
 				for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
-					if (listIndex == B2001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID) {
+					if (listIndex == Skf2020Fc001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID) {
 						dto.setErrorCodeID(
-								resultList.get(B2001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID));
+								resultList.get(Skf2020Fc001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID));
 					} else {
 						if (errorMessage.equals("") == false) {
 							errorMessage += "/";
