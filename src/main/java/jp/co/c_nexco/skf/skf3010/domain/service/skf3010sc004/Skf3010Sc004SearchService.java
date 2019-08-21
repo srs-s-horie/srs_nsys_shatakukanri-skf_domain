@@ -52,8 +52,8 @@ public class Skf3010Sc004SearchService extends BaseServiceAbstract<Skf3010Sc004S
 		searchDto.setPageTitleKey(MessageIdConstant.SKF3010_SC004_TITLE);
 
 		// 操作ログを出力する
-		//skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
-				
+		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
+		
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 

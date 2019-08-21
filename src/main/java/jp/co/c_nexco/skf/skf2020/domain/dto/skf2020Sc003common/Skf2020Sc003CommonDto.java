@@ -110,30 +110,39 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 	// 洗濯機
 	private String bihinWish11;
 	private String bihinState11;
+	private String bihinDisabled11;
 	// 冷蔵庫
 	private String bihinWish12;
 	private String bihinState12;
+	private String bihinDisabled12;
 	// オーブンレンジ
 	private String bihinWish13;
 	private String bihinState13;
+	private String bihinDisabled13;
 	// 掃除機
 	private String bihinWish14;
 	private String bihinState14;
+	private String bihinDisabled14;
 	// 電子炊飯ジャー
 	private String bihinWish15;
 	private String bihinState15;
+	private String bihinDisabled15;
 	// テレビ
 	private String bihinWish16;
 	private String bihinState16;
+	private String bihinDisabled16;
 	// テレビ台
 	private String bihinWish17;
 	private String bihinState17;
+	private String bihinDisabled17;
 	// 座卓（こたつ）
 	private String bihinWish18;
 	private String bihinState18;
+	private String bihinDisabled18;
 	// キッチンキャビネット
 	private String bihinWish19;
 	private String bihinState19;
+	private String bihinDisabled19;
 
 	// コメント
 	private String commentNote;

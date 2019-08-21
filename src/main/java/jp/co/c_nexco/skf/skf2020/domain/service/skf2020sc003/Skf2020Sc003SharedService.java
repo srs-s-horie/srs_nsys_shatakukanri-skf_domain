@@ -55,6 +55,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
@@ -76,15 +77,7 @@ public class Skf2020Sc003SharedService {
 
 	// 共通会社コード
 	private String companyCd = CodeConstant.C001;
-	// セッションキー
-	@Value("${skf.common.shataku_attached_file_session_key}")
-	private String sessionKeyShataku;
-	@Value("${skf.common.parking_attached_file_session_key}")
-	private String sessionKeyParking;
-	@Value("${skf.common.hosoku_attached_file_session_key}")
-	private String sessionKeyHosoku;
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKeyAttached;
+
 	// カンマ区切りフォーマット
 	private NumberFormat nfNum = NumberFormat.getNumberInstance();
 	//
@@ -93,6 +86,7 @@ public class Skf2020Sc003SharedService {
 	private final String SHATAKU_TEIJI_MSG = "社宅管理システムで提示データを確認";
 	private final String SHATAKU_TEIJI_NONE = "（社宅提示データが取得できませんでした。）";
 	private final String SHATAKU_TEIJI_COMP = "（社宅提示データが作成完了されていません。）";
+	private final String BIHIN_STATE_SONAETSUKE = "備付";
 
 	@Autowired
 	private Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
@@ -147,6 +141,17 @@ public class Skf2020Sc003SharedService {
 	}
 
 	/**
+	 * セッションの添付資料情報の初期化
+	 * @param bean
+	 */
+	public void clearMenuScopeSessionBean() {
+		if (menuScopeSessionBean == null) {
+			return;
+		}
+		skfAttachedFileUtiles.clearAttachedFileBySessionData(menuScopeSessionBean, SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
+	}
+
+	/**
 	 * コメント欄の入力チェック
 	 * 
 	 * @param dto
@@ -158,7 +163,7 @@ public class Skf2020Sc003SharedService {
 		errorTarget.add("commentNote");
 
 		// コメント欄入力チェック
-		String commentNote = StringUtils.trim(dto.getCommentNote());
+		String commentNote = StringUtils.strip(dto.getCommentNote());
 
 		if (NfwStringUtils.isEmpty(commentNote)) {
 			ServiceHelper.addErrorResultMessage(dto, errorTarget.toArray(new String[errorTarget.size()]),
@@ -237,7 +242,7 @@ public class Skf2020Sc003SharedService {
 
 		// セッションの添付資料情報を取得
 		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
-				.get(sessionKeyAttached);
+				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 
 		Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo = new Skf2020Sc003GetApplHistoryInfoForUpdateExp();
 		Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter param = new Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter();
@@ -289,7 +294,14 @@ public class Skf2020Sc003SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			String commentName = StringUtils.trim(userInfo.get("userName"));
+			String commentName = CodeConstant.NONE;
+			// 室、チームまたは課名を追記
+			List<String> tmpNameList = new ArrayList<String>();
+			if (userInfo.get("affiliation2Name") != null) {
+				tmpNameList.add(userInfo.get("affiliation2Name"));
+			}
+			tmpNameList.add(StringUtils.trim(userInfo.get("userName")));
+			commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
 			String commentNote = StringUtils.trim(dto.getCommentNote());
 
 			boolean commentErrorMessage = skfCommentUtils.insertComment(companyCd, applNo, newStatus, commentName,
@@ -313,6 +325,19 @@ public class Skf2020Sc003SharedService {
 
 		// TODO 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
 		return true;
+	}
+	
+	/**
+	 * 添付資料の設定をします
+	 * @param dto
+	 */
+	@SuppressWarnings("unchecked")
+	public void setAttachedFileList(Skf2020Sc003CommonDto dto) {
+		// セッションの添付資料情報を取得
+		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		dto.setAttachedFileList(attachedFileList);
+		return;
 	}
 
 	/** 以下、Privateメソッド */
@@ -467,7 +492,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 入居希望日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNyukyoYoteiDate())) {
-			dto.setNyukyoYoteiDate(shatakuNyukyoKiboInfo.getNyukyoYoteiDate());
+			dto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getNyukyoYoteiDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// １台目
 		// 自動者の保管場所
@@ -488,7 +513,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 車検の有効期間満了日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarExpirationDate())) {
-			dto.setCarExpirationDate(shatakuNyukyoKiboInfo.getCarExpirationDate());
+			dto.setCarExpirationDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getCarExpirationDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 自動車の使用者
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarUser())) {
@@ -496,7 +521,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 自動車の保管場所 使用開始日(予定日)
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingUseDate())) {
-			dto.setParkingUseDate(shatakuNyukyoKiboInfo.getParkingUseDate());
+			dto.setParkingUseDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// ２台目
 		// 自動車の登録番号の入力フラグ
@@ -513,7 +538,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 車検の有効期間満了日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarExpirationDate2())) {
-			dto.setCarExpirationDate2(shatakuNyukyoKiboInfo.getCarExpirationDate2());
+			dto.setCarExpirationDate2(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getCarExpirationDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 自動車の使用者
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarUser2())) {
@@ -521,7 +546,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 自動車の保管場所 使用開始日(予定日)
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingUseDate2())) {
-			dto.setParkingUseDate2(shatakuNyukyoKiboInfo.getParkingUseDate2());
+			dto.setParkingUseDate2(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 現居住宅
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNowShataku())) {
@@ -649,7 +674,7 @@ public class Skf2020Sc003SharedService {
 				ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1001, SHATAKU_TEIJI_MSG,
 						SHATAKU_TEIJI_COMP);
 				// 未作成は提示不可で継続
-
+				dto.setMaskPattern("TeijiNG");
 				break;
 			}
 		}
@@ -885,59 +910,62 @@ public class Skf2020Sc003SharedService {
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName1())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize1())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName1(), teijiDataInfo.getShatakuSupplementFile1(),
-					teijiDataInfo.getShatakuSupplementSize1(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShatakuSupplementSize1(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 社宅補足ファイル2
 		if (teijiDataInfo.getShatakuSupplementFile2() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName2())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize2())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName2(), teijiDataInfo.getShatakuSupplementFile2(),
-					teijiDataInfo.getShatakuSupplementSize2(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShatakuSupplementSize2(), shatakuAttachedFileList.size() , shatakuAttachedFileList);
 		}
 		// 社宅補足ファイル3
 		if (teijiDataInfo.getShatakuSupplementFile3() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName3())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize3())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName3(), teijiDataInfo.getShatakuSupplementFile3(),
-					teijiDataInfo.getShatakuSupplementSize3(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShatakuSupplementSize3(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル1
 		if (teijiDataInfo.getParkingSupplementFile1() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName1())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize1())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName1(), teijiDataInfo.getParkingSupplementFile1(),
-					teijiDataInfo.getParkingSupplementSize1(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getParkingSupplementSize1(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル2
 		if (teijiDataInfo.getParkingSupplementFile2() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName2())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize2())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName2(), teijiDataInfo.getParkingSupplementFile2(),
-					teijiDataInfo.getParkingSupplementSize2(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getParkingSupplementSize2(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 駐車場補足ファイル3
 		if (teijiDataInfo.getParkingSupplementFile3() != null
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementName3())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getParkingSupplementSize3())) {
 			addShatakuAttachedFile(teijiDataInfo.getParkingSupplementName3(), teijiDataInfo.getParkingSupplementFile3(),
-					teijiDataInfo.getParkingSupplementSize3(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getParkingSupplementSize3(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 資料補足ファイル
 		if (teijiDataInfo.getShiryoHosokuFile() != null && StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuName())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShiryoHosokuSize())) {
 			addShatakuAttachedFile(teijiDataInfo.getShiryoHosokuName(), teijiDataInfo.getShiryoHosokuFile(),
-					teijiDataInfo.getShiryoHosokuSize(), (int) CodeConstant.LONG_ZERO, shatakuAttachedFileList);
+					teijiDataInfo.getShiryoHosokuSize(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
-		menuScopeSessionBean.put(sessionKeyShataku, shatakuAttachedFileList);
+		menuScopeSessionBean.put(SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY, shatakuAttachedFileList);
 
 		// 添付ファイル情報設定
 		List<Map<String, Object>> tmpAttachedFileList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
 		tmpAttachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, applNo,
-				sessionKeyAttached);
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 		if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
-			int defaultAttachedNo = Integer.parseInt(
-					shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString()) + 1;
+			int defaultAttachedNo = 0;
+			if (shatakuAttachedFileList != null && shatakuAttachedFileList.size() > 0) {
+				defaultAttachedNo = Integer.parseInt(
+						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString()) + 1;
+			}
 			for (Map<String, Object> tmpAttachedFileMap : tmpAttachedFileList) {
 				addShatakuAttachedFile(tmpAttachedFileMap.get("attachedName").toString(),
 						(byte[]) tmpAttachedFileMap.get("fileStream"), tmpAttachedFileMap.get("fileSize").toString(),
@@ -1343,7 +1371,7 @@ public class Skf2020Sc003SharedService {
 
 			Long shatakuKanriNo = CodeConstant.LONG_ZERO;
 			if (dto.getNewShatakuKanriNo() != null) {
-				Long.parseLong(dto.getNewShatakuKanriNo());
+				shatakuKanriNo = Long.parseLong(dto.getNewShatakuKanriNo());
 			}
 			Long shatakuRoomKanriNo = CodeConstant.LONG_ZERO;
 			if (dto.getNewShatakuRoomKanriNo() != null) {
@@ -1360,7 +1388,7 @@ public class Skf2020Sc003SharedService {
 					// 備品状態が会社保有またはレンタルの場合にドロップボックスの初期値を選択不可にするための処理
 					if (bihinInfo.getBihinState().equals(CodeConstant.BIHIN_STATE_HOYU)
 							|| bihinInfo.getBihinState().equals(CodeConstant.BIHIN_STATE_RENTAL)) {
-						bihinWish = "0";
+						bihinWish = "1";
 					}
 					setBihinData(dto, bihinInfo.getBihinCd(), bihinStateTxt, bihinWish);
 				}
@@ -1390,7 +1418,7 @@ public class Skf2020Sc003SharedService {
 	 * @param fileSize
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
-	private void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int defaultAttachedNo,
+	private void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
 			List<Map<String, Object>> shatakuAttachedFileList) {
 		// 添付資料のコレクションをSessionより取得
 
@@ -1410,14 +1438,6 @@ public class Skf2020Sc003SharedService {
 		// 添付ファイルリストに無い場合
 		if (!findFlg) {
 			Map<String, Object> addAttachedFileInfo = new HashMap<String, Object>();
-			int attachedNo = 0;
-
-			if (shatakuAttachedFileList.size() > 0) {
-				// 添付資料番号
-				attachedNo = Integer.parseInt(
-						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString());
-			}
-			attachedNo = attachedNo + defaultAttachedNo;
 
 			addAttachedFileInfo.put("attachedNo", attachedNo);
 
@@ -1488,42 +1508,56 @@ public class Skf2020Sc003SharedService {
 	}
 
 	private void setBihinData(Skf2020Sc003CommonDto dto, String bihinCd, String bihinStateText, String bihinWish) {
+		String disabledFlag = "false";
+		if (BIHIN_STATE_SONAETSUKE.equals(bihinStateText)) {
+			bihinWish = CodeConstant.BIHIN_KIBO_FUKA;
+			disabledFlag = "true";
+		}
 		switch (bihinCd) {
 		case CodeConstant.BIHIN_WASHER:
 			dto.setBihinState11(bihinStateText);
 			dto.setDdBihinList11(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
+			dto.setBihinDisabled11(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_FREEZER:
 			dto.setDdBihinList12(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState12(bihinStateText);
+			dto.setBihinDisabled12(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_OVEN:
 			dto.setDdBihinList13(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState13(bihinStateText);
+			dto.setBihinDisabled13(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_CLENER:
 			dto.setDdBihinList14(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState14(bihinStateText);
+			dto.setBihinDisabled14(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_RICE_COOKER:
 			dto.setDdBihinList15(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState15(bihinStateText);
+			dto.setBihinDisabled15(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_TV:
 			dto.setDdBihinList16(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState16(bihinStateText);
+			dto.setBihinDisabled16(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_TV_STANDS:
 			dto.setDdBihinList17(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState17(bihinStateText);
+			dto.setBihinDisabled17(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_KOTATSU:
 			dto.setDdBihinList18(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState18(bihinStateText);
+			dto.setBihinDisabled18(disabledFlag);
 			break;
 		case CodeConstant.BIHIN_KICHEN_CABINET:
 			dto.setDdBihinList19(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
 			dto.setBihinState19(bihinStateText);
+			dto.setBihinDisabled19(disabledFlag);
 			break;
 		}
 	}

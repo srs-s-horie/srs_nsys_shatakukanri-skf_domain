@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -49,8 +50,8 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		
 		initDto.setPageTitleKey(MessageIdConstant.SKF3010_SC005_TITLE);
 
-		// 操作ログを出力する
-		//skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		//操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 				
 		// 画面のhidden項目をinitDtoに詰めなおす
 		initDto.setHdnRoomKanriNo(initDto.getHdnRoomKanriNo());
@@ -124,6 +125,21 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		initDto.setColdExemptionKbnList(coldExemptionKbnList);
 		initDto.setBihinListData(bihinListData);
 		initDto.setHdnBihinStatusList(hdnBihinStatusList);
+		
+		// エラー系のDto値を初期化
+		initDto.setRoomNoError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setOriginalMensekiError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setLendMensekiError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setOriginalKikakuError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setOriginalAuseError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setLendKbnError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setSunRoomMensekiError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setStairsMensekiError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setBarnMensekiError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setOriginalKikakuHosokuError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setOriginalAuseHosokuError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setLendKbnHosokuError(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setBikoError(CodeConstant.DOUBLE_QUOTATION);
  		
 		return initDto;
 	}
