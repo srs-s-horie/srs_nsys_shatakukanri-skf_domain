@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004CandidateDto;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004InitDto;
 import jp.co.intra_mart.system.repackage.bouncycastle_1_44.org.bouncycastle.asn1.ocsp.Request;
@@ -27,7 +28,8 @@ public class Skf2060Sc004CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	
     @Autowired
     Skf2060Sc004SharedService skf2060Sc004SharedService;
-
+    @Autowired
+    private SkfOperationLogUtils skfOperationLogUtils;
 	/**
 	 * サービス処理を行う。　
 	 * 

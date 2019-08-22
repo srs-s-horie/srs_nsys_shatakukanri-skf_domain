@@ -11,15 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetSendApplMailInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetSendApplMailInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc004.Skf2060Sc004GetKariageListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc004.Skf2060Sc004GetKariageListExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfShinseiUtils.SkfShinseiUtilsGetApplHistoryInfoByApplNoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfShinseiUtils.SkfShinseiUtilsGetApplHistoryInfoByApplNoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfShinseiUtils.SkfShinseiUtilsUpdateApplHistoryAgreeStatusExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc004.Skf2060Sc004GetKariageListExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfShinseiUtils.SkfShinseiUtilsGetApplHistoryInfoByApplNoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfShinseiUtils.SkfShinseiUtilsUpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -35,20 +35,32 @@ import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 @Service
 public class Skf2060Sc004SharedService {
 
+    //Repository
     @Autowired
     private Skf2060Sc004GetKariageListExpRepository skf2060Sc004GetKariageListExpRepository;
     @Autowired
     private Skf2010MApplicationRepository skf2010MApplicationRepository;
     @Autowired
+    private SkfShinseiUtilsGetApplHistoryInfoByApplNoExpRepository skfShinseiUtilsGetApplHistoryInfoByApplNoRepository;
+    @Autowired
+    private SkfShinseiUtilsUpdateApplHistoryAgreeStatusExpRepository skfShinseiUtilsUpdateApplHistoryStatusRepository;
+    
+    //Utils
+    @Autowired
     private SkfMailUtils skfMailUtils;
-
     @Autowired
     private SkfGenericCodeUtils skfGenericCodeUtils;
     
+    /**
+     * 借上候補物件状況一覧を取得して、画面のlistTableに表示するための情報を作成する。
+     * @param param
+     * @return listTableに表示する情報を格納したList
+     */
     public List<Map<String, Object>> getListTableData(
             Skf2060Sc004GetKariageListExpParameter param){
         List<Map<String, Object>> tableDataList = new ArrayList<Map<String, Object>>();
         
+        // 検索を実行
         List<Skf2060Sc004GetKariageListExp> kariageExpList  = this.searchKariageList(param);
         
         // 提示状況汎用コード取得
@@ -131,6 +143,11 @@ public class Skf2060Sc004SharedService {
         return tableDataList;
     }
     
+    /**
+     * 借上候補物件状況一覧情報を取得する。
+     * @param param
+     * @return 借上候補物件状況一覧Exp
+     */
     public List<Skf2060Sc004GetKariageListExp> searchKariageList(
             Skf2060Sc004GetKariageListExpParameter param) {
         List<Skf2060Sc004GetKariageListExp> kariageExpList = new ArrayList<Skf2060Sc004GetKariageListExp>();
@@ -139,6 +156,42 @@ public class Skf2060Sc004SharedService {
         return kariageExpList;
     }
 
+    /**
+     * 引数で指定された申請書類管理番号に対応する申請履歴情報を取得する。
+     * @param applNo 申請書類管理番号
+     * @param SkfShinseiUtilsGetApplHistoryInfoByApplNoExp
+     */
+    public SkfShinseiUtilsGetApplHistoryInfoByApplNoExp getApplInfo(String applNo){
+        SkfShinseiUtilsGetApplHistoryInfoByApplNoExpParameter param = 
+                new SkfShinseiUtilsGetApplHistoryInfoByApplNoExpParameter();
+        param.setCompanyCd(CodeConstant.C001);
+        param.setApplNo(applNo);
+        
+        return skfShinseiUtilsGetApplHistoryInfoByApplNoRepository.getApplHistoryInfoByApplNo(param);
+    }
+    
+    /**
+     * 申請履歴情報の更新
+     * @param inputExp 検索キー情報を保持したExp
+     * @param status 更新するステータス
+     * @return 更新件数
+     */
+    public int updateApplStatus(SkfShinseiUtilsGetApplHistoryInfoByApplNoExp inputExp, String status) {
+        SkfShinseiUtilsUpdateApplHistoryAgreeStatusExpParameter param 
+                = new SkfShinseiUtilsUpdateApplHistoryAgreeStatusExpParameter();
+        // キー情報
+        param.setCompanyCd(inputExp.getCompanyCd());
+        param.setShainNo(inputExp.getShainNo());
+        param.setApplDate(inputExp.getApplDate());
+        param.setApplNo(inputExp.getApplNo());
+        param.setApplId(inputExp.getApplId());
+
+        // ステータス更新(完了とする)
+        param.setApplStatus(status);
+
+        // DB更新実行
+        return skfShinseiUtilsUpdateApplHistoryStatusRepository.updateApplHistoryAgreeStatus(param);
+    }
     /**
      * 確認督促メール送信のメイン処理を行います
      * 

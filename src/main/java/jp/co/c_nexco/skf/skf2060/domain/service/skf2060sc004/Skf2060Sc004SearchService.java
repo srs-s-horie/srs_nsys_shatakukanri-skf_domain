@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc004.Skf2060Sc004GetKariageListExpParameter;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004SearchDto;
 
 /**
@@ -22,7 +24,8 @@ public class Skf2060Sc004SearchService extends BaseServiceAbstract<Skf2060Sc004S
 	
     @Autowired
     Skf2060Sc004SharedService skf2060Sc004SharedService;
-
+    @Autowired
+    private SkfOperationLogUtils skfOperationLogUtils;
     @Value("${skf2060.skf2060_sc004.search_max_count}")
     private String searchMaxCount;
 
@@ -37,7 +40,8 @@ public class Skf2060Sc004SearchService extends BaseServiceAbstract<Skf2060Sc004S
 	 */
 	@Override
 	public Skf2060Sc004SearchDto index(Skf2060Sc004SearchDto searchDto) throws Exception {
-		
+	    // 操作ログを出力する
+        skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
         // 検索実行
         searchDto.setListTableData(skf2060Sc004SharedService.getListTableData(setParam(searchDto)));
         searchDto.setListTableMaxRowCount(searchMaxCount);

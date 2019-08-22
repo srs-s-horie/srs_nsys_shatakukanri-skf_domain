@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004ConfirmDto;
 
 /**
@@ -19,7 +21,8 @@ public class Skf2060Sc004ConfirmService extends BaseServiceAbstract<Skf2060Sc004
 	
     @Autowired
     Skf2060Sc004SharedService skf2060Sc004SharedService;
-
+    @Autowired
+    private SkfOperationLogUtils skfOperationLogUtils;
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -31,7 +34,8 @@ public class Skf2060Sc004ConfirmService extends BaseServiceAbstract<Skf2060Sc004
 	public Skf2060Sc004ConfirmDto index(Skf2060Sc004ConfirmDto confirmDto) throws Exception {
 		
 		confirmDto.setPageTitleKey(MessageIdConstant.SKF2060_SC004_TITLE);
-		
+		// 操作ログを出力する
+        skfOperationLogUtils.setAccessLog("確認", CodeConstant.C001, confirmDto.getPageId());
         // リストチェック状態を解除
         confirmDto.setCompleteChkVal(null);
         confirmDto.setReminderChkVal(null);
