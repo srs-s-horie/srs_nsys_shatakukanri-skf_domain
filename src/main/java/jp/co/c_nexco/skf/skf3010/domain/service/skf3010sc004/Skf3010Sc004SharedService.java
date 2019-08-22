@@ -101,7 +101,7 @@ public class Skf3010Sc004SharedService {
 
 		String activeYearMonth = "";
 		// アクティブ年月を取得するGetSystemProcessNenGetsu
-		activeYearMonth = skfBaseBusinessLogicUtils.GetSystemProcessNenGetsu();
+		activeYearMonth = skfBaseBusinessLogicUtils.getSystemProcessNenGetsu();
 
 		// リストテーブルに格納するデータを取得する
 		int resultCount = 0;
@@ -123,8 +123,8 @@ public class Skf3010Sc004SharedService {
 		resultCount = resultListTableData.size();
 
 		// 取得データレコード数判定
-		if (resultCount == 0 || resultCount > maxGetRecordCount) {
-			// 取得データレコード数が0件または3000件より多い場合、何もせず処理終了
+		if (resultCount <= 0) {
+			// 取得データレコード数が0件場合、何もせず処理終了
 			return resultCount;
 		}
 
@@ -207,7 +207,7 @@ public class Skf3010Sc004SharedService {
 	 * @param shatakuKanriNo
 	 * @return
 	 */
-	public int GetParkingCount(Long shatakuKanriNo) {
+	public int getParkingCount(Long shatakuKanriNo) {
 
 		LogUtils.debugByMsg("駐車場総数取得処理開始");
 		LogUtils.debugByMsg("引数から取得した値：" + "社宅管理番号：" + shatakuKanriNo);
@@ -229,7 +229,7 @@ public class Skf3010Sc004SharedService {
 	 * @param shatakuKanriNo
 	 * @return
 	 */
-	public int GetRoomCount(Long shatakuKanriNo) {
+	public int getRoomCount(Long shatakuKanriNo) {
 
 		LogUtils.debugByMsg("社宅部屋総数取得処理開始");
 		LogUtils.debugByMsg("引数から取得した値：" + "社宅管理番号：" + shatakuKanriNo);
@@ -251,7 +251,7 @@ public class Skf3010Sc004SharedService {
 	 * @param shatakuKanriNo
 	 * @return
 	 */
-	public int GetEmptyRoomCount(Long shatakuKanriNo) {
+	public int getEmptyRoomCount(Long shatakuKanriNo) {
 
 		LogUtils.debugByMsg("空き社宅部屋総数取得処理開始");
 		LogUtils.debugByMsg("引数から取得した値：" + "社宅管理番号：" + shatakuKanriNo);

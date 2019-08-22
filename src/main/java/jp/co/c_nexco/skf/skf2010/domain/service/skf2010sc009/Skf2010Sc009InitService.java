@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009InitDto;
 
 /**
@@ -24,8 +25,7 @@ public class Skf2010Sc009InitService extends BaseServiceAbstract<Skf2010Sc009Ini
 	@Autowired
 	private Skf2010Sc009SharedService skf2010Sc009SharedService;
 
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
 	/**
 	 * サービス処理を行う。

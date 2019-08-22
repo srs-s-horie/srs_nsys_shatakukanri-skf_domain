@@ -12,11 +12,12 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetCommentListExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
@@ -26,6 +27,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
@@ -38,13 +40,14 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
 @Service
 public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002InitDto> {
 
-	private String companyCd = CodeConstant.C001;
 	@Autowired
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -61,7 +64,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC002_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
 		// セッション情報の取得(申請書情報)
 		List<Map<String, String>> resultApplList = null;
@@ -73,10 +76,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 前画面IDの取得
 		String pageId = initDto.getPageId();
 		BaseForm beforeForm = FormHelper.getFormBean(pageId, CommonConstant.C_PAGEMODE_STANDARD);
-		// BaseForm beforeForm =
-		// FormHelper.getFormBean(FunctionIdConstant.SKF2020_SC002,
-		// CommonConstant.C_PAGEMODE_STANDARD);
-
 		String prePageId = beforeForm.getPrePageId();
 		initDto.setPrePageId(prePageId);
 		// 申請状況の設定
@@ -84,21 +83,22 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		initDto.setApplStatusText(changeApplStatusText(applStatus));
 
 		// アコーディオン初期表示指定
-
 		Map<String, Object> displayLevelMap = new HashMap<String, Object>();
 		displayLevelMap = checkDisplayLevel(prePageId);
-		initDto.setDisplayLevel(Integer.parseInt(displayLevelMap.get("level").toString()));
+		initDto.setLevel1(displayLevelMap.get("level1").toString());
+		initDto.setLevel2(displayLevelMap.get("level2").toString());
+		initDto.setLevel3(displayLevelMap.get("level3").toString());
 		initDto.setLevel1Open(displayLevelMap.get("level1Open").toString());
 		initDto.setLevel2Open(displayLevelMap.get("level2Open").toString());
 		initDto.setLevel3Open(displayLevelMap.get("level3Open").toString());
 		initDto.setMaskPattern(displayLevelMap.get("mask").toString());
-		initDto.setCommentDisplayLevel(Integer.parseInt(displayLevelMap.get("commentDisplayLevel").toString()));
+		initDto.setCommentDisplayLevel(displayLevelMap.get("commentDisplayLevel").toString());
 
 		// 画面内容の設定
 		setDisplayData(initDto);
 
 		// コメントボタンの活性非活性処理
-		setCommentBtnDisabled(initDto);
+		setCommentBtnRemove(initDto);
 
 		// ボタン非表示設定
 		setBtnRemove(initDto);
@@ -116,14 +116,14 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 遷移元により制御
 		if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2020_SC002)) {
 			// 入居希望申請画面から遷移
-			initDto.setApplyBtnViewFlg("true");
-			initDto.setPresenBtnViewFlg("false");
+			initDto.setApplyBtnViewFlg(SkfCommonConstant.TRUE);
+			initDto.setPresenBtnViewFlg(SkfCommonConstant.FALSE);
 		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2040_SC001)) {
 			// 退居届申請画面から遷移
-			initDto.setPresenBtnViewFlg("false");
+			initDto.setPresenBtnViewFlg(SkfCommonConstant.FALSE);
 		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2020_SC003)) {
 			// 入居希望申請アウトソース画面から遷移
-			initDto.setApplyBtnViewFlg("false");
+			initDto.setApplyBtnViewFlg(SkfCommonConstant.FALSE);
 		}
 
 	}
@@ -133,9 +133,10 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * 
 	 * @param initDto
 	 */
-	private void setCommentBtnDisabled(Skf2010Sc002InitDto initDto) {
+	private void setCommentBtnRemove(Skf2010Sc002InitDto initDto) {
 
-		List<Skf2010Sc002GetCommentListExp> commentList = new ArrayList<Skf2010Sc002GetCommentListExp>();
+		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+
 		String applStatus = "";
 		// 権限チェック
 		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
@@ -157,18 +158,18 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			}
 		}
 
-		// 一般ユーザーの場合、申請状況に「承認１」をセット
-		if (!isAdmin) {
-			applStatus = CodeConstant.STATUS_SHONIN1;
-		}
+		// // 一般ユーザーの場合、申請状況に「承認１」をセット
+		// if (!isAdmin) {
+		// applStatus = CodeConstant.STATUS_SHONIN1;
+		// }
 
-		commentList = skf2010Sc002SharedService.getApplCommentList(initDto.getApplNo(), applStatus);
+		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
-			initDto.setCommentViewFlag("false");
+			initDto.setCommentViewFlag(SkfCommonConstant.FALSE);
 		} else {
 			// コメントがあれば表示
-			initDto.setCommentViewFlag("true");
+			initDto.setCommentViewFlag(SkfCommonConstant.TRUE);
 		}
 		return;
 
@@ -181,15 +182,22 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 */
 	private void setDisplayData(Skf2010Sc002InitDto initDto) {
 
-		String applNo = initDto.getApplNo();
-		String prePageId = initDto.getPrePageId();
+		String applNo = CodeConstant.DOUBLE_QUOTATION;
+		if (NfwStringUtils.isNotEmpty(initDto.getApplNo())) {
+			applNo = initDto.getApplNo();
+		}
+
+		String prePageId = CodeConstant.DOUBLE_QUOTATION;
+		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())) {
+			prePageId = initDto.getPrePageId();
+		}
 
 		switch (prePageId) {
 		case FunctionIdConstant.SKF2020_SC002:
 		case FunctionIdConstant.SKF2020_SC003:
 			// 入居希望申請情報の取得
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
-			tNyukyoChoshoTsuchi = skf2010Sc002SharedService.getNyukyoChoshoTsuchiInfo(companyCd, applNo);
+			tNyukyoChoshoTsuchi = skf2010Sc002SharedService.getNyukyoChoshoTsuchiInfo(CodeConstant.C001, applNo);
 			if (tNyukyoChoshoTsuchi != null) {
 				// 更新用
 				String applDate = skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getApplDate(),
@@ -197,7 +205,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 				initDto.setApplUpdateDate(applDate);
 				// 社宅入居希望等調書の項目設定
 				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
-				if (initDto.getDisplayLevel() == 2) {
+
+				if (SkfCommonConstant.TRUE.equals(initDto.getLevel2())) {
 					// 貸与（予定）社宅等のご案内
 					mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
 				}
@@ -205,6 +214,9 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			break;
 		case FunctionIdConstant.SKF2040_SC001:
 			// TODO 退居届の場合の処理
+			break;
+		default:
+			break;
 		}
 
 		// 申請書類種別IDを取得
@@ -228,9 +240,11 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * @return
 	 */
 	private String changeApplStatusText(String applStatus) {
+
 		String applStatusText = "";
 
-		Map<String, BaseCodeEntity> applStatusMap = codeCacheUtils.getGenericCode("SKF1001");
+		Map<String, BaseCodeEntity> applStatusMap = codeCacheUtils
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 
 		// 申請状況をコードから汎用コードに変更
 		if (applStatus != null) {
@@ -238,6 +252,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			baseCodeEntity = applStatusMap.get(applStatus);
 			applStatusText = baseCodeEntity.getCodeName();
 		}
+
 		return applStatusText;
 	}
 
@@ -248,36 +263,41 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * @return
 	 */
 	private Map<String, Object> checkDisplayLevel(String prePageId) {
-		/**
-		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
-		 * level3→退居（自動車の保管場所返還）届の申請画面 level2→社宅入居希望等調書（アウトソース用）から遷移）
-		 * level1→社宅入居希望等調書の申請画面
-		 */
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		switch (prePageId) {
 		case FunctionIdConstant.SKF2020_SC002:
-			result.put("level", 1);
-			result.put("mask", "LV1");
-			result.put("level1Open", "true");
-			result.put("level2Open", "false");
-			result.put("level3Open", "false");
-			result.put("commentDisplayLevel", 1);
+			// 社宅入居希望等調書（申請者用）
+			result.put("level1", SkfCommonConstant.TRUE); // 入居希望等調書
+			result.put("level2", SkfCommonConstant.FALSE); // 貸与社宅などのご案内
+			result.put("level3", SkfCommonConstant.FALSE);// 退居届
+			result.put("mask", CodeConstant.MASK_LEVEL1); // 申請ボタン表示
+			result.put("level1Open", SkfCommonConstant.TRUE); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", SkfCommonConstant.FALSE);// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", SkfCommonConstant.FALSE);// 退居届のアコーディオン初期表示
+			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_1); // 申請者から承認者へ
 			break;
 		case FunctionIdConstant.SKF2020_SC003:
-			result.put("level", 2);
-			result.put("mask", "LV2");
-			result.put("level1Open", "false");
-			result.put("level2Open", "true");
-			result.put("level3Open", "false");
-			result.put("commentDisplayLevel", 2);
+			// 社宅入居希望等調書（アウトソース用）
+			result.put("level1", SkfCommonConstant.TRUE); // 入居希望等調書
+			result.put("level2", SkfCommonConstant.TRUE); // 貸与社宅などのご案内
+			result.put("level3", SkfCommonConstant.FALSE);// 退居届
+			result.put("mask", CodeConstant.MASK_LEVEL2); // 提示ボタン表示
+			result.put("level1Open", SkfCommonConstant.FALSE); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", SkfCommonConstant.TRUE);// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", SkfCommonConstant.FALSE);// 退居届のアコーディオン初期表示
+			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_2);// 承認者から申請者へ
 			break;
 		case FunctionIdConstant.SKF2040_SC001:
-			result.put("level", 3);
-			result.put("mask", "LV1");
-			result.put("level1Open", "false");
-			result.put("level2Open", "false");
-			result.put("level3Open", "true");
-			result.put("commentDisplayLevel", 1);
+			// 退居（自動車の保管場所返還）届
+			result.put("level1", SkfCommonConstant.FALSE); // 入居希望等調書
+			result.put("level2", SkfCommonConstant.FALSE); // 貸与社宅などのご案内
+			result.put("level3", SkfCommonConstant.TRUE);// 退居届
+			result.put("mask", CodeConstant.MASK_LEVEL1); // 申請ボタン表示
+			result.put("level1Open", SkfCommonConstant.FALSE); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", SkfCommonConstant.FALSE);// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", SkfCommonConstant.TRUE);// 退居届のアコーディオン初期表示
+			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_1);// 申請者から承認者へ
 			break;
 
 		}
@@ -587,8 +607,15 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		initDto.setNowShatakuName(tNyukyoChoshoTsuchi.getNowShatakuName());
 		// 保有社宅号室
 		initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
-		// 保有社宅企画
-		initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
+		// 保有社宅規格
+		if (tNyukyoChoshoTsuchi.getNowShatakuKikaku() != null) {
+			initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
+			// 規格名称取得
+			String kikakuName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_LAYOUT_KBN,
+					initDto.getNowShatakuKikaku());
+			initDto.setNowShatakuKikakuName(kikakuName);
+		}
+
 		// 保有社宅面積
 		initDto.setNowShatakuMenseki(tNyukyoChoshoTsuchi.getNowShatakuMenseki());
 
@@ -627,8 +654,9 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * @param tNyukyoChoshoTsuchi
 	 */
 	private void mappingTaiyoShatakuAnnai(Skf2010Sc002InitDto initDto, Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi) {
+
 		Map<String, BaseCodeEntity> hitsuyoRiyuMap = new HashMap<String, BaseCodeEntity>();
-		hitsuyoRiyuMap = codeCacheUtils.getGenericCode("SKF1006");
+		hitsuyoRiyuMap = codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_NEED_RIYU_KBN);
 
 		// 案内日
 		initDto.setTsuchiDate(

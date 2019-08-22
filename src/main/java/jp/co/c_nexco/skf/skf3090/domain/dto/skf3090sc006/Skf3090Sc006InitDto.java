@@ -7,7 +7,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc006common.Skf3090Sc006Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3090_Sc008画面のInitDto。
+ * Skf3090_Sc006InitDto 組織マスタ一覧初期表示Dto
  * 
  */
 @lombok.Data
@@ -15,5 +15,8 @@ import lombok.EqualsAndHashCode;
 public class Skf3090Sc006InitDto extends Skf3090Sc006CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
+
+	// リストテーブルの1ページの最大表示件数
+	private String listTableMaxRowCount;
 
 }

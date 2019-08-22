@@ -9,12 +9,18 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001InitDto;
+import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc001InitService 社宅一覧画面のInitサービス処理クラス。
@@ -26,6 +32,10 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 	
 	@Autowired
 	private Skf3010Sc001SharedService skf3010Sc001SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	/** ロガー。 */
+	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3010.skf3010_sc001.max_row_count}")
 	private String listTableMaxRowCount;
@@ -40,8 +50,10 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 	@Override
 	public Skf3010Sc001InitDto index(Skf3010Sc001InitDto initDto) throws Exception {
 		
-		// 操作ログの出力
-		// LogUtils.info(MessageIdConstant.L_SKF_INIT);
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		// デバッグログ
+		logger.info("初期表示");
 
 		// 初期表示フラグ
 		Boolean initializeFlg = true;
@@ -80,12 +92,16 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 			initDto.setSelectedCompanyCd(hdnSelectedCompanyCd);
 			// 管理会社選択値判定
 			if (hdnSelectedCompanyCd != null && hdnSelectedCompanyCd.equals("ZZZZ")) {
+				// デバッグログ
+				logger.debug("管理会社：外部機関");
 				// 外部機関の場合
 				// 管理機関コードを空文字に設定
 				initDto.setAgencyCd(null);
 				// 外部機関選択時は管理機関プルダウンを非活性
 				initDto.setAgencyDispFlg(false);
 			} else {
+				// デバッグログ
+				logger.debug("管理会社：外部機関以外");
 				// 外部機関以外の場合
 				// 外部機関選択時は管理機関プルダウンを活性
 				initDto.setAgencyDispFlg(true);
@@ -105,6 +121,8 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 			// 社宅住所設定(検索キー)
 			initDto.setShatakuAddress(hdnShatakuAddress);
 		} else {
+			// デバッグログ
+			logger.debug("セッション情報なし");
 			// 画面連携のhidden項目を初期化
 			initDto.setHdnAgencyCd(null);
 			initDto.setHdnEmptyParkingCd(null);

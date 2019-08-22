@@ -35,12 +35,14 @@ public class Skf2010Sc002AttachedFileAreaAsyncService
 	@Override
 	protected AsyncBaseDto index(Skf2010Sc002AttachedFileAreaAsyncDto dto) throws Exception {
 
+		// 添付ファイル情報の取得
 		String applNo = dto.getApplNo();
 		List<Map<String, Object>> attachedFileList = skf2010Sc002SharedService.getAttachedFileInfo(applNo);
 
 		String baseLinkTag = "<a id=\"attached_$ATTACHEDNO$\">$ATTACHEDNAME$</a>";
 		List<String> listTagList = new ArrayList<String>();
 
+		// リンクタグの作成
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
 				String linkTag = baseLinkTag;

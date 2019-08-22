@@ -19,6 +19,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddDto;
 
@@ -37,8 +38,8 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 	@Autowired
 	private SkfAttachedFileUtiles skfAttachedFileUtiles;
 
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
+
 	@Value("${skf2010.skf2010_sc009.max_search_count}")
 	private String maxSearchCount;
 	@Value("${skf2010.skf2010_sc009.max_file_size}")

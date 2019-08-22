@@ -277,8 +277,8 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 			String urlBase = "/skf/Skf2030Sc001/init?SKF2030_SC001&menuflg=1&tokenCheck=0";
 
 			// TODO 送信メールにコメントが表示されないようになっている（意図的に空白が入っている）
-			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, CodeConstant.NONE, annai,
-					CodeConstant.NONE, shainNo, CodeConstant.NONE, urlBase);
+			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, CodeConstant.NONE, annai, shainNo,
+					CodeConstant.NONE, urlBase);
 		}
 		// ページ遷移先は「申請状況一覧」
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);

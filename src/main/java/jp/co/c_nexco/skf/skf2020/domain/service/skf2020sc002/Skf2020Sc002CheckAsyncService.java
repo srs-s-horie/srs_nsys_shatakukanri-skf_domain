@@ -37,15 +37,12 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 	@Override
 	public AsyncBaseDto index(Skf2020Sc002CheckAsyncDto checkDto) throws Exception {
 
-		// TODO エラー時に赤くならない。そしてメッセージが緑
-
 		Boolean ret = true;
-		// チェック処理
+		// 入力チェック処理
 		ret = checkDispInfo(checkDto);
 		// エラーがあった場合処理終了
 		if (!ret) {
 			throwBusinessExceptionIfErrors(checkDto.getResultMessages());
-			// return checkDto;
 		}
 		return checkDto;
 	}
@@ -58,9 +55,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 	 */
 	private boolean checkDispInfo(Skf2020Sc002CheckAsyncDto checkDto) throws Exception {
 
-		Boolean ret = true;
-		// コントロールをデフォルト色に戻す
-		setDefultColor(checkDto);
+		boolean ret = true;
 
 		boolean checkEmpty = true;
 		boolean checkType = true;
@@ -81,7 +76,6 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		checkDate = checkDateFormat(checkDto);
 
 		// エラーメッセージがある場合
-		// TODO 退居予定日と返却希望立会日の相関確認（Falseの場合確認メッセージ表示）
 		if (checkEmpty == false || checkType == false || checkCount == false || checkDate == false
 				|| checkTaikyoDate == false) {
 			ret = false;
@@ -123,7 +117,6 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 				if (NfwStringUtils.isBlank(checkDto.getHitsuyoRiyu())) {
 					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "hitsuyoRiyu" },
 							MessageIdConstant.E_SKF_1054, "社宅を必要とする理由");
-					// checkDto.setHitsuyoRiyuErr(validationErrorCode);
 					result = false;
 				}
 			}
@@ -159,7 +152,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 			if (CodeConstant.RELATION_OTHERS.equals(checkDto.getAffiliation1Cd())
 					&& NfwStringUtils.isBlank(checkDto.getNewAffiliation1Other())) {
 				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "newAffiliation1Other" },
-						MessageIdConstant.E_SKF_1048, "部 その他");
+						MessageIdConstant.E_SKF_1048, "部等 その他");
 				result = false;
 			}
 
@@ -254,7 +247,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 			// 駐車場1申請可能の場合
 			if (bCheckNeedCar1 == true) {
 				// 自動車の保有ラジオボタン「保有している」を選択している場合
-				if (NfwStringUtils.isBlank(checkDto.getCarNoInputFlg())
+				if (NfwStringUtils.isNotBlank(checkDto.getCarNoInputFlg())
 						&& CodeConstant.CAR_HOYU.equals(checkDto.getCarNoInputFlg())) {
 
 					LogUtils.debugByMsg(msg + "自動車の保管場所" + checkDto.getTaiyoHituyo() + checkDto.getParkingUmu());
@@ -297,11 +290,11 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 					LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(１台目)" + checkDto.getCarExpirationDate());
 					if (NfwStringUtils.isBlank(checkDto.getParkingUseDate())) {
 						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate" },
-								MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(１台目)");
+								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(１台目)");
 						result = false;
 					}
 
-				} else if (NfwStringUtils.isBlank(checkDto.getCarNoInputFlg())
+				} else if (NfwStringUtils.isNotBlank(checkDto.getCarNoInputFlg())
 						&& CodeConstant.CAR_YOTEI.equals(checkDto.getCarNoInputFlg())) {
 					// 自動車の保有ラジオボタン「購入を予定している」を選択している場合
 
@@ -315,7 +308,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 					// 自動車の保管場所使用開始日
 					if (NfwStringUtils.isBlank(checkDto.getParkingUseDate())) {
 						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate" },
-								MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(１台目)");
+								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(１台目)");
 						result = false;
 					}
 				} else {
@@ -360,7 +353,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 					LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(１台目)" + checkDto.getParkingUseDate());
 					if (NfwStringUtils.isBlank(checkDto.getParkingUseDate())) {
 						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate" },
-								MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(１台目)");
+								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(１台目)");
 						result = false;
 					}
 				}
@@ -384,35 +377,35 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 						LogUtils.debugByMsg(msg + "自動車の車名(2台目)" + checkDto.getCarName());
 						if (NfwStringUtils.isBlank(checkDto.getCarName2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carName2" },
-									MessageIdConstant.E_SKF_1048, "自動車の車名(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の車名(２台目)");
 							result = false;
 						}
 						// 自動車の登録番号(2台目)
 						LogUtils.debugByMsg(msg + "自動車の登録番号(2台目)" + checkDto.getCarNo2());
 						if (NfwStringUtils.isBlank(checkDto.getCarNo2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carNo2" },
-									MessageIdConstant.E_SKF_1048, "自動車の登録番号(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の登録番号(２台目)");
 							result = false;
 						}
 						// 車検の有効期間満了日(2台目)
 						LogUtils.debugByMsg(msg + "車検の有効期間満了日(2台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getCarExpirationDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate2" },
-									MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(2台目)");
+									MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(２台目)");
 							result = false;
 						}
 						// 自動車の使用者(2台目)
 						LogUtils.debugByMsg(msg + "自動車の使用者(2台目)" + checkDto.getCarUser2());
 						if (NfwStringUtils.isBlank(checkDto.getCarUser2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carUser2" },
-									MessageIdConstant.E_SKF_1048, "自動車の使用者(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の使用者(２台目)");
 							result = false;
 						}
 						// 自動車の保管場所使用開始日(2台目)
-						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(１台目)" + checkDto.getCarExpirationDate2());
+						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(2台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getParkingUseDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate2" },
-									MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(２台目)");
 							result = false;
 						}
 
@@ -423,59 +416,59 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 						LogUtils.debugByMsg(msg + "自動車の使用者(2台目)" + checkDto.getCarUser2());
 						if (NfwStringUtils.isBlank(checkDto.getCarUser2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carUser2" },
-									MessageIdConstant.E_SKF_1048, "自動車の使用者(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の使用者(２台目)");
 							result = false;
 						}
 						// 自動車の保管場所使用開始日(2台目)
-						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(１台目)" + checkDto.getCarExpirationDate2());
+						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(２台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getParkingUseDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate2" },
-									MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(２台目)");
 							result = false;
 						}
 					} else {
 						// 自動車の保有ラジオボタンにチェックが入っていない場合
 
 						// 自動車の保有(2台目)
-						LogUtils.debugByMsg(msg + "自動車の保有(2台目)" + checkDto.getCarNoInputFlg2());
+						LogUtils.debugByMsg(msg + "自動車の保有(２台目)" + checkDto.getCarNoInputFlg2());
 						if (NfwStringUtils.isBlank(checkDto.getCarNoInputFlg2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carNoInputFlg2" },
-									MessageIdConstant.E_SKF_1054, "自動車の保有(2台目)");
+									MessageIdConstant.E_SKF_1054, "自動車の保有(２台目)");
 							result = false;
 						}
 						// 自動車の車名(2台目)
-						LogUtils.debugByMsg(msg + "自動車の車名(2台目)" + checkDto.getCarName());
+						LogUtils.debugByMsg(msg + "自動車の車名(２台目)" + checkDto.getCarName());
 						if (NfwStringUtils.isBlank(checkDto.getCarName2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carName2" },
-									MessageIdConstant.E_SKF_1048, "自動車の車名(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の車名(２台目)");
 							result = false;
 						}
 						// 自動車の登録番号(2台目)
-						LogUtils.debugByMsg(msg + "自動車の登録番号(2台目)" + checkDto.getCarNo2());
+						LogUtils.debugByMsg(msg + "自動車の登録番号(２台目)" + checkDto.getCarNo2());
 						if (NfwStringUtils.isBlank(checkDto.getCarNo2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carNo2" },
-									MessageIdConstant.E_SKF_1048, "自動車の登録番号(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の登録番号(２台目)");
 							result = false;
 						}
 						// 車検の有効期間満了日(2台目)
-						LogUtils.debugByMsg(msg + "車検の有効期間満了日(2台目)" + checkDto.getCarExpirationDate2());
+						LogUtils.debugByMsg(msg + "車検の有効期間満了日(２台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getCarExpirationDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate2" },
-									MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(2台目)");
+									MessageIdConstant.E_SKF_1048, "車検の有効期間満了日(２台目)");
 							result = false;
 						}
 						// 自動車の使用者(2台目)
-						LogUtils.debugByMsg(msg + "自動車の使用者(2台目)" + checkDto.getCarUser2());
+						LogUtils.debugByMsg(msg + "自動車の使用者(２台目)" + checkDto.getCarUser2());
 						if (NfwStringUtils.isBlank(checkDto.getCarUser2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carUser2" },
-									MessageIdConstant.E_SKF_1048, "自動車の使用者(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の使用者(２台目)");
 							result = false;
 						}
 						// 自動車の保管場所使用開始日(2台目)
-						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(2台目)" + checkDto.getCarExpirationDate2());
+						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(２台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getParkingUseDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate2" },
-									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(2台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(２台目)");
 							result = false;
 						}
 					}
@@ -485,7 +478,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 
 		// 現居住宅
 		LogUtils.debugByMsg(msg + "現居住宅" + checkDto.getShatakuKanriId());
-		if (checkDto.getShatakuKanriId() < 0) {
+		if (checkDto.getShatakuKanriId() <= 0) {
 			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "nowShataku" }, MessageIdConstant.E_SKF_1054,
 					"現居住宅");
 			result = false;
@@ -893,7 +886,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 
 		// 自動車の保管場所
 		// 自動車の保管場所が必要の場合
-		LogUtils.debugByMsg("桁数チェック " + "自動車の保管場所必要有無 - " + checkDto.getParkingUmu());
+		LogUtils.debugByMsg("桁数チェック " + "自動車の保管場所必要有無1 - " + checkDto.getParkingUmu());
 		if (CodeConstant.CAR_PARK_HITUYO.equals(checkDto.getParkingUmu())) {
 			// 自動車の車名
 			LogUtils.debugByMsg("桁数チェック " + "自動車の車名　- " + checkDto.getCarName());
@@ -919,6 +912,40 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 						"自動車の使用者", "33");
 				result = false;
 			}
+
+			// 自動車の車名(２台目)
+			LogUtils.debugByMsg("桁数チェック " + "自動車の車名(２台目)　- " + checkDto.getCarName());
+			if (NfwStringUtils.isNotBlank(checkDto.getCarName())
+					&& CheckUtils.isMoreThanByteSize(checkDto.getCarName().trim(), 66)) {
+				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carName2" }, MessageIdConstant.E_SKF_1071,
+						"自動車の車名(２台目)", "33");
+				result = false;
+			}
+			// 自動車の登録番号(２台目)
+			LogUtils.debugByMsg("桁数チェック " + "自動車の登録番号(２台目)- " + checkDto.getCarNo());
+			if (NfwStringUtils.isNotBlank(checkDto.getCarNo2())
+					&& CheckUtils.isMoreThanByteSize(checkDto.getCarNo2().trim(), 66)) {
+				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carNo2" }, MessageIdConstant.E_SKF_1071,
+						"自動車の登録番号(２台目)", "33");
+				result = false;
+			}
+			// 自動車の使用者2
+			LogUtils.debugByMsg("桁数チェック " + "自動車の使用者(２台目)　- " + checkDto.getCarUser());
+			if (NfwStringUtils.isNotBlank(checkDto.getCarUser2())
+					&& CheckUtils.isMoreThanByteSize(checkDto.getCarUser2().trim(), 66)) {
+				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carUser2" }, MessageIdConstant.E_SKF_1071,
+						"自動車の使用者(２台目)", "33");
+				result = false;
+			}
+		}
+
+		// 特殊事情
+		LogUtils.debugByMsg("桁数チェック " + "特殊事情　- " + checkDto.getTokushuJijo());
+		if (NfwStringUtils.isNotBlank(checkDto.getTokushuJijo())
+				&& CheckUtils.isMoreThanByteSize(checkDto.getTokushuJijo().trim(), 256)) {
+			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "tokushuJijo" }, MessageIdConstant.E_SKF_1071,
+					"特殊事情", "128");
+			result = false;
 		}
 
 		// 現保有の社宅
@@ -948,14 +975,6 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 					&& CheckUtils.isMoreThanByteSize(checkDto.getTaikyogoRenrakuSaki().trim(), 128)) {
 				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyogoRenrakuSaki" },
 						MessageIdConstant.E_SKF_1071, "退居後の連絡先", "64");
-				result = false;
-			}
-			// 特殊事情など
-			LogUtils.debugByMsg("桁数チェック " + "特殊事情など　- " + checkDto.getTokushuJijo());
-			if (NfwStringUtils.isNotBlank(checkDto.getTokushuJijo())
-					&& CheckUtils.isMoreThanByteSize(checkDto.getTokushuJijo().trim(), 256)) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "tokushuJijo" },
-						MessageIdConstant.E_SKF_1071, "特殊事情など", "128");
 				result = false;
 			}
 		}
@@ -1196,7 +1215,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 		// 当日未満ならエラー
 		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate()))
-				&& CheckUtils.isDateLessThan(checkDto.getCarExpirationDate(), sysDate)) {
+				&& CheckUtils.isDateUnder(checkDto.getCarExpirationDate(), sysDate)) {
 			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate" },
 					MessageIdConstant.E_SKF_2017, "車検の有効期間満了日(1台目)");
 			result = false;
@@ -1211,7 +1230,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 		// 当日未満ならエラー
 		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate2()))
-				&& CheckUtils.isDateLessThan(checkDto.getCarExpirationDate2(), sysDate)) {
+				&& CheckUtils.isDateUnder(checkDto.getCarExpirationDate2(), sysDate)) {
 			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate2" },
 					MessageIdConstant.E_SKF_2017, "車検の有効期間満了日(2台目)");
 			result = false;
@@ -1257,124 +1276,124 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		return result;
 	}
 
-	/**
-	 * デフォルト色に設定
-	 * 
-	 * @param dto
-	 */
-	protected void setDefultColor(Skf2020Sc002CheckAsyncDto dto) {
-
-		// TEL
-		dto.setTelErr(CodeConstant.DOUBLE_QUOTATION);
-		// 社宅を必要としますか？
-		dto.setTaiyoHituyoErr(CodeConstant.DOUBLE_QUOTATION);
-		// 社宅を必要とする理由
-		dto.setHitsuyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
-		// 社宅を必要としない理由
-		dto.setFuhitsuyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
-		// 機関
-		dto.setNewAgencyErr(CodeConstant.DOUBLE_QUOTATION);
-		// 部等
-		dto.setNewAffiliation1Err(CodeConstant.DOUBLE_QUOTATION);
-		// 室、チーム又は課
-		dto.setNewAffiliation2Err(CodeConstant.DOUBLE_QUOTATION);
-		// 必要とする社宅
-		dto.setHitsuyoShatakuErr(CodeConstant.DOUBLE_QUOTATION);
-		// 続柄
-		dto.setDokyoRelation1Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoRelation2Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoRelation3Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoRelation4Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoRelation5Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoRelation6Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 氏名
-		dto.setDokyoName1Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoName2Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoName3Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoName4Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoName5Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoName6Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 年齢
-		dto.setDokyoAge1Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoAge2Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoAge3Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoAge4Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoAge5Err(CodeConstant.DOUBLE_QUOTATION);
-		dto.setDokyoAge6Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 入居希望日
-		dto.setNyukyoYoteiDateErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の保管場所
-		dto.setParkingUmuErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の保管場所
-		dto.setCarNoInputFlgErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の車名(１台目)
-		dto.setCarNameErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の登録番号(１台目)
-		dto.setCarNoErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 車検の有効期間満了日(１台目)
-		dto.setCarExpirationDateErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の使用者(１台目)
-		dto.setCarUserErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の保管場所 使用開始日(１台目)
-		dto.setParkingUseDateErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の車名(2台目)
-		dto.setCarName2Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の登録番号(2台目)
-		dto.setCarNo2Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 車検の有効期間満了日(2台目)
-		dto.setCarExpirationDate2Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の使用者(2台目)
-		dto.setCarUser2Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 自動車の保管場所 使用開始日(2台目)
-		dto.setParkingUseDate2Err(CodeConstant.DOUBLE_QUOTATION);
-
-		// 現居住宅
-		dto.setNowShatakuErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 保有社宅名
-		dto.setNowShatakuNameErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 特殊事情等
-		dto.setTokushuJijoErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 現保有の社宅(退居予定)
-		dto.setTaikyoYoteiErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 退居予定日
-		dto.setTaikyoYoteiDateErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 社宅の状態
-		dto.setShatakuJyotaiErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 退居理由
-		dto.setDdlTaikyoRiyuKbnListErr(CodeConstant.DOUBLE_QUOTATION);
-		dto.setTaikyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 退居連絡先
-		dto.setTaikyogoRenrakuSakiErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 返却立会希望日
-		dto.setSessionDayErr(CodeConstant.DOUBLE_QUOTATION);
-		dto.setSessionTimeErr(CodeConstant.DOUBLE_QUOTATION);
-
-		// 連絡先
-		dto.setRenrakuSakiErr(CodeConstant.DOUBLE_QUOTATION);
-
-	}
+	// /**
+	// * デフォルト色に設定
+	// *
+	// * @param dto
+	// */
+	// protected void setDefultColor(Skf2020Sc002CheckAsyncDto dto) {
+	//
+	// // TEL
+	// dto.setTelErr(CodeConstant.DOUBLE_QUOTATION);
+	// // 社宅を必要としますか？
+	// dto.setTaiyoHituyoErr(CodeConstant.DOUBLE_QUOTATION);
+	// // 社宅を必要とする理由
+	// dto.setHitsuyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
+	// // 社宅を必要としない理由
+	// dto.setFuhitsuyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
+	// // 機関
+	// dto.setNewAgencyErr(CodeConstant.DOUBLE_QUOTATION);
+	// // 部等
+	// dto.setNewAffiliation1Err(CodeConstant.DOUBLE_QUOTATION);
+	// // 室、チーム又は課
+	// dto.setNewAffiliation2Err(CodeConstant.DOUBLE_QUOTATION);
+	// // 必要とする社宅
+	// dto.setHitsuyoShatakuErr(CodeConstant.DOUBLE_QUOTATION);
+	// // 続柄
+	// dto.setDokyoRelation1Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoRelation2Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoRelation3Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoRelation4Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoRelation5Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoRelation6Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 氏名
+	// dto.setDokyoName1Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoName2Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoName3Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoName4Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoName5Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoName6Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 年齢
+	// dto.setDokyoAge1Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoAge2Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoAge3Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoAge4Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoAge5Err(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setDokyoAge6Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 入居希望日
+	// dto.setNyukyoYoteiDateErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の保管場所
+	// dto.setParkingUmuErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の保管場所
+	// dto.setCarNoInputFlgErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の車名(１台目)
+	// dto.setCarNameErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の登録番号(１台目)
+	// dto.setCarNoErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 車検の有効期間満了日(１台目)
+	// dto.setCarExpirationDateErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の使用者(１台目)
+	// dto.setCarUserErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の保管場所 使用開始日(１台目)
+	// dto.setParkingUseDateErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の車名(2台目)
+	// dto.setCarName2Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の登録番号(2台目)
+	// dto.setCarNo2Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 車検の有効期間満了日(2台目)
+	// dto.setCarExpirationDate2Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の使用者(2台目)
+	// dto.setCarUser2Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 自動車の保管場所 使用開始日(2台目)
+	// dto.setParkingUseDate2Err(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 現居住宅
+	// dto.setNowShatakuErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 保有社宅名
+	// dto.setNowShatakuNameErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 特殊事情等
+	// dto.setTokushuJijoErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 現保有の社宅(退居予定)
+	// dto.setTaikyoYoteiErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 退居予定日
+	// dto.setTaikyoYoteiDateErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 社宅の状態
+	// dto.setShatakuJyotaiErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 退居理由
+	// dto.setDdlTaikyoRiyuKbnListErr(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setTaikyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 退居連絡先
+	// dto.setTaikyogoRenrakuSakiErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 返却立会希望日
+	// dto.setSessionDayErr(CodeConstant.DOUBLE_QUOTATION);
+	// dto.setSessionTimeErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// // 連絡先
+	// dto.setRenrakuSakiErr(CodeConstant.DOUBLE_QUOTATION);
+	//
+	// }
 
 }

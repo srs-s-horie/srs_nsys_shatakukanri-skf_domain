@@ -42,10 +42,10 @@ public class Skf3020Sc005SharedService {
 	 * @return 転任者情報
 	 * @throws ParseException 
 	 */
-	public Map<String, Object> GetTenninshaShatakuInfo(String shainNo) throws ParseException {
+	public Map<String, Object> getTenninshaShatakuInfo(String shainNo) throws ParseException {
 
 		// デバッグログ
-		logger.debug("GetTenninshaShatakuInfo, 社員番号:" + shainNo);
+		logger.debug("getTenninshaShatakuInfo, 社員番号:" + shainNo);
 		// リストテーブルに格納するデータを取得する
 		List<Skf3020Sc005GetTenninshaShatakuInfoExp> resultListTableData = new ArrayList<Skf3020Sc005GetTenninshaShatakuInfoExp>();
 		Map<String, Object> resultTableData = null;
@@ -80,7 +80,7 @@ public class Skf3020Sc005SharedService {
 		// 社員番号
 		tmpMap.put("shainNo", getData.getShainNo());
 		// 社員名
-		tmpMap.put("shainName", getData.getName().trim());
+		tmpMap.put("shainName", getData.getShainName().trim());
 		// 等級
 		tmpMap.put("tokyu", getData.getTokyu());
 		// 年齢

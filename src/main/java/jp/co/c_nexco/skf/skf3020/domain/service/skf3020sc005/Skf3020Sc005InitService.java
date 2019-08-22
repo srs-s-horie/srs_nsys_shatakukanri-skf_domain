@@ -55,7 +55,7 @@ public class Skf3020Sc005InitService extends BaseServiceAbstract<Skf3020Sc005Ini
 		if (NfwStringUtils.isNotEmpty(hdnRowShainNo)) {
 			/** セッション情報存在(変更) */
 			// 転任者情報取得
-			Map<String, Object> resultTableData = skf3020Sc005SharedService.GetTenninshaShatakuInfo(hdnRowShainNo);
+			Map<String, Object> resultTableData = skf3020Sc005SharedService.getTenninshaShatakuInfo(hdnRowShainNo);
 			/** 戻り値(転任者情報)設定 */
 			// 社員番号
 			initDto.setShainNo((String)resultTableData.get("shainNo"));

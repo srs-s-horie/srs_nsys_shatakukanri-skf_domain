@@ -19,6 +19,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001RentalCopyCheckDto;
 import jp.co.intra_mart.common.platform.log.Logger;
@@ -32,6 +33,9 @@ import jp.co.intra_mart.common.platform.log.Logger;
 @Service
 public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3010Sc001RentalCopyCheckDto> {
 
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+
 	// 社宅区分
 	private static final String SHATAKU_KBN_KARIAGE = "2";
 
@@ -43,7 +47,8 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 
 	@Override
 	public BaseDto index(Skf3010Sc001RentalCopyCheckDto rentalCopyDto) throws Exception {
-		// 操作ログ出力
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("借上(複写)", CodeConstant.C001, rentalCopyDto.getPageId());
 		
 		// デバッグログ
 		logger.info("借上(複写)ボタン押下");

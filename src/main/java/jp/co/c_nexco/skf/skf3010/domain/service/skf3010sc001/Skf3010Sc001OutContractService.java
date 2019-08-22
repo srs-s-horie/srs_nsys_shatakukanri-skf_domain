@@ -19,6 +19,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001OutContractDto;
 import jp.co.intra_mart.common.platform.log.Logger;
@@ -30,6 +31,9 @@ import jp.co.intra_mart.common.platform.log.Logger;
  */
 @Service
 public class Skf3010Sc001OutContractService extends BaseServiceAbstract<Skf3010Sc001OutContractDto> {
+
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	/**
 	 * 中身は現状まったくの別物である。
@@ -50,6 +54,10 @@ public class Skf3010Sc001OutContractService extends BaseServiceAbstract<Skf3010S
 
 	@Override
 	public BaseDto index(Skf3010Sc001OutContractDto outContraDto) throws Exception {
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("契約情報出力", CodeConstant.C001, outContraDto.getPageId());
+		// デバッグログ
+		logger.info("契約情報出力ボタン押下");
 		// 社宅区分(選択行)
 		String hdnRowShatakuKbn = outContraDto.getHdnRowShatakuKbn();
 		// 社宅管理番号(選択行)

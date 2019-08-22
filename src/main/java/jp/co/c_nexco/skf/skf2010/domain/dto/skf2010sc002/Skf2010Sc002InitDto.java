@@ -5,7 +5,7 @@ package jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002;
 
 import java.util.List;
 import java.util.Map;
-import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010CommonDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc002common.Skf2010Sc002CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf2010Sc002InitDto extends Skf2010CommonDto {
+public class Skf2010Sc002InitDto extends Skf2010Sc002CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
@@ -33,12 +33,17 @@ public class Skf2010Sc002InitDto extends Skf2010CommonDto {
 
 	/** 画面表示用 **/
 	private int displayLevel; // 表示レベル（１～３）
+	// アコーディオン
+	// 社宅入居希望等調書
+	private String level1;
+	// 貸与社宅などのご案内
+	private String level2;
+	// 退居届
+	private String level3;
+
 	// アコーディオン初期表示用フラグ
 	private String level1Open;
 	private String level2Open;
 	private String level3Open;
-	private String level4Open;
 
-	// コメント表示レベル
-	private int commentDisplayLevel;
 }
