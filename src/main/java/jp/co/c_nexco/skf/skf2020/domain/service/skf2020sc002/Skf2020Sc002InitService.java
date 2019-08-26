@@ -47,12 +47,6 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	@Autowired
 	private Skf2020Sc002GetShainInfoExpRepository skf2020Sc002GetShainInfoExpRepository;
 
-	// 会社コード
-	private String companyCd = CodeConstant.C001;
-	// 判定用定数
-	public static final String FALSE = "false";
-	public static final String TRUE = "true";
-
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -67,10 +61,8 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC002_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
-		// フォントカラーをデフォルトに設定
-		// skf2020Sc002SharedService.setDefultColor(initDto);
 		// 入力情報のクリア
 		skf2020Sc002SharedService.setClearInfo(initDto);
 
@@ -81,7 +73,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		skf2020Sc002SharedService.initializeDisp(initDto);
 
 		// 返却備品の設定
-		skf2020Sc002SharedService.setReturnBihinInfo(initDto);
+		skf2020Sc002SharedService.setReturnBihinInfo(initDto, Skf2020Sc002SharedService.NO_UPDATE_FLG);
 
 		// 表示項目の活性制御または表示制御
 		skf2020Sc002SharedService.setControlValue(initDto);
@@ -114,7 +106,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 
 		// 社員マスタから社員情報取得
 		List<Skf2020Sc002GetShainInfoExp> shainList = new ArrayList<Skf2020Sc002GetShainInfoExp>();
-		shainList = getShainInfo(companyCd, userId, shainList);
+		shainList = getShainInfo(CodeConstant.C001, userId, shainList);
 		if (shainList.size() > 0) {
 			// リストに値を格納
 			initDto.setShainList(shainList);
@@ -128,9 +120,6 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		// 申請の可否区分を可に設定
 		initDto.setHdnConfirmFlg(CodeConstant.YES);
 		LogUtils.debugByMsg("可否区分の設定" + initDto.getHdnConfirmFlg());
-		// 申請区分を申請入力用に設定
-		initDto.setApplKbn(CodeConstant.SINSE_INPUT);
-		LogUtils.debugByMsg("申請区分の設定" + initDto.getApplKbn());
 	}
 
 	/**
@@ -159,13 +148,13 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	protected void setCommentBtnDisabled(Skf2020Sc002CommonDto dto) {
 		// コメントの設定
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-		commentList = skfCommentUtils.getCommentInfo(companyCd, dto.getApplNo(), null);
+		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, dto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
-			dto.setCommentViewFlag(FALSE);
+			dto.setCommentViewFlag(Skf2020Sc002SharedService.FALSE);
 		} else {
 			// コメントがあれば表示
-			dto.setCommentViewFlag(TRUE);
+			dto.setCommentViewFlag(Skf2020Sc002SharedService.TRUE);
 		}
 	}
 

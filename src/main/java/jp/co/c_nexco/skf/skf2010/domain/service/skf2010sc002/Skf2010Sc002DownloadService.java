@@ -13,11 +13,13 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002DownloadDto;
 
 /**
- * Skf2010Sc002 申請書類確認の調書ダウンロードボタン処理クラス。
+ * Skf2010Sc002 申請書類確認の添付ファイルリンク ダウンロード処理クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -26,12 +28,18 @@ public class Skf2010Sc002DownloadService extends BaseServiceAbstract<Skf2010Sc00
 
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+
 	@Value("${skf.common.attached_file_session_key}")
 	private String sessionKey;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected BaseDto index(Skf2010Sc002DownloadDto dlDto) throws Exception {
+
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("添付ファイルダウンロード", CodeConstant.C001, dlDto.getPageId());
 
 		// 添付資料番号
 		String attachedNo = dlDto.getAttachedNo();
