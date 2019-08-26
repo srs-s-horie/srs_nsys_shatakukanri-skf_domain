@@ -103,20 +103,6 @@ public class Skf3010Sc001SharedService {
 		useKbnList.clear();
 		useKbnList.addAll(
 				ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_RIYO_KBN, useKbnCd, isFirstRowEmpty));
-//		Map<String, Object> m = new HashMap<String, Object>();
-//		int index = -1;
-//		for (Map<String, Object> m1 : useKbnList) {
-//			if (m1.containsValue("解約済")) {
-//				index = useKbnList.indexOf(m1);
-//				break;
-//			}
-//		}
-		
-//		if (index != -1) {
-//			m = useKbnList.get(index);
-//			useKbnList.remove(index);
-//			useKbnList.add(m);
-//		}
 
 		// 空き駐車場リスト
 		emptyParkingList.clear();
@@ -154,28 +140,33 @@ public class Skf3010Sc001SharedService {
 		int resultCount = 0;
 		List<Skf3010Sc001GetListTableDataExp> resultListTableData = new ArrayList<Skf3010Sc001GetListTableDataExp>();
 		Skf3010Sc001GetListTableDataExpParameter param = new Skf3010Sc001GetListTableDataExpParameter();
-		param.setSelectedCompanyCd(selectedCompanyCd);
-		param.setAgencyCd(agencyCd);
-		param.setShatakuKbnCd(shatakuKbnCd);
-		param.setEmptyRoomCd(emptyRoomCd);
-		param.setUseKbnCd(useKbnCd);
-		param.setEmptyParkingCd(emptyParkingCd);
-		param.setShatakuName(shatakuName);
-		param.setShatakuAddress(shatakuAddress);
-		resultListTableData = skf3010Sc001GetListTableDataExpRepository.getListTableData(param);
 
-		// 取得レコード数を設定
-		resultCount = resultListTableData.size();
+		do {
+			param.setSelectedCompanyCd(selectedCompanyCd);
+			param.setAgencyCd(agencyCd);
+			param.setShatakuKbnCd(shatakuKbnCd);
+			param.setEmptyRoomCd(emptyRoomCd);
+			param.setUseKbnCd(useKbnCd);
+			param.setEmptyParkingCd(emptyParkingCd);
+			param.setShatakuName(shatakuName);
+			param.setShatakuAddress(shatakuAddress);
+			resultListTableData = skf3010Sc001GetListTableDataExpRepository.getListTableData(param);
 
-		// 取得データレコード数判定
-		if (resultCount == 0 || resultCount > maxGetRecordCount) {
-			// 取得データレコード数が0件または3000件より多い場合、何もせず処理終了
-			return resultCount;
-		}
-
-		// リストテーブルに出力するリストを取得する
-		listTableData.clear();
-		listTableData.addAll(getListTableDataViewColumn(resultListTableData));
+			// 取得レコード数を設定
+			resultCount = resultListTableData.size();
+	
+			// 取得データレコード数判定
+			if (resultCount == 0 || resultCount > maxGetRecordCount) {
+				// 取得データレコード数が0件または3000件より多い場合、何もせず処理終了
+				return resultCount;
+			}
+	
+			// リストテーブルに出力するリストを取得する
+			listTableData.clear();
+			listTableData.addAll(getListTableDataViewColumn(resultListTableData));
+		} while(false);
+		resultListTableData = null;
+		param = null;
 
 		return resultCount;
 
@@ -210,7 +201,7 @@ public class Skf3010Sc001SharedService {
 		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
 
 		for (int i = 0; i < originList.size(); i++) {
-			String shtakuKbn = "";
+			String shatakuKbn = "";
 			String useKbn = "";
 			String structureKbn = "";
 			String prefName = "";
@@ -231,9 +222,9 @@ public class Skf3010Sc001SharedService {
 			// 社宅区分
 			// 汎用コードから取得
 			if (tmpData.getShatakuKbn() != null) {
-				shtakuKbn = genericCodeMapShatakuKbn.get(tmpData.getShatakuKbn());
+				shatakuKbn = genericCodeMapShatakuKbn.get(tmpData.getShatakuKbn());
 			}
-			tmpMap.put("shtakuKbn", shtakuKbn);
+			tmpMap.put("shatakuKbn", shatakuKbn);
 			// 利用区分
 			if (tmpData.getUseKbn() != null) {
 				useKbn = genericCodeMapUseKbn.get(tmpData.getUseKbn());
@@ -295,6 +286,8 @@ public class Skf3010Sc001SharedService {
 			tmpMap.put("hdnEmptyRoomCount", tmpData.getEmptyRoomCount());
 			// 対象行の空き駐車場数
 			tmpMap.put("hdnEmptyParkingCount", tmpData.getEmptyParkingCount());
+			// 対象行の部屋番号
+			tmpMap.put("hdnRoomNo", tmpData.getRoomNo());
 			// 基本
 			tmpMap.put("col11", "");
 			// 社宅区分判定
@@ -303,9 +296,14 @@ public class Skf3010Sc001SharedService {
 				tmpMap.put("col12", "");
 			}
 			setViewList.add(tmpMap);
-
+			tmpMap = null;
+			tmpData = null;
 		}
-
+		// 解放
+		genericCodeMapShatakuKbn = null;
+		genericCodeMapUseKbn = null;
+		genericCodeMapStructure = null;
+		genericCodeMapPref = null;
 		return setViewList;
 	}
 }

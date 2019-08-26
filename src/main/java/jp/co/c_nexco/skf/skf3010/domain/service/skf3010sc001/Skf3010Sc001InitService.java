@@ -134,6 +134,7 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 //			initDto.setHdnUseKbn(null);
 			initDto.setHdnUseKbnCd(initDto.getUseKbnCd());
 		}
+
 		// ドロップダウンリストの値を設定
 		skf3010Sc001SharedService.getDoropDownList(initDto.getSelectedCompanyCd(), manageCompanyList,
 				initDto.getAgencyCd(), manageAgencyList, initDto.getShatakuKbnCd(), shatakuKbnList,
@@ -151,11 +152,20 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 			// 取得レコード0件のワーニング
 			ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
 		}
+		// セッション情報削除
+		initDto.setPageTitleKey(null);
+		initDto.setListTableMaxRowCount(null);
+		initDto.setManageCompanyList(null);
+		initDto.setManageAgencyList(null);
+		initDto.setEmptyRoomList(null);
+		initDto.setShatakuKbnList(null);
+		initDto.setUseKbnList(null);
+		initDto.setEmptyParkingList(null);
+		initDto.setListTableData(null);
 
 		// 戻り値をセット
 		initDto.setPageTitleKey(MessageIdConstant.SKF3010_SC001_TITLE);
 		initDto.setListTableMaxRowCount(listTableMaxRowCount);
-
 		initDto.setManageCompanyList(manageCompanyList);
 		initDto.setManageAgencyList(manageAgencyList);
 		initDto.setEmptyRoomList(emptyRoomList);
@@ -163,7 +173,14 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 		initDto.setUseKbnList(useKbnList);
 		initDto.setEmptyParkingList(emptyParkingList);
 		initDto.setListTableData(listTableData);
- 		
+		// 解放
+		manageCompanyList = null;
+		manageAgencyList = null;
+		emptyRoomList = null;
+		shatakuKbnList = null;
+		useKbnList = null;
+		emptyParkingList = null;
+ 
 		return initDto;
 	}
 	
