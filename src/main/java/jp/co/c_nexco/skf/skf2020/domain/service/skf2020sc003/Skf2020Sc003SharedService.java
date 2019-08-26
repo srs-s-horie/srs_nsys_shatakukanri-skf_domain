@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter;
@@ -142,13 +141,15 @@ public class Skf2020Sc003SharedService {
 
 	/**
 	 * セッションの添付資料情報の初期化
+	 * 
 	 * @param bean
 	 */
 	public void clearMenuScopeSessionBean() {
 		if (menuScopeSessionBean == null) {
 			return;
 		}
-		skfAttachedFileUtiles.clearAttachedFileBySessionData(menuScopeSessionBean, SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
+		skfAttachedFileUtiles.clearAttachedFileBySessionData(menuScopeSessionBean,
+				SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
 	}
 
 	/**
@@ -326,9 +327,10 @@ public class Skf2020Sc003SharedService {
 		// TODO 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
 		return true;
 	}
-	
+
 	/**
 	 * 添付資料の設定をします
+	 * 
 	 * @param dto
 	 */
 	@SuppressWarnings("unchecked")
@@ -492,7 +494,8 @@ public class Skf2020Sc003SharedService {
 		}
 		// 入居希望日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNyukyoYoteiDate())) {
-			dto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getNyukyoYoteiDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			dto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getNyukyoYoteiDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// １台目
 		// 自動者の保管場所
@@ -513,7 +516,8 @@ public class Skf2020Sc003SharedService {
 		}
 		// 車検の有効期間満了日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarExpirationDate())) {
-			dto.setCarExpirationDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getCarExpirationDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			dto.setCarExpirationDate(skfDateFormatUtils.dateFormatFromString(
+					shatakuNyukyoKiboInfo.getCarExpirationDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 自動車の使用者
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarUser())) {
@@ -521,7 +525,8 @@ public class Skf2020Sc003SharedService {
 		}
 		// 自動車の保管場所 使用開始日(予定日)
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingUseDate())) {
-			dto.setParkingUseDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			dto.setParkingUseDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// ２台目
 		// 自動車の登録番号の入力フラグ
@@ -538,7 +543,8 @@ public class Skf2020Sc003SharedService {
 		}
 		// 車検の有効期間満了日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarExpirationDate2())) {
-			dto.setCarExpirationDate2(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getCarExpirationDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			dto.setCarExpirationDate2(skfDateFormatUtils.dateFormatFromString(
+					shatakuNyukyoKiboInfo.getCarExpirationDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 自動車の使用者
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getCarUser2())) {
@@ -546,7 +552,8 @@ public class Skf2020Sc003SharedService {
 		}
 		// 自動車の保管場所 使用開始日(予定日)
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingUseDate2())) {
-			dto.setParkingUseDate2(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			dto.setParkingUseDate2(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getParkingUseDate2(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 現居住宅
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNowShataku())) {
@@ -917,7 +924,7 @@ public class Skf2020Sc003SharedService {
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementName2())
 				&& StringUtils.isNotEmpty(teijiDataInfo.getShatakuSupplementSize2())) {
 			addShatakuAttachedFile(teijiDataInfo.getShatakuSupplementName2(), teijiDataInfo.getShatakuSupplementFile2(),
-					teijiDataInfo.getShatakuSupplementSize2(), shatakuAttachedFileList.size() , shatakuAttachedFileList);
+					teijiDataInfo.getShatakuSupplementSize2(), shatakuAttachedFileList.size(), shatakuAttachedFileList);
 		}
 		// 社宅補足ファイル3
 		if (teijiDataInfo.getShatakuSupplementFile3() != null
@@ -964,7 +971,8 @@ public class Skf2020Sc003SharedService {
 			int defaultAttachedNo = 0;
 			if (shatakuAttachedFileList != null && shatakuAttachedFileList.size() > 0) {
 				defaultAttachedNo = Integer.parseInt(
-						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString()) + 1;
+						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString())
+						+ 1;
 			}
 			for (Map<String, Object> tmpAttachedFileMap : tmpAttachedFileList) {
 				addShatakuAttachedFile(tmpAttachedFileMap.get("attachedName").toString(),
@@ -995,7 +1003,10 @@ public class Skf2020Sc003SharedService {
 		getSinseiInfo(applNo, dto);
 		setTeijiDataInfo(dto.getShainNo(), applNo, dto);
 
-		Long shatakuKanriNo = Long.parseLong(dto.getNewShatakuKanriNo());
+		Long shatakuKanriNo = CodeConstant.LONG_ZERO;
+		if (NfwStringUtils.isNotEmpty(dto.getNewShatakuKanriNo())) {
+			shatakuKanriNo = Long.parseLong(dto.getNewShatakuKanriNo());
+		}
 		if (shatakuKanriNo == CodeConstant.LONG_ZERO) {
 			// 提示データが存在しない場合または、差戻し、修正依頼時には一時保存不要
 			// 戻り値が-1だとエラーメッセージが表示されてしまうため０を戻り値とする。
@@ -1417,7 +1428,7 @@ public class Skf2020Sc003SharedService {
 	 * @param file
 	 * @param fileSize
 	 */
-	@SuppressWarnings({ "unchecked", "static-access" })
+	@SuppressWarnings({ "static-access" })
 	private void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
 			List<Map<String, Object>> shatakuAttachedFileList) {
 		// 添付資料のコレクションをSessionより取得
