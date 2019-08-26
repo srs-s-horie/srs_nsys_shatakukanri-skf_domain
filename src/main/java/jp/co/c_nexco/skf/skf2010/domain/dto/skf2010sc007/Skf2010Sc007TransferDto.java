@@ -25,6 +25,9 @@ public class Skf2010Sc007TransferDto extends Skf2010Sc007CommonDto {
 	// 入退居区分
 	private String nyutaikyoKbn;
 
+	// 代行ログインフラグ
+	private String alterLoginFlg;
+
 	// 提示データ
 
 	// 申請書情報リスト

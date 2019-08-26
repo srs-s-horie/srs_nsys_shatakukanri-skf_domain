@@ -4,12 +4,16 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc007;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -17,6 +21,9 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007TransferDto;
@@ -40,6 +47,8 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private Skf2010Sc007GetApplHistoryInfoExpRepository skf2010Sc007GetApplHistoryInfoExpRepository;
 
@@ -67,6 +76,7 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	 * 
 	 * @param transferDto
 	 */
+	@SuppressWarnings("unchecked")
 	private void setRedirectAppl(Skf2010Sc007TransferDto transferDto) {
 
 		// 申請書類Idの設定
@@ -77,12 +87,37 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 		UserProfile profile = userContext.getUserProfile();
 		transferDto.setUserId(profile.getUserCd()); // ユーザID
 
+		// セッション情報の取得(代理ログイン情報)
+		Map<String, String> resultAlterLoginList = null;
+		resultAlterLoginList = (Map<String, String>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP);
+		if (resultAlterLoginList != null) {
+			transferDto.setAlterLoginFlg((resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY)));
+		} else {
+			transferDto.setAlterLoginFlg(SkfCommonConstant.NOT_USE);
+		}
+
+		List<Map<String, String>> applHistoryList = null;
+
 		// 社員番号の設定
-		List<Skf2010Sc007GetApplHistoryInfoExp> applHistoryList = new ArrayList<Skf2010Sc007GetApplHistoryInfoExp>();
-		applHistoryList = getApplHistoryList(transferDto.getUserId(), applID, applHistoryList);
-		// 値が取得できた場合は、社員番号を設定
-		if (applHistoryList.size() > 0) {
-			transferDto.setShainNo(applHistoryList.get(0).getShainNo());
+		if (SkfCommonConstant.NOT_USE.equals(transferDto.getAlterLoginFlg())) {
+			// 代行ログインでない場合
+			applHistoryList = getApplHistoryList(transferDto.getUserId(), applID);
+			// 値が取得できた場合は、社員番号を設定
+			if (applHistoryList.size() > 0) {
+				transferDto.setShainNo(applHistoryList.get(0).get("shainNo"));
+			}
+		} else {
+			// 代行ログインの場合
+			if (NfwStringUtils
+					.isNotEmpty(resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO))) {
+				// 社員番号の設定
+				transferDto.setShainNo(resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO));
+				applHistoryList = skfLoginUserInfoUtils.getAlterLoginUserApplHistoryList(transferDto.getShainNo(),
+						applID);
+
+			}
+
 		}
 
 		// 入退居については、申請前に申請可能か判定を行う。
@@ -94,7 +129,7 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 			// 取得した申請書履歴リストの件数分チェック
 			for (int i = 0; i < applHistoryList.size(); i++) {
 				resultN = skfShinseiUtils.checkSKSTeijiStatus(transferDto.getShainNo(), applID,
-						applHistoryList.get(i).getApplNo());
+						applHistoryList.get(i).get("applNo"));
 				if (resultN == false) {
 					cntN += 1;
 				}
@@ -121,7 +156,7 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 			// 取得した申請書履歴リストの件数分チェック
 			for (int i = 0; i < applHistoryList.size(); i++) {
 				resultT = skfShinseiUtils.checkSKSTeijiStatus(transferDto.getShainNo(), applID,
-						applHistoryList.get(i).getApplNo());
+						applHistoryList.get(i).get("applNo"));
 				if (resultT == false) {
 					cntT += 1;
 				}
@@ -151,15 +186,38 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	 * @param applHistoryReusltList リスト
 	 * @return 取得結果
 	 */
-	private List<Skf2010Sc007GetApplHistoryInfoExp> getApplHistoryList(String userId, String applId,
-			List<Skf2010Sc007GetApplHistoryInfoExp> applHistoryReusltList) {
+	private List<Map<String, String>> getApplHistoryList(String userId, String applId) {
+
+		// 戻り値
+		List<Map<String, String>> shainList = new ArrayList<Map<String, String>>();
 
 		// DB検索処理
+		List<Skf2010Sc007GetApplHistoryInfoExp> applHistoryList = new ArrayList<Skf2010Sc007GetApplHistoryInfoExp>();
 		Skf2010Sc007GetApplHistoryInfoExpParameter param = new Skf2010Sc007GetApplHistoryInfoExpParameter();
 		param.setCompanyCd(CodeConstant.C001);
 		param.setUserId(userId);
 		param.setApplId(applId);
-		applHistoryReusltList = skf2010Sc007GetApplHistoryInfoExpRepository.getApplHistoryInfo(param);
-		return applHistoryReusltList;
+		applHistoryList = skf2010Sc007GetApplHistoryInfoExpRepository.getApplHistoryInfo(param);
+
+		// 取得できなかった場合
+		if (applHistoryList == null) {
+			return shainList;
+		}
+
+		// mapに取得情報を格納
+		Map<String, String> shainMap = new HashMap<String, String>();
+
+		for (Skf2010Sc007GetApplHistoryInfoExp dt : applHistoryList) {
+			// 表示・値を設定
+			shainMap = new HashMap<String, String>();
+			shainMap.put("shainNo", dt.getShainNo());
+			shainMap.put("applNo", dt.getApplNo());
+			shainList.add(shainMap);
+		}
+
+		// 返却するリストをDebugログで出力
+		LogUtils.debugByMsg("社員情報情報のリスト：" + shainList.toString());
+
+		return shainList;
 	}
 }

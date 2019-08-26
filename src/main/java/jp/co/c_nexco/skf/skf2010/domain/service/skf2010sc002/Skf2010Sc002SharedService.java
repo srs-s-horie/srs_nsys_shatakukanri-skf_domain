@@ -34,8 +34,10 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc002common.Skf2010Sc002CommonDto;
+import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf2010Sc002 申請書類確認の共通処理クラス。
@@ -67,8 +69,8 @@ public class Skf2010Sc002SharedService {
 	@Value("${skf.common.attached_file_session_key}")
 	private String sessionKey;
 
-	@Value("${skf.common.validate_error}")
-	private String validationErrorCode;
+	/** ロガー。 */
+	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/**
 	 * 社宅入居希望等申請情報を取得する
@@ -277,6 +279,30 @@ public class Skf2010Sc002SharedService {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * 情報のチェック
+	 * 
+	 * @param applyDto
+	 * @throws Exception
+	 */
+	protected void checktApplSession(Skf2010Sc002CommonDto applyDto) throws Exception {
+
+		// 申請書類IDの有無チェック
+
+		if (applyDto.getApplId() == null) {
+			String errorMessage = "エラーが発生しました。ヘルプデスクへ連絡してください。";
+			logger.error(errorMessage);
+			throw new Exception(errorMessage);
+		}
+
+		// ステータスの有無チェック
+		if (applyDto.getApplStatus() == null) {
+			String errorMessage = "エラーが発生しました。ヘルプデスクへ連絡してください。";
+			logger.error(errorMessage);
+			throw new Exception(errorMessage);
+		}
 	}
 
 }
