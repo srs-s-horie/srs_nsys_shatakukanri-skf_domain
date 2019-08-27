@@ -178,10 +178,14 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		}
 
 		SheetDataBean sheetDataBean = sheetDataBeanList.get(0);
-		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();		
+		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();
 		Map<String, Integer> posMap = createColumnNoMap(rowDataBeanList); // 対象のデータ格納position
 		int shimeiEmptyCnt = 0; // 空の社員氏名カウント
-		List<String> shainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト
+		boolean duplicateShainNo = false; // 重複する社員番号の判定用
+		List<String> existShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複確認用)
+		boolean nonexistShainNo = false; // 存在しない社員番号の判定用
+		List<String> nonexistShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(既存確認用)
+
 		// 転任者調書エクセルファイルの内容読み込んでいく
 		for (int i = 0; i < (rowDataBeanList.size() - 1); i++) {
 			// 先頭行は飛ばす
@@ -207,23 +211,33 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 			int shainNoPos = posMap.get(IMPORT_COL.IMPORT_COL_SHAIN_NO.getColStr());
 			String shainNo = cellDataBeanList.get(shainNoPos).getValue(); // 社員番号
 			if (shainNo != null && !CheckUtils.isEmpty(shainNo)) {
-				
-				for (int j = 0; j < shainNoList.size(); j++) {
-					String listShainNo = shainNoList.get(j);
+				boolean exsistNoFlg = false;
+
+				for (int j = 0; j < existShainNoList.size(); j++) {
+					String listShainNo = existShainNoList.get(j);
 					// 社員番号重複チェック
 					if (shainNo.equals(listShainNo)) {
-						ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-								MessageIdConstant.E_SKF_3045, String.valueOf(shainNo));
-						return false;
+						exsistNoFlg = true;
+						duplicateShainNo = true;
+						break;
 					}
 				}
-				shainNoList.add(shainNo);
+
+				// リストに格納されてない社員番号の場合
+				if (!exsistNoFlg) {
+					existShainNoList.add(shainNo);
+				}
 
 				// 社員番号存在チェック
 				if (!skf3020Sc002SharedService.checkShainExists(shainNo)) {
-					ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-							MessageIdConstant.E_SKF_3046, shainNo);
-					return false;
+					nonexistShainNo = true;
+					for (int j = 0; j < nonexistShainNoList.size(); j++) {
+						// 社員番号重複チェック
+						if (shainNo.equals(nonexistShainNoList.get(j))) {
+							nonexistShainNoList.add(shainNo);
+							break;
+						}
+					}
 				}
 			}
 
@@ -232,18 +246,40 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 			importData.add(saveDto);
 
 			if (importData.size() > IMPORT_DATA_CNT_UPPER) {
-				ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-						MessageIdConstant.E_SKF_1065, IMPORT_DATA_CNT_UPPER);
-				return false;
+				break;
 			}
 
 			// カウント初期化
 			shimeiEmptyCnt = 0;
 		}
 
+		// 社員番号重複している場合
+		if (duplicateShainNo) {
+			// TODO メッセージ確認
+//			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+//					MessageIdConstant.E_SKF_3045, "");
+			return false;
+		}
+
+		// 存在しない社員番号がある場合
+		if (nonexistShainNo) {
+			// TODO メッセージ確認
+//			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+//					MessageIdConstant.E_SKF_3046, "");
+			return false;
+		}
+
+		// データ無しの場合
 		if (importData.size() == 0) {
 			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
 					MessageIdConstant.E_SKF_1064);
+			return false;
+		}
+
+		// データ件数の上限越え
+		if (importData.size() > IMPORT_DATA_CNT_UPPER) {
+			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+					MessageIdConstant.E_SKF_1065, IMPORT_DATA_CNT_UPPER);
 			return false;
 		}
 
