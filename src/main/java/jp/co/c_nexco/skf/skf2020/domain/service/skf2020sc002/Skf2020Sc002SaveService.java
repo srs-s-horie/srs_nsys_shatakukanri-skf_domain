@@ -101,8 +101,9 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		boolean ret = true;
 
 		// 社員番号を設定
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		applInfo.put("shainNo", loginUserInfoMap.get("shainNo"));
+		// Map<String, String> loginUserInfoMap =
+		// skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		applInfo.put("shainNo", saveDto.getShainNo());
 		// 添付ファイルの有無
 		Map<String, String> applTacInfoMap = skfShinseiUtils.getApplAttachFlg(applInfo.get("shainNo"),
 				applInfo.get("applNo"));
