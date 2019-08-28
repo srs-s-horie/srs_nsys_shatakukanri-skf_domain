@@ -2,7 +2,7 @@ package jp.co.c_nexco.skf.skf2030.domain.dto.common;
 
 import java.util.List;
 import java.util.Map;
-import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf203010CommonDto extends BaseDto {
+public class Skf203010CommonAsyncDto extends AsyncBaseDto {
 
 	private static final long serialVersionUID = 1L;
 
