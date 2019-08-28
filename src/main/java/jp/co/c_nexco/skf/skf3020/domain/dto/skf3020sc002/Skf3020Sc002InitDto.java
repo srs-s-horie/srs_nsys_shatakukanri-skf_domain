@@ -14,10 +14,10 @@ import lombok.EqualsAndHashCode;
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
 public class Skf3020Sc002InitDto extends Skf3020Sc002CommonDto {
-	
-	private static final long serialVersionUID = -1902278406295003652L;
-	
 
-	
+	private static final long serialVersionUID = 6750607356593193752L;
 
+	/** 「前に戻る」ボタン非表示フラグ（hidden） */
+	private boolean backBtnHiddenFlg;
+	
 }
