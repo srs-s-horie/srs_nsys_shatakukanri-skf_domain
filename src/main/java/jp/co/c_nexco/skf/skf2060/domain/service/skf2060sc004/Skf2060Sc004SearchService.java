@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc004.Skf2060Sc004GetKariageListExpParameter;
+import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004SearchDto;
 
@@ -22,6 +24,8 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004SearchDto;
 @Service
 public class Skf2060Sc004SearchService extends BaseServiceAbstract<Skf2060Sc004SearchDto> {
 	
+    @Autowired
+    private MenuScopeSessionBean sessionBean;
     @Autowired
     Skf2060Sc004SharedService skf2060Sc004SharedService;
     @Autowired
@@ -43,25 +47,28 @@ public class Skf2060Sc004SearchService extends BaseServiceAbstract<Skf2060Sc004S
 	    // 操作ログを出力する
         skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
         // 検索実行
-        searchDto.setListTableData(skf2060Sc004SharedService.getListTableData(setParam(searchDto)));
+        searchDto.setListTableData(skf2060Sc004SharedService.getListTableData(setSearchParam(searchDto)));
         searchDto.setListTableMaxRowCount(searchMaxCount);
 		return searchDto;
 	}
     
     /**
-     * 初期表示時 検索条件設定
+     * 検索条件設定
      * @param dto 初期表示時検索条件Dto
      * @return 借上社宅一覧データ取得SQLパラメータクラス
      */
-    private Skf2060Sc004GetKariageListExpParameter setParam(Skf2060Sc004SearchDto dto){
+    private Skf2060Sc004GetKariageListExpParameter setSearchParam(Skf2060Sc004SearchDto dto){
         Skf2060Sc004GetKariageListExpParameter param = new Skf2060Sc004GetKariageListExpParameter();
         
         param.setCandidateDateFrom(dto.getCandidateDateFrom());
         param.setCandidateDateTo(dto.getCandidateDateTo());
-        param.setCandidatePersonNo(dto.getCandidatePersonName());
+        param.setCandidatePersonName(dto.getCandidatePersonName());
         param.setShatakuName(dto.getShatakuName());
         param.setShatakuAddressName(dto.getShatakuAddressName());
         param.setApplStatus(Arrays.asList(dto.getCandidateStatus()));
+        
+        // 検索ボタン押下時の検索条件をセッションに格納
+        sessionBean.put(SessionCacheKeyConstant.SKF2060SC004_SEARCH_COND_SESSION_KEY, param);
         
         return param;
     }
