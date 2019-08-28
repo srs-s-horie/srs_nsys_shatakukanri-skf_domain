@@ -1,5 +1,8 @@
 package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc002;
 
+/*
+ * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
+ */
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,11 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-/*
- * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
- */
 import org.springframework.web.multipart.MultipartFile;
-
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -179,10 +178,14 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		}
 
 		SheetDataBean sheetDataBean = sheetDataBeanList.get(0);
-		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();		
+		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();
 		Map<String, Integer> posMap = createColumnNoMap(rowDataBeanList); // 対象のデータ格納position
 		int shimeiEmptyCnt = 0; // 空の社員氏名カウント
-		List<String> shainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト
+		boolean duplicateShainNo = false; // 重複する社員番号の判定用
+		List<String> existShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複確認用)
+		boolean nonexistShainNo = false; // 存在しない社員番号の判定用
+		List<String> nonexistShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(既存確認用)
+
 		// 転任者調書エクセルファイルの内容読み込んでいく
 		for (int i = 0; i < (rowDataBeanList.size() - 1); i++) {
 			// 先頭行は飛ばす
@@ -208,23 +211,33 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 			int shainNoPos = posMap.get(IMPORT_COL.IMPORT_COL_SHAIN_NO.getColStr());
 			String shainNo = cellDataBeanList.get(shainNoPos).getValue(); // 社員番号
 			if (shainNo != null && !CheckUtils.isEmpty(shainNo)) {
-				
-				for (int j = 0; j < shainNoList.size(); j++) {
-					String listShainNo = shainNoList.get(j);
+				boolean exsistNoFlg = false;
+
+				for (int j = 0; j < existShainNoList.size(); j++) {
+					String listShainNo = existShainNoList.get(j);
 					// 社員番号重複チェック
 					if (shainNo.equals(listShainNo)) {
-						ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-								MessageIdConstant.E_SKF_3045, String.valueOf(shainNo));
-						return false;
+						exsistNoFlg = true;
+						duplicateShainNo = true;
+						break;
 					}
 				}
-				shainNoList.add(shainNo);
+
+				// リストに格納されてない社員番号の場合
+				if (!exsistNoFlg) {
+					existShainNoList.add(shainNo);
+				}
 
 				// 社員番号存在チェック
 				if (!skf3020Sc002SharedService.checkShainExists(shainNo)) {
-					ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-							MessageIdConstant.E_SKF_3046, shainNo);
-					return false;
+					nonexistShainNo = true;
+					for (int j = 0; j < nonexistShainNoList.size(); j++) {
+						// 社員番号重複チェック
+						if (shainNo.equals(nonexistShainNoList.get(j))) {
+							nonexistShainNoList.add(shainNo);
+							break;
+						}
+					}
 				}
 			}
 
@@ -233,18 +246,40 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 			importData.add(saveDto);
 
 			if (importData.size() > IMPORT_DATA_CNT_UPPER) {
-				ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-						MessageIdConstant.E_SKF_1065, IMPORT_DATA_CNT_UPPER);
-				return false;
+				break;
 			}
 
 			// カウント初期化
 			shimeiEmptyCnt = 0;
 		}
 
+		// 社員番号重複している場合
+		if (duplicateShainNo) {
+			// TODO メッセージ確認
+//			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+//					MessageIdConstant.E_SKF_3045, "");
+			return false;
+		}
+
+		// 存在しない社員番号がある場合
+		if (nonexistShainNo) {
+			// TODO メッセージ確認
+//			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+//					MessageIdConstant.E_SKF_3046, "");
+			return false;
+		}
+
+		// データ無しの場合
 		if (importData.size() == 0) {
 			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
 					MessageIdConstant.E_SKF_1064);
+			return false;
+		}
+
+		// データ件数の上限越え
+		if (importData.size() > IMPORT_DATA_CNT_UPPER) {
+			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+					MessageIdConstant.E_SKF_1065, IMPORT_DATA_CNT_UPPER);
 			return false;
 		}
 
@@ -355,8 +390,8 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 	 */
 	private Skf302010SaveDto createSaveDto(String shimei, String shainNo, List<CellDataBean> cellDataBeanList,
 			Map<String, Integer> posMap) {
+		
 		Skf302010SaveDto saveDto = new Skf302010SaveDto();
-
 		// 社員氏名
 		saveDto.setName(shimei);
 		// 社員番号
@@ -367,65 +402,80 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		// 年齢
 		int agePos = posMap.get(IMPORT_COL.IMPORT_COL_AGE.getColStr());
 		saveDto.setAge(cellDataBeanList.get(agePos).getValue());
-		// 現所属
-		String nowAffiliation = editNowAffiliation(cellDataBeanList, posMap);
-		saveDto.setNowAffiliation(nowAffiliation);
-		// 新所属
-		String newAffiliation = editNewAffiliation(cellDataBeanList, posMap);
-		saveDto.setNewAffiliation(newAffiliation);
 		// 備考
 		int bikoPos = posMap.get(IMPORT_COL.IMPORT_COL_BIKO.getColStr());
 		saveDto.setBiko(cellDataBeanList.get(bikoPos).getValue());
-		
+
+		int[] nowAffiliationPosArray = { posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION1.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION2.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION3.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION4.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION5.getColStr()) };
+		// 現所属
+		String nowAffiliation = editAffiliation(cellDataBeanList, nowAffiliationPosArray);
+		saveDto.setNowAffiliation(nowAffiliation);
+
+		int[] newAffiliationPosArray = { posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION1.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION2.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION3.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION4.getColStr()),
+				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION5.getColStr()) };
+		// 新所属
+		String newAffiliation = editAffiliation(cellDataBeanList, newAffiliationPosArray);
+		saveDto.setNewAffiliation(newAffiliation);
+
 		LogUtils.debugByMsg("セッション登録DTO ： " + saveDto);
 
 		return saveDto;
 	}
 
 	/**
-	 * 現所属の表示内容を編集する。
+	 * 所属の表示内容を編集する。
 	 * 
 	 * @param cellDataBeanList
 	 * @param posMap
-	 * @return 編集後の現所属
+	 * @return 編集後の所属
 	 */
-	private String editNowAffiliation(List<CellDataBean> cellDataBeanList, Map<String, Integer> posMap) {
-		// 対象データ取得pos配列
-		int[] posArray = { posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION1.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION2.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION3.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION4.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NOW_AFFILIATION5.getColStr()) };
+	private String editAffiliation(List<CellDataBean> cellDataBeanList, int[] posArray) {
 
+		String br = "\n";
+		// 改行ごとに配列にセットしていく。
+		String str_1 = cellDataBeanList.get(posArray[0]).getValue();
+		String[] line_1 = str_1.split(br, 0);
+		String str_2 = cellDataBeanList.get(posArray[1]).getValue();
+		String[] line_2 = str_2.split(br, 0);
+		String str_3 = cellDataBeanList.get(posArray[2]).getValue();
+		String[] line_3 = str_3.split(br, 0);
+		String str_4 = cellDataBeanList.get(posArray[3]).getValue();
+		String[] line_4 = str_4.split(br, 0);
+		String str_5 = cellDataBeanList.get(posArray[4]).getValue();
+		String[] line_5 = str_5.split(br, 0);
+
+		int addLineCnt = 0;
 		String outVal = "";
-		for (int i = 0; i < posArray.length; i++) {
-			outVal += cellDataBeanList.get(posArray[i]).getValue() + CodeConstant.SPACE;
+
+		for (;;) {
+			outVal += line_1.length > addLineCnt ? line_1[addLineCnt] + CodeConstant.SPACE : "";
+			outVal += line_2.length > addLineCnt ? line_2[addLineCnt] + CodeConstant.SPACE : "";
+			outVal += line_3.length > addLineCnt ? line_3[addLineCnt] + CodeConstant.SPACE : "";
+			outVal += line_4.length > addLineCnt ? line_4[addLineCnt] + CodeConstant.SPACE : "";
+			outVal += line_5.length > addLineCnt ? line_5[addLineCnt] + CodeConstant.SPACE : "";
+			addLineCnt++;
+
+			if (line_1.length < (addLineCnt + 1) && line_2.length < (addLineCnt + 1) && line_3.length < (addLineCnt + 1)
+					&& line_4.length < (addLineCnt + 1) && line_5.length < (addLineCnt + 1)) {
+				break;
+
+			} else {
+				// 1回目は改行無し
+				if (addLineCnt != 0) {
+					// データがまだある場合は1行あける。
+					outVal += br + br;
+				}
+			}
 		}
 
-		return outVal.trim();
-	}
-
-	/**
-	 * 新所属の表示内容を編集する。
-	 * 
-	 * @param cellDataBeanList
-	 * @param posMap
-	 * @return 編集後の新所属
-	 */
-	private String editNewAffiliation(List<CellDataBean> cellDataBeanList, Map<String, Integer> posMap) {
-		// 対象データ取得pos配列
-		int[] posArray = { posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION1.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION2.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION3.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION4.getColStr()),
-				posMap.get(IMPORT_COL.IMPORT_COL_NEW_AFFILIATION5.getColStr()) };
-
-		String outVal = "";
-		for (int i = 0; i < posArray.length; i++) {
-			outVal += cellDataBeanList.get(posArray[i]).getValue() + CodeConstant.SPACE;
-		}
-
-		return outVal.trim();
+		return outVal;
 	}
 
 }

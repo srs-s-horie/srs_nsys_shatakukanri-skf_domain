@@ -21,6 +21,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetAgreeAuthorityGroupIdExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetApplHistoryInfoByParameterExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetApplHistoryStatusInfoForUpdateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetApplHistoryStatusInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetCommentInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetCommentInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetSendApplMailInfoExp;
@@ -29,8 +31,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetTeijiDataInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateApplHistoryAgreeStatusExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
@@ -51,12 +56,15 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetAgreeAuthorityCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetAgreeAuthorityGroupIdExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetApplHistoryInfoByParameterExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetApplHistoryStatusInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetCommentInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetSendApplMailInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetTeijiDataInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateCommentInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MOperationGuideRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
@@ -69,10 +77,12 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuSh
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 
 /**
  * Skf2010Sc005 承認一覧内部処理クラス
@@ -116,6 +126,12 @@ public class Skf2010Sc005SharedService {
 	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
 	@Autowired
 	private Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository;
+	@Autowired
+	private Skf2010Sc005GetApplHistoryStatusInfoForUpdateExpRepository skf2010Sc005GetApplHistoryStatusInfoForUpdateExpRepository;
+	@Autowired
+	private Skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository;
+	@Autowired
+	private Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
 
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
@@ -129,6 +145,8 @@ public class Skf2010Sc005SharedService {
 	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -974,6 +992,66 @@ public class Skf2010Sc005SharedService {
 		return;
 	}
 
+	public boolean isAgreeAuthority(String applId, String roleId, String applStatus) {
+		return this.isAgreeAuthority(companyCd, applId, roleId, applStatus);
+	}
+
+	/**
+	 * 社宅使用料月額の更新
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @param applNo
+	 * @return
+	 */
+	public boolean updateShatakuRental(String shainNo, String nyutaikyoKbn, String applNo) {
+		List<Skf2010Sc005GetTeijiDataInfoExp> teijiDataList = new ArrayList<Skf2010Sc005GetTeijiDataInfoExp>();
+		Skf2010Sc005GetTeijiDataInfoExpParameter param = new Skf2010Sc005GetTeijiDataInfoExpParameter();
+		param.setShainNo(shainNo);
+		param.setNyutaikyoKbn(nyutaikyoKbn);
+		param.setApplNo(applNo);
+		teijiDataList = skf2010Sc005GetTeijiDataInfoExpRepository.getTeijiDataInfo(param);
+		if (teijiDataList.size() > 0) {
+			Skf2010Sc005GetTeijiDataInfoExp teijiData = teijiDataList.get(0);
+			if (NfwStringUtils.isNotEmpty(teijiData.getRentalAdjust())) {
+				Skf2020TNyukyoChoshoTsuchi record = new Skf2020TNyukyoChoshoTsuchi();
+				// 主キー設定
+				record.setCompanyCd(companyCd);
+				record.setApplNo(applNo);
+				// 更新設定
+				updateShatakuRentalMapping(teijiData, record);
+
+				int result = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKeySelective(record);
+				if (result <= 0) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * 使用料と共益費更新用レコードのマッピング
+	 * 
+	 * @param teijiData
+	 * @param record
+	 */
+	private void updateShatakuRentalMapping(Skf2010Sc005GetTeijiDataInfoExp teijiData,
+			Skf2020TNyukyoChoshoTsuchi record) {
+		record.setNewRental(teijiData.getRentalAdjust());
+		record.setKyoekihiPersonKyogichuFlg(teijiData.getKyoekihiPersonKyogichuFlg());
+		record.setNewKyoekihi(teijiData.getKyoekihiPersonAdjust());
+
+		if (NfwStringUtils.isNotEmpty(teijiData.getParkingRental1())) {
+			record.setParkingRental(teijiData.getParkingRental1());
+		}
+		if (NfwStringUtils.isNotEmpty(teijiData.getParkingRental2())) {
+			record.setParkingRental2(teijiData.getParkingRental2());
+		}
+		return;
+	}
+
 	/**** ここからprivateメソッド ***/
 
 	/**
@@ -984,7 +1062,7 @@ public class Skf2010Sc005SharedService {
 	 */
 	private boolean checkAgree(Skf2010Sc005GetShoninIchiranShoninExp tmpData) {
 		// 「一括承認可能フラグ」に、不可が設定されている場合
-		if (tmpData != null && "0".equals(tmpData.getSumApprovalFlg())) {
+		if (tmpData == null || (tmpData != null && "0".equals(tmpData.getSumApprovalFlg()))) {
 			return false;
 		}
 		String applStatus = tmpData.getApplStatus();
@@ -1332,6 +1410,148 @@ public class Skf2010Sc005SharedService {
 		// メール送信
 		NfwSendMailUtils.sendMail("SKF_ML06", replaceMap);
 		return;
+	}
+
+	/**
+	 * 申請書類履歴テーブル更新（審査中）
+	 * 
+	 * @param applId
+	 * @param applNo
+	 * @param agreeAuthority
+	 * @param applStatus
+	 * @param errorMsg
+	 * @throws Exception
+	 */
+	public boolean updateStatusShinsachu(String applId, String applNo, boolean agreeAuthority, String applStatus,
+			Map<String, String> statusMap) throws Exception {
+		boolean statusUpdateFlg = true;
+
+		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)
+				&& (CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSEICHU)
+						|| CheckUtils.isEqual(applStatus, CodeConstant.STATUS_TORIKOMI_KANRYO)
+						|| CheckUtils.isEqual(applStatus, CodeConstant.STATUS_DOI_SHINAI))) {
+			// 申請書類IDが”R0100”【社宅入居希望等調書】かつ、
+			// 現在のステータスが”01”【申請中】又は、”15”【取込完了】”21”【同意しない】の場合、処理を継続する。
+		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0103)
+				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSEICHU)) {
+			// 申請書類IDが”R0103”【退居（自動車の保管場所返還）届】かつ、
+			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
+		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0104)
+				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSEICHU)) {
+			// 申請書類IDが”R0103”【社宅希望申請】かつ、
+			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
+		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0105)
+				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_DOI_SHINAI)) {
+			// 申請書類IDが”R0103”【社宅希望申請】かつ、
+			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
+		} else {
+			statusUpdateFlg = false;
+		}
+
+		// ステータス更新可能かどうか
+		if (agreeAuthority) {
+			// ステータスを審査中に更新
+			if (statusUpdateFlg) {
+				boolean result = updateApplHistory(applNo, applId, CodeConstant.STATUS_SHINSACHU);
+				if (!result) {
+					return false;
+				}
+				// ステータスを審査中に変更
+				// 文字列型は参照渡しできないのでMapオブジェクトに一時的に入れて返す
+				statusMap.put("applStatus", CodeConstant.STATUS_SHINSACHU);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 申請履歴を一時保存に変更します
+	 * 
+	 * @param applNo
+	 * @return
+	 */
+	public boolean updateApplHistory(String applNo, String applId, String applStatus) throws Exception {
+		boolean result = true;
+
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+
+		// 更新対象のデータを取得（行ロック実施）
+		Skf2010Sc005GetApplHistoryStatusInfoForUpdateExp baseUpdateData = new Skf2010Sc005GetApplHistoryStatusInfoForUpdateExp();
+		Skf2010Sc005GetApplHistoryStatusInfoForUpdateExpParameter param = new Skf2010Sc005GetApplHistoryStatusInfoForUpdateExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setApplNo(applNo);
+		param.setApplId(applId);
+		baseUpdateData = skf2010Sc005GetApplHistoryStatusInfoForUpdateExpRepository
+				.getApplHistoryStatusInfoForUpdate(param);
+		if (baseUpdateData == null) {
+			return false;
+		}
+
+		String agreDate = baseUpdateData.getAgreDate();
+		String agreName1 = baseUpdateData.getAgreName1();
+		String agreName2 = baseUpdateData.getAgreName2();
+
+		// ステータスが申請、所属長確認済み、又は搬出済み以外の場合（申請時は承認情報を空にする）
+		if (!CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSEICHU)
+				&& !CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHOZOKUCHO_KAKUNINZUMI)
+				&& !CheckUtils.isEqual(applStatus, CodeConstant.STATUS_HANSYUTSU_ZUMI)) {
+			// 承認日時が設定されている場合
+			if (NfwStringUtils.isNotEmpty(agreDate)) {
+				agreDate = null;
+			}
+			// 承認者名1が設定されている場合
+			if (NfwStringUtils.isEmpty(agreName1)) {
+				agreName1 = CodeConstant.NONE;
+			}
+			// 承認者名2が設定されている場合
+			if (NfwStringUtils.isEmpty(agreName2)) {
+				agreName2 = CodeConstant.NONE;
+			}
+		}
+
+		Skf2010Sc005UpdateApplHistoryAgreeStatusExp updateData = new Skf2010Sc005UpdateApplHistoryAgreeStatusExp();
+		// 更新対象のキー設定
+		updateData.setCompanyCd(companyCd);
+		updateData.setApplNo(applNo);
+
+		updateData.setApplStatus(applStatus);
+		updateData.setAgreDate(agreDate);
+		updateData.setAgreName1(agreName1);
+		updateData.setAgreName2(agreName2);
+		updateData.setUpdateDate(new Date());
+		updateData.setUpdateUserId(loginUserInfo.get("userName"));
+
+		int updateResult = skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository
+				.updateApplHistoryAgreeStatus(updateData);
+		if (updateResult <= 0) {
+			result = false;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 社宅貸与不要判定の取得
+	 * 
+	 * @param applNo
+	 * @return true:必要としない、false:必要とする
+	 */
+	public boolean getShatakuTaiyoFuyo(String applNo) {
+		Skf2020Sc003GetShatakuNyukyoKiboInfoExp shatakuNyukyoKiboInfo = new Skf2020Sc003GetShatakuNyukyoKiboInfoExp();
+		Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter param = new Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setApplNo(applNo);
+		shatakuNyukyoKiboInfo = skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository.getShatakuNyukyoKiboInfo(param);
+		// 該当の社宅入居希望等調書が取得できた場合
+		if (shatakuNyukyoKiboInfo != null) {
+			if (NfwStringUtils.isNotEmpty(shatakuNyukyoKiboInfo.getTaiyoHitsuyo())
+					&& CheckUtils.isEqual(shatakuNyukyoKiboInfo.getTaiyoHitsuyo(), CodeConstant.ASKED_SHATAKU_FUYOU)) {
+				// 必要としない場合は判定結果をTrue
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }
