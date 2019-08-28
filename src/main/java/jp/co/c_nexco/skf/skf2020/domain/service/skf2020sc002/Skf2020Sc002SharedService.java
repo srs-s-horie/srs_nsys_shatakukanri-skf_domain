@@ -863,7 +863,7 @@ public class Skf2020Sc002SharedService {
 
 		// 返却備品有無に「0:備品返却しない」を設定
 		dto.setHdnBihinHenkyakuUmu(CodeConstant.BIHIN_HENKYAKU_SHINAI);
-
+		String bihinItem = CodeConstant.DOUBLE_QUOTATION;
 		// 社宅管理番号の設定
 		long shatakuKanriId = CodeConstant.LONG_ZERO;
 
@@ -896,8 +896,11 @@ public class Skf2020Sc002SharedService {
 				bihinItemList.add(dt.getBihinName());
 				bihinItemNameList.add(bihinItemList);
 			}
+
 			// HTMLの作成
-			String bihinItem = skfHtmlCreationUtils.htmlBihinCreateTable(bihinItemNameList, 2);
+			bihinItem = skfHtmlCreationUtils.htmlBihinCreateTable(bihinItemNameList, 2);
+			dto.setReturnEquipment(bihinItem);
+		} else {
 			dto.setReturnEquipment(bihinItem);
 		}
 	}
@@ -2747,6 +2750,9 @@ public class Skf2020Sc002SharedService {
 		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils
 				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
 		dto.setTaikyoRiyu(dto.getTaikyoRiyu());
+
+		// 連絡先
+		dto.setHdnBihinHenkyakuUmu(dto.getHdnBihinHenkyakuUmu());
 
 		// 退居後の連絡先
 		dto.setTaikyogoRenrakuSaki(dto.getTaikyogoRenrakuSaki());
