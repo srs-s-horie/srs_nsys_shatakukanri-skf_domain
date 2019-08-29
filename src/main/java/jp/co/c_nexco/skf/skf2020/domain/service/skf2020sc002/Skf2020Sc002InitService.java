@@ -122,6 +122,8 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		} else {
 			initDto.setAlterLoginFlg(SkfCommonConstant.NOT_USE);
 		}
+
+		// 社員情報取得
 		if (SkfCommonConstant.NOT_USE.equals(initDto.getAlterLoginFlg())) {
 			// 代行ログインでない場合
 			// 社員マスタから社員情報取得
