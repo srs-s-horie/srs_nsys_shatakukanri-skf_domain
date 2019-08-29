@@ -863,7 +863,7 @@ public class Skf2020Sc002SharedService {
 
 		// 返却備品有無に「0:備品返却しない」を設定
 		dto.setHdnBihinHenkyakuUmu(CodeConstant.BIHIN_HENKYAKU_SHINAI);
-
+		String bihinItem = CodeConstant.DOUBLE_QUOTATION;
 		// 社宅管理番号の設定
 		long shatakuKanriId = CodeConstant.LONG_ZERO;
 
@@ -896,8 +896,11 @@ public class Skf2020Sc002SharedService {
 				bihinItemList.add(dt.getBihinName());
 				bihinItemNameList.add(bihinItemList);
 			}
+
 			// HTMLの作成
-			String bihinItem = skfHtmlCreationUtils.htmlBihinCreateTable(bihinItemNameList, 2);
+			bihinItem = skfHtmlCreationUtils.htmlBihinCreateTable(bihinItemNameList, 2);
+			dto.setReturnEquipment(bihinItem);
+		} else {
 			dto.setReturnEquipment(bihinItem);
 		}
 	}
@@ -2391,17 +2394,17 @@ public class Skf2020Sc002SharedService {
 	/**
 	 * 備品返却申請テーブルの更新処理
 	 *
-	 * @param setValue
 	 * @param dto
 	 * @param applInfo
 	 * @param bihinHenkyakuInfo
 	 * @return
 	 */
-	protected void updateBihinHenkyakuInfo(Skf2050TBihinHenkyakuShinsei setValue, Skf2020Sc002CommonDto dto,
-			Map<String, String> applInfo, Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo) {
+	protected void updateBihinHenkyakuInfo(Skf2020Sc002CommonDto dto, Map<String, String> applInfo,
+			Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo) {
 
 		int updateCnt = 0;
 		// 備品返却申請テーブルの更新項目設定
+		Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
 		setValue = setColumnInfoBihinList(setValue, dto, applInfo, bihinHenkyakuInfo.getTaikyoApplNo());
 		// 更新
 		updateCnt = skf2020Sc002UpdateBihinHenkyakuInfoExpRepository.updateBihinHenkyakuInfo(setValue);
@@ -2565,7 +2568,7 @@ public class Skf2020Sc002SharedService {
 			bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getTaikyoApplNo();
 		}
 
-		// 備品返却申請書番号がなければ居（自動車の保管場所返還）届管理番号を新規発行
+		// 備品返却申請書番号がなければ退居（自動車の保管場所返還）届管理番号を新規発行
 		if (NfwStringUtils.isEmpty(bihinHenkaykuShinseiApplNo)) {
 			// 備品返却申請用の申請書類管理番号を取得
 			bihinHenkaykuShinseiApplNo = skfShinseiUtils.getBihinHenkyakuShinseiNewApplNo(CodeConstant.C001,
@@ -2573,10 +2576,8 @@ public class Skf2020Sc002SharedService {
 			// 備品返却申請テーブルへ新規登録
 			insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, dto, applInfo);
 		} else {
-			// 項目の値設定
-			Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
 			// 更新処理
-			updateBihinHenkyakuInfo(setValue, dto, applInfo, bihinHenkyakuInfo);
+			updateBihinHenkyakuInfo(dto, applInfo, bihinHenkyakuInfo);
 		}
 
 	}
@@ -2747,6 +2748,9 @@ public class Skf2020Sc002SharedService {
 		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils
 				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
 		dto.setTaikyoRiyu(dto.getTaikyoRiyu());
+
+		// 連絡先
+		dto.setHdnBihinHenkyakuUmu(dto.getHdnBihinHenkyakuUmu());
 
 		// 退居後の連絡先
 		dto.setTaikyogoRenrakuSaki(dto.getTaikyogoRenrakuSaki());
