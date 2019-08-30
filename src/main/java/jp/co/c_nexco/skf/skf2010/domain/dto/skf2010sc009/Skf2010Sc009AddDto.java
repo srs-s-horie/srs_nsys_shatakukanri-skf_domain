@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009;
 
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc009common.Skf2010Sc009CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -11,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf2010Sc009AddDto extends Skf2010Sc009InitDto {
+public class Skf2010Sc009AddDto extends Skf2010Sc009CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 

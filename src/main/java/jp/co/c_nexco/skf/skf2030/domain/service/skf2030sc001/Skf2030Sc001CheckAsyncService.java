@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc001.Skf2030Sc001CheckAsyncDto;
 
 /**
- * Skf2030Sc001 備品希望申請（申請者用)申請処理クラス
+ * Skf2030Sc001 備品希望申請（申請者用)入居日と搬入完了日の相関チェック処理クラス
  *
  * @author NEXCOシステムズ
  */
@@ -77,6 +77,13 @@ public class Skf2030Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		return chkDto;
 	}
 
+	/**
+	 * 搬入完了日の入力チェックを行います
+	 * 
+	 * @param completeDate
+	 * @param chkDto
+	 * @return
+	 */
 	private boolean checkValidate(String completeDate, Skf2030Sc001CheckAsyncDto chkDto) {
 		boolean result = true;
 		if (NfwStringUtils.isEmpty(completeDate)) {

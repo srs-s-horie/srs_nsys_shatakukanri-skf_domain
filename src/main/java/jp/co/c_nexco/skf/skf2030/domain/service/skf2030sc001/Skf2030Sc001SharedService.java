@@ -491,6 +491,13 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
+	/**
+	 * 入居日と搬入完了日の相関チェックを行います
+	 * 
+	 * @param applInfo
+	 * @param completeDate
+	 * @return
+	 */
 	public boolean sokanCheck(Map<String, String> applInfo, String completeDate) {
 		List<Skf2030Sc001GetNyukyobiInfoExp> nyukyobiInfoList = new ArrayList<Skf2030Sc001GetNyukyobiInfoExp>();
 		Skf2030Sc001GetNyukyobiInfoExpParameter param = new Skf2030Sc001GetNyukyobiInfoExpParameter();
@@ -546,11 +553,11 @@ public class Skf2030Sc001SharedService {
 	/**
 	 * 申請履歴の承認者と申請状況を更新します
 	 * 
-	 * @param shainNo
 	 * @param applNo
-	 * @param shonin1
-	 * @param shonin2
-	 * @param applInfo
+	 * @param applId
+	 * @param applStatus
+	 * @param newApplStatus
+	 * @param shainNo
 	 * @return
 	 */
 	private boolean updateApplHistoryAgreeStatus(String applNo, String applId, String applStatus, String newApplStatus,
@@ -848,6 +855,13 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
+	/**
+	 * 申請書類履歴テーブル取得メソッド（申請日付の降順）
+	 * 
+	 * @param shainNo
+	 * @param applId
+	 * @return
+	 */
 	public List<Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp> getApplHistoryInfoInDescendingOrder(String shainNo,
 			String applId) {
 		List<Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp> applHistoryInfo = new ArrayList<Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp>();
@@ -861,8 +875,18 @@ public class Skf2030Sc001SharedService {
 		return applHistoryInfo;
 	}
 
-	public boolean checkSKSTeijiStatus(String shainNo, String applId, String applNo, Map<String, Object> errorMap) {
+	/**
+	 * 社宅管理 提示データステータスによる申請可否チェック
+	 * 
+	 * @param shainNo
+	 * @param applId
+	 * @param applNo
+	 * @param errorMap
+	 * @return
+	 */
+	public boolean checkSKSTeijiStatus(String shainNo, String applId, String applNo) {
 		String nyutaikyoKbn = CodeConstant.NONE;
+		// 該当データ数：初期値
 		long listCount = CodeConstant.LONG_ZERO;
 
 		if (NfwStringUtils.isEmpty(applNo)) {
@@ -892,8 +916,6 @@ public class Skf2030Sc001SharedService {
 		case FunctionIdConstant.R0103:
 		case FunctionIdConstant.R0105:
 			// R0100: 社宅入居希望等調書
-			// R0101: 貸与（予定）社宅等のご案内
-			// R0102: 入居等決定通知書
 			// R0103: 退居（自動車の保管場所返還）届
 			// R0105: 備品返却申請
 
@@ -920,15 +942,19 @@ public class Skf2030Sc001SharedService {
 		}
 
 		if (listCount > 0) {
-			errorMap.put("information", MessageIdConstant.I_SKF_1005);
-			errorMap.put("infoValue1", MSG_MISHONIN);
-			errorMap.put("infoValue1", MSG_KAKUNIN);
 			return true;
 		}
 
 		return false;
 	}
 
+	/**
+	 * 備品提示データステータス取得
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @return
+	 */
 	private long getSKSBihinTeijiStatusInfo(String shainNo, String nyutaikyoKbn) {
 		Skf2030Sc001GetBihinTeijiStatusCountExp data = new Skf2030Sc001GetBihinTeijiStatusCountExp();
 		Skf2030Sc001GetBihinTeijiStatusCountExpParameter param = new Skf2030Sc001GetBihinTeijiStatusCountExpParameter();
@@ -941,6 +967,14 @@ public class Skf2030Sc001SharedService {
 		return 0;
 	}
 
+	/**
+	 * 入退居予定データステータス取得メソッド
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @param applNo
+	 * @return
+	 */
 	private long getSKSNYDStatusInfo(String shainNo, String nyutaikyoKbn, String applNo) {
 		Skf2030Sc001GetNYDStatusCountExp data = new Skf2030Sc001GetNYDStatusCountExp();
 		Skf2030Sc001GetNYDStatusCountExpParameter param = new Skf2030Sc001GetNYDStatusCountExpParameter();
