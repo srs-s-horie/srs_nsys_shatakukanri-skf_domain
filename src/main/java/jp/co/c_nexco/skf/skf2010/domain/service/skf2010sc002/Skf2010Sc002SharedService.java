@@ -148,7 +148,7 @@ public class Skf2010Sc002SharedService {
 				// 添付資料
 				attachedFileMap.put("fileStream", attachedFileInfo.getFileStream());
 				// ファイルタイプ
-				String fileType = SkfAttachedFileUtiles.getFileTypeInfo(attachedFileInfo.getAttachedName());
+				String fileType = skfAttachedFileUtiles.getFileTypeInfo(attachedFileInfo.getAttachedName());
 				attachedFileMap.put("fileType", fileType);
 
 				resultAttachedFileList.add(attachedFileMap);
