@@ -491,6 +491,13 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
+	/**
+	 * 入居日と搬入完了日の相関チェックを行います
+	 * 
+	 * @param applInfo
+	 * @param completeDate
+	 * @return
+	 */
 	public boolean sokanCheck(Map<String, String> applInfo, String completeDate) {
 		List<Skf2030Sc001GetNyukyobiInfoExp> nyukyobiInfoList = new ArrayList<Skf2030Sc001GetNyukyobiInfoExp>();
 		Skf2030Sc001GetNyukyobiInfoExpParameter param = new Skf2030Sc001GetNyukyobiInfoExpParameter();
@@ -546,11 +553,11 @@ public class Skf2030Sc001SharedService {
 	/**
 	 * 申請履歴の承認者と申請状況を更新します
 	 * 
-	 * @param shainNo
 	 * @param applNo
-	 * @param shonin1
-	 * @param shonin2
-	 * @param applInfo
+	 * @param applId
+	 * @param applStatus
+	 * @param newApplStatus
+	 * @param shainNo
 	 * @return
 	 */
 	private boolean updateApplHistoryAgreeStatus(String applNo, String applId, String applStatus, String newApplStatus,
