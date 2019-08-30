@@ -477,8 +477,8 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 
 		// 現居住宅
-		LogUtils.debugByMsg(msg + "現居住宅" + checkDto.getShatakuKanriId());
-		if (checkDto.getShatakuKanriId() <= 0) {
+		LogUtils.debugByMsg(msg + "現居住宅" + checkDto.getShatakuKanriId() + checkDto.getNowShataku());
+		if (NfwStringUtils.isBlank(checkDto.getNowShataku())) {
 			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "nowShataku" }, MessageIdConstant.E_SKF_1054,
 					"現居住宅");
 			result = false;
@@ -1275,125 +1275,4 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 		return result;
 	}
-
-	// /**
-	// * デフォルト色に設定
-	// *
-	// * @param dto
-	// */
-	// protected void setDefultColor(Skf2020Sc002CheckAsyncDto dto) {
-	//
-	// // TEL
-	// dto.setTelErr(CodeConstant.DOUBLE_QUOTATION);
-	// // 社宅を必要としますか？
-	// dto.setTaiyoHituyoErr(CodeConstant.DOUBLE_QUOTATION);
-	// // 社宅を必要とする理由
-	// dto.setHitsuyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
-	// // 社宅を必要としない理由
-	// dto.setFuhitsuyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
-	// // 機関
-	// dto.setNewAgencyErr(CodeConstant.DOUBLE_QUOTATION);
-	// // 部等
-	// dto.setNewAffiliation1Err(CodeConstant.DOUBLE_QUOTATION);
-	// // 室、チーム又は課
-	// dto.setNewAffiliation2Err(CodeConstant.DOUBLE_QUOTATION);
-	// // 必要とする社宅
-	// dto.setHitsuyoShatakuErr(CodeConstant.DOUBLE_QUOTATION);
-	// // 続柄
-	// dto.setDokyoRelation1Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoRelation2Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoRelation3Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoRelation4Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoRelation5Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoRelation6Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 氏名
-	// dto.setDokyoName1Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoName2Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoName3Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoName4Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoName5Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoName6Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 年齢
-	// dto.setDokyoAge1Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoAge2Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoAge3Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoAge4Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoAge5Err(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setDokyoAge6Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 入居希望日
-	// dto.setNyukyoYoteiDateErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の保管場所
-	// dto.setParkingUmuErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の保管場所
-	// dto.setCarNoInputFlgErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の車名(１台目)
-	// dto.setCarNameErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の登録番号(１台目)
-	// dto.setCarNoErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 車検の有効期間満了日(１台目)
-	// dto.setCarExpirationDateErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の使用者(１台目)
-	// dto.setCarUserErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の保管場所 使用開始日(１台目)
-	// dto.setParkingUseDateErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の車名(2台目)
-	// dto.setCarName2Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の登録番号(2台目)
-	// dto.setCarNo2Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 車検の有効期間満了日(2台目)
-	// dto.setCarExpirationDate2Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の使用者(2台目)
-	// dto.setCarUser2Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 自動車の保管場所 使用開始日(2台目)
-	// dto.setParkingUseDate2Err(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 現居住宅
-	// dto.setNowShatakuErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 保有社宅名
-	// dto.setNowShatakuNameErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 特殊事情等
-	// dto.setTokushuJijoErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 現保有の社宅(退居予定)
-	// dto.setTaikyoYoteiErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 退居予定日
-	// dto.setTaikyoYoteiDateErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 社宅の状態
-	// dto.setShatakuJyotaiErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 退居理由
-	// dto.setDdlTaikyoRiyuKbnListErr(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setTaikyoRiyuErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 退居連絡先
-	// dto.setTaikyogoRenrakuSakiErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 返却立会希望日
-	// dto.setSessionDayErr(CodeConstant.DOUBLE_QUOTATION);
-	// dto.setSessionTimeErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// // 連絡先
-	// dto.setRenrakuSakiErr(CodeConstant.DOUBLE_QUOTATION);
-	//
-	// }
-
 }

@@ -4,7 +4,9 @@
 package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc002;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShainInfoExp;
@@ -17,8 +19,10 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
@@ -44,6 +48,8 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	private SkfOperationGuideUtils skfOperationGuideUtils;
 	@Autowired
 	private Skf2020Sc002SharedService skf2020Sc002SharedService;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private Skf2020Sc002GetShainInfoExpRepository skf2020Sc002GetShainInfoExpRepository;
 
@@ -94,24 +100,53 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	 * 
 	 * @param initDto
 	 */
+	@SuppressWarnings("unchecked")
 	private void setUserInfo(Skf2020Sc002InitDto initDto) {
 		// ユーザコンテキストを取得
 		UserContext userContext = Contexts.get(UserContext.class);
 		UserProfile profile = userContext.getUserProfile();
+
 		// ユーザIDの取得
 		String userId = profile.getUserCd();
 		if (NfwStringUtils.isNotEmpty(userId)) {
 			initDto.setUserId(userId);
 		}
 
-		// 社員マスタから社員情報取得
-		List<Skf2020Sc002GetShainInfoExp> shainList = new ArrayList<Skf2020Sc002GetShainInfoExp>();
-		shainList = getShainInfo(CodeConstant.C001, userId, shainList);
-		if (shainList.size() > 0) {
-			// リストに値を格納
-			initDto.setShainList(shainList);
+		// セッション情報の取得(代理ログイン情報)
+		Map<String, String> resultAlterLoginList = null;
+		resultAlterLoginList = (Map<String, String>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP);
+
+		if (resultAlterLoginList != null) {
+			initDto.setAlterLoginFlg((resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY)));
+		} else {
+			initDto.setAlterLoginFlg(SkfCommonConstant.NOT_USE);
+		}
+
+		// 社員情報取得
+		if (SkfCommonConstant.NOT_USE.equals(initDto.getAlterLoginFlg())) {
+			// 代行ログインでない場合
+			// 社員マスタから社員情報取得
+			List<Map<String, String>> shainList = getShainInfo(CodeConstant.C001, userId);
+
+			if (shainList.size() > 0) {
+				// リストに値を格納
+				initDto.setShainList(shainList);
+				// 社員番号の設定
+				initDto.setShainNo(shainList.get(0).get("shainNo"));
+			}
+		} else {
+			// 代行ログインの場合
+
 			// 社員番号の設定
-			initDto.setShainNo(shainList.get(0).getShainNo());
+			initDto.setShainNo(resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO));
+
+			// 代行対象のユーザ情報を取得
+			List<Map<String, String>> alterLoginUserInfo = skfLoginUserInfoUtils
+					.getAlterLoginUserInfo(initDto.getShainNo());
+
+			initDto.setShainList(alterLoginUserInfo);
+
 		}
 
 		// 現在日付の設定
@@ -130,13 +165,47 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	 * @param shainList
 	 * @return 取得結果
 	 */
-	private List<Skf2020Sc002GetShainInfoExp> getShainInfo(String companyCd, String userId,
-			List<Skf2020Sc002GetShainInfoExp> shainList) {
+	private List<Map<String, String>> getShainInfo(String companyCd, String userId) {
+
+		// 戻り値
+		List<Map<String, String>> shainList = new ArrayList<Map<String, String>>();
+
+		// 社員情報情報取得
+		List<Skf2020Sc002GetShainInfoExp> resultshainList = new ArrayList<Skf2020Sc002GetShainInfoExp>();
 		// DB検索処理
 		Skf2020Sc002GetShainInfoExpParameter param = new Skf2020Sc002GetShainInfoExpParameter();
 		param.setCompanyCd(companyCd);
 		param.setUserId(userId);
-		shainList = skf2020Sc002GetShainInfoExpRepository.getShainInfo(param);
+		resultshainList = skf2020Sc002GetShainInfoExpRepository.getShainInfo(param);
+
+		// 取得できなかった場合
+		if (resultshainList == null) {
+			return shainList;
+		}
+
+		// mapに取得情報を格納
+		Map<String, String> shainMap = new HashMap<String, String>();
+
+		for (Skf2020Sc002GetShainInfoExp dt : resultshainList) {
+
+			// 表示・値を設定
+			shainMap = new HashMap<String, String>();
+			shainMap.put("shainNo", dt.getShainNo());
+			shainMap.put("name", dt.getName());
+			shainMap.put("gender", dt.getGender());
+			shainMap.put("tokyuName", dt.getTokyuName());
+			shainMap.put("agencyName", dt.getAgencyName());
+			shainMap.put("affiliation1Name", dt.getAffiliation1Name());
+			shainMap.put("affiliation2Name", dt.getAffiliation2Name());
+			shainMap.put("tel", dt.getTel());
+
+			shainList.add(shainMap);
+
+		}
+
+		// 返却するリストをDebugログで出力
+		LogUtils.debugByMsg("社員情報情報のリスト：" + shainList.toString());
+
 		return shainList;
 	}
 

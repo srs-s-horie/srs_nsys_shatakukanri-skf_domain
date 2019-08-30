@@ -44,11 +44,13 @@ public class Skf2010Sc002AttachedFileAreaAsyncService
 
 		// リンクタグの作成
 		if (attachedFileList != null && attachedFileList.size() > 0) {
+			int attachedNo = attachedFileList.size();
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
 				String linkTag = baseLinkTag;
-				linkTag = linkTag.replace("$ATTACHEDNO$", attachedFileMap.get("attachedNo").toString());
+				linkTag = linkTag.replace("$ATTACHEDNO$", String.valueOf(attachedNo));
 				linkTag = linkTag.replace("$ATTACHEDNAME$", attachedFileMap.get("attachedName").toString());
 				listTagList.add(linkTag);
+				attachedNo++;
 			}
 		}
 

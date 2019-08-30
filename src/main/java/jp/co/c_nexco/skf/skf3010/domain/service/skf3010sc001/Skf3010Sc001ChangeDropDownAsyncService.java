@@ -46,6 +46,14 @@ public class Skf3010Sc001ChangeDropDownAsyncService
 				asyncDto.getEmptyRoomCd(), emptyRoomList, asyncDto.getUseKbnCd(), useKbnList, asyncDto.getEmptyParkingCd(),
 				emptyParkingList);
 
+		// セッション情報削除
+		asyncDto.setManageCompanyList(null);
+		asyncDto.setManageAgencyList(null);
+		asyncDto.setEmptyRoomList(null);
+		asyncDto.setShatakuKbnList(null);
+		asyncDto.setUseKbnList(null);
+		asyncDto.setEmptyParkingList(null);
+
 		// ドロップダウンリストをDTOにセット
 		asyncDto.setManageCompanyList(manageCompanyList);
 		asyncDto.setManageAgencyList(manageAgencyList);
@@ -53,6 +61,13 @@ public class Skf3010Sc001ChangeDropDownAsyncService
 		asyncDto.setShatakuKbnList(shatakuKbnList);
 		asyncDto.setUseKbnList(useKbnList);
 		asyncDto.setEmptyParkingList(emptyParkingList);
+		// 解放
+		manageCompanyList = null;
+		manageAgencyList = null;
+		emptyRoomList = null;
+		shatakuKbnList = null;
+		useKbnList = null;
+		emptyParkingList = null;
 
 		// 返却するリストをDebugログで出力
 		LogUtils.debugByMsg("管理会社コード:" + asyncDto.getSelectedCompanyCd());

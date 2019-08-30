@@ -18,7 +18,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
@@ -36,8 +35,6 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private Skf2020Sc002SharedService skf2020Sc002SharedService;
 	@Autowired
@@ -101,8 +98,9 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		boolean ret = true;
 
 		// 社員番号を設定
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		applInfo.put("shainNo", loginUserInfoMap.get("shainNo"));
+		// Map<String, String> loginUserInfoMap =
+		// skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		applInfo.put("shainNo", saveDto.getShainNo());
 		// 添付ファイルの有無
 		Map<String, String> applTacInfoMap = skfShinseiUtils.getApplAttachFlg(applInfo.get("shainNo"),
 				applInfo.get("applNo"));

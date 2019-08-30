@@ -50,6 +50,8 @@ public class Skf3010Sc001CommonDto extends Skf301010CommonDto {
 	private String hdnRowEmptyRoomCount;
 	// 対象行の空き駐車場数
 	private String hdnRowEmptyParkingCount;
+    // 対象行の部屋番号
+    private String hdnRoomNo;
 	// 戻るURL
 	// private String backUrl;
 

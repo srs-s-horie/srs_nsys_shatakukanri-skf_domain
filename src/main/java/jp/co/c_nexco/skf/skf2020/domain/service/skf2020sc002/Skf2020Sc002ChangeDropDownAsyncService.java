@@ -49,6 +49,8 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 		String companyCd = CodeConstant.C001;
 		String newAgencyCd = dto.getAgencyCd();
 		String newAffiliation1Cd = dto.getAffiliation1Cd();
+		String newAffiliation2Cd = dto.getAffiliation2Cd();
+
 		if (dto.getShatakuKanriId() > 0) {
 			dto.setShatakuKanriId(dto.getShatakuKanriId());
 		}
@@ -58,25 +60,31 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 		List<Map<String, Object>> affiliation1List = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 
-		// 機関コードが設定されていた場合は部等コードリストを作成
+		// 部等コードリストを作成
 		if (newAgencyCd != null && !CheckUtils.isEmpty(newAgencyCd)) {
-			affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, newAgencyCd, null, true);
+			affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, newAgencyCd, newAffiliation1Cd, true);
 			// その他を追加
 			Map<String, Object> soshikiMap = new HashMap<String, Object>();
 			soshikiMap.put("value", "99");
 			soshikiMap.put("label", "その他");
+			if ("99".equals(newAffiliation1Cd)) {
+				soshikiMap.put("selected", true);
+			}
 			affiliation1List.add(soshikiMap);
 			LogUtils.debugByMsg("返却する部等リスト：" + affiliation1List.toString());
 
 		}
 		// 部等コードが設定されていた場合は室、チーム又は課コードリストを作成
 		if (newAffiliation1Cd != null && !CheckUtils.isEmpty(newAffiliation1Cd)) {
-			affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, newAgencyCd, newAffiliation1Cd, null,
-					true);
+			affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, newAgencyCd, newAffiliation1Cd,
+					newAffiliation2Cd, true);
 			// その他を追加
 			Map<String, Object> teamMap = new HashMap<String, Object>();
 			teamMap.put("value", "99");
 			teamMap.put("label", "その他");
+			if ("99".equals(newAffiliation2Cd)) {
+				teamMap.put("selected", true);
+			}
 			affiliation2List.add(teamMap);
 			LogUtils.debugByMsg("返却室、チーム又は課：" + affiliation2List.toString());
 		}
@@ -200,6 +208,14 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 			if (shatakuList.get(0).getShatakuRoomKanriNo() != null) {
 				hdnNowShatakuRoomKanriNo = shatakuList.get(0).getShatakuRoomKanriNo();
 				dto.setHdnNowShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
+			}
+
+			// 駐車場の保管場所が2台ともNULLではない場合、駐車場のみラジオボタンを非活性にするフラグを設定
+			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress1())
+					&& NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress2())) {
+				// 駐車場2台フラグ
+				String one = "1";
+				dto.setParkingFullFlg(one);
 			}
 
 		}
