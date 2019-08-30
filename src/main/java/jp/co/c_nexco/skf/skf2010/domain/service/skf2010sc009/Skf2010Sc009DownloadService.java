@@ -4,12 +4,13 @@ import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FI
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DownloadDto;
@@ -32,6 +33,14 @@ public class Skf2010Sc009DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	protected BaseDto index(Skf2010Sc009DownloadDto dlDto) throws Exception {
 		// 添付資料番号
 		String attachedNo = dlDto.getAttachedNo();
+		// 申請書類ID
+		String applId = dlDto.getApplId();
+		// 借上候補物件番号
+		String candidateNo = dlDto.getCandidateNo();
+		// 申請書類が借上候補物件の場合、専用のセッションキーに切り替える
+		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
+			sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
+		}
 
 		// ファイル名
 		String fileName = "";

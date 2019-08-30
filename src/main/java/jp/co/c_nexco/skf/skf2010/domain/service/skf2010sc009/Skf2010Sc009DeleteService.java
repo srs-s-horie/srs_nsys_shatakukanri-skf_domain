@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DeleteDto;
@@ -31,7 +32,7 @@ public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009D
 	private MenuScopeSessionBean menuScopeSessionBean;
 
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
-	
+
 	@Value("${skf2010.skf2010_sc009.max_search_count}")
 	private String maxSearchCount;
 	@Value("${skf2010.skf2010_sc009.max_file_size}")
@@ -42,11 +43,9 @@ public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009D
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param delDto
-	 *            インプットDTO
+	 * @param delDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc009DeleteDto index(Skf2010Sc009DeleteDto delDto) throws Exception {
@@ -54,8 +53,14 @@ public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009D
 		delDto.setPageTitleKey(MessageIdConstant.SKF2010_SC009_TITLE);
 
 		String applId = delDto.getApplId();
+		String candidateNo = delDto.getCandidateNo();
 		String applName = getBaseScreenName(applId);
 		delDto.setApplName(applName);
+
+		// 申請書類が借上候補物件の場合、専用のセッションキーに切り替える
+		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
+			sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
+		}
 
 		String attachedNo = delDto.getAttachedNo();
 
