@@ -69,8 +69,6 @@ public class Skf2030Sc001CompleteService extends BaseServiceAbstract<Skf2030Sc00
 		applInfo.put("applId", dto.getApplId());
 		applInfo.put("shainNo", dto.getHdnShainNo());
 
-		Map<String, Object> errorMap = new HashMap<String, Object>();
-
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
@@ -92,7 +90,7 @@ public class Skf2030Sc001CompleteService extends BaseServiceAbstract<Skf2030Sc00
 				String nyukyoKiboApplNo = applHistoryInfo.getApplNo();
 
 				if (skf2030Sc001SharedService.checkSKSTeijiStatus(loginUserInfo.get("shainNo"),
-						FunctionIdConstant.R0104, nyukyoKiboApplNo, errorMap)) {
+						FunctionIdConstant.R0104, nyukyoKiboApplNo)) {
 					ServiceHelper.addResultMessage(dto, MessageIdConstant.I_SKF_1005, MSG_MISAKUSEI_BIHIN,
 							MSG_SAISAKUSEI_BIHIN);
 					return dto;

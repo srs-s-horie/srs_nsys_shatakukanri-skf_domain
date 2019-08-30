@@ -18,5 +18,9 @@ public class Skf2010Sc009DownloadDto extends FileDownloadDto {
 
 	// 添付資料番号
 	private String attachedNo;
+	// 申請書類ID
+	private String applId;
+	// 借上候補物件番号
+	private String candidateNo;
 
 }
