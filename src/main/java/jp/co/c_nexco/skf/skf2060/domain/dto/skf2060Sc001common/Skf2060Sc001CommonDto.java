@@ -45,6 +45,9 @@ public class Skf2060Sc001CommonDto extends Skf206010CommonDto {
 	//更新日時
 	private String updateDate;
 	
+	//申請書類ID
+	private String applId;
+	
 	//添付ファイル用
 	private List<DownloadFile> dlFile;
 	
