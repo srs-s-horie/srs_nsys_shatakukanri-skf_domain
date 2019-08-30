@@ -69,8 +69,6 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		applInfo.put("applId", applyDto.getApplId());
 		applInfo.put("shainNo", applyDto.getHdnShainNo());
 
-		Map<String, Object> errorMap = new HashMap<String, Object>();
-
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
@@ -92,7 +90,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 				String nyukyoKiboApplNo = applHistoryInfo.getApplNo();
 
 				if (skf2030Sc001SharedService.checkSKSTeijiStatus(loginUserInfo.get("shainNo"),
-						FunctionIdConstant.R0104, nyukyoKiboApplNo, errorMap)) {
+						FunctionIdConstant.R0104, nyukyoKiboApplNo)) {
 					ServiceHelper.addResultMessage(applyDto, MessageIdConstant.I_SKF_1005, MSG_MISAKUSEI_BIHIN,
 							MSG_SAISAKUSEI_BIHIN);
 					return applyDto;
@@ -111,6 +109,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 		}
 
+		// 更新処理
 		if (skf2030Sc001SharedService.updateDispInfo(applInfo, applyDto)) {
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
@@ -136,12 +135,12 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		boolean result = true;
 		// 備品希望の「申請する」が選択されている場合は必須チェック必要
 		boolean bihinCheckFlag = false;
-		if (NfwStringUtils.isEmpty(applyDto.getBihinCheckFlag())) {
+		if (NfwStringUtils.isNotEmpty(applyDto.getBihinCheckFlag())) {
 			bihinCheckFlag = Boolean.parseBoolean(applyDto.getBihinCheckFlag());
 		}
 
 		List<String> validateFlag = new ArrayList<String>();
-		if (!bihinCheckFlag) {
+		if (bihinCheckFlag) {
 			// tel
 			validateFlag.add("tel");
 			// 連絡先
@@ -163,6 +162,15 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		return result;
 	}
 
+	/**
+	 * 日付チェックを行う
+	 * 
+	 * @param applyDto
+	 * @param validateFlag
+	 * @param errorTarget
+	 * @param result
+	 * @return
+	 */
 	private boolean checkDate(Skf2030Sc001ApplyDto applyDto, List<String> validateFlag, List<String> errorTarget,
 			boolean result) {
 		if (!result) {
@@ -195,6 +203,16 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		return result;
 	}
 
+	/**
+	 * バイト数チェックを行います
+	 * 
+	 * @param applyDto
+	 * @param validateFlag
+	 * @param errorTarget
+	 * @param result
+	 * @return
+	 * @throws Exception
+	 */
 	private boolean checkByteCount(Skf2030Sc001ApplyDto applyDto, List<String> validateFlag, List<String> errorTarget,
 			boolean result) throws Exception {
 		if (applyDto.isStatus01Flag() && result) {
@@ -212,10 +230,18 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		return result;
 	}
 
+	/**
+	 * 必須入力チェックを行います
+	 * 
+	 * @param applyDto
+	 * @param validateFlag
+	 * @param errorTarget
+	 * @return
+	 */
 	private boolean checkControlEmpty(Skf2030Sc001ApplyDto applyDto, List<String> validateFlag,
 			List<String> errorTarget) {
 		boolean result = true;
-		// コメント
+		// 勤務先のTEL
 		if (!applyDto.isBihinReadOnly() && validateFlag.indexOf("tel") >= 0) {
 			if (NfwStringUtils.isEmpty(applyDto.getTel())) {
 				errorTarget.add("tel");
@@ -251,18 +277,21 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 				result = false;
 			}
 		}
-		// 搬入希望日
-		if (!applyDto.isBihinReadOnly() && validateFlag.indexOf("sessionTime") >= 0) {
-			if (NfwStringUtils.isEmpty(applyDto.getSessionTime())) {
-				errorTarget.add("sessionTime");
-				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "sessionTime" },
-						MessageIdConstant.E_SKF_1048, "搬入希望時刻");
-				// ServiceHelper.addErrorResultMessage(applyDto,
-				// errorTarget.toArray(new String[errorTarget.size()]),
-				// MessageIdConstant.E_SKF_1048, "搬入希望時刻");
-				result = false;
-			}
-		}
+		// 搬入希望時刻
+		// TODO 搬入希望時刻はドロップダウンなので不要？
+		// if (!applyDto.isBihinReadOnly() &&
+		// validateFlag.indexOf("sessionTime") >= 0) {
+		// if (NfwStringUtils.isEmpty(applyDto.getSessionTime())) {
+		// errorTarget.add("sessionTime");
+		// ServiceHelper.addErrorResultMessage(applyDto, new String[] {
+		// "sessionTime" },
+		// MessageIdConstant.E_SKF_1048, "搬入希望時刻");
+		// // ServiceHelper.addErrorResultMessage(applyDto,
+		// // errorTarget.toArray(new String[errorTarget.size()]),
+		// // MessageIdConstant.E_SKF_1048, "搬入希望時刻");
+		// result = false;
+		// }
+		// }
 		return result;
 	}
 
