@@ -42,6 +42,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiDet
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
@@ -97,7 +98,7 @@ public class Skf2060Sc001SharedService {
 	 * @param companyCd
 	 * @param shainNo
 	 * @param applNo
-	 * @return リストテーブルに出力するリスト
+	 * @return 申請書類履歴エンティティ
 	 */
 	public Skf2060Sc001GetApplHistoryExp getApplHistoryInfo(String companyCd, String shainNo, String applNo){
 	
@@ -119,18 +120,10 @@ public class Skf2060Sc001SharedService {
 	
 	
 	/**
-	 * 借上候補物件一覧テーブルリストを取得する。 <br>
-	 * 「※」項目はアドレスとして戻り値になる。
+	 * 借上候補物件一覧テーブルリストを取得する。 
 	 * 
-	 * @param shainNo
-	 * @param name
-	 * @param nameKk
-	 * @param companyCd
-	 * @param agencyCd
-	 * @param affiliation1Cd
-	 * @param affiliation2Cd
-	 * @param listTableData ※取得リストテーブルデータ
-	 * @return 取得データのレコードカウント
+	 * @param itiranFlg
+	 * @return List<Map<String, Object>>型のテーブルリスト
 	 */
 	public List<Map<String, Object>> getDataParamList(boolean itiranFlg) {
 		List<Map<String, Object>> dataParamList = new ArrayList<Map<String, Object>>();
@@ -169,18 +162,40 @@ public class Skf2060Sc001SharedService {
 		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
 
 		for (int i = 0; i < originList.size(); i++) {
+			String linkTag = CodeConstant.NONE;
+			List<String> linkTagList = new ArrayList<String>();
 			Skf2060Sc001GetKariageBukkenExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
+			//添付ファイル取得
+			List<Skf2060Sc001GetKariageBukkenFileExp> fileDataList = new ArrayList<Skf2060Sc001GetKariageBukkenFileExp> ();
+			Skf2060Sc001GetKariageBukkenFileExpParameter param = new Skf2060Sc001GetKariageBukkenFileExpParameter();
+			param.setCompanyCd(companyCd);
+			param.setCandidateNo(tmpData.getCandidateNo());
+			fileDataList = skf2060Sc001GetKariageBukkenFileExpRepository.getKariageBukkenFile(param);
+			if(fileDataList != null){
+				for(Skf2060Sc001GetKariageBukkenFileExp fileData : fileDataList){
+					//リンクタグを作成
+					String baseLinkTag = this.getLinkTag(String.valueOf(fileData.getCandidateNo()), fileData.getAttachedNo(), fileData.getAttachedName());
+					linkTagList.add(baseLinkTag);
+				}
+				
+				linkTag = String.join("<br />", linkTagList);
+				
+			}
 			String insertDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getInsertDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			String deleteBukken = "<span class='im-ui-icon-common-16-trashbox'></span>";
+			if(tmpData.getCandidateDate() != null){
+				deleteBukken = CodeConstant.DOUBLE_QUOTATION;
+			}
 			String candidateDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getCandidateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			tmpMap.put("teiji", "<input type='checkbox' name='teijiVal' id='teijiVal" + i + "' value='" + i + "'>");
 			tmpMap.put("insertDate", HtmlUtils.htmlEscape(insertDate));
 			tmpMap.put("candidateDate", HtmlUtils.htmlEscape(candidateDate));
 			tmpMap.put("shatakuName", HtmlUtils.htmlEscape(tmpData.getShatakuName()));
 			tmpMap.put("address", HtmlUtils.htmlEscape(tmpData.getAddress()));
-			tmpMap.put("attachedName", "");
+			tmpMap.put("attachedName", linkTag);
 			tmpMap.put("attachedFile", "");
-			tmpMap.put("deleteBukken", "");
+			tmpMap.put("deleteBukken", deleteBukken);
 			tmpMap.put("companyCd", HtmlUtils.htmlEscape(tmpData.getCompanyCd()));
 			tmpMap.put("candidateNo", tmpData.getCandidateNo());
 			tmpMap.put("money", tmpData.getMoney());
@@ -195,8 +210,8 @@ public class Skf2060Sc001SharedService {
 	 * 借上候補物件が重複していないかチェックを行う。
 	 * 
 	 * @param companyCd
-	 * @param shainNo
-	 * @param applNo
+	 * @param shatakuName
+	 * @param address
 	 * @return 重複していない場合true　重複している場合false
 	 */
 	public boolean getKariageBukken(String companyCd, String shatakuName, String address){
@@ -225,7 +240,6 @@ public class Skf2060Sc001SharedService {
 	 * @param candidateNo
 	 * @return 存在している場合true　存在していない場合false
 	 */
-	
 	public boolean getKariageBukken(String companyCd, long candidateNo){
 		
 		boolean existCheck = false;
@@ -245,6 +259,14 @@ public class Skf2060Sc001SharedService {
 		return existCheck;
 	}
 	
+	/**
+	 * 借上候補物件テーブルへ登録を行う
+	 * 
+	 * @param companyCd
+	 * @param candidateNo
+	 * @param address
+	 * @return 登録できた場合true　登録できなかった場合false
+	 */
 	public boolean insertKariageKohoInfo(String companyCd, String shatakuName, String address){	
 		boolean insertCheck = true;
 		int insertCount = 0;
@@ -266,6 +288,15 @@ public class Skf2060Sc001SharedService {
 		
 	}
 	
+	/**
+	 * 申請書類管理番号を取得する
+	 * 
+	 * @param companyCd
+	 * @param shainNo
+	 * @param applDate
+	 * @param applId
+	 * @return 作成した申請書類管理番号
+	 */
 	public String getApplNo(String companyCd, String shainNo, String applDate, String applId){
 		String applNo = new String();
 		
@@ -307,6 +338,20 @@ public class Skf2060Sc001SharedService {
 		return applNo;
 	}
 	
+	/**
+	 * 申請書類履歴テーブルへ登録を行う
+	 * 
+	 * @param companyCd
+	 * @param shainNo
+	 * @param applNo
+	 * @param applId
+	 * @param applStatus
+	 * @param applTacFlg
+	 * @param agreName1
+	 * @param comboFlg
+	 * 
+	 * @return 登録できた場合true　登録できなかった場合false
+	 */
 	public boolean insertApplHistory(String companyCd, String shainNo, String applNo, String applId, String applStatus,
 			String applTacFlg, String agreName1, String comboFlg){
 		
@@ -332,6 +377,20 @@ public class Skf2060Sc001SharedService {
 		return insertCheck;
 	}
 	
+	/**
+	 * 借上候補物件提示テーブルへ登録を行う
+	 * 
+	 * @param companyCd
+	 * @param shainNo
+	 * @param applNo
+	 * @param applId
+	 * @param applStatus
+	 * @param applTacFlg
+	 * @param agreName1
+	 * @param comboFlg
+	 * 
+	 * @return 登録できた場合true　登録できなかった場合false
+	 */
 	public boolean insertKatiageTeiji(String companyCd, String applNo, short teijiKaisu, long checkCandidateNo,
 			 Date candidateDate, String riyu, String biko){
 		
@@ -356,6 +415,21 @@ public class Skf2060Sc001SharedService {
 		return insertCheck;
 	}
 	
+	/**
+	 * 借上候補物件提示明細テーブルへ登録を行う
+	 * 
+	 * @param companyCd
+	 * @param shainNo
+	 * @param teijiKaisu
+	 * @param candidateNo
+	 * @param shatakuName
+	 * @param address
+	 * @param money
+	 * @param applCheckFlg
+	 * @param shainNo
+	 * 
+	 * @return 登録できた場合true　登録できなかった場合false
+	 */
 	public boolean insertKatiageTeijiDetail(String companyCd, String applNo, short teijiKaisu, long candidateNo,
 			String shatakuName, String address, String money, String applCheckFlg, String shainNo){
 		
@@ -382,6 +456,16 @@ public class Skf2060Sc001SharedService {
 		return insertCheck;
 	}
 	
+	/**
+	 * 添付ファイル管理テーブル (提示物件)へ登録を行う
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @param teijiKaisu
+	 * @param candidateNo
+	 * 
+	 * @return 登録できた場合true　登録できなかった場合false
+	 */
 	public boolean insertKatiageTeijiFile(String companyCd, String applNo, short teijiKaisu, long candidateNo){
 		
 		boolean insertCheck = true;
@@ -402,6 +486,14 @@ public class Skf2060Sc001SharedService {
 		return insertCheck;
 	}
 	
+	/**
+	 * 借上候補物件テーブルへ更新を行う
+	 * 
+	 * @param companyCd
+	 * @param candidateNo
+	 * 
+	 * @return 更新できた場合true　更新できなかった場合false
+	 */
 	public boolean updateKariageKoho(String companyCd, long candidateNo){
 		
 		boolean updateCheck = true;
@@ -422,6 +514,13 @@ public class Skf2060Sc001SharedService {
 		return updateCheck;
 	}
 	
+	/**
+	 * 申請書類管理テーブルを取得する
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @return 申請書類管理円エンティティ
+	 */
 	public Skf2060Sc001GetApplHistoryInfoForUpdateExp getApplHistoryInfoForUpdate(String companyCd, String applNo){
 		
 		boolean existCheck = false;
@@ -435,6 +534,14 @@ public class Skf2060Sc001SharedService {
 		return resultData;
 	}
 	
+	/**
+	 * 申請書類管理テーブルへ更新を行う
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * 
+	 * @return 更新できた場合true　更新できなかった場合false
+	 */
 	public boolean updateApplHistory(String companyCd, String applNo){
 		
 		boolean updateCheck = true;
@@ -455,6 +562,15 @@ public class Skf2060Sc001SharedService {
 		return updateCheck;
 	}
 	
+	/**
+	 * 借上候補物件テーブルへ提示フラグの更新を行う
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @param teijiKaisu
+	 * 
+	 * @return 更新できた場合true　更新できなかった場合false
+	 */
 	//TODO 自作なのでupdateUserIdなんかが入ってない
 	public boolean updateKariageBukkenTeijiFlg(String companyCd, String applNo, short teijiKaisu){
 		
@@ -475,6 +591,25 @@ public class Skf2060Sc001SharedService {
 		}
 		
 		return updateCheck;
+	}
+	
+	/**
+	 * 添付ファイルのリンクタグを取得する
+	 * 
+	 * @param candidateNo
+	 * @param attachedNo
+	 * @param candidateName
+	 * 
+	 * @return 添付ファイルリンクタグ
+	 */
+	public String getLinkTag(String candidateNo, String attachedNo, String attachedName){
+		String baseLinkTag = "<a id=\"attached_$CANDIDATENO$_$ATACCHEDNO$\">$ATTACHEDNAME$</a>";
+		
+		baseLinkTag = baseLinkTag.replace("$CANDIDATENO$", candidateNo);
+		baseLinkTag = baseLinkTag.replace("$ATACCHEDNO$", attachedNo);
+		baseLinkTag = baseLinkTag.replace("$ATTACHEDNAME$", attachedName);
+		
+		return baseLinkTag;
 	}
 	
 }

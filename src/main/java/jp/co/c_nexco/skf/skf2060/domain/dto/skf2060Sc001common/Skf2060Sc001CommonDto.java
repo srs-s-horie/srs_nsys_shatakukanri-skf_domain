@@ -39,11 +39,23 @@ public class Skf2060Sc001CommonDto extends Skf206010CommonDto {
 	//　リストテーブルチェックボックス要素
 	private String[] teijiVal;
 	
+	//支援ボタン制御
+	private String supportDisabled;
+	
+	//コメントボタン表示切替用
+	private boolean commentViewFlag;
+	
 	/** 借上候補物件登録画面hidden項目連携用 */
 	//提示対象者番号
 	private String presentedNo;
 	//更新日時
 	private String updateDate;
+	// 会社コード
+	private String hdnCompanyCd;
+	// 借上候補物件番号
+	private String hdnCandidateNo;
+	//添付ファイル番号
+	private String hdnAttachedNo;
 	
 	//申請書類ID
 	private String applId;
