@@ -127,10 +127,9 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			int parkingContractCount = createParkingContractTableDataList(paramShatakuKanriNoList, getParkingContractList);
 			// 取得結果件数判定
 			if ((shatakuContractCount + parkingContractCount) < 1) {
-				logger.warn("出力可能な契約情報データは存在しません。");
+				logger.warn("社宅情報が変更されていますので検索をしなおしてください。");
 				// {0}は存在しません。
-				ServiceHelper.addErrorResultMessage(
-						downloadDto, null, MessageIdConstant.E_SKF_1067, "出力可能な契約情報データ");
+				ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_3059);
 				break;
 			}
 			// 社宅契約情報出力用Excelワークシート作成
