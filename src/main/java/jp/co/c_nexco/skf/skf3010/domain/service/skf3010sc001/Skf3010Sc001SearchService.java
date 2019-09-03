@@ -77,12 +77,22 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 			// MessageIdConstant.E_SKF_1046, maxGetRecordCount.toString());
 		}
 
+		// セッション情報削除
+		searchDto.setPageTitleKey(null);
+		searchDto.setListTableMaxRowCount(null);
+		searchDto.setManageCompanyList(null);
+		searchDto.setManageAgencyList(null);
+		searchDto.setEmptyRoomList(null);
+		searchDto.setShatakuKbnList(null);
+		searchDto.setUseKbnList(null);
+		searchDto.setEmptyParkingList(null);
+		searchDto.setListTableData(null);
+
 		// 戻り値をセット
 		// 画面タイトル
 		searchDto.setPageTitleKey(MessageIdConstant.SKF3010_SC001_TITLE);
 		// 最大行数
 		searchDto.setListTableMaxRowCount(listTableMaxRowCount);
-
 		// ドロップダウン系
 		searchDto.setManageCompanyList(manageCompanyList);
 		searchDto.setManageAgencyList(manageAgencyList);
@@ -124,8 +134,15 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 		// 社宅住所設定(検索キー)
 		searchDto.setHdnShatakuAddress(searchDto.getShatakuAddress());
 
+		// 解放
+		listTableData = null;
+		manageCompanyList = null;
+		manageAgencyList = null;
+		emptyRoomList = null;
+		shatakuKbnList = null;
+		useKbnList = null;
+		emptyParkingList = null;
 		return searchDto;
-
 	}
 
 }

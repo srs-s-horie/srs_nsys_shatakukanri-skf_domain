@@ -3,20 +3,14 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc004;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
-import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004CandidateDto;
-import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004InitDto;
-import jp.co.intra_mart.system.repackage.bouncycastle_1_44.org.bouncycastle.asn1.ocsp.Request;
 
 /**
  * TestPrjTop画面のCandidete（提示）サービス処理クラス。　 
@@ -27,7 +21,8 @@ public class Skf2060Sc004CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	
     @Autowired
     Skf2060Sc004SharedService skf2060Sc004SharedService;
-
+    @Autowired
+    private SkfOperationLogUtils skfOperationLogUtils;
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -37,14 +32,12 @@ public class Skf2060Sc004CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	 */
 	@Override
 	public Skf2060Sc004CandidateDto index(Skf2060Sc004CandidateDto candidateDto) throws Exception {
-		
-		candidateDto.setPageTitleKey(MessageIdConstant.SKF2060_SC004_TITLE);
-		
-        // リストチェック状態を解除
-        candidateDto.setCompleteChkVal(null);
-        candidateDto.setReminderChkVal(null);
-
-        candidateDto.setListTableMaxRowCount("50"); //TODO
+	    // 操作ログを出力する
+        skfOperationLogUtils.setAccessLog("新規提示", CodeConstant.C001, candidateDto.getPageId());
+        
+        //借上社宅情報登録画面へ遷移させる
+        TransferPageInfo nextPage = TransferPageInfo.nextPage("Skf2060Sc001", "candidate");
+        candidateDto.setTransferPageInfo(nextPage);
 		return candidateDto;
 	}
 	

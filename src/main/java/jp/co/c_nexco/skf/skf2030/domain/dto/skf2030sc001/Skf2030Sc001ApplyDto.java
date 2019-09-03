@@ -1,18 +1,18 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001;
+package jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc001;
 
+import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030Sc001common.Skf2030Sc001CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3010Sc001 社宅一覧の複写(借上)ボタン処理のDto。
+ * Skf2030_Sc001画面のSaveDto。
  * 
- * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3010Sc001OutContractDto extends Skf3010Sc001InitDto {
+public class Skf2030Sc001ApplyDto extends Skf2030Sc001CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 

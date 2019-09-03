@@ -34,9 +34,6 @@ public class Skf2020Sc002ClearService extends BaseServiceAbstract<Skf2020Sc002Cl
 		// クリア処理を呼び出す。
 		clearDisp(clearDto);
 
-		// コメントの取得
-		// skf2020Sc002SharedService.setCommentBtnDisabled(clearDto);
-
 		return clearDto;
 	}
 
@@ -47,20 +44,16 @@ public class Skf2020Sc002ClearService extends BaseServiceAbstract<Skf2020Sc002Cl
 	 */
 	private void clearDisp(Skf2020Sc002ClearDto clearDto) {
 
-		// フォントカラーをデフォルトに設定
-		// skf2020Sc002SharedService.setDefultColor(clearDto);
 		// 入力情報のクリア
 		skf2020Sc002SharedService.setClearInfo(clearDto);
 
 		/*
 		 * 保存状態の復帰
 		 */
-		// 初期表示設定
-		skf2020Sc002SharedService.initializeDisp(clearDto);
+		// 登録済みデータの情報設定
+		skf2020Sc002SharedService.setSinseiInfo(clearDto);
 		// 返却備品の設定
-		skf2020Sc002SharedService.setReturnBihinInfo(clearDto);
-		// ドロップダウンリストの選択状態設定
-		skf2020Sc002SharedService.setControlDdl(clearDto);
+		skf2020Sc002SharedService.setReturnBihinInfo(clearDto, Skf2020Sc002SharedService.UPDATE_FLG);
 		// 表示項目の活性制御または表示制御
 		skf2020Sc002SharedService.setControlValue(clearDto);
 

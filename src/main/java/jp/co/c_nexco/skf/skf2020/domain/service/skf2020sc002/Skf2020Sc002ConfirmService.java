@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc002;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateBihinHenkyakuInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateNyukyoKiboInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
@@ -54,23 +51,11 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
 	@Autowired
-	private Skf2020Sc002UpdateNyukyoKiboInfoExpRepository skf2020Sc002UpdateNyukyoKiboInfoExpRepository;
-	@Autowired
-	private Skf2020Sc002UpdateBihinHenkyakuInfoExpRepository skf2020Sc002UpdateBihinHenkyakuInfoExpRepository;
-	@Autowired
 	private Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	// 更新フラグ
-	public static final String UPDATE_FLG = "1";
-	public static final String NO_UPDATE_FLG = "0";
-
-	// 最終更新日付のキャッシュキー
-	public static final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf1010_t_appl_history_UpdateDate";
-	public static final String NYUKYO_KEY_LAST_UPDATE_DATE = "skf2020_t_nyukyo_chosho_UpdateDate";
-	public static final String BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE = "skf2050_t_bihin_henkyaku_UpdateDate";
 
 	@Override
 	public BaseDto index(Skf2020Sc002ConfirmDto dto) throws Exception {
@@ -82,37 +67,23 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		skf2020Sc002SharedService.cutByte(dto);
 
 		// 登録処理
-		confirmClickProcess(dto);
-		return dto;
-	}
-
-	/**
-	 * btnConfirm（申請内容を確認する）が押下された時の処理
-	 *
-	 * @param applKbn
-	 * @param status
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 */
-	public void confirmClickProcess(Skf2020Sc002ConfirmDto dto)
-			throws IllegalAccessException, InvocationTargetException {
-
 		// ステータスの設定
 		Map<String, String> applInfo = skf2020Sc002SharedService.getSkfApplInfo(dto);
 		// 申請者用のステータスをデフォルト設定
 		String newStatus = CodeConstant.STATUS_ICHIJIHOZON;
-		// 申請対象区分の取得
-		String applKbn = dto.getApplKbn();
-		// 申請対象区分の判定
-		if (CodeConstant.OUT_INPUT.equals(applKbn)) {
-			// アウトソース用の場合、ステータスを変更しない
-			// 頻出データをセッションから変数に取得
-			newStatus = applInfo.get("status");
-		}
 		applInfo.put("newStatus", newStatus);
 
+		// 画面表示項目の保持
+		skf2020Sc002SharedService.setInfo(dto);
+		// 返却備品の設定
+		skf2020Sc002SharedService.setReturnBihinInfo(dto, Skf2020Sc002SharedService.UPDATE_FLG);
+		// 画面表示制御再設定
+		skf2020Sc002SharedService.setControlValue(dto);
+
 		// 一時保存処理を実行
-		saveInfo(applInfo, dto);
+		if (!saveInfo(applInfo, dto)) {
+			return dto;
+		}
 
 		// 申請書類確認に遷移
 		// 次の画面に渡すパラメータをセッションに格納
@@ -132,6 +103,8 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC002);
 		dto.setTransferPageInfo(nextPage, true);
+
+		return dto;
 	}
 
 	/**
@@ -140,12 +113,14 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 	 * @param applInfo
 	 * @param dto
 	 */
-	private void saveInfo(Map<String, String> applInfo, Skf2020Sc002ConfirmDto dto) {
+	private boolean saveInfo(Map<String, String> applInfo, Skf2020Sc002ConfirmDto dto) {
 
-		// 頻出データをセッションから変数に取得
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		// 更新者情報取得
-		applInfo.put("shainNo", loginUserInfoMap.get("shainNo"));
+		boolean ret = true;
+
+		// 社員番号を設定
+		// Map<String, String> loginUserInfoMap =
+		// skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		applInfo.put("shainNo", dto.getShainNo());
 		// 添付ファイルの有無
 		Map<String, String> applTacInfoMap = skfShinseiUtils.getApplAttachFlg(applInfo.get("shainNo"),
 				applInfo.get("applNo"));
@@ -154,10 +129,10 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		if (CodeConstant.STATUS_MISAKUSEI.equals(applInfo.get("status"))) {
 			// 指定なし（新規）の場合
 			dto.setHdnStatus(CodeConstant.STATUS_MISAKUSEI);
+			// 更新フラグを「0」に設定する
+			applInfo.put("updateFlg", Skf2020Sc002SharedService.NO_UPDATE_FLG);
 			// 新規登録処理
-			applInfo.put("updateFlg", NO_UPDATE_FLG);
 			if (skf2020Sc002SharedService.saveNewData(dto, applInfo)) {
-
 				// 退居社宅がある場合は備品返却の作成
 				if (NfwStringUtils.isNotEmpty(dto.getNowShatakuNo())) {
 					if (dto.getTaikyoYotei() != null && CodeConstant.LEAVE.equals(dto.getTaikyoYotei())
@@ -166,11 +141,22 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 						skf2020Sc002SharedService.registrationBihinShinsei(dto, applInfo);
 					}
 				}
+			} else {
+				ret = false;
 			}
 		} else {
 			// 新規以外
 			dto.setHdnStatus(applInfo.get("status"));
-			applInfo.put("updateFlg", UPDATE_FLG);
+			applInfo.put("updateFlg", Skf2020Sc002SharedService.UPDATE_FLG);
+
+			// 排他制御の比較用更新日を設定
+			Skf2020TNyukyoChoshoTsuchi key = new Skf2020TNyukyoChoshoTsuchi();
+			// 条件項目をセット
+			key.setCompanyCd(CodeConstant.C001);
+			key.setApplNo(dto.getApplNo());
+			Skf2020TNyukyoChoshoTsuchi reUpdateDate = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
+			dto.addLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE, reUpdateDate.getUpdateDate());
+
 			// 申請履歴テーブルの更新
 			int registHistoryCount = 0;
 			Skf2010TApplHistory setApplValue = new Skf2010TApplHistory();
@@ -178,8 +164,6 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			case CodeConstant.STATUS_ICHIJIHOZON:
 				// 一時保存の場合
 				applInfo.put("dateUpdateFlg", "1");
-				setApplValue.setLastUpdateDate(
-						dto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
 				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, dto, applInfo);
 				LogUtils.debugByMsg("申請情報履歴テーブル更新件数：" + registHistoryCount + "件");
 				break;
@@ -189,8 +173,6 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			default:
 				// 申請日時を更新しない
 				applInfo.put("dateUpdateFlg", "0");
-				setApplValue.setLastUpdateDate(
-						dto.getLastUpdateDate(Skf2020Sc002SharedService.APPL_HISTORY_KEY_LAST_UPDATE_DATE));
 				registHistoryCount = updateApplHistoryAgreeStatusIchiji(setApplValue, dto, applInfo);
 			}
 
@@ -207,13 +189,12 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			if (NfwStringUtils.isNotEmpty(dto.getNowShatakuNo())) {
 				if (dto.getTaikyoYotei() != null && CodeConstant.LEAVE.equals(dto.getTaikyoYotei())
 						&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(dto.getHdnBihinHenkyakuUmu())) {
-
 					// 備品返却申請テーブル登録処理
 					skf2020Sc002SharedService.registrationBihinShinsei(dto, applInfo);
 				}
 			}
 		}
-
+		return ret;
 	}
 
 	/**
@@ -231,8 +212,10 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		// 排他制御用更新日取得
 		// 更新日付を取得する
 		Skf2010TApplHistory resultUpdateDate = skf2020Sc002SharedService.selectByApplHistoryPrimaryKey(setValue, dto);
+		setValue.setLastUpdateDate(dto.getLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE));
+		setValue.setUpdateDate(resultUpdateDate.getUpdateDate());
 		// 排他チェック
-		super.checkLockException(dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE),
+		super.checkLockException(dto.getLastUpdateDate(Skf2020Sc002SharedService.KEY_LAST_UPDATE_DATE),
 				resultUpdateDate.getUpdateDate());
 
 		// 更新値の設定
@@ -240,73 +223,6 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		// 更新
 		resultCnt = skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(setValue);
 
-		// 排他制御の比較用更新日を再設定
-		// 更新日付を取得する
-		Skf2010TApplHistory reResultUpdateDate = skf2020Sc002SharedService.selectByApplHistoryPrimaryKey(setValue, dto);
-		dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, reResultUpdateDate.getUpdateDate());
-
 		return resultCnt;
 	}
-	//
-	// /**
-	// * 入居希望等調書テーブルの更新処理
-	// *
-	// * @param setValue
-	// * @param Skf2020Sc002CommonDto
-	// * @param applInfo
-	// * @return 登録件数
-	// */
-	// private int updateNyukyoChoshoTsuchi(Skf2020TNyukyoChoshoTsuchi setValue,
-	// Skf2020Sc002CommonDto dto,
-	// Map<String, String> applInfo) {
-	//
-	// // 社宅入居希望等調査・入居決定通知テーブル情報の取得
-	// Skf2020TNyukyoChoshoTsuchi nyukyoChoshoList = new
-	// Skf2020TNyukyoChoshoTsuchi();
-	// Skf2020TNyukyoChoshoTsuchiKey setKey = new
-	// Skf2020TNyukyoChoshoTsuchiKey();
-	// // 条件項目をセット
-	// setKey.setCompanyCd(CodeConstant.C001);
-	// setKey.setApplNo(dto.getApplNo());
-	// nyukyoChoshoList =
-	// skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setKey);
-	// LogUtils.debugByMsg("社宅入居希望等調査情報： " + nyukyoChoshoList);
-	//
-	// // 設定値
-	// setValue = skf2020Sc002SharedService.setNyukyoChoshoTsuchi(dto, setValue,
-	// applInfo);
-	// // 排他チェック
-	// super.checkLockException(dto.getLastUpdateDate(NYUKYO_KEY_LAST_UPDATE_DATE),
-	// nyukyoChoshoList.getUpdateDate());
-	// return
-	// skf2020Sc002UpdateNyukyoKiboInfoExpRepository.updateNyukyoKiboInfo(setValue);
-	// }
-	//
-	// /**
-	// * 備品返却申請テーブルの更新処理
-	// *
-	// * @param setValue
-	// * @param dto
-	// * @param applInfo
-	// * @param bihinHenkyakuInfo
-	// * @return
-	// */
-	// private int updateBihinHenkyakuInfo(Skf2050TBihinHenkyakuShinsei
-	// setValue, Skf2020Sc002CommonDto dto,
-	// Map<String, String> applInfo,
-	// Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo) {
-	//
-	// // 備品返却申請テーブルの設定
-	// // 設定値
-	// setValue = skf2020Sc002SharedService.setColumnInfoBihinList(setValue,
-	// dto, applInfo,
-	// bihinHenkyakuInfo.getTaikyoApplNo());
-	// // 排他チェック
-	// super.checkLockException(dto.getLastUpdateDate(BIHIN_HENKYAKU_KEY_LAST_UPDATE_DATE),
-	// bihinHenkyakuInfo.getUpdateDate());
-	// return
-	// skf2020Sc002UpdateBihinHenkyakuInfoExpRepository.updateBihinHenkyakuInfo(setValue);
-	//
-	// }
-
 }

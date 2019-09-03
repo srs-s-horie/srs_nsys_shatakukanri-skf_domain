@@ -33,17 +33,6 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ChangeDropD
 public class Skf2020Sc002ChangeDropDownAsyncService
 		extends AsyncBaseServiceAbstract<Skf2020Sc002ChangeDropDownAsyncDto> {
 
-	// 戻り値Map用定数
-	public static final String KEY_AGENCY_LIST = "AGENCY_LIST";
-	public static final String KEY_AFFILIATION1_LIST = "AFFILIATION1_LIST";
-	public static final String KEY_AFFILIATION2_LIST = "AFFILIATION2_LIST";
-	public static final String KEY_NOW_SHATAKU_NAME_LIST = "NOW_SHATAKU_NAME";
-	public static final String KEY_TAIKYO_RIYU_KBN_LIST = "TAIKYO_RIYU_KBN";
-	public static final String KEY_SESSION_TIME_LIST = "SESSION_TIME_LIST";
-
-	public static final String FALSE = "false";
-	public static final String TRUE = "true";
-
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
@@ -60,6 +49,8 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 		String companyCd = CodeConstant.C001;
 		String newAgencyCd = dto.getAgencyCd();
 		String newAffiliation1Cd = dto.getAffiliation1Cd();
+		String newAffiliation2Cd = dto.getAffiliation2Cd();
+
 		if (dto.getShatakuKanriId() > 0) {
 			dto.setShatakuKanriId(dto.getShatakuKanriId());
 		}
@@ -69,26 +60,31 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 		List<Map<String, Object>> affiliation1List = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 
-		// 機関コードが設定されていた場合は部等コードリストを作成
+		// 部等コードリストを作成
 		if (newAgencyCd != null && !CheckUtils.isEmpty(newAgencyCd)) {
-			affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, newAgencyCd, null, true);
+			affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, newAgencyCd, newAffiliation1Cd, true);
 			// その他を追加
-			dto.getNewAgencyErr();
 			Map<String, Object> soshikiMap = new HashMap<String, Object>();
 			soshikiMap.put("value", "99");
 			soshikiMap.put("label", "その他");
+			if ("99".equals(newAffiliation1Cd)) {
+				soshikiMap.put("selected", true);
+			}
 			affiliation1List.add(soshikiMap);
 			LogUtils.debugByMsg("返却する部等リスト：" + affiliation1List.toString());
 
 		}
 		// 部等コードが設定されていた場合は室、チーム又は課コードリストを作成
 		if (newAffiliation1Cd != null && !CheckUtils.isEmpty(newAffiliation1Cd)) {
-			affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, newAgencyCd, newAffiliation1Cd, null,
-					true);
+			affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, newAgencyCd, newAffiliation1Cd,
+					newAffiliation2Cd, true);
 			// その他を追加
 			Map<String, Object> teamMap = new HashMap<String, Object>();
 			teamMap.put("value", "99");
 			teamMap.put("label", "その他");
+			if ("99".equals(newAffiliation2Cd)) {
+				teamMap.put("selected", true);
+			}
 			affiliation2List.add(teamMap);
 			LogUtils.debugByMsg("返却室、チーム又は課：" + affiliation2List.toString());
 		}
@@ -124,6 +120,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 		long shatakuKanriId = CodeConstant.LONG_ZERO;
 		if (dto.getShatakuKanriId() > 0) {
 			shatakuKanriId = dto.getShatakuKanriId();
+			LogUtils.debugByMsg("社宅管理番号" + shatakuKanriId);
 		}
 
 		// 現居住宅の情報取得
@@ -136,31 +133,36 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 			// 社宅名
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getShatakuName())) {
 				dto.setHdnSelectedNowShatakuName(shatakuList.get(0).getShatakuName());
+				LogUtils.debugByMsg("社宅名" + dto.getHdnSelectedNowShatakuName());
 			}
 
 			// 室番号
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getRoomNo())) {
 				dto.setNowShatakuNo(shatakuList.get(0).getRoomNo());
+				LogUtils.debugByMsg("室番号" + dto.getNowShatakuNo());
 			}
 			// 規格(間取り)
 			// 規格があった場合は、貸与規格。それ以外は本来規格
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getKikaku())) {
 				hdnShatakuKikakuKbn = shatakuList.get(0).getKikaku();// 貸与規格
-				dto.setHdnShatakuKikakuKbn(hdnShatakuKikakuKbn);
 				dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
 				dto.setNowShatakuKikakuName(shatakuList.get(0).getKikakuName());
+				LogUtils.debugByMsg("規格(間取り)" + dto.getNowShatakuKikaku());
+				LogUtils.debugByMsg("規格(間取り)名称" + dto.getNowShatakuKikakuName());
 			} else {
 				if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getOriginalKikaku())) {
 					hdnShatakuKikakuKbn = shatakuList.get(0).getOriginalKikaku();// 本来規格
-					dto.setHdnShatakuKikakuKbn(hdnShatakuKikakuKbn);
 					dto.setNowShatakuKikaku(hdnShatakuKikakuKbn);
 					dto.setNowShatakuKikakuName(shatakuList.get(0).getOriginalKikakuName());
+					LogUtils.debugByMsg("規格(間取り)" + dto.getNowShatakuKikaku());
+					LogUtils.debugByMsg("規格(間取り)名称" + dto.getNowShatakuKikakuName());
 				}
 			}
 
 			// 面積
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getLendMenseki())) {
 				dto.setNowShatakuMenseki(shatakuList.get(0).getLendMenseki());
+				LogUtils.debugByMsg("現居社宅-面積" + dto.getNowShatakuMenseki());
 			}
 
 			// 駐車場 都道府県コード（保有社宅のみ設定される）
@@ -175,35 +177,45 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 			// 駐車場 １台目 保管場所
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress1())) {
 				dto.setParking1stPlace(wkPrefName + shatakuList.get(0).getParkingAddress1());
+				LogUtils.debugByMsg("現在の保管場所" + dto.getParking1stPlace());
 			}
 
 			// 駐車場 １台目 位置番号
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock1())) {
 				dto.setHdnParking1stNumber(shatakuList.get(0).getParkingBlock1());
+				LogUtils.debugByMsg("駐車場 １台目 位置番号" + dto.getHdnParking1stNumber());
 			}
 
 			// 駐車場 ２台目 保管場所
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress2())) {
 				dto.setParking2stPlace(wkPrefName + shatakuList.get(0).getParkingAddress2());
+				LogUtils.debugByMsg("現在の保管場所2" + dto.getParking2stPlace());
 			}
 
 			// 駐車場 ２台目 位置番号
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingBlock2())) {
 				dto.setHdnParking2stNumber(shatakuList.get(0).getParkingBlock2());
+				LogUtils.debugByMsg("駐車場 2台目 位置番号" + dto.getHdnParking2stNumber());
 			}
 
 			// 現在の社宅管理番号
 			if (shatakuList.get(0).getShatakuKanriNo() != null) {
 				hdnNowShatakuKanriNo = shatakuList.get(0).getShatakuKanriNo();
 				dto.setHdnNowShatakuKanriNo(hdnNowShatakuKanriNo);
-				dto.setHdnShatakuKanriNo(hdnNowShatakuKanriNo);
 			}
 
 			// 現在の部屋管理番号
 			if (shatakuList.get(0).getShatakuRoomKanriNo() != null) {
 				hdnNowShatakuRoomKanriNo = shatakuList.get(0).getShatakuRoomKanriNo();
-				dto.setHdnShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
-				dto.setHdnShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
+				dto.setHdnNowShatakuRoomKanriNo(hdnNowShatakuRoomKanriNo);
+			}
+
+			// 駐車場の保管場所が2台ともNULLではない場合、駐車場のみラジオボタンを非活性にするフラグを設定
+			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress1())
+					&& NfwStringUtils.isNotEmpty(shatakuList.get(0).getParkingAddress2())) {
+				// 駐車場2台フラグ
+				String one = "1";
+				dto.setParkingFullFlg(one);
 			}
 
 		}

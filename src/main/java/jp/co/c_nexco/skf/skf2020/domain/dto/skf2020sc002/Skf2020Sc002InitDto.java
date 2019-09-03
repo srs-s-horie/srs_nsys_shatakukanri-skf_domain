@@ -19,4 +19,7 @@ public class Skf2020Sc002InitDto extends Skf2020Sc002CommonDto {
 	// 操作ガイド
 	private String operationGuide;
 
+	// 代行ログインフラグ
+	private String alterLoginFlg;
+
 }
