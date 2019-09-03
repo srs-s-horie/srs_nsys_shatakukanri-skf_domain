@@ -70,7 +70,8 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		applInfo.put("shainNo", applyDto.getHdnShainNo());
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		skf2030Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 申請前に申請可能か判定を行う
 		// 該当社員の社宅入居希望等調書の最新申請書類のステータスが、22:同意済、31～32:承認中、40:承認済の場合 かつ
