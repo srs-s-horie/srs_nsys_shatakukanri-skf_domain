@@ -139,7 +139,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 			// 代行ログインの場合
 
 			// 社員番号の設定
-			initDto.setShainNo(resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO));
+			initDto.setShainNo(resultAlterLoginList.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO));
 
 			// 代行対象のユーザ情報を取得
 			List<Map<String, String>> alterLoginUserInfo = skfLoginUserInfoUtils
