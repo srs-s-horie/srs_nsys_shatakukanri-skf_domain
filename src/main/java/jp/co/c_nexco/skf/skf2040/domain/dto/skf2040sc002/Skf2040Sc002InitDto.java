@@ -10,7 +10,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040Sc002common.Skf2040Sc002Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf2040_Sc002 退居（自動車の保管場所返還）届(あ画面のInitDto。
+ * Skf2040_Sc002 退居（自動車の保管場所返還）届(アウトソース用）画面のInitDto。
  * 
  */
 @lombok.Data
@@ -32,6 +32,8 @@ public class Skf2040Sc002InitDto extends Skf2040Sc002CommonDto {
 	private String applId;
 	// 申請書類管理番号
 	private String applNo;
+	// ステータス
+	private String applStatus;
 	// ステータス（表示用）
 	private String applStatusText;
 
@@ -84,6 +86,9 @@ public class Skf2040Sc002InitDto extends Skf2040Sc002CommonDto {
 	// コメント
 	private String commentNote;
 
+	// 備品情報の表示エラー警告表示フラグ
+	private String warningDispFlag;
+
 	/*
 	 * hidden
 	 */
@@ -92,22 +97,4 @@ public class Skf2040Sc002InitDto extends Skf2040Sc002CommonDto {
 	// 更新日
 	private Date hdnApplUpdateDate;
 
-	/*
-	 * 表示フラグ類
-	 */
-	// 添付資料表示フラグ
-	private String tenpViewFlag;
-	// 備品返却欄表示フラグ
-	private String bihinVisible;
-	// 退居（自動車の保管場所変換）届PDF出力ボタン表示フラグ
-	private String taikyoPdfViewFlg;
-	// コメントボタン表示フラグ
-	private String commentViewFlag;
-
-	// 提示ボタン表示フラグ
-	private String presenBtnViewFlg;
-	// 修正依頼ボタン表示フラグ
-	private String revisionBtnViewFlg;
-	// 差戻しボタン表示フラグ
-	private String remandBtnViewFlg;
 }

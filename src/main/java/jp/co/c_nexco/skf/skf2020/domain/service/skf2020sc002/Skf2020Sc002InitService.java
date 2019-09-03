@@ -220,10 +220,10 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, dto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
-			dto.setCommentViewFlag(Skf2020Sc002SharedService.FALSE);
+			dto.setCommentViewFlag(Skf2020Sc002SharedService.sFalse);
 		} else {
 			// コメントがあれば表示
-			dto.setCommentViewFlag(Skf2020Sc002SharedService.TRUE);
+			dto.setCommentViewFlag(Skf2020Sc002SharedService.sTrue);
 		}
 	}
 
