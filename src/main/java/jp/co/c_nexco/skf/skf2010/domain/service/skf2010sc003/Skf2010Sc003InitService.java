@@ -46,11 +46,9 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc003InitDto index(Skf2010Sc003InitDto initDto) throws Exception {
@@ -78,7 +76,7 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 
 	private void setStatusList(Skf2010Sc003InitDto initDto) {
 		// ログインユーザー情報から社員番号取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo").toString();
 
 		String applDateFrom = initDto.getApplDateFrom();

@@ -46,11 +46,9 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param delDto
-	 *            インプットDTO
+	 * @param delDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public BaseDto index(Skf2010Sc003DeleteDto delDto) throws Exception {
@@ -96,7 +94,7 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 	 */
 	@SuppressWarnings("unchecked")
 	private List<Skf2010Sc003GetApplHistoryStatusInfoExp> getApplHistoryList(Skf2010Sc003DeleteDto dto) {
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo");
 
 		String applDateFrom = skfDateFormatUtils.dateFormatFromString(dto.getApplDateFrom(), pattern);
