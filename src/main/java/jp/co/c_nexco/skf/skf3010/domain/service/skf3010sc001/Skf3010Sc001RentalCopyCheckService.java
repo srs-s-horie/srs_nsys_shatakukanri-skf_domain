@@ -3,13 +3,9 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc001;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -20,7 +16,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001RentalCopyCheckDto;
 import jp.co.intra_mart.common.platform.log.Logger;
 
