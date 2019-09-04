@@ -87,8 +87,6 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	 */
 	@Override
 	public BaseDto index(Skf3010Sc001ContractDownLoadDto downloadDto) throws Exception {
-		// public BaseDto index(Skf3010Sc001OutContractDto outContraDto) throws
-		// Exception {
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("契約情報出力", CodeConstant.C001, downloadDto.getPageId());
 		// デバッグログ
