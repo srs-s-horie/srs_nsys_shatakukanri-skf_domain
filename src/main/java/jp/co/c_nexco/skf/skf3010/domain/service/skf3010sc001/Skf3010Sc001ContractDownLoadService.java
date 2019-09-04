@@ -87,8 +87,6 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	 */
 	@Override
 	public BaseDto index(Skf3010Sc001ContractDownLoadDto downloadDto) throws Exception {
-		// public BaseDto index(Skf3010Sc001OutContractDto outContraDto) throws
-		// Exception {
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("契約情報出力", CodeConstant.C001, downloadDto.getPageId());
 		// デバッグログ
@@ -178,15 +176,21 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			Map<String, Object> tmpData = contractList.get(i); // パラメータのリスト1行
 			Map<String, Object> tmpMap = new HashMap<String, Object>(); // 追加用行データ
 			// 社宅管理番号
-			String shatakuKanriNo = tmpData.get("hdnShatakuKanriNo").toString();
+			String shatakuKanriNo = "";
+			if (tmpData.get("hdnShatakuKanriNo") != null) {
+				shatakuKanriNo = tmpData.get("hdnShatakuKanriNo").toString();
+			}
 			// 社宅区分コード
-			String hdnShatakuKbn = (String) tmpData.get("hdnShatakuKbn");
+			String hdnShatakuKbn = "";
+			if (tmpData.get("hdnShatakuKbn") != null) {
+				hdnShatakuKbn = tmpData.get("hdnShatakuKbn").toString();
+			}
 			if (getContractList.containsKey(shatakuKanriNo)) {
 				// 社宅管理番号はリスト内で一意とし重複登録は行わない
 				continue;
 			}
 			// 社宅区分コード判定①
-			if (!hdnShatakuKbn.equals(SHATAKU_KBN_KARIAGE) && !hdnShatakuKbn.equals(SHATAKU_KBN_ITTO)) {
+			if (!SHATAKU_KBN_KARIAGE.equals(hdnShatakuKbn) && !SHATAKU_KBN_ITTO.equals(hdnShatakuKbn)) {
 				// 社宅区分が「借上/一棟」以外のデータは除外する。
 				continue;
 			}

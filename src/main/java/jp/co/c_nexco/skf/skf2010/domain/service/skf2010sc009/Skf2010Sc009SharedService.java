@@ -17,7 +17,7 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
 @Service
@@ -30,7 +30,7 @@ public class Skf2010Sc009SharedService {
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtiles;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 

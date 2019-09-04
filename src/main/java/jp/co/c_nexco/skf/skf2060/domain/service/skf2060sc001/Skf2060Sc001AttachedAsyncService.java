@@ -15,7 +15,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenFi
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001AttachedAsyncDto;
 
 /**
@@ -28,7 +28,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 	@Autowired
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private Skf2060TKariageBukkenFileRepository skf2060TKariageBukkenFileRepository;
 	@Autowired
@@ -47,7 +47,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 	public Skf2060Sc001AttachedAsyncDto index(Skf2060Sc001AttachedAsyncDto attachedDto) throws Exception {
 
 		String sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + attachedDto.getCandidateNo();
-		List<Map<String, Object>> fileDataList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, null,
+		List<Map<String, Object>> fileDataList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, null,
 				sessionKey);
 		if (fileDataList == null) {
 			fileDataList = new ArrayList<Map<String, Object>>();
