@@ -318,7 +318,7 @@ public class Skf3010Sc001SharedService {
 			// 基本
 			tmpMap.put("col11", "");
 			// 社宅区分判定
-			if (!tmpData.getShatakuKbn().equals(KARIAGE)) {
+			if (!KARIAGE.equals(tmpData.getShatakuKbn())) {
 				// 借上以外の場合のみ、「部屋」を追加
 				tmpMap.put("col12", "");
 			}
