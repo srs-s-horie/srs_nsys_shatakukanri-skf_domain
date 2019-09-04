@@ -64,7 +64,7 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 			return rentalCopyDto;
 		}
 		// 社宅区分判定
-		if (!hdnRowShatakuKbn.equals(SHATAKU_KBN_KARIAGE)) {
+		if (!SHATAKU_KBN_KARIAGE.equals(hdnRowShatakuKbn)) {
 			logger.warn("借上以外が選択されています。");
 			ServiceHelper.addErrorResultMessage(rentalCopyDto, null, MessageIdConstant.W_SKF_3002);
 			return rentalCopyDto;
