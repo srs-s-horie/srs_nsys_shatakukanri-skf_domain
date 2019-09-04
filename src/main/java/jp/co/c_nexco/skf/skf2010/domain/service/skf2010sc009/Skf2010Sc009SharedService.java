@@ -6,14 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc009.Skf2010Sc009GetApplInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc009.Skf2010Sc009GetApplInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsGetKariageBukkenFileInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsGetKariageBukkenFileInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc009.Skf2010Sc009GetApplInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsGetKariageBukkenFileInfoExpRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
 @Service
@@ -22,7 +26,11 @@ public class Skf2010Sc009SharedService {
 	@Autowired
 	private Skf2010Sc009GetApplInfoExpRepository skf2010Sc009GetApplInfoExpRepository;
 	@Autowired
+	private SkfAttachedFileUtilsGetKariageBukkenFileInfoExpRepository skfAttachedFileUtilsGetKariageBukkenFileInfoExpRepository;
+	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfAttachedFileUtils skfAttachedFileUtiles;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
@@ -52,6 +60,8 @@ public class Skf2010Sc009SharedService {
 	/**
 	 * 添付ファイルをセッションから取得します
 	 * 
+	 * @param attachedInfo
+	 * 
 	 * @param applNo
 	 */
 	@SuppressWarnings("unchecked")
@@ -62,9 +72,56 @@ public class Skf2010Sc009SharedService {
 		if (resultAttachedFileList != null) {
 			return resultAttachedFileList;
 		}
+
 		// 初期化
 		resultAttachedFileList = new ArrayList<Map<String, Object>>();
 		return resultAttachedFileList;
+	}
+
+	/**
+	 * テーブルから添付資料情報を取得する（現状は借上候補物件のみ）
+	 * 
+	 * @param sessionKey
+	 * @param applId
+	 * @param attachedMap
+	 * @return
+	 */
+	public List<Map<String, Object>> getAttachedFileListByTable(String sessionKey, String applId,
+			Map<String, String> attachedMap) {
+		List<Map<String, Object>> resultAttachedFileList = new ArrayList<Map<String, Object>>();
+		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
+			// 借上候補物件の時のみテーブルから読み込む
+			List<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp> fileInfoList = new ArrayList<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp>();
+			fileInfoList = getKariageBukkenFileList(attachedMap.get("candidateNo"));
+			if (fileInfoList != null && fileInfoList.size() > 0) {
+				for (SkfAttachedFileUtilsGetKariageBukkenFileInfoExp fileInfo : fileInfoList) {
+					Map<String, Object> attachedFileMap = new HashMap<String, Object>();
+					int attachedNo = resultAttachedFileList.size();
+					attachedFileMap = new HashMap<String, Object>();
+
+					// ファイルタイプ
+					String fileType = skfAttachedFileUtiles.getFileTypeInfo(fileInfo.getAttachedName());
+					setAttachedFileMap(attachedFileMap, attachedNo, fileInfo.getAttachedName(),
+							fileInfo.getFileStream(), fileInfo.getFileSize(), fileType, fileInfo.getInsertDate());
+
+					resultAttachedFileList.add(attachedFileMap);
+				}
+
+				// セッションにデータを保存
+				menuScopeSessionBean.put(sessionKey, resultAttachedFileList);
+			}
+		}
+
+		return resultAttachedFileList;
+	}
+
+	private List<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp> getKariageBukkenFileList(String candidateNo) {
+		List<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp> fileList = new ArrayList<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp>();
+		SkfAttachedFileUtilsGetKariageBukkenFileInfoExpParameter param = new SkfAttachedFileUtilsGetKariageBukkenFileInfoExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setCandidateNo(Long.parseLong(candidateNo));
+		fileList = skfAttachedFileUtilsGetKariageBukkenFileInfoExpRepository.getKariageBukkenFileInfo(param);
+		return fileList;
 	}
 
 	/**
@@ -107,6 +164,25 @@ public class Skf2010Sc009SharedService {
 		menuScopeSessionBean.put(sessionKey, attachedFileList);
 
 		return attachedFileList;
+	}
+
+	private void setAttachedFileMap(Map<String, Object> fileInfoMap, int attachedNo, String fileName, byte[] fileStream,
+			String fileSize, String fileType, Date updateDate) {
+		// 添付資料番号
+		fileInfoMap.put("attachedNo", String.valueOf(attachedNo));
+		// 添付資料名
+		fileInfoMap.put("attachedName", fileName);
+		// ファイルサイズ
+		fileInfoMap.put("fileSize", fileSize);
+		// 更新日
+		String applDate = skfDateFormatUtils.dateFormatFromDate(updateDate, "yyyy/MM/dd HH:mm:ss.SS");
+		fileInfoMap.put("applDate", applDate);
+		// 添付資料
+		fileInfoMap.put("fileStream", fileStream);
+		// ファイルタイプ
+		fileInfoMap.put("fileType", fileType);
+
+		return;
 	}
 
 	/**

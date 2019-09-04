@@ -3,13 +3,14 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc009;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009InitDto;
@@ -30,22 +31,38 @@ public class Skf2010Sc009InitService extends BaseServiceAbstract<Skf2010Sc009Ini
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc009InitDto index(Skf2010Sc009InitDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC009_TITLE);
 
-		String applName = getBaseScreenName(initDto.getApplId());
+		String applId = initDto.getApplId();
+		String candidateNo = initDto.getCandidateNo();
+
+		String applName = getBaseScreenName(applId);
 		initDto.setApplName(applName);
 
+		Map<String, String> attachedInfo = new HashMap<String, String>();
+		attachedInfo.put("applId", applId);
+		attachedInfo.put("candidateNo", candidateNo);
+
+		String sessionKeyString = sessionKey;
+
+		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
+			sessionKeyString = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
+		}
+
 		// 添付資料情報の取得
-		List<Map<String, Object>> attachedFileList = skf2010Sc009SharedService.getAttachedFileInfo(sessionKey);
+		List<Map<String, Object>> attachedFileList = skf2010Sc009SharedService.getAttachedFileInfo(sessionKeyString);
+
+		if (attachedFileList.size() == 0) {
+			attachedFileList = skf2010Sc009SharedService.getAttachedFileListByTable(sessionKeyString, applId,
+					attachedInfo);
+		}
 
 		// グリッドビューのバインド
 		initDto.setAttachedFileList(skf2010Sc009SharedService.createListTableData(attachedFileList));

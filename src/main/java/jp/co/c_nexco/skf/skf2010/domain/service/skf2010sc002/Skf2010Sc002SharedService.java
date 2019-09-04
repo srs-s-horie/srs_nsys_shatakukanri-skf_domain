@@ -32,7 +32,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -54,7 +54,7 @@ public class Skf2010Sc002SharedService {
 	@Autowired
 	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
@@ -148,7 +148,7 @@ public class Skf2010Sc002SharedService {
 				// 添付資料
 				attachedFileMap.put("fileStream", attachedFileInfo.getFileStream());
 				// ファイルタイプ
-				String fileType = SkfAttachedFileUtiles.getFileTypeInfo(attachedFileInfo.getAttachedName());
+				String fileType = skfAttachedFileUtils.getFileTypeInfo(attachedFileInfo.getAttachedName());
 				attachedFileMap.put("fileType", fileType);
 
 				resultAttachedFileList.add(attachedFileMap);

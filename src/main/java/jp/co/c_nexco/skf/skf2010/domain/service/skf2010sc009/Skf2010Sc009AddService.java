@@ -3,9 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc009;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddDto;
 
 /**
@@ -36,7 +33,7 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtiles;
 
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
@@ -50,11 +47,9 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param addDto
-	 *            インプットDTO
+	 * @param addDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -64,9 +59,14 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 
 		String applId = addDto.getApplId();
 		String applNo = addDto.getApplNo();
+		String candidateNo = addDto.getCandidateNo();
 		MultipartFile fileData = addDto.getAttachedFile();
 		String applName = getBaseScreenName(applId);
 		addDto.setApplName(applName);
+
+		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
+			sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
+		}
 
 		// ファイル名の妥当性判定
 		if (fileData == null) {
@@ -93,7 +93,7 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 		}
 
 		// 同名ファイルの確認
-		if (!errFlag && existFileNameGridView(sessionKey, fileName, applNo)) {
+		if (!errFlag && existFileNameGridView(fileName, applNo)) {
 			addDto.setErrorAttachedFile(validationErrorCode);
 			ServiceHelper.addErrorResultMessage(addDto, null, MessageIdConstant.E_SKF_1038);
 			errFlag = true;
@@ -132,7 +132,7 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 	 * @param applNo
 	 * @return
 	 */
-	private boolean existFileNameGridView(String sessionKey, String fileName, String applNo) {
+	private boolean existFileNameGridView(String fileName, String applNo) {
 		// 添付ファイルリストを取得する
 		List<Map<String, Object>> attachedFileList = skf2010Sc009SharedService.getAttachedFileInfo(sessionKey);
 		if (attachedFileList == null || attachedFileList.size() <= 0) {
@@ -218,11 +218,5 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 		applName = skf2010Sc009SharedService.getApplName(applId);
 
 		return applName;
-	}
-
-	private FileInputStream getFileStream(String filePath) throws FileNotFoundException {
-		FileInputStream fileStream = new FileInputStream(new File(filePath));
-
-		return fileStream;
 	}
 }

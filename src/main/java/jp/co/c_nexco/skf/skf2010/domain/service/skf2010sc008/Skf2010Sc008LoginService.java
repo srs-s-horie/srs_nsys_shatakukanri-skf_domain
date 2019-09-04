@@ -25,7 +25,7 @@ public class Skf2010Sc008LoginService extends BaseServiceAbstract<Skf2010Sc008Lo
 	private MenuScopeSessionBean sessionBean;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	
+
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
 
@@ -40,31 +40,31 @@ public class Skf2010Sc008LoginService extends BaseServiceAbstract<Skf2010Sc008Lo
 	public Skf2010Sc008LoginDto index(Skf2010Sc008LoginDto loginDto) throws Exception {
 
 		loginDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
-		
+
 		// 操作ログを出力
 		skfOperationLogUtils.setAccessLog("代行ログイン", companyCd, loginDto.getPageId());
-		
+
 		// ログイン処理
 		sessionBean.put(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY, CodeConstant.LOGIN);
 
 		// 代行ログイン対象社員情報をセッションに設定する
-		Map<String, Object> alterLoginUserInfoMap = new HashMap<String, Object>();
+		Map<String, String> alterLoginUserInfoMap = new HashMap<String, String>();
 
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO, loginDto.getShainNo());
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NAME, loginDto.getShainName());
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_AGENCY, loginDto.getAgency());
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_AGENCY_NAME, loginDto.getAgencyName());
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_AFFILIATION1, loginDto.getAffiliation1());
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_AFFILIATION1_NAME, loginDto.getAffiliation1Name());
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_AFFILIATION2, loginDto.getAffiliation2());
-		alterLoginUserInfoMap.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_AFFILIATION2_NAME, loginDto.getAffiliation2Name());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO, loginDto.getShainNo());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_SHAIN_NAME, loginDto.getShainName());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_AGENCY, loginDto.getAgency());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_AGENCY_NAME, loginDto.getAgencyName());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_AFFILIATION1, loginDto.getAffiliation1());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_AFFILIATION1_NAME, loginDto.getAffiliation1Name());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_AFFILIATION2, loginDto.getAffiliation2());
+		alterLoginUserInfoMap.put(CodeConstant.ALTER_LOGIN_USER_AFFILIATION2_NAME, loginDto.getAffiliation2Name());
 
-		sessionBean.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP, alterLoginUserInfoMap); 
+		sessionBean.put(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP, alterLoginUserInfoMap);
 
-		//社宅管理TOP画面へ遷移させる
+		// 社宅管理TOP画面へ遷移させる
 		TransferPageInfo prevPage = TransferPageInfo.nextPage("Skf1010Sc001");
 		loginDto.setTransferPageInfo(prevPage);
-		
+
 		return loginDto;
 	}
 }

@@ -69,10 +69,9 @@ public class Skf2030Sc001CompleteService extends BaseServiceAbstract<Skf2030Sc00
 		applInfo.put("applId", dto.getApplId());
 		applInfo.put("shainNo", dto.getHdnShainNo());
 
-		Map<String, Object> errorMap = new HashMap<String, Object>();
-
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		skf2030Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 申請前に申請可能か判定を行う
 		// 該当社員の社宅入居希望等調書の最新申請書類のステータスが、22:同意済、31～32:承認中、40:承認済の場合 かつ
@@ -92,7 +91,7 @@ public class Skf2030Sc001CompleteService extends BaseServiceAbstract<Skf2030Sc00
 				String nyukyoKiboApplNo = applHistoryInfo.getApplNo();
 
 				if (skf2030Sc001SharedService.checkSKSTeijiStatus(loginUserInfo.get("shainNo"),
-						FunctionIdConstant.R0104, nyukyoKiboApplNo, errorMap)) {
+						FunctionIdConstant.R0104, nyukyoKiboApplNo)) {
 					ServiceHelper.addResultMessage(dto, MessageIdConstant.I_SKF_1005, MSG_MISAKUSEI_BIHIN,
 							MSG_SAISAKUSEI_BIHIN);
 					return dto;

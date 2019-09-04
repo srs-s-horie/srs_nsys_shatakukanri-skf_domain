@@ -109,10 +109,9 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 			}
 		} else {
 			// 代行ログインの場合
-			if (NfwStringUtils
-					.isNotEmpty(resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO))) {
+			if (NfwStringUtils.isNotEmpty(resultAlterLoginList.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO))) {
 				// 社員番号の設定
-				transferDto.setShainNo(resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO));
+				transferDto.setShainNo(resultAlterLoginList.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO));
 				applHistoryList = skfLoginUserInfoUtils.getAlterLoginUserApplHistoryList(transferDto.getShainNo(),
 						applID);
 

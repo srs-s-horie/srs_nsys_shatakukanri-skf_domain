@@ -47,6 +47,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepo
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
+import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -71,6 +72,8 @@ public class Skf2030Sc001SharedService {
 	private Map<String, String> bihinInfoMap;
 	private Map<String, String> bihinApplMap;
 	private Map<String, String> bihinAdjustMap;
+
+	private MenuScopeSessionBean menuScopeSessionBean;
 
 	private final String NO_DATA_MESSAGE = "初期表示中に";
 	private final String MSG_MISHONIN = "承認されていない申請書類が存在し";
@@ -125,6 +128,15 @@ public class Skf2030Sc001SharedService {
 	private SkfHtmlCreateUtils skfHtmlCreateUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+
+	/**
+	 * セッション情報を保持します
+	 * 
+	 * @param sessionBean
+	 */
+	public void setMenuScopeSessionBean(MenuScopeSessionBean sessionBean) {
+		this.menuScopeSessionBean = sessionBean;
+	}
 
 	/**
 	 * 画面内容の設定を行います
@@ -382,7 +394,8 @@ public class Skf2030Sc001SharedService {
 		String updateTel = null;
 		String updateCompleteDate = null;
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// 更新ステータス等の判定
@@ -414,9 +427,11 @@ public class Skf2030Sc001SharedService {
 		// コメント
 		String commentName = loginUserInfo.get("userName");
 		String commentNote = skfHtmlCreateUtils.htmlEscapeEncode(dto.getCommentNote());
-		if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName, commentNote,
-				errorMsg)) {
-			return false;
+		if (NfwStringUtils.isNotEmpty(commentNote.trim())) {
+			if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName,
+					commentNote, errorMsg)) {
+				return false;
+			}
 		}
 
 		// 備品希望申請テーブルを更新
@@ -491,6 +506,13 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
+	/**
+	 * 入居日と搬入完了日の相関チェックを行います
+	 * 
+	 * @param applInfo
+	 * @param completeDate
+	 * @return
+	 */
 	public boolean sokanCheck(Map<String, String> applInfo, String completeDate) {
 		List<Skf2030Sc001GetNyukyobiInfoExp> nyukyobiInfoList = new ArrayList<Skf2030Sc001GetNyukyobiInfoExp>();
 		Skf2030Sc001GetNyukyobiInfoExpParameter param = new Skf2030Sc001GetNyukyobiInfoExpParameter();
@@ -546,11 +568,11 @@ public class Skf2030Sc001SharedService {
 	/**
 	 * 申請履歴の承認者と申請状況を更新します
 	 * 
-	 * @param shainNo
 	 * @param applNo
-	 * @param shonin1
-	 * @param shonin2
-	 * @param applInfo
+	 * @param applId
+	 * @param applStatus
+	 * @param newApplStatus
+	 * @param shainNo
 	 * @return
 	 */
 	private boolean updateApplHistoryAgreeStatus(String applNo, String applId, String applStatus, String newApplStatus,
@@ -848,6 +870,13 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
+	/**
+	 * 申請書類履歴テーブル取得メソッド（申請日付の降順）
+	 * 
+	 * @param shainNo
+	 * @param applId
+	 * @return
+	 */
 	public List<Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp> getApplHistoryInfoInDescendingOrder(String shainNo,
 			String applId) {
 		List<Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp> applHistoryInfo = new ArrayList<Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp>();
@@ -861,8 +890,18 @@ public class Skf2030Sc001SharedService {
 		return applHistoryInfo;
 	}
 
-	public boolean checkSKSTeijiStatus(String shainNo, String applId, String applNo, Map<String, Object> errorMap) {
+	/**
+	 * 社宅管理 提示データステータスによる申請可否チェック
+	 * 
+	 * @param shainNo
+	 * @param applId
+	 * @param applNo
+	 * @param errorMap
+	 * @return
+	 */
+	public boolean checkSKSTeijiStatus(String shainNo, String applId, String applNo) {
 		String nyutaikyoKbn = CodeConstant.NONE;
+		// 該当データ数：初期値
 		long listCount = CodeConstant.LONG_ZERO;
 
 		if (NfwStringUtils.isEmpty(applNo)) {
@@ -892,8 +931,6 @@ public class Skf2030Sc001SharedService {
 		case FunctionIdConstant.R0103:
 		case FunctionIdConstant.R0105:
 			// R0100: 社宅入居希望等調書
-			// R0101: 貸与（予定）社宅等のご案内
-			// R0102: 入居等決定通知書
 			// R0103: 退居（自動車の保管場所返還）届
 			// R0105: 備品返却申請
 
@@ -920,15 +957,19 @@ public class Skf2030Sc001SharedService {
 		}
 
 		if (listCount > 0) {
-			errorMap.put("information", MessageIdConstant.I_SKF_1005);
-			errorMap.put("infoValue1", MSG_MISHONIN);
-			errorMap.put("infoValue1", MSG_KAKUNIN);
 			return true;
 		}
 
 		return false;
 	}
 
+	/**
+	 * 備品提示データステータス取得
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @return
+	 */
 	private long getSKSBihinTeijiStatusInfo(String shainNo, String nyutaikyoKbn) {
 		Skf2030Sc001GetBihinTeijiStatusCountExp data = new Skf2030Sc001GetBihinTeijiStatusCountExp();
 		Skf2030Sc001GetBihinTeijiStatusCountExpParameter param = new Skf2030Sc001GetBihinTeijiStatusCountExpParameter();
@@ -941,6 +982,14 @@ public class Skf2030Sc001SharedService {
 		return 0;
 	}
 
+	/**
+	 * 入退居予定データステータス取得メソッド
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @param applNo
+	 * @return
+	 */
 	private long getSKSNYDStatusInfo(String shainNo, String nyutaikyoKbn, String applNo) {
 		Skf2030Sc001GetNYDStatusCountExp data = new Skf2030Sc001GetNYDStatusCountExp();
 		Skf2030Sc001GetNYDStatusCountExpParameter param = new Skf2030Sc001GetNYDStatusCountExpParameter();
