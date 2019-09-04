@@ -56,7 +56,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
@@ -131,7 +131,7 @@ public class Skf2020Sc003SharedService {
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
 
@@ -148,7 +148,7 @@ public class Skf2020Sc003SharedService {
 		if (menuScopeSessionBean == null) {
 			return;
 		}
-		skfAttachedFileUtiles.clearAttachedFileBySessionData(menuScopeSessionBean,
+		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
 				SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
 	}
 
@@ -965,7 +965,7 @@ public class Skf2020Sc003SharedService {
 		// 添付ファイル情報設定
 		List<Map<String, Object>> tmpAttachedFileList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-		tmpAttachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, applNo,
+		tmpAttachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, applNo,
 				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 		if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
 			int defaultAttachedNo = 0;
@@ -1302,7 +1302,7 @@ public class Skf2020Sc003SharedService {
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			// 添付ファイルの更新は削除→登録で行う
-			skfAttachedFileUtiles.deleteAttachedFile(applNo, shainNo, errorMsg);
+			skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
 				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
@@ -1462,7 +1462,7 @@ public class Skf2020Sc003SharedService {
 			addAttachedFileInfo.put("fileStream", file);
 			// 添付ファイルステータス
 			// ファイルタイプ
-			addAttachedFileInfo.put("fileType", skfAttachedFileUtiles.getFileTypeInfo(fileName));
+			addAttachedFileInfo.put("fileType", skfAttachedFileUtils.getFileTypeInfo(fileName));
 
 			shatakuAttachedFileList.add(addAttachedFileInfo);
 		}

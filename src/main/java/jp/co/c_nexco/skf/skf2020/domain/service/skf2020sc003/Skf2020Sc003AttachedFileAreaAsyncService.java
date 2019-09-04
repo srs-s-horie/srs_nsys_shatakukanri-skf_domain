@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003AttachedFileAreaAsyncDto;
 
 /**
@@ -25,7 +25,7 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 		extends AsyncBaseServiceAbstract<Skf2020Sc003AttachedFileAreaAsyncDto> {
 
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -43,10 +43,10 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 		String applNo = dto.getApplNo();
 
 		// 社宅向け添付資料取得
-		List<Map<String, Object>> shatakuAttachedFileList = skfAttachedFileUtiles
+		List<Map<String, Object>> shatakuAttachedFileList = skfAttachedFileUtils
 				.getAttachedFileInfo(menuScopeSessionBean, applNo, SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
 		// 一般添付資料取得
-		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
+		List<Map<String, Object>> attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean,
 				applNo, SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 		// 社宅向け添付資料が無い場合配列のインスタンス化だけ行う
 		if (shatakuAttachedFileList == null) {

@@ -17,7 +17,7 @@ import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001AttachedDownloadDto;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001DownloadDto;
 
@@ -33,7 +33,7 @@ public class Skf2060Sc001AttachedDownloadService extends BaseServiceAbstract<Skf
 	@Autowired
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	
 	private String companyCd = CodeConstant.C001;
 	private String fileName = "skf2060.skf2060_sc001.FileId";
@@ -57,7 +57,7 @@ public class Skf2060Sc001AttachedDownloadService extends BaseServiceAbstract<Skf
 		String attachedNo = adlDto.getHdnAttachedNo();
 		
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-		attachedFileList = skfAttachedFileUtiles.getKariageBukkenFileInfo(menuScopeSessionBean, candidateNo, attachedNo, SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY+attachedNo);
+		attachedFileList = skfAttachedFileUtils.getKariageBukkenFileInfo(menuScopeSessionBean, candidateNo, attachedNo, SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY+attachedNo);
 		
 		if(!(attachedFileList != null && attachedFileList.size() > 0)){
 			ServiceHelper.addErrorResultMessage(adlDto, null, MessageIdConstant.E_SKF_1040);
