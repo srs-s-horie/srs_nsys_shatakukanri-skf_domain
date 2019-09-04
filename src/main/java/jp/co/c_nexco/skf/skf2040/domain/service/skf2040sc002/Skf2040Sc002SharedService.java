@@ -37,7 +37,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -54,7 +54,7 @@ public class Skf2040Sc002SharedService {
 
 	private MenuScopeSessionBean menuScopeSessionBean;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
@@ -97,7 +97,7 @@ public class Skf2040Sc002SharedService {
 		if (menuScopeSessionBean == null) {
 			return;
 		}
-		skfAttachedFileUtiles.clearAttachedFileBySessionData(menuScopeSessionBean,
+		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
 				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 	}
 
@@ -142,7 +142,7 @@ public class Skf2040Sc002SharedService {
 			addAttachedFileInfo.put("fileStream", file);
 			// 添付ファイルステータス
 			// ファイルタイプ
-			addAttachedFileInfo.put("fileType", skfAttachedFileUtiles.getFileTypeInfo(fileName));
+			addAttachedFileInfo.put("fileType", skfAttachedFileUtils.getFileTypeInfo(fileName));
 
 			shatakuAttachedFileList.add(addAttachedFileInfo);
 		}
@@ -517,7 +517,7 @@ public class Skf2040Sc002SharedService {
 		if (NfwStringUtils.isNotEmpty(dto.getApplTacFlg()) && SkfCommonConstant.AVAILABLE.equals(dto.getApplTacFlg())) {
 
 			// 添付ファイル情報の取得
-			tmpAttachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, dto.getApplNo(),
+			tmpAttachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, dto.getApplNo(),
 					SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 			if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
 				int defaultAttachedNo = 0;
