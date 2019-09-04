@@ -209,7 +209,8 @@ public class Skf2030Sc001SharedService {
 			}
 			// 性別
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getGender())) {
-				initDto.setGender(bihinShinseiInfo.getGender());
+				Map<String, String> genderMap = skfGenericCodeUtils.getGenericCode("SKF1021");
+				initDto.setGender(genderMap.get(bihinShinseiInfo.getGender()));
 			}
 			// 【 入居社宅 】
 			// 社宅名
