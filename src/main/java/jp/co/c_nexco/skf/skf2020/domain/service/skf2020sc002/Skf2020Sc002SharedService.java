@@ -68,15 +68,15 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002Commo
 public class Skf2020Sc002SharedService {
 
 	// 戻り値Map用定数
-	public static final String KEY_AGENCY_LIST = "AGENCY_LIST";
-	public static final String KEY_AFFILIATION1_LIST = "AFFILIATION1_LIST";
-	public static final String KEY_AFFILIATION2_LIST = "AFFILIATION2_LIST";
-	public static final String KEY_NOW_SHATAKU_NAME_LIST = "NOW_SHATAKU_NAME";
-	public static final String KEY_TAIKYO_RIYU_KBN_LIST = "TAIKYO_RIYU_KBN";
-	public static final String KEY_SESSION_TIME_LIST = "SESSION_TIME_LIST";
+	private static final String KEY_AGENCY_LIST = "AGENCY_LIST";
+	private static final String KEY_AFFILIATION1_LIST = "AFFILIATION1_LIST";
+	private static final String KEY_AFFILIATION2_LIST = "AFFILIATION2_LIST";
+	private static final String KEY_NOW_SHATAKU_NAME_LIST = "NOW_SHATAKU_NAME";
+	private static final String KEY_TAIKYO_RIYU_KBN_LIST = "TAIKYO_RIYU_KBN";
+	private static final String KEY_SESSION_TIME_LIST = "SESSION_TIME_LIST";
 
-	public static final String FALSE = "false";
-	public static final String TRUE = "true";
+	public static final String sFalse = "false";
+	public static final String sTrue = "true";
 	// 更新フラグ
 	public static final String NO_UPDATE_FLG = "0";
 	public static final String UPDATE_FLG = "1";
@@ -579,9 +579,9 @@ public class Skf2020Sc002SharedService {
 	protected void setInitializeError(Skf2020Sc002CommonDto dto) {
 		// 更新処理を行わせないよ う一時保存、申請要件を確認ボタンを使用不可に
 		// 一時保存
-		dto.setBtnSaveDisabeld(TRUE);
+		dto.setBtnSaveDisabeld(sTrue);
 		// 申請内容を確認
-		dto.setBtnCheckDisabled(TRUE);
+		dto.setBtnCheckDisabled(sTrue);
 		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
 	}
 
@@ -962,16 +962,16 @@ public class Skf2020Sc002SharedService {
 		/*
 		 * 必要とする社宅 初期表示活性制御
 		 */
-		dto.setRdoKikonDisabled(TRUE);
-		dto.setRdoHitsuyoSetaiDisabled(TRUE);
-		dto.setRdoHitsuyoTanshinDisabled(TRUE);
-		dto.setRdoHitsuyoDokushinDisabled(TRUE);
-		dto.setNewAffiliation1OtherDisabled(TRUE);
-		dto.setNewAffiliation2OtherDisabled(TRUE);
+		dto.setRdoKikonDisabled(sTrue);
+		dto.setRdoHitsuyoSetaiDisabled(sTrue);
+		dto.setRdoHitsuyoTanshinDisabled(sTrue);
+		dto.setRdoHitsuyoDokushinDisabled(sTrue);
+		dto.setNewAffiliation1OtherDisabled(sTrue);
+		dto.setNewAffiliation2OtherDisabled(sTrue);
 
 		// 新たに社宅を必要としますか？の「駐車場のみ」は2台貸与されている場合または保有社宅が無い場合は非活性
 		if (checkParking(dto.getParking1stPlace(), dto.getParking2stPlace()) == 3) {
-			dto.setRdoParkingOnlyDisabled(TRUE);
+			dto.setRdoParkingOnlyDisabled(sTrue);
 		}
 
 		/*
@@ -981,26 +981,26 @@ public class Skf2020Sc002SharedService {
 			// 社宅を必要としますか？が「必要とする」の場合
 
 			// 社宅を必要とする理由を活性化
-			dto.setRdoHitsuyoIdoDisabled(FALSE);
-			dto.setRdoHitsuyoKekkonDisabled(FALSE);
-			dto.setRdoHitsuyoSonotaDisabled(FALSE);
+			dto.setRdoHitsuyoIdoDisabled(sFalse);
+			dto.setRdoHitsuyoKekkonDisabled(sFalse);
+			dto.setRdoHitsuyoSonotaDisabled(sFalse);
 			// 社宅を必要としない理由を非活性化
-			dto.setRdoFuyouJitakuTsuukinnDisabled(TRUE);
-			dto.setRdoFuyouJikoKariageDisabled(TRUE);
-			dto.setRdoFuyouSonotaDisabled(TRUE);
+			dto.setRdoFuyouJitakuTsuukinnDisabled(sTrue);
+			dto.setRdoFuyouJikoKariageDisabled(sTrue);
+			dto.setRdoFuyouSonotaDisabled(sTrue);
 
 			// 新所属 部等がその他が入力されている場合
 			if (NfwStringUtils.isNotEmpty(dto.getNewAffiliation1Other())) {
-				dto.setNewAffiliation1OtherDisabled(FALSE);
+				dto.setNewAffiliation1OtherDisabled(sFalse);
 			} else {
-				dto.setNewAffiliation1OtherDisabled(TRUE);
+				dto.setNewAffiliation1OtherDisabled(sTrue);
 			}
 
 			// 新所属 チームまたは課がその他が入力されている場合
 			if (NfwStringUtils.isNotEmpty(dto.getNewAffiliation2Other())) {
-				dto.setNewAffiliation2OtherDisabled(FALSE);
+				dto.setNewAffiliation2OtherDisabled(sFalse);
 			} else {
-				dto.setNewAffiliation2OtherDisabled(TRUE);
+				dto.setNewAffiliation2OtherDisabled(sTrue);
 			}
 
 			/*
@@ -1008,95 +1008,95 @@ public class Skf2020Sc002SharedService {
 			 */
 			if (CodeConstant.SETAI.equals(dto.getHitsuyoShataku())) {
 				// 「世帯」選択時
-				dto.setRdoKikonDisabled(TRUE);
-				dto.setRdoHitsuyoSetaiDisabled(FALSE);
-				dto.setRdoHitsuyoTanshinDisabled(FALSE);
-				dto.setRdoHitsuyoDokushinDisabled(FALSE);
+				dto.setRdoKikonDisabled(sTrue);
+				dto.setRdoHitsuyoSetaiDisabled(sFalse);
+				dto.setRdoHitsuyoTanshinDisabled(sFalse);
+				dto.setRdoHitsuyoDokushinDisabled(sFalse);
 			} else if (CodeConstant.TANSHIN.equals(dto.getHitsuyoShataku())) {
 				// 「単身」選択時
-				dto.setRdoKikonDisabled(TRUE);
-				dto.setRdoHitsuyoSetaiDisabled(FALSE);
-				dto.setRdoHitsuyoTanshinDisabled(FALSE);
-				dto.setRdoHitsuyoDokushinDisabled(FALSE);
+				dto.setRdoKikonDisabled(sTrue);
+				dto.setRdoHitsuyoSetaiDisabled(sFalse);
+				dto.setRdoHitsuyoTanshinDisabled(sFalse);
+				dto.setRdoHitsuyoDokushinDisabled(sFalse);
 			} else if (CodeConstant.DOKUSHIN.equals(dto.getHitsuyoShataku())) {
 				// 「独身」選択時
-				dto.setRdoKikonDisabled(FALSE);
-				dto.setRdoHitsuyoSetaiDisabled(TRUE);
-				dto.setRdoHitsuyoTanshinDisabled(TRUE);
-				dto.setRdoHitsuyoDokushinDisabled(FALSE);
+				dto.setRdoKikonDisabled(sFalse);
+				dto.setRdoHitsuyoSetaiDisabled(sTrue);
+				dto.setRdoHitsuyoTanshinDisabled(sTrue);
+				dto.setRdoHitsuyoDokushinDisabled(sFalse);
 			} else {
 				// それ以外
-				dto.setRdoKikonDisabled(FALSE);
-				dto.setRdoHitsuyoSetaiDisabled(TRUE);
-				dto.setRdoHitsuyoTanshinDisabled(TRUE);
-				dto.setRdoHitsuyoDokushinDisabled(FALSE);
+				dto.setRdoKikonDisabled(sFalse);
+				dto.setRdoHitsuyoSetaiDisabled(sTrue);
+				dto.setRdoHitsuyoTanshinDisabled(sTrue);
+				dto.setRdoHitsuyoDokushinDisabled(sFalse);
 			}
 
 			/*
 			 * 自動車の保管場所
 			 */
-			dto.setRdoCarHitsuyoDisabled(FALSE);
-			dto.setRdoCarFuyoDisabled(FALSE);
+			dto.setRdoCarHitsuyoDisabled(sFalse);
+			dto.setRdoCarFuyoDisabled(sFalse);
 
 			// 1台目 自動車の保有
-			dto.setRdo1stCarHoyuDisabled(TRUE);
-			dto.setRdo1stCarYoteiDisabled(TRUE);
+			dto.setRdo1stCarHoyuDisabled(sTrue);
+			dto.setRdo1stCarYoteiDisabled(sTrue);
 
 			// 2台目 自動車の保有
-			dto.setRdo2stCarHoyuDisabled(TRUE);
-			dto.setRdo2stCarYoteiDisabled(TRUE);
+			dto.setRdo2stCarHoyuDisabled(sTrue);
+			dto.setRdo2stCarYoteiDisabled(sTrue);
 
 			/*
 			 * 退居時必要項目表示フラグと退居届を促すメッセージの設定
 			 */
-			dto.setTaikyoViewFlag(TRUE);
-			dto.setLblShatakuFuyouMsgRemove(FALSE);
+			dto.setTaikyoViewFlag(sTrue);
+			dto.setLblShatakuFuyouMsgRemove(sFalse);
 
 		} else if (CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())) {
 			// 社宅を必要としますか？が「必要としない」の場合
 
 			// 社宅を必要とする理由
-			dto.setRdoHitsuyoIdoDisabled(TRUE);
-			dto.setRdoHitsuyoKekkonDisabled(TRUE);
-			dto.setRdoHitsuyoSonotaDisabled(TRUE);
+			dto.setRdoHitsuyoIdoDisabled(sTrue);
+			dto.setRdoHitsuyoKekkonDisabled(sTrue);
+			dto.setRdoHitsuyoSonotaDisabled(sTrue);
 
 			// 社宅を必要としない理由
-			dto.setRdoFuyouJitakuTsuukinnDisabled(FALSE);
-			dto.setRdoFuyouJikoKariageDisabled(FALSE);
-			dto.setRdoFuyouSonotaDisabled(FALSE);
+			dto.setRdoFuyouJitakuTsuukinnDisabled(sFalse);
+			dto.setRdoFuyouJikoKariageDisabled(sFalse);
+			dto.setRdoFuyouSonotaDisabled(sFalse);
 
 			/*
 			 * 自動車の保管場所
 			 */
-			dto.setRdoCarHitsuyoDisabled(TRUE);
-			dto.setRdoCarFuyoDisabled(FALSE);
+			dto.setRdoCarHitsuyoDisabled(sTrue);
+			dto.setRdoCarFuyoDisabled(sFalse);
 
 			// 1台目 自動車の保有
-			dto.setRdo1stCarHoyuDisabled(TRUE);
-			dto.setRdo1stCarYoteiDisabled(TRUE);
+			dto.setRdo1stCarHoyuDisabled(sTrue);
+			dto.setRdo1stCarYoteiDisabled(sTrue);
 
 			// 2台目 自動車の保有
-			dto.setRdo2stCarHoyuDisabled(TRUE);
-			dto.setRdo2stCarYoteiDisabled(TRUE);
+			dto.setRdo2stCarHoyuDisabled(sTrue);
+			dto.setRdo2stCarYoteiDisabled(sTrue);
 
 			/*
 			 * 退居時必要項目表示フラグと退居届を促すメッセージの設定
 			 */
-			dto.setTaikyoViewFlag(FALSE);
-			dto.setLblShatakuFuyouMsgRemove(TRUE);
+			dto.setTaikyoViewFlag(sFalse);
+			dto.setLblShatakuFuyouMsgRemove(sTrue);
 
 		} else if (CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(dto.getTaiyoHituyo())) {
 			// 社宅を必要としますか？が「駐車場のみ」の場合
 
 			// 社宅を必要とする理由
-			dto.setRdoHitsuyoIdoDisabled(TRUE);
-			dto.setRdoHitsuyoKekkonDisabled(TRUE);
-			dto.setRdoHitsuyoSonotaDisabled(TRUE);
+			dto.setRdoHitsuyoIdoDisabled(sTrue);
+			dto.setRdoHitsuyoKekkonDisabled(sTrue);
+			dto.setRdoHitsuyoSonotaDisabled(sTrue);
 
 			// 社宅を必要としない理由
-			dto.setRdoFuyouJitakuTsuukinnDisabled(TRUE);
-			dto.setRdoFuyouJikoKariageDisabled(TRUE);
-			dto.setRdoFuyouSonotaDisabled(TRUE);
+			dto.setRdoFuyouJitakuTsuukinnDisabled(sTrue);
+			dto.setRdoFuyouJikoKariageDisabled(sTrue);
+			dto.setRdoFuyouSonotaDisabled(sTrue);
 
 			/*
 			 * 社宅を必要とする理由「その他」 社宅を必要としない理由「その他」 現保有の社宅「継続利用する」 をチェック状態にする
@@ -1108,144 +1108,144 @@ public class Skf2020Sc002SharedService {
 			/*
 			 * 自動車の保管場所
 			 */
-			dto.setRdoCarHitsuyoDisabled(FALSE);
-			dto.setRdoCarFuyoDisabled(TRUE);
+			dto.setRdoCarHitsuyoDisabled(sFalse);
+			dto.setRdoCarFuyoDisabled(sTrue);
 
 			// 1台目 自動車の保有
-			dto.setRdo1stCarHoyuDisabled(FALSE);
-			dto.setRdo1stCarYoteiDisabled(FALSE);
+			dto.setRdo1stCarHoyuDisabled(sFalse);
+			dto.setRdo1stCarYoteiDisabled(sFalse);
 
 			// 2台目 自動車の保有
-			dto.setRdo2stCarHoyuDisabled(FALSE);
-			dto.setRdo2stCarYoteiDisabled(FALSE);
+			dto.setRdo2stCarHoyuDisabled(sFalse);
+			dto.setRdo2stCarYoteiDisabled(sFalse);
 
 			// 現保有の社宅「継続利用する」
-			dto.setRdoNowHoyuShatakuKeizokuDisabled(TRUE);
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(sTrue);
 
 			/*
 			 * 退居時必要項目表示フラグと退居届を促すメッセージの設定
 			 */
-			dto.setTaikyoViewFlag(TRUE);
-			dto.setLblShatakuFuyouMsgRemove(FALSE);
+			dto.setTaikyoViewFlag(sTrue);
+			dto.setLblShatakuFuyouMsgRemove(sFalse);
 
 		} else {
 			// それ以外
 
 			// 社宅を必要とする理由
-			dto.setRdoHitsuyoIdoDisabled(TRUE);
-			dto.setRdoHitsuyoKekkonDisabled(TRUE);
-			dto.setRdoHitsuyoSonotaDisabled(TRUE);
+			dto.setRdoHitsuyoIdoDisabled(sTrue);
+			dto.setRdoHitsuyoKekkonDisabled(sTrue);
+			dto.setRdoHitsuyoSonotaDisabled(sTrue);
 
 			// 社宅を必要としない理由
-			dto.setRdoFuyouJitakuTsuukinnDisabled(TRUE);
-			dto.setRdoFuyouJikoKariageDisabled(TRUE);
-			dto.setRdoFuyouSonotaDisabled(TRUE);
+			dto.setRdoFuyouJitakuTsuukinnDisabled(sTrue);
+			dto.setRdoFuyouJikoKariageDisabled(sTrue);
+			dto.setRdoFuyouSonotaDisabled(sTrue);
 
 			/*
 			 * 自動車の保管場所
 			 */
-			dto.setRdoCarHitsuyoDisabled(TRUE);
-			dto.setRdoCarFuyoDisabled(TRUE);
+			dto.setRdoCarHitsuyoDisabled(sTrue);
+			dto.setRdoCarFuyoDisabled(sTrue);
 
 			// 1台目 自動車の保有
-			dto.setRdo1stCarHoyuDisabled(TRUE);
-			dto.setRdo1stCarYoteiDisabled(TRUE);
+			dto.setRdo1stCarHoyuDisabled(sTrue);
+			dto.setRdo1stCarYoteiDisabled(sTrue);
 
 			// 2台目 自動車の保有
-			dto.setRdo2stCarHoyuDisabled(TRUE);
-			dto.setRdo2stCarYoteiDisabled(TRUE);
+			dto.setRdo2stCarHoyuDisabled(sTrue);
+			dto.setRdo2stCarYoteiDisabled(sTrue);
 
 			/*
 			 * 退居時必要項目表示フラグと退居届を促すメッセージの設定
 			 */
-			dto.setTaikyoViewFlag(TRUE);
-			dto.setLblShatakuFuyouMsgRemove(FALSE);
+			dto.setTaikyoViewFlag(sTrue);
+			dto.setLblShatakuFuyouMsgRemove(sFalse);
 		}
 
 		// 保管場所を必要とするか
 		if (CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())) {
 
 			// 1台目
-			dto.setRdo1stCarHoyuDisabled(FALSE);
-			dto.setRdo1stCarYoteiDisabled(FALSE);
+			dto.setRdo1stCarHoyuDisabled(sFalse);
+			dto.setRdo1stCarYoteiDisabled(sFalse);
 
 			// 2台目
-			dto.setRdo2stCarHoyuDisabled(FALSE);
-			dto.setRdo2stCarYoteiDisabled(FALSE);
+			dto.setRdo2stCarHoyuDisabled(sFalse);
+			dto.setRdo2stCarYoteiDisabled(sFalse);
 
 		} else {
 			// 1台目
-			dto.setRdo1stCarHoyuDisabled(TRUE);
-			dto.setRdo1stCarYoteiDisabled(TRUE);
+			dto.setRdo1stCarHoyuDisabled(sTrue);
+			dto.setRdo1stCarYoteiDisabled(sTrue);
 
 			// 2台目
-			dto.setRdo2stCarHoyuDisabled(TRUE);
-			dto.setRdo2stCarYoteiDisabled(TRUE);
+			dto.setRdo2stCarHoyuDisabled(sTrue);
+			dto.setRdo2stCarYoteiDisabled(sTrue);
 		}
 
 		// 現保有の社宅
 		if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
 			// 現保有の社宅を活性にする
-			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
-			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
+			dto.setRdoNowHoyuShatakuTaikyoDisabled(sFalse);
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(sFalse);
 			// 退居届を促すメッセージを表示
-			dto.setLblShatakuFuyouMsgRemove(TRUE);
+			dto.setLblShatakuFuyouMsgRemove(sTrue);
 
 		} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
 			// 現保有の社宅を活性にする
-			dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
-			dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
+			dto.setRdoNowHoyuShatakuTaikyoDisabled(sFalse);
+			dto.setRdoNowHoyuShatakuKeizokuDisabled(sFalse);
 			// 退居届を促すメッセージを非表示
-			dto.setLblShatakuFuyouMsgRemove(FALSE);
+			dto.setLblShatakuFuyouMsgRemove(sFalse);
 		} else {
 			LogUtils.debugByMsg("保有社宅が存在する場合" + dto.getShatakuList());
 			if (dto.getShatakuList() != null) {
 				// 現居住宅 保有(会社借上を含む)をチェック状態にする
 				dto.setNowShataku(CodeConstant.GENNYUKYO_SHATAKU_KBN_HOYU);
-				dto.setRdoNowJutakuHoyuDisabled(FALSE);
+				dto.setRdoNowJutakuHoyuDisabled(sFalse);
 				// その他項目を非活性にする
-				dto.setRdoNowJutakuJitakuDisabeld(TRUE);
-				dto.setRdoNowJutakuKariageDisabled(TRUE);
-				dto.setRdoNowJutakuSonotaDisabled(TRUE);
+				dto.setRdoNowJutakuJitakuDisabeld(sTrue);
+				dto.setRdoNowJutakuKariageDisabled(sTrue);
+				dto.setRdoNowJutakuSonotaDisabled(sTrue);
 				// 現保有の社宅を活性にする
-				dto.setRdoNowHoyuShatakuTaikyoDisabled(FALSE);
-				dto.setRdoNowHoyuShatakuKeizokuDisabled(FALSE);
+				dto.setRdoNowHoyuShatakuTaikyoDisabled(sFalse);
+				dto.setRdoNowHoyuShatakuKeizokuDisabled(sFalse);
 
 				if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
 					// 退居予定の場合
 					// 退居届を促すメッセージを表示
-					dto.setLblShatakuFuyouMsgRemove(TRUE);
+					dto.setLblShatakuFuyouMsgRemove(sTrue);
 				} else if (CodeConstant.NOT_LEAVE.equals(dto.getTaikyoYotei())) {
 
 					// 退居届を促すメッセージを非表示
-					dto.setLblShatakuFuyouMsgRemove(FALSE);
+					dto.setLblShatakuFuyouMsgRemove(sFalse);
 				}
 
 			} else {
 
 				// 現居住社宅が無い場合は駐車場のみ、現居住宅を非活性にする
-				dto.setRdoParkingOnlyDisabled(TRUE);
-				dto.setRdoNowJutakuHoyuDisabled(TRUE);
-				dto.setRdoNowJutakuJitakuDisabeld(FALSE);
-				dto.setRdoNowJutakuKariageDisabled(FALSE);
-				dto.setRdoNowJutakuSonotaDisabled(FALSE);
+				dto.setRdoParkingOnlyDisabled(sTrue);
+				dto.setRdoNowJutakuHoyuDisabled(sTrue);
+				dto.setRdoNowJutakuJitakuDisabeld(sFalse);
+				dto.setRdoNowJutakuKariageDisabled(sFalse);
+				dto.setRdoNowJutakuSonotaDisabled(sFalse);
 				// 現保有の社宅を非活性にする
-				dto.setRdoNowHoyuShatakuTaikyoDisabled(TRUE);
-				dto.setRdoNowHoyuShatakuKeizokuDisabled(TRUE);
+				dto.setRdoNowHoyuShatakuTaikyoDisabled(sTrue);
+				dto.setRdoNowHoyuShatakuKeizokuDisabled(sTrue);
 			}
 		}
 
 		// 備品制御
 		if (NfwStringUtils.isNotEmpty(dto.getReturnEquipment())) {
 			// 返却立会希望日、連絡先を活性にする
-			dto.setSessionTimeDisabled(FALSE);
-			dto.setSessionDayDisabled(FALSE);
-			dto.setRenrakuSakiDisabled(FALSE);
+			dto.setSessionTimeDisabled(sFalse);
+			dto.setSessionDayDisabled(sFalse);
+			dto.setRenrakuSakiDisabled(sFalse);
 		} else {
 			// 返却立会希望日、連絡先を非活性にする
-			dto.setSessionTimeDisabled(TRUE);
-			dto.setSessionDayDisabled(TRUE);
-			dto.setRenrakuSakiDisabled(TRUE);
+			dto.setSessionTimeDisabled(sTrue);
+			dto.setSessionDayDisabled(sTrue);
+			dto.setRenrakuSakiDisabled(sTrue);
 		}
 	}
 
