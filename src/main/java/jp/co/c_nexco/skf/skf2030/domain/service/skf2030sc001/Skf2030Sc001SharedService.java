@@ -394,7 +394,8 @@ public class Skf2030Sc001SharedService {
 		String updateTel = null;
 		String updateCompleteDate = null;
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// 更新ステータス等の判定
@@ -426,9 +427,11 @@ public class Skf2030Sc001SharedService {
 		// コメント
 		String commentName = loginUserInfo.get("userName");
 		String commentNote = skfHtmlCreateUtils.htmlEscapeEncode(dto.getCommentNote());
-		if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName, commentNote,
-				errorMsg)) {
-			return false;
+		if (NfwStringUtils.isNotEmpty(commentNote.trim())) {
+			if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName,
+					commentNote, errorMsg)) {
+				return false;
+			}
 		}
 
 		// 備品希望申請テーブルを更新
