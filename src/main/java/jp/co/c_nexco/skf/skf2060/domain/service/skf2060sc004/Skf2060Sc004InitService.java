@@ -20,13 +20,15 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004InitDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。　 
+ * SKF2060Sc004 借上候補物件状況一覧画面の初期表示サービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004InitDto> {
@@ -84,7 +86,7 @@ public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004Ini
             // セッションから検索条件パラメータが取得できた場合、パラメータから画面に表示する情報を復元
             initDto.setCandidateDateFrom( sessionParam.getCandidateDateFrom() );
             initDto.setCandidateDateTo( sessionParam.getCandidateDateTo() );
-            initDto.setCandidatePersonName( sessionParam.getCandidatePersonName() );
+            initDto.setCandidatePersonNo( sessionParam.getCandidatePersonNo() );
             initDto.setShatakuName( sessionParam.getShatakuName() );
             initDto.setShatakuAddressName( sessionParam.getShatakuAddressName() );
             
@@ -95,7 +97,7 @@ public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004Ini
         }else{
             // セッションから検索条件パラメータが取得できなかった場合、デフォルト検索条件を設定
             // 提示日From
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            DateTimeFormatter format = DateTimeFormatter.ofPattern(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
             LocalDate currentMonthFirstDate = LocalDate.now().withDayOfMonth(1); //当月初日を初期選択
             initDto.setCandidateDateFrom(currentMonthFirstDate.format(format));
             // 提示状況
@@ -136,10 +138,13 @@ public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004Ini
 
         param.setCandidateDateFrom( dto.getCandidateDateFrom());
         param.setCandidateDateTo(dto.getCandidateDateTo());
-        param.setCandidatePersonName(dto.getCandidatePersonName());
+        param.setCandidatePersonNo(dto.getCandidatePersonNo());
         param.setShatakuName(dto.getShatakuName());
         param.setShatakuAddressName(dto.getShatakuAddressName());
         param.setApplStatus(Arrays.asList(dto.getCandidateStatus()));
+        
+        // 初期検索条件をセッションに格納
+        sessionBean.put(SessionCacheKeyConstant.SKF2060SC004_SEARCH_COND_SESSION_KEY, param);
         
         return param;
     }

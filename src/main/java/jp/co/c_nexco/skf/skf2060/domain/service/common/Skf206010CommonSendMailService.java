@@ -1,3 +1,6 @@
+/**
+ * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
+ */
 package jp.co.c_nexco.skf.skf2060.domain.service.common;
 
 import java.util.Date;
@@ -27,12 +30,12 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
 
 /**
- * Skf206010 借上候補登録・確認・一覧画面 共通処理クラス
+ * Skf206010 借上候補登録・確認・一覧画面 共通メール送信処理クラス
  *
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf206010CommonSharedService {
+public class Skf206010CommonSendMailService {
 
     @Autowired
     private SkfGetInfoUtilsGetShainInfoExpRepository skfGetInfoUtilsGetShainInfoExpRepository;
@@ -151,7 +154,7 @@ public class Skf206010CommonSharedService {
         commentList = skfCommentUtils.getCommentInfo(
                 CodeConstant.C001,
                 applNo,
-                CodeConstant.STATUS_SHONIN_ZUMI
+                CodeConstant.STATUS_KAKUNIN_IRAI
         );
         String comment = "";
         if (commentList != null && commentList.size() > 0) {

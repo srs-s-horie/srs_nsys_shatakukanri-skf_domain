@@ -15,17 +15,18 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004SendMailDto;
-import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSharedService;
+import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailService;
 
 /**
- * TestPrjTop画面のCandidete（提示）サービス処理クラス。　 
+ * SKF2060Sc004 借上候補物件状況一覧画面の督促メール送信サービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2060Sc004SendMailService extends BaseServiceAbstract<Skf2060Sc004SendMailDto> {
     
     @Autowired
-    Skf206010CommonSharedService skf206010CommonSharedService;
+    Skf206010CommonSendMailService skf206010CommonSharedService;
     @Autowired
     Skf2060Sc004SharedService skf2060Sc004SharedService;
     @Autowired
