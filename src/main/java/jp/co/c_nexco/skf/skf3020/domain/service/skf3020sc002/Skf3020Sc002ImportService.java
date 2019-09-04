@@ -26,7 +26,7 @@ import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.common.Skf302010SaveDto;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc002.Skf3020Sc002ImportDto;
@@ -45,7 +45,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 	@Autowired
 	private Skf3020Sc002SharedService skf3020Sc002SharedService;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private ApplicationScopeBean bean;
 
@@ -297,7 +297,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 
 		MultipartFile tenninshaChoshoFile = importFile.getFuTenninsha(); // 取り込んだ転任者調書
 		String fileName = tenninshaChoshoFile.getOriginalFilename(); // ファイル名
-		String extension = skfAttachedFileUtiles.getExtension(fileName); // 拡張子
+		String extension = skfAttachedFileUtils.getExtension(fileName); // 拡張子
 		// 拡張子チェック
 		if (!CodeConstant.EXTENSION_XLSX.equals(extension)) {
 			ServiceHelper.addErrorResultMessage(importFile, new String[] { ERR_TARGET_ITEM },
