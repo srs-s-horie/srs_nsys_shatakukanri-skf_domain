@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuRoomBihinDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuRoomBihinDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiBihinDataExp;
@@ -23,6 +25,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReportKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinsei;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinseiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuRoomBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExpRepository;
@@ -33,7 +36,9 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040Sc002common.Skf2040Sc002CommonDto;
@@ -45,7 +50,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc002ShareService {
+public class Skf2040Sc002SharedService {
 
 	private MenuScopeSessionBean menuScopeSessionBean;
 	@Autowired
@@ -54,6 +59,8 @@ public class Skf2040Sc002ShareService {
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private Skf2040Sc002GetTeijiDataInfoExpRepository skf2040Sc002GetTeijiDataInfoExpRepository;
 	@Autowired
@@ -66,6 +73,8 @@ public class Skf2040Sc002ShareService {
 	Skf2050TBihinHenkyakuShinseiRepository skf2050TBihinHenkyakuShinseiRepository;
 	@Autowired
 	Skf2040Sc002GetHenkyakuBihinInfoExpRepository skf2040Sc002GetHenkyakuBihinInfoExpRepository;
+	@Autowired
+	Skf2040Sc002GetShatakuInfoExpRepository skf2040Sc002GetShatakuInfoExpRepository;
 
 	private Map<String, String> bihinStatusMap;// 備品状態
 	private Map<String, String> bihinReturnMap;// 備品返却
@@ -89,7 +98,7 @@ public class Skf2040Sc002ShareService {
 			return;
 		}
 		skfAttachedFileUtiles.clearAttachedFileBySessionData(menuScopeSessionBean,
-				SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 	}
 
 	/**
@@ -100,7 +109,7 @@ public class Skf2040Sc002ShareService {
 	 * @param fileSize
 	 */
 	@SuppressWarnings({ "static-access" })
-	protected void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
+	protected void addAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
 			List<Map<String, Object>> shatakuAttachedFileList) {
 		// 添付資料のコレクションをSessionより取得
 
@@ -167,11 +176,11 @@ public class Skf2040Sc002ShareService {
 		}
 
 		// 備品提示データリストの取得
-
 		List<Skf2040Sc002GetTeijiBihinDataExp> dtTeijiBihin = new ArrayList<Skf2040Sc002GetTeijiBihinDataExp>();
 		Skf2040Sc002GetTeijiBihinDataExpParameter teijiBihinParam = new Skf2040Sc002GetTeijiBihinDataExpParameter();
 		teijiBihinParam.setTeijiNo(teijiNo);
 		dtTeijiBihin = skf2040Sc002GetTeijiBihinDataExpRepository.getTeijiBihinData(teijiBihinParam);
+
 		// 社宅部屋備品情報の取得
 		List<Skf2040Sc002GetShatakuRoomBihinDataExp> dtShatakuRoomBihin = new ArrayList<Skf2040Sc002GetShatakuRoomBihinDataExp>();
 		Skf2040Sc002GetShatakuRoomBihinDataExpParameter dtShatakuRoomBihinParam = new Skf2040Sc002GetShatakuRoomBihinDataExpParameter();
@@ -185,25 +194,82 @@ public class Skf2040Sc002ShareService {
 
 		// mapに返却備品情報を設定
 		Map<String, Object> bihinInfoMap = new HashMap<String, Object>();
-		for (int i = 0; i <= henkyakuDt.size(); i++) {
-			bihinInfoMap = new HashMap<String, Object>();
 
-			String bihinCd = henkyakuDt.get(i).getBihinCd();
-			// 提示備品レコードを取得
-			String teijiBihinStts = CodeConstant.DOUBLE_QUOTATION;
-
-			// String wkDt = useStreamTeijiBihin(bihinCd,
-			// dtTeijiBihin.toString());
-			if (NfwStringUtils.isEmpty(dtTeijiBihin.get(i).getBihinLentStatusKbn())) {
-				// 備品貸与状態がDBNullの場合、次のレコードへ。
-				continue;
-			} else {
-				teijiBihinStts = dtTeijiBihin.get(i).getBihinLentStatusKbn();
-			}
+		// 備品提示データリストとの比較
+		for (Skf2040Sc002GetTeijiBihinDataExp teijiBihin : dtTeijiBihin) {
 
 		}
 
+		// 備品申請情報をレイアウトに合うように整形
+		for (
+
+		Map<String, Object> bihinInfo : henkyakuList) {
+			setBihinData(dto, bihinInfo);
+		}
+
 		return null;
+
+	}
+
+	/**
+	 * それぞれの備品に合うようにdtoの変数に値を割り当てます
+	 * 
+	 * @param dto
+	 * @param bihinInfo
+	 */
+	private void setBihinData(Skf2040Sc002InitDto dto, Map<String, Object> bihinInfo) {
+
+		// // String bihinCd = bihinInfo.getBihinCd();
+		// // String bihinWish = bihinInfo
+		// // String bihinAppl = bihinInfo.getBihinAppl();
+		//
+		// boolean btnDisabled = false;
+		// //
+		// // String bihinStateText =
+		// bihinInfoMap.get(bihinInfo.getBihinState());
+		// // String bihinApplText = bihinApplMap.get(bihinAppl);
+		// // String bihinAdjustText =
+		// // bihinAdjustMap.get(bihinInfo.getBihinAdjust());
+		//
+		// switch (bihinCd) {
+		// case CodeConstant.BIHIN_WASHER:
+		// dto.setBihinState11(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_FREEZER:
+		// dto.setBihinState12(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_OVEN:
+		// dto.setBihinState13(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_CLENER:
+		// dto.setBihinState14(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_RICE_COOKER:
+		// dto.setBihinState15(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_TV:
+		// dto.setBihinState16(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_TV_STANDS:
+		// dto.setBihinState17(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_KOTATSU:
+		// dto.setBihinState18(bihinStateText);
+		//
+		// break;
+		// case CodeConstant.BIHIN_KICHEN_CABINET:
+		// dto.setBihinState19(bihinStateText);
+		//
+		// break;
+		// }
+		return;
 
 	}
 
@@ -234,17 +300,6 @@ public class Skf2040Sc002ShareService {
 	}
 
 	/**
-	 * それぞれの備品に合うようにdtoの変数に値を割り当て
-	 * 
-	 * @param bihinInfo
-	 * @param dto
-	 */
-	private void setDisplayData(Skf2040Sc002GetHenkyakuBihinInfoExp bihinInfo, Skf2040Sc002InitDto dto) {
-		String bihinCd = bihinInfo.getBihinCd();
-
-	}
-
-	/**
 	 * 退居届の情報取得
 	 * 
 	 * @param 退居届の申請書類管理番号
@@ -261,8 +316,10 @@ public class Skf2040Sc002ShareService {
 	}
 
 	/**
+	 * 備品返却申請テーブルの情報取得
+	 * 
 	 * @param applNo
-	 * @return
+	 * @return Skf2050TBihinHenkyakuShinsei
 	 */
 	public Skf2050TBihinHenkyakuShinsei getBihinHenkyakuShinsei(String applNo) {
 
@@ -299,7 +356,14 @@ public class Skf2040Sc002ShareService {
 		return henkyakuDt;
 	}
 
+	/**
+	 * 備品返却時の表示項目
+	 * 
+	 * @param initDto
+	 * @param taikyoRepDt
+	 */
 	public void setBihinHenkyakuDisp(Skf2040Sc002InitDto initDto, Skf2040TTaikyoReport taikyoRepDt) {
+
 		// 返却立会希望日（日）の取得
 		String sessionDay = CodeConstant.DOUBLE_QUOTATION;
 		if (NfwStringUtils.isEmpty(taikyoRepDt.getSessionDay())) {
@@ -349,4 +413,144 @@ public class Skf2040Sc002ShareService {
 		dto.setTaikyoPdfViewBtnFlag(pdfDwnBtn);// pdfダウンロードボタン
 	}
 
+	/**
+	 * 退居届帳票イメージの情報設定
+	 * 
+	 * @param initDto
+	 * @param taikyoRepDt
+	 * @param shatakuInfo
+	 */
+	public void setReportInfo(Skf2040Sc002CommonDto dto, Skf2040TTaikyoReport taikyoRepDt,
+			Skf2040Sc002GetShatakuInfoExp shatakuInfo) {
+
+		String sfontColor = "<font color='red'>";
+		String eFontColoor = "</font>";
+
+		// 申請書類タイトル表記設定
+		dto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn()); // 社宅退居
+		dto.setShatakuTaikyoKbn2(taikyoRepDt.getShatakuTaikyoKbn2()); // 駐車場返還
+
+		// 申請書類管理番号
+		dto.setApplNo(taikyoRepDt.getApplNo());
+		// 申請年月日
+		String applDate = taikyoRepDt.getApplDate();
+		String applDateText = skfDateFormatUtils.dateFormatFromString(applDate, "yyyy年MM月dd日");
+		dto.setApplDate(applDateText);
+		// 機関
+		dto.setNowAgency(taikyoRepDt.getAgency());
+		// 部等
+		dto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
+		// 室、チーム又は課
+		dto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
+		// 現住所
+		dto.setAddress(shatakuInfo.getAddress());
+		// 氏名
+		dto.setName(taikyoRepDt.getName());
+
+		// 社宅退居区分
+		taikyoRepDt.getShatakuTaikyoKbn();
+
+		// 自動車の保管場所返還取消線フラグ
+		// 社宅
+		dto.setShatakuName(shatakuInfo.getShatakuName());
+		// 駐車場1
+		dto.setParkingAddress1(shatakuInfo.getParkingAddress1());
+		// 駐車場2
+		dto.setParkingAddress2(shatakuInfo.getParkingAddress2());
+		// 退居日 社宅等
+		// 退居日
+		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
+			dto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(), "yyyy年MM月dd日"));
+			// 日付変更フラグが1:変更ありなら赤文字にする
+			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
+					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
+
+				String taikyoDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(), "yyyy年MM月dd日");
+				// fontColorタグ設定
+				taikyoDate = sfontColor + taikyoDate + eFontColoor;
+				dto.setTaikyoDate(taikyoDate);
+			}
+		}
+		// 駐車場返還日
+		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
+			dto.setParkingHenkanDate(
+					skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(), "yyyy年MM月dd日"));
+			// 日付変更フラグが1:変更ありなら赤文字にする
+			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
+					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
+
+				String parkingHenkanDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
+						"yyyy年MM月dd日");
+				// fontColorタグ設定
+				parkingHenkanDate = sfontColor + parkingHenkanDate + eFontColoor;
+				dto.setParkingHenkanDate(parkingHenkanDate);
+			}
+		} else {
+			// 駐車場返還日がない場合は、退居日を設定
+			dto.setParkingHenkanDate(
+					skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(), "yyyy年MM月dd日"));
+		}
+		// 退居（返還）理由
+		Map<String, String> taikyoRiyuMap = skfGenericCodeUtils
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_TAIKYO_HENKAN_RIYU);
+		String taikyoRiyu = "";
+		if (taikyoRiyuMap != null) {
+			taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
+		}
+		dto.setTaikyoRiyu(taikyoRiyu);
+		// 退居後の連絡先
+		dto.setTaikyogoRenrakusaki(taikyoRepDt.getTaikyogoRenrakusaki());
+
+	}
+
+	/**
+	 * 添付ファイル情報の設定
+	 * 
+	 * @param initDto
+	 */
+	public void refreshHeaderAttachedFile(Skf2040Sc002CommonDto dto) {
+
+		List<Map<String, Object>> tmpAttachedFileList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
+
+		// 添付資料がある場合、添付資料表示処理を行う
+		if (NfwStringUtils.isNotEmpty(dto.getApplTacFlg()) && SkfCommonConstant.AVAILABLE.equals(dto.getApplTacFlg())) {
+
+			// 添付ファイル情報の取得
+			tmpAttachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, dto.getApplNo(),
+					SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+			if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
+				int defaultAttachedNo = 0;
+				for (Map<String, Object> tmpAttachedFileMap : tmpAttachedFileList) {
+					// skfAttachedFileUtiles.addShatakuAttachedFile(tmpAttachedFileMap.get("attachedName").toString(),
+					// (byte[]) tmpAttachedFileMap.get("fileStream"),
+					// tmpAttachedFileMap.get("fileSize").toString(),
+					// defaultAttachedNo, attachedFileList);
+				}
+			}
+		}
+		// 添付ファイル情報設定
+		dto.setAttachedFileList(attachedFileList);
+	}
+
+	/**
+	 * 社宅情報を取得します
+	 * 
+	 * @param shatakuKanriNo
+	 * @param shainNo
+	 * @return
+	 */
+	public Skf2040Sc002GetShatakuInfoExp getShatakuInfo(Long shatakuKanriNo, String shainNo) {
+		Skf2040Sc002GetShatakuInfoExp shatakuInfo = new Skf2040Sc002GetShatakuInfoExp();
+		Skf2040Sc002GetShatakuInfoExpParameter param = new Skf2040Sc002GetShatakuInfoExpParameter();
+
+		Date nowDate = new Date();
+		String yearMonth = skfDateFormatUtils.dateFormatFromDate(nowDate, "yyyyMM");
+		param.setYearMonth(yearMonth);
+		param.setShatakuKanriNo(shatakuKanriNo);
+		param.setShainNo(shainNo);
+
+		shatakuInfo = skf2040Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
+		return shatakuInfo;
+	}
 }

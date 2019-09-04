@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
@@ -28,8 +29,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -56,7 +55,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
-	private Skf2040Sc002ShareService skf2040Sc002ShareService;
+	private Skf2040Sc002SharedService skf2040Sc002ShareService;
 	@Autowired
 	Skf2040Sc002GetApplHistoryInfoExpRepository skf2040Sc002GetApplHistoryInfoExpRepository;
 
@@ -80,10 +79,15 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		// 操作ログを出力
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
+		// セッション情報引き渡し
+		skf2040Sc002ShareService.setMenuScopeSessionBean(menuScopeSessionBean);
+		// セッション情報初期化
+		skf2040Sc002ShareService.clearMenuScopeSessionBean();
+
 		// 画面内容の設定
 		if (setDisplayData(initDto)) {
-			// 「添付資料」欄の更新を行う
-			refreshHeaderAttachedFile();
+			// 添付ファイルの設定
+			skf2040Sc002ShareService.refreshHeaderAttachedFile(initDto);
 		} else {
 			// 初期表示に失敗した場合次処理のボタンを押せなくする。
 			setInitializeError(initDto);
@@ -136,24 +140,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		initDto.setApplStatus(applHistoryList.get(0).getApplStatus());
 		initDto.setApplStatusText(changeApplStatusText(applHistoryList.get(0).getApplStatus()));
 
-		// 添付資料がある場合、添付資料表示処理を行う
-		if (SkfCommonConstant.AVAILABLE.equals(applHistoryList.get(0).getApplTacFlg())) {
-			List<Map<String, Object>> tmpAttachedFileList = new ArrayList<Map<String, Object>>();
-			List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-			attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, initDto.getApplNo(),
-					SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
-
-			if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
-				int defaultAttachedNo = 0;
-				for (Map<String, Object> tmpAttachedFileMap : tmpAttachedFileList) {
-					skf2040Sc002ShareService.addShatakuAttachedFile(tmpAttachedFileMap.get("attachedName").toString(),
-							(byte[]) tmpAttachedFileMap.get("fileStream"),
-							tmpAttachedFileMap.get("fileSize").toString(), defaultAttachedNo, attachedFileList);
-				}
-			}
-		}
-		// 添付ファイルの設定
-
 		// 承認2済以降の場合
 		if (CodeConstant.STATUS_SHONIN1.equals(applHistoryList.get(0).getApplStatus())) {
 			// コメント入力欄の設定
@@ -196,11 +182,30 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				break;
 			}
 			break;
+
 		case FunctionIdConstant.R0103:
 			// ◆退居（自動車の保管場所返還）届
 
+			// 退居届テーブルから退居情報を取得
+			Skf2040TTaikyoReport taikyoRepDt = skf2040Sc002ShareService.getTaikyoReport(initDto.getApplNo());
+			// 取得できなかった場合は戻り値をfalse
+			if (taikyoRepDt == null) {
+				returnValue = false;
+				return returnValue;
+			}
+
+			Skf2040Sc002GetShatakuInfoExp shatakuInfo = new Skf2040Sc002GetShatakuInfoExp();
+			shatakuInfo = skf2040Sc002ShareService.getShatakuInfo(taikyoRepDt.getShatakuNo(), initDto.getShainNo());
+			// 取得できなかった場合は戻り値をfalse
+			if (shatakuInfo == null) {
+				returnValue = false;
+				return returnValue;
+			}
 			// レポート表示
 			initDto.setTaikyoViewFlag(sTrue);
+			// 帳票情報の設定
+			skf2040Sc002ShareService.setReportInfo(initDto, taikyoRepDt, shatakuInfo);
+
 			// 添付ファイル表示
 			initDto.setTenpViewFlag(sTrue);
 			// 返却備品があるかどうか
@@ -216,10 +221,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			} else {
 				// 申請状況が「審査中」以外
 
-				// 退居届テーブルから退居情報を取得
-				Skf2040TTaikyoReport taikyoRepDt = skf2040Sc002ShareService.getTaikyoReport(initDto.getApplNo());
-				// 取得できなかった、社宅退居区分が設定されていない場合は戻り値をfalse
-				if (taikyoRepDt == null || NfwStringUtils.isEmpty(taikyoRepDt.getShatakuTaikyoKbn())) {
+				// 社宅退居区分が設定されていない場合は戻り値をfalse
+				if (NfwStringUtils.isEmpty(taikyoRepDt.getShatakuTaikyoKbn())) {
 					returnValue = false;
 					return returnValue;
 				} else {
