@@ -139,7 +139,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 			// 代行ログインの場合
 
 			// 社員番号の設定
-			initDto.setShainNo(resultAlterLoginList.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO));
+			initDto.setShainNo(resultAlterLoginList.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO));
 
 			// 代行対象のユーザ情報を取得
 			List<Map<String, String>> alterLoginUserInfo = skfLoginUserInfoUtils
@@ -220,10 +220,10 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, dto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
-			dto.setCommentViewFlag(Skf2020Sc002SharedService.FALSE);
+			dto.setCommentViewFlag(Skf2020Sc002SharedService.sFalse);
 		} else {
 			// コメントがあれば表示
-			dto.setCommentViewFlag(Skf2020Sc002SharedService.TRUE);
+			dto.setCommentViewFlag(Skf2020Sc002SharedService.sTrue);
 		}
 	}
 

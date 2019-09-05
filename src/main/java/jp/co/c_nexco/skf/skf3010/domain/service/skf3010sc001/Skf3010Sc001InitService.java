@@ -83,8 +83,7 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 		String hdnShatakuAddress = initDto.getHdnShatakuAddress();
 
 		// セッション情報存在判定
-		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-				&& initDto.getPrePageId().equals(FunctionIdConstant.SKF3010_SC001)) {
+		if (FunctionIdConstant.SKF3010_SC001.equals(initDto.getPrePageId())) {
 			// セッション情報ありの場合：検索キー設定
 			// 初期表示フラグをfalseに設定
 			initializeFlg = false;

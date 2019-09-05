@@ -48,6 +48,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 
 		//セッションキーの設定
 		String sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + attachedDto.getCandidateNo();
+
 		//添付ファイルを取得し、セッションに保存
 		List<Map<String, Object>> fileDataList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, null,
 				sessionKey);

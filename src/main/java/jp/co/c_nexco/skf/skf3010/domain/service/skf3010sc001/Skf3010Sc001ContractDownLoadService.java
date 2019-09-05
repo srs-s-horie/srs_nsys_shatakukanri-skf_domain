@@ -4,12 +4,11 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc001;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +20,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -35,8 +36,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc001.Skf3010Sc001GetC
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc001.Skf3010Sc001GetParkingContractInfoDataExp;
 import jp.co.intra_mart.common.platform.log.Logger;
 
-
-
 /**
  * Skf3010Sc001ContractDownLoadService 社宅一覧の契約情報出力ボタン処理クラス。
  * 
@@ -49,6 +48,8 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private Skf3010Sc001GetShatakuContractInfoDataExpRepository skf3010Sc001GetShatakuContractInfoDataExpRepository;
 	@Autowired
@@ -81,13 +82,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	 * 
 	 * Dtoのリストから出力対象を抽出し、DBから帳票に出力に必要なデータを取得する。
 	 * DBからの取得データが社宅契約情報、駐車場契約情報の双方が存在しない場合は帳票の出力は行わない。
-	 * DBからの取得データ、Dtoから抽出した出力対象データから帳票出力データを作成し
-	 * 社宅契約情報、駐車場契約情報をExcelファイルに帳票出力する。
+	 * DBからの取得データ、Dtoから抽出した出力対象データから帳票出力データを作成し 社宅契約情報、駐車場契約情報をExcelファイルに帳票出力する。
 	 * 処理結果はメッセージに設定する。
 	 */
 	@Override
 	public BaseDto index(Skf3010Sc001ContractDownLoadDto downloadDto) throws Exception {
-//	public BaseDto index(Skf3010Sc001OutContractDto outContraDto) throws Exception {
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("契約情報出力", CodeConstant.C001, downloadDto.getPageId());
 		// デバッグログ
@@ -96,11 +95,9 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		// 契約情報取得リスト
 		Map<String, Object> getContractList = new HashMap<String, Object>();
 		// 社宅契約情報(DBから取得)
-		List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList =
-							new ArrayList<Skf3010Sc001GetShatakuContractInfoDataExp>();
+		List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList = new ArrayList<Skf3010Sc001GetShatakuContractInfoDataExp>();
 		// 駐車場契約情報(DBから取得)
-		List<Skf3010Sc001GetParkingContractInfoDataExp> getParkingContractList =
-							new ArrayList<Skf3010Sc001GetParkingContractInfoDataExp>();
+		List<Skf3010Sc001GetParkingContractInfoDataExp> getParkingContractList = new ArrayList<Skf3010Sc001GetParkingContractInfoDataExp>();
 		// 社宅契約情報出力リスト
 		SheetDataBean shatakuContractWorkSheet = null;
 		// 駐車場契約情報出力リスト
@@ -109,7 +106,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		List<Map<String, Object>> contractList = downloadDto.getListTableData();
 		// 社宅管理番号リスト(SQLパラメータ用)
 		List<Long> paramShatakuKanriNoList = null;
-		
+
 		do {
 			// 契約情報取得リスト作成
 			paramShatakuKanriNoList = createGetContractList(contractList, getContractList);
@@ -117,20 +114,21 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			if (getContractList.size() < 1) {
 				logger.warn("社宅区分「借上/一棟」の検索結果が存在しません。");
 				// {0}は存在しません。
-				ServiceHelper.addErrorResultMessage(
-						downloadDto, null, MessageIdConstant.E_SKF_1067, "検索結果に出力対象データ(「借上」、または「一棟」)");
+				ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_1067,
+						"検索結果に出力対象データ(「借上」、または「一棟」)");
 				break;
 			}
 			// 社宅契約情報取得(DBから取得)
-			int shatakuContractCount = createShatakuContractTableDataList(paramShatakuKanriNoList, getShatakuContractList);
+			int shatakuContractCount = createShatakuContractTableDataList(paramShatakuKanriNoList,
+					getShatakuContractList);
 			// 駐車場契約情報取得(DBから取得)
-			int parkingContractCount = createParkingContractTableDataList(paramShatakuKanriNoList, getParkingContractList);
+			int parkingContractCount = createParkingContractTableDataList(paramShatakuKanriNoList,
+					getParkingContractList);
 			// 取得結果件数判定
 			if ((shatakuContractCount + parkingContractCount) < 1) {
-				logger.warn("出力可能な契約情報データは存在しません。");
+				logger.warn("社宅情報が変更されていますので検索をしなおしてください。");
 				// {0}は存在しません。
-				ServiceHelper.addErrorResultMessage(
-						downloadDto, null, MessageIdConstant.E_SKF_1067, "出力可能な契約情報データ");
+				ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_3059);
 				break;
 			}
 			// 社宅契約情報出力用Excelワークシート作成
@@ -139,7 +137,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			parkingContractWorkSheet = createWorkSheetParkingContract(getContractList, getParkingContractList);
 			// 帳票作成
 			fileOutPutExcelContractInfo(shatakuContractWorkSheet, parkingContractWorkSheet, downloadDto);
-		} while(false);
+		} while (false);
 
 		// 解放
 		paramShatakuKanriNoList = null;
@@ -151,49 +149,58 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		parkingContractWorkSheet = null;
 		return downloadDto;
 	}
+
 	/**
 	 * 契約情報取得リスト作成
 	 * 
-	 * 引数の「契約情報取得対象リスト」より「契約情報取得リスト」作成を作成する。
-	 * 契約情報取得リストの社宅管理番号は一意とし、重複登録は行わない
+	 * 引数の「契約情報取得対象リスト」より「契約情報取得リスト」作成を作成する。 契約情報取得リストの社宅管理番号は一意とし、重複登録は行わない
 	 * 社宅区分が「借上」、「一棟」以外のデータは対象外とする
 	 * 
 	 * 「※」項目はアドレスとして戻り値になる。
-	 * @param contractList 契約情報取得対象リスト
-	 * @param *getContractList 契約情報取得リスト
+	 * 
+	 * @param contractList
+	 *            契約情報取得対象リスト
+	 * @param *getContractList
+	 *            契約情報取得リスト
 	 * @return 契約情報取得社宅管理番号(カンマ区切り：SQLパラメータで使用)
 	 */
-	private List<Long> createGetContractList(
-			List<Map<String, Object>> contractList, Map<String, Object> getContractList) {
+	private List<Long> createGetContractList(List<Map<String, Object>> contractList,
+			Map<String, Object> getContractList) {
 
 		// 社宅管理番号リスト
 		List<Long> shatakukanriNoList = new ArrayList<Long>();
 		getContractList.clear();
-		
+
 		// 契約情報取得リスト作成
 		for (int i = 0; i < contractList.size(); i++) {
-			Map<String, Object> tmpData = contractList.get(i);			// パラメータのリスト1行
-			Map<String, Object> tmpMap = new HashMap<String, Object>();	// 追加用行データ
+			Map<String, Object> tmpData = contractList.get(i); // パラメータのリスト1行
+			Map<String, Object> tmpMap = new HashMap<String, Object>(); // 追加用行データ
 			// 社宅管理番号
-			String shatakuKanriNo = tmpData.get("hdnShatakuKanriNo").toString();
+			String shatakuKanriNo = "";
+			if (tmpData.get("hdnShatakuKanriNo") != null) {
+				shatakuKanriNo = tmpData.get("hdnShatakuKanriNo").toString();
+			}
 			// 社宅区分コード
-			String hdnShatakuKbn = (String)tmpData.get("hdnShatakuKbn");
+			String hdnShatakuKbn = "";
+			if (tmpData.get("hdnShatakuKbn") != null) {
+				hdnShatakuKbn = tmpData.get("hdnShatakuKbn").toString();
+			}
 			if (getContractList.containsKey(shatakuKanriNo)) {
 				// 社宅管理番号はリスト内で一意とし重複登録は行わない
 				continue;
 			}
 			// 社宅区分コード判定①
-			if (!hdnShatakuKbn.equals(SHATAKU_KBN_KARIAGE) && !hdnShatakuKbn.equals(SHATAKU_KBN_ITTO)) {
+			if (!SHATAKU_KBN_KARIAGE.equals(hdnShatakuKbn) && !SHATAKU_KBN_ITTO.equals(hdnShatakuKbn)) {
 				// 社宅区分が「借上/一棟」以外のデータは除外する。
 				continue;
 			}
-			//	・社宅区分コード
+			// ・社宅区分コード
 			tmpMap.put("hdnShatakuKbn", hdnShatakuKbn);
-			//	・社宅区分
+			// ・社宅区分
 			tmpMap.put("shatakuKbn", tmpData.get("shatakuKbn"));
-			//	・部屋番号
+			// ・部屋番号
 			tmpMap.put("hdnRoomNo", tmpData.get("hdnRoomNo"));
-			//	・所在地
+			// ・所在地
 			tmpMap.put("shatakuAddress", tmpData.get("shatakuAddress"));
 			// 契約情報取得リストへ追加
 			getContractList.put(shatakuKanriNo, tmpMap);
@@ -202,45 +209,36 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		}
 		return shatakukanriNoList;
 	}
-	
+
 	/**
 	 * 社宅契約情報出力用Excelワークシート作成
 	 * 
 	 * 引数の「契約情報取得リスト」、「社宅契約情報リスト」より社宅契約情報出力用Excelワークシートを作成する。
 	 * 部屋番号は社宅区分が「借上」の場合のみ設定し、「借上」以外の場合は空文字とする。
-	 * 賃貸人番号がDBから取得出来ていない場合、下記データは空文字とする。
-	 *	・契約番号
-	 *	・賃貸人氏名
-	 *	・賃貸人住所
-	 *	・法人個人区分
-	 *	・所在地
-	 *	・経理連携用管理番号
-	 *	・契約開始日
-	 *	・契約終了日
-	 *	・家賃
-	 *	・共益費
-	 *	・駐車場料（地代）
+	 * 賃貸人番号がDBから取得出来ていない場合、下記データは空文字とする。 ・契約番号 ・賃貸人氏名 ・賃貸人住所 ・法人個人区分 ・所在地
+	 * ・経理連携用管理番号 ・契約開始日 ・契約終了日 ・家賃 ・共益費 ・駐車場料（地代）
 	 * 
-	 * @param getContractList 契約情報取得リスト
-	 * @param getShatakuContractList 社宅契約情報リスト(DBからの取得値)
+	 * @param getContractList
+	 *            契約情報取得リスト
+	 * @param getShatakuContractList
+	 *            社宅契約情報リスト(DBからの取得値)
 	 * @return 社宅契約情報出力用Excelワークシート
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	private SheetDataBean createWorkSheetShatakuContract(Map<String, Object> getContractList, 
-				List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList) throws Exception {
+	private SheetDataBean createWorkSheetShatakuContract(Map<String, Object> getContractList,
+			List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList) throws Exception {
 
 		// 個人法人区分リスト取得
 		Map<String, String> businessKbnList = new HashMap<String, String>();
-		businessKbnList =
-				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
+		businessKbnList = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
 		// Excelワークシート(契約情報（社宅）)
 		SheetDataBean sheetDataBean = new SheetDataBean();
 		// Excel行データ
 		List<RowDataBean> rowDataBeanList = new ArrayList<>();
 
 		// 社宅契約情報
-		for (int i = 0, rowNo = 1 ; i < getShatakuContractList.size(); i++, rowNo++) {
+		for (int i = 0, rowNo = 1; i < getShatakuContractList.size(); i++, rowNo++) {
 			// 設定用ワーク変数
 			String shatakuKbn = "";
 			String shatakuName = "";
@@ -259,8 +257,8 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 
 			// 行データ
 			RowDataBean rdb = new RowDataBean();
-			Skf3010Sc001GetShatakuContractInfoDataExp getRowData = getShatakuContractList.get(i);	// DB取得1行
-			Map<String, Object> listRowData = null;													// 契約情報取得リスト1行
+			Skf3010Sc001GetShatakuContractInfoDataExp getRowData = getShatakuContractList.get(i); // DB取得1行
+			Map<String, Object> listRowData = null; // 契約情報取得リスト1行
 
 			// 社宅管理番号取得
 			if (getRowData.getShatakuKanriNo() == null) {
@@ -272,11 +270,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 				throw new Exception("社宅契約情報リストに社宅管理番号なし");
 			}
 			// 契約情報取得リストより該当社宅管理番号データ取得
-			listRowData = (Map<String, Object>)getContractList.get(getRowData.getShatakuKanriNo().toString());
+			listRowData = (Map<String, Object>) getContractList.get(getRowData.getShatakuKanriNo().toString());
 
 			// 行データ設定
 			// 社宅区分(契約情報取得リスト)
-			if(listRowData.containsKey("shatakuKbn") && listRowData.get("shatakuKbn") != null) {
+			if (listRowData.containsKey("shatakuKbn") && listRowData.get("shatakuKbn") != null) {
 				shatakuKbn = listRowData.get("shatakuKbn").toString();
 			}
 			// 社宅名(DB取得データ)
@@ -285,10 +283,10 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			}
 			// 部屋番号(社宅区分が「借上」の場合のみ対象とする)
 			// 社宅区分判定
-			if(listRowData.containsKey("hdnShatakuKbn") && listRowData.get("hdnShatakuKbn") != null
+			if (listRowData.containsKey("hdnShatakuKbn") && listRowData.get("hdnShatakuKbn") != null
 					&& listRowData.get("hdnShatakuKbn").equals(SHATAKU_KBN_KARIAGE)) {
 				// 部屋番号設定判定
-				if(listRowData.containsKey("hdnRoomNo") && listRowData.get("hdnRoomNo") != null) {
+				if (listRowData.containsKey("hdnRoomNo") && listRowData.get("hdnRoomNo") != null) {
 					roomNo = listRowData.get("hdnRoomNo").toString();
 				}
 			}
@@ -309,14 +307,12 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 					ownerAddress = getRowData.getOwnerAddress();
 				}
 				// 法人個人区分(DB取得データ)
-				if (getRowData.getBusinessKbn() != null
-						&& businessKbnList.get(getRowData.getBusinessKbn()) != null) {
+				if (getRowData.getBusinessKbn() != null && businessKbnList.get(getRowData.getBusinessKbn()) != null) {
 					// DB取得データのコードから汎用コードマスタより文字列取得
 					businessKbn = businessKbnList.get(getRowData.getBusinessKbn());
 				}
 				// 所在地(契約情報取得リスト)
-				if (listRowData.containsKey("shatakuAddress")
-						&& listRowData.get("shatakuAddress") != null) {
+				if (listRowData.containsKey("shatakuAddress") && listRowData.get("shatakuAddress") != null) {
 					shatakuAddress = listRowData.get("shatakuAddress").toString();
 				}
 				// 経理連携用管理番号(DB取得データ)
@@ -354,11 +350,49 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			rdb.addCellDataBean("H" + rowNo, businessKbn);
 			rdb.addCellDataBean("I" + rowNo, shatakuAddress);
 			rdb.addCellDataBean("J" + rowNo, assetRegisterNo);
-			rdb.addCellDataBean("K" + rowNo, contractStartDate);
-			rdb.addCellDataBean("L" + rowNo, contractEndDate);
-			rdb.addCellDataBean("M" + rowNo, rent);
-			rdb.addCellDataBean("N" + rowNo, kyoekihi);
-			rdb.addCellDataBean("O" + rowNo, landRent);
+			// 契約開始日データ型判定
+			if (contractStartDate.length() > 0) {
+				// 日付型(数値型、日付フォーマット指定)でセル追加
+				rdb.addCellDataBean(
+						"K" + rowNo, 
+						skfDateFormatUtils.dateFormatFromString(contractStartDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH),
+						Cell.CELL_TYPE_NUMERIC,
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			} else {
+				rdb.addCellDataBean("K" + rowNo, contractStartDate);
+			}
+			// 契約終了日データ型判定
+			if (contractEndDate.length() > 0) {
+				// 日付型(数値型、日付フォーマット指定)でセル追加
+				rdb.addCellDataBean(
+						"L" + rowNo, 
+						skfDateFormatUtils.dateFormatFromString(contractEndDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH),
+						Cell.CELL_TYPE_NUMERIC,
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			} else {
+				rdb.addCellDataBean("L" + rowNo, contractEndDate);
+			}
+			// 家賃データ型判定
+			if (landRent.length() > 0) {
+				// 数値型でセル追加
+				rdb.addCellDataBean("M" + rowNo, rent, Cell.CELL_TYPE_NUMERIC, "#,###");
+			} else {
+				rdb.addCellDataBean("M" + rowNo, rent);
+			}
+			// 共益費データ型判定
+			if (landRent.length() > 0) {
+				// 数値型でセル追加
+				rdb.addCellDataBean("N" + rowNo, kyoekihi, Cell.CELL_TYPE_NUMERIC, "#,###");
+			} else {
+				rdb.addCellDataBean("N" + rowNo, kyoekihi);
+			}
+			// 駐車場料データ型判定
+			if (landRent.length() > 0) {
+				// 数値型でセル追加
+				rdb.addCellDataBean("O" + rowNo, landRent, Cell.CELL_TYPE_NUMERIC, "#,###");
+			} else {
+				rdb.addCellDataBean("O" + rowNo, landRent);
+			}
 			// 行データ追加
 			rowDataBeanList.add(rdb);
 			// 解放
@@ -378,32 +412,24 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	 * 
 	 * 引数の「契約情報取得リスト」、「駐車場契約情報リスト」より駐車場契約情報出力用Excelワークシートを作成する。
 	 * 部屋番号は社宅区分が「借上」の場合のみ設定し、「借上」以外の場合は空文字とする。
-	 * 賃貸人番号がDBから取得出来ていない場合、下記データは空文字とする。
-	 *	・契約番号
-	 *	・契約形態
-	 *	・賃貸人氏名
-	 *	・賃貸人住所
-	 *	・法人個人区分
-	 *	・所在地
-	 *	・所在地
-	 *	・経理連携用管理番号
-	 *	・契約開始日
-	 *	・契約終了日
-	 *	・駐車場料（地代）
+	 * 賃貸人番号がDBから取得出来ていない場合、下記データは空文字とする。 ・契約番号 ・契約形態 ・賃貸人氏名 ・賃貸人住所 ・法人個人区分 ・所在地
+	 * ・所在地 ・経理連携用管理番号 ・契約開始日 ・契約終了日 ・駐車場料（地代）
 	 * 
-	 * @param getContractList 契約情報取得リスト
-	 * @param getParkingContractList 駐車場契約情報リスト(DBからの取得値)
+	 * @param getContractList
+	 *            契約情報取得リスト
+	 * @param getParkingContractList
+	 *            駐車場契約情報リスト(DBからの取得値)
 	 * @return 駐車場契約情報出力用Excelワークシート
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	private SheetDataBean createWorkSheetParkingContract(Map<String, Object> getContractList, 
+	private SheetDataBean createWorkSheetParkingContract(Map<String, Object> getContractList,
 			List<Skf3010Sc001GetParkingContractInfoDataExp> getParkingContractList) throws Exception {
 
 		// 駐車場契約形態区分リスト取得
 		Map<String, String> parkingContractKbnList = new HashMap<String, String>();
-		parkingContractKbnList =
-				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN);
+		parkingContractKbnList = skfGenericCodeUtils
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN);
 		// 個人法人区分リスト取得
 		Map<String, String> businessKbnList = new HashMap<String, String>();
 		businessKbnList = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
@@ -431,10 +457,10 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			String contractEndDate = "";
 			String landRent = "";
 
-			//	行データ作成
+			// 行データ作成
 			RowDataBean rdb = new RowDataBean();
-			Skf3010Sc001GetParkingContractInfoDataExp getRowData = getParkingContractList.get(i);	// DB取得1行
-			Map<String, Object> listRowData = null;													// 契約情報取得リスト1行
+			Skf3010Sc001GetParkingContractInfoDataExp getRowData = getParkingContractList.get(i); // DB取得1行
+			Map<String, Object> listRowData = null; // 契約情報取得リスト1行
 
 			// 社宅管理番号取得
 			if (getRowData.getShatakuKanriNo() == null) {
@@ -446,11 +472,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 				throw new Exception("社宅契約情報リストに社宅管理番号なし");
 			}
 			// 契約情報取得リストより該当社宅管理番号データ取得
-			listRowData = (Map<String, Object>)getContractList.get(getRowData.getShatakuKanriNo().toString());
+			listRowData = (Map<String, Object>) getContractList.get(getRowData.getShatakuKanriNo().toString());
 
 			// 行データ設定
 			// 社宅区分(契約情報取得リスト)
-			if(listRowData.containsKey("shatakuKbn") && listRowData.get("shatakuKbn") != null) {
+			if (listRowData.containsKey("shatakuKbn") && listRowData.get("shatakuKbn") != null) {
 				shatakuKbn = listRowData.get("shatakuKbn").toString();
 			}
 			// 社宅名(DB取得データ)
@@ -459,10 +485,10 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			}
 			// 部屋番号(社宅区分が「借上」の場合のみ対象とする)
 			// 社宅区分判定
-			if(listRowData.containsKey("hdnShatakuKbn") && listRowData.get("hdnShatakuKbn") != null
+			if (listRowData.containsKey("hdnShatakuKbn") && listRowData.get("hdnShatakuKbn") != null
 					&& listRowData.get("hdnShatakuKbn").equals(SHATAKU_KBN_KARIAGE)) {
 				// 部屋番号設定判定
-				if(listRowData.containsKey("hdnRoomNo") && listRowData.get("hdnRoomNo") != null) {
+				if (listRowData.containsKey("hdnRoomNo") && listRowData.get("hdnRoomNo") != null) {
 					roomNo = listRowData.get("hdnRoomNo").toString();
 				}
 			}
@@ -492,10 +518,9 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 					ownerAddress = getRowData.getOwnerAddress();
 				}
 				// 法人個人区分(DB取得データ)
-				if (getRowData.getParkingContractType() != null
-						&& businessKbnList.get(getRowData.getParkingContractType()) != null) {
+				if (getRowData.getBusinessKbn() != null && businessKbnList.get(getRowData.getBusinessKbn()) != null) {
 					// DB取得データのコードから汎用コードマスタより文字列取得
-					businessKbn = businessKbnList.get(getRowData.getParkingContractType());
+					businessKbn = businessKbnList.get(getRowData.getBusinessKbn());
 				}
 				// 駐車場所在地 (DB取得データ)
 				if (getRowData.getParkingAddress() != null) {
@@ -519,7 +544,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 				}
 				// 駐車場料(DB取得データ)
 				if (getRowData.getLandRent() != null) {
-					landRent = Integer.toString(getRowData.getLandRent());
+					landRent = getRowData.getLandRent().toString();
 				}
 			}
 			// Excel行データ設定
@@ -535,9 +560,34 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			rdb.addCellDataBean("K" + rowNo, parkingAddress);
 			rdb.addCellDataBean("L" + rowNo, parkingName);
 			rdb.addCellDataBean("M" + rowNo, assetRegisterNo);
-			rdb.addCellDataBean("N" + rowNo, contractStartDate);
-			rdb.addCellDataBean("O" + rowNo, contractEndDate);
-			rdb.addCellDataBean("P" + rowNo, landRent);
+			// 契約開始日データ型判定
+			if (contractStartDate.length() > 0) {
+				// 日付型(数値型、日付フォーマット指定)でセル追加
+				rdb.addCellDataBean(
+						"N" + rowNo, 
+						skfDateFormatUtils.dateFormatFromString(contractStartDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH),
+						Cell.CELL_TYPE_NUMERIC,
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			} else {
+				rdb.addCellDataBean("N" + rowNo, contractStartDate);
+			}
+			// 契約終了日データ型判定
+			if (contractEndDate.length() > 0) {
+				// 日付型(数値型、日付フォーマット指定)でセル追加
+				rdb.addCellDataBean(
+						"O" + rowNo, 
+						skfDateFormatUtils.dateFormatFromString(contractEndDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH),
+						Cell.CELL_TYPE_NUMERIC,
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			} else {
+				rdb.addCellDataBean("O" + rowNo, contractEndDate);
+			}
+			// 駐車場料データ型判定
+			if (landRent.length() > 0) {
+				rdb.addCellDataBean("P" + rowNo, landRent, Cell.CELL_TYPE_NUMERIC, "#,###");
+			} else {
+				rdb.addCellDataBean("P" + rowNo, landRent);
+			}
 			// 行データ追加
 			rowDataBeanList.add(rdb);
 			// 解放
@@ -557,9 +607,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	 * 
 	 * 引数の社宅契約情報、駐車場契約情報のExcelワークシートからExcelブックを作成し、を帳票に出力する
 	 * 
-	 * @param outShatakuContractList 社宅契約情報出力用Excelワークシート
-	 * @param outParkingContractList 駐車場契約情報出力用Excelワークシート
-	 * @throws Exception 
+	 * @param outShatakuContractList
+	 *            社宅契約情報出力用Excelワークシート
+	 * @param outParkingContractList
+	 *            駐車場契約情報出力用Excelワークシート
+	 * @throws Exception
 	 */
 	private void fileOutPutExcelContractInfo(SheetDataBean shatakuContractWorkSheet,
 			SheetDataBean parkingContractWorkSheet, Skf3010Sc001ContractDownLoadDto downloadDto) throws Exception {
@@ -567,17 +619,17 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		List<SheetDataBean> sheetDataBeanList = new ArrayList<>();
 		sheetDataBeanList.add(shatakuContractWorkSheet);
 		sheetDataBeanList.add(parkingContractWorkSheet);
-		
-		Map<String, Object> cellparams = new HashMap<>();	// 列書式(背景、フォント)
-		Map<String, Object> resultMap = new HashMap<>();	// 列書式(背景、フォント)
-		
-		String fileName = excelPreFileName + DateTime.now().toString("YYYYMMddHHmmss")+ ".xlsx";
+
+		Map<String, Object> cellparams = new HashMap<>(); // 列書式(背景、フォント)
+		Map<String, Object> resultMap = new HashMap<>(); // 列書式(背景、フォント)
+
+		String fileName = excelPreFileName + DateTime.now().toString("YYYYMMddHHmmss") + ".xlsx";
 		WorkBookDataBean wbdb = new WorkBookDataBean(fileName);
 		wbdb.setSheetDataBeanList(sheetDataBeanList);
 		// Excelファイルへ出力
-		SkfFileOutputUtils.fileOutputExcel(wbdb, cellparams, 
-			"skf3010.skf3010_sc001.excelTemplateFile", "SKF3010SC001", excelOutPutStartLine, null, resultMap);
-		byte[] writeFileData = (byte[])resultMap.get("fileData");
+		SkfFileOutputUtils.fileOutputExcel(wbdb, cellparams, "skf3010.skf3010_sc001.excelTemplateFile", "SKF3010SC001",
+				excelOutPutStartLine, null, resultMap);
+		byte[] writeFileData = (byte[]) resultMap.get("fileData");
 		downloadDto.setFileData(writeFileData);
 		downloadDto.setUploadFileName(fileName);
 		downloadDto.setViewPath(NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH);
@@ -588,7 +640,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		wbdb = null;
 		writeFileData = null;
 	}
-	
+
 	/**
 	 * 社宅契約情報取得
 	 * 
@@ -596,20 +648,21 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	 * 
 	 * 「※」項目はアドレスとして戻り値になる。
 	 * 
-	 * @param paramShatakuKanriNoList 社宅管理番号リスト
-	 * @param *listTableData 社宅契約情報リスト
+	 * @param paramShatakuKanriNoList
+	 *            社宅管理番号リスト
+	 * @param *listTableData
+	 *            社宅契約情報リスト
 	 * @return 取得件数
 	 */
-	public int createShatakuContractTableDataList(
-			List<Long> paramShatakuKanriNoList, List<Skf3010Sc001GetShatakuContractInfoDataExp> listTableData) {
+	public int createShatakuContractTableDataList(List<Long> paramShatakuKanriNoList,
+			List<Skf3010Sc001GetShatakuContractInfoDataExp> listTableData) {
 		int resultCount = 0;
-		List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList =
-								new ArrayList<Skf3010Sc001GetShatakuContractInfoDataExp>();
+		List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList = new ArrayList<Skf3010Sc001GetShatakuContractInfoDataExp>();
 
 		Skf3010Sc001GetContractInfoDataExpParameter param = new Skf3010Sc001GetContractInfoDataExpParameter();
 		param.setShatakuKanriNoList(paramShatakuKanriNoList);
-		getShatakuContractList =
-				skf3010Sc001GetShatakuContractInfoDataExpRepository.getShatakuContractListTableData(param);
+		getShatakuContractList = skf3010Sc001GetShatakuContractInfoDataExpRepository
+				.getShatakuContractListTableData(param);
 
 		do {
 			// 取得レコード数を設定
@@ -622,7 +675,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// リストテーブルに出力するリストを取得する
 			listTableData.clear();
 			listTableData.addAll(getShatakuContractList);
-		} while(false);
+		} while (false);
 		getShatakuContractList = null;
 		param = null;
 		return resultCount;
@@ -635,20 +688,21 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	 * 
 	 * 「※」項目はアドレスとして戻り値になる。
 	 * 
-	 * @param paramShatakuKanriNoList 社宅管理番号リスト
-	 * @param *listTableData 駐車場契約情報リスト
+	 * @param paramShatakuKanriNoList
+	 *            社宅管理番号リスト
+	 * @param *listTableData
+	 *            駐車場契約情報リスト
 	 * @return 取得件数
 	 */
-	public int createParkingContractTableDataList(
-			List<Long> paramShatakuKanriNoList, List<Skf3010Sc001GetParkingContractInfoDataExp> listTableData) {
+	public int createParkingContractTableDataList(List<Long> paramShatakuKanriNoList,
+			List<Skf3010Sc001GetParkingContractInfoDataExp> listTableData) {
 		int resultCount = 0;
-		List<Skf3010Sc001GetParkingContractInfoDataExp> getParkingContractList =
-							new ArrayList<Skf3010Sc001GetParkingContractInfoDataExp>();
+		List<Skf3010Sc001GetParkingContractInfoDataExp> getParkingContractList = new ArrayList<Skf3010Sc001GetParkingContractInfoDataExp>();
 
 		Skf3010Sc001GetContractInfoDataExpParameter param = new Skf3010Sc001GetContractInfoDataExpParameter();
 		param.setShatakuKanriNoList(paramShatakuKanriNoList);
-		getParkingContractList =
-				skf3010Sc001GetParkingContractInfoDataExpRepository.getParkingContractListTableData(param);
+		getParkingContractList = skf3010Sc001GetParkingContractInfoDataExpRepository
+				.getParkingContractListTableData(param);
 
 		do {
 			// 取得レコード数を設定
@@ -661,7 +715,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// リストテーブルに出力するリストを取得する
 			listTableData.clear();
 			listTableData.addAll(getParkingContractList);
-		} while(false);
+		} while (false);
 		getParkingContractList = null;
 		param = null;
 		return resultCount;

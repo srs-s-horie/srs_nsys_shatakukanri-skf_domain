@@ -47,6 +47,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepo
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
+import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -71,6 +72,8 @@ public class Skf2030Sc001SharedService {
 	private Map<String, String> bihinInfoMap;
 	private Map<String, String> bihinApplMap;
 	private Map<String, String> bihinAdjustMap;
+
+	private MenuScopeSessionBean menuScopeSessionBean;
 
 	private final String NO_DATA_MESSAGE = "初期表示中に";
 	private final String MSG_MISHONIN = "承認されていない申請書類が存在し";
@@ -125,6 +128,15 @@ public class Skf2030Sc001SharedService {
 	private SkfHtmlCreateUtils skfHtmlCreateUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+
+	/**
+	 * セッション情報を保持します
+	 * 
+	 * @param sessionBean
+	 */
+	public void setMenuScopeSessionBean(MenuScopeSessionBean sessionBean) {
+		this.menuScopeSessionBean = sessionBean;
+	}
 
 	/**
 	 * 画面内容の設定を行います
@@ -382,7 +394,8 @@ public class Skf2030Sc001SharedService {
 		String updateTel = null;
 		String updateCompleteDate = null;
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// 更新ステータス等の判定
@@ -414,9 +427,11 @@ public class Skf2030Sc001SharedService {
 		// コメント
 		String commentName = loginUserInfo.get("userName");
 		String commentNote = skfHtmlCreateUtils.htmlEscapeEncode(dto.getCommentNote());
-		if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName, commentNote,
-				errorMsg)) {
-			return false;
+		if (NfwStringUtils.isNotEmpty(commentNote.trim())) {
+			if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName,
+					commentNote, errorMsg)) {
+				return false;
+			}
 		}
 
 		// 備品希望申請テーブルを更新

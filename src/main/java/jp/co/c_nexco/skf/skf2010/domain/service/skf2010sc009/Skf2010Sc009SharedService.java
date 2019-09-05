@@ -17,7 +17,7 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtiles;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
 @Service
@@ -30,7 +30,7 @@ public class Skf2010Sc009SharedService {
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
-	private SkfAttachedFileUtiles skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtiles;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
@@ -102,7 +102,7 @@ public class Skf2010Sc009SharedService {
 					// ファイルタイプ
 					String fileType = skfAttachedFileUtiles.getFileTypeInfo(fileInfo.getAttachedName());
 					setAttachedFileMap(attachedFileMap, attachedNo, fileInfo.getAttachedName(),
-							fileInfo.getFileStream(), fileInfo.getFileSize(), fileType);
+							fileInfo.getFileStream(), fileInfo.getFileSize(), fileType, fileInfo.getInsertDate());
 
 					resultAttachedFileList.add(attachedFileMap);
 				}
@@ -167,7 +167,7 @@ public class Skf2010Sc009SharedService {
 	}
 
 	private void setAttachedFileMap(Map<String, Object> fileInfoMap, int attachedNo, String fileName, byte[] fileStream,
-			String fileSize, String fileType) {
+			String fileSize, String fileType, Date updateDate) {
 		// 添付資料番号
 		fileInfoMap.put("attachedNo", String.valueOf(attachedNo));
 		// 添付資料名
@@ -175,7 +175,7 @@ public class Skf2010Sc009SharedService {
 		// ファイルサイズ
 		fileInfoMap.put("fileSize", fileSize);
 		// 更新日
-		String applDate = skfDateFormatUtils.dateFormatFromDate(new Date(), "yyyy/MM/dd HH:mm:ss.SS");
+		String applDate = skfDateFormatUtils.dateFormatFromDate(updateDate, "yyyy/MM/dd HH:mm:ss.SS");
 		fileInfoMap.put("applDate", applDate);
 		// 添付資料
 		fileInfoMap.put("fileStream", fileStream);

@@ -140,6 +140,7 @@ public class Skf3010Sc001SharedService {
 		int resultCount = 0;
 		List<Skf3010Sc001GetListTableDataExp> resultListTableData = new ArrayList<Skf3010Sc001GetListTableDataExp>();
 		Skf3010Sc001GetListTableDataExpParameter param = new Skf3010Sc001GetListTableDataExpParameter();
+		List<Map<String, Object>> tmpListData = new ArrayList<Map<String, Object>>();
 
 		do {
 			param.setSelectedCompanyCd(selectedCompanyCd);
@@ -149,37 +150,50 @@ public class Skf3010Sc001SharedService {
 			param.setUseKbnCd(useKbnCd);
 			param.setEmptyParkingCd(emptyParkingCd);
 			param.setShatakuName(shatakuName);
-			param.setShatakuAddress(shatakuAddress);
 			resultListTableData = skf3010Sc001GetListTableDataExpRepository.getListTableData(param);
 
 			// 取得レコード数を設定
 			resultCount = resultListTableData.size();
-	
+
 			// 取得データレコード数判定
+			if (resultCount == 0) {
+				// 取得データレコード数が0件の多い場合、何もせず処理終了
+				break;
+			}
+
+			// リストテーブルに出力するリストを取得する
+			tmpListData.clear();
+			tmpListData.addAll(getListTableDataViewColumn(resultListTableData, shatakuAddress));
+			// 取得レコード数を設定
+			resultCount = tmpListData.size();
 			if (resultCount == 0 || resultCount > maxGetRecordCount) {
 				// 取得データレコード数が0件または3000件より多い場合、何もせず処理終了
-				return resultCount;
+				break;
 			}
-	
-			// リストテーブルに出力するリストを取得する
+			// 出力するリストを設定
 			listTableData.clear();
-			listTableData.addAll(getListTableDataViewColumn(resultListTableData));
+			listTableData.addAll(tmpListData);			
+			
 		} while(false);
+		tmpListData = null;
 		resultListTableData = null;
 		param = null;
 
 		return resultCount;
 
 	}
-
+	
 	/**
 	 * リストテーブルに出力するリストを取得する。
+	 * 検索社宅住所が指定されている場合は対象住所を含む場合のみリストへ追加する。
 	 * 
-	 * @param originList
+	 * @param1 originList		DBからの取得結果
+	 * @param2 searchAddress	検索社宅住所
 	 * @return リストテーブルに出力するリスト
 	 * @throws ParseException
 	 */
-	private List<Map<String, Object>> getListTableDataViewColumn(List<Skf3010Sc001GetListTableDataExp> originList)
+	private List<Map<String, Object>> getListTableDataViewColumn(
+			List<Skf3010Sc001GetListTableDataExp> originList, String searchAddress)
 			throws ParseException {
 
 		logger.debug("社宅一覧リスト作成");
@@ -202,9 +216,9 @@ public class Skf3010Sc001SharedService {
 
 		for (int i = 0; i < originList.size(); i++) {
 			String shatakuKbn = "";
+			String shatakuAddress = "";
 			String useKbn = "";
 			String structureKbn = "";
-			String prefName = "";
 			String emptyRoomCount = "";
 			String emptyParkingCount = "";
 			String areaKbn = "";
@@ -236,9 +250,22 @@ public class Skf3010Sc001SharedService {
 			// 都道府県コード判定
 			if (tmpData.getPrefCd() != null && !tmpData.getPrefCd().equals(CD_PREF_OTHER)) {
 				// 存在し、且つ、その他以外の場合は都道府県名を付与
-				prefName = genericCodeMapPref.get(tmpData.getPrefCd());
+				shatakuAddress = genericCodeMapPref.get(tmpData.getPrefCd());
 			}
-			tmpMap.put("shatakuAddress", prefName + tmpData.getShatakuAddress());
+			// 住所取得結果判定
+			if (tmpData.getShatakuAddress() != null) {
+				shatakuAddress += tmpData.getShatakuAddress();
+			}
+			// 住所検索判定
+			if (searchAddress != null && searchAddress.length() > 0) {
+				// 住所検索(検索キーが含まれていない
+				if (!shatakuAddress.contains(searchAddress)) {
+					// リストへ追加せず次の取得データ処理を実施する
+					continue;
+				}
+			}
+
+			tmpMap.put("shatakuAddress", shatakuAddress);
 			// 構造
 			if (tmpData.getStructureKbn() != null) {
 				structureKbn = genericCodeMapStructure.get(tmpData.getStructureKbn());
@@ -291,7 +318,7 @@ public class Skf3010Sc001SharedService {
 			// 基本
 			tmpMap.put("col11", "");
 			// 社宅区分判定
-			if (!tmpData.getShatakuKbn().equals(KARIAGE)) {
+			if (!KARIAGE.equals(tmpData.getShatakuKbn())) {
 				// 借上以外の場合のみ、「部屋」を追加
 				tmpMap.put("col12", "");
 			}

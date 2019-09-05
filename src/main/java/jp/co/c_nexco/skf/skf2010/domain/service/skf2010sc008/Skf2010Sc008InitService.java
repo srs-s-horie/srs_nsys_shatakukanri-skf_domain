@@ -1,7 +1,6 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc008;
 
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
@@ -27,7 +26,7 @@ public class Skf2010Sc008InitService extends BaseServiceAbstract<Skf2010Sc008Ini
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
-	
+
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
 
@@ -42,25 +41,28 @@ public class Skf2010Sc008InitService extends BaseServiceAbstract<Skf2010Sc008Ini
 	public Skf2010Sc008InitDto index(Skf2010Sc008InitDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
-		
+
 		// 操作ログを出力
 		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
-		
+
 		// 操作ガイドの設定
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
-		
+
 		// セッションから代行ログイン状態を取得
 		String sessionVal = (String) sessionBean.get(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY);
-		Map<String, Object> alterLoginUserInfoMap = (Map<String, Object>) sessionBean.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP);
+		Map<String, Object> alterLoginUserInfoMap = (Map<String, Object>) sessionBean
+				.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP);
 		if (CodeConstant.LOGIN.equals(sessionVal)) {
 			// 代行ログイン中
 			// セッションの代行対象社員の情報を取得する
-			initDto.setShainNo((String)alterLoginUserInfoMap.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NO));
-			initDto.setShainName((String)alterLoginUserInfoMap.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_SHAIN_NAME));
-			initDto.setAgencyName((String)alterLoginUserInfoMap.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_AGENCY_NAME));
-			initDto.setAffiliation1Name((String)alterLoginUserInfoMap.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_AFFILIATION1_NAME));
-			initDto.setAffiliation2Name((String)alterLoginUserInfoMap.get(SessionCacheKeyConstant.ALTER_LOGIN_USER_AFFILIATION2_NAME));
-		} 
+			initDto.setShainNo((String) alterLoginUserInfoMap.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO));
+			initDto.setShainName((String) alterLoginUserInfoMap.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NAME));
+			initDto.setAgencyName((String) alterLoginUserInfoMap.get(CodeConstant.ALTER_LOGIN_USER_AGENCY_NAME));
+			initDto.setAffiliation1Name(
+					(String) alterLoginUserInfoMap.get(CodeConstant.ALTER_LOGIN_USER_AFFILIATION1_NAME));
+			initDto.setAffiliation2Name(
+					(String) alterLoginUserInfoMap.get(CodeConstant.ALTER_LOGIN_USER_AFFILIATION2_NAME));
+		}
 		return initDto;
 	}
 
