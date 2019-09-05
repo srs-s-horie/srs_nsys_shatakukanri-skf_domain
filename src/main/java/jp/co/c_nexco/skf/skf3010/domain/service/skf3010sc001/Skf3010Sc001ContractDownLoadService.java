@@ -228,8 +228,8 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList) throws Exception {
 
 		// 個人法人区分リスト取得
-		Map<String, String> businessKbnList = new HashMap<String, String>();
-		businessKbnList = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
+		Map<String, String> businessKbnList =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
 		// Excelワークシート(契約情報（社宅）)
 		SheetDataBean sheetDataBean = new SheetDataBean();
 		// Excel行データ
@@ -425,16 +425,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			List<Skf3010Sc001GetParkingContractInfoDataExp> getParkingContractList) throws Exception {
 
 		// 駐車場契約形態区分リスト取得
-		Map<String, String> parkingContractKbnList = new HashMap<String, String>();
-		parkingContractKbnList = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN);
+		Map<String, String> parkingContractKbnList =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN);
 		// 個人法人区分リスト取得
-		Map<String, String> businessKbnList = new HashMap<String, String>();
-		businessKbnList = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
-		// 駐車場所在地区分リスト取得
-		Map<String, String> parkingAddressKbnList = new HashMap<String, String>();
-		parkingAddressKbnList = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_ADDRESS_KBN);
+		Map<String, String> businessKbnList =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
 
 		// Excelワークシート(契約情報（駐車場）)
 		SheetDataBean sheetDataBean = new SheetDataBean();

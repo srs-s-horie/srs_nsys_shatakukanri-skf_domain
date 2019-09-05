@@ -199,18 +199,18 @@ public class Skf3010Sc001SharedService {
 		logger.debug("社宅一覧リスト作成");
 
 		// 社宅区分コード取得
-		Map<String, String> genericCodeMapShatakuKbn = new HashMap<String, String>();
-		genericCodeMapShatakuKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
+		Map<String, String> genericCodeMapShatakuKbn =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
 		// 利用区分コード取得
-		Map<String, String> genericCodeMapUseKbn = new HashMap<String, String>();
-		genericCodeMapUseKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_RIYO_KBN);
+		Map<String, String> genericCodeMapUseKbn =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_RIYO_KBN);
 		
 		// 構造区分
-		Map<String, String> genericCodeMapStructure = new HashMap<String, String>();
-		genericCodeMapStructure = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STRUCTURE_KBN);
+		Map<String, String> genericCodeMapStructure =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STRUCTURE_KBN);
 		// 都道府県コード
-		Map<String, String> genericCodeMapPref = new HashMap<String, String>();
-		genericCodeMapPref = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+		Map<String, String> genericCodeMapPref =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
 
 		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
 
