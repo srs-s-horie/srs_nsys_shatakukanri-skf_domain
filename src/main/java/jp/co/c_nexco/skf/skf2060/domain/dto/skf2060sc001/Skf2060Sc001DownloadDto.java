@@ -19,5 +19,9 @@ public class Skf2060Sc001DownloadDto extends FileDownloadDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 	
+	//提示対象者番号
+	private String shainNo;
+	//申請書類管理番号
+	private String applNo;
 	
 }
