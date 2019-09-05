@@ -309,7 +309,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 					// DB取得データのコードから汎用コードマスタより文字列取得
 					businessKbn = businessKbnList.get(getRowData.getBusinessKbn());
 				}
-				// 所在地(契約情報取得リスト)
+				// 社宅所在地(契約情報取得リスト)
 				if (listRowData.containsKey("shatakuAddress") && listRowData.get("shatakuAddress") != null) {
 					shatakuAddress = listRowData.get("shatakuAddress").toString();
 				}
@@ -528,8 +528,10 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 				// 駐車場所在地区分(DB取得データ)判定
 				if (PARKING_ADDRESS_KBN_EQUALS.equals(getRowData.getParkingAddressKbn())) {
 					// 社宅と同一所在地
-					// DB取得データのコードから汎用コードマスタより文字列取得
-					parkingAddress = parkingAddressKbnList.get(getRowData.getParkingAddressKbn());
+					// 社宅所在地(契約情報取得リスト)
+					if (listRowData.containsKey("shatakuAddress") && listRowData.get("shatakuAddress") != null) {
+						parkingAddress = listRowData.get("shatakuAddress").toString();
+					}
 				} else if (getRowData.getParkingAddress() != null) {
 					// 社宅と別所在地
 					parkingAddress = getRowData.getParkingAddress();
