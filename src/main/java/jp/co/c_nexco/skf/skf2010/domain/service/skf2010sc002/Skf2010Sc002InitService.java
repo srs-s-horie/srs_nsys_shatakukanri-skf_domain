@@ -49,6 +49,9 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
 
+	private String sTrue = "true";
+	private String sFalse = "false";
+
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -116,14 +119,14 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 遷移元により制御
 		if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2020_SC002)) {
 			// 入居希望申請画面から遷移
-			initDto.setApplyBtnViewFlg(SkfCommonConstant.TRUE);
-			initDto.setPresenBtnViewFlg(SkfCommonConstant.FALSE);
+			initDto.setApplyBtnViewFlg(sTrue);
+			initDto.setPresenBtnViewFlg(sFalse);
 		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2040_SC001)) {
 			// 退居届申請画面から遷移
-			initDto.setPresenBtnViewFlg(SkfCommonConstant.FALSE);
+			initDto.setPresenBtnViewFlg(sFalse);
 		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2020_SC003)) {
 			// 入居希望申請アウトソース画面から遷移
-			initDto.setApplyBtnViewFlg(SkfCommonConstant.FALSE);
+			initDto.setApplyBtnViewFlg(sFalse);
 		}
 
 	}
@@ -166,10 +169,10 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
-			initDto.setCommentViewFlag(SkfCommonConstant.FALSE);
+			initDto.setCommentViewFlag(sFalse);
 		} else {
 			// コメントがあれば表示
-			initDto.setCommentViewFlag(SkfCommonConstant.TRUE);
+			initDto.setCommentViewFlag(sTrue);
 		}
 		return;
 
@@ -206,7 +209,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 				// 社宅入居希望等調書の項目設定
 				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
 
-				if (SkfCommonConstant.TRUE.equals(initDto.getLevel2())) {
+				if (sTrue.equals(initDto.getLevel2())) {
 					// 貸与（予定）社宅等のご案内
 					mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
 				}
@@ -268,35 +271,35 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		switch (prePageId) {
 		case FunctionIdConstant.SKF2020_SC002:
 			// 社宅入居希望等調書（申請者用）
-			result.put("level1", SkfCommonConstant.TRUE); // 入居希望等調書
-			result.put("level2", SkfCommonConstant.FALSE); // 貸与社宅などのご案内
-			result.put("level3", SkfCommonConstant.FALSE);// 退居届
+			result.put("level1", sTrue); // 入居希望等調書
+			result.put("level2", sFalse); // 貸与社宅などのご案内
+			result.put("level3", sFalse);// 退居届
 			result.put("mask", CodeConstant.MASK_LEVEL1); // 申請ボタン表示
-			result.put("level1Open", SkfCommonConstant.TRUE); // 入居希望等調書のアコーディオン初期表示
-			result.put("level2Open", SkfCommonConstant.FALSE);// 貸与社宅などのご案内のアコーディオン初期表示
-			result.put("level3Open", SkfCommonConstant.FALSE);// 退居届のアコーディオン初期表示
+			result.put("level1Open", sTrue); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", sFalse);// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
 			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_1); // 申請者から承認者へ
 			break;
 		case FunctionIdConstant.SKF2020_SC003:
 			// 社宅入居希望等調書（アウトソース用）
-			result.put("level1", SkfCommonConstant.TRUE); // 入居希望等調書
-			result.put("level2", SkfCommonConstant.TRUE); // 貸与社宅などのご案内
-			result.put("level3", SkfCommonConstant.FALSE);// 退居届
+			result.put("level1", sTrue); // 入居希望等調書
+			result.put("level2", sTrue); // 貸与社宅などのご案内
+			result.put("level3", sFalse);// 退居届
 			result.put("mask", CodeConstant.MASK_LEVEL2); // 提示ボタン表示
-			result.put("level1Open", SkfCommonConstant.FALSE); // 入居希望等調書のアコーディオン初期表示
-			result.put("level2Open", SkfCommonConstant.TRUE);// 貸与社宅などのご案内のアコーディオン初期表示
-			result.put("level3Open", SkfCommonConstant.FALSE);// 退居届のアコーディオン初期表示
+			result.put("level1Open", sFalse); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", sTrue);// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
 			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_2);// 承認者から申請者へ
 			break;
 		case FunctionIdConstant.SKF2040_SC001:
 			// 退居（自動車の保管場所返還）届
-			result.put("level1", SkfCommonConstant.FALSE); // 入居希望等調書
-			result.put("level2", SkfCommonConstant.FALSE); // 貸与社宅などのご案内
-			result.put("level3", SkfCommonConstant.TRUE);// 退居届
+			result.put("level1", sFalse); // 入居希望等調書
+			result.put("level2", sFalse); // 貸与社宅などのご案内
+			result.put("level3", sTrue);// 退居届
 			result.put("mask", CodeConstant.MASK_LEVEL1); // 申請ボタン表示
-			result.put("level1Open", SkfCommonConstant.FALSE); // 入居希望等調書のアコーディオン初期表示
-			result.put("level2Open", SkfCommonConstant.FALSE);// 貸与社宅などのご案内のアコーディオン初期表示
-			result.put("level3Open", SkfCommonConstant.TRUE);// 退居届のアコーディオン初期表示
+			result.put("level1Open", sFalse); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", sFalse);// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", sTrue);// 退居届のアコーディオン初期表示
 			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_1);// 申請者から承認者へ
 			break;
 
