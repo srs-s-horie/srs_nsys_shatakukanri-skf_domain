@@ -248,12 +248,14 @@ public class Skf2030Sc001SharedService {
 				initDto.setSessionDay(sessionDayText);
 			}
 			// 備品搬入希望時間 ※入力項目
-			String ApplTime = CodeConstant.NONE;
+			String applTime = CodeConstant.NONE;
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getSessionTime())) {
-				ApplTime = bihinShinseiInfo.getSessionTime();
+				applTime = bihinShinseiInfo.getSessionTime();
+				Map<String, String> sessionTimeMap = skfGenericCodeUtils.getGenericCode("SKF1048");
+				initDto.setSessionTimeText(sessionTimeMap.get(applTime));
 			}
 			// 希望時間取得（ドロップダウン生成時に初期値を設定）
-			initDto.setDdlWishTime(skfDropDownUtils.getGenericForDoropDownList("SKF1048", ApplTime, false));
+			initDto.setDdlWishTime(skfDropDownUtils.getGenericForDoropDownList("SKF1048", applTime, false));
 			// 【 連絡先 】 ※入力項目
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getRenrakuSaki())) {
 				initDto.setRenrakuSaki(bihinShinseiInfo.getRenrakuSaki());
