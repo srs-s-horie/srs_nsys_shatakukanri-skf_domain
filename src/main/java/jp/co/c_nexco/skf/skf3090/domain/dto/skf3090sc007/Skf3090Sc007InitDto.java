@@ -35,8 +35,12 @@ public class Skf3090Sc007InitDto extends Skf3090Sc007CommonDto {
 	private String companyCdDisabled;
 	// 機関コードテキストボックス操作可否判定
 	private String agencyCdDisabled;
+	// 機関コード名称を検索ボタン操作可判定
+	private String agencyCdSearchDisabled;
 	// 部等コードテキストボックス操作可否判定
 	private String affiliation1CdDisabled;
+	// 部等コード名称を検索ボタン操作可否判定
+	private String affiliation1CdSearchDisabled;
 	// 室、チーム又は課コードテキストボックス操作可否判定
 	private String affiliation2CdDisabled;
 	// 機関テキストボックス操作可否判定
@@ -47,4 +51,10 @@ public class Skf3090Sc007InitDto extends Skf3090Sc007CommonDto {
 	private String affiliation2NameDisabled;
 	// 事業領域ドロップダウン操作可否判定
 	private String businessAreaCdDisabled;
+	// 登録ボタン操作可否判定
+	private String registButtonDisabled;
+	// 登録ボタン表示可否判定
+	private String registButtonRemove;
+	// 削除ボタン操作可否判定
+	private String deleteButtonDisabled;
 }
