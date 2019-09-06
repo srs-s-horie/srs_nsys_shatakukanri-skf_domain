@@ -60,6 +60,9 @@ public class Skf3090Sc006SharedService {
 			tmpMap.put("businessAreaName", tmpData.getBusinessAreaName());
 			tmpMap.put("companyCd", tmpData.getCompanyCd());
 			tmpMap.put("agencyCd", tmpData.getAgencyCd());
+			tmpMap.put("affiliation1Cd", tmpData.getAffiliation1Cd());
+			tmpMap.put("affiliation2Cd", tmpData.getAffiliation2Cd());
+			tmpMap.put("registflag", tmpData.getRegistFlg());
 			tmpMap.put("details", "");
 
 			setViewList.add(tmpMap);
