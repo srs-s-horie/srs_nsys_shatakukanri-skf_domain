@@ -373,10 +373,12 @@ public class Skf2030Sc001SharedService {
 		case CodeConstant.STATUS_HANNYU_MACHI:
 			initDto.setBihinReadOnly(true);
 			initDto.setCompletionDayDisabled(false);
+			initDto.setStatus24Flag(false);
 			break;
 		default:
 			initDto.setBihinReadOnly(true);
 			initDto.setCompletionDayDisabled(true);
+			initDto.setStatus24Flag(true);
 			break;
 		}
 

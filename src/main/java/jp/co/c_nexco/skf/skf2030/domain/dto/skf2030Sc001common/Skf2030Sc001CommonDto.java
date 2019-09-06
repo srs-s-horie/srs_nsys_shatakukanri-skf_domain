@@ -20,6 +20,8 @@ public class Skf2030Sc001CommonDto extends Skf203010CommonDto {
 	private boolean bihinReadOnly;
 	// 「申請中」フラグ
 	private boolean status01Flag;
+	// 「搬入済」フラグ
+	private boolean status24Flag;
 	// 「搬入完了日」非活性フラグ
 	private boolean completionDayDisabled;
 	// 備品申請ラジオボタンフラグ
