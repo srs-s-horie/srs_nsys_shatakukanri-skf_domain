@@ -438,7 +438,7 @@ public class Skf2030Sc001SharedService {
 		}
 
 		// 備品希望申請テーブルを更新
-		if (updateBihinKiboShinseiInfo(applInfo, updateTel, updateRenrakuSakiTel, updateSessionDay, updateTime,
+		if (!updateBihinKiboShinseiInfo(applInfo, updateTel, updateRenrakuSakiTel, updateSessionDay, updateTime,
 				updateCompleteDate)) {
 			return false;
 		}
