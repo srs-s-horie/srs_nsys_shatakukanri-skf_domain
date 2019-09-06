@@ -25,11 +25,12 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004BulkCompleteDto;
-import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSharedService;
+import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailService;
 
 /**
- * TestPrjTop画面のSkf2060Sc004BulkCompleteDto（一括完了）サービス処理クラス。　 
+ * SKF2060Sc004 借上候補物件状況一覧画面の一括完了サービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2060Sc004BulkCompleteService extends BaseServiceAbstract<Skf2060Sc004BulkCompleteDto> {
@@ -37,7 +38,7 @@ public class Skf2060Sc004BulkCompleteService extends BaseServiceAbstract<Skf2060
     @Autowired
     private MenuScopeSessionBean sessionBean;
     @Autowired
-    Skf206010CommonSharedService skf206010CommonSharedService;
+    Skf206010CommonSendMailService skf206010CommonSharedService;
     @Autowired
     Skf2060Sc004SharedService skf2060Sc004SharedService;
     @Autowired

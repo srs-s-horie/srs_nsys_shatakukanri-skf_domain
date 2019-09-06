@@ -1,3 +1,6 @@
+/**
+ * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
+ */
 package jp.co.c_nexco.skf.skf2060.domain.service.common;
 
 import java.util.Date;
@@ -27,12 +30,12 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
 
 /**
- * Skf206010 借上候補登録・確認・一覧画面 共通処理クラス
+ * Skf206010 借上候補登録・確認・一覧画面 共通メール送信処理クラス
  *
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf206010CommonSharedService {
+public class Skf206010CommonSendMailService {
 
     @Autowired
     private SkfGetInfoUtilsGetShainInfoExpRepository skfGetInfoUtilsGetShainInfoExpRepository;
@@ -50,7 +53,8 @@ public class Skf206010CommonSharedService {
     private final String REMINDER_MAIL_TEMPLATE_ID = "SKF_ML32";
     /** 借上候補物件確認画面へのURL */
     private final String SKF2060SC002_URL_BASE = "/skf/Skf2060Sc002/init?SKF2060_SC002&menuflg=1&tokenCheck=0";
-    
+    /** 借上げ候補物件確認画面からの戻り先URL */
+    private final String SKF2060SC002_BACK_URL = "/skf/Skf2060Sc004/init";
     /**
      * 借上候補物件提示通知メールを送付する。
      * @param applNo 申請書類管理番号
@@ -82,13 +86,17 @@ public class Skf206010CommonSharedService {
         // 承認者コメントを取得
         String comment = this.getApproveCommentStr(applInfoExp.getApplNo());
         
+        // メールに記載するURLを生成
+        String url = SKF2060SC002_URL_BASE + this.makeUrlParamsStr(
+                applInfoExp.getShainNo(), applNo, applInfoExp.getApplStatus(), SKF2060SC002_BACK_URL);
+        
         // URLを設定
         this.sendKariageTeijiMail(
                 applInfoExp.getApplNo(),
                 applInfoExp.getApplDate(),
                 shainInfoExp.getName(),
                 comment,
-                this.SKF2060SC002_URL_BASE, 
+                url, 
                 shainInfoExp.getMailAddress(),
                 applName);
     }
@@ -151,7 +159,7 @@ public class Skf206010CommonSharedService {
         commentList = skfCommentUtils.getCommentInfo(
                 CodeConstant.C001,
                 applNo,
-                CodeConstant.STATUS_SHONIN_ZUMI
+                CodeConstant.STATUS_KAKUNIN_IRAI //「確認依頼」ステータスのコメントを取得
         );
         String comment = "";
         if (commentList != null && commentList.size() > 0) {
@@ -188,8 +196,8 @@ public class Skf206010CommonSharedService {
         replaceMap.put("【appl_user_name】", StringUtils.defaultString(applShainName)); // 申請社員名
         replaceMap.put("【comment】", StringUtils.defaultString(comment)); // コメント
         
-        // 申請日のフォーマット(yyyy年MM月dd日)
-        String applDateStr = skfDateFormatUtils.dateFormatFromDate(applDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+        // 申請日のフォーマット(yyyy/MM/dd)
+        String applDateStr = skfDateFormatUtils.dateFormatFromDate(applDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
         replaceMap.put("【appl_date】", StringUtils.defaultString(applDateStr)); // 申請日
 
         // 短縮URL作成
@@ -204,6 +212,15 @@ public class Skf206010CommonSharedService {
         return;
     }
     
-
-
+    /**
+     * メールに記載するURLに必要なパラメータ文字列を作成する。
+     * @param shainNo 社員バン後う
+     * @param applNo 申請書類管理番号
+     * @param applStatus 申請状況
+     * @param backUrl 戻りURL
+     * @return パラメータ文字列
+     */
+    private String makeUrlParamsStr(String shainNo, String applNo, String applStatus, String backUrl){
+        return "&shainNo=" + shainNo + "&applNo=" + applNo + "&applStatus=" + applStatus + "&backUrl=" + backUrl;
+    }
 }
