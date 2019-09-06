@@ -70,7 +70,8 @@ public class Skf2030Sc001CompleteService extends BaseServiceAbstract<Skf2030Sc00
 		applInfo.put("shainNo", dto.getHdnShainNo());
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		skf2030Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 申請前に申請可能か判定を行う
@@ -110,7 +111,7 @@ public class Skf2030Sc001CompleteService extends BaseServiceAbstract<Skf2030Sc00
 			throwBusinessExceptionIfErrors(dto.getResultMessages());
 		}
 
-		if (skf2030Sc001SharedService.updateDispInfo(applInfo, dto)) {
+		if (!skf2030Sc001SharedService.updateDispInfo(applInfo, dto)) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(dto.getResultMessages());
 			return dto;
