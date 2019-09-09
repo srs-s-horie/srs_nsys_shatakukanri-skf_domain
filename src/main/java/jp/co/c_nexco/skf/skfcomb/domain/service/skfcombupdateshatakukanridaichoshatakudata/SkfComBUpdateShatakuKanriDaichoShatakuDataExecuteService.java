@@ -2,7 +2,7 @@
  * 
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skfbatch.domain.service.UpdateShatakuKanriDaichoShatakuData;
+package jp.co.c_nexco.skf.skfcomb.domain.service.skfcombupdateshatakukanridaichoshatakudata;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -13,7 +13,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchBusinessLogicUtils;
-import jp.co.c_nexco.skf.skfbatch.domain.dto.UpdateShatakuKanriDaichoShatakuData.UpdateShatakuKanriDaichoShatakuDataExecuteDto;
+import jp.co.c_nexco.skf.skfcomb.domain.dto.skfcombupdateshatakukanridaichoshatakudata.SkfComBUpdateShatakuKanriDaichoShatakuDataExecuteDto;
 
 /**
  * UpdateShatakuKanriDaichoShatakuDataExecuteService 社宅管理台帳データ登録（社宅情報）更新テストクラス
@@ -22,8 +22,8 @@ import jp.co.c_nexco.skf.skfbatch.domain.dto.UpdateShatakuKanriDaichoShatakuData
  *
  */
 @Service
-public class UpdateShatakuKanriDaichoShatakuDataExecuteService
-		extends BaseServiceAbstract<UpdateShatakuKanriDaichoShatakuDataExecuteDto> {
+public class SkfComBUpdateShatakuKanriDaichoShatakuDataExecuteService
+		extends BaseServiceAbstract<SkfComBUpdateShatakuKanriDaichoShatakuDataExecuteDto> {
 
 	@Autowired
 	SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
@@ -32,7 +32,7 @@ public class UpdateShatakuKanriDaichoShatakuDataExecuteService
 	 * 画面初期表示のメイン処理
 	 */
 	@Override
-	public BaseDto index(UpdateShatakuKanriDaichoShatakuDataExecuteDto dto) throws Exception {
+	public BaseDto index(SkfComBUpdateShatakuKanriDaichoShatakuDataExecuteDto dto) throws Exception {
 
 		LogUtils.debugByMsg("updateShatakuKanriDaichoShatakuData-UTTest：テスト実行クラス処理開始");
 
