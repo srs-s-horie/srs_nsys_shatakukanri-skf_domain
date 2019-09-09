@@ -123,6 +123,7 @@ public class Skf3010Sc005CommonDto extends Skf301010CommonDto {
 	 * 内部フラグ
 	 */
 	private String hdnRegistFlg;
+	private String deleteBtnFlg;
 	
 	/** エラー系 **/
 	// 部屋番号
