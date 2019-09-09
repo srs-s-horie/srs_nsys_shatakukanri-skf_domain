@@ -62,14 +62,13 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	private String excelWorkSheetNameShataku;
 	@Value("${skf3010.skf3010_sc001.excelWorkSheetNameParking}")
 	private String excelWorkSheetNameParking;
-
-	/**
-	 * 社宅一覧 契約情報出力ボタン押下処理
-	 */
+	
 	// 社宅区分:借上
 	private static final String SHATAKU_KBN_KARIAGE = "2";
 	// 社宅区分:一棟
 	private static final String SHATAKU_KBN_ITTO = "4";
+	// 駐車場所在地区分:社宅と同一所在地
+	private static final String PARKING_ADDRESS_KBN_EQUALS = "0";
 
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
@@ -121,16 +120,15 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// 社宅契約情報取得(DBから取得)
 			int shatakuContractCount = createShatakuContractTableDataList(paramShatakuKanriNoList,
 					getShatakuContractList);
-			// 駐車場契約情報取得(DBから取得)
-			int parkingContractCount = createParkingContractTableDataList(paramShatakuKanriNoList,
-					getParkingContractList);
 			// 取得結果件数判定
-			if ((shatakuContractCount + parkingContractCount) < 1) {
+			if ((shatakuContractCount) < 1) {
 				logger.warn("社宅情報が変更されていますので検索をしなおしてください。");
-				// {0}は存在しません。
 				ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_3059);
 				break;
 			}
+			// 駐車場契約情報取得(DBから取得)
+			createParkingContractTableDataList(paramShatakuKanriNoList,
+					getParkingContractList);
 			// 社宅契約情報出力用Excelワークシート作成
 			shatakuContractWorkSheet = createWorkSheetShatakuContract(getContractList, getShatakuContractList);
 			// 駐車場契約情報出力リスト作成
@@ -230,8 +228,8 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			List<Skf3010Sc001GetShatakuContractInfoDataExp> getShatakuContractList) throws Exception {
 
 		// 個人法人区分リスト取得
-		Map<String, String> businessKbnList = new HashMap<String, String>();
-		businessKbnList = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
+		Map<String, String> businessKbnList =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
 		// Excelワークシート(契約情報（社宅）)
 		SheetDataBean sheetDataBean = new SheetDataBean();
 		// Excel行データ
@@ -311,7 +309,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 					// DB取得データのコードから汎用コードマスタより文字列取得
 					businessKbn = businessKbnList.get(getRowData.getBusinessKbn());
 				}
-				// 所在地(契約情報取得リスト)
+				// 社宅所在地(契約情報取得リスト)
 				if (listRowData.containsKey("shatakuAddress") && listRowData.get("shatakuAddress") != null) {
 					shatakuAddress = listRowData.get("shatakuAddress").toString();
 				}
@@ -427,12 +425,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			List<Skf3010Sc001GetParkingContractInfoDataExp> getParkingContractList) throws Exception {
 
 		// 駐車場契約形態区分リスト取得
-		Map<String, String> parkingContractKbnList = new HashMap<String, String>();
-		parkingContractKbnList = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN);
+		Map<String, String> parkingContractKbnList =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN);
 		// 個人法人区分リスト取得
-		Map<String, String> businessKbnList = new HashMap<String, String>();
-		businessKbnList = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
+		Map<String, String> businessKbnList =
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN);
 
 		// Excelワークシート(契約情報（駐車場）)
 		SheetDataBean sheetDataBean = new SheetDataBean();
@@ -523,7 +520,15 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 					businessKbn = businessKbnList.get(getRowData.getBusinessKbn());
 				}
 				// 駐車場所在地 (DB取得データ)
-				if (getRowData.getParkingAddress() != null) {
+				// 駐車場所在地区分(DB取得データ)判定
+				if (PARKING_ADDRESS_KBN_EQUALS.equals(getRowData.getParkingAddressKbn())) {
+					// 社宅と同一所在地
+					// 社宅所在地(契約情報取得リスト)
+					if (listRowData.containsKey("shatakuAddress") && listRowData.get("shatakuAddress") != null) {
+						parkingAddress = listRowData.get("shatakuAddress").toString();
+					}
+				} else if (getRowData.getParkingAddress() != null) {
+					// 社宅と別所在地
 					parkingAddress = getRowData.getParkingAddress();
 				}
 				// 駐車場名(DB取得データ)

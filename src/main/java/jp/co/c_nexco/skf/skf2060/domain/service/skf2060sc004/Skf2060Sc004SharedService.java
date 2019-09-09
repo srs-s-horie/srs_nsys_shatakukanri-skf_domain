@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 
 
 /**
- * Skf2010Sc008 代行ログイン画面 内部処理クラス
+ * SKF2060Sc004 借上候補物件状況一覧画面のサービス共通処理クラス
  *
  * @author NEXCOシステムズ
  */
@@ -97,8 +97,10 @@ public class Skf2060Sc004SharedService {
                 }
             }
             String applNo = tmpData.getApplNo();
-            tmpMap.put("completeChk", "<INPUT type='checkbox' name='completeChkVal' id='completeChkVal" + i + "' value='" + applNo + "'" + completeChkDisabled + ">");
-            tmpMap.put("reminderChk", "<INPUT type='checkbox' name='reminderChkVal' id='reminderChkVal" + i + "' value='" + applNo + "'" + reminderChkDisabled + ">");
+            tmpMap.put("completeChk", "<INPUT type='checkbox' name='completeChkVal' id='completeChkVal" + i + "'"
+                       + " value='" + applNo + "' tabindex='12'" + completeChkDisabled + ">");
+            tmpMap.put("reminderChk", "<INPUT type='checkbox' name='reminderChkVal' id='reminderChkVal" + i + "'"
+                       + " value='" + applNo + "' tabindex='13'" + reminderChkDisabled + ">");
     
             // 提示状況表示文言を汎用コードから取得
             String candidateStatus = candidateStatusGenCodeMap.get(tmpData.getCandidateStatus());

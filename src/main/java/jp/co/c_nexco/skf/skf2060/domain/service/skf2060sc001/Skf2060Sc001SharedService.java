@@ -3,50 +3,42 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateKariageBukkenTeijiFlgExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateKariageKohoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukken;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukkenKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeiji;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiDetail;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiFile;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateKariageBukkenTeijiFlgExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateKariageKohoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiDetailRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiRepository;
-import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
 /**
@@ -66,8 +58,6 @@ public class Skf2060Sc001SharedService {
 	@Autowired
 	private Skf2060Sc001GetApplHistoryExpRepository skf2060Sc001GetApplHistoryExpRepository;
 	@Autowired
-	private Skf2060Sc001UpdateKariageKohoExpRepository skf2060Sc001UpdateKariageKohoExpRepository;
-	@Autowired
 	private Skf2060TKariageBukkenRepository skf2060TKariageBukkenRepository;
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
@@ -80,11 +70,9 @@ public class Skf2060Sc001SharedService {
 	@Autowired
 	private Skf2060Sc001GetApplHistoryInfoForUpdateExpRepository skf2060Sc001GetApplHistoryInfoForUpdateExpRepository;	
 	@Autowired
-	private Skf2060Sc001UpdateKariageBukkenTeijiFlgExpRepository skf2060Sc001UpdateKariageBukkenTeijiFlgExpRepository;	
+	private Skf2060Sc001GetKariageTeijiForUpdateExpRepository skf2060Sc001GetKariageTeijiForUpdateExpRepository;	
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
-	@Autowired
-	private MenuScopeSessionBean sessionBean;
 	
 	public static List<Skf2060Sc001GetKariageBukkenExp> dataParam;
 	public static List<Skf2060Sc001GetKariageBukkenFileExp> dataParam2;
@@ -125,23 +113,16 @@ public class Skf2060Sc001SharedService {
 	 * @param itiranFlg
 	 * @return List<Map<String, Object>>型のテーブルリスト
 	 */
-	public List<Map<String, Object>> getDataParamList(boolean itiranFlg) {
+	public List<Map<String, Object>> getDataParamList(boolean itiranFlg, String shainNo, String applNo) {
 		List<Map<String, Object>> dataParamList = new ArrayList<Map<String, Object>>();
 		// リストテーブルに格納するデータを取得する
 		List<Skf2060Sc001GetKariageBukkenExp> resultListTableData = new ArrayList<Skf2060Sc001GetKariageBukkenExp>();
 		Skf2060Sc001GetKariageBukkenExpParameter param = new Skf2060Sc001GetKariageBukkenExpParameter();
-		String shainNo = CodeConstant.DOUBLE_QUOTATION;
-		String applNo = CodeConstant.DOUBLE_QUOTATION;
 		//TODO セッション名(´・ω・｀)
-		Skf2060Sc001GetApplHistoryExp applInforesultData = (Skf2060Sc001GetApplHistoryExp)sessionBean.get("getApplHistoryResultData");
-		if(applInforesultData != null){
-			shainNo = applInforesultData.getShainNo();
-			applNo = applInforesultData.getApplNo();
-		}
 		param.setCompanyCd(companyCd);
 		param.setShainNo(shainNo);
 		param.setApplNo(applNo);
-		param.setItiranFlg(true);
+		param.setItiranFlg(itiranFlg);
 		resultListTableData = skf2060Sc001GetKariageBukkenExpRepository.getKariageBukken(param);
 
 		// リストテーブルに出力するリストを取得する
@@ -240,7 +221,7 @@ public class Skf2060Sc001SharedService {
 	 * @param candidateNo
 	 * @return 存在している場合true　存在していない場合false
 	 */
-	public boolean getKariageBukken(String companyCd, long candidateNo){
+	public boolean getKariageBukkenForDelete(String companyCd, long candidateNo){
 		
 		boolean existCheck = false;
 		
@@ -263,7 +244,7 @@ public class Skf2060Sc001SharedService {
 	 * 借上候補物件テーブルへ登録を行う
 	 * 
 	 * @param companyCd
-	 * @param candidateNo
+	 * @param shatakuName
 	 * @param address
 	 * @return 登録できた場合true　登録できなかった場合false
 	 */
@@ -392,7 +373,7 @@ public class Skf2060Sc001SharedService {
 	 * @return 登録できた場合true　登録できなかった場合false
 	 */
 	public boolean insertKatiageTeiji(String companyCd, String applNo, short teijiKaisu, long checkCandidateNo,
-			 Date candidateDate, String riyu, String biko){
+			 Date candidateDate){
 		
 		boolean insertCheck = true;
 		int insertCount =0;
@@ -402,8 +383,6 @@ public class Skf2060Sc001SharedService {
 		insertData.setApplNo(applNo);
 		insertData.setTeijiKaisu(teijiKaisu);
 		insertData.setCheckCandidateNo(checkCandidateNo);
-		insertData.setRiyu(riyu);
-		insertData.setBiko(biko);
 		insertData.setCandidateDate(candidateDate);
 		
 		insertCount = skf2060TKariageTeijiRepository.insertSelective(insertData);
@@ -468,22 +447,34 @@ public class Skf2060Sc001SharedService {
 	 */
 	public boolean insertKatiageTeijiFile(String companyCd, String applNo, short teijiKaisu, long candidateNo){
 		
-		boolean insertCheck = true;
 		int insertCount =0;
 		
-		Skf2060TKariageTeijiFile insertData = new Skf2060TKariageTeijiFile();
-		insertData.setCompanyCd(companyCd);
-		insertData.setApplNo(applNo);
-		insertData.setTeijiKaisu(teijiKaisu);
-		insertData.setCandidateNo(candidateNo);
-		
-		insertCount = skf2060TKariageTeijiFileRepository.insertSelective(insertData);
-		
-		if (insertCount <= 0) {
-			insertCheck = false;
+		List<Skf2060Sc001GetKariageBukkenFileExp> bukkenFileDataList = new ArrayList<Skf2060Sc001GetKariageBukkenFileExp>();
+		Skf2060Sc001GetKariageBukkenFileExpParameter bukkenFileParam = new Skf2060Sc001GetKariageBukkenFileExpParameter();
+		bukkenFileParam.setCompanyCd(companyCd);
+		bukkenFileParam.setCandidateNo(candidateNo);
+		bukkenFileDataList = skf2060Sc001GetKariageBukkenFileExpRepository.getKariageBukkenFile(bukkenFileParam);
+		if(bukkenFileDataList.size() <= 0){
+			return false;
 		}
-		
-		return insertCheck;
+		for(Skf2060Sc001GetKariageBukkenFileExp bukkenFileData : bukkenFileDataList){
+			Skf2060TKariageTeijiFile insertData = new Skf2060TKariageTeijiFile();
+			insertData.setCompanyCd(companyCd);
+			insertData.setApplNo(applNo);
+			insertData.setTeijiKaisu(teijiKaisu);
+			insertData.setCandidateNo(bukkenFileData.getCandidateNo());
+			insertData.setAttachedName(bukkenFileData.getAttachedName());
+			insertData.setAttachedNo(bukkenFileData.getAttachedNo());
+			insertData.setFileSize(bukkenFileData.getFileSize());
+			insertData.setFileStream(bukkenFileData.getFileStream());
+			
+			insertCount = skf2060TKariageTeijiFileRepository.insertSelective(insertData);
+			
+			if (insertCount <= 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -515,13 +506,13 @@ public class Skf2060Sc001SharedService {
 	}
 	
 	/**
-	 * 申請書類管理テーブルを取得する
+	 * 申請書類管理テーブルから情報が取得出来たかチェックする(楽観的排他チェック用）
 	 * 
 	 * @param companyCd
 	 * @param applNo
-	 * @return 申請書類管理円エンティティ
+	 * @return 取得出来た場合true　取得出来なかった場合false
 	 */
-	public Skf2060Sc001GetApplHistoryInfoForUpdateExp getApplHistoryInfoForUpdate(String companyCd, String applNo){
+	public boolean getApplHistoryInfoForUpdate(String companyCd, String applNo){
 		
 		boolean existCheck = false;
 		Skf2060Sc001GetApplHistoryInfoForUpdateExp resultData = new Skf2060Sc001GetApplHistoryInfoForUpdateExp();
@@ -531,7 +522,11 @@ public class Skf2060Sc001SharedService {
 		
 		resultData = skf2060Sc001GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
 		
-		return resultData;
+		if(resultData != null){
+			existCheck = true;
+		}
+		
+		return existCheck;
 	}
 	
 	/**
@@ -571,26 +566,31 @@ public class Skf2060Sc001SharedService {
 	 * 
 	 * @return 更新できた場合true　更新できなかった場合false
 	 */
-	//TODO 自作なのでupdateUserIdなんかが入ってない
 	public boolean updateKariageBukkenTeijiFlg(String companyCd, String applNo, short teijiKaisu){
 		
-		boolean updateCheck = true;
 		int updateCount =0;
 		String teijiFlg = "0";
 		
-		Skf2060Sc001UpdateKariageBukkenTeijiFlgExp updateData = new Skf2060Sc001UpdateKariageBukkenTeijiFlgExp();
-		updateData.setCompanyCd(companyCd);
-		updateData.setApplNo(applNo);
-		updateData.setTeijiKaisu(teijiKaisu);
-		updateData.setTeijiFlg(teijiFlg);
-		
-		updateCount = skf2060Sc001UpdateKariageBukkenTeijiFlgExpRepository.updateKariageBukkenTeijiFlg(updateData);
-		
-		if (updateCount <= 0) {
-			updateCheck = false;
+		List<Skf2060Sc001GetKariageTeijiForUpdateExp> teijiDataList = new ArrayList<Skf2060Sc001GetKariageTeijiForUpdateExp>();
+		Skf2060Sc001GetKariageTeijiForUpdateExpParameter tdparam = new Skf2060Sc001GetKariageTeijiForUpdateExpParameter();
+		tdparam.setCompanyCd(companyCd);
+		tdparam.setApplNo(applNo);
+		tdparam.setTeijiKaisu(teijiKaisu);
+		teijiDataList = skf2060Sc001GetKariageTeijiForUpdateExpRepository.getKariageTeijiForUpdate(tdparam);
+		if(teijiDataList.size() <= 0){
+			return false;
 		}
 		
-		return updateCheck;
+		Skf2060TKariageBukken updateData = new Skf2060TKariageBukken();
+		updateData.setCompanyCd(companyCd);
+		updateData.setCandidateNo(teijiDataList.get(0).getCheckCandidateNo());
+		updateData.setTeijiFlg(teijiFlg);
+		
+		updateCount = skf2060TKariageBukkenRepository.updateByPrimaryKeySelective(updateData);
+		if (updateCount <= 0) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
