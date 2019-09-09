@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -82,7 +82,7 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		List<Map<String, Object>> hdnBihinStatusList = new ArrayList<Map<String, Object>>();
 		
 		// '詳細ボタンから遷移する時
-		if(!StringUtils.isEmpty(initDto.getHdnRoomKanriNo())){
+		if(!NfwStringUtils.isEmpty(initDto.getHdnRoomKanriNo())){
 			//部屋管理番号設定ありの場合、データ更新
 			LogUtils.debugByMsg("社宅部屋登録(更新)" + ":部屋管理番号=" + initDto.getHdnRoomKanriNo());
 			// 'データ操作区分（更新）
@@ -94,6 +94,7 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 			// '備品情報をセット
 			skf3010Sc005SharedService.setBihinInfo(initDto.getHdnShatakuKanriNo(), initDto.getHdnRoomKanriNo(),bihinListData,hdnBihinStatusList);
 			initDto.setMaskPattern("");
+			initDto.setDeleteBtnFlg("false");
 			//ドロップダウンリストの設定
 			skf3010Sc005SharedService.getDoropDownList(initDto.getOriginalKikaku(), originalKikakuList, 
 					initDto.getOriginalAuse(), originalAuseList,
@@ -111,6 +112,7 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 			
 			// '削除ボタンを非活性にする
 			initDto.setMaskPattern("INSERT");
+			initDto.setDeleteBtnFlg("true");
 			
 			//ドロップダウンリストの設定
 			skf3010Sc005SharedService.getDoropDownList("", originalKikakuList, 
@@ -225,35 +227,35 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		
 		//部屋情報設定
 		//部屋番号
-		initDto.setRoomNo("");
+		initDto.setRoomNo(CodeConstant.DOUBLE_QUOTATION);
 		//本来規格
-		initDto.setOriginalKikaku("");
+		initDto.setOriginalKikaku(CodeConstant.DOUBLE_QUOTATION);
 		//本来規格補足
-		initDto.setOriginalKikakuHosoku("");
+		initDto.setOriginalKikakuHosoku(CodeConstant.DOUBLE_QUOTATION);
 		//本来用途
-		initDto.setOriginalAuse("");
+		initDto.setOriginalAuse(CodeConstant.DOUBLE_QUOTATION);
 		//本来用途補足
-		initDto.setOriginalAuseHosoku("");
+		initDto.setOriginalAuseHosoku(CodeConstant.DOUBLE_QUOTATION);
 		//貸与区分
-		initDto.setLendKbn("");
+		initDto.setLendKbn(CodeConstant.DOUBLE_QUOTATION);
 		//貸与区分補足
-		initDto.setLendKbnHosoku("");
+		initDto.setLendKbnHosoku(CodeConstant.DOUBLE_QUOTATION);
 		//備考
-		initDto.setBiko("");
+		initDto.setBiko(CodeConstant.DOUBLE_QUOTATION);
 		//本来延面積
-		initDto.setOriginalMenseki("");
+		initDto.setOriginalMenseki(CodeConstant.DOUBLE_QUOTATION);
 		//貸与面積
-		initDto.setLendMenseki("");
+		initDto.setLendMenseki(CodeConstant.DOUBLE_QUOTATION);
 		//サンルーム面積
-		initDto.setSunRoomMenseki("");
+		initDto.setSunRoomMenseki(CodeConstant.DOUBLE_QUOTATION);
 		//寒冷地減免事由区分
-		initDto.setColdExemptionKbn("");
+		initDto.setColdExemptionKbn(CodeConstant.DOUBLE_QUOTATION);
 		//階段面積
-		initDto.setStairsMenseki("");
+		initDto.setStairsMenseki(CodeConstant.DOUBLE_QUOTATION);
 		//物置面積
-		initDto.setBarnMenseki("");
+		initDto.setBarnMenseki(CodeConstant.DOUBLE_QUOTATION);
 		//物置調整面積
-		initDto.setBarnMensekiAdjust("");
+		initDto.setBarnMensekiAdjust(CodeConstant.DOUBLE_QUOTATION);
 		
 	}
 
