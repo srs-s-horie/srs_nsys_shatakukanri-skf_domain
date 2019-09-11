@@ -21,7 +21,9 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004BulkCompleteDto;
@@ -77,28 +79,35 @@ public class Skf2060Sc004BulkCompleteService extends BaseServiceAbstract<Skf2060
                 // 対応する申請履歴が取得できなかった場合次の処理へ
                 break;
             }
-            
-            // 完了対象の申請書類履歴テーブルのステータスを「完了」に変更する
-            skf2060Sc004SharedService.updateApplStatus(applInfoExp, CodeConstant.STATUS_KANRYOU,
-                    DateUtils.getSysDate(), LoginUserInfoUtils.getUserName());
-            
-            List<String> targetCandidateNo;
-            // 選択されなかった借上候補物件番号リストを取得
-            targetCandidateNo = this.getCandidateNo(applNo, CodeConstant.BUKKEN_NOT_SELECTED);
-            // 選択されなかった借上候補物件の提示フラグを「提示可」に変更
-            targetCandidateNo.forEach(candidateNo -> this.updateBukkenTeijiFlg(candidateNo, CodeConstant.TEIJI_FLG_SELECTABLE));
-            
-            // 選択された借上候補物件番号を取得
-            targetCandidateNo = this.getCandidateNo(applNo, CodeConstant.BUKKEN_SELECTED);
-            // 選択された借上候補物件の提示フラグを「選択済」に変更
-            targetCandidateNo.forEach(candidateNo -> this.updateBukkenTeijiFlg(candidateNo, CodeConstant.TEIJI_FLG_SELECTED));
+            try{
+                // 楽観的排他チェック
+                super.checkLockException(bulkCompDto.getLastUpdateDate(bulkCompDto.UPDATE_TABLE_PREFIX_APPL_HIST + applInfoExp.getApplNo()),
+                        applInfoExp.getUpdateDate());
+                // 完了対象の申請書類履歴テーブルのステータスを「完了」に変更する
+                skf2060Sc004SharedService.updateApplStatus(applInfoExp, CodeConstant.STATUS_KANRYOU,
+                        DateUtils.getSysDate(), LoginUserInfoUtils.getUserName());
+
+                List<String> targetCandidateNo;
+                // 選択されなかった借上候補物件番号リストを取得
+                targetCandidateNo = this.getCandidateNo(applNo, CodeConstant.BUKKEN_NOT_SELECTED);
+                // 選択されなかった借上候補物件の提示フラグを「提示可」に変更
+                targetCandidateNo.forEach(candidateNo -> this.updateBukkenTeijiFlg(candidateNo, CodeConstant.TEIJI_FLG_SELECTABLE));
+                
+                // 選択された借上候補物件番号を取得
+                targetCandidateNo = this.getCandidateNo(applNo, CodeConstant.BUKKEN_SELECTED);
+                // 選択された借上候補物件の提示フラグを「選択済」に変更s
+                targetCandidateNo.forEach(candidateNo -> this.updateBukkenTeijiFlg(candidateNo, CodeConstant.TEIJI_FLG_SELECTED));
+            }catch(Exception e){
+                // 排他チェックエラーとなった場合、エラーメッセージを表示して次の処理へ
+                ServiceHelper.addErrorResultMessage(bulkCompDto, null, MessageIdConstant.E_SKF_1134, "社員番号:" + applInfoExp.getShainNo());
+            }
         }
         
         // 検索ボタン押下時の検索条件をセッションから取得
         Skf2060Sc004GetKariageListExpParameter param;
         param = (Skf2060Sc004GetKariageListExpParameter) sessionBean.get(SessionCacheKeyConstant.SKF2060SC004_SEARCH_COND_SESSION_KEY);
         //再検索実行
-        bulkCompDto.setListTableData(skf2060Sc004SharedService.getListTableData(param));
+        bulkCompDto.setListTableData(skf2060Sc004SharedService.getListTableData(param, bulkCompDto));
         return bulkCompDto;
     }
 
