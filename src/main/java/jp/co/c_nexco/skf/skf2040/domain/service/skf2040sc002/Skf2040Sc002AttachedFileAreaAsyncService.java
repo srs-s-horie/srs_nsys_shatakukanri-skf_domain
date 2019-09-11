@@ -41,7 +41,7 @@ public class Skf2040Sc002AttachedFileAreaAsyncService
 
 		// 添付ファイルがあればリンクタグを生成する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
-			int attachedNo = attachedFileList.size();
+			int attachedNo = 0;
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
 				String linkTag = baseLinkTag;
 				linkTag = linkTag.replace("$ATTACHEDNO$", String.valueOf(attachedNo));
