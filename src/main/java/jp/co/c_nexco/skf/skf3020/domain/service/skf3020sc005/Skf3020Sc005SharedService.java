@@ -480,9 +480,6 @@ public class Skf3020Sc005SharedService {
 
 		tenninshaChoshoData.setBiko(inDto.getTxtBiko().trim());
 		tenninshaChoshoData.setShainNoHenkoKbn(chkShainNoHenkoKbn);
-		tenninshaChoshoData.setNyukyoFlg(null);
-		tenninshaChoshoData.setTaikyoFlg(null);
-		tenninshaChoshoData.setHenkouFlg(null);
 
 		String genShatakuKbn = getGenShatakuKbn(shainNo);
 		tenninshaChoshoData.setNowShatakuKbn(genShatakuKbn);

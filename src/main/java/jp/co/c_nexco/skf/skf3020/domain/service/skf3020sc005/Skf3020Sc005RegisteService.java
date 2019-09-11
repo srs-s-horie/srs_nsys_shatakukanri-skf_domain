@@ -195,7 +195,7 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 			}
 
 			// 転任者調書更新
-			int rtn = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKey(updateData);
+			int rtn = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKeySelective(updateData);
 
 			if (rtn <= 0) {
 				return MessageIdConstant.W_SKF_1009;
