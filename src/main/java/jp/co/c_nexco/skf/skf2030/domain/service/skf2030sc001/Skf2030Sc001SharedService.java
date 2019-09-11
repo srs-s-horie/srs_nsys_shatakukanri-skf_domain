@@ -209,7 +209,8 @@ public class Skf2030Sc001SharedService {
 			}
 			// 性別
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getGender())) {
-				initDto.setGender(bihinShinseiInfo.getGender());
+				Map<String, String> genderMap = skfGenericCodeUtils.getGenericCode("SKF1021");
+				initDto.setGender(genderMap.get(bihinShinseiInfo.getGender()));
 			}
 			// 【 入居社宅 】
 			// 社宅名
@@ -247,12 +248,14 @@ public class Skf2030Sc001SharedService {
 				initDto.setSessionDay(sessionDayText);
 			}
 			// 備品搬入希望時間 ※入力項目
-			String ApplTime = CodeConstant.NONE;
+			String applTime = CodeConstant.NONE;
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getSessionTime())) {
-				ApplTime = bihinShinseiInfo.getSessionTime();
+				applTime = bihinShinseiInfo.getSessionTime();
+				Map<String, String> sessionTimeMap = skfGenericCodeUtils.getGenericCode("SKF1048");
+				initDto.setSessionTimeText(sessionTimeMap.get(applTime));
 			}
 			// 希望時間取得（ドロップダウン生成時に初期値を設定）
-			initDto.setDdlWishTime(skfDropDownUtils.getGenericForDoropDownList("SKF1048", ApplTime, false));
+			initDto.setDdlWishTime(skfDropDownUtils.getGenericForDoropDownList("SKF1048", applTime, false));
 			// 【 連絡先 】 ※入力項目
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getRenrakuSaki())) {
 				initDto.setRenrakuSaki(bihinShinseiInfo.getRenrakuSaki());
@@ -370,10 +373,12 @@ public class Skf2030Sc001SharedService {
 		case CodeConstant.STATUS_HANNYU_MACHI:
 			initDto.setBihinReadOnly(true);
 			initDto.setCompletionDayDisabled(false);
+			initDto.setStatus24Flag(false);
 			break;
 		default:
 			initDto.setBihinReadOnly(true);
 			initDto.setCompletionDayDisabled(true);
+			initDto.setStatus24Flag(true);
 			break;
 		}
 
@@ -435,7 +440,7 @@ public class Skf2030Sc001SharedService {
 		}
 
 		// 備品希望申請テーブルを更新
-		if (updateBihinKiboShinseiInfo(applInfo, updateTel, updateRenrakuSakiTel, updateSessionDay, updateTime,
+		if (!updateBihinKiboShinseiInfo(applInfo, updateTel, updateRenrakuSakiTel, updateSessionDay, updateTime,
 				updateCompleteDate)) {
 			return false;
 		}

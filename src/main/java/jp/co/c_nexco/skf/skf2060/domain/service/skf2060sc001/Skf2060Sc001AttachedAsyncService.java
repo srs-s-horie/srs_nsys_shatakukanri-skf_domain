@@ -13,13 +13,15 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukkenFile;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001DeleteAttachedFileExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenFileRepository;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001AttachedAsyncDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
+ * TestPrjTop画面のAttachedAsyncサービス処理クラス。
  * 
  */
 @Service
@@ -39,16 +41,22 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param attachedDto インプットDTO
+	 * @param attachedDto DTO
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2060Sc001AttachedAsyncDto index(Skf2060Sc001AttachedAsyncDto attachedDto) throws Exception {
 
+		// 操作ログを出力
+		//skfOperationLogUtils.setAccessLog("再提示", companyCd, initDto.getPageId());
+		//セッションキーの設定
 		String sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + attachedDto.getCandidateNo();
+
+		//添付ファイルを取得し、セッションに保存
 		List<Map<String, Object>> fileDataList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, null,
 				sessionKey);
+		//添付ファイルが存在しなかった場合、初期化
 		if (fileDataList == null) {
 			fileDataList = new ArrayList<Map<String, Object>>();
 		}
@@ -59,15 +67,15 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 		deleteData.setCompanyCd(companyCd);
 		deleteData.setCandidateNo(attachedDto.getCandidateNo());
 		deleteCount = skf2060Sc001DeleteAttachedFileExpRepository.deleteAttachedFile(deleteData);
-
+		//削除できなかった場合
 		if (deleteCount < 0) {
 			// TODO エラー
-			return attachedDto;
+			ServiceHelper.addErrorResultMessage(attachedDto, null, MessageIdConstant.E_SKF_2003);
+			throwBusinessExceptionIfErrors(attachedDto.getResultMessages());
 		}
 
 		int attachedNo = 1;
 
-		String baseLinkTag = "<a id=\"attached_$CANDIDATENO$_$ATACCHEDNO$\">$ATTACHEDNAME$</a>";
 		List<String> linkTagList = new ArrayList<String>();
 		// 添付ファイル情報を追加
 		for (Map<String, Object> fileData : fileDataList) {
@@ -83,22 +91,23 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 
 			if (res <= 0) {
 				// TODO エラー
-				return attachedDto;
+				ServiceHelper.addErrorResultMessage(attachedDto, null, MessageIdConstant.E_SKF_2003);
+				throwBusinessExceptionIfErrors(attachedDto.getResultMessages());
 			}
 
-			String linkTag = baseLinkTag;
-			linkTag = linkTag.replace("$CANDIDATENO$", insertData.getCandidateNo().toString());
-			linkTag = linkTag.replace("$ATACCHEDNO$", insertData.getAttachedNo().toString());
-			linkTag = linkTag.replace("$ATTACHEDNAME$", insertData.getAttachedName());
+			//リンクタグを作成
+			String linkTag = skf2060Sc001SharedService.getLinkTag(insertData.getCandidateNo().toString(), insertData.getAttachedNo().toString(), insertData.getAttachedName());
 
+			//リンクタグリスト作成
 			linkTagList.add(linkTag);
 
 			attachedNo++;
 
 		}
-
+		//リンクタグリストの間に改行コードをはさむ
 		attachedDto.setAttachedFileLink(String.join("<br />", linkTagList));
 
+		//セッションスコープを消去する？
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY);
 
 		return attachedDto;

@@ -57,7 +57,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 	@Override
 	public Skf2030Sc001ApplyDto index(Skf2030Sc001ApplyDto applyDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("入力内容をクリア処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("申請処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
 
 		// タイトル設定
 		applyDto.setPageTitleKey(MessageIdConstant.SKF2030_SC001_TITLE);
@@ -70,7 +70,8 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		applInfo.put("shainNo", applyDto.getHdnShainNo());
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		skf2030Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 申請前に申請可能か判定を行う
@@ -93,14 +94,14 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 				if (skf2030Sc001SharedService.checkSKSTeijiStatus(loginUserInfo.get("shainNo"),
 						FunctionIdConstant.R0104, nyukyoKiboApplNo)) {
 					ServiceHelper.addResultMessage(applyDto, MessageIdConstant.I_SKF_1005, MSG_MISAKUSEI_BIHIN,
-							MSG_SAISAKUSEI_BIHIN);
+							MSG_SAISAKUSEI_BIHIN, CodeConstant.NONE);
 					return applyDto;
 				}
 
 				break;
 			default:
 				ServiceHelper.addResultMessage(applyDto, MessageIdConstant.I_SKF_1005, MSG_MISAKUSEI_BIHIN,
-						MSG_SAISAKUSEI_BIHIN);
+						MSG_SAISAKUSEI_BIHIN, CodeConstant.NONE);
 				return applyDto;
 			}
 		}
@@ -111,7 +112,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 		}
 
 		// 更新処理
-		if (skf2030Sc001SharedService.updateDispInfo(applInfo, applyDto)) {
+		if (!skf2030Sc001SharedService.updateDispInfo(applInfo, applyDto)) {
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			return applyDto;

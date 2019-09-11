@@ -5,7 +5,6 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc005;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,15 +16,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetB
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetBihinInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihin;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihinKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc005.Skf3010Sc005GetBihinInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomBihinRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
-import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 
 /**
  * Skf3010Sc004SharedService 社宅部屋登録内共通クラス

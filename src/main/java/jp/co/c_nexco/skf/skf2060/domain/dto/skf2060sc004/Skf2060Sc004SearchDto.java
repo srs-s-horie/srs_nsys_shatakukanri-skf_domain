@@ -7,14 +7,21 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060Sc004common.Skf2060Sc004Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf2060_Sc004画面のInitDto。
+ * SKF2060Sc004 借上候補物件状況一覧画面の検索Dto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
 public class Skf2060Sc004SearchDto extends Skf2060Sc004CommonDto {
-	
-	private static final long serialVersionUID = -1902278406295003652L;
-	
-	
+    
+    private static final long serialVersionUID = -1902278406295003652L;
+    
+    // エラー項目
+    private String candidateDateFromErr;
+    private String candidateDateToErr;
+    private String candidatePersonNameErr;
+    private String shatakuNameErr;
+    private String shatakuAddressNameErr;
+    private String candidateStatusErr;
 }

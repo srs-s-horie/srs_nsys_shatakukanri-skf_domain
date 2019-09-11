@@ -7,8 +7,9 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060Sc004common.Skf2060Sc004Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf2060_Sc004画面のInitDto。
+ * SKF2060Sc004 借上候補物件状況一覧画面の督促メール送信Dto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
