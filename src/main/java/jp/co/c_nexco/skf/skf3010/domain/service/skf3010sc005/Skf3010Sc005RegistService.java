@@ -16,7 +16,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetM
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoom;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihin;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihinKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc005.Skf3010Sc005GetMaxShatakuRoomNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomBihinRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
@@ -169,6 +168,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 		skf3010Sc005SharedService.setBihinInfo(registDto.getHdnShatakuKanriNo(), registDto.getHdnRoomKanriNo(),bihinListData,hdnBihinStatusList);
 		//「削除」ボタンを活性化
 		registDto.setMaskPattern("");
+		registDto.setDeleteBtnFlg("false");
 		
 		//ドロップダウンリストの設定
 		skf3010Sc005SharedService.getDoropDownList(registDto.getOriginalKikaku(), originalKikakuList, 
@@ -694,20 +694,20 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 
 		int updateCount = 0;
 		int updateRoomBihinCount = 0;
-		Skf3010Sc005GetRoomInfoExp resultValue = new Skf3010Sc005GetRoomInfoExp();
+//		Skf3010Sc005GetRoomInfoExp resultValue = new Skf3010Sc005GetRoomInfoExp();
 		
 		// 排他チェック
-		resultValue = skf3010Sc005SharedService.getRoomInfo(setValue.getShatakuKanriNo().toString(),
-				setValue.getShatakuRoomKanriNo().toString());
-		if(resultValue == null){
-			LogUtils.debugByMsg("社宅部屋情報取得結果NULL");
-			//取得件数0はエラーとして終了
-			return -1;
-		}
-		LogUtils.debugByMsg("setValueLastUpdateDate：" + setValue.getLastUpdateDate());
-		LogUtils.debugByMsg("resultValueUpdateDate：" + resultValue.getLastUpdateDate());
-		super.checkLockException(setValue.getLastUpdateDate(), resultValue.getLastUpdateDate());
-		// 更新
+//		resultValue = skf3010Sc005SharedService.getRoomInfo(setValue.getShatakuKanriNo().toString(),
+//				setValue.getShatakuRoomKanriNo().toString());
+//		if(resultValue == null){
+//			LogUtils.debugByMsg("社宅部屋情報取得結果NULL");
+//			//取得件数0はエラーとして終了
+//			return -1;
+//		}
+//		LogUtils.debugByMsg("setValueLastUpdateDate：" + setValue.getLastUpdateDate());
+//		LogUtils.debugByMsg("resultValueUpdateDate：" + resultValue.getLastUpdateDate());
+//		super.checkLockException(setValue.getLastUpdateDate(), resultValue.getLastUpdateDate());
+//		// 更新
 		updateCount = skf3010MShatakuRoomRepository.updateByPrimaryKeySelective(setValue);
 		
 		LogUtils.debugByMsg("部屋情報更新件数：" + updateCount);
@@ -735,19 +735,20 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			}else{
 				//更新処理を行う。
 				//排他チェック
-				Skf3010MShatakuRoomBihinKey bihinKey = new Skf3010MShatakuRoomBihinKey();
-				bihinKey.setShatakuKanriNo(setValue.getShatakuKanriNo());
-				bihinKey.setShatakuRoomKanriNo(setValue.getShatakuRoomKanriNo());
-				bihinKey.setBihinCd(map.get("bihinCode").toString());
-				Skf3010MShatakuRoomBihin bihinInfo = skf3010MShatakuRoomBihinRepository.selectByPrimaryKey(bihinKey);
-				if(bihinInfo == null){
-					LogUtils.debugByMsg("部屋備品情報取得結果NULL");
-					return -1;
-				}
-				LogUtils.debugByMsg("setValueUpdateDate：" + (Date) map.get("updateDate"));
-				LogUtils.debugByMsg("bihinInfoUpdateDate：" + bihinInfo.getUpdateDate());
-				super.checkLockException((Date) map.get("updateDate"), bihinInfo.getUpdateDate());
-				
+				bihinSetValue.setLastUpdateDate((Date) map.get("updateDate"));
+//				Skf3010MShatakuRoomBihinKey bihinKey = new Skf3010MShatakuRoomBihinKey();
+//				bihinKey.setShatakuKanriNo(setValue.getShatakuKanriNo());
+//				bihinKey.setShatakuRoomKanriNo(setValue.getShatakuRoomKanriNo());
+//				bihinKey.setBihinCd(map.get("bihinCode").toString());
+//				Skf3010MShatakuRoomBihin bihinInfo = skf3010MShatakuRoomBihinRepository.selectByPrimaryKey(bihinKey);
+//				if(bihinInfo == null){
+//					LogUtils.debugByMsg("部屋備品情報取得結果NULL");
+//					return -1;
+//				}
+//				LogUtils.debugByMsg("setValueUpdateDate：" + (Date) map.get("updateDate"));
+//				LogUtils.debugByMsg("bihinInfoUpdateDate：" + bihinInfo.getUpdateDate());
+//				super.checkLockException((Date) map.get("updateDate"), bihinInfo.getUpdateDate());
+//				
 				// 更新
 				updateRoomBihinCount += updateShatakuRoomBihin(bihinSetValue);
 			}

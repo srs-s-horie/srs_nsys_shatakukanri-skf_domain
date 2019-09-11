@@ -5,7 +5,7 @@ package jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc007common;
 
 import java.util.List;
 import java.util.Map;
-import jp.co.c_nexco.skf.skf3090.domain.dto.common.Skf309040CommonDto;
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3090Sc007CommonDto extends Skf309040CommonDto {
+public class Skf3090Sc007CommonAsyncDto extends AsyncBaseDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
@@ -48,10 +48,11 @@ public class Skf3090Sc007CommonDto extends Skf309040CommonDto {
 	// 室、チーム又は課
 	private String affiliation2NameError;
 
+	// 会社ドロップ
+	List<Map<String, Object>> companyList;
 	// 事業領域ドロップダウンリスト
 	List<Map<String, Object>> businessAreaList;
 
-	// 登録フラグ
-	private String registFlag;
+	private String pageId;
 
 }

@@ -11,7 +11,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -29,9 +28,6 @@ public class Skf2060Sc001AttachedDownloadService extends BaseServiceAbstract<Skf
 
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtils;
-	
-	private String companyCd = CodeConstant.C001;
-	private String fileName = "skf2060.skf2060_sc001.FileId";
 
 	
 

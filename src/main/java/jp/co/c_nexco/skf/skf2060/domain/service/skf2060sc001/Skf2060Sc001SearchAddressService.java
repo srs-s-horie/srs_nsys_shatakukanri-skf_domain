@@ -57,7 +57,7 @@ public class Skf2060Sc001SearchAddressService extends BaseServiceAbstract<Skf206
 			
 			//該当する郵便番号データが無かった場合
 			if(resultEntity == null){
-				ServiceHelper.addErrorResultMessage(searchAddressDto, new String[] { "postalCd", "address" }, MessageIdConstant.E_SKF_1047);
+				ServiceHelper.addErrorResultMessage(searchAddressDto, new String[] { "postalCd" }, MessageIdConstant.E_SKF_1047);
 			}
 		//「郵便番号」が未入力で、「住所」が入力されている場合
 		}else if(!(searchAddressDto.getAddress() == null || CheckUtils.isEmpty(searchAddressDto.getAddress().trim()))){
@@ -67,11 +67,12 @@ public class Skf2060Sc001SearchAddressService extends BaseServiceAbstract<Skf206
 			
 			//該当する郵便番号データが無かった場合
 			if(resultEntity == null){
-				ServiceHelper.addErrorResultMessage(searchAddressDto, new String[] { "postalCd", "address" }, MessageIdConstant.E_SKF_1047);
+				ServiceHelper.addErrorResultMessage(searchAddressDto, new String[] { "address" }, MessageIdConstant.E_SKF_2019);
 			}
 		//「郵便番号」と「住所」が未入力の場合
 		}else{
 			ServiceHelper.addErrorResultMessage(searchAddressDto, new String[] { "postalCd" }, MessageIdConstant.E_SKF_1048, "郵便番号");
+			ServiceHelper.addErrorResultMessage(searchAddressDto, new String[] { "address" }, MessageIdConstant.E_SKF_1048, "住所");
 		}
 		
 		//郵便番号データが存在する場合

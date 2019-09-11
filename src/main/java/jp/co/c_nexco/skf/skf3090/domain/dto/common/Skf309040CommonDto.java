@@ -25,6 +25,12 @@ public class Skf309040CommonDto extends BaseDto {
 	private String affiliation2Cd;
 	// 事業領域コード
 	private String businessAreaCd;
+	// 機関
+	private String agencyName;
+	// 部等
+	private String affiliation1Name;
+	// 室、チーム又は課
+	private String affiliation2Name;
 
 	/** ドロップダウン系 */
 	// 会社ドロップダウンリスト

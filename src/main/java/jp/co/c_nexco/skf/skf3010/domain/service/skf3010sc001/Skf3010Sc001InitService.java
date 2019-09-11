@@ -27,7 +27,7 @@ import jp.co.intra_mart.common.platform.log.Logger;
  */
 @Service
 public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001InitDto> {
-	
+
 	@Autowired
 	private Skf3010Sc001SharedService skf3010Sc001SharedService;
 	@Autowired
@@ -47,11 +47,11 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 	 */
 	@Override
 	public Skf3010Sc001InitDto index(Skf3010Sc001InitDto initDto) throws Exception {
-		
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+
 		// デバッグログ
 		logger.info("初期表示");
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
 		// 初期表示フラグ
 		Boolean initializeFlg = true;
@@ -128,7 +128,6 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 			initDto.setHdnShatakuAddress(null);
 			initDto.setHdnShatakuKbnCd(null);
 			initDto.setHdnShatakuName(null);
-//			initDto.setHdnUseKbn(null);
 			initDto.setHdnUseKbnCd(initDto.getUseKbnCd());
 		}
 

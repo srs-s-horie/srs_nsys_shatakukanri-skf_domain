@@ -57,7 +57,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 	@Override
 	public Skf2030Sc001ApplyDto index(Skf2030Sc001ApplyDto applyDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("入力内容をクリア処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("申請処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
 
 		// タイトル設定
 		applyDto.setPageTitleKey(MessageIdConstant.SKF2030_SC001_TITLE);
