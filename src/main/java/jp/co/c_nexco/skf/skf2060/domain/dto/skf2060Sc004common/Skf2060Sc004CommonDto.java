@@ -19,6 +19,8 @@ import lombok.EqualsAndHashCode;
 public class Skf2060Sc004CommonDto extends Skf206010CommonDto {
     
     private static final long serialVersionUID = -1902278406295003652L;
+    /** 楽観的排他制御に使用するテーブルプレフィクス */
+    public final String UPDATE_TABLE_PREFIX_APPL_HIST = "SKF2010_APPL_HISTORY_";
     
     // リストテーブルデータ
     private List<Map<String, Object>> listTableData;
