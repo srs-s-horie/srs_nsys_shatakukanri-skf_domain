@@ -1,14 +1,14 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skfcomb.domain.dto.skfcombupdateshatakukanridaichoshatakudata;
+package jp.co.c_nexco.skf.skfcomb.domain.dto.skfcombatch1;
 
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import lombok.EqualsAndHashCode;
 
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class SkfComBUpdateShatakuKanriDaichoShatakuDataInitDto extends BaseDto {
+public class SkfComBatch1InitDto extends BaseDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
