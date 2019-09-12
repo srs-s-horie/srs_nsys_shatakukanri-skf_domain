@@ -66,7 +66,7 @@ public class Skf2060Sc004SearchService extends BaseServiceAbstract<Skf2060Sc004S
             return searchDto;
         }
         // 検索実行
-        List<Map<String, Object>> resultList = skf2060Sc004SharedService.getListTableData(setSearchParam(searchDto));
+        List<Map<String, Object>> resultList = skf2060Sc004SharedService.getListTableData(setSearchParam(searchDto), searchDto);
         
         if (resultList == null || resultList.size() == 0) {
             // 検索結果0件

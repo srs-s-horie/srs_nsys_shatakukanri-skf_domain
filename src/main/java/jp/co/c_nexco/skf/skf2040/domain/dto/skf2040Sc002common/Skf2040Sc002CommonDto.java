@@ -19,6 +19,9 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
+	/*
+	 * 退居（自動車の保管場所返還）届
+	 */
 	// 社宅管理番号
 	private String shatakuKanriNo;
 	// 氏名
@@ -33,10 +36,6 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private String applStatus;
 	// ステータス（表示用）
 	private String applStatusText;
-
-	/*
-	 * 退居（自動車の保管場所返還）届
-	 */
 	// 現所属：機関
 	private String nowAgency;
 	// 現所属：部等
@@ -66,6 +65,18 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private String shatakuTaikyoKbn;
 	// 駐車場返還区分
 	private String shatakuTaikyoKbn2;
+
+	// 提示番号
+	private long teijiNo;
+
+	// アコーディオン初期表示
+	private String levelOpen;
+
+	// 申請書類履歴テーブル申請日
+	private Date applHistoryDate;
+
+	// メール区分
+	private String mailKbn;
 
 	/*
 	 * 添付資料
@@ -110,9 +121,6 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private String bihinState19;
 	private String bihinReturn19;
 
-	// 社宅の状態
-	private String shatakuStatus;
-
 	// コメント
 	private String commentNote;
 
@@ -134,39 +142,31 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	/*
 	 * フラグ類
 	 */
-	// 備品返却欄表示フラグ
-	private boolean bihinVisible;
 	// 添付資料欄表示フラグ
-	private String tenpViewFlag;
+	private String tenpViewFlg;
 	// 退居（自動車の保管場所変換）届表示フラグ
-	private String taikyoViewFlag;
-
-	// 返却備品なしフラグ true:あり false:なし
-	private String isHenkyakuBihinNothing;
-
-	// コメントボタン表示フラグ
-	private String commentBtnViewFlag;
+	private String taikyoViewFlg;
+	// 社宅状態表示フラグ
+	private String shatakuJyotaiViewFlg;
 	// 退居（自動車の保管場所変換）届PDF出力ボタン表示フラグ
-	private boolean TaikyoPdfViewBtnFlag;
-	// 提示ボタン表示フラグ
-	private boolean presentBtnViewFlag;
-	// 承認ボタン表示フラグ
-	private boolean approveBtnViewFlag;
-	// 修正依頼ボタン表示フラグ
-	private boolean revisionBtnViewFlag;
-	// 差戻しボタン表示フラグ
-	private boolean remandBtnViewFlag;
-	// 資料を添付
-	private boolean shiryoBtnViewFlag;
+	private String taikyoPdfViewFlg;
+
+	// 資料を添付ボタン表示フラグ
+	private boolean shiryoBtnViewFlg;
+	// コメントボタン表示フラグ
+	private String commentViewFlg;
+
+	// 返却情報表示フラグ true:あり false:なし
+	private String henkyakuInfoViewFlg;
+	// 返却備品なしフラグ true:あり false:なし
+	private String henkyakuBihinNothing;
 
 	/*
 	 * hidden
 	 */
 	// 備品返却申請の書類管理番号
 	private String hdnBihinHenkyakuApplNo;
-
 	// 社員番号
 	private String hdnApplShainNo;
-	// 更新日
-	private Date hdnApplUpdateDate;
+
 }

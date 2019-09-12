@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,10 +20,12 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001InitDto;
 
@@ -43,6 +46,8 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+    @Autowired
+    private SkfGenericCodeUtils skfGenericCodeUtils;
 	
 	private String companyCd = CodeConstant.C001;
 	
@@ -59,13 +64,13 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 		
 		initDto.setPageTitleKey(MessageIdConstant.SKF2060_SC001_TITLE);
 		
-		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
-		
 		//前画面から送られてくる値 shainNo, applNo, applStatus
 		
 		//申請書類情報が取得できた場合
-		if(initDto.getApplNo() != null && CheckUtils.isEmpty(initDto.getApplNo().trim())){
+		if(!(initDto.getShainNo() == null || CheckUtils.isEmpty(initDto.getShainNo().trim())) && !(initDto.getApplNo() == null || CheckUtils.isEmpty(initDto.getApplNo().trim()))){
+			// 操作ログを出力
+			skfOperationLogUtils.setAccessLog("再提示", companyCd, initDto.getPageId());
+			
 			//申請書類管理番号からコメントを取得
 			List<SkfCommentUtilsGetCommentInfoExp> commentList =  skfCommentUtils.getCommentInfo(companyCd, initDto.getApplNo(), null);
 			initDto.setCommentViewFlag(false);
@@ -87,14 +92,20 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 				shainData = skf1010MShainRepository.selectByPrimaryKey(param);
 				//社員情報を取得できた場合
 				if(shainData != null){
+			        // 提示状況汎用コード取得
+			        Map<String, String> candidateStatusGenCodeMap = new HashMap<String, String>();
+			        candidateStatusGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 					//借上提示先情報の「提示対象者名」に社員情報の社員名を、「提示状況」に申請情報のステータスを、「提示日」に申請情報の申請日時を設定
 					initDto.setPresentedName(shainData.getName());
-					initDto.setPresentedStatus(applHistoryData.getApplStatus());
+					initDto.setPresentedStatus(candidateStatusGenCodeMap.get(applHistoryData.getApplStatus()));
 					initDto.setPresentedDate(skfDateFormatUtils.dateFormatFromDate(applHistoryData.getApplDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 				}
 			}
 			//支援ボタンを非活性にする
 			initDto.setSupportDisabled("True");
+		}else{
+			// 操作ログを出力
+			skfOperationLogUtils.setAccessLog("新規作成", companyCd, initDto.getPageId());
 		}
 		
 		//隠し要素として現在日時を設定

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplComment;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -23,6 +25,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001CandidateDto;
+import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailService;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -41,9 +44,14 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	@Autowired
 	private Skf2060Sc001GetMaxTeijiKaisuExpRepository skf2060Sc001GetMaxTeijiKaisuExpRepository;
 	@Autowired
+	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
+	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private Skf206010CommonSendMailService skf206010CommonSendMailService;
+	
 	
 	private String companyCd = CodeConstant.C001;
 	
@@ -56,7 +64,6 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	 * @throws Exception
 	 *             例外
 	 */
-	@SuppressWarnings("unused")
 	@Override
 	public Skf2060Sc001CandidateDto index(Skf2060Sc001CandidateDto candidateDto) throws Exception {
 		
@@ -124,7 +131,7 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		}
 		
 		//申請書類履歴情報が取得できた場合
-		if(applNo != null && applStatus != null ){
+		if(!(applNo == null ||  CheckUtils.isEmpty(applNo.trim())) && !(applStatus == null ||  CheckUtils.isEmpty(applStatus.trim())) ){
 			//提示ステータスが20のとき（確認依頼）
 			if(applStatus.equals(CodeConstant.STATUS_KAKUNIN_IRAI)){
 				//エラーメッセージを設定
@@ -303,10 +310,19 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			}
 		}
 		
-		//コメントを取得
-		String comment = candidateDto.getComment();
+		//コメントが記載されている場合
+		if(!(candidateDto.getComment() == null || CheckUtils.isEmpty(candidateDto.getComment().trim()))){
+			//申請書類コメントテーブルへコメントを追加
+			boolean insertCommentCheck = this.insertApplComment(companyCd, applNo, applStatus, shainName, candidateDto.getComment());
+			//コメント追加に失敗した場合
+			if(!(insertCommentCheck)){
+				ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1073);
+				throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
+			}
+		}
 		
-		//TODO　メールの送信処理
+		//メールの送信処理
+		skf206010CommonSendMailService.sendKariageTeijiMail(applNo);
 		
 		
 		// リストデータ取得用
@@ -341,6 +357,36 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			TeijiKaisu = resultData.getTeijiKaisu();
 		}
 		return TeijiKaisu;
+	}
+	
+	/**
+	 * 申請書類コメントテーブルへ登録を行う
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @param applStatus
+	 * @param commentName
+	 * @param commentNote
+	 * 
+	 * @return 登録できた場合true　登録できなかった場合false
+	 */
+	public boolean insertApplComment(String companyCd, String applNo, String applStatus, String commentName, String commentNote){
+		boolean insertCommentCheck = true;
+		
+		Skf2010TApplComment commentData = new Skf2010TApplComment();
+		commentData.setCompanyCd(companyCd);
+		commentData.setApplNo(applNo);
+		commentData.setApplStatus(applStatus);
+		commentData.setCommentName(commentName);
+		commentData.setCommentNote(commentNote);
+		int insertCount = skf2010TApplCommentRepository.insertSelective(commentData);
+		
+		//コメント追加に失敗した場合
+		if(insertCount <= 0){
+			insertCommentCheck = false;
+		}
+		
+		return insertCommentCheck;
 	}
 	
 }
