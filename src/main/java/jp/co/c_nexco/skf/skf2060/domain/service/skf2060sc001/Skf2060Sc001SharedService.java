@@ -541,7 +541,7 @@ public class Skf2060Sc001SharedService {
 		
 		boolean updateCheck = true;
 		int updateCount =0;
-		String applStatus = "20";
+		String applStatus = CodeConstant.STATUS_KAKUNIN_IRAI;
 		
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 		updateData.setCompanyCd(companyCd);
