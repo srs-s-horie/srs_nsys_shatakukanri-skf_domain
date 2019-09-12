@@ -176,7 +176,7 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 
 		// 転任者調書データを取得
 		Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository
-				.selectByPrimaryKey(oldShainNo);
+				.selectByPrimaryKey(newShainNo);
 
 		if (tenninshaInfo != null) {
 
