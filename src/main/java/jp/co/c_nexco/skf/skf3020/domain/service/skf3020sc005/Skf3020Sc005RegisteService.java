@@ -129,9 +129,9 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 	private Skf3020Sc005RegisteDto registTenninshaInfo(Skf3020Sc005RegisteDto registDto) throws ParseException {
 
 		String chkShainNoHenkoKbn = skf302010CommonSharedService.NOT_CHECKED;
-		String[] checkBox = registDto.getId_check_shainNo();
+		String[] checkBoxArray = registDto.getId_check_shainNo();
 
-		if (skf302010CommonSharedService.CHECKED.equals(checkBox[0])) {
+		if (checkBoxArray.length != 0 && skf302010CommonSharedService.CHECKED.equals(checkBoxArray[0])) {
 			chkShainNoHenkoKbn = skf302010CommonSharedService.CHECKED;
 		}
 
@@ -176,7 +176,7 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 
 		// 転任者調書データを取得
 		Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository
-				.selectByPrimaryKey(oldShainNo);
+				.selectByPrimaryKey(newShainNo);
 
 		if (tenninshaInfo != null) {
 
