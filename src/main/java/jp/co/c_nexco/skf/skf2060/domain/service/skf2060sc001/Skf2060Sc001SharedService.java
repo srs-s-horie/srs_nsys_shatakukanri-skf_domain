@@ -506,15 +506,14 @@ public class Skf2060Sc001SharedService {
 	}
 	
 	/**
-	 * 申請書類管理テーブルから情報が取得出来たかチェックする(楽観的排他チェック用）
+	 * 申請書類管理テーブルから情報が取得する(楽観的排他チェック用）
 	 * 
 	 * @param companyCd
 	 * @param applNo
-	 * @return 取得出来た場合true　取得出来なかった場合false
+	 * @return 申請書類管理情報
 	 */
-	public boolean getApplHistoryInfoForUpdate(String companyCd, String applNo){
+	public Skf2060Sc001GetApplHistoryInfoForUpdateExp getApplHistoryInfoForUpdate(String companyCd, String applNo){
 		
-		boolean existCheck = false;
 		Skf2060Sc001GetApplHistoryInfoForUpdateExp resultData = new Skf2060Sc001GetApplHistoryInfoForUpdateExp();
 		Skf2060Sc001GetApplHistoryInfoForUpdateExpParameter param = new Skf2060Sc001GetApplHistoryInfoForUpdateExpParameter();
 		param.setCompanyCd(companyCd);
@@ -522,11 +521,7 @@ public class Skf2060Sc001SharedService {
 		
 		resultData = skf2060Sc001GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
 		
-		if(resultData != null){
-			existCheck = true;
-		}
-		
-		return existCheck;
+		return resultData;
 	}
 	
 	/**
@@ -537,7 +532,7 @@ public class Skf2060Sc001SharedService {
 	 * 
 	 * @return 更新できた場合true　更新できなかった場合false
 	 */
-	public boolean updateApplHistory(String companyCd, String applNo){
+	public boolean updateApplHistory(String companyCd, String shainNo, Date applDate, String applNo, String applId){
 		
 		boolean updateCheck = true;
 		int updateCount =0;
@@ -545,7 +540,10 @@ public class Skf2060Sc001SharedService {
 		
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 		updateData.setCompanyCd(companyCd);
+		updateData.setShainNo(shainNo);
+		updateData.setApplDate(applDate);
 		updateData.setApplNo(applNo);
+		updateData.setApplId(applId);
 		updateData.setApplStatus(applStatus);
 		
 		updateCount = skf2010TApplHistoryRepository.updateByPrimaryKeySelective(updateData);
@@ -564,7 +562,7 @@ public class Skf2060Sc001SharedService {
 	 * @param applNo
 	 * @param teijiKaisu
 	 * 
-	 * @return 更新できた場合true　更新できなかった場合false
+	 * @return 更新できた場合もしくは提示済みの物件が存在しなかった場合true　更新できなかった場合false
 	 */
 	public boolean updateKariageBukkenTeijiFlg(String companyCd, String applNo, short teijiKaisu){
 		
@@ -578,17 +576,19 @@ public class Skf2060Sc001SharedService {
 		tdparam.setTeijiKaisu(teijiKaisu);
 		teijiDataList = skf2060Sc001GetKariageTeijiForUpdateExpRepository.getKariageTeijiForUpdate(tdparam);
 		if(teijiDataList.size() <= 0){
-			return false;
+			return true;
 		}
 		
-		Skf2060TKariageBukken updateData = new Skf2060TKariageBukken();
-		updateData.setCompanyCd(companyCd);
-		updateData.setCandidateNo(teijiDataList.get(0).getCheckCandidateNo());
-		updateData.setTeijiFlg(teijiFlg);
-		
-		updateCount = skf2060TKariageBukkenRepository.updateByPrimaryKeySelective(updateData);
-		if (updateCount <= 0) {
-			return false;
+		if(teijiDataList.get(0).getCheckCandidateNo() != 0){
+			Skf2060TKariageBukken updateData = new Skf2060TKariageBukken();
+			updateData.setCompanyCd(companyCd);
+			updateData.setCandidateNo(teijiDataList.get(0).getCheckCandidateNo());
+			updateData.setTeijiFlg(teijiFlg);
+			
+			updateCount = skf2060TKariageBukkenRepository.updateByPrimaryKeySelective(updateData);
+			if (updateCount <= 0) {
+				return false;
+			}
 		}
 		return true;
 	}
