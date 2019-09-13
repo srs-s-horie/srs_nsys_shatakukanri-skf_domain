@@ -1,5 +1,6 @@
 package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinse
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -144,8 +146,9 @@ public class Skf2030Sc001SharedService {
 	 * @param applInfo
 	 * @param force
 	 * @param initDto
+	 * @throws Exception
 	 */
-	public boolean setDisplayData(Map<String, String> applInfo, Skf2030Sc001CommonDto initDto) {
+	public boolean setDisplayData(Map<String, String> applInfo, Skf2030Sc001CommonDto initDto) throws Exception {
 		String applNo = applInfo.get("applNo");
 		// 申請状況を設定
 		if (NfwStringUtils.isNotEmpty(applInfo.get("status"))) {
@@ -169,7 +172,7 @@ public class Skf2030Sc001SharedService {
 
 			// 備品希望申請情報を取得
 			Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
-			bihinShinseiInfo = getBihinShinseiInfo(companyCd, applNo);
+			getBihinShinseiInfo(companyCd, applNo, bihinShinseiInfo);
 			if (bihinShinseiInfo == null) {
 				setInitializeError(initDto);
 				return false;
@@ -724,6 +727,19 @@ public class Skf2030Sc001SharedService {
 		return applHistoryInfoList;
 	}
 
+	public void getBihinShinseiInfo(String companyCd, String applNo, Skf2030TBihinKiboShinsei bihinShinseiInfo2)
+			throws Exception {
+		// 備品希望申請情報を取得する
+		Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
+		Skf2030TBihinKiboShinseiKey key = new Skf2030TBihinKiboShinseiKey();
+		key.setCompanyCd(companyCd);
+		key.setApplNo(applNo);
+		bihinShinseiInfo = skf2030TBihinKiboShinseiRepository.selectByPrimaryKey(key);
+
+		CopyUtils.copyProperties(bihinShinseiInfo2, bihinShinseiInfo);
+		return;
+	}
+
 	public Skf2030TBihinKiboShinsei getBihinShinseiInfo(String companyCd, String applNo) {
 		// 備品希望申請情報を取得する
 		Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
@@ -984,6 +1000,7 @@ public class Skf2030Sc001SharedService {
 		if (data != null) {
 			return data.getNydCount();
 		}
+
 		return 0;
 	}
 
