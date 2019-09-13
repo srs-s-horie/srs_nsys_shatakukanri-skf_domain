@@ -5,12 +5,14 @@ package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplComment;
@@ -22,11 +24,13 @@ import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001CandidateDto;
 import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailService;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 
@@ -51,6 +55,8 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf206010CommonSendMailService skf206010CommonSendMailService;
+    @Autowired
+    private SkfGenericCodeUtils skfGenericCodeUtils;
 	
 	
 	private String companyCd = CodeConstant.C001;
@@ -80,7 +86,10 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		//申請書類番号とステータス
 		String applNo = candidateDto.getApplNo();
 		String applStatus = candidateDto.getPresentedStatus();
-	
+        // 提示状況汎用コード取得
+        Map<String, String> candidateStatusGenCodeMap = new HashMap<String, String>();
+        candidateStatusGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
+        
 		//ログインセッションのユーザ情報
 		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		//ログインセッションユーザ情報のユーザ名
@@ -133,12 +142,12 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		//申請書類履歴情報が取得できた場合
 		if(!(applNo == null ||  CheckUtils.isEmpty(applNo.trim())) && !(applStatus == null ||  CheckUtils.isEmpty(applStatus.trim())) ){
 			//提示ステータスが20のとき（確認依頼）
-			if(applStatus.equals(CodeConstant.STATUS_KAKUNIN_IRAI)){
+			if(applStatus.equals(candidateStatusGenCodeMap.get(CodeConstant.STATUS_KAKUNIN_IRAI))){
 				//エラーメッセージを設定
 				ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_2016);
 				throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
 			//提示ステータスが41のとき（完了）
-			}else if(applStatus.equals(CodeConstant.STATUS_KANRYOU)){
+			}else if(applStatus.equals(candidateStatusGenCodeMap.get(CodeConstant.STATUS_KANRYOU))){
 				//申請書類管理番号を作成する
 				applNo = skf2060Sc001SharedService.getApplNo(companyCd, shainNo, updateDate, applId);
 				//提示回数に"1"を設定する
@@ -161,10 +170,11 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			newCreateFlg = true;
 		}
 		
+		applStatus = CodeConstant.STATUS_KAKUNIN_IRAI;
+		
 		//申請書類履歴更新処理
 		//新規作成フラグがTrueの場合
 		if(newCreateFlg){
-			applStatus = "20";
 			//申請書類履歴テーブルに登録
 			boolean insertCheck = skf2060Sc001SharedService.insertApplHistory(companyCd, shainNo, applNo, applId, applStatus, applTacFlg, userName, comboFlg);
 			
@@ -231,13 +241,13 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		//新規作成フラグがFalseの時
 		}else{
 			//楽観的排他チェック
-			boolean existCheck = skf2060Sc001SharedService.getApplHistoryInfoForUpdate(companyCd, applNo);
+			Skf2060Sc001GetApplHistoryInfoForUpdateExp existCheckData = skf2060Sc001SharedService.getApplHistoryInfoForUpdate(companyCd, applNo);
 			//該当する「申請書類履歴テーブル」のデータが取得できた場合
-			if(existCheck){
+			if(existCheckData != null){
 				//TODO 申請書類履歴テーブルよりステータスを更新
-				boolean updateApplHistoryCheck = skf2060Sc001SharedService.updateApplHistory(companyCd, applNo);
+				boolean updateApplHistoryCheck = skf2060Sc001SharedService.updateApplHistory(companyCd, shainNo, existCheckData.getApplDate(), applNo, existCheckData.getApplId());
 				//更新に失敗した場合
-				if(updateApplHistoryCheck){
+				if(!(updateApplHistoryCheck)){
 					//エラーメッセージの設定
 					ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1073);
 					throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
@@ -246,11 +256,13 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 				//「申請書類管理番号」と「提示回数」をもとに借上候補物件提示明細テーブルに存在する全ての借上候補物件データの「提示フラグ」を"0"(提示可)に更新する。
 				boolean updateKariageBukkenTeijiFlgCheck = skf2060Sc001SharedService.updateKariageBukkenTeijiFlg(companyCd, applNo, teijiKaisu);
 				//更新に失敗した場合
-				if(updateKariageBukkenTeijiFlgCheck){
+				if(!(updateKariageBukkenTeijiFlgCheck)){
 					//エラーメッセージの設定
 					ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1073);
 					throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
 				}
+				//提示回数を＋１する
+				teijiKaisu++;
 				
 				//(CreateKariageBukkenTeiji)
 				//借上候補物件提示データの作成を行う
@@ -322,7 +334,7 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		}
 		
 		//メールの送信処理
-		skf206010CommonSendMailService.sendKariageTeijiMail(applNo);
+		//skf206010CommonSendMailService.sendKariageTeijiMail(applNo);
 		
 		
 		// リストデータ取得用
