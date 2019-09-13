@@ -67,7 +67,7 @@ public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004Ini
         this.setInitInfo(initDto);
 
         // 初期検索実行
-        initDto.setListTableData(skf2060Sc004SharedService.getListTableData(setDefaultSearchParam(initDto)));
+        initDto.setListTableData(skf2060Sc004SharedService.getListTableData(setDefaultSearchParam(initDto), initDto));
         initDto.setListTableMaxRowCount(searchMaxCount);
         return initDto;
     }

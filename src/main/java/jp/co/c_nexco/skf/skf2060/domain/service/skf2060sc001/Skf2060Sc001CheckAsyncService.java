@@ -50,11 +50,11 @@ public class Skf2060Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		boolean dialogFlg = false;
 		
 		boolean inputCheck = isValidateInput(checkDto);
-		int repeatCheck = isValidateRepeat(checkDto);
 		
 		//入力チェック
 		if(inputCheck){
 			//入力チェックOK時
+			int repeatCheck = isValidateRepeat(checkDto);
 			//重複チェック
 			if(repeatCheck == 0){
 				//重複チェックOK時
@@ -130,15 +130,15 @@ public class Skf2060Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		//借上候補物件テーブルに重複するデータが存在する場合
 		if(resultListTableData.size() > 0){
 			//借上候補物件提示明細テーブルから重複する物件を取得する
-			Skf2060Sc001GetTeijiShainDataExp shainData = new Skf2060Sc001GetTeijiShainDataExp();
+			List<Skf2060Sc001GetTeijiShainDataExp> shainData = new ArrayList<Skf2060Sc001GetTeijiShainDataExp>();
 			Skf2060Sc001GetTeijiShainDataExpParameter param2 = new Skf2060Sc001GetTeijiShainDataExpParameter();
 			param2.setCompanyCd(companyCd);
 			param2.setCandidateNo(resultListTableData.get(0).getCandidateNo());
 			shainData = skf2060Sc001GetTeijiShainDataExpRepository.getTeijiShainData(param2);
 			//借上候補物件提示明細テーブルに重複する物件が存在する場合
-			if(shainData != null){
-				//確認ダイアログ表示フラグをTrueにする
-				checkDto.setDialogShainName(shainData.getName());
+			if(shainData.size() > 0){
+				//重複物件の提示されている社員名を取得
+				checkDto.setDialogShainName(shainData.get(0).getName());
 			}
 			//提示可or提示済(提示不可)の物件の場合
 			if(resultListTableData.get(0).getTeijiFlg().equals(CodeConstant.TEIJI_FLG_SELECTABLE)||resultListTableData.get(0).getTeijiFlg().equals(CodeConstant.TEIJI_FLG_SELECT_IMPOSSIBLE)){
