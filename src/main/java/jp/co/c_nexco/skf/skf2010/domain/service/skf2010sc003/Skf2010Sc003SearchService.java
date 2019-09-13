@@ -88,7 +88,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		dto.setAgreDateToErr("");
 		// 申請日FROM
 		if ((dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())
-				&& (!CheckUtils.isFormatDate(dto.getApplDateFrom(), "yyyy/MM/dd") || !SkfCheckUtils
+				&& (!CheckUtils.isFormatDate(dto.getApplDateFrom(), "yyyy/MM/dd") && !SkfCheckUtils
 						.isSkfDateFormat(dto.getApplDateFrom(), CheckUtils.DateFormatType.YYYYMMDD)))) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請日FROM");
 			dto.setApplDateFromErr(validationErrorCode);
@@ -98,7 +98,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		// 申請日TO
 		if ((dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())
 				&& (!CheckUtils.isFormatDate(dto.getApplDateTo(), "yyyy/MM/dd")
-						|| !SkfCheckUtils.isSkfDateFormat(dto.getApplDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
+						&& !SkfCheckUtils.isSkfDateFormat(dto.getApplDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "申請日To");
 			dto.setApplDateToErr(validationErrorCode);
 			// dto.setApplDateTo("");
@@ -163,7 +163,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 
 	@SuppressWarnings("unchecked")
 	private List<Skf2010Sc003GetApplHistoryStatusInfoExp> getApplHistoryList(Skf2010Sc003SearchDto dto) {
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo");
 
 		String applDateFrom = skfDateFormatUtils.dateFormatFromString(dto.getApplDateFrom(), pattern);

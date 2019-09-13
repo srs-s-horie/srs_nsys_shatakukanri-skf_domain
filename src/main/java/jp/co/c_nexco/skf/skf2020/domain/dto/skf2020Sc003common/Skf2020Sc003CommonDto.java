@@ -105,6 +105,7 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 	private String parking2StartDate;
 
 	// 備品希望設定
+	private List<Map<String, Object>> bihinShinseiList;
 	// 必要社宅
 	private String bihinHitsuyoShataku;
 	// 洗濯機
