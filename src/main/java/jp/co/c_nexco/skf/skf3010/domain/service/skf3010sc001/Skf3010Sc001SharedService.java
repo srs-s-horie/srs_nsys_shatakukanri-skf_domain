@@ -143,13 +143,21 @@ public class Skf3010Sc001SharedService {
 		List<Map<String, Object>> tmpListData = new ArrayList<Map<String, Object>>();
 
 		do {
+			String searchShatakuName = null;
+			// 文字エスケープ(% _ ' \)
+			if (shatakuName != null) {
+				// 「\」を「\\」に置換
+				searchShatakuName = shatakuName.replace("\\", "\\\\");
+				// 「%」を「\%」に置換、「_」を「\_」に置換、「'」を「''」に置換
+				searchShatakuName = searchShatakuName.replace("%", "\\%").replace("_", "\\_").replace("'", "''");
+			}
 			param.setSelectedCompanyCd(selectedCompanyCd);
 			param.setAgencyCd(agencyCd);
 			param.setShatakuKbnCd(shatakuKbnCd);
 			param.setEmptyRoomCd(emptyRoomCd);
 			param.setUseKbnCd(useKbnCd);
 			param.setEmptyParkingCd(emptyParkingCd);
-			param.setShatakuName(shatakuName);
+			param.setShatakuName(searchShatakuName);
 			resultListTableData = skf3010Sc001GetListTableDataExpRepository.getListTableData(param);
 
 			// 取得レコード数を設定
@@ -172,7 +180,7 @@ public class Skf3010Sc001SharedService {
 			}
 			// 出力するリストを設定
 			listTableData.clear();
-			listTableData.addAll(tmpListData);			
+			listTableData.addAll(tmpListData);
 			
 		} while(false);
 		tmpListData = null;
