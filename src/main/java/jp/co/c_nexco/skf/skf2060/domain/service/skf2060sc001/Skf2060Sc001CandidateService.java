@@ -244,7 +244,7 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			Skf2060Sc001GetApplHistoryInfoForUpdateExp existCheckData = skf2060Sc001SharedService.getApplHistoryInfoForUpdate(companyCd, applNo);
 			//該当する「申請書類履歴テーブル」のデータが取得できた場合
 			if(existCheckData != null){
-				//TODO 申請書類履歴テーブルよりステータスを更新
+				//申請書類履歴テーブルよりステータスを更新
 				boolean updateApplHistoryCheck = skf2060Sc001SharedService.updateApplHistory(companyCd, shainNo, existCheckData.getApplDate(), applNo, existCheckData.getApplId());
 				//更新に失敗した場合
 				if(!(updateApplHistoryCheck)){
@@ -334,7 +334,7 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		}
 		
 		//メールの送信処理
-		//skf206010CommonSendMailService.sendKariageTeijiMail(applNo);
+		skf206010CommonSendMailService.sendKariageTeijiMail(applNo);
 		
 		
 		// リストデータ取得用
