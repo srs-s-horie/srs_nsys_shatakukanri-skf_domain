@@ -69,16 +69,16 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 	private void setInitInfo(Skf2040Sc001InitDto initDto){
 	    
 	    // 退居(返還)理由プルダウンリストをDtoに設定
-	    initDto.setDdlTaikyoRiyuKbnList(skf2040Sc001SharedService.getTaikyoHenkanRiyuList(defaultSelectCdVal));
+	    //initDto.setDdlTaikyoRiyuKbnList(skf2040Sc001SharedService.getTaikyoHenkanRiyuList(defaultSelectCdVal));
 	    
 	    // 現居住社宅名プルダウンリストをDtoに設定
-	    List<Map<String, Object>> nowShatakuNameList = 
-	            skf2040Sc001SharedService.getNowShatakuNameList(shainNo, defaultSelectShatakuId);
-	    if (null!=nowShatakuNameList){
-	        initDto.setDdlNowShatakuNameList(nowShatakuNameList);
-	    } else {
+//	    List<Map<String, Object>> nowShatakuNameList = 
+//	            skf2040Sc001SharedService.getNowShatakuNameList(shainNo, defaultSelectShatakuId);
+//	    if (null!=nowShatakuNameList){
+//	        initDto.setDdlNowShatakuNameList(nowShatakuNameList);
+//	    } else {
 	        // データが取得できなかった場合、エラーメッセージを表示して初期表示処理を終了
-	    }
+//	    }
 	    
 	    
 	    
@@ -99,5 +99,4 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 	    
 	    
 	}
-	
 }
