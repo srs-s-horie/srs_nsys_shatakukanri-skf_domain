@@ -254,7 +254,7 @@ public class Skf3020Sc005SharedService {
 
 		inDto.setEnterMsg(enterMsg);
 
-		String backMsg = PropertyUtils.getValue(MessageIdConstant.I_SKF_3031);
+		String backMsg = PropertyUtils.getValue(MessageIdConstant.I_SKF_1009);
 		inDto.setBackMsg(backMsg);
 	}
 
