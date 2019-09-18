@@ -130,8 +130,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		int diff = 0;
 		if ((dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom()))
 				&& (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo()))) {
-			fromDate = DateFormat.getDateInstance().parse(dto.getApplDateFrom());
-			toDate = DateFormat.getDateInstance().parse(dto.getApplDateTo());
+			fromDate = skfDateFormatUtils.formatStringToDate(dto.getApplDateFrom());
+			toDate = skfDateFormatUtils.formatStringToDate(dto.getApplDateTo());
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
@@ -145,8 +145,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		// 承認日のFrom < To整合性
 		if ((dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom()))
 				&& (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo()))) {
-			fromDate = DateFormat.getDateInstance().parse(dto.getAgreDateFrom());
-			toDate = DateFormat.getDateInstance().parse(dto.getAgreDateTo());
+			fromDate = skfDateFormatUtils.formatStringToDate(dto.getAgreDateFrom());
+			toDate = skfDateFormatUtils.formatStringToDate(dto.getAgreDateTo());
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
