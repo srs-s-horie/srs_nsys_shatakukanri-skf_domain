@@ -1,5 +1,7 @@
 package jp.co.c_nexco.skf.skf2020.domain.dto.common;
 
+import java.util.List;
+import java.util.Map;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import lombok.EqualsAndHashCode;
 

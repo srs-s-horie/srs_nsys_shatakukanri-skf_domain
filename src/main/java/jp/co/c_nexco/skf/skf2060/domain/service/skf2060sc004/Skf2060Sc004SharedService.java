@@ -1,3 +1,6 @@
+/*
+ * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
+ */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc004;
 
 import java.text.SimpleDateFormat;
@@ -22,6 +25,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060Sc004common.Skf2060Sc004CommonDto;
 
 
 /**
@@ -47,12 +51,14 @@ public class Skf2060Sc004SharedService {
      * @param param
      * @return listTableに表示する情報を格納したList
      */
-    public List<Map<String, Object>> getListTableData(
-            Skf2060Sc004GetKariageListExpParameter param){
+    public <DTO extends Skf2060Sc004CommonDto> List<Map<String, Object>> getListTableData(
+            Skf2060Sc004GetKariageListExpParameter param, DTO dto ){
         List<Map<String, Object>> tableDataList = new ArrayList<Map<String, Object>>();
         
         // 検索を実行
         List<Skf2060Sc004GetKariageListExp> kariageExpList  = this.searchKariageList(param);
+        
+        Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
         
         // 提示状況汎用コード取得
         Map<String, String> candidateStatusGenCodeMap = new HashMap<String, String>();
@@ -65,6 +71,9 @@ public class Skf2060Sc004SharedService {
         SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
         for (int i = 0; i < kariageExpList.size(); i++) {
             Skf2060Sc004GetKariageListExp tmpData = kariageExpList.get(i);
+            // 排他チェック用に最終更新日を取得
+            lastUpdateDateMap.put(dto.UPDATE_TABLE_PREFIX_APPL_HIST + tmpData.getApplNo(), tmpData.getLastUpdateDate());
+            
             Map<String, Object> tmpMap = new HashMap<String, Object>();
             
             // 完了チェックボックス非活性制御
@@ -98,9 +107,9 @@ public class Skf2060Sc004SharedService {
             }
             String applNo = tmpData.getApplNo();
             tmpMap.put("completeChk", "<INPUT type='checkbox' name='completeChkVal' id='completeChkVal" + i + "'"
-                       + " value='" + applNo + "' tabindex='12'" + completeChkDisabled + ">");
+                       + " value='" + applNo + "' " + completeChkDisabled + ">");
             tmpMap.put("reminderChk", "<INPUT type='checkbox' name='reminderChkVal' id='reminderChkVal" + i + "'"
-                       + " value='" + applNo + "' tabindex='13'" + reminderChkDisabled + ">");
+                       + " value='" + applNo + "' " + reminderChkDisabled + ">");
     
             // 提示状況表示文言を汎用コードから取得
             String candidateStatus = candidateStatusGenCodeMap.get(tmpData.getCandidateStatus());
@@ -133,6 +142,7 @@ public class Skf2060Sc004SharedService {
             tableDataList.add(tmpMap);
         }
         
+        dto.setLastUpdateDateMap(lastUpdateDateMap);
         return tableDataList;
     }
     
@@ -153,12 +163,12 @@ public class Skf2060Sc004SharedService {
      * 申請履歴情報の更新
      * @param inputExp 検索キー情報を保持したExp
      * @param status 更新するステータス
-     * @param applDate 承認日付
-     * @param applUserName 承認者名
+     * @param agreDate 承認日付
+     * @param agreUserName 承認者名
      * @return 更新件数
      */
     public int updateApplStatus(SkfShinseiUtilsGetApplHistoryInfoByApplNoExp inputExp, String status,
-            Date applDate, String applUserName) {
+            Date agreDate, String agreUserName) {
         Skf2010TApplHistory record = new Skf2010TApplHistory();
         // キー情報
         record.setCompanyCd(inputExp.getCompanyCd());
@@ -170,9 +180,11 @@ public class Skf2060Sc004SharedService {
         // ステータス更新(完了とする)
         record.setApplStatus(status);
         // 承認日付
-        record.setApplDate(applDate);
+        record.setAgreDate(agreDate);
         // 承認者名１
-        record.setAgreName1(applUserName);
+        record.setAgreName1(agreUserName);
+        // 最終更新日付
+        record.setLastUpdateDate(inputExp.getLastUpdateDate());
 
         // DB更新実行
         return skf2010TApplHistoryRepository.updateByPrimaryKeySelective(record);
