@@ -36,6 +36,9 @@ public class Skf2030Sc002CommonDto extends Skf203010CommonDto {
 	// CSS折り返し埋め込み用変数
 	private String floatL;
 
+	// 更新内容
+	private String updateType;
+
 	// 備品希望設定
 	private List<Map<String, String>> bihinList;
 	// 洗濯機
@@ -96,6 +99,7 @@ public class Skf2030Sc002CommonDto extends Skf203010CommonDto {
 	// コメント
 	private String commentNote;
 	// コメントボタン表示フラグ
+	private boolean commentBtnVisibled;
 	private boolean commentViewFlag;
 
 	// ボタン表示フラグ
