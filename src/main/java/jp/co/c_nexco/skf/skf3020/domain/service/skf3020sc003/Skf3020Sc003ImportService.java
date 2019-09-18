@@ -253,13 +253,22 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 
 		List<Map<String, Object>> infoList = importDto.getTenninshaChoshoDataTable();
 		String errResult = "";
+		
+		String firstShainNo = (String) infoList.get(0).get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
+		// 転任者調書データを取得
+		Skf3020TTenninshaChoshoData firstTenninshaInfo = skf3020TTenninshaChoshoDataRepository
+				.selectByPrimaryKey(firstShainNo);
+		if (firstTenninshaInfo != null) {
+			// 排他用更新日設定
+			importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, firstTenninshaInfo.getUpdateDate());
+		}
 
 		for (int i = 0; i < infoList.size(); i++) {
 
 			String flg = "0"; // 現社宅判定フラグ
 			Map<String, Object> targetMap = infoList.get(i);
 			String shainNo = (String) targetMap.get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
-
+			
 			if (shainNo == null || CheckUtils.isEmpty(shainNo)) {
 				// 社員番号が無い場合は登録処理
 				errResult = skf3020Sc003SharedService.insertTenninshaInfo(targetMap);
@@ -271,7 +280,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 				// 転任者調書データを取得
 				Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository
 						.selectByPrimaryKey(shainNo);
-
+				
 				if (tenninshaInfo != null) {
 					if (tenninshaInfo.getShainNo() == null || CheckUtils.isEmpty(tenninshaInfo.getShainNo())) {
 						LogUtils.debugByMsg("転任者調書データ内の指定の社員番号が取得出来なかった。");
@@ -279,9 +288,6 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 						ServiceHelper.addErrorResultMessage(importDto, null, "");
 						throwBusinessExceptionIfErrors(importDto.getResultMessages());
 					}
-
-					// 排他用更新日設定
-					importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, tenninshaInfo.getLastUpdateDate());
 
 					// 現社宅判定フラグ設定
 					flg = skf3020Sc003SharedService.setGenshatakuFlg(tenninshaInfo.getShainNo());
