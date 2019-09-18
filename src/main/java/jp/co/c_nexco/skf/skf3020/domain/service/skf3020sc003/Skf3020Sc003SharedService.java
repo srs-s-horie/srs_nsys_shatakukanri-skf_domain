@@ -16,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc003.Skf3020Sc003GetShatakuNyukyoCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
+import jp.co.c_nexco.skf.skf3020.domain.service.common.Skf302010CommonSharedService;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 
 /**
@@ -52,6 +53,8 @@ public class Skf3020Sc003SharedService {
 	public static final String BIKO_COL = "col7";
 	/** エラー */
 	public static final String ERR_COL = "col8";
+	
+	private static final int SHATAKU_NYUKYO_CNT_JUDG_VAL = 1;
 
 	/**
 	 * 現社宅判定フラグを設定する。
@@ -69,9 +72,9 @@ public class Skf3020Sc003SharedService {
 		// 社宅入居情報の件数取得
 		int shatakuNyukyoCnt = skf3020Sc003GetShatakuNyukyoCountExpRepository.getShatakuNyukyoCount(param);
 
-		if (shatakuNyukyoCnt > 1) {
+		if (shatakuNyukyoCnt > SHATAKU_NYUKYO_CNT_JUDG_VAL) {
 			return "2";
-		} else if (shatakuNyukyoCnt == 1) {
+		} else if (shatakuNyukyoCnt == SHATAKU_NYUKYO_CNT_JUDG_VAL) {
 			return "1";
 		} else {
 			return "0";
@@ -93,10 +96,10 @@ public class Skf3020Sc003SharedService {
 
 		String outMsg = "";
 		switch (result) {
-		case -1:
+		case Skf302010CommonSharedService.DB_ERR_MINUS_1:
 			outMsg = MessageIdConstant.E_SKF_1075;
 			return outMsg;
-		case 0:
+		case Skf302010CommonSharedService.DB_ERR_0:
 			outMsg = MessageIdConstant.E_SKF_1009;
 			return outMsg;
 		default:
@@ -170,10 +173,10 @@ public class Skf3020Sc003SharedService {
 
 		String outMsg = "";
 		switch (result) {
-		case -1:
+		case Skf302010CommonSharedService.DB_ERR_MINUS_1:
 			outMsg = MessageIdConstant.E_SKF_1073;
 			return outMsg;
-		case 0:
+		case Skf302010CommonSharedService.DB_ERR_0:
 			outMsg = MessageIdConstant.E_SKF_1010;
 			return outMsg;
 		default:
