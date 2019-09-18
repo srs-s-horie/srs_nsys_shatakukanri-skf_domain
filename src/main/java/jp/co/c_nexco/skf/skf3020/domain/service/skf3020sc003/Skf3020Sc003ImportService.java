@@ -1,3 +1,6 @@
+/*
+ * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
+ */
 package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc003;
 
 import java.util.List;
@@ -20,6 +23,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc003.Skf3020Sc003ImportDto;
+import jp.co.c_nexco.skf.skf3020.domain.service.common.Skf302010CommonSharedService;
 
 /**
  * Skf3020Sc003 転任者調書更新・登録処理クラス
@@ -36,13 +40,15 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 	private Skf3020Sc003SharedService skf3020Sc003SharedService;
 	@Autowired
 	private Skf3020TTenninshaChoshoDataRepository skf3020TTenninshaChoshoDataRepository;
+	@Autowired
+	private Skf302010CommonSharedService skf302010CommonSharedService;
 
-	/** 最大バイト数 */
-	private final static int MAX_BYTE_4 = 4;
-	private final static int MAX_BYTE_8 = 8;
-	private final static int MAX_BYTE_20 = 20;
-	private final static int MAX_BYTE_255 = 255;
-	private final static int MAX_BYTE_1600 = 1600;
+	/** 最大文字数 */
+	private final static int MAX_LEN_4 = 4;
+	private final static int MAX_LEN_8 = 8;
+	private final static int MAX_LEN_20 = 20;
+	private final static int MAX_LEN_255 = 255;
+	private final static int MAX_LEN_1600 = 1600;
 
 	private final static String TENNIN_CHOSHO_DATA_UPDATE_KEY = "Skf3020TTenninshaChoshoDataUpdateDate";
 
@@ -104,35 +110,35 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 
 			String tokyu = (String) targetMap.get(Skf3020Sc003SharedService.TOKYU_COL); // 等級
 			// 等級チェック
-			if (!checkByte(tokyu, MAX_BYTE_255)) {
+			if (!checkStrLen(tokyu, MAX_LEN_255)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.TOKYU_COL);
 				errFlg = true;
 			}
 
 			String age = (String) targetMap.get(Skf3020Sc003SharedService.AGE_COL); // 年齢
 			// 年齢チェック
-			if (!checkByte(age, MAX_BYTE_4)) {
+			if (!checkStrLen(age, MAX_LEN_4)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.AGE_COL);
 				errFlg = true;
 			}
 
 			String newAffiliation = (String) targetMap.get(Skf3020Sc003SharedService.NEW_AFFILIATION_COL); // 新所属
 			// 新所属チェック
-			if (!checkByte(newAffiliation, MAX_BYTE_255)) {
+			if (!checkStrLen(newAffiliation, MAX_LEN_255)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.NEW_AFFILIATION_COL);
 				errFlg = true;
 			}
 
 			String nowAffiliation = (String) targetMap.get(Skf3020Sc003SharedService.NOW_AFFILIATION_COL); // 現所属
 			// 現所属チェック
-			if (!checkByte(nowAffiliation, MAX_BYTE_255)) {
+			if (!checkStrLen(nowAffiliation, MAX_LEN_255)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.NOW_AFFILIATION_COL);
 				errFlg = true;
 			}
 
 			String biko = (String) targetMap.get(Skf3020Sc003SharedService.BIKO_COL); // 備考
 			// 備考チェック
-			if (!checkByte(biko, MAX_BYTE_1600)) {
+			if (!checkStrLen(biko, MAX_LEN_1600)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.BIKO_COL);
 				errFlg = true;
 			}
@@ -159,12 +165,12 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 	 */
 	private boolean checkShainNo(String shainNo) {
 
-		if (shainNo.indexOf(CodeConstant.SPACE) != -1 || shainNo.indexOf(CodeConstant.ZEN_SPACE) != -1
+		if (skf302010CommonSharedService.isExistSpace(shainNo)
 				|| !shainNo.matches("^[a-zA-Z0-9]*$")) {
 			return false;
 		}
 
-		if (!checkByte(shainNo, MAX_BYTE_8)) {
+		if (!checkStrLen(shainNo, MAX_LEN_8)) {
 			return false;
 		}
 
@@ -184,7 +190,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 			return false;
 		}
 
-		if (!checkByte(shainName, MAX_BYTE_20)) {
+		if (!checkStrLen(shainName, MAX_LEN_20)) {
 			return false;
 		}
 
@@ -192,18 +198,18 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 	}
 
 	/**
-	 * 文字列のバイト数チェック
+	 * 文字列の長さチェック
 	 * 
 	 * @param str
 	 *            対象文字列
 	 * @param maxByte
-	 *            比較バイト数（上限）
+	 *            比較する長さ（上限）
 	 * @return 結果
 	 */
-	private boolean checkByte(String str, int maxByte) {
+	private boolean checkStrLen(String str, int maxLen) {
 
-		int targetByte = str.getBytes().length;
-		if (targetByte > maxByte) {
+		int targetLen = str.length();
+		if (targetLen > maxLen) {
 			return false;
 		}
 

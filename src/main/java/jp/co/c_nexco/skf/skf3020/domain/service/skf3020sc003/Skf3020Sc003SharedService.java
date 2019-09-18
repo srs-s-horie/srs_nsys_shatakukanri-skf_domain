@@ -1,3 +1,6 @@
+/*
+ * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
+ */
 package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc003;
 
 import java.util.Date;
