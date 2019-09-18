@@ -57,7 +57,6 @@ import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
@@ -82,8 +81,6 @@ public class Skf2040Sc002SharedService {
 	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
-	@Autowired
-	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
@@ -156,55 +153,6 @@ public class Skf2040Sc002SharedService {
 	}
 
 	/**
-	 * 添付資料データを設定します
-	 * 
-	 * @param fileName
-	 * @param file
-	 * @param fileSize
-	 */
-	@SuppressWarnings({ "static-access" })
-	protected void addAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
-			List<Map<String, Object>> shatakuAttachedFileList) {
-		// 添付資料のコレクションをSessionより取得
-
-		// リンクリストチェック
-		boolean findFlg = false;
-		if (shatakuAttachedFileList != null) {
-			for (Map<String, Object> attachedFileMap : shatakuAttachedFileList) {
-				if (fileName.equals(attachedFileMap.get("attachedName"))) {
-					findFlg = true;
-					break;
-				}
-			}
-		} else {
-			shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
-		}
-
-		// 添付ファイルリストに無い場合
-		if (!findFlg) {
-			Map<String, Object> addAttachedFileInfo = new HashMap<String, Object>();
-
-			addAttachedFileInfo.put("attachedNo", attachedNo);
-
-			// 添付資料名
-			addAttachedFileInfo.put("attachedName", fileName);
-			// ファイルサイズ
-			addAttachedFileInfo.put("attachedFileSize", fileSize);
-			// 更新日
-			addAttachedFileInfo.put("registDate", new Date());
-			// 添付資料
-			addAttachedFileInfo.put("fileStream", file);
-			// 添付ファイルステータス
-			// ファイルタイプ
-			addAttachedFileInfo.put("fileType", skfAttachedFileUtils.getFileTypeInfo(fileName));
-
-			shatakuAttachedFileList.add(addAttachedFileInfo);
-		}
-
-		return;
-	}
-
-	/**
 	 * 備品返却区分を書き換え
 	 * 
 	 * @param shainNo
@@ -237,7 +185,7 @@ public class Skf2040Sc002SharedService {
 			bihinInfoMap.put("bihinReturnKbn", henkyakuBihin.getBihinReturnKbn());// 備品返却区分
 			bihinInfoMap.put("bihinApplKbn", henkyakuBihin.getBihinApplKbn());// 備品申請区分
 
-			// 備品提示データとの比較
+			// 提示備品データの備品貸与状態区分を設定
 			String teijiBihinStts = CodeConstant.DOUBLE_QUOTATION;
 			if (NfwStringUtils.isEmpty(henkyakuBihin.getTeijiBihinLentStatusKbn())) {
 				// 備品貸与状態がDBNullの場合、次のレコードへ。
@@ -246,7 +194,7 @@ public class Skf2040Sc002SharedService {
 				teijiBihinStts = henkyakuBihin.getTeijiBihinLentStatusKbn();
 			}
 
-			// 部屋備品レコードを取得
+			// 社宅部屋備品情報の備品貸与状態区分を設定
 			String roomBihinStts = CodeConstant.DOUBLE_QUOTATION;
 			if (NfwStringUtils.isEmpty(henkyakuBihin.getRoomBihinLentStatusKbn())) {
 				// 部屋備付状態区分がDBNullの場合、次のレコードへ。
@@ -257,9 +205,9 @@ public class Skf2040Sc002SharedService {
 
 			// 更新する備品返却区分の設定
 			String bihinReturnKbn = CodeConstant.DOUBLE_QUOTATION;
-			// 備品貸与状態区分が備品備付区分と同じ場合
+			// 提示備品データの備品貸与状態区分が社宅部屋備品情報の備品備付区分と同じ場合
 			if (teijiBihinStts.equals(roomBihinStts)) {
-				// 備品備付区分が「保有」か「レンタル」の場合、備品返却区分を”0”に設定する。
+				// 社宅部屋備品情報の備品備付区分が「保有」か「レンタル」の場合、備品返却区分を”0”（返却区分 返却不要）に設定する。
 				if (CodeConstant.BIHIN_STATE_HOYU.equals(roomBihinStts)
 						|| CodeConstant.BIHIN_STATE_RENTAL.equals(roomBihinStts)) {
 					bihinReturnKbn = CodeConstant.BIHIN_HENKYAKU_KBN_FUYO;
@@ -268,15 +216,17 @@ public class Skf2040Sc002SharedService {
 				}
 			}
 
-			// 備品備付区分が「なし」「共有」の場合も、返却備品として扱う。
-			// 備品貸与状態区分が「レンタル」の場合、備品返却区分を”3”に設定する
+			// 社宅部屋備品情報の備品備付区分が「なし」「共有」の場合も、返却備品として扱う。
+			// 提示備品データの備品貸与状態区分が「レンタル」の場合、備品返却区分を”3”（レンタル返却）に設定する
 			if ((CodeConstant.BIHIN_STATE_NONE.equals(roomBihinStts)
 					|| CodeConstant.BIHIN_STATE_KYOYO.equals(roomBihinStts))
 					&& CodeConstant.BIHIN_STATE_RENTAL.equals(teijiBihinStts)) {
 
 				bihinReturnKbn = CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU;
 			}
-			// 備品貸与状態区分が”会社保有”の場合、備品返却区分を”2”に設定する
+
+			// 社宅部屋備品情報の備品備付区分が「なし」「共有」の場合も、返却備品として扱う。
+			// 提示備品データの備品貸与状態区分が”会社保有”の場合、備品返却区分を”2”（会社保有返却）に設定する
 			if ((CodeConstant.BIHIN_STATE_NONE.equals(roomBihinStts)
 					|| CodeConstant.BIHIN_STATE_KYOYO.equals(roomBihinStts))
 					&& CodeConstant.BIHIN_STATE_HOYU.equals(teijiBihinStts)) {
@@ -284,7 +234,7 @@ public class Skf2040Sc002SharedService {
 				bihinReturnKbn = CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU;
 			}
 
-			// /設定した値で備品返却区分を書き換え
+			// 設定した値で備品返却区分を書き換え
 			bihinInfoMap.put("bihinReturnKbn", bihinReturnKbn);// 備品返却区分
 			// リストに設定
 			henkyakuList.add(bihinInfoMap);
@@ -313,7 +263,7 @@ public class Skf2040Sc002SharedService {
 	}
 
 	/**
-	 * 退居届の情報取得
+	 * 退居（自動車の保管場所返還）届の情報取得
 	 * 
 	 * @param 退居届の申請書類管理番号
 	 * @return Skf2040TTaikyoReport
@@ -352,8 +302,7 @@ public class Skf2040Sc002SharedService {
 	 * @param shainNo
 	 * @param shatakuNo
 	 * @param roomNo
-	 * @param l
-	 * @param teijiDataInfo
+	 * @param teijiNo
 	 * @return
 	 */
 	protected List<Skf2040Sc002GetHenkyakuBihinInfoExp> getHenkyakuBihinInfo(String applNo, String shainNo,
@@ -383,7 +332,8 @@ public class Skf2040Sc002SharedService {
 		// 返却立会希望日（日）の取得
 		String sessionDay = CodeConstant.DOUBLE_QUOTATION;
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getSessionDay())) {
-			sessionDay = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getSessionDay(), "yyyy年MM月dd日");
+			sessionDay = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getSessionDay(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 		}
 		// 返却立会希望日（時）の取得
 		String sessionTime = CodeConstant.DOUBLE_QUOTATION;
@@ -413,7 +363,8 @@ public class Skf2040Sc002SharedService {
 	 * PTN_B:【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：非表示】<br>
 	 * PTN_C:【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】<br>
 	 * PTN_D：【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：表示】<br>
-	 * PTN_E:【全ボタン非表示】<br>
+	 * PTN_E：【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】<br>
+	 * PTN_F:【全ボタン非表示】<br>
 	 * 
 	 * @param maslPtn
 	 * @param shiryoBtn
@@ -424,6 +375,27 @@ public class Skf2040Sc002SharedService {
 
 		dto.setMaskPattern(maslPtn);// マスク（非表示）パターン
 		dto.setTaikyoPdfViewFlg(pdfDwnBtn);// pdfダウンロードボタン
+	}
+
+	/**
+	 * 社宅情報の取得
+	 * 
+	 * @param shatakuKanriNo
+	 * @param shainNo
+	 * @return
+	 */
+	protected Skf2040Sc002GetShatakuInfoExp getShatakuInfo(Long shatakuKanriNo, String shainNo) {
+		Skf2040Sc002GetShatakuInfoExp shatakuInfo = new Skf2040Sc002GetShatakuInfoExp();
+		Skf2040Sc002GetShatakuInfoExpParameter param = new Skf2040Sc002GetShatakuInfoExpParameter();
+
+		Date nowDate = new Date();
+		String yearMonth = skfDateFormatUtils.dateFormatFromDate(nowDate, "yyyyMM");
+		param.setYearMonth(yearMonth);
+		param.setShatakuKanriNo(shatakuKanriNo);
+		param.setShainNo(shainNo);
+
+		shatakuInfo = skf2040Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
+		return shatakuInfo;
 	}
 
 	/**
@@ -447,7 +419,8 @@ public class Skf2040Sc002SharedService {
 		dto.setApplNo(taikyoRepDt.getApplNo());
 		// 申請年月日
 		String applDate = taikyoRepDt.getApplDate();
-		String applDateText = skfDateFormatUtils.dateFormatFromString(applDate, "yyyy年MM月dd日");
+		String applDateText = skfDateFormatUtils.dateFormatFromString(applDate,
+				SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
 		dto.setApplDate(applDateText);
 		// 機関
 		dto.setNowAgency(taikyoRepDt.getAgency());
@@ -463,7 +436,6 @@ public class Skf2040Sc002SharedService {
 		// 社宅退居区分
 		taikyoRepDt.getShatakuTaikyoKbn();
 
-		// 自動車の保管場所返還取消線フラグ
 		// 社宅
 		dto.setShatakuName(shatakuInfo.getShatakuName());
 		// 駐車場1
@@ -473,12 +445,14 @@ public class Skf2040Sc002SharedService {
 		// 退居日 社宅等
 		// 退居日
 		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
-			dto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(), "yyyy年MM月dd日"));
+			dto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 			// 日付変更フラグが1:変更ありなら赤文字にする
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
 					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
 
-				String taikyoDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(), "yyyy年MM月dd日");
+				String taikyoDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
 				// fontColorタグ設定
 				taikyoDate = sfontColor + taikyoDate + eFontColoor;
 				dto.setTaikyoDate(taikyoDate);
@@ -486,27 +460,27 @@ public class Skf2040Sc002SharedService {
 		}
 		// 駐車場返還日
 		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
-			dto.setParkingHenkanDate(
-					skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(), "yyyy年MM月dd日"));
+			dto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 			// 日付変更フラグが1:変更ありなら赤文字にする
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
 					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
 
 				String parkingHenkanDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
-						"yyyy年MM月dd日");
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
 				// fontColorタグ設定
 				parkingHenkanDate = sfontColor + parkingHenkanDate + eFontColoor;
 				dto.setParkingHenkanDate(parkingHenkanDate);
 			}
 		} else {
 			// 駐車場返還日がない場合は、退居日を設定
-			dto.setParkingHenkanDate(
-					skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(), "yyyy年MM月dd日"));
+			dto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 		}
 		// 退居（返還）理由
 		Map<String, String> taikyoRiyuMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_TAIKYO_HENKAN_RIYU);
-		String taikyoRiyu = "";
+		String taikyoRiyu = CodeConstant.DOUBLE_QUOTATION;
 		if (taikyoRiyuMap != null) {
 			taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
 		}
@@ -519,7 +493,7 @@ public class Skf2040Sc002SharedService {
 	/**
 	 * 添付ファイル情報の設定
 	 * 
-	 * @param initDto
+	 * @param dto
 	 */
 	protected void refreshHeaderAttachedFile(Skf2040Sc002CommonDto dto) {
 
@@ -546,29 +520,8 @@ public class Skf2040Sc002SharedService {
 	}
 
 	/**
-	 * 社宅情報を取得します
 	 * 
-	 * @param shatakuKanriNo
-	 * @param shainNo
-	 * @return
-	 */
-	protected Skf2040Sc002GetShatakuInfoExp getShatakuInfo(Long shatakuKanriNo, String shainNo) {
-		Skf2040Sc002GetShatakuInfoExp shatakuInfo = new Skf2040Sc002GetShatakuInfoExp();
-		Skf2040Sc002GetShatakuInfoExpParameter param = new Skf2040Sc002GetShatakuInfoExpParameter();
-
-		Date nowDate = new Date();
-		String yearMonth = skfDateFormatUtils.dateFormatFromDate(nowDate, "yyyyMM");
-		param.setYearMonth(yearMonth);
-		param.setShatakuKanriNo(shatakuKanriNo);
-		param.setShainNo(shainNo);
-
-		shatakuInfo = skf2040Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
-		return shatakuInfo;
-	}
-
-	/**
-	 * 
-	 * それぞれの備品に合うようにdtoに備品状態と返却区分を割り当て
+	 * 備品状態と返却区分の設定
 	 * 
 	 * @param initDto
 	 * @param henkyakuList
@@ -642,23 +595,20 @@ public class Skf2040Sc002SharedService {
 	/**
 	 * 入力チェック
 	 * 
-	 * 
 	 * @param dto
 	 * @param reFlg 差戻し、修正依頼フラグ
 	 * @return 正常：true 異常:false
 	 * @throws Exception
 	 */
 	protected boolean checkValidation(Skf2040Sc002CommonDto dto, String reFlg) throws Exception {
-		List<String> errorTarget = new ArrayList<String>();
-		errorTarget.add("commentNote");
 
 		// コメント欄入力チェック
 		String commentNote = StringUtils.strip(dto.getCommentNote());
 
 		// 差戻し、修正依頼の場合必須入力チェック
 		if (sTrue.equals(reFlg) && NfwStringUtils.isEmpty(commentNote)) {
-			ServiceHelper.addErrorResultMessage(dto, errorTarget.toArray(new String[errorTarget.size()]),
-					MessageIdConstant.E_SKF_1048, "申請者へのコメント");
+			ServiceHelper.addErrorResultMessage(dto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1048,
+					"申請者へのコメント");
 			return false;
 		}
 
@@ -689,22 +639,6 @@ public class Skf2040Sc002SharedService {
 		// セッションの添付資料情報を取得
 		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
-
-		Skf2040Sc002GetApplHistoryInfoForUpdateExp applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
-		Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter param = new Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter();
-		param.setCompanyCd(CodeConstant.C001);
-		param.setApplNo(applNo);
-		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
-		if (applInfo == null) {
-			errorMsg.put("error", MessageIdConstant.E_SKF_1075);
-			return false;
-		}
-
-		Map<String, String> userInfo = new HashMap<String, String>();
-		userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-
-		dto.setApplId(applInfo.getApplId());
-
 		// 添付ファイルの有無
 		String applTacFlg = CodeConstant.DOUBLE_QUOTATION;
 		if (attachedFileList != null && attachedFileList.size() > 0) {
@@ -713,6 +647,22 @@ public class Skf2040Sc002SharedService {
 		} else {
 			applTacFlg = CodeConstant.NO;
 		}
+
+		// 申請書類情報の取得
+		Skf2040Sc002GetApplHistoryInfoForUpdateExp applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
+		Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter param = new Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter();
+		param.setCompanyCd(CodeConstant.C001);
+		param.setApplNo(applNo);
+		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
+		if (applInfo == null) {
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+			return false;
+		}
+
+		Map<String, String> userInfo = new HashMap<String, String>();
+		userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+
+		dto.setApplId(applInfo.getApplId());
 
 		switch (newStatus) {
 		case CodeConstant.STATUS_SASHIMODOSHI:
@@ -734,7 +684,7 @@ public class Skf2040Sc002SharedService {
 			boolean resultUpdateApplInfo = updateApplHistoryAgreeStatus(newStatus, shainNo, applNo, shonin1, shonin2,
 					applInfo.getApplId());
 			if (!resultUpdateApplInfo) {
-				errorMsg.put("error", MessageIdConstant.E_SKF_1075);
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 				return false;
 			}
 
@@ -743,7 +693,7 @@ public class Skf2040Sc002SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			if (!updateCommentTable(userInfo, applNo, newStatus, errorMsg, dto.getCommentNote())) {
+			if (!insertCommentTable(userInfo, applNo, newStatus, errorMsg, dto.getCommentNote())) {
 				return false;
 			}
 		}
@@ -760,14 +710,16 @@ public class Skf2040Sc002SharedService {
 	}
 
 	/**
-	 * コメント更新
+	 * 申請コメントテーブル更新
 	 * 
 	 * @param userInfo
 	 * @param applNo
 	 * @param newStatus
+	 * @param errorMsg
+	 * @param comment
 	 * @return
 	 */
-	protected boolean updateCommentTable(Map<String, String> userInfo, String applNo, String newStatus,
+	protected boolean insertCommentTable(Map<String, String> userInfo, String applNo, String newStatus,
 			Map<String, String> errorMsg, String comment) {
 
 		String commentName = CodeConstant.NONE;
@@ -825,18 +777,21 @@ public class Skf2040Sc002SharedService {
 	}
 
 	/**
-	 * 添付資料情報を更新する。
+	 * 添付ファイル管理テーブルの更新
 	 * 
 	 * @param newStatus
 	 * @param applNo
 	 * @param shainNo
 	 * @param attachedFileList
 	 * @param applTacFlg
-	 * @param updDto
+	 * @param applInfo
+	 * @param errorMsg
+	 * @return
 	 */
 	protected boolean updateAttachedFileInfo(String newStatus, String applNo, String shainNo,
 			List<Map<String, Object>> attachedFileList, String applTacFlg,
 			Skf2040Sc002GetApplHistoryInfoForUpdateExp applInfo, Map<String, String> errorMsg) {
+
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			// 添付ファイルの更新は削除→登録で行う
@@ -864,6 +819,14 @@ public class Skf2040Sc002SharedService {
 		return true;
 	}
 
+	/**
+	 * 添付ファイル管理テーブルの登録値を設定する
+	 * 
+	 * @param attachedFileMap
+	 * @param applNo
+	 * @param shainNo
+	 * @return
+	 */
 	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
 		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
@@ -889,28 +852,40 @@ public class Skf2040Sc002SharedService {
 		return resultData;
 	}
 
+	// /**
+	// * 申請書類履歴テーブル情報取得
+	// *
+	// * @param setValue
+	// * @param dto
+	// * @return
+	// */
+	// protected Skf2010TApplHistory
+	// selectByApplHistoryPrimaryKey(Skf2010TApplHistory setValue,
+	// Skf2040Sc002CommonDto dto) {
+	// // キー項目をセット
+	// setValue.setCompanyCd(CodeConstant.C001);
+	// setValue.setShainNo(dto.getShainNo());
+	// setValue.setApplDate(dto.getApplHistoryDate());
+	// setValue.setApplNo(dto.getApplNo());
+	// setValue.setApplId(dto.getApplId());
+	//
+	// Skf2010TApplHistory resultInfo = new Skf2010TApplHistory();
+	// resultInfo = skf2010TApplHistoryRepository.selectByPrimaryKey(setValue);
+	//
+	// return resultInfo;
+	// }
+
 	/**
-	 * 申請書類履歴テーブル情報取得
+	 * 申請書類履歴テーブルに備品返却申請を登録/更新する処理
 	 * 
-	 * @param setValue
+	 * @param nextStatus
+	 * @param applTacFlg
 	 * @param dto
+	 * @param shoninName1
+	 * @param shoninName2
+	 * @param applId
 	 * @return
 	 */
-	protected Skf2010TApplHistory selectByApplHistoryPrimaryKey(Skf2010TApplHistory setValue,
-			Skf2040Sc002CommonDto dto) {
-		// キー項目をセット
-		setValue.setCompanyCd(CodeConstant.C001);
-		setValue.setShainNo(dto.getShainNo());
-		setValue.setApplDate(dto.getApplHistoryDate());
-		setValue.setApplNo(dto.getApplNo());
-		setValue.setApplId(dto.getApplId());
-
-		Skf2010TApplHistory resultInfo = new Skf2010TApplHistory();
-		resultInfo = skf2010TApplHistoryRepository.selectByPrimaryKey(setValue);
-
-		return resultInfo;
-	}
-
 	public boolean insertOrUpdateApplHistoryForBihinHenkyaku(String nextStatus, String applTacFlg,
 			Skf2040Sc002CommonDto dto, String shoninName1, String shoninName2, String applId) {
 
@@ -937,6 +912,8 @@ public class Skf2040Sc002SharedService {
 			break;
 		}
 
+		dto.setMailKbn(mailKbn);
+
 		// 申請書類履歴テーブルに備品返却希望申請があるかどうか確認
 		List<Skf2040Sc002GetApplHistoryInfoExp> applHistoryList = new ArrayList<Skf2040Sc002GetApplHistoryInfoExp>();
 		Skf2040Sc002GetApplHistoryInfoExpParameter param = new Skf2040Sc002GetApplHistoryInfoExpParameter();
@@ -960,7 +937,7 @@ public class Skf2040Sc002SharedService {
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -1058,7 +1035,7 @@ public class Skf2040Sc002SharedService {
 		if (!insertFlg) {
 			// 更新SQLでは不要
 			// 申請区分
-			setValue.setBihinAppl(CodeConstant.DOUBLE_QUOTATION);
+			setValue.setBihinAppl(CodeConstant.STRING_ZERO);
 		}
 
 		// 会社コード
@@ -1131,9 +1108,10 @@ public class Skf2040Sc002SharedService {
 	 * 
 	 * 
 	 * @param dto
+	 * @param fromTeijiButton 提示ボタンから来たかフラグ
 	 * @throws Exception
 	 */
-	public void sendMail(Skf2040Sc002CommonDto dto) throws Exception {
+	public void sendMail(Skf2040Sc002CommonDto dto, boolean fromTeijiButton) throws Exception {
 
 		// メール送信
 		Map<String, String> applInfo = new HashMap<String, String>();
@@ -1145,16 +1123,27 @@ public class Skf2040Sc002SharedService {
 		String urlBase = "skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 		// コメント
 		String commentNote = dto.getCommentNote();
-
-		String sendUser = CodeConstant.NONE;
+		// 送付者
+		String sendUser = CodeConstant.DOUBLE_QUOTATION;
+		// メール区分
+		String mailKbn = CodeConstant.DOUBLE_QUOTATION;
+		// 案内
+		String annai = CodeConstant.DOUBLE_QUOTATION;
 
 		if (CodeConstant.SHONIN_KANRYO_TSUCHI.equals(dto.getMailKbn())) {
+			// 承認完了通知の場合
 			// メール区分が承認完了通知だった場合は送信先の社員番号を設定
+			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
+			sendUser = dto.getShainNo();
+
+		} else if (fromTeijiButton) {
+			// 提示ボタンからの処理の場合
+			mailKbn = CodeConstant.BIHIN_HENKYAKU_ANNAI;
 			sendUser = dto.getShainNo();
 		}
 
-		skfMailUtils.sendApplTsuchiMail(dto.getMailKbn(), applInfo, commentNote, CodeConstant.NONE, sendUser,
-				CodeConstant.NONE, urlBase);
+		skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, annai, sendUser, CodeConstant.DOUBLE_QUOTATION,
+				urlBase);
 
 	}
 

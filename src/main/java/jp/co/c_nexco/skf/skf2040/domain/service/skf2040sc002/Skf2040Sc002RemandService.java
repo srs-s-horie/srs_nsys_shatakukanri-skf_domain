@@ -13,7 +13,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002RemandDto;
@@ -29,8 +28,6 @@ public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002R
 	@Autowired
 	private Skf2040Sc002SharedService skf2040sc002SharedService;
 	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	@Autowired
 	private SkfMailUtils skfMailUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -44,9 +41,7 @@ public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002R
 		// 操作ログ出力メソッドを呼び出す
 		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, remDto.getPageId());
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		Map<String, String> errorMsg = new HashMap<String, String>();
-
+		// コメント欄チェック
 		boolean validate = skf2040sc002SharedService.checkValidation(remDto, sTrue);
 		if (!validate) {
 			// 添付資料だけはセッションから再取得の必要あり
@@ -54,7 +49,10 @@ public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002R
 			return remDto;
 		}
 
+		// 申請書類履歴保存の処理
+		Map<String, String> errorMsg = new HashMap<String, String>();
 		boolean result = skf2040sc002SharedService.saveApplInfo(CodeConstant.STATUS_HININ, remDto, errorMsg);
+
 		if (result) {
 			// 差戻し（否認）通知メール送信
 			Map<String, String> applInfo = new HashMap<String, String>();
@@ -64,8 +62,11 @@ public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002R
 
 			String commentNote = remDto.getCommentNote();
 
+			// メールの記載URLは「申請状況一覧画面」
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-					remDto.getShainNo(), CodeConstant.NONE, CodeConstant.NONE);
+					remDto.getShainNo(), CodeConstant.NONE, urlBase);
 
 		}
 

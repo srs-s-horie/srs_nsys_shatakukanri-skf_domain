@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -53,8 +54,6 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 		// 操作ログ出力メソッドを呼び出す
 		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, preDto.getPageId());
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-
 		// 申請書類履歴情報の取得
 		Skf2040Sc002GetApplHistoryInfoForUpdateExp applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
 		Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter param = new Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter();
@@ -80,9 +79,6 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 			skf2040Sc002SharedService.setAttachedFileList(preDto);
 			return preDto;
 		}
-
-		// 備品返却の申請書類管理番号を格納
-		preDto.setHdnBihinHenkyakuApplNo(preDto.getHdnBihinHenkyakuApplNo());
 
 		// 承認者情報の取得
 		Map<String, String> userInfo = new HashMap<String, String>();
@@ -112,7 +108,11 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 			break;
 		}
 
+		// メール区分の設定
 		preDto.setMailKbn(mailKbn);
+
+		// 備品返却の申請書類管理番号を格納
+		preDto.setHdnBihinHenkyakuApplNo(preDto.getHdnBihinHenkyakuApplNo());
 
 		switch (preDto.getApplId()) {
 		case FunctionIdConstant.R0103:
@@ -120,16 +120,17 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 			/* 申請書類履歴テーブルの更新（退居届） */
 			// 申請書類履歴テーブル」よりステータスを更新
 			boolean resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
-					preDto.getShainNo(), preDto.getApplNo(), shoninName1, shoninName2, FunctionIdConstant.R0105);
+					preDto.getShainNo(), preDto.getApplNo(), shoninName1, shoninName2, preDto.getApplId());
 			if (!resultUpdateApplInfo) {
-				errorMsg.put("error", MessageIdConstant.E_SKF_1075);
+				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 				return preDto;
 			}
 
 			// コメントがある場合は更新
 			if (NfwStringUtils.isNotEmpty(preDto.getCommentNote())) {
-				if (!skf2040Sc002SharedService.updateCommentTable(userInfo, preDto.getApplNo(), nextStatus, errorMsg,
+				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(), nextStatus, errorMsg,
 						preDto.getCommentNote())) {
+					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
 			}
@@ -138,6 +139,7 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 			boolean resultUpdateFile = skf2040Sc002SharedService.updateAttachedFileInfo(nextStatus, preDto.getApplNo(),
 					preDto.getShainNo(), attachedFileList, applTacFlg, applInfo, errorMsg);
 			if (!resultUpdateFile) {
+				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 				return preDto;
 			}
 
@@ -147,20 +149,20 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 				if (!skf2040Sc002SharedService.insertOrUpdateApplHistoryForBihinHenkyaku(nextStatus, applTacFlg, preDto,
 						shoninName1, shoninName2, FunctionIdConstant.R0105)) {
 					// エラーがある場合、処理を中断
-					errorMsg.put("error", MessageIdConstant.E_SKF_1075);
+					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
 
 				// 備品申請テーブル 登録/更新処理
 				if (!skf2040Sc002SharedService.insertOrUpdateBihinShinseiTable(preDto)) {
 					// エラーがある場合、処理を中断
-					errorMsg.put("error", MessageIdConstant.E_SKF_1075);
+					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
 			}
 
 			// メール送信処理
-			skf2040Sc002SharedService.sendMail(preDto);
+			skf2040Sc002SharedService.sendMail(preDto, true);
 
 			// TODO 社宅管理データ連携処理実行
 
@@ -177,30 +179,30 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 			if (!skf2040Sc002SharedService.insertOrUpdateApplHistoryForBihinHenkyaku(nextStatus, applTacFlg, preDto,
 					shoninName1, shoninName2, FunctionIdConstant.R0105)) {
 				// エラーがある場合、処理を中断
-				errorMsg.put("error", MessageIdConstant.E_SKF_1075);
+				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 				return preDto;
 			}
 
 			// 備品申請テーブル 登録/更新処理
 			if (!skf2040Sc002SharedService.insertOrUpdateBihinShinseiTable(preDto)) {
 				// エラーがある場合、処理を中断
-				errorMsg.put("error", MessageIdConstant.E_SKF_1075);
+				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 				return preDto;
 			}
 
 			// コメント更新
 			if (NfwStringUtils.isNotEmpty(preDto.getCommentNote())) {
-				if (!skf2040Sc002SharedService.updateCommentTable(userInfo, preDto.getApplNo(),
+				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(),
 						CodeConstant.STATUS_KAKUNIN_IRAI, errorMsg, preDto.getCommentNote())) {
+					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
 			}
 
 			// メール送信処理
-			skf2040Sc002SharedService.sendMail(preDto);
+			skf2040Sc002SharedService.sendMail(preDto, true);
 
 			break;
-
 		}
 
 		// 備品返却の提示作成がある場合

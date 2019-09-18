@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -113,20 +114,21 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		boolean resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
 				appDto.getShainNo(), appDto.getApplNo(), shoninName1, shoninName2, appDto.getApplId());
 		if (!resultUpdateApplInfo) {
-			errorMsg.put("error", MessageIdConstant.E_SKF_1075);
+			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
 			return appDto;
 		}
 
 		// コメント更新
 		if (NfwStringUtils.isNotEmpty(appDto.getCommentNote())) {
-			if (!skf2040Sc002SharedService.updateCommentTable(userInfo, appDto.getApplNo(), nextStatus, errorMsg,
+			if (!skf2040Sc002SharedService.insertCommentTable(userInfo, appDto.getApplNo(), nextStatus, errorMsg,
 					appDto.getCommentNote())) {
+				ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
 				return appDto;
 			}
 		}
 
 		// メール送信処理
-		skf2040Sc002SharedService.sendMail(appDto);
+		skf2040Sc002SharedService.sendMail(appDto, false);
 
 		// TODO 社宅管理データ連携処理実行
 

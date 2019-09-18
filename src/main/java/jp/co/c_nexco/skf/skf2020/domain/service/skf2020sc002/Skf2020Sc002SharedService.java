@@ -593,29 +593,51 @@ public class Skf2020Sc002SharedService {
 	private void setShainList(Skf2020Sc002CommonDto dto) {
 
 		// 機関
-		dto.setAgencyName(dto.getShainList().get(0).get("agencyName"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("agencyName"))) {
+			dto.setAgencyName(dto.getShainList().get(0).get("agencyName"));
+		}
 		// 部等
-		dto.setAffiliation1Name(dto.getShainList().get(0).get("affiliation1Name"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("affiliation1Name"))) {
+			dto.setAffiliation1Name(dto.getShainList().get(0).get("affiliation1Name"));
+		}
 		// 室、チームまたは課
-		dto.setAffiliation2Name(dto.getShainList().get(0).get("affiliation2Name"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("affiliation2Name"))) {
+			dto.setAffiliation2Name(dto.getShainList().get(0).get("affiliation2Name"));
+		}
 		// 勤務先のTEL
-		dto.setTel(dto.getShainList().get(0).get("tel"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("tel"))) {
+			dto.setTel(dto.getShainList().get(0).get("tel"));
+		}
 
 		// 社員番号
-		dto.setShainNo(dto.getShainList().get(0).get("shainNo"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("shainNo"))) {
+			dto.setShainNo(dto.getShainList().get(0).get("shainNo"));
+		}
 		// 社員名
-		dto.setName(dto.getShainList().get(0).get("name"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("name"))) {
+			dto.setName(dto.getShainList().get(0).get("name"));
+		}
 		// 等級
-		dto.setTokyuName(dto.getShainList().get(0).get("tokyuName"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("tokyuName"))) {
+			dto.setTokyuName(dto.getShainList().get(0).get("tokyuName"));
+		}
 		// 性別
-		dto.setGender(dto.getShainList().get(0).get("gender"));
-		switch (dto.getGender()) {
+		String gender = CodeConstant.DOUBLE_QUOTATION;
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("gender"))) {
+			gender = dto.getShainList().get(0).get("gender");
+			dto.setGender(dto.getShainList().get(0).get("gender"));
+		}
+
+		switch (gender) {
 		case CodeConstant.MALE:
 			dto.setGenderName(CodeConstant.OUTPUT_MALE);
 			break;
 		case CodeConstant.FEMALE:
 			dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
 			break;
+		default:
+			break;
+
 		}
 		// 申請書ステータス
 		dto.setStatus(CodeConstant.STATUS_MISAKUSEI);
