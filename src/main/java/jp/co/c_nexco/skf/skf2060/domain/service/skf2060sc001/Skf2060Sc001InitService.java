@@ -102,7 +102,7 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 				}
 			}
 			//支援ボタンを非活性にする
-			initDto.setSupportDisabled("True");
+			initDto.setSupportDisabled("true");
 		}else{
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("新規作成", companyCd, initDto.getPageId());

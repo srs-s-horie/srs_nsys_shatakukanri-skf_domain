@@ -1370,15 +1370,20 @@ public class Skf2020Sc003SharedService {
 		bihinShinseiInfoList = getBihinShinseiInfo(companyCd, applNo);
 
 		Map<String, String> bihinInfoMap = skfGenericCodeUtils.getGenericCode("SKF1051");
-
+		List<Map<String, Object>> bihinShinseiList = new ArrayList<Map<String, Object>>();
 		if (bihinShinseiInfoList != null && bihinShinseiInfoList.size() > 0) {
 			for (Skf2020Sc003GetBihinShinseiInfoExp bihinShinseiInfo : bihinShinseiInfoList) {
 				String bihinStateText = bihinInfoMap.get(bihinShinseiInfo.getBihinState());
-				setBihinData(dto, bihinShinseiInfo.getBihinCd(), bihinStateText, bihinShinseiInfo.getBihinHope());
+				Map<String, Object> bihinMap = setBihinData(dto, bihinShinseiInfo.getBihinCd(),
+						bihinShinseiInfo.getBihinName(), bihinStateText, bihinShinseiInfo.getBihinHope());
+				bihinShinseiList.add(bihinMap);
 			}
 		}
+		dto.setBihinShinseiList(bihinShinseiList);
 
 		if (bihinShinseiInfoList == null || bihinShinseiInfoList.size() <= 0 || isShonin) {
+			// 初期化
+			bihinShinseiList = new ArrayList<Map<String, Object>>();
 
 			Long shatakuKanriNo = CodeConstant.LONG_ZERO;
 			if (dto.getNewShatakuKanriNo() != null) {
@@ -1401,7 +1406,9 @@ public class Skf2020Sc003SharedService {
 							|| bihinInfo.getBihinState().equals(CodeConstant.BIHIN_STATE_RENTAL)) {
 						bihinWish = "1";
 					}
-					setBihinData(dto, bihinInfo.getBihinCd(), bihinStateTxt, bihinWish);
+					Map<String, Object> bihinMap = setBihinData(dto, bihinInfo.getBihinCd(), bihinInfo.getBihinName(),
+							bihinStateTxt, bihinWish);
+					bihinShinseiList.add(bihinMap);
 				}
 
 			} else {
@@ -1412,11 +1419,14 @@ public class Skf2020Sc003SharedService {
 					for (Skf2020Sc003GetBihinItemExp bihinItem : bihinItemList) {
 						String bihinWish = "0";
 						String bihinStateTxt = bihinInfoMap.get(CodeConstant.BIHIN_STATE_NONE);
-						setBihinData(dto, bihinItem.getBihinCd(), bihinStateTxt, bihinWish);
+						Map<String, Object> bihinMap = setBihinData(dto, bihinItem.getBihinCd(),
+								bihinItem.getBihinName(), bihinStateTxt, bihinWish);
+						bihinShinseiList.add(bihinMap);
 					}
 				}
 			}
 		}
+		dto.setBihinShinseiList(bihinShinseiList);
 		return;
 
 	}
@@ -1518,59 +1528,23 @@ public class Skf2020Sc003SharedService {
 		}
 	}
 
-	private void setBihinData(Skf2020Sc003CommonDto dto, String bihinCd, String bihinStateText, String bihinWish) {
+	private Map<String, Object> setBihinData(Skf2020Sc003CommonDto dto, String bihinCd, String bihinName,
+			String bihinStateText, String bihinWish) {
 		String disabledFlag = "false";
 		if (BIHIN_STATE_SONAETSUKE.equals(bihinStateText)) {
 			bihinWish = CodeConstant.BIHIN_KIBO_FUKA;
 			disabledFlag = "true";
 		}
-		switch (bihinCd) {
-		case CodeConstant.BIHIN_WASHER:
-			dto.setBihinState11(bihinStateText);
-			dto.setDdBihinList11(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinDisabled11(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_FREEZER:
-			dto.setDdBihinList12(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState12(bihinStateText);
-			dto.setBihinDisabled12(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_OVEN:
-			dto.setDdBihinList13(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState13(bihinStateText);
-			dto.setBihinDisabled13(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_CLENER:
-			dto.setDdBihinList14(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState14(bihinStateText);
-			dto.setBihinDisabled14(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_RICE_COOKER:
-			dto.setDdBihinList15(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState15(bihinStateText);
-			dto.setBihinDisabled15(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_TV:
-			dto.setDdBihinList16(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState16(bihinStateText);
-			dto.setBihinDisabled16(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_TV_STANDS:
-			dto.setDdBihinList17(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState17(bihinStateText);
-			dto.setBihinDisabled17(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_KOTATSU:
-			dto.setDdBihinList18(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState18(bihinStateText);
-			dto.setBihinDisabled18(disabledFlag);
-			break;
-		case CodeConstant.BIHIN_KICHEN_CABINET:
-			dto.setDdBihinList19(skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
-			dto.setBihinState19(bihinStateText);
-			dto.setBihinDisabled19(disabledFlag);
-			break;
-		}
+
+		Map<String, Object> bihinMap = new HashMap<String, Object>();
+		bihinMap.put("bihinCd", bihinCd);
+		bihinMap.put("bihinName", bihinName);
+		bihinMap.put("bihinState", bihinStateText);
+		bihinMap.put("bihinWish", bihinWish);
+		bihinMap.put("dropDown", skfDropDownUtils.getGenericForDoropDownList("SKF1055", bihinWish, false));
+		bihinMap.put("disabled", disabledFlag);
+
+		return bihinMap;
 	}
 
 	private Skf2020Sc003GetShatakuNyukyoKiboInfoExp getShatakuNyukyoKiboInfo(String companyCd, String applNo) {

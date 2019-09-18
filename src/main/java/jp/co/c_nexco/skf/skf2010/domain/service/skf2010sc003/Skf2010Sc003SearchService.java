@@ -88,7 +88,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		dto.setAgreDateToErr("");
 		// 申請日FROM
 		if ((dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())
-				&& (!CheckUtils.isFormatDate(dto.getApplDateFrom(), "yyyy/MM/dd") || !SkfCheckUtils
+				&& (!CheckUtils.isFormatDate(dto.getApplDateFrom(), "yyyy/MM/dd") && !SkfCheckUtils
 						.isSkfDateFormat(dto.getApplDateFrom(), CheckUtils.DateFormatType.YYYYMMDD)))) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請日FROM");
 			dto.setApplDateFromErr(validationErrorCode);
@@ -98,7 +98,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		// 申請日TO
 		if ((dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())
 				&& (!CheckUtils.isFormatDate(dto.getApplDateTo(), "yyyy/MM/dd")
-						|| !SkfCheckUtils.isSkfDateFormat(dto.getApplDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
+						&& !SkfCheckUtils.isSkfDateFormat(dto.getApplDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "申請日To");
 			dto.setApplDateToErr(validationErrorCode);
 			// dto.setApplDateTo("");
@@ -130,8 +130,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		int diff = 0;
 		if ((dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom()))
 				&& (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo()))) {
-			fromDate = DateFormat.getDateInstance().parse(dto.getApplDateFrom());
-			toDate = DateFormat.getDateInstance().parse(dto.getApplDateTo());
+			fromDate = skfDateFormatUtils.formatStringToDate(dto.getApplDateFrom());
+			toDate = skfDateFormatUtils.formatStringToDate(dto.getApplDateTo());
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
@@ -145,8 +145,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		// 承認日のFrom < To整合性
 		if ((dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom()))
 				&& (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo()))) {
-			fromDate = DateFormat.getDateInstance().parse(dto.getAgreDateFrom());
-			toDate = DateFormat.getDateInstance().parse(dto.getAgreDateTo());
+			fromDate = skfDateFormatUtils.formatStringToDate(dto.getAgreDateFrom());
+			toDate = skfDateFormatUtils.formatStringToDate(dto.getAgreDateTo());
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
@@ -163,7 +163,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 
 	@SuppressWarnings("unchecked")
 	private List<Skf2010Sc003GetApplHistoryStatusInfoExp> getApplHistoryList(Skf2010Sc003SearchDto dto) {
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo");
 
 		String applDateFrom = skfDateFormatUtils.dateFormatFromString(dto.getApplDateFrom(), pattern);

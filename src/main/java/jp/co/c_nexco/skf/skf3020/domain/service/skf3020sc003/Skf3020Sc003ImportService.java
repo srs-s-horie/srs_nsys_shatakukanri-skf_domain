@@ -1,5 +1,10 @@
+/*
+ * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
+ */
 package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc003;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -20,6 +26,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc003.Skf3020Sc003ImportDto;
+import jp.co.c_nexco.skf.skf3020.domain.service.common.Skf302010CommonSharedService;
 
 /**
  * Skf3020Sc003 転任者調書更新・登録処理クラス
@@ -36,13 +43,15 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 	private Skf3020Sc003SharedService skf3020Sc003SharedService;
 	@Autowired
 	private Skf3020TTenninshaChoshoDataRepository skf3020TTenninshaChoshoDataRepository;
+	@Autowired
+	private Skf302010CommonSharedService skf302010CommonSharedService;
 
-	/** 最大バイト数 */
-	private final static int MAX_BYTE_4 = 4;
-	private final static int MAX_BYTE_8 = 8;
-	private final static int MAX_BYTE_20 = 20;
-	private final static int MAX_BYTE_255 = 255;
-	private final static int MAX_BYTE_1600 = 1600;
+	/** 最大文字数 */
+	private final static int MAX_LEN_4 = 4;
+	private final static int MAX_LEN_8 = 8;
+	private final static int MAX_LEN_20 = 20;
+	private final static int MAX_LEN_255 = 255;
+	private final static int MAX_LEN_1600 = 1600;
 
 	private final static String TENNIN_CHOSHO_DATA_UPDATE_KEY = "Skf3020TTenninshaChoshoDataUpdateDate";
 
@@ -104,35 +113,35 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 
 			String tokyu = (String) targetMap.get(Skf3020Sc003SharedService.TOKYU_COL); // 等級
 			// 等級チェック
-			if (!checkByte(tokyu, MAX_BYTE_255)) {
+			if (!checkStrLen(tokyu, MAX_LEN_255)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.TOKYU_COL);
 				errFlg = true;
 			}
 
 			String age = (String) targetMap.get(Skf3020Sc003SharedService.AGE_COL); // 年齢
 			// 年齢チェック
-			if (!checkByte(age, MAX_BYTE_4)) {
+			if (!checkStrLen(age, MAX_LEN_4)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.AGE_COL);
 				errFlg = true;
 			}
 
 			String newAffiliation = (String) targetMap.get(Skf3020Sc003SharedService.NEW_AFFILIATION_COL); // 新所属
 			// 新所属チェック
-			if (!checkByte(newAffiliation, MAX_BYTE_255)) {
+			if (!checkStrLen(newAffiliation, MAX_LEN_255)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.NEW_AFFILIATION_COL);
 				errFlg = true;
 			}
 
 			String nowAffiliation = (String) targetMap.get(Skf3020Sc003SharedService.NOW_AFFILIATION_COL); // 現所属
 			// 現所属チェック
-			if (!checkByte(nowAffiliation, MAX_BYTE_255)) {
+			if (!checkStrLen(nowAffiliation, MAX_LEN_255)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.NOW_AFFILIATION_COL);
 				errFlg = true;
 			}
 
 			String biko = (String) targetMap.get(Skf3020Sc003SharedService.BIKO_COL); // 備考
 			// 備考チェック
-			if (!checkByte(biko, MAX_BYTE_1600)) {
+			if (!checkStrLen(biko, MAX_LEN_1600)) {
 				errItems = setErrItems(errItems, Skf3020Sc003SharedService.BIKO_COL);
 				errFlg = true;
 			}
@@ -159,12 +168,12 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 	 */
 	private boolean checkShainNo(String shainNo) {
 
-		if (shainNo.indexOf(CodeConstant.SPACE) != -1 || shainNo.indexOf(CodeConstant.ZEN_SPACE) != -1
+		if (skf302010CommonSharedService.isExistSpace(shainNo)
 				|| !shainNo.matches("^[a-zA-Z0-9]*$")) {
 			return false;
 		}
 
-		if (!checkByte(shainNo, MAX_BYTE_8)) {
+		if (!checkStrLen(shainNo, MAX_LEN_8)) {
 			return false;
 		}
 
@@ -184,7 +193,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 			return false;
 		}
 
-		if (!checkByte(shainName, MAX_BYTE_20)) {
+		if (!checkStrLen(shainName, MAX_LEN_20)) {
 			return false;
 		}
 
@@ -192,18 +201,18 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 	}
 
 	/**
-	 * 文字列のバイト数チェック
+	 * 文字列の長さチェック
 	 * 
 	 * @param str
 	 *            対象文字列
 	 * @param maxByte
-	 *            比較バイト数（上限）
+	 *            比較する長さ（上限）
 	 * @return 結果
 	 */
-	private boolean checkByte(String str, int maxByte) {
+	private boolean checkStrLen(String str, int maxLen) {
 
-		int targetByte = str.getBytes().length;
-		if (targetByte > maxByte) {
+		int targetLen = str.length();
+		if (targetLen > maxLen) {
 			return false;
 		}
 
@@ -247,13 +256,25 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 
 		List<Map<String, Object>> infoList = importDto.getTenninshaChoshoDataTable();
 		String errResult = "";
+		
+		String firstShainNo = (String) infoList.get(0).get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
+		
+		// 最新更新日を取得
+		String update_data_1 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+		
+		if (!NfwStringUtils.isEmpty(update_data_1)) {
+			Date lastUpdateData = sdFormat.parse(update_data_1);
+			// 排他用更新日設定
+			importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, lastUpdateData);
+		}
 
 		for (int i = 0; i < infoList.size(); i++) {
 
 			String flg = "0"; // 現社宅判定フラグ
 			Map<String, Object> targetMap = infoList.get(i);
 			String shainNo = (String) targetMap.get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
-
+			
 			if (shainNo == null || CheckUtils.isEmpty(shainNo)) {
 				// 社員番号が無い場合は登録処理
 				errResult = skf3020Sc003SharedService.insertTenninshaInfo(targetMap);
@@ -265,7 +286,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 				// 転任者調書データを取得
 				Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository
 						.selectByPrimaryKey(shainNo);
-
+				
 				if (tenninshaInfo != null) {
 					if (tenninshaInfo.getShainNo() == null || CheckUtils.isEmpty(tenninshaInfo.getShainNo())) {
 						LogUtils.debugByMsg("転任者調書データ内の指定の社員番号が取得出来なかった。");
@@ -274,15 +295,14 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 						throwBusinessExceptionIfErrors(importDto.getResultMessages());
 					}
 
-					// 排他用更新日設定
-					importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, tenninshaInfo.getLastUpdateDate());
-
 					// 現社宅判定フラグ設定
 					flg = skf3020Sc003SharedService.setGenshatakuFlg(tenninshaInfo.getShainNo());
 
+					String update_data_2 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
+					Date updateData = sdFormat.parse(update_data_2);
 					// 排他チェック
 					super.checkLockException(importDto.getLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY),
-							tenninshaInfo.getUpdateDate());
+							updateData);
 
 					// 転任者調書データ更新結果
 					errResult = skf3020Sc003SharedService.updateTenninshaInfo(tenninshaInfo, targetMap, flg);
