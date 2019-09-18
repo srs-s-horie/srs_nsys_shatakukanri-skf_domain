@@ -156,13 +156,18 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			initDto.setTeijiNo(CodeConstant.LONG_ZERO);
 		}
 
-		// 承認2済以降の場合
-		if (CodeConstant.STATUS_SHONIN1.compareTo(applHistoryList.get(0).getApplStatus()) <= 0) {
-			// コメント入力欄の設定
-			setInputComment(initDto);
-		} else {
-			initDto.setCommentViewFlg(sFalse);
-		}
+		// コメント入力欄の設定
+		setInputComment(initDto);
+
+		// // 承認2済以降の場合
+		// if
+		// (CodeConstant.STATUS_SHONIN1.compareTo(applHistoryList.get(0).getApplStatus())
+		// <= 0) {
+		// // コメント入力欄の設定
+		// setInputComment(initDto);
+		// } else {
+		// initDto.setCommentViewFlg(sFalse);
+		// }
 
 		// コントロール制御
 		initDto.setApplId(applHistoryList.get(0).getApplId());
@@ -582,7 +587,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				}
 			}
 
-			// 備品表示項目の設定
+			// 返却情報の設定
 			skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt);
 		}
 		return returnValue;
