@@ -70,6 +70,7 @@ public class Skf2030Sc002ApplyService extends BaseServiceAbstract<Skf2030Sc002Ap
 		boolean updResult = skf2030Sc002SharedService.updateDispInfo(execName, applyDto, applInfo, loginUserInfo);
 		if (!updResult) {
 			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
+			return applyDto;
 		}
 
 		// 前の画面に遷移する
