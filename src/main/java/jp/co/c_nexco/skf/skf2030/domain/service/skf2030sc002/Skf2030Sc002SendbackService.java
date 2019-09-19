@@ -49,7 +49,7 @@ public class Skf2030Sc002SendbackService extends BaseServiceAbstract<Skf2030Sc00
 
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
