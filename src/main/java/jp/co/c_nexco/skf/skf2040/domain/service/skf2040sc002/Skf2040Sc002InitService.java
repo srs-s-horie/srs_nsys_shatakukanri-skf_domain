@@ -159,16 +159,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		// コメント入力欄の設定
 		setInputComment(initDto);
 
-		// // 承認2済以降の場合
-		// if
-		// (CodeConstant.STATUS_SHONIN1.compareTo(applHistoryList.get(0).getApplStatus())
-		// <= 0) {
-		// // コメント入力欄の設定
-		// setInputComment(initDto);
-		// } else {
-		// initDto.setCommentViewFlg(sFalse);
-		// }
-
 		// コントロール制御
 		initDto.setApplId(applHistoryList.get(0).getApplId());
 		switch (initDto.getApplId()) {
@@ -480,6 +470,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					initDto.setHenkyakuInfoViewFlg(sTrue);
 					// 表示項目の設定
 					skf2040Sc002ShareService.setBihinData(initDto, henkyakuList);
+
 				}
 
 				for (Map<String, Object> list : henkyakuList) {

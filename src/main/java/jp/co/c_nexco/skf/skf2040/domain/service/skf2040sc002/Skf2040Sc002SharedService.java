@@ -114,7 +114,6 @@ public class Skf2040Sc002SharedService {
 	private Map<String, String> bihinReturnMap;// 備品返却
 
 	private String sTrue = "true";
-	private String sFalse = "false";
 
 	/**
 	 * セッション情報を取得
@@ -236,6 +235,24 @@ public class Skf2040Sc002SharedService {
 
 			// 設定した値で備品返却区分を書き換え
 			bihinInfoMap.put("bihinReturnKbn", bihinReturnKbn);// 備品返却区分
+
+			// 備品状態 表示名
+			String bihinStateText = henkyakuBihin.getBihinLentStatusKbn();
+			if (NfwStringUtils.isEmpty(bihinStateText)) {
+				// 返却区分がない場合はハイフン設定
+				bihinStateText = CodeConstant.HYPHEN;
+			}
+
+			// 返却区分 表示名
+			String bihinReturnText = bihinReturnKbn;
+			if (NfwStringUtils.isEmpty(bihinReturnText)) {
+				// 返却区分がない場合はハイフン設定
+				bihinReturnText = CodeConstant.HYPHEN;
+			}
+
+			bihinInfoMap.put("bihinStateText", bihinStateText);
+			bihinInfoMap.put("bihinReturnText", bihinReturnText);
+
 			// リストに設定
 			henkyakuList.add(bihinInfoMap);
 		}
@@ -528,15 +545,16 @@ public class Skf2040Sc002SharedService {
 	 */
 	protected void setBihinData(Skf2040Sc002CommonDto dto, List<Map<String, Object>> henkyakuList) {
 
+		List<Map<String, Object>> bihinShinseiList = new ArrayList<Map<String, Object>>();
 		bihinStatusMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_EQUIPMENT_STATE); // 備品状態
 		bihinReturnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_LOAN_KBN); // 備品返却区分
 
 		/*
 		 * 備品情報
 		 */
+		Map<String, Object> bihinMap = new HashMap<String, Object>();
 		for (Map<String, Object> list : henkyakuList) {
 
-			String bihinCd = list.get("bihinCd").toString();
 			// 備品状態
 			String bihinStateText = bihinStatusMap.get(list.get("bihinLentStatusKbn").toString());
 			if (NfwStringUtils.isEmpty(bihinStateText)) {
@@ -550,46 +568,55 @@ public class Skf2040Sc002SharedService {
 				bihinReturnText = CodeConstant.HYPHEN;
 			}
 
+			bihinMap = new HashMap<String, Object>();
+			bihinMap.put("bihinCd", list.get("bihinCd").toString());
+			bihinMap.put("bihinName", list.get("bihinName").toString());
+			bihinMap.put("bihinState", list.get("bihinLentStatusKbn").toString());
+			bihinMap.put("bihinReturn", list.get("bihinReturnKbn").toString());
+			bihinMap.put("bihinStateText", bihinStateText);
+			bihinMap.put("bihinReturnText", bihinReturnText);
+			bihinShinseiList.add(bihinMap);
+
 			// dtoに割り当て
-			switch (bihinCd) {
-			case CodeConstant.BIHIN_WASHER:
-				dto.setBihinState11(bihinStateText);
-				dto.setBihinReturn11(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_FREEZER:
-				dto.setBihinState12(bihinStateText);
-				dto.setBihinReturn12(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_OVEN:
-				dto.setBihinState13(bihinStateText);
-				dto.setBihinReturn13(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_CLENER:
-				dto.setBihinState14(bihinStateText);
-				dto.setBihinReturn14(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_RICE_COOKER:
-				dto.setBihinState15(bihinStateText);
-				dto.setBihinReturn15(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_TV:
-				dto.setBihinState16(bihinStateText);
-				dto.setBihinReturn16(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_TV_STANDS:
-				dto.setBihinState17(bihinStateText);
-				dto.setBihinReturn17(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_KOTATSU:
-				dto.setBihinState18(bihinStateText);
-				dto.setBihinReturn18(bihinReturnText);
-				break;
-			case CodeConstant.BIHIN_KICHEN_CABINET:
-				dto.setBihinState19(bihinStateText);
-				dto.setBihinReturn19(bihinReturnText);
-				break;
-			}
+			// switch (bihinCd) {
+			// case CodeConstant.BIHIN_WASHER:
+			// dto.setBihinState11(bihinStateText);
+			// dto.setBihinReturn11(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_FREEZER:
+			// dto.setBihinState12(bihinStateText);
+			// dto.setBihinReturn12(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_OVEN:
+			// dto.setBihinState13(bihinStateText);
+			// dto.setBihinReturn13(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_CLENER:
+			// dto.setBihinState14(bihinStateText);
+			// dto.setBihinReturn14(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_RICE_COOKER:
+			// dto.setBihinState15(bihinStateText);
+			// dto.setBihinReturn15(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_TV:
+			// dto.setBihinState16(bihinStateText);
+			// dto.setBihinReturn16(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_TV_STANDS:
+			// dto.setBihinState17(bihinStateText);
+			// dto.setBihinReturn17(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_KOTATSU:
+			// dto.setBihinState18(bihinStateText);
+			// dto.setBihinReturn18(bihinReturnText);
+			// break;
+			// case CodeConstant.BIHIN_KICHEN_CABINET:
+			// dto.setBihinState19(bihinStateText);
+			// dto.setBihinReturn19(bihinReturnText);
+			// break;
 		}
+		dto.setHenkyakuList(bihinShinseiList);
 	}
 
 	/**
@@ -914,7 +941,7 @@ public class Skf2040Sc002SharedService {
 
 		dto.setMailKbn(mailKbn);
 
-		// 申請書類履歴テーブルに備品返却希望申請があるかどうか確認
+		// 申請書類履歴テーブルに備品返却申請があるかどうか確認
 		List<Skf2040Sc002GetApplHistoryInfoExp> applHistoryList = new ArrayList<Skf2040Sc002GetApplHistoryInfoExp>();
 		Skf2040Sc002GetApplHistoryInfoExpParameter param = new Skf2040Sc002GetApplHistoryInfoExpParameter();
 		param.setApplNo(dto.getHdnBihinHenkyakuApplNo());
@@ -1001,7 +1028,9 @@ public class Skf2040Sc002SharedService {
 			for (Map<String, Object> list : dto.getHenkyakuList()) {
 				// 登録情報の設定
 				Skf2030TBihin setValue = new Skf2030TBihin();
-				setValue = setColumnInfoListForBihin(dto, insertFlg, setValue, list.get("bihinCd").toString());
+				setValue = setColumnInfoListForBihin(dto, insertFlg, setValue, list.get("bihinCd").toString(),
+						list.get("bihinName").toString(), list.get("bihinState").toString(),
+						list.get("bihinReturn").toString());
 				skf2030TBihinRepository.insertSelective(setValue);
 			}
 
@@ -1010,7 +1039,9 @@ public class Skf2040Sc002SharedService {
 			for (Map<String, Object> list : dto.getHenkyakuList()) {
 				// 登録情報の設定
 				Skf2030TBihin setValue = new Skf2030TBihin();
-				setValue = setColumnInfoListForBihin(dto, insertFlg, setValue, list.get("bihinCd").toString());
+				setValue = setColumnInfoListForBihin(dto, insertFlg, setValue, list.get("bihinCd").toString(),
+						list.get("bihinName").toString(), list.get("bihinState").toString(),
+						list.get("bihinReturn").toString());
 				skf2030TBihinRepository.updateByPrimaryKeySelective(setValue);
 			}
 		}
@@ -1025,11 +1056,13 @@ public class Skf2040Sc002SharedService {
 	 * @param insertFlg
 	 * @param setValue
 	 * @param bihinCd
+	 * @param bihinName
+	 * @param string3
+	 * @param string4
 	 * @return
 	 */
 	private Skf2030TBihin setColumnInfoListForBihin(Skf2040Sc002CommonDto dto, boolean insertFlg,
-			Skf2030TBihin setValue, String bihinCd) {
-
+			Skf2030TBihin setValue, String bihinCd, String bihinName, String bihinState, String bihinReturn) {
 		// 登録項目をセット
 
 		if (!insertFlg) {
@@ -1043,65 +1076,106 @@ public class Skf2040Sc002SharedService {
 		// 申請書類番号
 		setValue.setApplNo(dto.getHdnBihinHenkyakuApplNo());
 		// 備品コード
-		switch (bihinCd) {
-		case CodeConstant.BIHIN_WASHER:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("洗濯機");
-			setValue.setBihinState(dto.getBihinState11());
-			setValue.setBihinAdjust(dto.getBihinReturn11());
-			break;
-		case CodeConstant.BIHIN_FREEZER:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("冷蔵庫");
-			setValue.setBihinState(dto.getBihinState12());
-			setValue.setBihinAdjust(dto.getBihinReturn12());
-			break;
-		case CodeConstant.BIHIN_OVEN:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("オーブンレンジ");
-			setValue.setBihinState(dto.getBihinState13());
-			setValue.setBihinAdjust(dto.getBihinReturn13());
-			break;
-		case CodeConstant.BIHIN_CLENER:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("掃除機");
-			setValue.setBihinState(dto.getBihinState14());
-			setValue.setBihinAdjust(dto.getBihinReturn14());
-			break;
-		case CodeConstant.BIHIN_RICE_COOKER:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("電子炊飯ジャー");
-			setValue.setBihinState(dto.getBihinState15());
-			setValue.setBihinAdjust(dto.getBihinReturn15());
-			break;
-		case CodeConstant.BIHIN_TV:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("テレビ");
-			setValue.setBihinState(dto.getBihinState16());
-			setValue.setBihinAdjust(dto.getBihinReturn16());
-			break;
-		case CodeConstant.BIHIN_TV_STANDS:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("テレビ台");
-			setValue.setBihinState(dto.getBihinState17());
-			setValue.setBihinAdjust(dto.getBihinReturn17());
-			break;
-		case CodeConstant.BIHIN_KOTATSU:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("座卓（こたつ）");
-			setValue.setBihinState(dto.getBihinState18());
-			setValue.setBihinAdjust(dto.getBihinReturn18());
-			break;
-		case CodeConstant.BIHIN_KICHEN_CABINET:
-			setValue.setBihinCd(bihinCd);
-			setValue.setBihinName("キッチンキャビネット");
-			setValue.setBihinState(dto.getBihinState19());
-			setValue.setBihinAdjust(dto.getBihinReturn19());
-			break;
-		}
+		setValue.setBihinCd(bihinCd);
+		setValue.setBihinName(bihinName);
+		setValue.setBihinState(bihinState);
+		setValue.setBihinAdjust(bihinReturn);
 
 		return setValue;
 	}
+
+	// /**
+	// * カラム情報の取得（備品申請）
+	// *
+	// * @param dto
+	// * @param insertFlg
+	// * @param setValue
+	// * @param bihinCd
+	// * @param bihinMap
+	// * @return
+	// */
+	// private Skf2030TBihin setColumnInfoListForBihin(Skf2040Sc002CommonDto
+	// dto, boolean insertFlg,
+	// Skf2030TBihin setValue, String bihinCd, HashMap<String, Object> bihinMap)
+	// {
+	//
+	// // 登録項目をセット
+	//
+	// if (!insertFlg) {
+	// // 更新SQLでは不要
+	// // 申請区分
+	// setValue.setBihinAppl(CodeConstant.STRING_ZERO);
+	// }
+	//
+	// // 会社コード
+	// setValue.setCompanyCd(CodeConstant.C001);
+	// // 申請書類番号
+	// setValue.setApplNo(dto.getHdnBihinHenkyakuApplNo());
+	// // 備品コード
+	// setValue.setBihinCd(bihinCd);
+	// setValue.setBihinName(b);
+	// setValue.setBihinState(dto.getBihinState11());
+	// setValue.setBihinAdjust(dto.getBihinReturn11());
+	//
+	// // switch (bihinCd) {
+	// // case CodeConstant.BIHIN_WASHER:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("洗濯機");
+	// // setValue.setBihinState(dto.getBihinState11());
+	// // setValue.setBihinAdjust(dto.getBihinReturn11());
+	// // break;
+	// // case CodeConstant.BIHIN_FREEZER:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("冷蔵庫");
+	// // setValue.setBihinState(dto.getBihinState12());
+	// // setValue.setBihinAdjust(dto.getBihinReturn12());
+	// // break;
+	// // case CodeConstant.BIHIN_OVEN:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("オーブンレンジ");
+	// // setValue.setBihinState(dto.getBihinState13());
+	// // setValue.setBihinAdjust(dto.getBihinReturn13());
+	// // break;
+	// // case CodeConstant.BIHIN_CLENER:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("掃除機");
+	// // setValue.setBihinState(dto.getBihinState14());
+	// // setValue.setBihinAdjust(dto.getBihinReturn14());
+	// // break;
+	// // case CodeConstant.BIHIN_RICE_COOKER:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("電子炊飯ジャー");
+	// // setValue.setBihinState(dto.getBihinState15());
+	// // setValue.setBihinAdjust(dto.getBihinReturn15());
+	// // break;
+	// // case CodeConstant.BIHIN_TV:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("テレビ");
+	// // setValue.setBihinState(dto.getBihinState16());
+	// // setValue.setBihinAdjust(dto.getBihinReturn16());
+	// // break;
+	// // case CodeConstant.BIHIN_TV_STANDS:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("テレビ台");
+	// // setValue.setBihinState(dto.getBihinState17());
+	// // setValue.setBihinAdjust(dto.getBihinReturn17());
+	// // break;
+	// // case CodeConstant.BIHIN_KOTATSU:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("座卓（こたつ）");
+	// // setValue.setBihinState(dto.getBihinState18());
+	// // setValue.setBihinAdjust(dto.getBihinReturn18());
+	// // break;
+	// // case CodeConstant.BIHIN_KICHEN_CABINET:
+	// // setValue.setBihinCd(bihinCd);
+	// // setValue.setBihinName("キッチンキャビネット");
+	// // setValue.setBihinState(dto.getBihinState19());
+	// // setValue.setBihinAdjust(dto.getBihinReturn19());
+	// // break;
+	//
+	// return setValue;
+	//
+	// }
 
 	/**
 	 * 差戻し、修正依頼以外のメール送付
