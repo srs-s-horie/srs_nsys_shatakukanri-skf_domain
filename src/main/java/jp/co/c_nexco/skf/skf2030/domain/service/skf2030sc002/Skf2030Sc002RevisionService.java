@@ -52,8 +52,7 @@ public class Skf2030Sc002RevisionService extends BaseServiceAbstract<Skf2030Sc00
 		revDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
@@ -62,7 +61,7 @@ public class Skf2030Sc002RevisionService extends BaseServiceAbstract<Skf2030Sc00
 		applInfo.put("applId", revDto.getApplId());
 
 		// 入力チェック
-		boolean validateResult = skf2030Sc002SharedService.validateReason(revDto, false);
+		boolean validateResult = skf2030Sc002SharedService.validateReason(revDto, true);
 		if (!validateResult) {
 			throwBusinessExceptionIfErrors(revDto.getResultMessages());
 		}
@@ -72,6 +71,7 @@ public class Skf2030Sc002RevisionService extends BaseServiceAbstract<Skf2030Sc00
 		boolean updResult = skf2030Sc002SharedService.updateDispInfo(execName, revDto, applInfo, loginUserInfo);
 		if (!updResult) {
 			throwBusinessExceptionIfErrors(revDto.getResultMessages());
+			return revDto;
 		}
 
 		// 前の画面に遷移する

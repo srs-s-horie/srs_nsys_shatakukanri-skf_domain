@@ -15,5 +15,7 @@ import lombok.EqualsAndHashCode;
 public class Skf2010Sc004AgreeDto extends Skf2010Sc004CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
+	
+	private boolean dialogFlg = false;
 
 }

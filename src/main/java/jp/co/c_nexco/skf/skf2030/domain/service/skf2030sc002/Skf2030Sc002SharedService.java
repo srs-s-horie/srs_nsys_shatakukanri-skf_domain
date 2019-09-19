@@ -16,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfAp
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetSKSDairininInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
@@ -61,8 +62,6 @@ public class Skf2030Sc002SharedService {
 	// 排他処理用最終更新日付
 	private static final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
 	private static final String BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_kibo_shinsei_UpdateDate";
-	private static final String BIHIN_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_UpdateDate";
-
 	private static final String CSS_FLOAT_L = " float-L";
 
 	// 更新内容
@@ -74,9 +73,8 @@ public class Skf2030Sc002SharedService {
 	// メッセージ用定数
 	private static final String NO_DATA_MESSAGE = "初期表示中に";
 	private static final String SHATAKU_TEIJI_MSG = "社宅管理システムで提示データを確認";
-	private static final String SHATAKU_TEIJI_COMP = "（社宅提示データが作成完了されていません。）";
 	private static final String BIHIN_TEIJI_COMP = "備品提示前に社宅入居希望等調書を承認";
-	private static final String NYUKYO_SHONIN_MSG_T = "";
+	private static final String NYUKYO_SHONIN_MSG_T = "備品承認前に社宅入居希望等調書を承認";
 	private static final String REASON_LABEL = "申請者へのコメント";
 
 	@Autowired
@@ -270,8 +268,6 @@ public class Skf2030Sc002SharedService {
 			// 備品申請情報を取得する
 			bihinInfoList = skfBihinInfoUtils.getBihinInfo(companyCd, applInfo.get("applNo"));
 
-			Long count = CodeConstant.LONG_ZERO;
-
 			if (bihinInfoList != null && bihinInfoList.size() > 0) {
 				boolean isBihinAppl = false;
 
@@ -358,6 +354,13 @@ public class Skf2030Sc002SharedService {
 		return true;
 	}
 
+	/**
+	 * 提示備品データを取得します
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @return
+	 */
 	private List<Skf2030Sc002GetTeijiBihinInfoExp> getTeijiBihinInfo(String shainNo, String nyutaikyoKbn) {
 		List<Skf2030Sc002GetTeijiBihinInfoExp> teijiBihinList = new ArrayList<Skf2030Sc002GetTeijiBihinInfoExp>();
 		Skf2030Sc002GetTeijiBihinInfoExpParameter param = new Skf2030Sc002GetTeijiBihinInfoExpParameter();
@@ -488,6 +491,16 @@ public class Skf2030Sc002SharedService {
 
 	}
 
+	/**
+	 * 更新処理を行います
+	 * 
+	 * @param execName
+	 * @param dto
+	 * @param applInfo
+	 * @param loginUserInfo
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean updateDispInfo(String execName, Skf2030Sc002CommonDto dto, Map<String, String> applInfo,
 			Map<String, String> loginUserInfo) throws Exception {
 		// 申請社員番号を設定
@@ -497,11 +510,8 @@ public class Skf2030Sc002SharedService {
 		String shoninName1 = CodeConstant.NONE;
 		String shoninName2 = CodeConstant.NONE;
 		Date agreDate = null;
-		String agreFlg = CodeConstant.NONE;
 		String mailKbn = CodeConstant.NONE;
 		String nextWorkflow = CodeConstant.NONE;
-		String renkeiStatus = CodeConstant.NONE;
-
 		Date sysDateTime = new Date();
 
 		String applStatus = applInfo.get("status");
@@ -510,8 +520,7 @@ public class Skf2030Sc002SharedService {
 		case CodeConstant.STATUS_SHINSEICHU:
 			// 申請中、審査中
 			// 次のステータスを設定
-			String updateType = dto.getUpdateType();
-			if (CheckUtils.isEqual(updateType, UPDATE_TYPE_APPLY)) {
+			if (CheckUtils.isEqual(execName, UPDATE_TYPE_APPLY)) {
 				// 次のステータス、メール区分、承認者名1、次の階層を設定
 				updateStatus = CodeConstant.STATUS_SHONIN1;
 				shoninName1 = loginUserInfo.get("userName");
@@ -546,14 +555,12 @@ public class Skf2030Sc002SharedService {
 				updateStatus = CodeConstant.STATUS_HANNYU_MACHI;
 				mailKbn = CodeConstant.HANNYU_MACHI_TSUCHI;
 				agreDate = sysDateTime;
-				renkeiStatus = CodeConstant.STATUS_SASHIMODOSHI;
 				break;
 			case CodeConstant.STATUS_SHINSACHU:
 				// 押下されたボタンが修正依頼 かつステータスが審査中の場合、更新ステータスを強制的に修正依頼に変更
 				updateStatus = CodeConstant.STATUS_SASHIMODOSHI;
 				mailKbn = CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI;
 				agreDate = sysDateTime;
-				renkeiStatus = CodeConstant.STATUS_SASHIMODOSHI;
 				break;
 			}
 			break;
@@ -562,7 +569,6 @@ public class Skf2030Sc002SharedService {
 			updateStatus = CodeConstant.STATUS_HININ;
 			mailKbn = CodeConstant.HININ_KANRYO_TSUCHI;
 			agreDate = sysDateTime;
-			renkeiStatus = CodeConstant.STATUS_HININ;
 			break;
 		case UPDATE_TYPE_PRESENT:
 			// 押下されたボタンが提示の場合
@@ -574,8 +580,6 @@ public class Skf2030Sc002SharedService {
 			updateStatus = CodeConstant.STATUS_HANNYU_MACHI;
 			mailKbn = CodeConstant.HANNYU_MACHI_TSUCHI;
 			agreDate = sysDateTime;
-			renkeiStatus = updateStatus;
-
 			break;
 		default:
 			// 社宅入居希望等調書の承認がされていない場合、備品の承認を行えないよう制御する
@@ -584,11 +588,10 @@ public class Skf2030Sc002SharedService {
 			}
 
 			if (NfwStringUtils.isEmpty(nextWorkflow)) {
-				// 次のワークフロー設定がある場合、次権限グループを取得
+				// 次のワークフロー設定がない場合、承認済みに設定
 				updateStatus = CodeConstant.STATUS_SHONIN_ZUMI;
 				mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
 			}
-			renkeiStatus = updateStatus;
 			break;
 		}
 
@@ -601,9 +604,10 @@ public class Skf2030Sc002SharedService {
 		if (updApplInfo == null) {
 			return false;
 		}
-		// 楽観的排他チェック
+		// 楽観的排他チェック（申請情報履歴）
 		if (!CheckUtils.isEqual(updApplInfo.getUpdateDate(),
 				dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE))) {
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134, "skf2010_t_appl_history");
 			return false;
 		}
 
@@ -724,13 +728,19 @@ public class Skf2030Sc002SharedService {
 	 */
 	public boolean updateDispInfoOfBihin(String applNo, Skf2030Sc002CommonDto dto) {
 		// 登録備品情報を設定
-		for (int bihinCd = 11; bihinCd <= 19; bihinCd++) {
+		List<SkfBihinInfoUtilsGetBihinMasterInfoExp> bihinMasterList = skfBihinInfoUtils.getBihinMasterList();
+		if (bihinMasterList == null || bihinMasterList.size() <= 0) {
+			return false;
+		}
+		for (SkfBihinInfoUtilsGetBihinMasterInfoExp bihinData : bihinMasterList) {
+			// for (int bihinCd = 11; bihinCd <= 19; bihinCd++) {
+			String bihinCd = bihinData.getBihinCd();
 			Skf2030TBihin updData = new Skf2030TBihin();
 			updData.setCompanyCd(companyCd);
 			updData.setApplNo(applNo);
-			updData.setBihinCd(String.valueOf(bihinCd));
+			updData.setBihinCd(bihinCd);
 			String bihinAppl = CodeConstant.NONE;
-			switch (String.valueOf(bihinCd)) {
+			switch (bihinCd) {
 			case CodeConstant.BIHIN_WASHER:
 				bihinAppl = dto.getBihinAppl11();
 				break;
@@ -788,16 +798,16 @@ public class Skf2030Sc002SharedService {
 	 * コメント欄入力チェック
 	 * 
 	 * @param dto
-	 * @param agreeFlag
+	 * @param checkFlag
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean validateReason(Skf2030Sc002CommonDto dto, boolean agreeFlag) throws Exception {
+	public boolean validateReason(Skf2030Sc002CommonDto dto, boolean checkFlag) throws Exception {
 
 		String commentNote = dto.getCommentNote();
 
 		// エラーメッセージがある場合、メッセージを表示して処理を中断
-		if (!agreeFlag && NfwStringUtils.isEmpty(commentNote)) {
+		if (checkFlag && NfwStringUtils.isEmpty(commentNote)) {
 			ServiceHelper.addErrorResultMessage(dto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1048,
 					REASON_LABEL);
 			return false;

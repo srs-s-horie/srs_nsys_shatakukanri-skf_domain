@@ -71,7 +71,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		skf2030Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 申請前に申請可能か判定を行う
