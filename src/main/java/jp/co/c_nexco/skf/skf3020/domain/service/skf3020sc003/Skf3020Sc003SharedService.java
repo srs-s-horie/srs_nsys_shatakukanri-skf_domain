@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import com.ibm.icu.text.SimpleDateFormat;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc003.Skf3020Sc003GetShatakuNyukyoCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc003.Skf3020Sc003GetTenninshaInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc003.Skf3020Sc003GetShatakuNyukyoCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc003.Skf3020Sc003GetTenninshaInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3020.domain.service.common.Skf302010CommonSharedService;
@@ -33,6 +35,8 @@ public class Skf3020Sc003SharedService {
 	private Skf3020TTenninshaChoshoDataRepository skf3020TTenninshaChoshoDataRepository;
 	@Autowired
 	private Skf3020Sc003GetShatakuNyukyoCountExpRepository skf3020Sc003GetShatakuNyukyoCountExpRepository;
+	@Autowired
+	Skf3020Sc003GetTenninshaInfoForUpdateExpRepository skf3020Sc003GetTenninshaInfoForUpdateExpRepository;
 
 	/***********************************
 	 * 画面表示のlistTableのカラム設定用
@@ -134,10 +138,12 @@ public class Skf3020Sc003SharedService {
 		tenninshaChoshoData.setAge(age);
 		// 現所属
 		String nowAffiliation = (String) targetData.get(NOW_AFFILIATION_COL);
-		tenninshaChoshoData.setNowAffiliation(nowAffiliation);
+		tenninshaChoshoData.setNowAffiliation(nowAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS));
 		// 新所属
 		String newAffiliation = (String) targetData.get(NEW_AFFILIATION_COL);
-		tenninshaChoshoData.setNewAffiliation(newAffiliation);
+		tenninshaChoshoData.setNewAffiliation(newAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS));
 		// 備考
 		String biko = (String) targetData.get(BIKO_COL);
 		tenninshaChoshoData.setBiko(biko);
@@ -211,10 +217,12 @@ public class Skf3020Sc003SharedService {
 		tenninshaChoshoData.setAge(age);
 		// 現所属
 		String nowAffiliation = (String) targetData.get(NOW_AFFILIATION_COL);
-		tenninshaChoshoData.setNowAffiliation(nowAffiliation);
+		tenninshaChoshoData.setNowAffiliation(nowAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS));
 		// 新所属
 		String newAffiliation = (String) targetData.get(NEW_AFFILIATION_COL);
-		tenninshaChoshoData.setNewAffiliation(newAffiliation);
+		tenninshaChoshoData.setNewAffiliation(newAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS));
 		// 備考
 		String biko = (String) targetData.get(BIKO_COL);
 		tenninshaChoshoData.setBiko(biko);
@@ -237,4 +245,18 @@ public class Skf3020Sc003SharedService {
 		return tenninshaChoshoData;
 	}
 
+	/**
+	 * 転任者調書データの更新日を取得する。
+	 * 
+	 * @param shainNo
+	 * 			社員番号
+	 * @return 更新日
+	 */
+	public String getTenninshaInfoForUpdate(String shainNo) {
+		Skf3020Sc003GetTenninshaInfoForUpdateExpParameter param = new Skf3020Sc003GetTenninshaInfoForUpdateExpParameter();
+		param.setShainNo(shainNo);
+		String updateData = skf3020Sc003GetTenninshaInfoForUpdateExpRepository.getTenninshaInfoForUpdate(param);
+		
+		return updateData;
+	}
 }

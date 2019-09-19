@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc003;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -255,12 +258,15 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 		String errResult = "";
 		
 		String firstShainNo = (String) infoList.get(0).get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
-		// 転任者調書データを取得
-		Skf3020TTenninshaChoshoData firstTenninshaInfo = skf3020TTenninshaChoshoDataRepository
-				.selectByPrimaryKey(firstShainNo);
-		if (firstTenninshaInfo != null) {
+		
+		// 最新更新日を取得
+		String update_data_1 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+		
+		if (!NfwStringUtils.isEmpty(update_data_1)) {
+			Date lastUpdateData = sdFormat.parse(update_data_1);
 			// 排他用更新日設定
-			importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, firstTenninshaInfo.getUpdateDate());
+			importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, lastUpdateData);
 		}
 
 		for (int i = 0; i < infoList.size(); i++) {
@@ -292,9 +298,11 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 					// 現社宅判定フラグ設定
 					flg = skf3020Sc003SharedService.setGenshatakuFlg(tenninshaInfo.getShainNo());
 
+					String update_data_2 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
+					Date updateData = sdFormat.parse(update_data_2);
 					// 排他チェック
 					super.checkLockException(importDto.getLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY),
-							tenninshaInfo.getUpdateDate());
+							updateData);
 
 					// 転任者調書データ更新結果
 					errResult = skf3020Sc003SharedService.updateTenninshaInfo(tenninshaInfo, targetMap, flg);
