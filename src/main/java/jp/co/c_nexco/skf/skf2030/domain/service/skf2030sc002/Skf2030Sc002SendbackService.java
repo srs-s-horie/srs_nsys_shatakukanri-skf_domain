@@ -61,11 +61,12 @@ public class Skf2030Sc002SendbackService extends BaseServiceAbstract<Skf2030Sc00
 			throwBusinessExceptionIfErrors(sbDto.getResultMessages());
 		}
 
-		String execName = "Sendback";
+		String execName = "sendback";
 
 		boolean updResult = skf2030Sc002SharedService.updateDispInfo(execName, sbDto, applInfo, loginUserInfo);
 		if (!updResult) {
 			throwBusinessExceptionIfErrors(sbDto.getResultMessages());
+			return sbDto;
 		}
 
 		// 前の画面に遷移する

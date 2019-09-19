@@ -71,6 +71,7 @@ public class Skf2030Sc002RevisionService extends BaseServiceAbstract<Skf2030Sc00
 		boolean updResult = skf2030Sc002SharedService.updateDispInfo(execName, revDto, applInfo, loginUserInfo);
 		if (!updResult) {
 			throwBusinessExceptionIfErrors(revDto.getResultMessages());
+			return revDto;
 		}
 
 		// 前の画面に遷移する
