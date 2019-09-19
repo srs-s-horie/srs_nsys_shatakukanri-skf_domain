@@ -20,6 +20,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc004.Skf3020Sc004GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc004.Skf3020Sc004GetTenninshaInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc004.Skf3020Sc004GetTenninshaInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -78,16 +79,36 @@ public class Skf3020Sc004SharedService {
 		int resultCount = 0;
 		List<Skf3020Sc004GetTenninshaInfoExp> resultListTableData = new ArrayList<Skf3020Sc004GetTenninshaInfoExp>();
 		Skf3020Sc004GetTenninshaInfoExpParameter param = new Skf3020Sc004GetTenninshaInfoExpParameter();
-		param.setShainNo(shainNo);
-		param.setShainName(shainName);
+		if(NfwStringUtils.isNotEmpty(shainNo)){
+			param.setShainNo(escapeString(shainNo));
+		}else{
+			param.setShainNo(shainNo);
+		}
+		if(NfwStringUtils.isNotEmpty(shainName)){
+			param.setShainName(escapeString(shainName));
+		}else{
+			param.setShainName(shainName);
+		}
 		param.setNyukyo(nyukyo);
 		param.setTaikyo(taikyo);
 		param.setHenko(henko);
 		param.setGenShatakuKubun(genShatakuKubun);
-		param.setGenShozoku(genShozoku);
-		param.setShinShozoku(shinShozoku);
+		if(NfwStringUtils.isNotEmpty(genShozoku)){
+			param.setGenShozoku(escapeString(genShozoku));
+		}else{
+			param.setGenShozoku(genShozoku);
+		}
+		if(NfwStringUtils.isNotEmpty(shinShozoku)){
+			param.setShinShozoku(escapeString(shinShozoku));
+		}else{
+			param.setShinShozoku(shinShozoku);
+		}
 		param.setNyutaikyoYoteiSakuseiKubun(nyutaikyoYoteiSakuseiKubun);
-		param.setBiko(biko);
+		if(NfwStringUtils.isNotEmpty(biko)){
+			param.setBiko(escapeString(biko));
+		}else{
+			param.setBiko(biko);
+		}
 		resultListTableData = skf3020Sc004GetTenninshaInfoExpRepository.getTenninshaInfo(param);
 
 		// 取得レコード数を設定
@@ -107,6 +128,24 @@ public class Skf3020Sc004SharedService {
 
 	}
 
+	/**
+	 * 特定の文字をエスケープする（検索用）
+	 * @param beforStr 変換前の文字列
+	 * @return 変換後の文字列
+	 */
+	private String escapeString(String beforStr){
+		String afterStr = null;
+		// 文字エスケープ(%, _, '\)
+		if (beforStr != null) {
+			// 「\」を「\\」に置換
+			afterStr = beforStr.replace("\\", "\\\\");
+			// 「%」を「\%」に置換、「_」を「\_」に置換、「'」を「''」に置換
+			afterStr = afterStr.replace("%", "\\%").replace("_", "\\_").replace("'", "''");
+		}
+		
+		return afterStr;
+	}
+	
 	/**
 	 * リストテーブルに出力するリストを取得する。
 	 * 
