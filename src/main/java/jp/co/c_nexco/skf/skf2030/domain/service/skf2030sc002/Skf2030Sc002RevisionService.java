@@ -62,7 +62,7 @@ public class Skf2030Sc002RevisionService extends BaseServiceAbstract<Skf2030Sc00
 		applInfo.put("applId", revDto.getApplId());
 
 		// 入力チェック
-		boolean validateResult = skf2030Sc002SharedService.validateReason(revDto, false);
+		boolean validateResult = skf2030Sc002SharedService.validateReason(revDto, true);
 		if (!validateResult) {
 			throwBusinessExceptionIfErrors(revDto.getResultMessages());
 		}

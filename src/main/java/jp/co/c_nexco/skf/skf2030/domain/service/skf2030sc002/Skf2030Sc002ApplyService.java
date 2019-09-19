@@ -63,6 +63,11 @@ public class Skf2030Sc002ApplyService extends BaseServiceAbstract<Skf2030Sc002Ap
 
 		String execName = "apply";
 
+		// 入力チェック
+		if (!skf2030Sc002SharedService.validateReason(applyDto, false)) {
+			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
+		}
+
 		boolean updResult = skf2030Sc002SharedService.updateDispInfo(execName, applyDto, applInfo, loginUserInfo);
 		if (!updResult) {
 			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
