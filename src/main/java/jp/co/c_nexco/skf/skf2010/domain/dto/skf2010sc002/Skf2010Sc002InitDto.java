@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Skf2010_Sc002 申請内容確認画面のInitDto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
