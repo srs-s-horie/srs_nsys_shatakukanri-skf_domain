@@ -56,11 +56,9 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc004InitDto index(Skf2010Sc004InitDto initDto) throws Exception {
@@ -250,7 +248,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		// 操作ガイド取得
 		Map<String, String> operationGuideMap = new HashMap<String, String>();
-		operationGuideMap = skfOperationGuideUtils.getOperationGuideMap(initDto.getPageId());
+		operationGuideMap = skfOperationGuideUtils.getOperationGuideMap(FunctionIdConstant.SKF2010_SC004);
 
 		String operationGuide = CodeConstant.NONE;
 		if (operationGuideMap != null) {

@@ -403,7 +403,7 @@ public class Skf2030Sc001SharedService {
 		String updateCompleteDate = null;
 
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// 更新ステータス等の判定

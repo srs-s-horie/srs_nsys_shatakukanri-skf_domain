@@ -76,7 +76,7 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 
 	private void setStatusList(Skf2010Sc003InitDto initDto) {
 		// ログインユーザー情報から社員番号取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo").toString();
 
 		String applDateFrom = initDto.getApplDateFrom();

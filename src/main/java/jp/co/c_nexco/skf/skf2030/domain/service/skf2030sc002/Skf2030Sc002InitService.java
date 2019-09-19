@@ -51,8 +51,7 @@ public class Skf2030Sc002InitService extends BaseServiceAbstract<Skf2030Sc002Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();

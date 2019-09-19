@@ -358,6 +358,13 @@ public class Skf2030Sc002SharedService {
 		return true;
 	}
 
+	/**
+	 * 提示備品データを取得します
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @return
+	 */
 	private List<Skf2030Sc002GetTeijiBihinInfoExp> getTeijiBihinInfo(String shainNo, String nyutaikyoKbn) {
 		List<Skf2030Sc002GetTeijiBihinInfoExp> teijiBihinList = new ArrayList<Skf2030Sc002GetTeijiBihinInfoExp>();
 		Skf2030Sc002GetTeijiBihinInfoExpParameter param = new Skf2030Sc002GetTeijiBihinInfoExpParameter();
@@ -488,6 +495,16 @@ public class Skf2030Sc002SharedService {
 
 	}
 
+	/**
+	 * 更新処理を行います
+	 * 
+	 * @param execName
+	 * @param dto
+	 * @param applInfo
+	 * @param loginUserInfo
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean updateDispInfo(String execName, Skf2030Sc002CommonDto dto, Map<String, String> applInfo,
 			Map<String, String> loginUserInfo) throws Exception {
 		// 申請社員番号を設定
@@ -510,8 +527,7 @@ public class Skf2030Sc002SharedService {
 		case CodeConstant.STATUS_SHINSEICHU:
 			// 申請中、審査中
 			// 次のステータスを設定
-			String updateType = dto.getUpdateType();
-			if (CheckUtils.isEqual(updateType, UPDATE_TYPE_APPLY)) {
+			if (CheckUtils.isEqual(execName, UPDATE_TYPE_APPLY)) {
 				// 次のステータス、メール区分、承認者名1、次の階層を設定
 				updateStatus = CodeConstant.STATUS_SHONIN1;
 				shoninName1 = loginUserInfo.get("userName");
@@ -601,9 +617,10 @@ public class Skf2030Sc002SharedService {
 		if (updApplInfo == null) {
 			return false;
 		}
-		// 楽観的排他チェック
+		// 楽観的排他チェック（申請情報履歴）
 		if (!CheckUtils.isEqual(updApplInfo.getUpdateDate(),
 				dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE))) {
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134, "skf2010_t_appl_history");
 			return false;
 		}
 
@@ -788,16 +805,16 @@ public class Skf2030Sc002SharedService {
 	 * コメント欄入力チェック
 	 * 
 	 * @param dto
-	 * @param agreeFlag
+	 * @param checkFlag
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean validateReason(Skf2030Sc002CommonDto dto, boolean agreeFlag) throws Exception {
+	public boolean validateReason(Skf2030Sc002CommonDto dto, boolean checkFlag) throws Exception {
 
 		String commentNote = dto.getCommentNote();
 
 		// エラーメッセージがある場合、メッセージを表示して処理を中断
-		if (!agreeFlag && NfwStringUtils.isEmpty(commentNote)) {
+		if (checkFlag && NfwStringUtils.isEmpty(commentNote)) {
 			ServiceHelper.addErrorResultMessage(dto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1048,
 					REASON_LABEL);
 			return false;

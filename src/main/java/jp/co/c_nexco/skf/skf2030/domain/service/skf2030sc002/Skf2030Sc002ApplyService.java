@@ -52,8 +52,7 @@ public class Skf2030Sc002ApplyService extends BaseServiceAbstract<Skf2030Sc002Ap
 		applyDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
@@ -62,6 +61,11 @@ public class Skf2030Sc002ApplyService extends BaseServiceAbstract<Skf2030Sc002Ap
 		applInfo.put("applId", applyDto.getApplId());
 
 		String execName = "apply";
+
+		// 入力チェック
+		if (!skf2030Sc002SharedService.validateReason(applyDto, false)) {
+			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
+		}
 
 		boolean updResult = skf2030Sc002SharedService.updateDispInfo(execName, applyDto, applInfo, loginUserInfo);
 		if (!updResult) {
