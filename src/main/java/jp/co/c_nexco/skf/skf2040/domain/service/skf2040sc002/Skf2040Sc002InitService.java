@@ -125,6 +125,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 
 		// 取得できなかった場合エラー
 		if (applHistoryList == null || applHistoryList.size() <= 0) {
+			returnValue = false;
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
 		}
 
@@ -185,26 +186,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			}
 
 			// ボタン制御
-			switch (initDto.getApplStatus()) {
-			case CodeConstant.STATUS_SHINSACHU:
-				// 申請状況が「審査中」
-				// 【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：非表示】→PTN_A
-				// 【PDFダウンロードボタン：非表示】
-				skf2040Sc002ShareService.setButtonVisible("PTN_A", sFalse, initDto);
-				break;
-			case CodeConstant.STATUS_HANSYUTSU_ZUMI:
-				// 申請状況が「搬出済」
-				// 【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：非表示】→PTN_B
-				// 【PDFダウンロードボタン：非表示】
-				skf2040Sc002ShareService.setButtonVisible("PTN_B", sFalse, initDto);
-				break;
-			default:
-				// 申請状況が上記以外
-				// 【全ボタン非表示】→PTN_F
-				skf2040Sc002ShareService.setButtonVisible("PTN_F", sFalse, initDto);
-				break;
-			}
-			break;
+			setButtonVisible(initDto, teijiDataInfo);
 
 		case FunctionIdConstant.R0103:
 			// ◆退居（自動車の保管場所返還）届
@@ -252,6 +234,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.I_SKF_1006,
 							"返却備品情報が取得できませんでした。必要に応じて社宅管理台帳から返却備品", "メンテナンス");
 				}
+
 			} else {
 				// 申請状況が「審査中」以外
 				// 返却情報欄の表示
@@ -279,6 +262,49 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			}
 
 			// ボタン制御
+			setButtonVisible(initDto, teijiDataInfo);
+			break;
+		}
+
+		// 表示正常終了
+		return returnValue;
+
+	}
+
+	/**
+	 * ボタン制御
+	 * 
+	 * @param initDto
+	 * @param teijiDataInfo
+	 */
+	private void setButtonVisible(Skf2040Sc002InitDto initDto, Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo) {
+
+		switch (initDto.getApplId()) {
+		case FunctionIdConstant.R0105:
+			// ◆備品返却希望
+			switch (initDto.getApplStatus()) {
+			case CodeConstant.STATUS_SHINSACHU:
+				// 申請状況が「審査中」
+				// 【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：非表示】→PTN_A
+				// 【PDFダウンロードボタン：非表示】
+				skf2040Sc002ShareService.setButtonVisible("PTN_A", sFalse, initDto);
+				break;
+			case CodeConstant.STATUS_HANSYUTSU_ZUMI:
+				// 申請状況が「搬出済」
+				// 【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：非表示】→PTN_B
+				// 【PDFダウンロードボタン：非表示】
+				skf2040Sc002ShareService.setButtonVisible("PTN_B", sFalse, initDto);
+				break;
+			default:
+				// 申請状況が上記以外
+				// 【全ボタン非表示】→PTN_F
+				skf2040Sc002ShareService.setButtonVisible("PTN_F", sFalse, initDto);
+				break;
+			}
+			break;
+
+		case FunctionIdConstant.R0103:
+			// ◆退居（自動車の保管場所返還）届
 			switch (initDto.getApplStatus()) {
 			case CodeConstant.STATUS_SHINSACHU:
 				// 申請状況が「審査中」
@@ -316,7 +342,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 								initDto.setBtnApproveDisabled(sTrue);
 								// 提示ボタン
 								initDto.setBtnPresentDisabeld(sTrue);
-
 								ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001,
 										"社宅管理システムで提示データを確認", "（備品提示データが作成完了されていません。）");
 								break;
@@ -356,13 +381,11 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			}
 			break;
 		}
-
-		// 表示正常終了
-		return returnValue;
-
 	}
 
 	/**
+	 * 備品返却申請の申請書類番号取得
+	 * 
 	 * @param hdnBihinHenkyakuApplNo
 	 * @return
 	 */

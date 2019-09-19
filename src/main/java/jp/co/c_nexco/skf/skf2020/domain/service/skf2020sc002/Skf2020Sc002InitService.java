@@ -18,6 +18,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
@@ -85,8 +86,7 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		skf2020Sc002SharedService.setControlValue(initDto);
 
 		// 操作ガイドの設定
-		LogUtils.debugByMsg("操作ガイド" + initDto.getPageId());
-		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2020_SC002));
 
 		// コメント設定の有無
 		setCommentBtnDisabled(initDto);

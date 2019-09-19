@@ -120,7 +120,7 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 			/* 申請書類履歴テーブルの更新（退居届） */
 			// 申請書類履歴テーブル」よりステータスを更新
 			boolean resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
-					preDto.getShainNo(), preDto.getApplNo(), shoninName1, shoninName2, preDto.getApplId());
+					preDto.getShainNo(), preDto.getApplNo(), shoninName1, shoninName2, preDto.getApplId(), applTacFlg);
 			if (!resultUpdateApplInfo) {
 				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 				return preDto;

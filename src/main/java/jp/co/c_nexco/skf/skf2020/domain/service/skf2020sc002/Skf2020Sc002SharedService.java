@@ -152,7 +152,7 @@ public class Skf2020Sc002SharedService {
 		if (dto.getApplNo() != null) {
 
 			// 登録済みデータの情報設定
-			setSinseiInfo(dto);
+			setSinseiInfo(dto, true);
 
 		} else {
 			// 無い場合
@@ -172,8 +172,9 @@ public class Skf2020Sc002SharedService {
 	 * 社宅入居希望等調書の申請情報から初期表示項目を設定。
 	 * 
 	 * @param dto
+	 * @param initializeErrorFlg 初期表示エラー判定フラグ true:実行 false:何もしない
 	 */
-	protected void setSinseiInfo(Skf2020Sc002CommonDto dto) {
+	protected void setSinseiInfo(Skf2020Sc002CommonDto dto, boolean initializeErrorFlg) {
 
 		/**
 		 * 社宅入居希望等調査・入居決定通知テーブル情報の取得
@@ -186,9 +187,12 @@ public class Skf2020Sc002SharedService {
 		nyukyoChoshoList = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setValue);
 		LogUtils.debugByMsg("社宅入居希望等調査情報： " + nyukyoChoshoList);
 
-		// データが取得できなかった場合は更新ボタンを使用不可にする
-		if (nyukyoChoshoList == null) {
-			setInitializeError(dto);
+		// 初期表示エラー判定
+		if (initializeErrorFlg) {
+			// データが取得できなかった場合は更新ボタンを使用不可にする
+			if (nyukyoChoshoList == null) {
+				setInitializeError(dto);
+			}
 		}
 
 		if (nyukyoChoshoList != null) {
@@ -1413,7 +1417,8 @@ public class Skf2020Sc002SharedService {
 		String Msg = "クリア処理　：";
 
 		// 前画面が申請内容確認以外の場合はクリア
-		if (!dto.getPrePageId().equals(FunctionIdConstant.SKF2010_SC002)) {
+		if (NfwStringUtils.isNotEmpty(dto.getPrePageId())
+				&& !FunctionIdConstant.SKF2010_SC002.equals(dto.getPrePageId())) {
 
 			// TEL
 			dto.setTel(null);

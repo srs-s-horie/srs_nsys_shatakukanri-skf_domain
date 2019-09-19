@@ -44,7 +44,6 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 	@Autowired
 	private Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 
-	private String sTrue = "true";
 	private String sFalse = "false";
 	Map<String, String> errorMsg = new HashMap<String, String>();
 
@@ -112,7 +111,7 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 
 		// 申請書類履歴テーブル」よりステータスを更新
 		boolean resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
-				appDto.getShainNo(), appDto.getApplNo(), shoninName1, shoninName2, appDto.getApplId());
+				appDto.getShainNo(), appDto.getApplNo(), shoninName1, shoninName2, appDto.getApplId(), applTacFlg);
 		if (!resultUpdateApplInfo) {
 			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
 			return appDto;
@@ -125,6 +124,14 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 				ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
 				return appDto;
 			}
+		}
+
+		// 添付ファイル管理テーブル更新処理
+		boolean resultUpdateFile = skf2040Sc002SharedService.updateAttachedFileInfo(nextStatus, appDto.getApplNo(),
+				appDto.getShainNo(), attachedFileList, applTacFlg, applInfo, errorMsg);
+		if (!resultUpdateFile) {
+			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
+			return appDto;
 		}
 
 		// メール送信処理

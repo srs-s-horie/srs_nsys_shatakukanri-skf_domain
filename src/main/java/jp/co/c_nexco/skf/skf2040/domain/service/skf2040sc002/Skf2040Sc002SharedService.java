@@ -709,7 +709,7 @@ public class Skf2040Sc002SharedService {
 
 			// 申請書類履歴テーブルの更新
 			boolean resultUpdateApplInfo = updateApplHistoryAgreeStatus(newStatus, shainNo, applNo, shonin1, shonin2,
-					applInfo.getApplId());
+					applInfo.getApplId(), applTacFlg);
 			if (!resultUpdateApplInfo) {
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 				return false;
@@ -770,15 +770,17 @@ public class Skf2040Sc002SharedService {
 	/**
 	 * 申請履歴の承認者と申請状況を更新します
 	 * 
+	 * @param newStatus
 	 * @param shainNo
 	 * @param applNo
 	 * @param shonin1
 	 * @param shonin2
-	 * @param applInfo
+	 * @param applId
+	 * @param applTacFlg
 	 * @return
 	 */
 	protected boolean updateApplHistoryAgreeStatus(String newStatus, String shainNo, String applNo, String shonin1,
-			String shonin2, String applId) {
+			String shonin2, String applId, String applTacFlg) {
 
 		Skf2040Sc002UpdateApplHistoryExp record = new Skf2040Sc002UpdateApplHistoryExp();
 		if (NfwStringUtils.isNotEmpty(shonin1)) {
@@ -789,6 +791,7 @@ public class Skf2040Sc002SharedService {
 		}
 		record.setAgreDate(new Date());
 		record.setApplStatus(newStatus);
+		record.setApplTacFlg(applTacFlg);
 
 		// 条件
 		record.setCompanyCd(CodeConstant.C001);
@@ -923,7 +926,7 @@ public class Skf2040Sc002SharedService {
 		case CodeConstant.STATUS_SHINSACHU:
 			// 申請状況が「審査中」
 			nextStatus = CodeConstant.STATUS_KAKUNIN_IRAI;
-			mailKbn = CodeConstant.SHONIN_IRAI_TSUCHI;
+			mailKbn = CodeConstant.TEJI_TSUCHI;
 			break;
 		case CodeConstant.STATUS_DOI_ZUMI:
 			// 申請状況が「同意済」
@@ -951,7 +954,7 @@ public class Skf2040Sc002SharedService {
 			// あれば更新処理
 			// 申請書類履歴テーブルの更新
 			boolean resultUpdateApplInfo = updateApplHistoryAgreeStatus(nextStatus, dto.getShainNo(),
-					dto.getHdnBihinHenkyakuApplNo(), shoninName1, shoninName2, applId);
+					dto.getHdnBihinHenkyakuApplNo(), shoninName1, shoninName2, applId, applTacFlg);
 			if (!resultUpdateApplInfo) {
 				return false;
 			}
@@ -1018,7 +1021,7 @@ public class Skf2040Sc002SharedService {
 		bihinList = skf2040Sc002GetBihinShinseiInfoExpRepository.getBihinShinseiInfo(param);
 
 		boolean insertFlg = false;
-		if (bihinList == null && bihinList.size() < 0) {
+		if (bihinList == null) {
 			// 備品申請テーブルのデータが存在しない場合は新規追加
 			insertFlg = true;
 		}
