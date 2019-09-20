@@ -73,7 +73,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		String prePageId = beforeForm.getPrePageId();
 		initDto.setPrePageId(prePageId);
 		// 申請状況の設定
-		initDto.setApplStatusText(changeApplStatusText(initDto.getStatus()));
+		initDto.setApplStatusText(changeApplStatusText(initDto.getApplStatus()));
 
 		// アコーディオン初期表示指定
 		Map<String, Object> displayLevelMap = new HashMap<String, Object>();
@@ -94,7 +94,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		setCommentBtnRemove(initDto);
 
 		// ボタン非表示設定
-		setBtnRemove(initDto);
+		// setBtnRemove(initDto);
 
 		return initDto;
 	}
@@ -113,10 +113,12 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setPresenBtnViewFlg(sFalse);
 		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2040_SC001)) {
 			// 退居届申請画面から遷移
+			initDto.setApplyBtnViewFlg(sTrue);
 			initDto.setPresenBtnViewFlg(sFalse);
-		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2020_SC003)) {
+		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2010_SC005)) {
 			// 入居希望申請アウトソース画面から遷移
 			initDto.setApplyBtnViewFlg(sFalse);
+			initDto.setPresenBtnViewFlg(sTrue);
 		}
 
 	}
@@ -130,7 +132,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
 
-		String applStatus = "";
 		// 権限チェック
 		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
 		if (roleIds == null) {
@@ -150,11 +151,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 				break;
 			}
 		}
-
-		// // 一般ユーザーの場合、申請状況に「承認１」をセット
-		// if (!isAdmin) {
-		// applStatus = CodeConstant.STATUS_SHONIN1;
-		// }
 
 		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), null);
 		if (commentList == null || commentList.size() <= 0) {
@@ -187,7 +183,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		switch (prePageId) {
 		case FunctionIdConstant.SKF2020_SC002:
-		case FunctionIdConstant.SKF2020_SC003:
+		case FunctionIdConstant.SKF2010_SC005:
 			// 入居希望申請情報の取得
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
 			tNyukyoChoshoTsuchi = skf2010Sc002SharedService.getNyukyoChoshoTsuchiInfo(CodeConstant.C001, applNo);
@@ -270,8 +266,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
 			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_1); // 申請者から承認者へ
 			break;
-		case FunctionIdConstant.SKF2020_SC003:
-			// 社宅入居希望等調書（アウトソース用）
+		case FunctionIdConstant.SKF2010_SC005:
+			// 承認一覧→社宅入居希望等調書（アウトソース用）
 			result.put("level1", sTrue); // 入居希望等調書
 			result.put("level2", sTrue); // 貸与社宅などのご案内
 			result.put("level3", sFalse);// 退居届

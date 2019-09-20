@@ -644,7 +644,7 @@ public class Skf2020Sc002SharedService {
 
 		}
 		// 申請書ステータス
-		dto.setStatus(CodeConstant.STATUS_MISAKUSEI);
+		dto.setApplStatus(CodeConstant.STATUS_MISAKUSEI);
 	}
 
 	/**
@@ -1745,7 +1745,7 @@ public class Skf2020Sc002SharedService {
 		// 申請日をdtoに設定
 		dto.setApplDate(dto.getApplHistroyApplDate());
 		// ステータスを更新
-		dto.setStatus(applInfo.get("newStatus"));
+		dto.setApplStatus(applInfo.get("newStatus"));
 		// 申請書番号を設定
 		dto.setApplNo(newApplNo);
 
@@ -2470,7 +2470,7 @@ public class Skf2020Sc002SharedService {
 		LogUtils.debugByMsg("申請書類履歴テーブル登録件数：" + registCount + "件");
 
 		// ステータスを設定
-		dto.setStatus(applInfo.get("newStatus"));
+		dto.setApplStatus(applInfo.get("newStatus"));
 	}
 
 	/**
