@@ -34,10 +34,6 @@ public class Skf3010Sc001SharedService {
 	@Value("${skf3010.skf3010_sc001.max_search_count}")
 	private Integer maxGetRecordCount;
 
-	// 経年対象月日
-	@Value("${skf.common.settings.keinen_taishou_tsukihi}")
-	private String xmlKeinenTaishouTsukihi;
-
 	@Autowired
 	private SkfDropDownUtils ddlUtils;
 	@Autowired
@@ -289,8 +285,7 @@ public class Skf3010Sc001SharedService {
 				buildDate = tmpData.getBuildDate();
 			}
 			// 経年取得
-			keinen = skfBaseBusinessLogicUtils.getAging(buildDate, areaKbn, tmpData.getStructureKbn(),
-					xmlKeinenTaishouTsukihi);
+			keinen = skfBaseBusinessLogicUtils.getAging(buildDate, areaKbn, tmpData.getStructureKbn());
 			tmpMap.put("aging", Long.toString(keinen) + AGING_YEAR);
 
 			// 空きbr部屋数
