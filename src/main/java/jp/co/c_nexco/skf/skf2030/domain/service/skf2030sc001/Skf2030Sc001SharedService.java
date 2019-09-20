@@ -6,14 +6,10 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinShinseiInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinShinseiInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinTeijiStatusCountExp;
@@ -26,17 +22,16 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetSKSDairininInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinseiKey;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinShinseiInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinTeijiStatusCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetNYDStatusCountExpRepository;
@@ -49,13 +44,14 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinse
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
@@ -83,11 +79,7 @@ public class Skf2030Sc001SharedService {
 	public static final String BIHIN_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_UpdateDate";
 
 	@Autowired
-	private Skf2030Sc001GetApplHistoryInfoExpRepository skf2030Sc001GetApplHistoryInfoExpRepository;
-	@Autowired
 	private Skf2030Sc001GetSKSDairininInfoExpRepository skf2030Sc001GetSKSDairininInfoExpRepository;
-	@Autowired
-	private Skf2030Sc001GetBihinInfoExpRepository skf2030Sc001GetBihinInfoExpRepository;
 	@Autowired
 	private Skf2030Sc001GetNyukyobiInfoExpRepository skf2030Sc001GetNyukyobiInfoExpRepository;
 	@Autowired
@@ -126,6 +118,10 @@ public class Skf2030Sc001SharedService {
 	private SkfHtmlCreateUtils skfHtmlCreateUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
+	@Autowired
+	private SkfBihinInfoUtils skfBihinInfoUtils;
 
 	/**
 	 * セッション情報を保持します
@@ -153,14 +149,14 @@ public class Skf2030Sc001SharedService {
 			initDto.setApplStatusText(applStatusMap.get(applInfo.get("status")));
 
 			// 申請書類履歴取得
-			List<Skf2030Sc001GetApplHistoryInfoExp> applHistoryInfoList = new ArrayList<Skf2030Sc001GetApplHistoryInfoExp>();
-			applHistoryInfoList = getApplHistoryInfo(companyCd, applNo);
+			List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> applHistoryInfoList = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
+			applHistoryInfoList = skfApplHistoryInfoUtils.getApplHistoryInfo(companyCd, applNo);
 
 			if (applHistoryInfoList == null || applHistoryInfoList.size() <= 0) {
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, NO_DATA_MESSAGE);
 				return false;
 			}
-			Skf2030Sc001GetApplHistoryInfoExp applHistoryInfo = applHistoryInfoList.get(0);
+			SkfApplHistoryInfoUtilsGetApplHistoryInfoExp applHistoryInfo = applHistoryInfoList.get(0);
 			// 申請書類履歴情報を画面の隠し項目に設定
 			initDto.setHdnShainNo(applHistoryInfo.getShainNo());
 			// 排他処理用申請履歴最終更新日保持
@@ -168,7 +164,7 @@ public class Skf2030Sc001SharedService {
 
 			// 備品希望申請情報を取得
 			Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
-			bihinShinseiInfo = getBihinShinseiInfo(companyCd, applNo);
+			bihinShinseiInfo = skfBihinInfoUtils.getBihinShinseiInfo(companyCd, applNo);
 			if (bihinShinseiInfo == null) {
 				setInitializeError(initDto);
 				return false;
@@ -290,8 +286,8 @@ public class Skf2030Sc001SharedService {
 			}
 
 			// 備品申請情報を取得する
-			List<Skf2030Sc001GetBihinInfoExp> bihinInfoList = new ArrayList<Skf2030Sc001GetBihinInfoExp>();
-			bihinInfoList = getBihinInfo(companyCd, applNo);
+			List<SkfBihinInfoUtilsGetBihinInfoExp> bihinInfoList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();
+			bihinInfoList = skfBihinInfoUtils.getBihinInfo(companyCd, applNo);
 
 			Long count = CodeConstant.LONG_ZERO;
 
@@ -302,7 +298,7 @@ public class Skf2030Sc001SharedService {
 
 				int keyIndex = 11;
 				// 備品申請情報をレイアウトに合うように整形
-				for (Skf2030Sc001GetBihinInfoExp bihinInfo : bihinInfoList) {
+				for (SkfBihinInfoUtilsGetBihinInfoExp bihinInfo : bihinInfoList) {
 					setBihinData(initDto, bihinInfo);
 					// 調整区分が「2：保有備品搬入」か「3：レンタル搬入」の場合はカウントを１進める
 					if (CodeConstant.BIHIN_ADJUST_HOYU.equals(bihinInfo.getBihinAdjust())
@@ -423,8 +419,14 @@ public class Skf2030Sc001SharedService {
 			break;
 		}
 
-		if (!updateApplHistoryAgreeStatus(applInfo.get("applNo"), applInfo.get("applId"), applInfo.get("applStatus"),
-				updateStatus, applInfo.get("shainNo"))) {
+		/*
+		 * if (!updateApplHistoryAgreeStatus(applInfo.get("applNo"),
+		 * applInfo.get("applId"), applInfo.get("applStatus"), updateStatus,
+		 * applInfo.get("shainNo"))) { return false; }
+		 */
+
+		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("shainNo"),
+				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, null, null, null, errorMsg)) {
 			return false;
 		}
 
@@ -439,8 +441,13 @@ public class Skf2030Sc001SharedService {
 		}
 
 		// 備品希望申請テーブルを更新
-		if (!updateBihinKiboShinseiInfo(applInfo, updateTel, updateRenrakuSakiTel, updateSessionDay, updateTime,
-				updateCompleteDate)) {
+		/*
+		 * if (!updateBihinKiboShinseiInfo(applInfo, updateTel,
+		 * updateRenrakuSakiTel, updateSessionDay, updateTime,
+		 * updateCompleteDate)) { return false; }
+		 */
+		if (!skfBihinInfoUtils.updateBihinKiboShinseiInfo(applInfo, companyCd, updateTel, updateRenrakuSakiTel,
+				updateSessionDay, updateTime, updateCompleteDate, null, null)) {
 			return false;
 		}
 
@@ -536,75 +543,6 @@ public class Skf2030Sc001SharedService {
 		return false;
 	}
 
-	private boolean updateBihinKiboShinseiInfo(Map<String, String> applInfo, String updateTel,
-			String updateRenrakuSakiTel, String updateSessionDay, String updateTime, String updateCompleteDate) {
-		Skf2030TBihinKiboShinsei record = new Skf2030TBihinKiboShinsei();
-		// プライマリキー設定
-		record.setCompanyCd(companyCd);
-		record.setApplNo(applInfo.get("applNo"));
-		// 更新項目設定
-		// 勤務先のTEL
-		if (NfwStringUtils.isNotEmpty(updateTel)) {
-			record.setTel(updateTel);
-		}
-		// 連絡先
-		if (NfwStringUtils.isNotEmpty(updateRenrakuSakiTel)) {
-			record.setRenrakuSaki(updateRenrakuSakiTel);
-		}
-		// 搬入希望日
-		if (NfwStringUtils.isNotEmpty(updateSessionDay)) {
-			record.setSessionDay(updateSessionDay);
-		}
-		// 搬入希望時刻
-		if (NfwStringUtils.isNotEmpty(updateTime)) {
-			record.setSessionTime(updateTime);
-		}
-		// 搬入完了日
-		if (NfwStringUtils.isNotEmpty(updateCompleteDate)) {
-			record.setCompletionDay(updateCompleteDate);
-		}
-
-		boolean result = updateBihinKiboShinsei(record);
-
-		return result;
-	}
-
-	/**
-	 * 申請履歴の承認者と申請状況を更新します
-	 * 
-	 * @param applNo
-	 * @param applId
-	 * @param applStatus
-	 * @param newApplStatus
-	 * @param shainNo
-	 * @return
-	 */
-	private boolean updateApplHistoryAgreeStatus(String applNo, String applId, String applStatus, String newApplStatus,
-			String shainNo) {
-		// 更新用データ取得（行ロック）
-		Skf2030Sc001GetApplHistoryInfoForUpdateExp tmpData = new Skf2030Sc001GetApplHistoryInfoForUpdateExp();
-		tmpData = getApplHistoryInfoForUpdate(applNo, applId, applStatus, shainNo);
-		if (tmpData == null) {
-			return false;
-		}
-
-		Skf2010TApplHistory record = new Skf2010TApplHistory();
-		record.setApplStatus(newApplStatus);
-
-		// 条件
-		record.setCompanyCd(companyCd);
-		record.setApplNo(applNo);
-		record.setShainNo(shainNo);
-		record.setApplDate(tmpData.getApplDate());
-		record.setApplId(applId);
-
-		boolean result = updateApplHistory(record);
-		if (!result) {
-			return false;
-		}
-		return true;
-	}
-
 	private void setInitializeError(Skf2030Sc001CommonDto initDto) {
 		// 更新処理を行わせないようボタンを使用不可に
 		initDto.setMaskPattern("ERR");
@@ -617,7 +555,7 @@ public class Skf2030Sc001SharedService {
 	 * @param dto
 	 * @param bihinInfo
 	 */
-	private void setBihinData(Skf2030Sc001CommonDto dto, Skf2030Sc001GetBihinInfoExp bihinInfo) {
+	private void setBihinData(Skf2030Sc001CommonDto dto, SkfBihinInfoUtilsGetBihinInfoExp bihinInfo) {
 		String bihinCd = bihinInfo.getBihinCd();
 		String bihinWish = bihinInfo.getBihinHope();
 		String bihinAppl = bihinInfo.getBihinAppl();
@@ -707,40 +645,6 @@ public class Skf2030Sc001SharedService {
 	}
 
 	/**
-	 * 申請履歴情報を取得します
-	 * 
-	 * @param companyCd
-	 * @param applNo
-	 * @return
-	 */
-	public List<Skf2030Sc001GetApplHistoryInfoExp> getApplHistoryInfo(String companyCd, String applNo) {
-		// 申請履歴情報を取得する
-		List<Skf2030Sc001GetApplHistoryInfoExp> applHistoryInfoList = new ArrayList<Skf2030Sc001GetApplHistoryInfoExp>();
-		Skf2030Sc001GetApplHistoryInfoExpParameter param = new Skf2030Sc001GetApplHistoryInfoExpParameter();
-		param.setApplNo(applNo);
-		param.setCompanyCd(companyCd);
-		applHistoryInfoList = skf2030Sc001GetApplHistoryInfoExpRepository.getApplHistoryInfo(param);
-		return applHistoryInfoList;
-	}
-
-	/**
-	 * 備品希望申請のデータを取得します
-	 * 
-	 * @param companyCd
-	 * @param applNo
-	 * @return
-	 */
-	public Skf2030TBihinKiboShinsei getBihinShinseiInfo(String companyCd, String applNo) {
-		// 備品希望申請情報を取得する
-		Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
-		Skf2030TBihinKiboShinseiKey key = new Skf2030TBihinKiboShinseiKey();
-		key.setCompanyCd(companyCd);
-		key.setApplNo(applNo);
-		bihinShinseiInfo = skf2030TBihinKiboShinseiRepository.selectByPrimaryKey(key);
-		return bihinShinseiInfo;
-	}
-
-	/**
 	 * 代理人情報を取得します
 	 * 
 	 * @param shainNo
@@ -755,24 +659,6 @@ public class Skf2030Sc001SharedService {
 		dairininInfoList = skf2030Sc001GetSKSDairininInfoExpRepository.getSKSDairininInfo(param);
 
 		return dairininInfoList;
-	}
-
-	/**
-	 * 備品申請情報を取得します
-	 * 
-	 * @param companyCd
-	 * @param applNo
-	 * @return
-	 */
-	public List<Skf2030Sc001GetBihinInfoExp> getBihinInfo(String companyCd, String applNo) {
-		// 備品申請情報取得
-		List<Skf2030Sc001GetBihinInfoExp> bihinInfoList = new ArrayList<Skf2030Sc001GetBihinInfoExp>();
-		Skf2030Sc001GetBihinInfoExpParameter param = new Skf2030Sc001GetBihinInfoExpParameter();
-		param.setCompanyCd(companyCd);
-		param.setApplNo(applNo);
-		bihinInfoList = skf2030Sc001GetBihinInfoExpRepository.getBihinInfo(param);
-
-		return bihinInfoList;
 	}
 
 	/**

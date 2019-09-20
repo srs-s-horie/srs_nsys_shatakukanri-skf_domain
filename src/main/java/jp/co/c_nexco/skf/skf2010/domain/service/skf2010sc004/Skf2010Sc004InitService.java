@@ -140,6 +140,13 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		return applStatusText;
 	}
 
+	/**
+	 * 画面表示設定
+	 * 
+	 * @param applId
+	 * @param applStatus
+	 * @param dto
+	 */
 	private void checkDisplayLevel(String applId, String applStatus, Skf2010Sc004InitDto dto) {
 		/**
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
@@ -148,37 +155,47 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
 			// 社宅入居希望等申請
-			if (applStatus.equals(CodeConstant.STATUS_SHINSEICHU)
-					|| applStatus.equals(CodeConstant.STATUS_KAKUNIN_IRAI)) {
-				// 申請中、または確認依頼の時
-				if (applStatus.equals(CodeConstant.STATUS_SHINSEICHU)) {
-					// 申請中
-					dto.setMaskPattern("PTN_A");
-					dto.setLevel1Open("true");
-				} else {
-					// 確認依頼
-					dto.setMaskPattern("PTN_B");
-					displayLevel = 2;
-					dto.setLevel2Open("true");
-					// 取下げボタン非表示
-				}
-			} else {
-				// それ以外
+			switch (applStatus) {
+			case CodeConstant.STATUS_SHINSEICHU:
+			case CodeConstant.STATUS_SHINSACHU:
+				/**
+				 * 申請中、審査中： 社宅入居希望等調書のみ表示
+				 */
+				dto.setMaskPattern("PTN_A");
+				dto.setLevel1Open("true");
+				break;
+			case CodeConstant.STATUS_KAKUNIN_IRAI:
+				/**
+				 * 確認依頼： 案内＋誓約書追加
+				 */
+				dto.setMaskPattern("PTN_B");
+				displayLevel = 2;
+				dto.setLevel2Open("true");
+				break;
+			default:
+				/**
+				 * それ以外（同意済み以降）： 入居決定通知書追加
+				 */
 				dto.setMaskPattern("PTN_C");
 				displayLevel = 3;
 				dto.setLevel3Open("true");
+				break;
 			}
 		} else if (applId.equals(FunctionIdConstant.R0103)) {
 			// 退居（自動車の保管場所変換）届
 			displayLevel = 4;
 			dto.setLevel4Open("true");
-			if (applStatus.equals(CodeConstant.STATUS_SHINSEICHU)) {
-				// 申請中
+			switch (applStatus) {
+			case CodeConstant.STATUS_SHINSEICHU:
+				// 申請中、審査中
 				dto.setMaskPattern("PTN_A");
-			} else if (applStatus.equals(CodeConstant.STATUS_SHONIN_ZUMI)) {
+				break;
+			case CodeConstant.STATUS_SHONIN_ZUMI:
 				// 承認済み
 				dto.setMaskPattern("PTN_C");
+				break;
 			}
+
 		}
 
 		dto.setDisplayLevel(displayLevel);

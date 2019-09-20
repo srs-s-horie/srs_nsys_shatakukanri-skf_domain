@@ -596,7 +596,7 @@ public class Skf2030Sc002SharedService {
 		Map<String, String> errorMsg = new HashMap<String, String>();
 		SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp updApplInfo = new SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp();
 		updApplInfo = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(companyCd, applInfo.get("shainNo"),
-				applInfo.get("applNo"), errorMsg);
+				applInfo.get("applNo"), applInfo.get("applId"));
 		if (updApplInfo == null) {
 			return false;
 		}
@@ -611,8 +611,9 @@ public class Skf2030Sc002SharedService {
 		if (NfwStringUtils.isNotEmpty(shoninName2) && NfwStringUtils.isNotEmpty(updApplInfo.getAgreName1())) {
 			shoninName1 = updApplInfo.getAgreName1();
 		}
-		result = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("applNo"), null, null,
-				updateStatus, agreDate, shoninName1, shoninName2, errorMsg);
+		result = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("applShainNo"),
+				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, agreDate, shoninName1,
+				shoninName2, errorMsg);
 		if (!result) {
 			// エラーメッセージ（メッセージID：S02000）を設定
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
