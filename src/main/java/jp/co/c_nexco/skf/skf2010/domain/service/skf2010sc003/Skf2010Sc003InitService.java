@@ -14,6 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetA
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
@@ -76,7 +77,8 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 
 	private void setStatusList(Skf2010Sc003InitDto initDto) {
 		// ログインユーザー情報から社員番号取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo").toString();
 
 		String applDateFrom = initDto.getApplDateFrom();
@@ -105,8 +107,10 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 
 		Date applDateFrom = cal.getTime();
 
-		initDto.setApplDateFrom(skfDateFormatUtils.dateFormatFromDate(applDateFrom, "yyyy/MM/dd"));
-		initDto.setApplDateTo(skfDateFormatUtils.dateFormatFromDate(applDateTo, "yyyy/MM/dd"));
+		initDto.setApplDateFrom(
+				skfDateFormatUtils.dateFormatFromDate(applDateFrom, SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+		initDto.setApplDateTo(
+				skfDateFormatUtils.dateFormatFromDate(applDateTo, SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 	}
 
 	/**
