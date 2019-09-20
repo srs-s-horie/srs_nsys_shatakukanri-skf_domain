@@ -152,7 +152,7 @@ public class Skf2020Sc002SharedService {
 		if (dto.getApplNo() != null) {
 
 			// 登録済みデータの情報設定
-			setSinseiInfo(dto);
+			setSinseiInfo(dto, true);
 
 		} else {
 			// 無い場合
@@ -172,8 +172,9 @@ public class Skf2020Sc002SharedService {
 	 * 社宅入居希望等調書の申請情報から初期表示項目を設定。
 	 * 
 	 * @param dto
+	 * @param initializeErrorFlg 初期表示エラー判定フラグ true:実行 false:何もしない
 	 */
-	protected void setSinseiInfo(Skf2020Sc002CommonDto dto) {
+	protected void setSinseiInfo(Skf2020Sc002CommonDto dto, boolean initializeErrorFlg) {
 
 		/**
 		 * 社宅入居希望等調査・入居決定通知テーブル情報の取得
@@ -186,9 +187,12 @@ public class Skf2020Sc002SharedService {
 		nyukyoChoshoList = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setValue);
 		LogUtils.debugByMsg("社宅入居希望等調査情報： " + nyukyoChoshoList);
 
-		// データが取得できなかった場合は更新ボタンを使用不可にする
-		if (nyukyoChoshoList == null) {
-			setInitializeError(dto);
+		// 初期表示エラー判定
+		if (initializeErrorFlg) {
+			// データが取得できなかった場合は更新ボタンを使用不可にする
+			if (nyukyoChoshoList == null) {
+				setInitializeError(dto);
+			}
 		}
 
 		if (nyukyoChoshoList != null) {
@@ -593,29 +597,51 @@ public class Skf2020Sc002SharedService {
 	private void setShainList(Skf2020Sc002CommonDto dto) {
 
 		// 機関
-		dto.setAgencyName(dto.getShainList().get(0).get("agencyName"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("agencyName"))) {
+			dto.setAgencyName(dto.getShainList().get(0).get("agencyName"));
+		}
 		// 部等
-		dto.setAffiliation1Name(dto.getShainList().get(0).get("affiliation1Name"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("affiliation1Name"))) {
+			dto.setAffiliation1Name(dto.getShainList().get(0).get("affiliation1Name"));
+		}
 		// 室、チームまたは課
-		dto.setAffiliation2Name(dto.getShainList().get(0).get("affiliation2Name"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("affiliation2Name"))) {
+			dto.setAffiliation2Name(dto.getShainList().get(0).get("affiliation2Name"));
+		}
 		// 勤務先のTEL
-		dto.setTel(dto.getShainList().get(0).get("tel"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("tel"))) {
+			dto.setTel(dto.getShainList().get(0).get("tel"));
+		}
 
 		// 社員番号
-		dto.setShainNo(dto.getShainList().get(0).get("shainNo"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("shainNo"))) {
+			dto.setShainNo(dto.getShainList().get(0).get("shainNo"));
+		}
 		// 社員名
-		dto.setName(dto.getShainList().get(0).get("name"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("name"))) {
+			dto.setName(dto.getShainList().get(0).get("name"));
+		}
 		// 等級
-		dto.setTokyuName(dto.getShainList().get(0).get("tokyuName"));
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("tokyuName"))) {
+			dto.setTokyuName(dto.getShainList().get(0).get("tokyuName"));
+		}
 		// 性別
-		dto.setGender(dto.getShainList().get(0).get("gender"));
-		switch (dto.getGender()) {
+		String gender = CodeConstant.DOUBLE_QUOTATION;
+		if (NfwStringUtils.isNotEmpty(dto.getShainList().get(0).get("gender"))) {
+			gender = dto.getShainList().get(0).get("gender");
+			dto.setGender(dto.getShainList().get(0).get("gender"));
+		}
+
+		switch (gender) {
 		case CodeConstant.MALE:
 			dto.setGenderName(CodeConstant.OUTPUT_MALE);
 			break;
 		case CodeConstant.FEMALE:
 			dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
 			break;
+		default:
+			break;
+
 		}
 		// 申請書ステータス
 		dto.setStatus(CodeConstant.STATUS_MISAKUSEI);
@@ -1391,7 +1417,8 @@ public class Skf2020Sc002SharedService {
 		String Msg = "クリア処理　：";
 
 		// 前画面が申請内容確認以外の場合はクリア
-		if (!dto.getPrePageId().equals(FunctionIdConstant.SKF2010_SC002)) {
+		if (NfwStringUtils.isNotEmpty(dto.getPrePageId())
+				&& !FunctionIdConstant.SKF2010_SC002.equals(dto.getPrePageId())) {
 
 			// TEL
 			dto.setTel(null);

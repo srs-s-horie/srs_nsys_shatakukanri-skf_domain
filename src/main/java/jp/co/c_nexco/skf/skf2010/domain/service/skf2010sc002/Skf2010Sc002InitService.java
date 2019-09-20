@@ -25,8 +25,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -69,21 +67,13 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
-		// セッション情報の取得(申請書情報)
-		List<Map<String, String>> resultApplList = null;
-		resultApplList = (List<Map<String, String>>) menuScopeSessionBean
-				.get(SessionCacheKeyConstant.APPL_INFO_SESSION_KEY);
-		initDto.setApplNo(resultApplList.get(0).get(SkfCommonConstant.KEY_APPL_NO));
-		initDto.setApplStatus(resultApplList.get(0).get(SkfCommonConstant.KEY_STATUS));
-
 		// 前画面IDの取得
 		String pageId = initDto.getPageId();
 		BaseForm beforeForm = FormHelper.getFormBean(pageId, CommonConstant.C_PAGEMODE_STANDARD);
 		String prePageId = beforeForm.getPrePageId();
 		initDto.setPrePageId(prePageId);
 		// 申請状況の設定
-		String applStatus = initDto.getApplStatus();
-		initDto.setApplStatusText(changeApplStatusText(applStatus));
+		initDto.setApplStatusText(changeApplStatusText(initDto.getStatus()));
 
 		// アコーディオン初期表示指定
 		Map<String, Object> displayLevelMap = new HashMap<String, Object>();
