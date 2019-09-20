@@ -1,6 +1,5 @@
 package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,9 +77,6 @@ public class Skf2030Sc001SharedService {
 	private MenuScopeSessionBean menuScopeSessionBean;
 
 	private final String NO_DATA_MESSAGE = "初期表示中に";
-	private final String MSG_MISHONIN = "承認されていない申請書類が存在し";
-	private final String MSG_KAKUNIN = "「申請書類を確認する」から確認";
-
 	// 排他処理用最終更新日付
 	public static final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
 	public static final String BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_kibo_shinsei_UpdateDate";
@@ -172,7 +168,7 @@ public class Skf2030Sc001SharedService {
 
 			// 備品希望申請情報を取得
 			Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
-			getBihinShinseiInfo(companyCd, applNo, bihinShinseiInfo);
+			bihinShinseiInfo = getBihinShinseiInfo(companyCd, applNo);
 			if (bihinShinseiInfo == null) {
 				setInitializeError(initDto);
 				return false;
@@ -727,19 +723,13 @@ public class Skf2030Sc001SharedService {
 		return applHistoryInfoList;
 	}
 
-	public void getBihinShinseiInfo(String companyCd, String applNo, Skf2030TBihinKiboShinsei bihinShinseiInfo2)
-			throws Exception {
-		// 備品希望申請情報を取得する
-		Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
-		Skf2030TBihinKiboShinseiKey key = new Skf2030TBihinKiboShinseiKey();
-		key.setCompanyCd(companyCd);
-		key.setApplNo(applNo);
-		bihinShinseiInfo = skf2030TBihinKiboShinseiRepository.selectByPrimaryKey(key);
-
-		CopyUtils.copyProperties(bihinShinseiInfo2, bihinShinseiInfo);
-		return;
-	}
-
+	/**
+	 * 備品希望申請のデータを取得します
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @return
+	 */
 	public Skf2030TBihinKiboShinsei getBihinShinseiInfo(String companyCd, String applNo) {
 		// 備品希望申請情報を取得する
 		Skf2030TBihinKiboShinsei bihinShinseiInfo = new Skf2030TBihinKiboShinsei();
@@ -750,6 +740,13 @@ public class Skf2030Sc001SharedService {
 		return bihinShinseiInfo;
 	}
 
+	/**
+	 * 代理人情報を取得します
+	 * 
+	 * @param shainNo
+	 * @param sysNyutaikyoKbn
+	 * @return
+	 */
 	public List<Skf2030Sc001GetSKSDairininInfoExp> getSKSDairininInfo(String shainNo, String sysNyutaikyoKbn) {
 		List<Skf2030Sc001GetSKSDairininInfoExp> dairininInfoList = new ArrayList<Skf2030Sc001GetSKSDairininInfoExp>();
 		Skf2030Sc001GetSKSDairininInfoExpParameter param = new Skf2030Sc001GetSKSDairininInfoExpParameter();
@@ -760,6 +757,13 @@ public class Skf2030Sc001SharedService {
 		return dairininInfoList;
 	}
 
+	/**
+	 * 備品申請情報を取得します
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @return
+	 */
 	public List<Skf2030Sc001GetBihinInfoExp> getBihinInfo(String companyCd, String applNo) {
 		// 備品申請情報取得
 		List<Skf2030Sc001GetBihinInfoExp> bihinInfoList = new ArrayList<Skf2030Sc001GetBihinInfoExp>();
@@ -771,6 +775,13 @@ public class Skf2030Sc001SharedService {
 		return bihinInfoList;
 	}
 
+	/**
+	 * 入居日を取得します
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @return
+	 */
 	public List<Skf2030Sc001GetNyukyobiInfoExp> getNyukyobiInfo(String companyCd, String applNo) {
 		List<Skf2030Sc001GetNyukyobiInfoExp> nyukyobiInfo = new ArrayList<Skf2030Sc001GetNyukyobiInfoExp>();
 		Skf2030Sc001GetNyukyobiInfoExpParameter param = new Skf2030Sc001GetNyukyobiInfoExpParameter();
@@ -780,6 +791,13 @@ public class Skf2030Sc001SharedService {
 		return nyukyobiInfo;
 	}
 
+	/**
+	 * 申請一覧を取得します
+	 * 
+	 * @param companyCd
+	 * @param applId
+	 * @return
+	 */
 	public Skf2010MApplication getApplMaster(String companyCd, String applId) {
 		Skf2010MApplication applMaster = new Skf2010MApplication();
 		Skf2010MApplicationKey key = new Skf2010MApplicationKey();

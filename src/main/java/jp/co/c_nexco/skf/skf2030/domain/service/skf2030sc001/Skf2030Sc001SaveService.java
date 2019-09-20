@@ -220,9 +220,4 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		return true;
 	}
 
-	private boolean skf2030Sc001DeleteBihinInfo(String applNo) {
-		// TODO 自動生成されたメソッド・スタブ
-		return false;
-	}
-
 }

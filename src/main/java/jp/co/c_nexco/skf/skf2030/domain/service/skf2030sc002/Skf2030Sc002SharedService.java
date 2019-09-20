@@ -1,6 +1,5 @@
 package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc002;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,10 +38,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
-import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030Sc001common.Skf2030Sc001CommonDto;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030Sc002common.Skf2030Sc002CommonDto;
-import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002RevisionDto;
-import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002SendbackDto;
 
 /**
  * Skf2030Sc002 備品希望申請（アウトソース用)共通処理クラス
