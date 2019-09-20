@@ -14,7 +14,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetB
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
@@ -199,26 +198,18 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				return returnValue;
 			}
 
-			// 社宅情報を取得
-			Skf2040Sc002GetShatakuInfoExp shatakuInfo = new Skf2040Sc002GetShatakuInfoExp();
-			shatakuInfo = skf2040Sc002ShareService.getShatakuInfo(taikyoRepDt.getShatakuNo(), taikyoRepDt.getShainNo());
-			// 取得できなかった場合は戻り値をfalse
-			if (shatakuInfo == null) {
-				returnValue = false;
-				return returnValue;
-			}
 			// レポート表示
 			initDto.setTaikyoViewFlg(sTrue);
 			// アコーディオン初期表示
 			initDto.setLevelOpen(sTrue);
 			// 帳票情報の設定
-			skf2040Sc002ShareService.setReportInfo(initDto, taikyoRepDt, shatakuInfo);
+			skf2040Sc002ShareService.setReportInfo(initDto, taikyoRepDt);
 
 			// 添付資料欄表示
 			initDto.setTenpViewFlg(sTrue);
 
-			// 返却情報欄の非表示
-			initDto.setHenkyakuInfoViewFlg(sFalse);
+			// 返却情報欄の表示
+			initDto.setHenkyakuInfoViewFlg(sTrue);
 			// 返却備品があるかどうか
 			initDto.setHenkyakuBihinNothing(sFalse);
 
@@ -311,9 +302,9 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 
 				if (sTrue.equals(initDto.getHenkyakuBihinNothing())) {
 					// 備品返却なし
-					// 【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：表示】【添付資料ボタン：表示】→PTN_D
+					// 【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_E
 					// 【PDFダウンロードボタン：表示】
-					skf2040Sc002ShareService.setButtonVisible("PTN_D", sTrue, initDto);
+					skf2040Sc002ShareService.setButtonVisible("PTN_E", sTrue, initDto);
 
 				} else {
 					// 備品返却あり

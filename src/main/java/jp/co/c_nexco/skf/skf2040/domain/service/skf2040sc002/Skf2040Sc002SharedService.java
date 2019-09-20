@@ -19,8 +19,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetB
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinShinseiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryExp;
@@ -394,36 +392,39 @@ public class Skf2040Sc002SharedService {
 		dto.setTaikyoPdfViewFlg(pdfDwnBtn);// pdfダウンロードボタン
 	}
 
-	/**
-	 * 社宅情報の取得
-	 * 
-	 * @param shatakuKanriNo
-	 * @param shainNo
-	 * @return
-	 */
-	protected Skf2040Sc002GetShatakuInfoExp getShatakuInfo(Long shatakuKanriNo, String shainNo) {
-		Skf2040Sc002GetShatakuInfoExp shatakuInfo = new Skf2040Sc002GetShatakuInfoExp();
-		Skf2040Sc002GetShatakuInfoExpParameter param = new Skf2040Sc002GetShatakuInfoExpParameter();
-
-		Date nowDate = new Date();
-		String yearMonth = skfDateFormatUtils.dateFormatFromDate(nowDate, "yyyyMM");
-		param.setYearMonth(yearMonth);
-		param.setShatakuKanriNo(shatakuKanriNo);
-		param.setShainNo(shainNo);
-
-		shatakuInfo = skf2040Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
-		return shatakuInfo;
-	}
+	// /**
+	// * 社宅情報の取得
+	// *
+	// * @param shatakuKanriNo
+	// * @param shainNo
+	// * @return
+	// */
+	// protected Skf2040Sc002GetShatakuInfoExp getShatakuInfo(Long
+	// shatakuKanriNo, String shainNo) {
+	// Skf2040Sc002GetShatakuInfoExp shatakuInfo = new
+	// Skf2040Sc002GetShatakuInfoExp();
+	// Skf2040Sc002GetShatakuInfoExpParameter param = new
+	// Skf2040Sc002GetShatakuInfoExpParameter();
+	//
+	// Date nowDate = new Date();
+	// String yearMonth = skfDateFormatUtils.dateFormatFromDate(nowDate,
+	// "yyyyMM");
+	// param.setYearMonth(yearMonth);
+	// param.setShatakuKanriNo(shatakuKanriNo);
+	// param.setShainNo(shainNo);
+	//
+	// shatakuInfo =
+	// skf2040Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
+	// return shatakuInfo;
+	// }
 
 	/**
 	 * 退居届帳票イメージの情報設定
 	 * 
 	 * @param initDto
 	 * @param taikyoRepDt
-	 * @param shatakuInfo
 	 */
-	protected void setReportInfo(Skf2040Sc002CommonDto dto, Skf2040TTaikyoReport taikyoRepDt,
-			Skf2040Sc002GetShatakuInfoExp shatakuInfo) {
+	protected void setReportInfo(Skf2040Sc002CommonDto dto, Skf2040TTaikyoReport taikyoRepDt) {
 
 		String sfontColor = "<font color='red'>";
 		String eFontColoor = "</font>";
@@ -446,7 +447,7 @@ public class Skf2040Sc002SharedService {
 		// 室、チーム又は課
 		dto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
 		// 現住所
-		dto.setAddress(shatakuInfo.getAddress());
+		dto.setAddress(taikyoRepDt.getAddress());
 		// 氏名
 		dto.setName(taikyoRepDt.getName());
 
@@ -454,11 +455,11 @@ public class Skf2040Sc002SharedService {
 		taikyoRepDt.getShatakuTaikyoKbn();
 
 		// 社宅
-		dto.setShatakuName(shatakuInfo.getShatakuName());
+		dto.setShatakuName(taikyoRepDt.getTaikyoArea());
 		// 駐車場1
-		dto.setParkingAddress1(shatakuInfo.getParkingAddress1());
+		dto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
 		// 駐車場2
-		dto.setParkingAddress2(shatakuInfo.getParkingAddress2());
+		dto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
 		// 退居日 社宅等
 		// 退居日
 		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
