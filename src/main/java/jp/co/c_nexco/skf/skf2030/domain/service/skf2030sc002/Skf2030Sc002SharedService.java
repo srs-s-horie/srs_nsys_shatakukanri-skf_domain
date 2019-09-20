@@ -669,7 +669,7 @@ public class Skf2030Sc002SharedService {
 		case CodeConstant.HANNYU_MACHI_TSUCHI:
 		case CodeConstant.TEJI_TSUCHI:
 			// 掲載URL
-			String urlBase = "";
+			String urlBase = "skf/Skf2010Sc003/init";
 			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, null, commentName, CodeConstant.NONE,
 					urlBase);
 			break;
