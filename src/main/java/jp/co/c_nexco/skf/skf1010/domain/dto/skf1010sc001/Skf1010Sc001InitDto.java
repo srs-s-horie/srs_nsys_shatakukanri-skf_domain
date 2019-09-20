@@ -50,5 +50,141 @@ public class Skf1010Sc001InitDto extends Skf1010Sc001CommonDto {
 	private String level5;
 	// システムに関するお知らせ
 	private String note;
+	// 入退居区分
+	private String nyutaikyoKbn;
+	// 入退居申請状況区分
+	private String nyutaikyoApplStatusKbn;
+	private String nyutaikyoCount1;
+	private String nyutaikyoCount2;
 
+	// 社宅入居希望等調書の申請の件数（本社）
+	private int nyukyoApplicationHonsya;
+	// 社宅入居希望等調書の申請の件数（東京支社）
+	private int nyukyoApplicationTokyo;
+	// 社宅入居希望等調書の申請の件数（八王子支社）
+	private int nyukyoApplicationHatiouzi;
+	// 社宅入居希望等調書の申請の件数（名古屋支社）
+	private int nyukyoApplicationNagoya;
+	// 社宅入居希望等調書の申請の件数（金沢支社）
+	private int nyukyoApplicationKanazawa;
+	// 入居希望者への社宅の提示が未完了の件数（本社）
+	private int nyukyoUnfinishedTipsHonsya;
+	// 入居希望者への社宅の提示が未完了の件数（東京支社）
+	private int nyukyoUnfinishedTipsTokyo;
+	// 入居希望者への社宅の提示が未完了の件数（八王子支社）
+	private int nyukyoUnfinishedTipsHatiouzi;
+	// 入居希望者への社宅の提示が未完了の件数（名古屋支社）
+	private int nyukyoUnfinishedTipsNagoya;
+	// 入居希望者への社宅の提示が未完了の件数（金沢支社）
+	private int nyukyoUnfinishedTipsKanazawa;
+	// 提示社宅の本人確認が未完了の件数（本社）
+	private int nyukyoUnfinishedCheckHonsya;
+	// 提示社宅の本人確認が未完了の件数（東京支社）
+	private int nyukyoUnfinishedCheckTokyo;
+	// 提示社宅の本人確認が未完了の件数（八王子支社）
+	private int nyukyoUnfinishedCheckHatiouzi;
+	// 提示社宅の本人確認が未完了の件数（名古屋支社）
+	private int nyukyoUnfinishedCheckNagoya;
+	// 提示社宅の本人確認が未完了の件数（金沢支社）
+	private int nyukyoUnfinishedCheckKanazawa;
+	// 入居希望者の同意済の件数（本社）
+	private int nyukyoAgreedHonsya;
+	// 入居希望者の同意済の件数（東京支社）
+	private int nyukyoAgreedTokyo;
+	// 入居希望者の同意済の件数（八王子支社）
+	private int nyukyoAgreedHatiouzi;
+	// 入居希望者の同意済の件数（名古屋支社）
+	private int nyukyoAgreedNagoya;
+	// 入居希望者の同意済の件数（金沢支社）
+	private int nyukyoAgreedKanazawa;
+	// 入居希望者の同意されなかった件数（本社）
+	private int nyukyoDisagreedHonsya;
+	// 入居希望者の同意されなかった件数（東京支社）
+	private int nyukyoDisagreedTokyo;
+	// 入居希望者の同意されなかった件数（八王子支社）
+	private int nyukyoDisagreedHatiouzi;
+	// 入居希望者の同意されなかった件数（名古屋支社）
+	private int nyukyoDisagreedNagoya;
+	// 入居希望者の同意されなかった件数（金沢支社）
+	private int nyukyoDisagreedKanazawa;
+	// 退居届の申請の件数（本社）
+	private int taikyoApplicationHonsya;
+	// 退居届の申請の件数（東京支社）
+	private int taikyoApplicationTokyo;
+	// 退居届の申請の件数（八王子支社）
+	private int taikyoApplicationHatiouzi;
+	// 退居届の申請の件数（名古屋支社）
+	private int taikyoApplicationNagoya;
+	// 退居届の申請の件数（金沢支社）
+	private int taikyoApplicationKanazawa;
+	// 備品希望の申請が無い入居情報の件数（本社）
+	private int bihinNotApplicationHonsya;
+	// 備品希望の申請が無い入居情報の件数（東京支社）
+	private int bihinNotApplicationTokyo;
+	// 備品希望の申請が無い入居情報の件数（八王子支社）
+	private int bihinNotApplicationHatiouzi;
+	// 備品希望の申請が無い入居情報の件数（名古屋支社）
+	private int bihinNotApplicationNagoya;
+	// 備品希望の申請が無い入居情報の件数（金沢支社）
+	private int bihinNotApplicationKanazawa;
+	// 備品希望の提示が未完了の件数（本社）
+	private int bihinKiboUnfinishedTipsHonsya;
+	// 備品希望の提示が未完了の件数（東京支社）
+	private int bihinKiboUnfinishedTipsTokyo;
+	// 備品希望の提示が未完了の件数（八王子支社）
+	private int bihinKiboUnfinishedTipsHatiouzi;
+	// 備品希望の提示が未完了の件数（名古屋支社）
+	private int bihinKiboUnfinishedTipsNagoya;
+	// 備品希望の提示が未完了の件数（金沢支社）
+	private int bihinKiboUnfinishedTipsKanazawa;
+	// 備品希望の搬入が未完了の件数（本社）
+	private int bihinKiboUnfinishedEmplacementHonsya;
+	// 備品希望の搬入が未完了の件数（東京支社）
+	private int bihinKiboUnfinishedEmplacementTokyo;
+	// 備品希望の搬入が未完了の件数（八王子支社）
+	private int bihinKiboUnfinishedEmplacementHatiouzi;
+	// 備品希望の搬入が未完了の件数（名古屋支社）
+	private int bihinKiboUnfinishedEmplacementNagoya;
+	// 備品希望の搬入が未完了の件数（金沢支社）
+	private int bihinKiboUnfinishedEmplacementKanazawa;
+	// 備品返却の提示が未完了の件数（本社）
+	private int bihinHenkyakuUnfinishedTipsHonsya;
+	// 備品返却の提示が未完了の件数（東京支社）
+	private int bihinHenkyakuUnfinishedTipsTokyo;
+	// 備品返却の提示が未完了の件数（八王子支社）
+	private int bihinHenkyakuUnfinishedTipsHatiouzi;
+	// 備品返却の提示が未完了の件数（名古屋支社）
+	private int bihinHenkyakuUnfinishedTipsNagoya;
+	// 備品返却の提示が未完了の件数（金沢支社）
+	private int bihinHenkyakuUnfinishedTipsKanazawa;
+	// 備品返却提示の本人確認が未完了の件数（本社）
+	private int bihinHenkyakuUnfinishedCheckHonsya;
+	// 備品返却提示の本人確認が未完了の件数（東京支社）
+	private int bihinHenkyakuUnfinishedCheckTokyo;
+	// 備品返却提示の本人確認が未完了の件数（八王子支社）
+	private int bihinHenkyakuUnfinishedCheckHatiouzi;
+	// 備品返却提示の本人確認が未完了の件数（名古屋支社）
+	private int bihinHenkyakuUnfinishedCheckNagoya;
+	// 備品返却提示の本人確認が未完了の件数（金沢支社）
+	private int bihinHenkyakuUnfinishedCheckKanazawa;
+	// 備品返却提示の同意済の件数（本社）
+	private int bihinHenkyakuAgreedHonsya;
+	// 備品返却提示の同意済の件数（東京支社）
+	private int bihinHenkyakuAgreedTokyo;
+	// 備品返却提示の同意済の件数（八王子支社）
+	private int bihinHenkyakuAgreedHatiouzi;
+	// 備品返却提示の同意済の件数（名古屋支社）
+	private int bihinHenkyakuAgreedNagoya;
+	// 備品返却提示の同意済の件数（金沢支社）
+	private int bihinHenkyakuAgreedKanazawa;
+	// 備品の搬出が未完了の件数（本社）
+	private int bihinUnfinishedMovementHonsya;
+	// 備品の搬出が未完了の件数（東京支社）
+	private int bihinUnfinishedMovementTokyo;
+	// 備品の搬出が未完了の件数（八王子支社）
+	private int bihinUnfinishedMovementHatiouzi;
+	// 備品の搬出が未完了の件数（名古屋支社）
+	private int bihinUnfinishedMovementNagoya;
+	// 備品の搬出が未完了の件数（金沢支社）
+	private int bihinUnfinishedMovementKanazawa;
 }
