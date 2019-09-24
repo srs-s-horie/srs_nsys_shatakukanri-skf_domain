@@ -269,10 +269,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		String operationGuide = CodeConstant.NONE;
 		if (operationGuideMap != null) {
-			if (initDto.getApplStatus().equals(CodeConstant.STATUS_SHINSEICHU)) {
+			switch (initDto.getApplStatus()) {
+			case CodeConstant.STATUS_SHINSEICHU:
+			case CodeConstant.STATUS_SHINSACHU:
 				operationGuide = operationGuideMap.get("01");
-			} else if (initDto.getApplStatus().equals(CodeConstant.STATUS_KAKUNIN_IRAI)) {
+				break;
+			case CodeConstant.STATUS_KAKUNIN_IRAI:
 				operationGuide = operationGuideMap.get("02");
+				break;
 			}
 		}
 		initDto.setOperationGuide(operationGuide);
