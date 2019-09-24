@@ -7,17 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
-import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002SendbackDto;
 
@@ -32,14 +28,10 @@ public class Skf2030Sc002SendbackService extends BaseServiceAbstract<Skf2030Sc00
 	@Autowired
 	private Skf2030Sc002SharedService skf2030Sc002SharedService;
 
-	private final String REASON_LABEL = "申請者へのコメント";
-
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfOperationGuideUtils skfOperationGuideUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -56,8 +48,7 @@ public class Skf2030Sc002SendbackService extends BaseServiceAbstract<Skf2030Sc00
 		sbDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
@@ -66,15 +57,16 @@ public class Skf2030Sc002SendbackService extends BaseServiceAbstract<Skf2030Sc00
 		applInfo.put("applId", sbDto.getApplId());
 
 		// 入力チェック
-		if (!skf2030Sc002SharedService.validateReason(sbDto, false)) {
+		if (!skf2030Sc002SharedService.validateReason(sbDto, true)) {
 			throwBusinessExceptionIfErrors(sbDto.getResultMessages());
 		}
 
-		String execName = "Sendback";
+		String execName = "sendback";
 
 		boolean updResult = skf2030Sc002SharedService.updateDispInfo(execName, sbDto, applInfo, loginUserInfo);
 		if (!updResult) {
 			throwBusinessExceptionIfErrors(sbDto.getResultMessages());
+			return sbDto;
 		}
 
 		// 前の画面に遷移する

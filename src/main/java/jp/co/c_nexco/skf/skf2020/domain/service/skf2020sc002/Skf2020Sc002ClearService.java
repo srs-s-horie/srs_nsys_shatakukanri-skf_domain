@@ -51,7 +51,7 @@ public class Skf2020Sc002ClearService extends BaseServiceAbstract<Skf2020Sc002Cl
 		 * 保存状態の復帰
 		 */
 		// 登録済みデータの情報設定
-		skf2020Sc002SharedService.setSinseiInfo(clearDto);
+		skf2020Sc002SharedService.setSinseiInfo(clearDto, false);
 		// 返却備品の設定
 		skf2020Sc002SharedService.setReturnBihinInfo(clearDto, Skf2020Sc002SharedService.UPDATE_FLG);
 		// 表示項目の活性制御または表示制御

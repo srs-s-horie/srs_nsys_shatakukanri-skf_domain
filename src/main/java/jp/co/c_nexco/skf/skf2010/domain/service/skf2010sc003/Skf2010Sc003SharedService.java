@@ -20,6 +20,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 
@@ -106,7 +107,8 @@ public class Skf2010Sc003SharedService {
 
 			// 日付型を文字列型に変更する
 			if (applHistoryData.getApplDate() != null) {
-				applDate = skfDateFormatUtils.dateFormatFromString(applHistoryData.getApplDate(), datePattern);
+				applDate = skfDateFormatUtils.dateFormatFromDate(applHistoryData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 			if (applHistoryData.getAgreDate() != null) {
 				agreDate = skfDateFormatUtils.dateFormatFromString(applHistoryData.getAgreDate(), datePattern);

@@ -291,6 +291,10 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getTokyu())){
 				setVal.setTokyu(tenninshaInfo.getTokyu());
 			}
+			// - 年齢
+			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getAge())){
+				setVal.setAge(tenninshaInfo.getAge());
+			}
 			// - 現所属
 			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNowAffiliation())){
 				setVal.setNowAffiliation(tenninshaInfo.getNowAffiliation());
@@ -482,7 +486,8 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 	private int updateTenninshaChoshoData(Skf3020TTenninshaChoshoData setVal){
 		int updateCount=0;
 		
-		updateCount = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKey(setVal);
+		//updateCount = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKey(setVal);
+		updateCount = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKeySelective(setVal);
 		
 		return updateCount;
 	}

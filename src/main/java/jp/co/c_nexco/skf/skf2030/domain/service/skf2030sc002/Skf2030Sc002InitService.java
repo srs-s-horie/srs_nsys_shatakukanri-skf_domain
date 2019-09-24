@@ -6,7 +6,6 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc002;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -51,8 +50,7 @@ public class Skf2030Sc002InitService extends BaseServiceAbstract<Skf2030Sc002Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();

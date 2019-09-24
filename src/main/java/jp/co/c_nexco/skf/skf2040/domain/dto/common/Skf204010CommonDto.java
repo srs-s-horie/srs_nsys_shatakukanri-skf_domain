@@ -23,7 +23,6 @@ public class Skf204010CommonDto extends BaseDto {
 	private String sessionDay;
 	// 連絡先
 	private String renrakuSaki;
-
 	// コメント
 	private String commentNote;
 
