@@ -163,7 +163,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 			registNyukyoCount = skf2020Sc002SharedService.updateNyukyoChoshoTsuchi(setValue, saveDto, applInfo);
 			LogUtils.debugByMsg("入居希望等調書申請テーブル更新件数：" + registNyukyoCount + "件");
 			// ステータスを更新
-			saveDto.setStatus(applInfo.get("newStatus"));
+			saveDto.setApplStatus(applInfo.get("newStatus"));
 
 			// 退居社宅がある場合は備品返却の作成
 			if (NfwStringUtils.isNotEmpty(saveDto.getNowShatakuNo())) {
