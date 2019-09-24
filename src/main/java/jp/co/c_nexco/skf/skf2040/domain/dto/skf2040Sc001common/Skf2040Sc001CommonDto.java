@@ -39,6 +39,8 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     private long shatakuNo;
     // 現住所
     private String nowAddress;
+    // 社員番号
+    private String shainNo;
     // 氏名
     private String name;
     // 性別
@@ -71,6 +73,13 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     /**
      * 活性非活性
      */
+    // 社宅を必要としますか？ 「社宅を退居する」ラジオボタン
+    private String nowShatakuTaikyoDisabled;
+    // 社宅を必要としますか？ 「駐車場１を返還する」ラジオボタン
+    private String nowParking1TaikyoDisabled;
+    // 社宅を必要としますか？ 「駐車場２を返還する」ラジオボタン
+    private String nowParking2TaikyoDisabled;
+
     // 社宅を必要としますか？ 駐車場のみ
     private String rdoParkingOnlyDisabled;
 
@@ -88,7 +97,7 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     private String btnCheckDisabled;
     // 一時保存ボタン
     private String btnSaveDisabled;
-    
+
     /**
      * ドロップダウン
      */
@@ -168,4 +177,25 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     // 連絡先
     private String renrakuSakiErr;
 
+    /**
+     * hidden
+     */
+
+    // 選択された社宅名
+    private String hdnSelectedNowShatakuName;
+    // 現在の位置番号
+    private String hdnParking1stNumber;
+    // 現在の位置番号2
+    private String hdnParking2ndNumber;
+    // 現居住社宅管理番号
+    private long hdnNowShatakuKanriNo;
+    // 現居住社宅部屋管理番号
+    private long hdnNowShatakuRoomKanriNo;
+    // 備品返却有無
+    private String hdnBihinHenkyakuUmu;
+
+    // 可否フラグ
+    private String hdnConfirmFlg;
+    // ステータス
+    private String hdnStatus;
 }

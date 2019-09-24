@@ -18,7 +18,4 @@ public class Skf2040Sc001ConfirmDto extends Skf2040Sc001CommonDto {
 	private static final long serialVersionUID = -1902278406295003652L;
 	
 
-		
-	
-
 }
