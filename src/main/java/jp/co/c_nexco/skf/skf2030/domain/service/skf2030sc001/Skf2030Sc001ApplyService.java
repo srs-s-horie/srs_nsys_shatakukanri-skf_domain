@@ -249,9 +249,6 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 				errorTarget.add("tel");
 				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "tel" }, MessageIdConstant.E_SKF_1048,
 						"勤務先のTEL");
-				// ServiceHelper.addErrorResultMessage(applyDto,
-				// errorTarget.toArray(new String[errorTarget.size()]),
-				// MessageIdConstant.E_SKF_1048, "勤務先のTEL");
 				result = false;
 			}
 		}
@@ -261,9 +258,6 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 				errorTarget.add("renrakuSaki");
 				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "renrakuSaki" },
 						MessageIdConstant.E_SKF_1048, "連絡先");
-				// ServiceHelper.addErrorResultMessage(applyDto,
-				// errorTarget.toArray(new String[errorTarget.size()]),
-				// MessageIdConstant.E_SKF_1048, "連絡先");
 				result = false;
 			}
 		}
@@ -273,27 +267,10 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 				errorTarget.add("sessionDay");
 				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "sessionDay" },
 						MessageIdConstant.E_SKF_1048, "搬入希望日");
-				// ServiceHelper.addErrorResultMessage(applyDto,
-				// errorTarget.toArray(new String[errorTarget.size()]),
-				// MessageIdConstant.E_SKF_1048, "搬入希望日");
 				result = false;
 			}
 		}
-		// 搬入希望時刻
-		// TODO 搬入希望時刻はドロップダウンなので不要？
-		// if (!applyDto.isBihinReadOnly() &&
-		// validateFlag.indexOf("sessionTime") >= 0) {
-		// if (NfwStringUtils.isEmpty(applyDto.getSessionTime())) {
-		// errorTarget.add("sessionTime");
-		// ServiceHelper.addErrorResultMessage(applyDto, new String[] {
-		// "sessionTime" },
-		// MessageIdConstant.E_SKF_1048, "搬入希望時刻");
-		// // ServiceHelper.addErrorResultMessage(applyDto,
-		// // errorTarget.toArray(new String[errorTarget.size()]),
-		// // MessageIdConstant.E_SKF_1048, "搬入希望時刻");
-		// result = false;
-		// }
-		// }
+
 		return result;
 	}
 

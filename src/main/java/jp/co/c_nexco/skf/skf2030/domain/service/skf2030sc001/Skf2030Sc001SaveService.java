@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinShinseiInfoForUpdateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
@@ -18,6 +19,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc001.Skf2030Sc001SaveDto;
 
@@ -34,6 +36,8 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -89,10 +93,16 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		String applId = applInfo.get("applId");
 		String applStatus = applInfo.get("status");
 		String shainNo = applInfo.get("shainNo");
+
+		Map<String, String> errorMsg = new HashMap<String, String>();
+
 		// 申請履歴情報を更新する
 		// 更新対象の申請履歴情報を取得
-		Skf2030Sc001GetApplHistoryInfoForUpdateExp tmpData = new Skf2030Sc001GetApplHistoryInfoForUpdateExp();
-		tmpData = skf2030Sc001SharedService.getApplHistoryInfoForUpdate(applNo, applId, applStatus, shainNo);
+		SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp tmpData = new SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp();
+		tmpData = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(applStatus, shainNo, applNo, applId);
+		// tmpData =
+		// skf2030Sc001SharedService.getApplHistoryInfoForUpdate(applNo, applId,
+		// applStatus, shainNo);
 		if (tmpData == null) {
 			ServiceHelper.addWarnResultMessage(saveDto, null, MessageIdConstant.W_SKF_1009);
 			return -1;
@@ -218,11 +228,6 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		}
 
 		return true;
-	}
-
-	private boolean skf2030Sc001DeleteBihinInfo(String applNo) {
-		// TODO 自動生成されたメソッド・スタブ
-		return false;
 	}
 
 }
