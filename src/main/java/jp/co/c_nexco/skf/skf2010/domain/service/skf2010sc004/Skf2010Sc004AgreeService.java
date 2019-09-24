@@ -16,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetS
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -58,11 +59,9 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param agreeDto
-	 *            インプットDTO
+	 * @param agreeDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc004AgreeDto index(Skf2010Sc004AgreeDto agreeDto) throws Exception {
@@ -263,7 +262,6 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 				ServiceHelper.addErrorResultMessage(agreeDto, null, errorMsg.get("error"));
 				throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
 			}
-			// TODO 備品申請の申請書類管理番号をセットされている場合は自動遷移のダイアログ表示
 
 			// 同意確認通知のメールを送信する
 			Map<String, String> applInfoBihin = new HashMap<String, String>();
@@ -276,9 +274,18 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 
 			String urlBase = "/skf/Skf2030Sc001/init?SKF2030_SC001&menuflg=1&tokenCheck=0";
 
-			// TODO 送信メールにコメントが表示されないようになっている（意図的に空白が入っている）
-			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, CodeConstant.NONE, annai, shainNo,
-					CodeConstant.NONE, urlBase);
+			// メール送信
+			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, agreeDto.getCommentNote(), annai,
+					shainNo, CodeConstant.NONE, urlBase);
+
+			// TODO 備品申請の申請書類管理番号をセットされている場合は自動遷移のダイアログ表示
+			if (NfwStringUtils.isNotEmpty(applNoBihinShinsei)) {
+				ServiceHelper.addResultMessage(agreeDto, MessageIdConstant.I_SKF_2047);
+				// ダイアログ表示フラグをセットする
+
+				// return agreeDto;
+			}
+
 		}
 		// ページ遷移先は「申請状況一覧」
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);

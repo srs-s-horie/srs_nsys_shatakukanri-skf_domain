@@ -19,8 +19,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002InitDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
- * 
+ * Skf2030Sc002 備品希望申請（アウトソース用)初期表示処理クラス
+ *
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2030Sc002InitService extends BaseServiceAbstract<Skf2030Sc002InitDto> {
@@ -50,8 +51,7 @@ public class Skf2030Sc002InitService extends BaseServiceAbstract<Skf2030Sc002Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
 		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAfterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();

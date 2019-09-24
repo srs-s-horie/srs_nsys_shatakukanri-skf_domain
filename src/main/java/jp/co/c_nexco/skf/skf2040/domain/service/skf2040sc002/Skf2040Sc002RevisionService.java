@@ -13,7 +13,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002RevisionDto;
@@ -29,8 +28,6 @@ public class Skf2040Sc002RevisionService extends BaseServiceAbstract<Skf2040Sc00
 	@Autowired
 	private Skf2040Sc002SharedService skf2040sc002SharedService;
 	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	@Autowired
 	private SkfMailUtils skfMailUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -43,6 +40,7 @@ public class Skf2040Sc002RevisionService extends BaseServiceAbstract<Skf2040Sc00
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("修正依頼", CodeConstant.C001, rvsDto.getPageId());
 
+		// コメント欄チェック
 		boolean validate = skf2040sc002SharedService.checkValidation(rvsDto, sTrue);
 		if (!validate) {
 			// 添付資料だけはセッションから再取得の必要あり
@@ -50,7 +48,7 @@ public class Skf2040Sc002RevisionService extends BaseServiceAbstract<Skf2040Sc00
 			return rvsDto;
 		}
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		// 申請書類履歴保存の処理
 		Map<String, String> errorMsg = new HashMap<String, String>();
 		boolean result = skf2040sc002SharedService.saveApplInfo(CodeConstant.STATUS_SASHIMODOSHI, rvsDto, errorMsg);
 
@@ -68,7 +66,6 @@ public class Skf2040Sc002RevisionService extends BaseServiceAbstract<Skf2040Sc00
 
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI, applInfo, commentNote,
 					CodeConstant.NONE, rvsDto.getShainNo(), CodeConstant.NONE, urlBase);
-			;
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);
