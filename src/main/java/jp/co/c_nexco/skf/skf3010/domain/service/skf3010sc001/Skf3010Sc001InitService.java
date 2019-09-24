@@ -64,7 +64,7 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 		List<Map<String, Object>> emptyRoomList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> shatakuKbnList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> useKbnList = new ArrayList<Map<String, Object>>();
-		List<Map<String, Object>> emptyParkingList = new ArrayList<Map<String, Object>>();		
+		List<Map<String, Object>> emptyParkingList = new ArrayList<Map<String, Object>>();
 
 		// 利用区分を「使用中」に設定
 		initDto.setUseKbnCd("2");

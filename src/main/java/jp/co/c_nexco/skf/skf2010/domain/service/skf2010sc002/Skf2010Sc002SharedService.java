@@ -298,7 +298,7 @@ public class Skf2010Sc002SharedService {
 		}
 
 		// ステータスの有無チェック
-		if (applyDto.getApplStatus() == null) {
+		if (applyDto.getStatus() == null) {
 			String errorMessage = "エラーが発生しました。ヘルプデスクへ連絡してください。";
 			logger.error(errorMessage);
 			throw new Exception(errorMessage);

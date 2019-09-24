@@ -34,10 +34,6 @@ public class Skf3010Sc001SharedService {
 	@Value("${skf3010.skf3010_sc001.max_search_count}")
 	private Integer maxGetRecordCount;
 
-	// 経年対象月日
-	@Value("${skf.common.settings.keinen_taishou_tsukihi}")
-	private String xmlKeinenTaishouTsukihi;
-
 	@Autowired
 	private SkfDropDownUtils ddlUtils;
 	@Autowired
@@ -143,13 +139,21 @@ public class Skf3010Sc001SharedService {
 		List<Map<String, Object>> tmpListData = new ArrayList<Map<String, Object>>();
 
 		do {
+			String searchShatakuName = null;
+			// 文字エスケープ(% _ ' \)
+			if (shatakuName != null) {
+				// 「\」を「\\」に置換
+				searchShatakuName = shatakuName.replace("\\", "\\\\");
+				// 「%」を「\%」に置換、「_」を「\_」に置換、「'」を「''」に置換
+				searchShatakuName = searchShatakuName.replace("%", "\\%").replace("_", "\\_").replace("'", "''");
+			}
 			param.setSelectedCompanyCd(selectedCompanyCd);
 			param.setAgencyCd(agencyCd);
 			param.setShatakuKbnCd(shatakuKbnCd);
 			param.setEmptyRoomCd(emptyRoomCd);
 			param.setUseKbnCd(useKbnCd);
 			param.setEmptyParkingCd(emptyParkingCd);
-			param.setShatakuName(shatakuName);
+			param.setShatakuName(searchShatakuName);
 			resultListTableData = skf3010Sc001GetListTableDataExpRepository.getListTableData(param);
 
 			// 取得レコード数を設定
@@ -172,7 +176,7 @@ public class Skf3010Sc001SharedService {
 			}
 			// 出力するリストを設定
 			listTableData.clear();
-			listTableData.addAll(tmpListData);			
+			listTableData.addAll(tmpListData);
 			
 		} while(false);
 		tmpListData = null;
@@ -281,8 +285,7 @@ public class Skf3010Sc001SharedService {
 				buildDate = tmpData.getBuildDate();
 			}
 			// 経年取得
-			keinen = skfBaseBusinessLogicUtils.getAging(buildDate, areaKbn, tmpData.getStructureKbn(),
-					xmlKeinenTaishouTsukihi);
+			keinen = skfBaseBusinessLogicUtils.getAging(buildDate, areaKbn, tmpData.getStructureKbn());
 			tmpMap.put("aging", Long.toString(keinen) + AGING_YEAR);
 
 			// 空きbr部屋数

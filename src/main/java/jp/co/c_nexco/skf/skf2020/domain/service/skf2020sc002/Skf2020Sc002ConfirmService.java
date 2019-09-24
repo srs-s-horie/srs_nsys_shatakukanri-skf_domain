@@ -3,9 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc002;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +11,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
-import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -24,7 +21,6 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
@@ -49,8 +45,6 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
 	@Autowired
 	private Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
-	@Autowired
-	private MenuScopeSessionBean menuScopeSessionBean;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
@@ -82,23 +76,18 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			return dto;
 		}
 
-		// 申請書類確認に遷移
-		// 次の画面に渡すパラメータをセッションに格納
-		List<Map<String, Object>> resultApplList = null;
-		resultApplList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> applMap = new HashMap<String, Object>();
-		applMap.put(SkfCommonConstant.KEY_STATUS, dto.getStatus());
-		applMap.put(SkfCommonConstant.KEY_APPL_NO, dto.getApplNo());
-		resultApplList.add(applMap);
-		menuScopeSessionBean.put(SessionCacheKeyConstant.APPL_INFO_SESSION_KEY, resultApplList);
-
 		// フォームデータを設定
 		dto.setPrePageId(dto.getPageId());
 		BaseForm form = new BaseForm();
 		CopyUtils.copyProperties(form, dto);
 		FormHelper.setFormBean(FunctionIdConstant.SKF2010_SC002, form);
 
+		// 申請書類確認画面に遷移
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC002);
+		Map<String, Object> attributeMap = new HashMap<String, Object>();
+		attributeMap.put(SkfCommonConstant.KEY_APPL_NO, dto.getApplNo());
+		attributeMap.put(SkfCommonConstant.KEY_STATUS, dto.getApplStatus());
+		nextPage.setTransferAttributes(attributeMap);
 		dto.setTransferPageInfo(nextPage, true);
 
 		return dto;
@@ -178,7 +167,7 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			registNyukyoCount = skf2020Sc002SharedService.updateNyukyoChoshoTsuchi(setValue, dto, applInfo);
 			LogUtils.debugByMsg("入居希望等調書申請テーブル更新件数：" + registNyukyoCount + "件");
 			// ステータスを更新
-			dto.setStatus(applInfo.get("newStatus"));
+			dto.setApplStatus(applInfo.get("newStatus"));
 
 			// 退居社宅がある場合は備品返却の作成
 			if (NfwStringUtils.isNotEmpty(dto.getNowShatakuNo())) {

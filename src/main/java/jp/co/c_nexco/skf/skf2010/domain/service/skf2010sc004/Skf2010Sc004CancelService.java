@@ -12,15 +12,15 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003CancelDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004CancelDto;
 
 /**
- * Skf2010Sc003 申請状況一覧取下げ処理クラス
+ * Skf2010Sc004 申請状況一覧取下げ処理クラス
  *
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc003CancelDto> {
+public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004CancelDto> {
 
 	@Autowired
 	private Skf2010Sc004SharedService skf2010Sc004SharedService;
@@ -33,14 +33,12 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc003C
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param cancelDto
-	 *            インプットDTO
+	 * @param cancelDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
-	public BaseDto index(Skf2010Sc003CancelDto cancelDto) throws Exception {
+	public BaseDto index(Skf2010Sc004CancelDto cancelDto) throws Exception {
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
