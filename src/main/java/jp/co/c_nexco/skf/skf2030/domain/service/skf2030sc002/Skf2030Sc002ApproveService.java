@@ -15,7 +15,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002ApplyDto;
+import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002ApproveDto;
 
 /**
  * Skf2030Sc002 備品希望申請（アウトソース用)申請処理クラス
@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002ApplyDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2030Sc002ApplyService extends BaseServiceAbstract<Skf2030Sc002ApplyDto> {
+public class Skf2030Sc002ApproveService extends BaseServiceAbstract<Skf2030Sc002ApproveDto> {
 
 	@Autowired
 	private Skf2030Sc002SharedService skf2030Sc002SharedService;
@@ -41,7 +41,7 @@ public class Skf2030Sc002ApplyService extends BaseServiceAbstract<Skf2030Sc002Ap
 	 * @throws Exception 例外
 	 */
 	@Override
-	public BaseDto index(Skf2030Sc002ApplyDto applyDto) throws Exception {
+	public BaseDto index(Skf2030Sc002ApproveDto applyDto) throws Exception {
 		// 操作ログ出力
 		skfOperationLogUtils.setAccessLog("申請処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC002);
 		// タイトル設定
