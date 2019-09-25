@@ -22,8 +22,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007SelectListDto;
 
 /**
- * 駐車場契約情報登録画面のリスト選択処理サービス処理クラス。　 
- * 
+ * Skf3010Sc007SelectListService  駐車場契約情報登録画面のリスト選択処理サービス処理クラス。　
+ *
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc007SelectListDto> {
@@ -55,7 +56,6 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 	 * @throws Exception
 	 *             例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Skf3010Sc007SelectListDto index(Skf3010Sc007SelectListDto selectDto) throws Exception {
 		
@@ -254,6 +254,9 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 					selectDto.setContractStartDate(contractStartDate);
 					selectDto.setContractEndDate(contractEndDate);
 					selectDto.setLandRent(landRent);
+//					if(!landRent.isEmpty()){
+//						selectDto.setLandRent(Long.parseLong(landRent));
+//					}
 					selectDto.setBiko(biko);
 					
 					//入力チェック用
@@ -274,6 +277,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 			
 		}
 		
+		String contractPropertyIdListData = CodeConstant.DOUBLE_QUOTATION;
 		//契約番号リスト(仮)のサイズチェック
 		if(propertyIdList.size() > 0){
 			//1以上で、契約番号リスト生成
@@ -300,7 +304,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 				}
 				//表示内容設定(契約番号：契約開始日)
 				forListMap.put("label", id.toString() + "：" + contractStartDate);
-				
+				contractPropertyIdListData += id.toString() + "：" + contractStartDate +",";
 				if (id.equals(selectContractPropertyId)) {
 					//選択契約番号を選択中にする
 					forListMap.put("selected", true);
@@ -308,6 +312,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 				contractPropertyIdList.add(forListMap);
 			}
 		}
+		selectDto.setContractPropertyIdListData(contractPropertyIdListData);
 		
 		selectDto.setHdnBackupMaxContractPropertyId(String.valueOf(propertyIdList.size()));
 		if(selectDto.getSelectMode().compareTo(BUTTON_LIST) == 0){

@@ -32,6 +32,8 @@ public class Skf3010Sc007CommonDto extends Skf301010CommonDto {
 	private String contractPropertyId;
 	//契約番号リスト
 	private List<Map<String, Object>> contractPropertyIdList;
+	//リスト用文字列
+	private String contractPropertyIdListData;
 	//契約形態リスト
 	private List<Map<String, Object>> parkingContractTypeList;
 	private String parkingContractType;
@@ -55,6 +57,7 @@ public class Skf3010Sc007CommonDto extends Skf301010CommonDto {
 	private String contractEndDate;
 	//駐車場料（地代） 
 	private String landRent;
+	private String landRentnumber;
 	//備考
 	private String biko;
 	//駐車場管理番号
@@ -138,4 +141,5 @@ public class Skf3010Sc007CommonDto extends Skf301010CommonDto {
 	private String landRentError;
 	private String parkingContractTypeError;
 	private String contractPropertyIdError;
+	
 }

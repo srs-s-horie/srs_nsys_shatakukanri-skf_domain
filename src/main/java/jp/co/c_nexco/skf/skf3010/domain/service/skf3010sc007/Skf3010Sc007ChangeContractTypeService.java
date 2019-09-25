@@ -18,8 +18,9 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007ChangeContractTypeDto;
 
 /**
- * 駐車場契約情報登録画面の契約形態変更時サービス処理クラス。　 
+ * Skf3010Sc007ChangeContractTypeService 駐車場契約情報登録画面の契約形態変更時サービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3010Sc007ChangeContractTypeService extends BaseServiceAbstract<Skf3010Sc007ChangeContractTypeDto> {
