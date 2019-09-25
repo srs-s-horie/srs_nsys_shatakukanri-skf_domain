@@ -44,7 +44,6 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 
 	@Override
 	protected BaseDto index(Skf2010Sc002PresentationDto preDto) throws Exception {
-		// TODO アウトソース画面からの遷移時
 
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, preDto.getPageId());
@@ -107,8 +106,7 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 
 				String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 
-				// TODO 送信メールにコメントが表示されないようになっている（意図的に空白が入っている）
-				skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, CodeConstant.NONE, annai,
+				skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, preDto.getCommentNote(), annai,
 						preDto.getShainNo(), CodeConstant.NONE, urlBase);
 
 				// TODO 社宅管理データ連携処理実行
