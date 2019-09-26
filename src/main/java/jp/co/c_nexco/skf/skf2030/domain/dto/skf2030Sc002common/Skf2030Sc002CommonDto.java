@@ -101,6 +101,8 @@ public class Skf2030Sc002CommonDto extends Skf203010CommonDto {
 	// コメントボタン表示フラグ
 	private boolean commentBtnVisibled;
 	private boolean commentViewFlag;
+	// コメント欄非活性フラグ
+	private String commentDisabled = "false";
 
 	// ボタン表示フラグ
 	// 申請条件を確認ボタン
