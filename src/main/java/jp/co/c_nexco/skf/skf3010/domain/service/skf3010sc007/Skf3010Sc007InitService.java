@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -23,6 +24,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007InitDto;
 /**
  * 駐車場契約情報登録画面のInitサービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3010Sc007InitService extends BaseServiceAbstract<Skf3010Sc007InitDto> {
@@ -36,7 +38,10 @@ public class Skf3010Sc007InitService extends BaseServiceAbstract<Skf3010Sc007Ini
 	private Skf3010Sc007SharedService skf3010Sc007SharedService;
 	
 	private final static String TRUE = "true";
-	private final static String FALSE = "false";
+	
+	// リストテーブルの１ページ最大表示行数
+	@Value("${skf3010.skf3010_sc007.max_row_count}")
+	private String listTableMaxRowCount;
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -123,6 +128,7 @@ public class Skf3010Sc007InitService extends BaseServiceAbstract<Skf3010Sc007Ini
 		initDto.setParkinglendKbnList(parkinglendKbnList);
 		initDto.setContractPropertyIdList(contractPropertyIdList);
 		
+		initDto.setListTableMaxRowCount(listTableMaxRowCount);
 		initDto.setListTableData(listTableData);
 		initDto.setHdnListData(hdnListData);
 		initDto.setHdnDelInfoFlg(CodeConstant.STRING_ZERO);

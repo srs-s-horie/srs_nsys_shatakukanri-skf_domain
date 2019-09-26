@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
  * Skf3020Sc003 転任者調書確認共通処理クラス
  *
  * @author NEXCOシステムズ
-*/
+ */
 @Service
 public class Skf3020Sc003SharedService {
 
@@ -36,7 +36,9 @@ public class Skf3020Sc003SharedService {
 	@Autowired
 	private Skf3020Sc003GetShatakuNyukyoCountExpRepository skf3020Sc003GetShatakuNyukyoCountExpRepository;
 	@Autowired
-	Skf3020Sc003GetTenninshaInfoForUpdateExpRepository skf3020Sc003GetTenninshaInfoForUpdateExpRepository;
+	private Skf3020Sc003GetTenninshaInfoForUpdateExpRepository skf3020Sc003GetTenninshaInfoForUpdateExpRepository;
+	@Autowired
+	private Skf302010CommonSharedService skf302010CommonSharedService;
 
 	/***********************************
 	 * 画面表示のlistTableのカラム設定用
@@ -57,7 +59,7 @@ public class Skf3020Sc003SharedService {
 	public static final String BIKO_COL = "col7";
 	/** エラー */
 	public static final String ERR_COL = "col8";
-	
+
 	private static final int SHATAKU_NYUKYO_CNT_JUDG_VAL = 1;
 
 	/**
@@ -122,31 +124,33 @@ public class Skf3020Sc003SharedService {
 	 */
 	private Skf3020TTenninshaChoshoData editUpdateTenninshaInfoData(Skf3020TTenninshaChoshoData inData,
 			Map<String, Object> targetData, String shatakKbn) {
-		
+
 		Skf3020TTenninshaChoshoData tenninshaChoshoData = new Skf3020TTenninshaChoshoData();
-		
+
 		// 社員番号
 		tenninshaChoshoData.setShainNo(inData.getShainNo());
 		// 社員氏名
 		String name = (String) targetData.get(NAME_COL);
-		tenninshaChoshoData.setName(name);
+		tenninshaChoshoData.setName(skf302010CommonSharedService.replaceEscapeStr(name));
 		// 等級
 		String tokyu = (String) targetData.get(TOKYU_COL);
-		tenninshaChoshoData.setTokyu(tokyu);
+		tenninshaChoshoData.setTokyu(skf302010CommonSharedService.replaceEscapeStr(tokyu));
 		// 年齢
 		String age = (String) targetData.get(AGE_COL);
-		tenninshaChoshoData.setAge(age);
+		tenninshaChoshoData.setAge(skf302010CommonSharedService.replaceEscapeStr(age));
 		// 現所属
 		String nowAffiliation = (String) targetData.get(NOW_AFFILIATION_COL);
-		tenninshaChoshoData.setNowAffiliation(nowAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
-				Skf302010CommonSharedService.DB_LS));
+		nowAffiliation = nowAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
+		tenninshaChoshoData.setNowAffiliation(skf302010CommonSharedService.replaceEscapeStr(nowAffiliation));
 		// 新所属
 		String newAffiliation = (String) targetData.get(NEW_AFFILIATION_COL);
-		tenninshaChoshoData.setNewAffiliation(newAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
-				Skf302010CommonSharedService.DB_LS));
+		newAffiliation = newAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
+		tenninshaChoshoData.setNewAffiliation(skf302010CommonSharedService.replaceEscapeStr(newAffiliation));
 		// 備考
 		String biko = (String) targetData.get(BIKO_COL);
-		tenninshaChoshoData.setBiko(biko);
+		tenninshaChoshoData.setBiko(skf302010CommonSharedService.replaceEscapeStr(biko));
 		// 社員番号変更対象区分
 		tenninshaChoshoData.setShainNoHenkoKbn(inData.getShainNoHenkoKbn());
 		// 入居フラグ
@@ -208,24 +212,26 @@ public class Skf3020Sc003SharedService {
 		tenninshaChoshoData.setShainNo(kariShainNo);
 		// 社員氏名
 		String name = (String) targetData.get(NAME_COL);
-		tenninshaChoshoData.setName(name);
+		tenninshaChoshoData.setName(skf302010CommonSharedService.replaceEscapeStr(name));
 		// 等級
 		String tokyu = (String) targetData.get(TOKYU_COL);
-		tenninshaChoshoData.setTokyu(tokyu);
+		tenninshaChoshoData.setTokyu(skf302010CommonSharedService.replaceEscapeStr(tokyu));
 		// 年齢
 		String age = (String) targetData.get(AGE_COL);
-		tenninshaChoshoData.setAge(age);
+		tenninshaChoshoData.setAge(skf302010CommonSharedService.replaceEscapeStr(age));
 		// 現所属
 		String nowAffiliation = (String) targetData.get(NOW_AFFILIATION_COL);
-		tenninshaChoshoData.setNowAffiliation(nowAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
-				Skf302010CommonSharedService.DB_LS));
+		nowAffiliation = nowAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
+		tenninshaChoshoData.setNowAffiliation(skf302010CommonSharedService.replaceEscapeStr(nowAffiliation));
 		// 新所属
 		String newAffiliation = (String) targetData.get(NEW_AFFILIATION_COL);
-		tenninshaChoshoData.setNewAffiliation(newAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
-				Skf302010CommonSharedService.DB_LS));
+		newAffiliation = newAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
+		tenninshaChoshoData.setNewAffiliation(skf302010CommonSharedService.replaceEscapeStr(newAffiliation));
 		// 備考
 		String biko = (String) targetData.get(BIKO_COL);
-		tenninshaChoshoData.setBiko(biko);
+		tenninshaChoshoData.setBiko(skf302010CommonSharedService.replaceEscapeStr(biko));
 		// 社員番号変更対象区分
 		tenninshaChoshoData.setShainNoHenkoKbn("");
 		// 入居フラグ
@@ -249,14 +255,14 @@ public class Skf3020Sc003SharedService {
 	 * 転任者調書データの更新日を取得する。
 	 * 
 	 * @param shainNo
-	 * 			社員番号
+	 *            社員番号
 	 * @return 更新日
 	 */
 	public String getTenninshaInfoForUpdate(String shainNo) {
 		Skf3020Sc003GetTenninshaInfoForUpdateExpParameter param = new Skf3020Sc003GetTenninshaInfoForUpdateExpParameter();
 		param.setShainNo(shainNo);
 		String updateData = skf3020Sc003GetTenninshaInfoForUpdateExpRepository.getTenninshaInfoForUpdate(param);
-		
+
 		return updateData;
 	}
 }

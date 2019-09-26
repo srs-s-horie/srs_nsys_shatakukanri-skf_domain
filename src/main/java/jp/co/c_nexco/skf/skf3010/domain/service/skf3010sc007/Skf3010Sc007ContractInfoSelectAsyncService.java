@@ -8,11 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007ContractInfoSelectAsyncDto;
 
 
@@ -53,6 +57,11 @@ public class Skf3010Sc007ContractInfoSelectAsyncService
 		
 		boolean checkResult=false;
 		
+		String landRentStr=CodeConstant.DOUBLE_QUOTATION;
+		if(!SkfCheckUtils.isNullOrEmpty(asyncDto.getLandRent())){
+			landRentStr = asyncDto.getLandRent().replace(",", "");
+		}
+		
 		//入力内容変更有無チェック
 		if(asyncDto.getSelectMode().compareTo("mainList") == 0 
 				&& asyncDto.getHdnDelInfoFlg().compareTo("0") != 0){
@@ -87,8 +96,8 @@ public class Skf3010Sc007ContractInfoSelectAsyncService
 		}else if(asyncDto.getHdnBackupContractEndDate().compareTo(asyncDto.getContractEndDate()) != 0){
 			LogUtils.debugByMsg("契約終了日：変更有" + asyncDto.getHdnBackupContractEndDate() + "!=" +asyncDto.getContractEndDate());
 			checkResult=true;
-		}else if(asyncDto.getHdnBackupLandRent().compareTo(asyncDto.getLandRent()) != 0){
-			LogUtils.debugByMsg("駐車場料（地代）：変更有" + asyncDto.getHdnBackupLandRent() + "!=" + asyncDto.getLandRent());
+		}else if(asyncDto.getHdnBackupLandRent().compareTo(landRentStr) != 0){
+			LogUtils.debugByMsg("駐車場料（地代）：変更有" + asyncDto.getHdnBackupLandRent() + "!=" + landRentStr);
 			checkResult=true;
 		}else if(asyncDto.getHdnBackupBiko().compareTo(asyncDto.getBiko()) != 0){
 			LogUtils.debugByMsg("備考：変更有" + asyncDto.getHdnBackupBiko() + "!=" + asyncDto.getBiko());
@@ -97,8 +106,18 @@ public class Skf3010Sc007ContractInfoSelectAsyncService
 		
 		
 		if(checkResult){
+			//変更有
 			asyncDto.setCheckResult("1");
-			setContractPropertyId = Long.parseLong(hdnBackupContractPropertyId);
+			if(!SkfCheckUtils.isNullOrEmpty(asyncDto.getHdnBackupParkingContractType())){
+				//新規で無い場合、キャンセル対応で前のを選択状態に
+				setContractPropertyId = Long.parseLong(hdnBackupContractPropertyId);
+				LogUtils.debugByMsg("キャンセル用設定：" + hdnBackupContractPropertyId);
+			}else{
+				//新規の場合
+				setContractPropertyId = Long.parseLong(asyncDto.getHdnBackupMaxContractPropertyId());
+				LogUtils.debugByMsg("キャンセル用設定：" + setContractPropertyId);
+			}
+
 		}
 		else{
 			asyncDto.setCheckResult("0");
@@ -111,11 +130,31 @@ public class Skf3010Sc007ContractInfoSelectAsyncService
 			
 			Map<String, Object> forListMap = new HashMap<String, Object>();
 			for (int i=1; i<=proIdMax; i++) {
+				String contractStartDate="";
 				// 表示・値を設定
 				forListMap = new HashMap<String, Object>();
 				forListMap.put("value", i);
-				forListMap.put("label", i);
+				
+				//契約開始日の取得
+				//画面からは文字列で取得するので、まず行ごとに分割
+				String[] infoList = asyncDto.getContractPropertyIdListData().split(",");
+				for(String info : infoList){
+					//行データを項目ごとに分割
+					String[] contract = info.split("：");
+					if(contract.length >= 2){
+						int id = Integer.parseInt(contract[0].trim());
+						if(id == i){
+							contractStartDate = contract[1].trim();
+							break;
+						}
+					}
+				}
+				
+				//表示内容設定(契約番号：契約開始日)
+				forListMap.put("label", i + "：" + contractStartDate);
+				
 				if (i == setContractPropertyId.intValue()) {
+					LogUtils.debugByMsg("選択中設定：" + i);
 					//選択契約番号を選択中にする
 					forListMap.put("selected", true);
 				}
