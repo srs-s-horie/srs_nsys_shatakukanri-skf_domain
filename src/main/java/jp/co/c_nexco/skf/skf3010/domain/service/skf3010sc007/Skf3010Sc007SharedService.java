@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc007.Skf3010Sc007GetParkingContractInfoExp;
@@ -19,7 +18,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc007.Skf3010Sc007
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -30,12 +28,8 @@ import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
  * @author NEXCOシステムズ
  *
  */
-
 @Service
 public class Skf3010Sc007SharedService {
-
-	@Value("${skf3010.skf3010_sc004.max_search_count}")
-	private Integer maxGetRecordCount;
 
 	@Autowired
 	private SkfDropDownUtils ddlUtils;

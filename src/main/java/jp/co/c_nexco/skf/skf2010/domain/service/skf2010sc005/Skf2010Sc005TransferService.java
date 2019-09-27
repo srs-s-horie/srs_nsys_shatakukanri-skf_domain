@@ -143,16 +143,13 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 					skf2010Sc005SharedService.updateShatakuRental(applShainNo, CodeConstant.NYUTAIKYO_KBN_NYUKYO,
 							applNo);
 				}
-			} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0103)) {
+			} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0103)
+					|| CheckUtils.isEqual(applId, FunctionIdConstant.R0105)) {
+				// 退居（自動車の保管場所返還）届、備品返却申請
 				nextPageId = FunctionIdConstant.SKF2040_SC002;
 			} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0104)) {
+				// 備品希望申請
 				nextPageId = FunctionIdConstant.SKF2030_SC002;
-			} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0105)) {
-				if (CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSACHU)) {
-					nextPageId = FunctionIdConstant.SKF2040_SC002;
-				} else {
-					nextPageId = FunctionIdConstant.SKF2050_SC002;
-				}
 			}
 
 			if (NfwStringUtils.isEmpty(nextPageId)) {

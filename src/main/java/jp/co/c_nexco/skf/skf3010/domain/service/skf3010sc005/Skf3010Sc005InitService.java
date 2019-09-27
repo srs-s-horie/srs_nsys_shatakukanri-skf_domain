@@ -25,6 +25,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005InitDto;
 /**
  * Skf3010Sc005InitService 社宅部屋登録画面のInitサービス処理クラス。
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005InitDto> {
