@@ -43,10 +43,6 @@ public class Skf2060Sc002InitDto extends Skf2060Sc002CommonDto {
 	private String attachedFile;
     //理由ドロップダウン
     private List<Map<String, Object>> riyuList;
-    //理由ドロップダウン選択された要素
-    private String riyuDropdown;
-    //備考
-    private String biko;;
 	
     // 操作ガイド
     private String operationGuide;
@@ -55,20 +51,10 @@ public class Skf2060Sc002InitDto extends Skf2060Sc002CommonDto {
 	//「選択」ボタン表示切替用
 	private boolean selectViewFlag;
     
-    //隠し要素
-    //申請書類管理番号
-    private String applNo;
-    //提示回数
-    private String teijiKaisu;
-    
     //借上物件リスト
     private List<Map<String, String>> kariageTeijiList;
-    //ラジオボタン用借上物件番号
-    private String radioCandidateNo;
     
     //非活性制御用
-    //ラジオボタン
-    private String radioCandidateNoDisabled;
     //理由ドロップダウン
     private String riyuDropdownDisabled;
     //備考テキストボックス
