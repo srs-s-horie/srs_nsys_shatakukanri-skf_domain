@@ -91,7 +91,7 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	// 可否フラグ
 	private String hdnConfirmFlg;
 	// ステータス
-	private String hdnStatus;
+	// private String hdnStatus;
 
 	/**
 	 * ラジオボタンチェック状態判定用

@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetSKSTeijiShatakuInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetSKSTeijiShatakuInfoExpParameter;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetSKSTeijiShatakuInfoExpRepository;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExpParameter;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002PresentationDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002PresentDto;
 
 /**
  * Skf2010Sc002 申請書類確認の提示ボタン処理クラス。
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002Presentatio
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010Sc002PresentationDto> {
+public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002PresentDto> {
 
 	@Autowired
 	private SkfMailUtils skfMailUtils;
@@ -40,10 +40,10 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 	@Autowired
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;
 	@Autowired
-	private Skf2010Sc002GetSKSTeijiShatakuInfoExpRepository skf2010Sc002GetSKSTeijiShatakuInfoExpRepository;
+	private Skf2010Sc002GetTeijiShatakuInfoExpRepository skf2010Sc002GetTeijiShatakuInfoExpRepository;
 
 	@Override
-	protected BaseDto index(Skf2010Sc002PresentationDto preDto) throws Exception {
+	protected BaseDto index(Skf2010Sc002PresentDto preDto) throws Exception {
 
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, preDto.getPageId());
@@ -56,6 +56,8 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 			// エラーメッセージがある場合、処理を中断
 			return preDto;
 		}
+
+		String commentNote = preDto.getCommentNote();
 
 		// ステータスを設定
 		String status = CodeConstant.STATUS_KAKUNIN_IRAI;
@@ -77,12 +79,12 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 		if (FunctionIdConstant.R0100.equals(preDto.getApplId())) {
 			// R0100: 社宅入居希望等調書
 			// 提示社宅データの取得
-			List<Skf2010Sc002GetSKSTeijiShatakuInfoExp> tSkSTeijiShatakuInfo = new ArrayList<Skf2010Sc002GetSKSTeijiShatakuInfoExp>();
-			Skf2010Sc002GetSKSTeijiShatakuInfoExpParameter param = new Skf2010Sc002GetSKSTeijiShatakuInfoExpParameter();
+			List<Skf2010Sc002GetTeijiShatakuInfoExp> tSkSTeijiShatakuInfo = new ArrayList<Skf2010Sc002GetTeijiShatakuInfoExp>();
+			Skf2010Sc002GetTeijiShatakuInfoExpParameter param = new Skf2010Sc002GetTeijiShatakuInfoExpParameter();
 			param.setApplNo(preDto.getApplNo());
 			param.setShainNo(preDto.getShainNo());
 			param.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_NYUKYO);
-			tSkSTeijiShatakuInfo = skf2010Sc002GetSKSTeijiShatakuInfoExpRepository.getSKSTeijiShatakuInfo(param);
+			tSkSTeijiShatakuInfo = skf2010Sc002GetTeijiShatakuInfoExpRepository.getTeijiShatakuInfo(param);
 
 			// 提示社宅データが取得できた場合
 			if (tSkSTeijiShatakuInfo != null && tSkSTeijiShatakuInfo.size() > 0) {
@@ -106,16 +108,20 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 
 				String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 
-				skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, preDto.getCommentNote(), annai,
-						preDto.getShainNo(), CodeConstant.NONE, urlBase);
+				// skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI,
+				// applInfoAnnai, preDto.getCommentNote(), annai,
+				// preDto.getShainNo(), CodeConstant.NONE, urlBase);
 
 				// TODO 社宅管理データ連携処理実行
 
-				// 画面遷移（申請条件一覧へ）
-				TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003, "init");
+				// 画面遷移（承認一覧へ）
+				TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005, "init");
 				nextPage.addResultMessage(MessageIdConstant.I_SKF_2047);
 				preDto.setTransferPageInfo(nextPage);
 
+			} else {
+				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_2011);
+				throwBusinessExceptionIfErrors(preDto.getResultMessages());
 			}
 		}
 
@@ -130,7 +136,7 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 	 * @return
 	 */
 	private String getAnnaiShatakuManage(String shatakuKbn,
-			List<Skf2010Sc002GetSKSTeijiShatakuInfoExp> tSkSTeijiShatakuInfo) {
+			List<Skf2010Sc002GetTeijiShatakuInfoExp> tSkSTeijiShatakuInfo) {
 
 		// メール本文置換え
 		String annai = CodeConstant.DOUBLE_QUOTATION;
@@ -367,12 +373,12 @@ public class Skf2010Sc002PresentationService extends BaseServiceAbstract<Skf2010
 		// メッセージ取得
 		String msg = PropertyUtils.getValue(id);
 
-		// 可変項目の置換え
+		// 可変項目の置換え6666
 		for (int idx = 0; idx < param.size(); idx++) {
 
 			String sParam = param.get(idx);
-
-			msg = msg.replaceFirst("{" + idx + "}", sParam);
+			String rep = "{" + idx + "}";
+			msg = msg.replace(rep, sParam);
 		}
 
 		return msg;

@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 申請情報確認画面の共通Dto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,7 +18,7 @@ public class Skf2010Sc002CommonDto extends Skf2010CommonDto {
 	private static final long serialVersionUID = -1902278406295003652L;
 
 	// 申請ステータス
-	private String status;
+	private String applStatus;
 	// コメント表示レベル
 	private String commentDisplayLevel;
 

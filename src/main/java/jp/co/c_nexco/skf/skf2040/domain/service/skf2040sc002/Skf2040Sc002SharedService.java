@@ -156,16 +156,16 @@ public class Skf2040Sc002SharedService {
 	 * @param applNo
 	 * @param shatakuNo
 	 * @param roomNo
-	 * @param henkyakuDt
-	 * @return henkyakuList(返却備品のリスト)
+	 * @param henkyakuDt(返却備品のリスト)
+	 * @return
 	 */
-	protected List<Map<String, Object>> updateBihinReturnKbn(Skf2040Sc002InitDto dto, long shatakuNo, long roomNo,
+	protected List<Map<String, Object>> updateBihinReturnKbn(String shainNo, String applNo, long shatakuNo, long roomNo,
 			List<Skf2040Sc002GetHenkyakuBihinInfoExp> henkyakuDt) {
 
 		List<Map<String, Object>> henkyakuList = new ArrayList<Map<String, Object>>();
 
 		// 提示データ情報を取得
-		Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo = getTeijiDataInfo(dto.getShainNo(), dto.getApplNo());
+		Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo = getTeijiDataInfo(shainNo, applNo);
 		if (teijiDataInfo == null) {
 			// 提示データの取得ができない場合、リストは空で返す
 			return henkyakuList;
