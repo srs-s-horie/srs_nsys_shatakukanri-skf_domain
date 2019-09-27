@@ -78,7 +78,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		skf2020Sc002SharedService.setControlValue(saveDto);
 
 		// 正常終了
-		if (CodeConstant.STATUS_MISAKUSEI.equals(saveDto.getHdnStatus())) {
+		if (CodeConstant.STATUS_MISAKUSEI.equals(saveDto.getApplStatus())) {
 			ServiceHelper.addResultMessage(saveDto, MessageIdConstant.I_SKF_1012);
 		} else {
 			ServiceHelper.addResultMessage(saveDto, MessageIdConstant.I_SKF_1011);
@@ -108,7 +108,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 
 		if (CodeConstant.STATUS_MISAKUSEI.equals(applInfo.get("status"))) {
 			// 指定なし（新規）の場合
-			saveDto.setHdnStatus(CodeConstant.STATUS_MISAKUSEI);
+			saveDto.setApplStatus(CodeConstant.STATUS_MISAKUSEI);
 			// 更新フラグを「0」に設定する
 			applInfo.put("updateFlg", Skf2020Sc002SharedService.NO_UPDATE_FLG);
 			// 新規登録処理
@@ -126,7 +126,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 			}
 		} else {
 			// 新規以外
-			saveDto.setHdnStatus(applInfo.get("status"));
+			saveDto.setApplStatus(applInfo.get("status"));
 			applInfo.put("updateFlg", Skf2020Sc002SharedService.UPDATE_FLG);
 
 			// 排他制御の比較用更新日を設定

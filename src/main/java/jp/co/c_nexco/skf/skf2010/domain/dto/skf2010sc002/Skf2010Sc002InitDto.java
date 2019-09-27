@@ -39,12 +39,17 @@ public class Skf2010Sc002InitDto extends Skf2010Sc002CommonDto {
 	private String level1;
 	// 貸与社宅などのご案内
 	private String level2;
-	// 退居届
+	// 退居(自動車の変換場所）届
 	private String level3;
 
 	// アコーディオン初期表示用フラグ
 	private String level1Open;
 	private String level2Open;
 	private String level3Open;
+
+	// 社宅退居区分
+	private String shatakuTaikyoKbn;
+	// 駐車場返還区分
+	private String shatakuTaikyoKbn2;
 
 }

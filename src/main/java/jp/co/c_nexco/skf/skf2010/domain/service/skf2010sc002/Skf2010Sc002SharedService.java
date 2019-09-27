@@ -20,6 +20,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplComment;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
@@ -298,11 +299,16 @@ public class Skf2010Sc002SharedService {
 		}
 
 		// ステータスの有無チェック
-		if (applyDto.getStatus() == null) {
+		if (applyDto.getApplStatus() == null) {
 			String errorMessage = "エラーが発生しました。ヘルプデスクへ連絡してください。";
 			logger.error(errorMessage);
 			throw new Exception(errorMessage);
 		}
+	}
+
+	protected Skf2040TTaikyoReport getTaikyoReportInfo(String c001, String applNo) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 }

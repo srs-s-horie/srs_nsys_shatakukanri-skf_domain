@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf2010Sc002PresentationDto extends Skf2010Sc002InitDto {
+public class Skf2010Sc002PresentDto extends Skf2010Sc002InitDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
