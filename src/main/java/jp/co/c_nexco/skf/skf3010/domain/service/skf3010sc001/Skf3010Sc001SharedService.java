@@ -62,18 +62,26 @@ public class Skf3010Sc001SharedService {
 	 * ドロップダウンリストに設定するリストを取得する。<br>
 	 * 「※」項目はアドレスとして戻り値になる。
 	 * 
-	 * @param originalCompanyCd 会社コード
-	 * @param manageCompanyList ※管理会社ドロップダウンリスト
-	 * @param agencyCd 機関コード
-	 * @param manageAgencyList ※管理機関ドロップダウンリスト
-	 * @param affiliation1List ※社宅区分ドロップダウンリスト
-	 * @param affiliation2List ※空き部屋ドロップダウンリスト
-	 * @param affiliation3List ※利用区分ドロップダウンリスト
+	 * @param selectedCompanyCd		管理会社コード選択値
+	 * @param *manageCompanyList	*管理会社プルダウン
+	 * @param agencyCd				管理機関コード選択値
+	 * @param *manageAgencyList		*管理機関プルダウン
+	 * @param shatakuKbnCd			社宅区分コード選択値
+	 * @param *shatakuKbnList		*社宅区分プルダウン
+	 * @param emptyRoomCd			空き部屋区分コード選択値
+	 * @param *emptyRoomList		*空き部屋プルダウン
+	 * @param useKbnCd				利用区分コード選択値
+	 * @param *useKbnList			*利用区分プル団
+	 * @param emptyParkingCd		空き駐車場区分コード選択値
+	 * @param *emptyParkingList		*空き駐車場プルダウン
 	 */
-	public void getDoropDownList(String selectedCompanyCd, List<Map<String, Object>> manageCompanyList, String agencyCd,
-			List<Map<String, Object>> manageAgencyList, String shatakuKbnCd, List<Map<String, Object>> shatakuKbnList,
-			String emptyRoomCd, List<Map<String, Object>> emptyRoomList, String useKbnCd,
-			List<Map<String, Object>> useKbnList, String emptyParkingCd, List<Map<String, Object>> emptyParkingList) {
+	public void getDoropDownList(
+			String selectedCompanyCd, List<Map<String, Object>> manageCompanyList,
+			String agencyCd, List<Map<String, Object>> manageAgencyList,
+			String shatakuKbnCd, List<Map<String, Object>> shatakuKbnList,
+			String emptyRoomCd, List<Map<String, Object>> emptyRoomList,
+			String useKbnCd, List<Map<String, Object>> useKbnList,
+			String emptyParkingCd, List<Map<String, Object>> emptyParkingList) {
 
 		boolean isFirstRowEmpty = true;
 
