@@ -63,17 +63,17 @@ public class Skf3010Sc001SharedService {
 	 * 「※」項目はアドレスとして戻り値になる。
 	 * 
 	 * @param selectedCompanyCd		管理会社コード選択値
-	 * @param *manageCompanyList	*管理会社プルダウン
+	 * @param manageCompanyList	*管理会社プルダウン
 	 * @param agencyCd				管理機関コード選択値
-	 * @param *manageAgencyList		*管理機関プルダウン
+	 * @param manageAgencyList		*管理機関プルダウン
 	 * @param shatakuKbnCd			社宅区分コード選択値
-	 * @param *shatakuKbnList		*社宅区分プルダウン
+	 * @param shatakuKbnList		*社宅区分プルダウン
 	 * @param emptyRoomCd			空き部屋区分コード選択値
-	 * @param *emptyRoomList		*空き部屋プルダウン
+	 * @param emptyRoomList		*空き部屋プルダウン
 	 * @param useKbnCd				利用区分コード選択値
-	 * @param *useKbnList			*利用区分プル団
+	 * @param useKbnList			*利用区分プル団
 	 * @param emptyParkingCd		空き駐車場区分コード選択値
-	 * @param *emptyParkingList		*空き駐車場プルダウン
+	 * @param emptyParkingList		*空き駐車場プルダウン
 	 */
 	public void getDoropDownList(
 			String selectedCompanyCd, List<Map<String, Object>> manageCompanyList,
@@ -120,15 +120,15 @@ public class Skf3010Sc001SharedService {
 	 * パラメータの検索キーでDBを検索し、結果を戻り値のリストテーブルに設定する
 	 * 「※」項目はアドレスとして戻り値になる。
 	 * 
-	 * @param selectedCompanyCd 会社コード
-	 * @param agencyCd 機関コード
-	 * @param shatakuKbnCd 社宅区分
-	 * @param emptyRoomCd 空き部屋
-	 * @param useKbnCd 利用区分
-	 * @param emptyParkingCd 空き駐車場
-	 * @param shatakuName 社宅名
-	 * @param shatakuAddress 社宅住所
-	 * @param *listTableData リストデータ
+	 * @param selectedCompanyCd	会社コード
+	 * @param agencyCd			機関コード
+	 * @param shatakuKbnCd		社宅区分
+	 * @param emptyRoomCd		空き部屋
+	 * @param useKbnCd			利用区分
+	 * @param emptyParkingCd	空き駐車場
+	 * @param shatakuName		社宅名
+	 * @param shatakuAddress	社宅住所
+	 * @param listTableData		*リストデータ
 	 * @return
 	 * @throws ParseException
 	 */
