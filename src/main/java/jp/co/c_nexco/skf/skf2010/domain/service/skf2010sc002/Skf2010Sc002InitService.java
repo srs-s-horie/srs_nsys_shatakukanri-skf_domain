@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
@@ -25,8 +26,10 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
 
@@ -46,6 +49,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
 
 	private String sTrue = "true";
 	private String sFalse = "false";
@@ -93,34 +98,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// コメントボタンの活性非活性処理
 		setCommentBtnRemove(initDto);
 
-		// ボタン非表示設定
-		// setBtnRemove(initDto);
-
 		return initDto;
-	}
-
-	/**
-	 * ボタンの表示制御
-	 * 
-	 * @param initDto
-	 */
-	private void setBtnRemove(Skf2010Sc002InitDto initDto) {
-
-		// 遷移元により制御
-		if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2020_SC002)) {
-			// 入居希望申請画面から遷移
-			initDto.setApplyBtnViewFlg(sTrue);
-			initDto.setPresenBtnViewFlg(sFalse);
-		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2040_SC001)) {
-			// 退居届申請画面から遷移
-			initDto.setApplyBtnViewFlg(sTrue);
-			initDto.setPresenBtnViewFlg(sFalse);
-		} else if (initDto.getPrePageId().equals(FunctionIdConstant.SKF2010_SC005)) {
-			// 入居希望申請アウトソース画面から遷移
-			initDto.setApplyBtnViewFlg(sFalse);
-			initDto.setPresenBtnViewFlg(sTrue);
-		}
-
 	}
 
 	/**
@@ -137,6 +115,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		if (roleIds == null) {
 			return;
 		}
+
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
 		for (String roleId : roleIds) {
@@ -202,7 +181,17 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			}
 			break;
 		case FunctionIdConstant.SKF2040_SC001:
-			// TODO 退居届の場合の処理
+			// 退居届情報の取得
+			Skf2040TTaikyoReport tTaikyoReport = new Skf2040TTaikyoReport();
+			tTaikyoReport = skf2010Sc002SharedService.getTaikyoReportInfo(CodeConstant.C001, applNo);
+			if (tTaikyoReport != null) {
+				// 更新用
+				String applDate = skfDateFormatUtils.dateFormatFromString(tTaikyoReport.getApplDate(),
+						"yyyy/MM/dd HH:mm:ss");
+				initDto.setApplUpdateDate(applDate);
+				// 退居届情報の項目設定
+				mappingTaikyoReport(initDto, tTaikyoReport);
+			}
 			break;
 		default:
 			break;
@@ -287,6 +276,18 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level2Open", sFalse);// 貸与社宅などのご案内のアコーディオン初期表示
 			result.put("level3Open", sTrue);// 退居届のアコーディオン初期表示
 			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_1);// 申請者から承認者へ
+			break;
+
+		default:
+			// 上記画面以外は何も表示しない
+			result.put("level1", sFalse); // 入居希望等調書
+			result.put("level2", sFalse); // 貸与社宅などのご案内
+			result.put("level3", sFalse);// 退居届
+			result.put("mask", CodeConstant.MASK_LEVEL3); // ボタン非表示
+			result.put("level1Open", sFalse); // 入居希望等調書のアコーディオン初期表示
+			result.put("level2Open", sFalse);// 貸与社宅などのご案内のアコーディオン初期表示
+			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
+			result.put("commentDisplayLevel", CodeConstant.NONE);
 			break;
 
 		}
@@ -724,6 +725,97 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		initDto.setParkingKanoDate2(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingKanoDate2(), "yyyy年MM月dd日"));
 		return;
+	}
+
+	/**
+	 * 退居(自動車の変換場所）届表示のマッピングを行います
+	 * 
+	 * @param initDto
+	 * @param tTaikyoReport
+	 */
+	private void mappingTaikyoReport(Skf2010Sc002InitDto initDto, Skf2040TTaikyoReport taikyoRepDt) {
+		String sfontColor = "<font color='red'>";
+		String eFontColoor = "</font>";
+
+		// 申請書類タイトル表記設定
+		initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn()); // 社宅退居
+		initDto.setShatakuTaikyoKbn2(taikyoRepDt.getShatakuTaikyoKbn2()); // 駐車場返還
+
+		// 申請書類管理番号
+		initDto.setApplNo(taikyoRepDt.getApplNo());
+		// 申請年月日
+		String applDate = taikyoRepDt.getApplDate();
+		String applDateText = skfDateFormatUtils.dateFormatFromString(applDate,
+				SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+		initDto.setApplDate(applDateText);
+		// 機関
+		initDto.setNowAgency(taikyoRepDt.getAgency());
+		// 部等
+		initDto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
+		// 室、チーム又は課
+		initDto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
+		// 現住所
+		initDto.setAddress(taikyoRepDt.getAddress());
+		// 氏名
+		initDto.setName(taikyoRepDt.getName());
+
+		// 社宅退居区分
+		taikyoRepDt.getShatakuTaikyoKbn();
+
+		// 社宅
+		initDto.setShatakuName(taikyoRepDt.getTaikyoArea());
+		// 駐車場1
+		initDto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
+		// 駐車場2
+		initDto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
+		// 退居日 社宅等
+		// 退居日
+		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
+			initDto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+			// 日付変更フラグが1:変更ありなら赤文字にする
+			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
+					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
+
+				String taikyoDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+				// fontColorタグ設定
+				taikyoDate = sfontColor + taikyoDate + eFontColoor;
+				initDto.setTaikyoDate(taikyoDate);
+			}
+		}
+		// 駐車場返還日
+		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
+			initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+			// 日付変更フラグが1:変更ありなら赤文字にする
+			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
+					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
+
+				String parkingHenkanDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+				// fontColorタグ設定
+				parkingHenkanDate = sfontColor + parkingHenkanDate + eFontColoor;
+				initDto.setParkingHenkanDate(parkingHenkanDate);
+			}
+		} else {
+			// 駐車場返還日がない場合は、退居日を設定
+			initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
+		// 退居（返還）理由
+		Map<String, String> taikyoRiyuMap = skfGenericCodeUtils
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_TAIKYO_HENKAN_RIYU);
+		String taikyoRiyu = CodeConstant.DOUBLE_QUOTATION;
+		if (taikyoRiyuMap != null) {
+			taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
+		}
+		initDto.setTaikyoRiyu(taikyoRiyu);
+		// 退居後の連絡先
+		initDto.setTaikyogoRenrakusaki(taikyoRepDt.getTaikyogoRenrakusaki());
+
+		return;
+
 	}
 
 }
