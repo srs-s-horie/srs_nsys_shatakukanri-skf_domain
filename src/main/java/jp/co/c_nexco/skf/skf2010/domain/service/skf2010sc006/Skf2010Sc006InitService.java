@@ -45,11 +45,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc006InitDto index(Skf2010Sc006InitDto initDto) throws Exception {
@@ -182,13 +180,13 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			result.put("level3Open", "false");
 			break;
 		case CodeConstant.STATUS_KAKUNIN_IRAI:
-		case CodeConstant.STATUS_DOI_ZUMI:
 			result.put("level", 2);
 			result.put("mask", "LV2");
 			result.put("level1Open", "false");
 			result.put("level2Open", "true");
 			result.put("level3Open", "false");
 			break;
+		case CodeConstant.STATUS_DOI_ZUMI:
 		case CodeConstant.STATUS_SHONIN:
 		case CodeConstant.STATUS_SHONIN1:
 		case CodeConstant.STATUS_SHONIN2:

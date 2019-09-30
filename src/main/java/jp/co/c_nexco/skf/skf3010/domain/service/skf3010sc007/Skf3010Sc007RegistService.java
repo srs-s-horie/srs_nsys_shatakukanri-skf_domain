@@ -332,7 +332,12 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 			}
 			
 			// 駐車場代（地代） 
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getLandRent())) {
+			if(registDto.getLandRent() == null){
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
+				registDto.setLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 必須入力チェック - 駐車場代（地代） ";
+			}else if (SkfCheckUtils.isNullOrEmpty(registDto.getLandRent().toString())) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
 				registDto.setLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
@@ -361,7 +366,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 					
 					if(isCheckOk){
 						//日付関係
-						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 						Date startDate = null;
 						Date endDate = null;
 						try{
@@ -475,6 +480,9 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		}
 		
 		//駐車場代（地代） 
+//		if(dto.getLandRent() != null){
+//			setValue.setLandRent(dto.getLandRent().intValue());
+//		}
 		if(!SkfCheckUtils.isNullOrEmpty(dto.getLandRent())){
 			String tempLandRent = dto.getLandRent().replace(",", "");
 			int landRent =  Integer.parseInt(tempLandRent);
@@ -783,6 +791,9 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 					dto.setContractStartDate(contractStartDate);
 					dto.setContractEndDate(contractEndDate);
 					dto.setLandRent(landRent);
+//					if(!landRent.isEmpty()){
+//						dto.setLandRent(Long.parseLong(landRent));
+//					}
 					dto.setBiko(biko);
 					
 					//入力チェック用

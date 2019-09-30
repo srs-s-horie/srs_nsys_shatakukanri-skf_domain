@@ -15,7 +15,6 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005ChangeDropD
  * Skf3010Sc001ChangeDropDownAsyncService 社宅一覧ドロップダウンリスト変更時非同期処理クラス
  * 
  * @author NEXCOシステムズ
- *
  */
 @Service
 public class Skf3010Sc005ChangeDropDownAsyncService

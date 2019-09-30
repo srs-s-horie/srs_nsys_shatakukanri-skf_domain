@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002PresentationDto;
+import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002PresentDto;
 
 /**
  * Skf2040Sc002 退居（自動車の保管場所返還）届(アウトソース用）画面提示処理クラス
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002Presentatio
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040Sc002PresentationDto> {
+public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002PresentDto> {
 
 	@Autowired
 	private Skf2040Sc002SharedService skf2040Sc002SharedService;
@@ -49,7 +49,7 @@ public class Skf2040Sc002PresentationSavice extends BaseServiceAbstract<Skf2040S
 	Map<String, String> errorMsg = new HashMap<String, String>();
 
 	@Override
-	public BaseDto index(Skf2040Sc002PresentationDto preDto) throws Exception {
+	protected BaseDto index(Skf2040Sc002PresentDto preDto) throws Exception {
 
 		// 操作ログ出力メソッドを呼び出す
 		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, preDto.getPageId());

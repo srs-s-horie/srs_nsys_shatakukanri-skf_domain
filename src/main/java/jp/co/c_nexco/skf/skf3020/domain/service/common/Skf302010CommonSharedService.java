@@ -90,5 +90,25 @@ public class Skf302010CommonSharedService {
 
 		return outStr;
 	}
+	
+	/**
+	 * エスケープ文字列の置き換え。
+	 * 
+	 * @param inStr
+	 * 			対象文字列
+	 * @return 編集後の文字列
+	 */
+	public String replaceEscapeStr(String inStr) {
+		String outStr = "";
+		
+		if (NfwStringUtils.isEmpty(inStr)) {
+			return inStr;
+		
+		} else {
+			String editStr = inStr.replace("'", "''");
+			outStr = editStr.replace("\\", "\\\\");
+			return outStr;
+		}
+	}
 
 }

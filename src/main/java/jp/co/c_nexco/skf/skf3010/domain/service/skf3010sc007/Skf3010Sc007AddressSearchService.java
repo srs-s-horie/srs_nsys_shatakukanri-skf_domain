@@ -23,8 +23,9 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007AddressSear
 
 
 /**
- * 駐車場契約情報登録画面の住所検索サービス処理クラス。　 
+ * Skf3010Sc007AddressSearchService　駐車場契約情報登録画面の住所検索サービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3010Sc007AddressSearchService extends BaseServiceAbstract<Skf3010Sc007AddressSearchDto> {
