@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -75,6 +77,10 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 		return initDto;
 	}
 
+	/**
+	 * 
+	 * @param initDto
+	 */
 	private void setStatusList(Skf2010Sc003InitDto initDto) {
 		// ログインユーザー情報から社員番号取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
@@ -97,20 +103,29 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 		initDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList));
 	}
 
+	/**
+	 * カレンダーの初期値設定
+	 * 
+	 * @param initDto
+	 */
 	private void setApplDateDefault(Skf2010Sc003InitDto initDto) {
-		Date applDateTo = new Date();
+		// Date applDateTo = new Date();
+		LocalDate applDateTo = LocalDate.now();
+		LocalDate applDateFrom = applDateTo.minusMonths(1);
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime((Date) applDateTo.clone());
+		// Calendar cal = Calendar.getInstance();
+		// cal.setTime((Date) applDateTo.clone());
+		//
+		// cal.add(Calendar.MONTH, -1);
 
-		cal.add(Calendar.MONTH, -1);
+		// Date applDateFrom = cal.getTime();
 
-		Date applDateFrom = cal.getTime();
-
-		initDto.setApplDateFrom(
-				skfDateFormatUtils.dateFormatFromDate(applDateFrom, SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
-		initDto.setApplDateTo(
-				skfDateFormatUtils.dateFormatFromDate(applDateTo, SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+		initDto.setApplDateFrom(skfDateFormatUtils.dateFormatFromDate(
+				Date.from(applDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+				SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+		initDto.setApplDateTo(skfDateFormatUtils.dateFormatFromDate(
+				Date.from(applDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+				SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 	}
 
 	/**

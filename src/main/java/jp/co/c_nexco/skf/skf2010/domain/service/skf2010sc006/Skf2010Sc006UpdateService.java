@@ -17,6 +17,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006UpdateDto;
 
@@ -32,13 +33,10 @@ public class Skf2010Sc006UpdateService extends BaseServiceAbstract<Skf2010Sc006U
 	private Skf2010Sc006SharedService skf2010Sc006SharedService;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
 	@SuppressWarnings("unchecked")
 	@Override
