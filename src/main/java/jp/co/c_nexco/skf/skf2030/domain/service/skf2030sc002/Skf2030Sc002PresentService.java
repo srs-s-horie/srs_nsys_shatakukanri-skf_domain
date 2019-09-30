@@ -66,7 +66,7 @@ public class Skf2030Sc002PresentService extends BaseServiceAbstract<Skf2030Sc002
 
 		// 前の画面に遷移する
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);
-		tpi.addResultMessage(MessageIdConstant.I_SKF_2030);
+		tpi.addResultMessage(MessageIdConstant.I_SKF_2047);
 		preDto.setTransferPageInfo(tpi);
 
 		return preDto;

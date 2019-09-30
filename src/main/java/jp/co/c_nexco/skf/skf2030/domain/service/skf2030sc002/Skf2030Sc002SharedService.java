@@ -222,7 +222,9 @@ public class Skf2030Sc002SharedService {
 		// 【 備品搬入完了 】
 		// 備品搬入完了日 ※入力項目
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getCompletionDay())) {
-			dto.setCompletionDay(bihinShinseiInfo.getCompletionDay());
+			String completionDayText = skfDateFormatUtils.dateFormatFromString(bihinShinseiInfo.getCompletionDay(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			dto.setCompletionDay(completionDayText);
 		}
 
 		List<SkfBihinInfoUtilsGetBihinInfoExp> bihinInfoList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();

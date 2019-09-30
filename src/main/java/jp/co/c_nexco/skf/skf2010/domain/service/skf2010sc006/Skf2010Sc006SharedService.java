@@ -57,6 +57,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
@@ -112,8 +113,7 @@ public class Skf2010Sc006SharedService {
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
 	/**
 	 * 社宅入居希望等申請情報を取得する
@@ -522,16 +522,16 @@ public class Skf2010Sc006SharedService {
 		tTaijiDataList = skf2010Sc006GetTeijiDataInfoExpRepository.getTeijiDataInfo(param);
 		if (tTaijiDataList != null && tTaijiDataList.size() > 0) {
 			Skf2010Sc006GetTeijiDataInfoExp tTaijiData = tTaijiDataList.get(0);
-			if (tTaijiData.getRentalAdjust() != null) {
+			if (tTaijiData.getRentalAdjust() != CodeConstant.LONG_ZERO) {
 				Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExp updateData = new Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExp();
 				updateData.setCompanyCd(companyCd);
 				updateData.setApplNo(applNo);
-				if (tTaijiData.getRentalAdjust() != null) {
-					updateData.setNewKyoekihi(tTaijiData.getRentalAdjust().toString());
+				if (tTaijiData.getRentalAdjust() != CodeConstant.LONG_ZERO) {
+					updateData.setNewKyoekihi(String.valueOf(tTaijiData.getRentalAdjust()));
 				}
 				updateData.setKyoekihiPersonKyogichuFlg(tTaijiData.getKyoekihiPersonKyogichuFlg());
-				if (tTaijiData.getKyoekihiPersonAdjust() != null) {
-					updateData.setNewKyoekihi(tTaijiData.getKyoekihiPersonAdjust().toString());
+				if (tTaijiData.getKyoekihiPersonAdjust() != CodeConstant.LONG_ZERO) {
+					updateData.setNewKyoekihi(String.valueOf(tTaijiData.getKyoekihiPersonAdjust()));
 				}
 				updateData.setParkingRental(tTaijiData.getParkingRental1());
 				updateData.setParkingRental2(tTaijiData.getParkingRental2());
