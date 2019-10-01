@@ -183,7 +183,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		case FunctionIdConstant.SKF2040_SC001:
 			// 退居届情報の取得
 			Skf2040TTaikyoReport tTaikyoReport = new Skf2040TTaikyoReport();
-			tTaikyoReport = skf2010Sc002SharedService.getTaikyoReportInfo(CodeConstant.C001, applNo);
+			tTaikyoReport = skf2010Sc002SharedService.getTaikyoReportInfo(applNo);
 			if (tTaikyoReport != null) {
 				// 更新用
 				String applDate = skfDateFormatUtils.dateFormatFromString(tTaikyoReport.getApplDate(),
