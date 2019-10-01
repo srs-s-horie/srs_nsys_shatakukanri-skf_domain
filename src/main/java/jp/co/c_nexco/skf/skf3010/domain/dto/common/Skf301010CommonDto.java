@@ -6,8 +6,10 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf301010CommonDto Skf301010同期処理共通Dto
  * 
+ * @author NEXCOシステムズ
+ *
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

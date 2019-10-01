@@ -45,11 +45,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc006InitDto index(Skf2010Sc006InitDto initDto) throws Exception {
@@ -87,6 +85,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		String roleId = loginUser.get("roleId");
 		if (userName.equals(initDto.getShonin1Name())) {
 			initDto.setShoninBtnViewFlag("false");
+			initDto.setCommentViewFlag("false");
+			initDto.setCommentAreaVisibled(false);
 		} else {
 			initDto.setShoninBtnViewFlag("true");
 		}
@@ -174,7 +174,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		switch (applStatus) {
 		case CodeConstant.STATUS_ICHIJIHOZON:
 		case CodeConstant.STATUS_SASHIMODOSHI:
-		case CodeConstant.STATUS_SHINSEICHU:
+		case CodeConstant.STATUS_HININ:
+		case CodeConstant.STATUS_SHINSACHU:
 			result.put("level", 1);
 			result.put("mask", "LV1");
 			result.put("level1Open", "true");
@@ -182,25 +183,25 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			result.put("level3Open", "false");
 			break;
 		case CodeConstant.STATUS_KAKUNIN_IRAI:
-		case CodeConstant.STATUS_DOI_ZUMI:
 			result.put("level", 2);
 			result.put("mask", "LV2");
 			result.put("level1Open", "false");
 			result.put("level2Open", "true");
 			result.put("level3Open", "false");
 			break;
+		case CodeConstant.STATUS_DOI_ZUMI:
 		case CodeConstant.STATUS_SHONIN:
 		case CodeConstant.STATUS_SHONIN1:
 		case CodeConstant.STATUS_SHONIN2:
 			result.put("level", 3);
-			result.put("mask", "LV2");
+			result.put("mask", "LV3");
 			result.put("level1Open", "false");
 			result.put("level2Open", "false");
 			result.put("level3Open", "true");
 			break;
 		case CodeConstant.STATUS_SHONIN_ZUMI:
 			result.put("level", 3);
-			result.put("mask", "LV3");
+			result.put("mask", "LV2");
 			result.put("level1Open", "false");
 			result.put("level2Open", "false");
 			result.put("level3Open", "true");
@@ -212,6 +213,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 	private void setDisplayData(Skf2010Sc006InitDto initDto) {
 		String applNo = initDto.getApplNo();
+		String applStatus = initDto.getApplStatus();
 
 		Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
 		tNyukyoChoshoTsuchi = skf2010Sc006SharedService.getNyukyoChoshoTsuchiInfo(companyCd, applNo);
@@ -241,6 +243,16 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
 		attachedFileList = skf2010Sc006SharedService.getAttachedFileInfo(applNo);
 		initDto.setAttachedFileList(attachedFileList);
+
+		switch (applStatus) {
+		case CodeConstant.STATUS_ICHIJIHOZON:
+		case CodeConstant.STATUS_KAKUNIN_IRAI:
+		case CodeConstant.STATUS_HININ:
+		case CodeConstant.STATUS_SASHIMODOSHI:
+		case CodeConstant.STATUS_SHONIN_ZUMI:
+			initDto.setCommentAreaVisibled(false);
+			break;
+		}
 
 	}
 

@@ -319,7 +319,8 @@ public class Skf2030Sc001SharedService {
 				nyukyobiInfoList = getNyukyobiInfo(companyCd, applNo);
 
 				if (nyukyobiInfoList != null && nyukyobiInfoList.size() > 0) {
-					if (NfwStringUtils.isNotEmpty(nyukyobiInfoList.get(0).getNyukyoKanoDate())) {
+					if (nyukyobiInfoList.get(0) != null
+							&& NfwStringUtils.isNotEmpty(nyukyobiInfoList.get(0).getNyukyoKanoDate())) {
 						// 入居可能日が設定されていた場合、備品搬入日に入居可能日を設定する
 						String nyukyoKanoDate = skfDateFormatUtils.dateFormatFromString(
 								nyukyobiInfoList.get(0).getNyukyoKanoDate(),

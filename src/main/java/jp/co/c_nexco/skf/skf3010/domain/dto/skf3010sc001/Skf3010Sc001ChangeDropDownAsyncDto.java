@@ -7,7 +7,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc001common.Skf3010Sc001Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3090Sc004ChangeDropDownAsyncDto 従業員マスタ一覧ドロップダウン変更時Dto
+ * Skf3010Sc001ChangeDropDownAsyncDto 社宅一覧ドロップダウン変更時Dto。
  * 
  * @author NEXCOシステムズ
  *

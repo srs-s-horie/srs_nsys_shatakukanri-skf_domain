@@ -7,8 +7,9 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc001common.Skf3010Sc001Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3010_Sc001画面のInitDto。
+ * Skf3010Sc001InitDto画面のInitDto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

@@ -80,7 +80,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		// 入力チェック
 		boolean inputAreaVisible = false;
 		boolean validateResult = true;
-		if (!CheckUtils.isEmpty(agreeDto.getInputAreaVisible())) {
+		if (!NfwStringUtils.isEmpty(agreeDto.getInputAreaVisible())) {
 			inputAreaVisible = Boolean.valueOf(agreeDto.getInputAreaVisible());
 		}
 		if (inputAreaVisible) {
@@ -106,7 +106,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		String syokiTaikyobi = agreeDto.getTaikyoDate();
 
 		// 退居日の有無をチェック
-		if (CheckUtils.isEmpty(syokiTaikyobi)) {
+		if (NfwStringUtils.isEmpty(syokiTaikyobi)) {
 			// 退居日が無い時にテキストボックスの入力があった場合、変更フラグを1:変更ありにする。
 			if (!CheckUtils.isEmpty(taikyobi)) {
 				// 退居日変更フラグに1：変更ありを設定
@@ -131,19 +131,21 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		String henkanChangeFlag = SkfCommonConstant.NOT_CHANGE;
 
 		// 返還日の有無をチェック
-		if (CheckUtils.isEmpty(syokiHenkanbi)) {
+		if (NfwStringUtils.isEmpty(syokiHenkanbi)) {
 			// 返還日が無い時にテキストボックスの入力があった場合、変更フラグを1:変更ありにする。
-			if (!CheckUtils.isEmpty(henkanbi)) {
+			if (!NfwStringUtils.isEmpty(henkanbi)) {
 				// 返還日変更フラグに1：変更ありを設定
 				henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		} else {
-			// フォーマットを合わせる
-			henkanbi = henkanbi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-					CodeConstant.NONE);
-			if (!syokiHenkanbi.equals(henkanbi)) {
-				// 返還日変更フラグに1：変更ありを設定
-				henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
+			if (NfwStringUtils.isNotEmpty(henkanbi)) {
+				// フォーマットを合わせる
+				henkanbi = henkanbi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
+						CodeConstant.NONE);
+				if (!syokiHenkanbi.equals(henkanbi)) {
+					// 返還日変更フラグに1：変更ありを設定
+					henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
+				}
 			}
 		}
 
@@ -156,19 +158,21 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		String nyukyoChangeFlag = SkfCommonConstant.NOT_CHANGE;
 
 		// 入居日の有無をチェック
-		if (CheckUtils.isEmpty(syokiNyukyobi)) {
+		if (NfwStringUtils.isEmpty(syokiNyukyobi)) {
 			// 入居日が無い時にテキストボックスの入力があった場合、変更フラグを1:変更ありにする。
-			if (!CheckUtils.isEmpty(nyukyobi)) {
+			if (!NfwStringUtils.isEmpty(nyukyobi)) {
 				// 入居日変更フラグに1：変更ありを設定
 				nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		} else {
-			// フォーマットを合わせる
-			nyukyobi = nyukyobi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-					CodeConstant.NONE);
-			if (!syokiNyukyobi.equals(nyukyobi)) {
-				// 入居日変更フラグに1：変更ありを設定
-				nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
+			if (NfwStringUtils.isNotEmpty(nyukyobi)) {
+				// フォーマットを合わせる
+				nyukyobi = nyukyobi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
+						CodeConstant.NONE);
+				if (!syokiNyukyobi.equals(nyukyobi)) {
+					// 入居日変更フラグに1：変更ありを設定
+					nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
+				}
 			}
 		}
 
@@ -193,13 +197,13 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		// 駐車場使用開始日の有無をチェック
 		// 駐車場使用開始日1,2が無い時にテキストボックスの入力があった場合、
 		// (1台目,2台目)変更フラグを1:変更ありにする。
-		if (!CheckUtils.isEmpty(syokiShiyobi) && !CheckUtils.isEmpty(syokiShiyobi2)) {
+		if (!NfwStringUtils.isEmpty(syokiShiyobi) && !NfwStringUtils.isEmpty(syokiShiyobi2)) {
 			// 駐車場使用開始日変更フラグに3：変更ありを設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE_COM;
-		} else if (!CheckUtils.isEmpty(syokiShiyobi)) {
+		} else if (!NfwStringUtils.isEmpty(syokiShiyobi)) {
 			// 駐車場使用開始日変更フラグに1：変更あり(1台目)を設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE;
-		} else if (!CheckUtils.isEmpty(syokiShiyobi2)) {
+		} else if (!NfwStringUtils.isEmpty(syokiShiyobi2)) {
 			// 駐車場使用開始日変更フラグに2：変更あり(2台目)を設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE2;
 		}
@@ -212,7 +216,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String shainNo = loginUserInfo.get("shainNo");
 
-		if (CheckUtils.isEmpty(taikyobi) || CheckUtils.isEmpty(henkanbi)) {
+		if (NfwStringUtils.isEmpty(taikyobi) || NfwStringUtils.isEmpty(henkanbi)) {
 			newApplNo = skf2010Sc004SharedService.getApplNo(shainNo, applId);
 
 			nowAddress = skf2010Sc004SharedService.getAddressInfo(shainNo);
@@ -230,7 +234,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		}
 
 		// 退居届の申請書類番号が存在する場合
-		if (!CheckUtils.isEmpty(newApplNo)) {
+		if (!NfwStringUtils.isEmpty(newApplNo)) {
 			// 社宅入居時、退居届けの承認依頼メールを送信する
 			Map<String, String> applInfo2 = new HashMap<String, String>();
 			applInfo2.put("applNo", newApplNo);
@@ -253,7 +257,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		// Hidden領域の備品希望要否
 		String applNoBihinShinsei = CodeConstant.NONE;
 		String bihinKibo = agreeDto.getBihinKibo();
-		if (!CheckUtils.isEmpty(bihinKibo) && bihinKibo.equals(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO)) {
+		if (!NfwStringUtils.isEmpty(bihinKibo) && bihinKibo.equals(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO)) {
 			// 備品希望申請の申請書類履歴テーブルを作成する
 			applNoBihinShinsei = skf2010Sc004SharedService.insertApplHistoryBihinKibo(newApplNo, applId, shainNo,
 					errorMsg);

@@ -104,7 +104,7 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		// skf2030Sc001SharedService.getApplHistoryInfoForUpdate(applNo, applId,
 		// applStatus, shainNo);
 		if (tmpData == null) {
-			ServiceHelper.addWarnResultMessage(saveDto, null, MessageIdConstant.W_SKF_1009);
+			ServiceHelper.addWarnResultMessage(saveDto, MessageIdConstant.W_SKF_1009);
 			return -1;
 		}
 		// 排他チェック
@@ -132,7 +132,7 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		Skf2030Sc001GetBihinShinseiInfoForUpdateExp bihinShinseiData = new Skf2030Sc001GetBihinShinseiInfoForUpdateExp();
 		bihinShinseiData = skf2030Sc001SharedService.getBihinShinseiInfoForUpdate(applNo);
 		if (bihinShinseiData == null) {
-			ServiceHelper.addWarnResultMessage(saveDto, null, MessageIdConstant.W_SKF_1009);
+			ServiceHelper.addWarnResultMessage(saveDto, MessageIdConstant.W_SKF_1009);
 			return -1;
 		}
 		// 排他チェック
