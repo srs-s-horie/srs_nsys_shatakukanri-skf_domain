@@ -26,6 +26,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
@@ -47,6 +48,8 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfMailUtils skfMailUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -113,9 +116,6 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 				taikyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		} else {
-			// フォーマットを合わせる
-			taikyobi = taikyobi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-					CodeConstant.NONE);
 			if (!syokiTaikyobi.equals(taikyobi)) {
 				// 退居日変更フラグに1：変更ありを設定
 				taikyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
@@ -138,14 +138,9 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 				henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		} else {
-			if (NfwStringUtils.isNotEmpty(henkanbi)) {
-				// フォーマットを合わせる
-				henkanbi = henkanbi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-						CodeConstant.NONE);
-				if (!syokiHenkanbi.equals(henkanbi)) {
-					// 返還日変更フラグに1：変更ありを設定
-					henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
-				}
+			if (!syokiHenkanbi.equals(henkanbi)) {
+				// 返還日変更フラグに1：変更ありを設定
+				henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		}
 
@@ -165,14 +160,9 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 				nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		} else {
-			if (NfwStringUtils.isNotEmpty(nyukyobi)) {
-				// フォーマットを合わせる
-				nyukyobi = nyukyobi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-						CodeConstant.NONE);
-				if (!syokiNyukyobi.equals(nyukyobi)) {
-					// 入居日変更フラグに1：変更ありを設定
-					nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
-				}
+			if (!syokiNyukyobi.equals(nyukyobi)) {
+				// 入居日変更フラグに1：変更ありを設定
+				nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		}
 
