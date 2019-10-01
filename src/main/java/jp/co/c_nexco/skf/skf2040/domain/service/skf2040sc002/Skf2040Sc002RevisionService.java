@@ -66,6 +66,9 @@ public class Skf2040Sc002RevisionService extends BaseServiceAbstract<Skf2040Sc00
 
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI, applInfo, commentNote,
 					CodeConstant.NONE, rvsDto.getShainNo(), CodeConstant.NONE, urlBase);
+		} else {
+			throwBusinessExceptionIfErrors(rvsDto.getResultMessages());
+			return rvsDto;
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);

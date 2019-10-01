@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002PresentDto;
 
 /**
- * Skf2010Sc002 申請書類確認の提示ボタン処理クラス。
+ * Skf2010Sc002PresentService 申請書類確認の提示ボタン処理クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -108,9 +108,8 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 
 				String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 
-				// skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI,
-				// applInfoAnnai, preDto.getCommentNote(), annai,
-				// preDto.getShainNo(), CodeConstant.NONE, urlBase);
+				skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, preDto.getCommentNote(), annai,
+						preDto.getShainNo(), CodeConstant.NONE, urlBase);
 
 				// TODO 社宅管理データ連携処理実行
 

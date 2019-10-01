@@ -21,11 +21,13 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReportKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -66,6 +68,8 @@ public class Skf2010Sc002SharedService {
 	private Skf2010Sc002GetApplHistoryInfoByParameterExpRepository skf2010Sc002GetApplHistoryInfoByParameterExpRepository;
 	@Autowired
 	private Skf2010Sc002GetAttachedFileInfoExpRepository skf2010Sc002GetAttachedFileInfoExpRepository;
+	@Autowired
+	Skf2040TTaikyoReportRepository skf2040TTaikyoReportRepository;
 
 	@Value("${skf.common.attached_file_session_key}")
 	private String sessionKey;
@@ -306,9 +310,20 @@ public class Skf2010Sc002SharedService {
 		}
 	}
 
-	protected Skf2040TTaikyoReport getTaikyoReportInfo(String c001, String applNo) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	/**
+	 * 退居届情報取得
+	 * 
+	 * @param applNo
+	 * @return
+	 */
+	protected Skf2040TTaikyoReport getTaikyoReportInfo(String applNo) {
+
+		Skf2040TTaikyoReport taikyoRepDt = new Skf2040TTaikyoReport();
+		Skf2040TTaikyoReportKey setKey = new Skf2040TTaikyoReportKey();
+		setKey.setCompanyCd(CodeConstant.C001);
+		setKey.setApplNo(applNo);
+		taikyoRepDt = skf2040TTaikyoReportRepository.selectByPrimaryKey(setKey);
+		return taikyoRepDt;
 	}
 
 }
