@@ -78,8 +78,13 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		return initDto;
 	}
 
+	/**
+	 * 承認者チェックを行います
+	 * 
+	 * @param initDto
+	 */
 	private void setShoninBtnRemove(Skf2010Sc006InitDto initDto) {
-		// TODO 自動生成されたメソッド・スタブ
+		// 承認者が前の承認者と同一の場合、「再提示」「資料ファイル添付」「承認」「コメント表示」ボタンを非表示にする
 		Map<String, String> loginUser = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userName = loginUser.get("userName");
 		String roleId = loginUser.get("roleId");
