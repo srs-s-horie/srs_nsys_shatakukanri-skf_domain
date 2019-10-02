@@ -63,6 +63,7 @@ public class Skf2030Sc002InitService extends BaseServiceAbstract<Skf2030Sc002Ini
 		if (!result) {
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 			initDto.setMaskPattern("ERR");
+			initDto.setCommentDisabled("true");
 		}
 
 		skf2030Sc002SharedService.setEnabled(initDto, applInfo);

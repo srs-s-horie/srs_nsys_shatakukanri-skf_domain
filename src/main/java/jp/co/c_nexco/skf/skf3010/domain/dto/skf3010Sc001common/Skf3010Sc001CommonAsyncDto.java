@@ -7,9 +7,9 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.common.Skf301010CommonAsyncDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * 従業員マスタ一覧非同期処理共通Dto
+ * Skf3010Sc001CommonAsyncDto 社宅一覧内共通DTO(非同期用)
  * 
- * @author k.takagi
+ * @author NEXCOシステムズ
  *
  */
 @lombok.Data

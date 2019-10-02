@@ -43,7 +43,7 @@ public class Skf2030Sc002ApproveService extends BaseServiceAbstract<Skf2030Sc002
 	@Override
 	public BaseDto index(Skf2030Sc002ApproveDto applyDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("申請処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC002);
+		skfOperationLogUtils.setAccessLog("承認処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC002);
 		// タイトル設定
 		applyDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
