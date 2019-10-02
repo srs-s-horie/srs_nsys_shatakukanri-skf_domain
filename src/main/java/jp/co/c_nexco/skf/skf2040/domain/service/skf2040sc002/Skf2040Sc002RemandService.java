@@ -68,6 +68,9 @@ public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002R
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
 					remDto.getShainNo(), CodeConstant.NONE, urlBase);
 
+		} else {
+			throwBusinessExceptionIfErrors(remDto.getResultMessages());
+			return remDto;
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);

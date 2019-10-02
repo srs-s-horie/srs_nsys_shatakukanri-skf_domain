@@ -112,7 +112,7 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 
 		if (CodeConstant.STATUS_MISAKUSEI.equals(applInfo.get("status"))) {
 			// 指定なし（新規）の場合
-			dto.setHdnStatus(CodeConstant.STATUS_MISAKUSEI);
+			dto.setApplStatus(CodeConstant.STATUS_MISAKUSEI);
 			// 更新フラグを「0」に設定する
 			applInfo.put("updateFlg", Skf2020Sc002SharedService.NO_UPDATE_FLG);
 			// 新規登録処理
@@ -130,7 +130,7 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			}
 		} else {
 			// 新規以外
-			dto.setHdnStatus(applInfo.get("status"));
+			dto.setApplStatus(applInfo.get("status"));
 			applInfo.put("updateFlg", Skf2020Sc002SharedService.UPDATE_FLG);
 
 			// 排他制御の比較用更新日を設定

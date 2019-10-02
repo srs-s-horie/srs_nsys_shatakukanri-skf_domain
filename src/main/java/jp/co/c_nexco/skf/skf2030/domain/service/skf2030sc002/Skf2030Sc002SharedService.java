@@ -69,7 +69,7 @@ public class Skf2030Sc002SharedService {
 	// メッセージ用定数
 	private static final String NO_DATA_MESSAGE = "初期表示中に";
 	private static final String SHATAKU_TEIJI_MSG = "社宅管理システムで提示データを確認";
-	private static final String BIHIN_TEIJI_COMP = "備品提示前に社宅入居希望等調書を承認";
+	private static final String BIHIN_TEIJI_COMP = "（備品提示データが作成完了されていません。）";
 	private static final String NYUKYO_SHONIN_MSG_T = "備品承認前に社宅入居希望等調書を承認";
 	private static final String REASON_LABEL = "申請者へのコメント";
 
@@ -222,7 +222,9 @@ public class Skf2030Sc002SharedService {
 		// 【 備品搬入完了 】
 		// 備品搬入完了日 ※入力項目
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getCompletionDay())) {
-			dto.setCompletionDay(bihinShinseiInfo.getCompletionDay());
+			String completionDayText = skfDateFormatUtils.dateFormatFromString(bihinShinseiInfo.getCompletionDay(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			dto.setCompletionDay(completionDayText);
 		}
 
 		List<SkfBihinInfoUtilsGetBihinInfoExp> bihinInfoList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();
@@ -510,6 +512,8 @@ public class Skf2030Sc002SharedService {
 		String nextWorkflow = CodeConstant.NONE;
 		Date sysDateTime = new Date();
 
+		String sendUserId = CodeConstant.NONE;
+
 		String applStatus = applInfo.get("status");
 		switch (applStatus) {
 		case CodeConstant.STATUS_SHINSACHU:
@@ -551,12 +555,14 @@ public class Skf2030Sc002SharedService {
 				updateStatus = CodeConstant.STATUS_HANNYU_MACHI;
 				mailKbn = CodeConstant.HANNYU_MACHI_TSUCHI;
 				agreDate = sysDateTime;
+				sendUserId = applInfo.get("applShainNo");
 				break;
 			case CodeConstant.STATUS_SHINSACHU:
 				// 押下されたボタンが修正依頼 かつステータスが審査中の場合、更新ステータスを強制的に修正依頼に変更
 				updateStatus = CodeConstant.STATUS_SASHIMODOSHI;
 				mailKbn = CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI;
 				agreDate = sysDateTime;
+				sendUserId = applInfo.get("applShainNo");
 				break;
 			}
 			break;
@@ -565,6 +571,7 @@ public class Skf2030Sc002SharedService {
 			updateStatus = CodeConstant.STATUS_HININ;
 			mailKbn = CodeConstant.HININ_KANRYO_TSUCHI;
 			agreDate = sysDateTime;
+			sendUserId = applInfo.get("applShainNo");
 			break;
 		case UPDATE_TYPE_PRESENT:
 			// 押下されたボタンが提示の場合
@@ -576,6 +583,7 @@ public class Skf2030Sc002SharedService {
 			updateStatus = CodeConstant.STATUS_HANNYU_MACHI;
 			mailKbn = CodeConstant.HANNYU_MACHI_TSUCHI;
 			agreDate = sysDateTime;
+			sendUserId = applInfo.get("applShainNo");
 			break;
 		default:
 			// 社宅入居希望等調書の承認がされていない場合、備品の承認を行えないよう制御する
@@ -587,6 +595,7 @@ public class Skf2030Sc002SharedService {
 				// 次のワークフロー設定がない場合、承認済みに設定
 				updateStatus = CodeConstant.STATUS_SHONIN_ZUMI;
 				mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
+				sendUserId = applInfo.get("applShainNo");
 			}
 			break;
 		}
@@ -667,7 +676,7 @@ public class Skf2030Sc002SharedService {
 		case CodeConstant.TEJI_TSUCHI:
 			// 掲載URL
 			String urlBase = "skf/Skf2010Sc003/init";
-			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, null, commentName, CodeConstant.NONE,
+			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, null, sendUserId, CodeConstant.NONE,
 					urlBase);
 			break;
 
