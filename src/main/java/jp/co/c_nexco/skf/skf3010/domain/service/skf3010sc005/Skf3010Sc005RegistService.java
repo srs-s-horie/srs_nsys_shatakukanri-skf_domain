@@ -515,7 +515,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 		//社宅管理番号
 		setValue.setShatakuKanriNo(Long.parseLong(dto.getHdnShatakuKanriNo()));
 		//　部屋番号
-		setValue.setRoomNo(dto.getRoomNo().trim());
+		setValue.setRoomNo(dto.getRoomNo());
 		
 		// 本来規格
 		setValue.setOriginalKikaku(dto.getOriginalKikaku());
