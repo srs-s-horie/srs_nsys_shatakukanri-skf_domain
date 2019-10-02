@@ -136,6 +136,19 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			returnValue = false;
 			return returnValue;
 		}
+		// 申請書類履歴情報を画面に設定
+		initDto.setShainNo(applHistoryList.get(0).getShainNo());
+		initDto.setHdnApplShainNo(applHistoryList.get(0).getShainNo());
+		initDto.setApplHistoryDate(applHistoryList.get(0).getApplDate());
+
+		// 添付書類有無が取得できた場合は設定
+		if (NfwStringUtils.isNotEmpty(applHistoryList.get(0).getApplTacFlg())) {
+			initDto.setApplTacFlg(applHistoryList.get(0).getApplTacFlg());
+		}
+
+		// 申請状況を設定
+		initDto.setApplStatus(applHistoryList.get(0).getApplStatus());
+		initDto.setApplStatusText(changeApplStatusText(applHistoryList.get(0).getApplStatus()));
 
 		// 排他チェック用の日付設定
 		if (FunctionIdConstant.R0105.equals(initDto.getApplId())) {
@@ -161,21 +174,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					applHistoryList.get(0).getUpdateDate());
 		}
 
-		// 申請書類履歴情報を画面のに設定
-		initDto.setShainNo(applHistoryList.get(0).getShainNo());
-		initDto.setHdnApplShainNo(applHistoryList.get(0).getShainNo());
-		initDto.setApplHistoryDate(applHistoryList.get(0).getApplDate());
-
-		// 添付書類有無が取得できた場合は設定
-		if (NfwStringUtils.isNotEmpty(applHistoryList.get(0).getApplTacFlg())) {
-			initDto.setApplTacFlg(applHistoryList.get(0).getApplTacFlg());
-		}
-
-		// 申請状況を設定
-		initDto.setApplStatus(applHistoryList.get(0).getApplStatus());
-		initDto.setApplStatusText(changeApplStatusText(applHistoryList.get(0).getApplStatus()));
-
-		// コメント入力欄の設定
+		// コメントボタンの設定
 		setInputComment(initDto);
 
 		// コントロール制御
@@ -691,7 +690,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	}
 
 	/**
-	 * コメント入力欄の設定
+	 * コメントボタンの設定
 	 * 
 	 * @param initDto
 	 */

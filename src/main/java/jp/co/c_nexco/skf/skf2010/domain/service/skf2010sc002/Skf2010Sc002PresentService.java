@@ -48,7 +48,7 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, preDto.getPageId());
 
-		// 申請情報のチェックを行う
+		// セッション情報チェック
 		skf2010Sc002SharedService.checktApplSession(preDto);
 
 		// コメント欄の入力チェック
@@ -56,8 +56,6 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 			// エラーメッセージがある場合、処理を中断
 			return preDto;
 		}
-
-		String commentNote = preDto.getCommentNote();
 
 		// ステータスを設定
 		String status = CodeConstant.STATUS_KAKUNIN_IRAI;

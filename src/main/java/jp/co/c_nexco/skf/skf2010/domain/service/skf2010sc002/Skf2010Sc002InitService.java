@@ -16,7 +16,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUti
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
@@ -162,7 +161,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		switch (prePageId) {
 		case FunctionIdConstant.SKF2020_SC002:
-		case FunctionIdConstant.SKF2010_SC005:
+		case FunctionIdConstant.SKF2020_SC003:
 			// 入居希望申請情報の取得
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
 			tNyukyoChoshoTsuchi = skf2010Sc002SharedService.getNyukyoChoshoTsuchiInfo(CodeConstant.C001, applNo);
@@ -255,8 +254,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
 			result.put("commentDisplayLevel", CodeConstant.COMMENT_DISPLAY_LEVEL_1); // 申請者から承認者へ
 			break;
-		case FunctionIdConstant.SKF2010_SC005:
-			// 承認一覧→社宅入居希望等調書（アウトソース用）
+		case FunctionIdConstant.SKF2020_SC003:
+			// 社宅入居希望等調書（アウトソース用）
 			result.put("level1", sTrue); // 入居希望等調書
 			result.put("level2", sTrue); // 貸与社宅などのご案内
 			result.put("level3", sFalse);// 退居届
@@ -306,7 +305,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 入居希望申請調書
 		// 社宅必要可否
-		if (tNyukyoChoshoTsuchi.getTaiyoHitsuyo() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTaiyoHitsuyo())) {
 			switch (tNyukyoChoshoTsuchi.getTaiyoHitsuyo()) {
 			case CodeConstant.ASKED_SHATAKU_HITSUYO:
 				// 必要
@@ -339,7 +338,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 社宅必要理由
-		if (tNyukyoChoshoTsuchi.getHitsuyoRiyu() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getHitsuyoRiyu())) {
 			switch (tNyukyoChoshoTsuchi.getHitsuyoRiyu()) {
 			case CodeConstant.IDOU:
 				// 異動のため
@@ -372,7 +371,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 社宅不必要理由
-		if (tNyukyoChoshoTsuchi.getFuhitsuyoRiyu() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getFuhitsuyoRiyu())) {
 			switch (tNyukyoChoshoTsuchi.getFuhitsuyoRiyu()) {
 			case CodeConstant.JITAKU_TSUKIN:
 				// 自宅通勤
@@ -405,29 +404,48 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 社員番号
-		initDto.setShainNo(tNyukyoChoshoTsuchi.getShainNo());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getShainNo())) {
+			initDto.setShainNo(tNyukyoChoshoTsuchi.getShainNo());
+		}
 		// 氏名
-		initDto.setName(tNyukyoChoshoTsuchi.getName());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getName())) {
+			initDto.setName(tNyukyoChoshoTsuchi.getName());
+		}
 		// 等級
-		initDto.setTokyu(tNyukyoChoshoTsuchi.getTokyu());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTokyu())) {
+			initDto.setTokyu(tNyukyoChoshoTsuchi.getTokyu());
+		}
 		// 所属
 		// 現所属：機関
-		initDto.setNowAgency(tNyukyoChoshoTsuchi.getAgency());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getAgency())) {
+			initDto.setNowAgency(tNyukyoChoshoTsuchi.getAgency());
+		}
 		// 現所属：部等
-		initDto.setNowAffiliation1(tNyukyoChoshoTsuchi.getAffiliation1());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getAffiliation1())) {
+			initDto.setNowAffiliation1(tNyukyoChoshoTsuchi.getAffiliation1());
+		}
 		// 現所属：室、チーム又は課
-		initDto.setNowAffiliation2(tNyukyoChoshoTsuchi.getAffiliation2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getAffiliation2())) {
+			initDto.setNowAffiliation2(tNyukyoChoshoTsuchi.getAffiliation2());
+		}
 		// 現所属：勤務先のTEL
-		initDto.setNowTel(tNyukyoChoshoTsuchi.getTel());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTel())) {
+			initDto.setNowTel(tNyukyoChoshoTsuchi.getTel());
+		}
 		// 新所属：機関
-		initDto.setNewAgency(tNyukyoChoshoTsuchi.getNewAgency());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewAgency())) {
+			initDto.setNewAgency(tNyukyoChoshoTsuchi.getNewAgency());
+		}
 		// 新所属：部等
-		initDto.setNewAffiliation1(tNyukyoChoshoTsuchi.getNewAffiliation1());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewAffiliation1())) {
+			initDto.setNewAffiliation1(tNyukyoChoshoTsuchi.getNewAffiliation1());
+		}
 		// 新所属：室、チーム又は課
-		initDto.setNewAffiliation2(tNyukyoChoshoTsuchi.getNewAffiliation2());
-
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewAffiliation2())) {
+			initDto.setNewAffiliation2(tNyukyoChoshoTsuchi.getNewAffiliation2());
+		}
 		// 必要とする社宅
-		if (tNyukyoChoshoTsuchi.getHitsuyoShataku() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getHitsuyoShataku())) {
 			switch (tNyukyoChoshoTsuchi.getHitsuyoShataku()) {
 			case CodeConstant.SETAI:
 				// 世帯
@@ -459,49 +477,79 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setHitsuyouShatakuSingle(CodeConstant.UNCHECKED);
 		}
 
-		// 同居家族続柄１
-		initDto.setDokyoRelation1(tNyukyoChoshoTsuchi.getDokyoRelation1());
-		// 同居家族氏名１
-		initDto.setDokyoName1(tNyukyoChoshoTsuchi.getDokyoName1());
-		// 同居家族年齢１
-		initDto.setDokyoAge1(tNyukyoChoshoTsuchi.getDokyoAge1());
-		// 同居家族続柄2
-		initDto.setDokyoRelation2(tNyukyoChoshoTsuchi.getDokyoRelation2());
-		// 同居家族氏名2
-		initDto.setDokyoName2(tNyukyoChoshoTsuchi.getDokyoName2());
-		// 同居家族年齢2
-		initDto.setDokyoAge2(tNyukyoChoshoTsuchi.getDokyoAge2());
-		// 同居家族続柄3
-		initDto.setDokyoRelation3(tNyukyoChoshoTsuchi.getDokyoRelation3());
-		// 同居家族氏名3
-		initDto.setDokyoName3(tNyukyoChoshoTsuchi.getDokyoName3());
-		// 同居家族年齢3
-		initDto.setDokyoAge3(tNyukyoChoshoTsuchi.getDokyoAge3());
-		// 同居家族続柄5
-		initDto.setDokyoRelation5(tNyukyoChoshoTsuchi.getDokyoRelation5());
-		// 同居家族氏名5
-		initDto.setDokyoName5(tNyukyoChoshoTsuchi.getDokyoName5());
-		// 同居家族年齢5
-		initDto.setDokyoAge5(tNyukyoChoshoTsuchi.getDokyoAge5());
-		// 同居家族続柄5
-		initDto.setDokyoRelation5(tNyukyoChoshoTsuchi.getDokyoRelation5());
-		// 同居家族氏名5
-		initDto.setDokyoName5(tNyukyoChoshoTsuchi.getDokyoName5());
-		// 同居家族年齢5
-		initDto.setDokyoAge5(tNyukyoChoshoTsuchi.getDokyoAge5());
-		// 同居家族続柄6
-		initDto.setDokyoRelation6(tNyukyoChoshoTsuchi.getDokyoRelation6());
-		// 同居家族氏名6
-		initDto.setDokyoName6(tNyukyoChoshoTsuchi.getDokyoName6());
-		// 同居家族年齢6
-		initDto.setDokyoAge6(tNyukyoChoshoTsuchi.getDokyoAge6());
+		// 家族1
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation1())) {
+			initDto.setDokyoRelation1(tNyukyoChoshoTsuchi.getDokyoRelation1());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName1())) {
+			initDto.setDokyoName1(tNyukyoChoshoTsuchi.getDokyoName1());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge1())) {
+			initDto.setDokyoAge1(tNyukyoChoshoTsuchi.getDokyoAge1());
+		}
+
+		// 家族2
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation2())) {
+			initDto.setDokyoRelation2(tNyukyoChoshoTsuchi.getDokyoRelation2());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName2())) {
+			initDto.setDokyoName2(tNyukyoChoshoTsuchi.getDokyoName2());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge2())) {
+			initDto.setDokyoAge2(tNyukyoChoshoTsuchi.getDokyoAge2());
+		}
+
+		// 家族3
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation3())) {
+			initDto.setDokyoRelation3(tNyukyoChoshoTsuchi.getDokyoRelation3());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName3())) {
+			initDto.setDokyoName3(tNyukyoChoshoTsuchi.getDokyoName3());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge3())) {
+			initDto.setDokyoAge3(tNyukyoChoshoTsuchi.getDokyoAge3());
+		}
+
+		// 家族4
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation4())) {
+			initDto.setDokyoRelation4(tNyukyoChoshoTsuchi.getDokyoRelation4());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName4())) {
+			initDto.setDokyoName4(tNyukyoChoshoTsuchi.getDokyoName4());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge4())) {
+			initDto.setDokyoAge4(tNyukyoChoshoTsuchi.getDokyoAge4());
+		}
+
+		// 家族5
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation5())) {
+			initDto.setDokyoRelation5(tNyukyoChoshoTsuchi.getDokyoRelation5());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName5())) {
+			initDto.setDokyoName5(tNyukyoChoshoTsuchi.getDokyoName5());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge5())) {
+			initDto.setDokyoAge5(tNyukyoChoshoTsuchi.getDokyoAge5());
+		}
+
+		// 家族6
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation6())) {
+			initDto.setDokyoRelation6(tNyukyoChoshoTsuchi.getDokyoRelation6());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName6())) {
+			initDto.setDokyoName6(tNyukyoChoshoTsuchi.getDokyoName6());
+		}
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge6())) {
+			initDto.setDokyoAge6(tNyukyoChoshoTsuchi.getDokyoAge6());
+		}
 
 		// 入居予定日
-		initDto.setNyukyoYoteiDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoYoteiDate(), "yyyy年MM月dd日"));
-
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNyukyoYoteiDate())) {
+			initDto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoYoteiDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		// 保管場所
-		if (tNyukyoChoshoTsuchi.getParkingUmu() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUmu())) {
 			switch (tNyukyoChoshoTsuchi.getParkingUmu()) {
 			case CodeConstant.CAR_PARK_HITUYO:
 				// 必要
@@ -520,36 +568,60 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 自動車番号登録フラグ
-		initDto.setCarNoInputFlg(tNyukyoChoshoTsuchi.getCarNoInputFlg());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNoInputFlg())) {
+			initDto.setCarNoInputFlg(tNyukyoChoshoTsuchi.getCarNoInputFlg());
+		}
 		// 自動車の車名
-		initDto.setCarName(tNyukyoChoshoTsuchi.getCarName());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarName())) {
+			initDto.setCarName(tNyukyoChoshoTsuchi.getCarName());
+		}
 		// 自動車の登録番号
-		initDto.setCarNo(tNyukyoChoshoTsuchi.getCarNo());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo())) {
+			initDto.setCarNo(tNyukyoChoshoTsuchi.getCarNo());
+		}
 		// 自動車の使用者
-		initDto.setCarUser(tNyukyoChoshoTsuchi.getCarUser());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser())) {
+			initDto.setCarUser(tNyukyoChoshoTsuchi.getCarUser());
+		}
 		// 車検の有効期間満了日
-		initDto.setCarExpirationDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getCarExpirationDate(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarExpirationDate())) {
+			initDto.setCarExpirationDate(skfDateFormatUtils.dateFormatFromString(
+					tNyukyoChoshoTsuchi.getCarExpirationDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		// 自動車の保管場所使用開始日
-		initDto.setParkingUserDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingUseDate(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUseDate())) {
+			initDto.setParkingUserDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingUseDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		// 自動車番号登録フラグ2
-		initDto.setCarNoInputFlg2(tNyukyoChoshoTsuchi.getCarNoInputFlg2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNoInputFlg2())) {
+			initDto.setCarNoInputFlg2(tNyukyoChoshoTsuchi.getCarNoInputFlg2());
+		}
 		// 自動車の車名2
-		initDto.setCarName2(tNyukyoChoshoTsuchi.getCarName2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarName2())) {
+			initDto.setCarName2(tNyukyoChoshoTsuchi.getCarName2());
+		}
 		// 自動車の登録番号2
-		initDto.setCarNo2(tNyukyoChoshoTsuchi.getCarNo2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())) {
+			initDto.setCarNo2(tNyukyoChoshoTsuchi.getCarNo2());
+		}
 		// 自動車の使用者2
-		initDto.setCarUser2(tNyukyoChoshoTsuchi.getCarUser2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
+			initDto.setCarUser2(tNyukyoChoshoTsuchi.getCarUser2());
+		}
 		// 車検の有効期間満了日2
-		initDto.setCarExpirationDate2(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getCarExpirationDate2(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarExpirationDate2())) {
+			initDto.setCarExpirationDate2(skfDateFormatUtils.dateFormatFromString(
+					tNyukyoChoshoTsuchi.getCarExpirationDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		// 自動車の保管場所使用開始日2
-		initDto.setParkingUserDate2(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingUseDate2(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUseDate2())) {
+			initDto.setParkingUserDate2(skfDateFormatUtils.dateFormatFromString(
+					tNyukyoChoshoTsuchi.getParkingUseDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 
 		// 入居社宅
-		if (tNyukyoChoshoTsuchi.getNowShataku() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShataku())) {
 			switch (tNyukyoChoshoTsuchi.getNowShataku()) {
 			case CodeConstant.GENNYUKYO_SHATAKU_KBN_HOYU:
 				// 保有
@@ -594,11 +666,15 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 保有社宅名
-		initDto.setNowShatakuName(tNyukyoChoshoTsuchi.getNowShatakuName());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuName())) {
+			initDto.setNowShatakuName(tNyukyoChoshoTsuchi.getNowShatakuName());
+		}
 		// 保有社宅号室
-		initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuNo())) {
+			initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
+		}
 		// 保有社宅規格
-		if (tNyukyoChoshoTsuchi.getNowShatakuKikaku() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuKikaku())) {
 			initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
 			// 規格名称取得
 			String kikakuName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_LAYOUT_KBN,
@@ -607,10 +683,12 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 保有社宅面積
-		initDto.setNowShatakuMenseki(tNyukyoChoshoTsuchi.getNowShatakuMenseki());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuMenseki())) {
+			initDto.setNowShatakuMenseki(tNyukyoChoshoTsuchi.getNowShatakuMenseki());
+		}
 
 		// 現入居社宅
-		if (tNyukyoChoshoTsuchi.getTaikyoYotei() != null) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTaikyoYotei())) {
 			switch (tNyukyoChoshoTsuchi.getTaikyoYotei()) {
 			case CodeConstant.LEAVE:
 				// 退居する
@@ -629,101 +707,143 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 保有社宅退居予定日
-		initDto.setTaikyoYoteiDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getTaikyoYoteiDate(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTaikyoYoteiDate())) {
+			initDto.setTaikyoYoteiDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getTaikyoYoteiDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		// 特殊事情
-		initDto.setTokushuJijo(tNyukyoChoshoTsuchi.getTokushuJijo());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTokushuJijo())) {
+			initDto.setTokushuJijo(tNyukyoChoshoTsuchi.getTokushuJijo());
+		}
 
 		return;
 	}
 
 	/**
-	 * 貸与（予定）社宅等のご案内表示のマッピングを行います
+	 * 貸与（予定）社宅等のご案内表示のマッピング
 	 * 
 	 * @param initDto
 	 * @param tNyukyoChoshoTsuchi
 	 */
 	private void mappingTaiyoShatakuAnnai(Skf2010Sc002InitDto initDto, Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi) {
 
+		// 社宅を必要とする理由変換用Map
 		Map<String, BaseCodeEntity> hitsuyoRiyuMap = new HashMap<String, BaseCodeEntity>();
 		hitsuyoRiyuMap = codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_NEED_RIYU_KBN);
 
+		// 規格変換用Map
+		Map<String, BaseCodeEntity> shatakuKikakuMap = new HashMap<String, BaseCodeEntity>();
+		shatakuKikakuMap = codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_LAYOUT_KBN);
+
 		// 案内日
-		initDto.setTsuchiDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getTsuchiDate(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTsuchiDate())) {
+			initDto.setTsuchiDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getTsuchiDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		// 申請日
-		initDto.setApplDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getApplDate(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getApplDate())) {
+			initDto.setApplDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getApplDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 
 		// 制約日
-		initDto.setSeiyakuDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getSeiyakuDate(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getSeiyakuDate())) {
+			initDto.setSeiyakuDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getSeiyakuDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 
 		// 社宅を必要とする理由
-		String hitsuyoRiyu = tNyukyoChoshoTsuchi.getHitsuyoRiyu();
-		BaseCodeEntity bce = hitsuyoRiyuMap.get(hitsuyoRiyu);
-		initDto.setHitsuyoRiyu(bce.getCodeName());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getHitsuyoRiyu())) {
+			String hitsuyoRiyu = tNyukyoChoshoTsuchi.getHitsuyoRiyu();
+			BaseCodeEntity bceHitsuyoRiyu = hitsuyoRiyuMap.get(hitsuyoRiyu);
+			initDto.setHitsuyoRiyu(bceHitsuyoRiyu.getCodeName());
+		}
 
 		// 社宅所在地
-		initDto.setNewShozaichi(tNyukyoChoshoTsuchi.getNewShozaichi());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShozaichi())) {
+			initDto.setNewShozaichi(tNyukyoChoshoTsuchi.getNewShozaichi());
+		}
 
 		// 社宅名
-		initDto.setNewShatakuName(tNyukyoChoshoTsuchi.getNewShatakuName());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuName())) {
+			initDto.setNewShatakuName(tNyukyoChoshoTsuchi.getNewShatakuName());
+		}
 
 		// 室番号
-		initDto.setNewShatakuNo(tNyukyoChoshoTsuchi.getNewShatakuNo());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
+			initDto.setNewShatakuNo(tNyukyoChoshoTsuchi.getNewShatakuNo());
+		}
 
 		// 規格
-		initDto.setNewShatakuKikaku(tNyukyoChoshoTsuchi.getNewShatakuKikaku());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuKikaku())) {
+			String shatakuKikaku = tNyukyoChoshoTsuchi.getNewShatakuKikaku();
+			BaseCodeEntity bceKikaku = shatakuKikakuMap.get(shatakuKikaku);
+			initDto.setNewShatakuKikaku(bceKikaku.getCodeName());
+		}
 
 		// 面積
-		initDto.setNewShatakuMenseki(tNyukyoChoshoTsuchi.getNewShatakuMenseki());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuMenseki())) {
+			initDto.setNewShatakuMenseki(tNyukyoChoshoTsuchi.getNewShatakuMenseki());
+		}
 
 		// 数値のカンマ区切り設定
 		NumberFormat nfNum = NumberFormat.getNumberInstance();
 
 		// 使用料
 		String newRental = tNyukyoChoshoTsuchi.getNewRental();
-		if (newRental != null && !CheckUtils.isEmpty(newRental)) {
+		if (NfwStringUtils.isNotEmpty(newRental)) {
 			newRental = nfNum.format(Long.parseLong(newRental));
+			initDto.setNewRental(newRental);
 		}
-		initDto.setNewRental(newRental);
 		// 共益費
 		String newKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
-		if (newKyoekihi != null && !CheckUtils.isEmpty(newKyoekihi)) {
+		if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
 			newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
+			initDto.setNewKyoekihi(newKyoekihi);
 		}
-		initDto.setNewKyoekihi(newKyoekihi);
 
 		// 自動車１台目
 		// 自動車の保管場所
-		initDto.setParkingArea(tNyukyoChoshoTsuchi.getParkingArea());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea())) {
+			initDto.setParkingArea(tNyukyoChoshoTsuchi.getParkingArea());
+		}
 		// 自動車の位置番号
-		initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarIchiNo())) {
+			initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo());
+		}
 		// 保管場所使用料
 		String parkingRental = tNyukyoChoshoTsuchi.getParkingRental();
-		if (parkingRental != null && !CheckUtils.isEmpty(parkingRental)) {
+		if (NfwStringUtils.isNotEmpty(parkingRental)) {
 			parkingRental = nfNum.format(Long.parseLong(parkingRental));
+			initDto.setParkingRental(parkingRental);
 		}
-		initDto.setParkingRental(parkingRental);
 
 		// 自動車２台目
 		// 自動車の保管場所
-		initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())) {
+			initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
+		}
 		// 自動車の位置番号
-		initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())) {
+			initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getParkingArea2());
+		}
 		// 保管場所使用料
 		String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
-		if (parkingRental2 != null && !CheckUtils.isEmpty(parkingRental2)) {
+		if (NfwStringUtils.isNotEmpty(parkingRental2)) {
 			parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
+			initDto.setParkingRental2(parkingRental2);
 		}
-		initDto.setParkingRental2(parkingRental2);
 
 		// 自動車保管場所（１台目）の使用開始予定日
-		initDto.setParkingKanoDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingKanoDate(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingKanoDate())) {
+			initDto.setParkingKanoDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingKanoDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		// 自動車保管場所（２台目）の使用開始予定日
-		initDto.setParkingKanoDate2(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingKanoDate2(), "yyyy年MM月dd日"));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingKanoDate2())) {
+			initDto.setParkingKanoDate2(skfDateFormatUtils.dateFormatFromString(
+					tNyukyoChoshoTsuchi.getParkingKanoDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 		return;
 	}
 
@@ -734,40 +854,62 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * @param tTaikyoReport
 	 */
 	private void mappingTaikyoReport(Skf2010Sc002InitDto initDto, Skf2040TTaikyoReport taikyoRepDt) {
+
 		String sfontColor = "<font color='red'>";
 		String eFontColoor = "</font>";
 
 		// 申請書類タイトル表記設定
-		initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn()); // 社宅退居
-		initDto.setShatakuTaikyoKbn2(taikyoRepDt.getShatakuTaikyoKbn2()); // 駐車場返還
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuTaikyoKbn())) {
+			initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn()); // 社宅退居
+		}
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuTaikyoKbn2())) {
+			initDto.setShatakuTaikyoKbn2(taikyoRepDt.getShatakuTaikyoKbn2()); // 駐車場返還
+		}
 
 		// 申請書類管理番号
-		initDto.setApplNo(taikyoRepDt.getApplNo());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getApplNo())) {
+			initDto.setApplNo(taikyoRepDt.getApplNo());
+		}
 		// 申請年月日
 		String applDate = taikyoRepDt.getApplDate();
-		String applDateText = skfDateFormatUtils.dateFormatFromString(applDate,
-				SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
-		initDto.setApplDate(applDateText);
+		if (NfwStringUtils.isNotEmpty(applDate)) {
+			String applDateText = skfDateFormatUtils.dateFormatFromString(applDate,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+			initDto.setApplDate(applDateText);
+		}
 		// 機関
-		initDto.setNowAgency(taikyoRepDt.getAgency());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAgency())) {
+			initDto.setNowAgency(taikyoRepDt.getAgency());
+		}
 		// 部等
-		initDto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation1())) {
+			initDto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
+		}
 		// 室、チーム又は課
-		initDto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation2())) {
+			initDto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
+		}
 		// 現住所
-		initDto.setAddress(taikyoRepDt.getAddress());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAddress())) {
+			initDto.setAddress(taikyoRepDt.getAddress());
+		}
 		// 氏名
-		initDto.setName(taikyoRepDt.getName());
-
-		// 社宅退居区分
-		taikyoRepDt.getShatakuTaikyoKbn();
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getName())) {
+			initDto.setName(taikyoRepDt.getName());
+		}
 
 		// 社宅
-		initDto.setShatakuName(taikyoRepDt.getTaikyoArea());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoArea())) {
+			initDto.setShatakuName(taikyoRepDt.getTaikyoArea());
+		}
 		// 駐車場1
-		initDto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress1())) {
+			initDto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
+		}
 		// 駐車場2
-		initDto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress2())) {
+			initDto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
+		}
 		// 退居日 社宅等
 		// 退居日
 		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
@@ -809,10 +951,12 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		String taikyoRiyu = CodeConstant.DOUBLE_QUOTATION;
 		if (taikyoRiyuMap != null) {
 			taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
+			initDto.setTaikyoRiyu(taikyoRiyu);
 		}
-		initDto.setTaikyoRiyu(taikyoRiyu);
 		// 退居後の連絡先
-		initDto.setTaikyogoRenrakusaki(taikyoRepDt.getTaikyogoRenrakusaki());
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyogoRenrakusaki())) {
+			initDto.setTaikyogoRenrakusaki(taikyoRepDt.getTaikyogoRenrakusaki());
+		}
 
 		return;
 

@@ -39,7 +39,7 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("申請", CodeConstant.C001, applyDto.getPageId());
 
-		// 申請情報のチェックを行う
+		// セッション情報チェック
 		skf2010Sc002SharedService.checktApplSession(applyDto);
 
 		// 申請前に申請可能か判定を行う。
