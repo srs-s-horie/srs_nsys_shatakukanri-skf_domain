@@ -11,16 +11,19 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.common.Skf204010CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf2040Sc001 退居（自動車の保管場所返還）届画面Form
+ * Skf2040Sc001 退居（自動車の保管場所返還）届画面の共通Dto
  * 
  * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
 public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
-	
-	private static final long serialVersionUID = -1902278406295003652L;
-	
+    
+    private static final long serialVersionUID = -1902278406295003652L;
+    /** 楽観的排他制御に使用するテーブルプレフィクス_申請履歴 */
+    public final String UPDATE_TABLE_PREFIX_APPL_HIST = "SKF2010_APPL_HISTORY_";
+    /** 楽観的排他制御に使用するテーブルプレフィクス_退居届 */
+    public final String UPDATE_TABLE_PREFIX_TAIKYO_REPORT = "SKF2040_TAIKYO_REPORT_";
     /**
      * フォーム情報
      */
@@ -35,8 +38,20 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     private String nowShataku;
     // 保有社宅名
     private String nowShatakuName;
+    // 室番号
+    private String nowShatakuNo;
+    // 規格（間取り）
+    private String nowShatakuKikaku;
+    // 規格名称（間取り）
+    private String nowShatakuKikakuName;
+    // 面積
+    private String nowShatakuMenseki;
     // 社宅管理番号
     private long shatakuNo;
+    // 社宅管理ID
+    private long shatakuKanriId;
+    // 社宅名
+    private String shatakuName;
     // 現住所
     private String nowAddress;
     // 社員番号
@@ -45,6 +60,12 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     private String name;
     // 性別
     private String gender;
+    // 性別名称
+    private String genderName;
+    // ユーザＩＤ
+    private String userId;
+    // 等級
+    private String Tokyu;
 
     // 駐車場1台目
     private String parking1stPlace;
