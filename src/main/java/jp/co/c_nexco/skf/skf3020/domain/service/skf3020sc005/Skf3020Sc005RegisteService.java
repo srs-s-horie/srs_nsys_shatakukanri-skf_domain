@@ -215,18 +215,8 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 
 			if (rtn <= 0) {
 				return MessageIdConstant.E_SKF_1009;
-			}
-
-			switch (rtn) {
-			case -1:
-				dbErrMsgId = MessageIdConstant.E_SKF_1075;
-				break;
-			case 0:
-				dbErrMsgId = MessageIdConstant.W_SKF_1009;
-				break;
-			default:
+			} else {
 				dbErrMsgId = "";
-				break;
 			}
 
 		} else {
