@@ -128,11 +128,11 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 	 */
 	private Skf3020Sc005RegisteDto registTenninshaInfo(Skf3020Sc005RegisteDto registDto) throws ParseException {
 
-		String chkShainNoHenkoKbn = skf302010CommonSharedService.NOT_CHECKED;
+		String chkShainNoHenkoKbn = Skf302010CommonSharedService.NOT_CHECKED;
 		String[] checkBoxArray = registDto.getId_check_shainNo();
 
-		if (checkBoxArray.length != 0 && skf302010CommonSharedService.CHECKED.equals(checkBoxArray[0])) {
-			chkShainNoHenkoKbn = skf302010CommonSharedService.CHECKED;
+		if (checkBoxArray.length != 0 && Skf302010CommonSharedService.CHECKED.equals(checkBoxArray[0])) {
+			chkShainNoHenkoKbn = Skf302010CommonSharedService.CHECKED;
 		}
 
 		String dbErrMsgId = "";
@@ -187,10 +187,10 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 			// 転任者調書データ排他チェック
 			if (!NfwStringUtils.isEmpty(registDto.getHdnUpdateDateTenninsha())) {
 				Date tenninChoshoLastUpdateDate = sdFormat.parse(registDto.getHdnUpdateDateTenninsha());
-				registDto.addLastUpdateDate(skf302010CommonSharedService.TENNIN_CHOSHO_DATA_UPDATE_KEY,
+				registDto.addLastUpdateDate(Skf302010CommonSharedService.TENNIN_CHOSHO_DATA_UPDATE_KEY,
 						tenninChoshoLastUpdateDate);
 				super.checkLockException(
-						registDto.getLastUpdateDate(skf302010CommonSharedService.TENNIN_CHOSHO_DATA_UPDATE_KEY),
+						registDto.getLastUpdateDate(Skf302010CommonSharedService.TENNIN_CHOSHO_DATA_UPDATE_KEY),
 						tenninshaInfo.getUpdateDate());
 			}
 
@@ -204,9 +204,9 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 			// 社宅社員マスタデータ排他チェック
 			if (!NfwStringUtils.isEmpty(registDto.getHdnUpdateDateShain())) {
 				Date shatakuShainLastUpdateDate = sdFormat.parse(registDto.getHdnUpdateDateShain());
-				registDto.addLastUpdateDate(skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY, shatakuShainLastUpdateDate);
+				registDto.addLastUpdateDate(Skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY, shatakuShainLastUpdateDate);
 				Skf1010MShain shatakuShainData = skf3020Sc005SharedService.getShainData(newShainNo);
-				super.checkLockException(registDto.getLastUpdateDate(skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY),
+				super.checkLockException(registDto.getLastUpdateDate(Skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY),
 						shatakuShainData.getUpdateDate());
 			}
 
