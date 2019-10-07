@@ -19,7 +19,7 @@ import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002ApplyDto;
 
 /**
- * Skf2010Sc002 申請書類確認の申請ボタン処理クラス。
+ * Skf2010Sc002ApplyService 申請書類確認画面の申請処理クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -29,9 +29,9 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
-	private Skf2010Sc002SharedService skf2010Sc002SharedService;
-	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private Skf2010Sc002SharedService skf2010Sc002SharedService;
 
 	@Override
 	public BaseDto index(Skf2010Sc002ApplyDto applyDto) throws Exception {
@@ -39,8 +39,16 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("申請", CodeConstant.C001, applyDto.getPageId());
 
-		// セッション情報チェック
-		skf2010Sc002SharedService.checktApplSession(applyDto);
+		// 申請書類IDの有無チェック
+		if (applyDto.getApplId() == null) {
+			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1078, "");
+			return applyDto;
+		}
+		// ステータスの有無チェック
+		if (applyDto.getApplStatus() == null) {
+			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1078, "");
+			return applyDto;
+		}
 
 		// 申請前に申請可能か判定を行う。
 		if (!skfShinseiUtils.checkSKSTeijiStatus(applyDto.getShainNo(), applyDto.getApplId(), applyDto.getApplNo())) {
@@ -52,12 +60,14 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 		}
 
 		// コメント欄の入力チェック
-		if (!(skf2010Sc002SharedService.validateComment(applyDto))) {
-			// エラーメッセージがある場合、処理を中断
+		if (!(skf2010Sc002SharedService.validateComment(applyDto.getCommentNote()))) {
+			// エラーがある場合はメッセージを出力して処理を中断
+			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1071,
+					"承認者へのコメント", "2000");
 			return applyDto;
 		}
 
-		// ステータスを設定
+		// 次のステータスを設定
 		String status = CodeConstant.STATUS_SHINSEICHU;
 
 		// 「申請書類履歴テーブル」よりステータスを更新 + 承認者へのコメントを更新
@@ -67,10 +77,16 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 		applMap.put("name", applyDto.getName());
 		applMap.put("status", status);
 		applMap.put("commentNote", applyDto.getCommentNote());
-		boolean res = skf2010Sc002SharedService.updateShinseiHistory(applMap);
-		if (!res) {
+		String res = skf2010Sc002SharedService.updateShinseiHistory(applMap,
+				applyDto.getLastUpdateDate(Skf2010Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY));
+		if ("updateError".equals(res)) {
+			// 更新エラー
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1073);
-			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
+			return applyDto;
+		} else if ("exclusiveError".equals(res)) {
+			// 排他チェックエラー
+			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1134, "skf2010_t_appl_history");
+			return applyDto;
 		}
 
 		// TODO 支社担当者、事務所担当者にメールを送付→承認権限がないため不要と思われる

@@ -3,8 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002;
 
-import java.util.List;
-import java.util.Map;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc002common.Skf2010Sc002CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -28,9 +26,6 @@ public class Skf2010Sc002InitDto extends Skf2010Sc002CommonDto {
 	private String applyBtnViewFlg;
 	// コメント表示フラグ
 	private String commentViewFlag;
-
-	// 添付資料情報
-	private List<Map<String, Object>> attachedFileList;
 
 	/** 画面表示用 **/
 	private int displayLevel; // 表示レベル（１～３）

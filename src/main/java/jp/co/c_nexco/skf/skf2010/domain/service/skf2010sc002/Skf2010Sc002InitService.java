@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExp;
@@ -16,12 +15,12 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUti
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
-import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -33,7 +32,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
 
 /**
- * Skf2010Sc002 申請書類確認のInitサービス処理クラス。
+ * Skf2010Sc002 申請書類確認画面の初期表示処理クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -61,7 +60,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Skf2010Sc002InitDto index(Skf2010Sc002InitDto initDto) throws Exception {
 
@@ -70,18 +68,41 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		// セッション情報引き渡し
+		skf2010Sc002SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
+		// セッション情報初期化
+		skf2010Sc002SharedService.clearMenuScopeSessionBean();
+
+		// initDto.setPageId("Skf2010Sc002");
+		// initDto.setApplNo("R0103-00512272-20190208-01");
+		// initDto.setPrePageId("Skf2040Sc001");
 
 		// 前画面IDの取得
-		String pageId = initDto.getPageId();
-		BaseForm beforeForm = FormHelper.getFormBean(pageId, CommonConstant.C_PAGEMODE_STANDARD);
+		BaseForm beforeForm = FormHelper.getFormBean(initDto.getPageId(), CommonConstant.C_PAGEMODE_STANDARD);
 		String prePageId = beforeForm.getPrePageId();
 		initDto.setPrePageId(prePageId);
+
+		// 申請書類履歴情報を取得取得
+		Skf2010Sc002GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc002GetApplHistoryInfoByParameterExp();
+		tApplHistoryData = skf2010Sc002SharedService.getApplHistoryInfoByParameter(initDto.getApplNo());
+		if (tApplHistoryData != null) {
+			// 申請書類種別IDの設定
+			initDto.setApplId(tApplHistoryData.getApplId());
+
+			// 排他制御用の申請書類履歴の最終更新日付保持
+			initDto.addLastUpdateDate(Skf2010Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY,
+					tApplHistoryData.getUpdateDate());
+		} else {
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
+			return initDto;
+		}
+
 		// 申請状況の設定
 		initDto.setApplStatusText(changeApplStatusText(initDto.getApplStatus()));
 
-		// アコーディオン初期表示指定
+		// 帳票イメージの初期表示指定
 		Map<String, Object> displayLevelMap = new HashMap<String, Object>();
-		displayLevelMap = checkDisplayLevel(prePageId);
+		displayLevelMap = checkDisplayLevel(initDto.getPrePageId());
 		initDto.setLevel1(displayLevelMap.get("level1").toString());
 		initDto.setLevel2(displayLevelMap.get("level2").toString());
 		initDto.setLevel3(displayLevelMap.get("level3").toString());
@@ -94,51 +115,37 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 画面内容の設定
 		setDisplayData(initDto);
 
-		// コメントボタンの活性非活性処理
-		setCommentBtnRemove(initDto);
+		// 添付資料情報を取得
+		skf2010Sc002SharedService.setAttachedFileList(initDto.getShainNo(), initDto.getApplNo(), initDto);
+
+		// コメント表示ボタンの表示非表示を設定
+		String commetFlg = setCommentBtnRemove(initDto.getApplNo());
+		if (NfwStringUtils.isNotEmpty(commetFlg)) {
+			initDto.setCommentViewFlag(commetFlg);
+		}
 
 		return initDto;
+
 	}
 
 	/**
-	 * コメント表示ボタンの表示非表示を設定します
+	 * コメント表示ボタンの表示非表示を設定
 	 * 
 	 * @param initDto
 	 */
-	private void setCommentBtnRemove(Skf2010Sc002InitDto initDto) {
+	private String setCommentBtnRemove(String applNo) {
 
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-
-		// 権限チェック
-		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
-		if (roleIds == null) {
-			return;
-		}
-
-		// 一般ユーザーかチェック
-		boolean isAdmin = false;
-		for (String roleId : roleIds) {
-			switch (roleId) {
-			case CodeConstant.NAKASA_SHATAKU_TANTO:
-			case CodeConstant.NAKASA_SHATAKU_KANRI:
-			case CodeConstant.SYSTEM_KANRI:
-				isAdmin = true;
-				break;
-			default:
-				isAdmin = false;
-				break;
-			}
-		}
-
-		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), null);
+		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applNo, null);
+		String commentViewFlag = CodeConstant.NONE;
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントが無ければ非表示
-			initDto.setCommentViewFlag(sFalse);
+			commentViewFlag = sFalse;
 		} else {
 			// コメントがあれば表示
-			initDto.setCommentViewFlag(sTrue);
+			commentViewFlag = sTrue;
 		}
-		return;
+		return commentViewFlag;
 
 	}
 
@@ -149,64 +156,34 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 */
 	private void setDisplayData(Skf2010Sc002InitDto initDto) {
 
-		String applNo = CodeConstant.DOUBLE_QUOTATION;
-		if (NfwStringUtils.isNotEmpty(initDto.getApplNo())) {
-			applNo = initDto.getApplNo();
-		}
-
-		String prePageId = CodeConstant.DOUBLE_QUOTATION;
-		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())) {
-			prePageId = initDto.getPrePageId();
-		}
-
-		switch (prePageId) {
+		switch (initDto.getPrePageId()) {
 		case FunctionIdConstant.SKF2020_SC002:
 		case FunctionIdConstant.SKF2020_SC003:
 			// 入居希望申請情報の取得
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
-			tNyukyoChoshoTsuchi = skf2010Sc002SharedService.getNyukyoChoshoTsuchiInfo(CodeConstant.C001, applNo);
+			tNyukyoChoshoTsuchi = skf2010Sc002SharedService.getNyukyoChoshoTsuchiInfo(initDto.getApplNo());
 			if (tNyukyoChoshoTsuchi != null) {
-				// 更新用
-				String applDate = skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getApplDate(),
-						"yyyy/MM/dd HH:mm:ss");
-				initDto.setApplUpdateDate(applDate);
 				// 社宅入居希望等調書の項目設定
 				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
 
-				if (sTrue.equals(initDto.getLevel2())) {
-					// 貸与（予定）社宅等のご案内
+				if (FunctionIdConstant.SKF2020_SC003.equals(initDto.getPrePageId())) {
+					// 前の画面が入居希望（アウトソースの場合は、貸与（予定）社宅等のご案内表示設定
 					mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
 				}
 			}
 			break;
 		case FunctionIdConstant.SKF2040_SC001:
-			// 退居届情報の取得
+			// 退居（自動車の保管場所返還）届情報の取得
 			Skf2040TTaikyoReport tTaikyoReport = new Skf2040TTaikyoReport();
-			tTaikyoReport = skf2010Sc002SharedService.getTaikyoReportInfo(applNo);
+			tTaikyoReport = skf2010Sc002SharedService.getTaikyoReportInfo(initDto.getApplNo());
 			if (tTaikyoReport != null) {
-				// 更新用
-				String applDate = skfDateFormatUtils.dateFormatFromString(tTaikyoReport.getApplDate(),
-						"yyyy/MM/dd HH:mm:ss");
-				initDto.setApplUpdateDate(applDate);
-				// 退居届情報の項目設定
+				// 退居（自動車の保管場所返還）届の項目設定
 				mappingTaikyoReport(initDto, tTaikyoReport);
 			}
 			break;
 		default:
 			break;
 		}
-
-		// 申請書類種別IDを取得
-		Skf2010Sc002GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc002GetApplHistoryInfoByParameterExp();
-		tApplHistoryData = skf2010Sc002SharedService.getApplHistoryInfo(applNo);
-		if (tApplHistoryData != null) {
-			initDto.setApplId(tApplHistoryData.getApplId());
-		}
-
-		// 添付資料情報取得
-		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-		attachedFileList = skf2010Sc002SharedService.getAttachedFileInfo(applNo);
-		initDto.setAttachedFileList(attachedFileList);
 
 	}
 
@@ -234,7 +211,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	}
 
 	/**
-	 * アコーディオン項目の表示設定
+	 * 帳票イメージの初期表示設定
 	 * 
 	 * @param applStatus
 	 * @return
@@ -248,7 +225,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level1", sTrue); // 入居希望等調書
 			result.put("level2", sFalse); // 貸与社宅などのご案内
 			result.put("level3", sFalse);// 退居届
-			result.put("mask", CodeConstant.MASK_LEVEL1); // 申請ボタン表示
+			result.put("mask", "shinsei"); // 申請ボタン表示
 			result.put("level1Open", sTrue); // 入居希望等調書のアコーディオン初期表示
 			result.put("level2Open", sFalse);// 貸与社宅などのご案内のアコーディオン初期表示
 			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
@@ -259,7 +236,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level1", sTrue); // 入居希望等調書
 			result.put("level2", sTrue); // 貸与社宅などのご案内
 			result.put("level3", sFalse);// 退居届
-			result.put("mask", CodeConstant.MASK_LEVEL2); // 提示ボタン表示
+			result.put("mask", "teiji"); // 提示ボタン表示
 			result.put("level1Open", sFalse); // 入居希望等調書のアコーディオン初期表示
 			result.put("level2Open", sTrue);// 貸与社宅などのご案内のアコーディオン初期表示
 			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
@@ -270,7 +247,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level1", sFalse); // 入居希望等調書
 			result.put("level2", sFalse); // 貸与社宅などのご案内
 			result.put("level3", sTrue);// 退居届
-			result.put("mask", CodeConstant.MASK_LEVEL1); // 申請ボタン表示
+			result.put("mask", "shinsei"); // 申請ボタン表示
 			result.put("level1Open", sFalse); // 入居希望等調書のアコーディオン初期表示
 			result.put("level2Open", sFalse);// 貸与社宅などのご案内のアコーディオン初期表示
 			result.put("level3Open", sTrue);// 退居届のアコーディオン初期表示
@@ -282,7 +259,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			result.put("level1", sFalse); // 入居希望等調書
 			result.put("level2", sFalse); // 貸与社宅などのご案内
 			result.put("level3", sFalse);// 退居届
-			result.put("mask", CodeConstant.MASK_LEVEL3); // ボタン非表示
+			result.put("mask", "none"); // ボタン非表示
 			result.put("level1Open", sFalse); // 入居希望等調書のアコーディオン初期表示
 			result.put("level2Open", sFalse);// 貸与社宅などのご案内のアコーディオン初期表示
 			result.put("level3Open", sFalse);// 退居届のアコーディオン初期表示
@@ -301,7 +278,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 */
 	private void mappingNyukyoChoshoTsuchi(Skf2010Sc002InitDto initDto,
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi) {
-		// 申請番号
 
 		// 入居希望申請調書
 		// 社宅必要可否
@@ -824,8 +800,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
 		}
 		// 自動車の位置番号
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())) {
-			initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getParkingArea2());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarIchiNo2())) {
+			initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getCarIchiNo2());
 		}
 		// 保管場所使用料
 		String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
@@ -844,11 +820,12 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setParkingKanoDate2(skfDateFormatUtils.dateFormatFromString(
 					tNyukyoChoshoTsuchi.getParkingKanoDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 		}
+
 		return;
 	}
 
 	/**
-	 * 退居(自動車の変換場所）届表示のマッピングを行います
+	 * 退居(自動車の変換場所）届表示のマッピング
 	 * 
 	 * @param initDto
 	 * @param tTaikyoReport
@@ -864,6 +841,29 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuTaikyoKbn2())) {
 			initDto.setShatakuTaikyoKbn2(taikyoRepDt.getShatakuTaikyoKbn2()); // 駐車場返還
+		}
+
+		// 社員番号
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShainNo())) {
+			initDto.setShainNo(taikyoRepDt.getShainNo());
+		}
+		// 氏名
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getName())) {
+			initDto.setName(taikyoRepDt.getName());
+		}
+
+		// 所属
+		// 現所属：機関
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAgency())) {
+			initDto.setNowAgency(taikyoRepDt.getAgency());
+		}
+		// 現所属：部等
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation1())) {
+			initDto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
+		}
+		// 現所属：室、チーム又は課
+		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation2())) {
+			initDto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
 		}
 
 		// 申請書類管理番号
