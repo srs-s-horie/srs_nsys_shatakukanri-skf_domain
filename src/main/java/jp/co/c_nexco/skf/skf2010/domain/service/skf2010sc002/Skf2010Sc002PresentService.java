@@ -120,9 +120,8 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 
 			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 
-			// skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI,
-			// applInfoAnnai, preDto.getCommentNote(), annai,
-			// preDto.getShainNo(), CodeConstant.NONE, urlBase);
+			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, preDto.getCommentNote(), annai,
+					preDto.getShainNo(), CodeConstant.NONE, urlBase);
 
 			// TODO 社宅管理データ連携処理実行
 
@@ -384,7 +383,7 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 		// メッセージ取得
 		String msg = PropertyUtils.getValue(id);
 
-		// 可変項目の置換え6666
+		// 可変項目の置換え
 		for (int idx = 0; idx < param.size(); idx++) {
 
 			String sParam = param.get(idx);

@@ -6,6 +6,7 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc002;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetShatakuAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetShatakuAttachedFileExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplComment;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
@@ -34,11 +35,12 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc002common.Skf2010Sc002CommonDto;
 
 /**
- * Skf2010Sc002 申請書類確認画面の共通処理クラス。
+ * Skf2010Sc002SharedService 申請書類確認画面の共通処理クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -63,6 +65,8 @@ public class Skf2010Sc002SharedService {
 	Skf2040TTaikyoReportRepository skf2040TTaikyoReportRepository;
 	@Autowired
 	Skf2010Sc002GetShatakuAttachedFileExpRepository skf2010Sc002GetShatakuAttachedFileExpRepository;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils;
 
 	// 申請書類履歴の最終更新日付のキャッシュキー
 	protected static final String KEY_LAST_UPDATE_DATE_HISTORY = "skf2010_t_appl_history";
@@ -90,11 +94,10 @@ public class Skf2010Sc002SharedService {
 	}
 
 	/**
-	 * 社宅入居希望等申請情報を取得する
+	 * 入居希望等調書・入居決定通知情報の取得
 	 * 
-	 * @param companyCd
 	 * @param applNo
-	 * @return
+	 * @return 取得結果 Skf2020TNyukyoChoshoTsuchi
 	 */
 	protected Skf2020TNyukyoChoshoTsuchi getNyukyoChoshoTsuchiInfo(String applNo) {
 
@@ -107,19 +110,17 @@ public class Skf2010Sc002SharedService {
 	}
 
 	/**
-	 * 申請書類種別IDを取得
+	 * 更新対象の申請書類履歴情報を取得
 	 * 
 	 * @param applNo
-	 * @return
+	 * @return 取得結果 tApplHistoryData
 	 */
 	protected Skf2010Sc002GetApplHistoryInfoByParameterExp getApplHistoryInfoByParameter(String applNo) {
 		Skf2010Sc002GetApplHistoryInfoByParameterExpParameter param = new Skf2010Sc002GetApplHistoryInfoByParameterExpParameter();
 		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(applNo);
-		// 更新対象の申請情報を取得
 		Skf2010Sc002GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc002GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc002GetApplHistoryInfoByParameterExpRepository.getApplHistoryInfoByParameter(param);
-
 		return tApplHistoryData;
 	}
 
@@ -128,7 +129,7 @@ public class Skf2010Sc002SharedService {
 	 * 
 	 * @param applInfo
 	 * @param lastUpdateDate
-	 * @return
+	 * @return エラー内容
 	 */
 	protected String updateShinseiHistory(Map<String, String> applInfo, Date lastUpdateDate) {
 
@@ -144,7 +145,8 @@ public class Skf2010Sc002SharedService {
 			// 排他チェックエラー
 			return "exclusiveError";
 		}
-		// 更新処理
+
+		// 申請書類履歴テーブルの更新処理
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 		// プライマリキー設定
 		updateData.setCompanyCd(CodeConstant.C001);
@@ -161,8 +163,8 @@ public class Skf2010Sc002SharedService {
 			return result;
 		}
 
-		// コメントの更新
-		if (!updateCommentInfo(applInfo)) {
+		// コメントの登録
+		if (!setCommentInfo(applInfo)) {
 			result = "updateError";
 			return result;
 		}
@@ -176,20 +178,35 @@ public class Skf2010Sc002SharedService {
 	 * @param applInfo
 	 * @return
 	 */
-	private boolean updateCommentInfo(Map<String, String> applInfo) {
+	private boolean setCommentInfo(Map<String, String> applInfo) {
+
+		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 承認2済から承認4済は、承認1済にする
 		String applStatus = applInfo.get("status");
-		if (CodeConstant.STATUS_SHONIN1.compareTo(applStatus) < 0
-				&& CodeConstant.STATUS_SHONIN_ZUMI.compareTo(applStatus) > 0) {
+		if (applStatus.equals(CodeConstant.STATUS_SHONIN2) || applStatus.equals(CodeConstant.STATUS_SHONIN_ZUMI)) {
 			applStatus = CodeConstant.STATUS_SHONIN1;
 		}
 
-		// TODO
-		// コメントが登録されている、かつ、承認1済～承認済の場合、削除処理をする（承認のコメントを上書きのため）→ルート上こないためいらない？
+		// 現存のコメントを取得
+		Date commentUpdateDate = null;
+		List<SkfCommentUtilsGetCommentInfoExp> commentInfoList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+		commentInfoList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applInfo.get("applNo"), applStatus);
+		if (commentInfoList != null && commentInfoList.size() > 0) {
+			commentUpdateDate = commentInfoList.get(0).getCommentDate();
+		}
+
+		// コメントが登録されている、かつ、承認1の場合、削除処理をする（承認のコメントを上書きのため）
+		if (commentUpdateDate != null && (applStatus.equals(CodeConstant.STATUS_SHONIN1))) {
+			boolean delRes = skfCommentUtils.deleteComment(CodeConstant.C001, applInfo.get("applNo"), applStatus,
+					errorMsg);
+			if (!delRes) {
+				return false;
+			}
+		}
 
 		// コメントが入力されていない場合、処理を終了
 		String comment = applInfo.get("commentNote");
@@ -204,22 +221,12 @@ public class Skf2010Sc002SharedService {
 		}
 		tmpNameList.add(loginUserInfoMap.get("userName"));
 		String commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
-		Date commentDate = new Date();
 
-		// コメントを更新する
-		if (comment != null && !CheckUtils.isEmpty(comment)) {
-			Skf2010TApplComment skf2010TApplComment = new Skf2010TApplComment();
-			skf2010TApplComment.setCompanyCd(CodeConstant.C001);
-			skf2010TApplComment.setApplNo(applInfo.get("applNo"));
-			skf2010TApplComment.setApplStatus(applInfo.get("status"));
-			skf2010TApplComment.setCommentDate(commentDate);
-			skf2010TApplComment.setCommentName(commentName);
-			skf2010TApplComment.setCommentNote(comment);
-			int insCommentRes = skf2010TApplCommentRepository.insertSelective(skf2010TApplComment);
-			// 取得できなかった場合処理終了
-			if (insCommentRes <= 0) {
-				return false;
-			}
+		// コメント情報の登録
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"),
+				applStatus, commentName, comment, errorMsg);
+		if (!commentErrorMessage) {
+			return false;
 		}
 
 		return true;
