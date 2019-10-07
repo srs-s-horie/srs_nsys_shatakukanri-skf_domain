@@ -123,10 +123,10 @@ public class Skf3020Sc005SharedService {
 			String chkShainNoHenkoKbn = ""; // 仮社員番号設定(社員番号の変更の要否)
 
 			if (NfwStringUtils.isEmpty(shainNoHenkoKbn)
-					|| shainNoHenkoKbn.equals(skf302010CommonSharedService.MI_SAKUSEI)) {
+					|| shainNoHenkoKbn.equals(Skf302010CommonSharedService.MI_SAKUSEI)) {
 				chkShainNoHenkoKbn = "";
 			} else {
-				chkShainNoHenkoKbn = skf302010CommonSharedService.CHECKED;
+				chkShainNoHenkoKbn = Skf302010CommonSharedService.CHECKED;
 			}
 			// 仮社員番号設定
 			String[] checkBox = new String[] { chkShainNoHenkoKbn };
@@ -136,11 +136,11 @@ public class Skf3020Sc005SharedService {
 			inDto.setTxtTokyu(skf302010CommonSharedService.cnvString(resultTableData.getTokyu()));
 			inDto.setTxtNenrei(skf302010CommonSharedService.cnvString(resultTableData.getAge()));
 			String newAffiliation = skf302010CommonSharedService.cnvString(resultTableData.getNewAffiliation());
-			inDto.setTxtShinShozoku(newAffiliation.replaceAll(skf302010CommonSharedService.DB_LS,
-					skf302010CommonSharedService.DISPLAY_LS));
+			inDto.setTxtShinShozoku(newAffiliation.replaceAll(Skf302010CommonSharedService.DB_LS,
+					Skf302010CommonSharedService.DISPLAY_LS));
 			String nowAffiliation = skf302010CommonSharedService.cnvString(resultTableData.getNowAffiliation());
-			inDto.setTxtGenShozoku(nowAffiliation.replaceAll(skf302010CommonSharedService.DB_LS,
-					skf302010CommonSharedService.DISPLAY_LS));
+			inDto.setTxtGenShozoku(nowAffiliation.replaceAll(Skf302010CommonSharedService.DB_LS,
+					Skf302010CommonSharedService.DISPLAY_LS));
 			inDto.setTxtBiko(skf302010CommonSharedService.cnvString(resultTableData.getBiko()));
 
 			String nyutaikyoKbn = resultTableData.getNyutaikyoYoteiKbn();
@@ -215,7 +215,7 @@ public class Skf3020Sc005SharedService {
 
 			String hdnNyutaikyoYoteiKbn = inDto.getHdnNyutaikyoYoteiKbn();
 			if (NfwStringUtils.isEmpty(hdnNyutaikyoYoteiKbn)
-					|| skf302010CommonSharedService.MI_SAKUSEI.equals(hdnNyutaikyoYoteiKbn)) {
+					|| Skf302010CommonSharedService.MI_SAKUSEI.equals(hdnNyutaikyoYoteiKbn)) {
 				// 入退居予定作成区分：未作成
 				inDto.setTxtDisabled(false);
 
@@ -273,7 +273,7 @@ public class Skf3020Sc005SharedService {
 
 		String outMsgId = "";
 		String shainNo = inDto.getTxtShainNo();
-		int result = skf302010CommonSharedService.DB_RESULT_NORMAL;
+		int result = Skf302010CommonSharedService.DB_RESULT_NORMAL;
 		Skf3020Sc005GetTenninshaShatakuInfoExp existData = getTenninshaShatakuInfo(shainNo);
 
 		if (existData == null) {
@@ -340,7 +340,7 @@ public class Skf3020Sc005SharedService {
 		String updateShainNo = "";
 		String updateChkShainNoHenkoKbn = "";
 		// 仮社員番号ではない場合
-		if (!skf302010CommonSharedService.KARI_K.equals(oldShainNo.substring(0, 1))) {
+		if (!Skf302010CommonSharedService.KARI_K.equals(oldShainNo.substring(0, 1))) {
 
 			if (oldShainNo.equals(newShainNo)) {
 				updateShainNo = oldShainNo;
@@ -379,7 +379,7 @@ public class Skf3020Sc005SharedService {
 	public String getGenShatakuKbn(String shainNo) {
 
 		if (NfwStringUtils.isEmpty(shainNo)) {
-			return skf302010CommonSharedService.MI_NYUKYO;
+			return Skf302010CommonSharedService.MI_NYUKYO;
 		}
 
 		Skf3020Sc003GetShatakuNyukyoCountExpParameter param = new Skf3020Sc003GetShatakuNyukyoCountExpParameter();
@@ -389,14 +389,14 @@ public class Skf3020Sc005SharedService {
 		// 社宅入居情報の件数取得
 		int shatakuNyukyoCnt = skf3020Sc003GetShatakuNyukyoCountExpRepository.getShatakuNyukyoCount(param);
 
-		if (shatakuNyukyoCnt > skf302010CommonSharedService.COUNT_1) {
-			return skf302010CommonSharedService.SINSEI_CHU;
+		if (shatakuNyukyoCnt > Skf302010CommonSharedService.COUNT_1) {
+			return Skf302010CommonSharedService.SINSEI_CHU;
 
-		} else if (shatakuNyukyoCnt == skf302010CommonSharedService.COUNT_1) {
-			return skf302010CommonSharedService.NYUKYO_CHU;
+		} else if (shatakuNyukyoCnt == Skf302010CommonSharedService.COUNT_1) {
+			return Skf302010CommonSharedService.NYUKYO_CHU;
 
 		} else {
-			return skf302010CommonSharedService.MI_NYUKYO;
+			return Skf302010CommonSharedService.MI_NYUKYO;
 		}
 
 	}
@@ -422,12 +422,12 @@ public class Skf3020Sc005SharedService {
 		tenninshaChoshoData.setTokyu(inDto.getTxtTokyu().trim());
 		tenninshaChoshoData.setAge(inDto.getTxtNenrei().trim());
 
-		String nowAffiliation = inDto.getTxtGenShozoku().replaceAll(skf302010CommonSharedService.DISPLAY_LS,
-				skf302010CommonSharedService.DB_LS);
+		String nowAffiliation = inDto.getTxtGenShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
 		tenninshaChoshoData.setNowAffiliation(nowAffiliation);
 
-		String newAffiliation = inDto.getTxtShinShozoku().replaceAll(skf302010CommonSharedService.DISPLAY_LS,
-				skf302010CommonSharedService.DB_LS);
+		String newAffiliation = inDto.getTxtShinShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
 		tenninshaChoshoData.setNewAffiliation(newAffiliation);
 
 		tenninshaChoshoData.setBiko(inDto.getTxtBiko().trim());
@@ -439,7 +439,7 @@ public class Skf3020Sc005SharedService {
 		String genShatakuKbn = getGenShatakuKbn(shainNo);
 		tenninshaChoshoData.setNowShatakuKbn(genShatakuKbn);
 
-		tenninshaChoshoData.setNyutaikyoYoteiKbn(skf302010CommonSharedService.MI_SAKUSEI);
+		tenninshaChoshoData.setNyutaikyoYoteiKbn(Skf302010CommonSharedService.MI_SAKUSEI);
 
 		Date nowTime = skfBaseBusinessLogicUtils.getSystemDateTime();
 		tenninshaChoshoData.setDataTakinginDate(new SimpleDateFormat("yyyyMMdd").format(nowTime));
@@ -470,12 +470,12 @@ public class Skf3020Sc005SharedService {
 		tenninshaChoshoData.setTokyu(inDto.getTxtTokyu().trim());
 		tenninshaChoshoData.setAge(inDto.getTxtNenrei().trim());
 
-		String nowAffiliation = inDto.getTxtGenShozoku().replaceAll(skf302010CommonSharedService.DISPLAY_LS,
-				skf302010CommonSharedService.DB_LS);
+		String nowAffiliation = inDto.getTxtGenShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
 		tenninshaChoshoData.setNowAffiliation(nowAffiliation);
 
-		String newAffiliation = inDto.getTxtShinShozoku().replaceAll(skf302010CommonSharedService.DISPLAY_LS,
-				skf302010CommonSharedService.DB_LS);
+		String newAffiliation = inDto.getTxtShinShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+				Skf302010CommonSharedService.DB_LS);
 		tenninshaChoshoData.setNewAffiliation(newAffiliation);
 
 		tenninshaChoshoData.setBiko(inDto.getTxtBiko().trim());
