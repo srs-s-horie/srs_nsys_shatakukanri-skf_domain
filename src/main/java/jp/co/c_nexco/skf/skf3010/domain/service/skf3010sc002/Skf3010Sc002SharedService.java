@@ -478,11 +478,6 @@ public class Skf3010Sc002SharedService {
 					contractMap.put("selected", true);
 					setSelectedValue = true;
 				}
-//				else if (Skf3010Sc002CommonDto.CONTRACT_MODE_DEL.equals(selectMode)) {
-//					// 削除対象の為、契約情報番号リストに追加しない
-//					contractMap = null;
-//					continue;
-//				}
 			}
 			// 削除済み契約番号除外判定
 			try {
@@ -2525,56 +2520,37 @@ public class Skf3010Sc002SharedService {
 		String deletedConstractNo = CodeConstant.STRING_ZERO;
 
 		/** セッション情報取得 */
-		// 社宅管理番号
-		if (initDto.getHdnShatakuKanriNo() != null) {
-			shatakuKanriNo = initDto.getHdnShatakuKanriNo();
-		}
-		// 社宅名
-		if (initDto.getHdnShatakuName() != null) {
-			shatakuName = initDto.getHdnShatakuName();
-		}
-		// 社宅区分コード
-		if (initDto.getHdnShatakuKbn() != null) {
-			shatakuKbnCd = initDto.getHdnShatakuKbn();
-		}
-		// 地域区分コード
-		if (initDto.getHdnAreaKbn() != null) {
-			areaKbnCd = initDto.getHdnAreaKbn();
-		}
-		// 空き部屋数
-		if (initDto.getHdnEmptyRoomCount() != null) {
-			emptyRoomCount = initDto.getHdnEmptyRoomCount();
-		}
-		// 空き駐車場数
-		if (initDto.getHdnEmptyParkingCount() != null) {
-			emptyParkingCount = initDto.getHdnEmptyParkingCount();
+		/** セッション情報取得 */
+		// 遷移元判定
+		if (!NfwStringUtils.isEmpty(initDto.getHdnShatakuKanriNo())) {
+			// 駐車場契約からの画面遷移 or 自画面
+			shatakuKanriNo = (initDto.getHdnShatakuKanriNo() != null) ? initDto.getHdnShatakuKanriNo() : "";
+			shatakuKanriNo = (initDto.getHdnShatakuKanriNo() != null) ? initDto.getHdnShatakuKanriNo() : "";
+			shatakuName = (initDto.getHdnShatakuName() != null) ? initDto.getHdnShatakuName() : "";
+			shatakuKbnCd = (initDto.getHdnShatakuKbn() != null) ? initDto.getHdnShatakuKbn() : "";
+			areaKbnCd = (initDto.getHdnAreaKbn() != null) ? initDto.getHdnAreaKbn() : "";
+			emptyRoomCount = (initDto.getHdnEmptyRoomCount() != null) ?
+					initDto.getHdnEmptyRoomCount() : CodeConstant.STRING_ZERO;
+			emptyParkingCount = (initDto.getHdnEmptyParkingCount() != null) ?
+					initDto.getHdnEmptyParkingCount() : CodeConstant.STRING_ZERO;
+		} else if (!NfwStringUtils.isEmpty(initDto.getHdnRowShatakuKanriNo())) {
+			// 社宅一覧からの遷移
+			shatakuKanriNo =(initDto.getHdnRowShatakuKanriNo() != null) ? initDto.getHdnRowShatakuKanriNo(): "";
+			shatakuName = (initDto.getHdnRowShatakuName() != null) ? initDto.getHdnRowShatakuName() : "";
+			shatakuKbnCd = (initDto.getHdnRowShatakuKbn() != null) ? initDto.getHdnRowShatakuKbn() : "";
+			areaKbnCd = (initDto.getHdnRowAreaKbn() != null) ? initDto.getHdnRowAreaKbn() : "";
+			emptyRoomCount = (initDto.getHdnRowEmptyRoomCount() != null) ?
+					initDto.getHdnRowEmptyRoomCount() : CodeConstant.STRING_ZERO;
+			emptyParkingCount = (initDto.getHdnRowEmptyParkingCount() != null) ?
+						initDto.getHdnRowEmptyParkingCount() : CodeConstant.STRING_ZERO;
+		} else {
+			// 新規
+			shatakuKbnCd = (initDto.getHdnRowShatakuKbn() != null) ? initDto.getHdnRowShatakuKbn() : "";
 		}
 		// 削除済契約番号
 		if (initDto.getHdnDeleteContractSelectedValue() != null
 				&& initDto.getHdnDeleteContractSelectedValue().length() > 0) {
 			deletedConstractNo = initDto.getHdnDeleteContractSelectedValue();
-		}
-		/** セッション情報取得 */
-		// 遷移元判定
-		if (!NfwStringUtils.isEmpty(initDto.getHdnShatakuKanriNo())) {
-			// 駐車場契約からの画面遷移 or 自画面
-			shatakuKanriNo = initDto.getHdnShatakuKanriNo();
-			shatakuName = initDto.getHdnShatakuName();
-			shatakuKbnCd = initDto.getHdnShatakuKbn();
-			areaKbnCd = initDto.getHdnAreaKbn();
-			emptyRoomCount = initDto.getHdnEmptyRoomCount();
-			emptyParkingCount = initDto.getHdnEmptyParkingCount();
-		} else if (!NfwStringUtils.isEmpty(initDto.getHdnRowShatakuKanriNo())) {
-			// 社宅一覧からの遷移
-			shatakuKanriNo = initDto.getHdnRowShatakuKanriNo();
-			shatakuName = initDto.getHdnRowShatakuName();
-			shatakuKbnCd = initDto.getHdnRowShatakuKbn();
-			areaKbnCd = initDto.getHdnRowAreaKbn();
-			emptyRoomCount = initDto.getHdnRowEmptyRoomCount();
-			emptyParkingCount = initDto.getHdnRowEmptyParkingCount();
-		} else {
-			// 新規
-			shatakuKbnCd = initDto.getHdnRowShatakuKbn();
 		}
 
 		// セッション情報存在判定
