@@ -56,6 +56,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
@@ -134,6 +135,8 @@ public class Skf2020Sc003SharedService {
 	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
+	@Autowired
+	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
 
 	public void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
 		menuScopeSessionBean = bean;
@@ -271,20 +274,21 @@ public class Skf2020Sc003SharedService {
 		case CodeConstant.STATUS_SASHIMODOSHI:
 		case CodeConstant.STATUS_HININ:
 			// 承認者設定処理
-			String shonin1 = CodeConstant.NONE;
-			String shonin2 = CodeConstant.NONE;
+			String shonin1 = null;
+			String shonin2 = null;
 			switch (applInfo.getApplStatus()) {
 			case CodeConstant.STATUS_SHINSACHU:
 			case CodeConstant.STATUS_DOI_ZUMI:
 				shonin1 = userInfo.get("userName");
 				break;
 			case CodeConstant.STATUS_SHONIN1:
+				shonin1 = CodeConstant.NONE;
 				shonin2 = userInfo.get("userName");
 				break;
 			}
 
-			boolean resultUpdateApplInfo = updateApplHistoryAgreeStatus(newStatus, shainNo, applNo, shonin1, shonin2,
-					applInfo);
+			boolean resultUpdateApplInfo = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, shainNo,
+					applNo, applInfo.getApplId(), null, null, newStatus, null, shonin1, shonin2, errorMsg);
 			if (!resultUpdateApplInfo) {
 				errorMsg.put("error", MessageIdConstant.E_SKF_1075);
 				return false;
@@ -655,7 +659,6 @@ public class Skf2020Sc003SharedService {
 	 * @param applNo
 	 * @param dto
 	 */
-	@SuppressWarnings("unchecked")
 	private boolean setTeijiDataInfo(String shainNo, String applNo, Skf2020Sc003CommonDto dto) {
 		List<Skf2020Sc003GetTeijiDataInfoExp> teijiDataInfoList = new ArrayList<Skf2020Sc003GetTeijiDataInfoExp>();
 		String nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_NYUKYO;
@@ -665,9 +668,6 @@ public class Skf2020Sc003SharedService {
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1001, SHATAKU_TEIJI_MSG,
 					SHATAKU_TEIJI_NONE);
 
-			// TODO この時点では添付ファイルは取得されていないため不要？
-			// 提示データが存在しない場合は添付資料を表示させない。（クリア処理を行う。）
-			// dto.setShatakuAttachedFileList(null);
 			return false;
 		}
 
@@ -1261,30 +1261,33 @@ public class Skf2020Sc003SharedService {
 	 * @param applInfo
 	 * @return
 	 */
-	private boolean updateApplHistoryAgreeStatus(String newStatus, String shainNo, String applNo, String shonin1,
-			String shonin2, Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo) {
-		Skf2020Sc003UpdateApplHistoryExp record = new Skf2020Sc003UpdateApplHistoryExp();
-		if (NfwStringUtils.isNotEmpty(shonin1)) {
-			record.setAgreName1(shonin1);
-		}
-		if (NfwStringUtils.isNotEmpty(shonin2)) {
-			record.setAgreName1(shonin2);
-		}
-		record.setAgreDate(new Date());
-		record.setApplStatus(newStatus);
-
-		// 条件
-		record.setCompanyCd(companyCd);
-		record.setApplNo(applNo);
-		record.setShainNo(shainNo);
-		record.setApplId(applInfo.getApplId());
-
-		int result = skf2020Sc003UpdateApplHistoryExpRepository.updateApplHistory(record);
-		if (result <= 0) {
-			return false;
-		}
-		return true;
-	}
+	// private boolean updateApplHistoryAgreeStatus(String newStatus, String
+	// shainNo, String applNo, String shonin1,
+	// String shonin2, Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo) {
+	// Skf2020Sc003UpdateApplHistoryExp record = new
+	// Skf2020Sc003UpdateApplHistoryExp();
+	// if (NfwStringUtils.isNotEmpty(shonin1)) {
+	// record.setAgreName1(shonin1);
+	// }
+	// if (NfwStringUtils.isNotEmpty(shonin2)) {
+	// record.setAgreName1(shonin2);
+	// }
+	// record.setAgreDate(new Date());
+	// record.setApplStatus(newStatus);
+	//
+	// // 条件
+	// record.setCompanyCd(companyCd);
+	// record.setApplNo(applNo);
+	// record.setShainNo(shainNo);
+	// record.setApplId(applInfo.getApplId());
+	//
+	// int result =
+	// skf2020Sc003UpdateApplHistoryExpRepository.updateApplHistory(record);
+	// if (result <= 0) {
+	// return false;
+	// }
+	// return true;
+	// }
 
 	/**
 	 * 添付資料情報を更新する。
@@ -1438,7 +1441,6 @@ public class Skf2020Sc003SharedService {
 	 * @param file
 	 * @param fileSize
 	 */
-	@SuppressWarnings({ "static-access" })
 	private void addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
 			List<Map<String, Object>> shatakuAttachedFileList) {
 		// 添付資料のコレクションをSessionより取得

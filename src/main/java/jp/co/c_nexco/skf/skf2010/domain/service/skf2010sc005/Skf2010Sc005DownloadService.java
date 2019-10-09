@@ -41,6 +41,8 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	private String templateFilePropertyKeyR0104 = "skf2010.skf2010_sc005.r0104_csv";
 	private String templateFilePropertyKeyR0105 = "skf2010.skf2010_sc005.r0105_csv";
 
+	private final String FILE_TEMPLETE_FUNCTION_CD = "skf2010fl001";
+
 	@Value("${skf.common.company_cd}")
 	private String companyCd;
 	@Value("${skf2010.skf2010_sc005.search_max_count}")
@@ -102,13 +104,13 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		}
 
 		BeanOutputCsv beanOutputCsvR0100 = new FileOutput().new BeanOutputCsv(r0100List, templateFilePropertyKeyR0100,
-				"skf2010r0100", 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 1, null);
 		BeanOutputCsv beanOutputCsvR0103 = new FileOutput().new BeanOutputCsv(r0103List, templateFilePropertyKeyR0103,
-				"skf2010r0103", 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 1, null);
 		BeanOutputCsv beanOutputCsvR0104 = new FileOutput().new BeanOutputCsv(r0104List, templateFilePropertyKeyR0104,
-				"skf2010r0104", 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 1, null);
 		BeanOutputCsv beanOutputCsvR0105 = new FileOutput().new BeanOutputCsv(r0105List, templateFilePropertyKeyR0105,
-				"skf2010r0105", 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 1, null);
 		List<BeanOutputCsv> beanOutputCsvList = new ArrayList<BeanOutputCsv>();
 		beanOutputCsvList.add(beanOutputCsvR0100);
 		beanOutputCsvList.add(beanOutputCsvR0103);
