@@ -505,11 +505,11 @@ public class Skf2030Sc002SharedService {
 		applInfo.put("applShainNo", dto.getHdnShainNo());
 
 		String updateStatus = null;
-		String shoninName1 = CodeConstant.NONE;
-		String shoninName2 = CodeConstant.NONE;
+		String shoninName1 = null;
+		String shoninName2 = null;
 		Date agreDate = null;
-		String mailKbn = CodeConstant.NONE;
-		String nextWorkflow = CodeConstant.NONE;
+		String mailKbn = null;
+		String nextWorkflow = null;
 		Date sysDateTime = new Date();
 
 		String sendUserId = CodeConstant.NONE;
@@ -540,6 +540,7 @@ public class Skf2030Sc002SharedService {
 			// 承認1済
 			// 次のステータス、メール区分、承認者名2、次の階層を設定
 			updateStatus = CodeConstant.STATUS_SHONIN_ZUMI;
+			shoninName1 = CodeConstant.NONE;
 			shoninName2 = loginUserInfo.get("userName");
 			agreDate = sysDateTime;
 			break;
@@ -668,18 +669,20 @@ public class Skf2030Sc002SharedService {
 		}
 
 		// 承認完了通知・修正依頼完了通知の場合のみ
-		switch (mailKbn) {
-		case CodeConstant.SHONIN_KANRYO_TSUCHI:
-		case CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI:
-		case CodeConstant.HININ_KANRYO_TSUCHI:
-		case CodeConstant.HANNYU_MACHI_TSUCHI:
-		case CodeConstant.TEJI_TSUCHI:
-			// 掲載URL
-			String urlBase = "skf/Skf2010Sc003/init";
-			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, null, sendUserId, CodeConstant.NONE,
-					urlBase);
-			break;
+		if (mailKbn != null) {
+			switch (mailKbn) {
+			case CodeConstant.SHONIN_KANRYO_TSUCHI:
+			case CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI:
+			case CodeConstant.HININ_KANRYO_TSUCHI:
+			case CodeConstant.HANNYU_MACHI_TSUCHI:
+			case CodeConstant.TEJI_TSUCHI:
+				// 掲載URL
+				String urlBase = "skf/Skf2010Sc003/init";
+				skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, null, sendUserId, CodeConstant.NONE,
+						urlBase);
+				break;
 
+			}
 		}
 		// ステータス値を更新
 		applInfo.put("status", updateStatus);

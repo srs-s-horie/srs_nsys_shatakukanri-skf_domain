@@ -9,7 +9,7 @@ import jp.co.c_nexco.skf.skf3022.domain.dto.common.Skf302210CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf3022Sc006CommonDto　提示データ登録画面のInitDto。
  * 
  */
 @lombok.Data
@@ -17,5 +17,11 @@ import lombok.EqualsAndHashCode;
 public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
+	
+	//画面項目(ヘッダ）
+	private String shatakuName;
+	
+	//非表示項目
+	private String hdnShatakuKanriNo;
 	
 }

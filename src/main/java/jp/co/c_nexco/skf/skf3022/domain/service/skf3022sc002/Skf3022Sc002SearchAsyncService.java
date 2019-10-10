@@ -62,8 +62,8 @@ public class Skf3022Sc002SearchAsyncService
 		boolean nidaishiyo = false;
 		
 		//TODO デバッグコード消す
-		asyncDto.setShatakuNo("2015120071");
-		asyncDto.setKaisiDate("20181010");
+//		asyncDto.setShatakuNo("2015120071");
+//		asyncDto.setKaisiDate("20181010");
 		//デバッグコードここまで
 		
 		// 駐車場情報一覧検索

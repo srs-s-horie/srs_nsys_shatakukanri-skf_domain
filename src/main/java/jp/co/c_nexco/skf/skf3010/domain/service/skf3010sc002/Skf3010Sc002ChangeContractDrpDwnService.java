@@ -12,17 +12,18 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002InitDto;
+import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeContractDrpDwnDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
- * Skf3010Sc002InitService 保有社宅登録のInitサービス処理クラス。
+ * Skf3010Sc002ChangeContractDrpDwnService 保有社宅登録の契約情報プルダウン変更サービス処理クラス。
+ * 同期処理
  * 
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002InitDto> {
+public class Skf3010Sc002ChangeContractDrpDwnService extends BaseServiceAbstract<Skf3010Sc002ChangeContractDrpDwnDto> {
 
 	@Autowired
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;
@@ -39,27 +40,22 @@ public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002Ini
 	 * @throws Exception	例外
 	 */
 	@Override
-	public Skf3010Sc002InitDto index(Skf3010Sc002InitDto initDto) throws Exception {
+	public Skf3010Sc002ChangeContractDrpDwnDto index(Skf3010Sc002ChangeContractDrpDwnDto initDto) throws Exception {
 		// デバッグログ
-		logger.info("初期表示");
+		logger.info("契約情報プルダウン変更");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約情報プルダウン変更", CodeConstant.C001, initDto.getPageId());
 
 		// 契約情報変更モード
-		String selectMode = Skf3010Sc002CommonDto.CONTRACT_MODE_INIT;
-		// DTO初期化
+		String selectMode = Skf3010Sc002CommonDto.CONTRACT_MODE_CHANGE;
 		// 選択タブインデックス
-		initDto.setHdnNowSelectTabIndex(null);
-		// 契約情報プルダウン
-		initDto.setHdnChangeContractSelectedIndex(null);
-		// 削除済み契約番号初期化
-		initDto.setHdnDeleteContractSelectedValue(null);
-
+		String selectTabIndex = initDto.getHdnNowSelectTabIndex();
 		// 保有社宅登録情報設定
-		skf3010Sc002SharedService.setHoyuShatakuInfo(selectMode, "", initDto);
+		skf3010Sc002SharedService.setHoyuShatakuInfo(selectMode, initDto.getHdnChangeContractSelectedIndex(), initDto);
 
-		// 選択タブインデックス設定：基本情報タブ
-		initDto.setHdnNowSelectTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON);
+		// 選択タブインデックス(契約情報タブ)
+//		initDto.setHdnNowSelectTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_CONTRACT);
+		initDto.setHdnNowSelectTabIndex(selectTabIndex);
 
 		return initDto;
 	}
