@@ -47,4 +47,9 @@ public class Skf2010Sc002InitDto extends Skf2010Sc002CommonDto {
 	// 駐車場返還区分
 	private String shatakuTaikyoKbn2;
 
+	// 退居日日付変更フラグ
+	private String taikyoDateFlg;
+	// 駐車場日付変更フラグ
+	private String parkingEDateFlg;
+
 }

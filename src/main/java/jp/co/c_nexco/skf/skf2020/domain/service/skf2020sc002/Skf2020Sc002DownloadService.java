@@ -42,7 +42,7 @@ public class Skf2020Sc002DownloadService extends BaseServiceAbstract<Skf2020Sc00
 		String downloadFileName = "skf2020.skf2020_sc002.FileId";
 
 		// 機能ID
-		String functionId = "skf202010002";
+		String functionId = "skfapplrequirement";
 
 		// DTOに値をセット
 		dto.setDownloadFileName(downloadFileName);

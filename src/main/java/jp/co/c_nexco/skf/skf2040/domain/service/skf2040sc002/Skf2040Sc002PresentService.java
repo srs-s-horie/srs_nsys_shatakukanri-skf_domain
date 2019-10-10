@@ -76,9 +76,11 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		boolean validate = skf2040Sc002SharedService.checkValidation(preDto, sFalse);
 		if (!validate) {
 			// 添付資料だけはセッションから再取得の必要あり
-			skf2040Sc002SharedService.setAttachedFileList(preDto);
+			List<Map<String, Object>> reAttachedFileList = skf2040Sc002SharedService.setAttachedFileList();
+			preDto.setAttachedFileList(reAttachedFileList);
 			return preDto;
 		}
+		String comment = preDto.getCommentNote();
 
 		// 承認者情報の取得
 		Map<String, String> userInfo = new HashMap<String, String>();
@@ -132,12 +134,14 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			}
 
 			// コメントがある場合は更新
-			if (NfwStringUtils.isNotEmpty(preDto.getCommentNote())) {
+			if (NfwStringUtils.isNotEmpty(comment)) {
 				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(), nextStatus, errorMsg,
-						preDto.getCommentNote())) {
+						comment)) {
 					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
+			} else {
+				comment = CodeConstant.NONE;
 			}
 
 			// 添付ファイル管理テーブル更新処理
@@ -175,7 +179,8 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			}
 
 			// メール送信処理
-			skf2040Sc002SharedService.sendMail(preDto, true);
+			skf2040Sc002SharedService.sendMail(preDto.getApplNo(), preDto.getApplId(), preDto.getShainNo(), comment,
+					preDto.getMailKbn(), true);
 
 			// TODO 社宅管理データ連携処理実行
 
@@ -212,16 +217,19 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			}
 
 			// コメント更新
-			if (NfwStringUtils.isNotEmpty(preDto.getCommentNote())) {
+			if (NfwStringUtils.isNotEmpty(comment)) {
 				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(),
 						CodeConstant.STATUS_KAKUNIN_IRAI, errorMsg, preDto.getCommentNote())) {
 					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
+			} else {
+				comment = CodeConstant.NONE;
 			}
 
 			// メール送信処理
-			skf2040Sc002SharedService.sendMail(preDto, true);
+			skf2040Sc002SharedService.sendMail(preDto.getApplNo(), preDto.getApplId(), preDto.getShainNo(), comment,
+					preDto.getMailKbn(), true);
 
 			break;
 		}
