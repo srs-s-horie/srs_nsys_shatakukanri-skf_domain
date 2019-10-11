@@ -621,9 +621,10 @@ public class Skf2030Sc002SharedService {
 		if (NfwStringUtils.isNotEmpty(shoninName2) && NfwStringUtils.isNotEmpty(updApplInfo.getAgreName1())) {
 			shoninName1 = updApplInfo.getAgreName1();
 		}
+		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
 		result = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("applShainNo"),
 				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, agreDate, shoninName1,
-				shoninName2, errorMsg);
+				shoninName2, lastUpdateDate, errorMsg);
 		if (!result) {
 			// エラーメッセージ（メッセージID：S02000）を設定
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);

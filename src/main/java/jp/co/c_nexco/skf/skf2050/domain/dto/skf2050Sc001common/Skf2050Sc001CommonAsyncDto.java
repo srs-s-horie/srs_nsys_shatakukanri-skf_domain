@@ -4,7 +4,7 @@
 package jp.co.c_nexco.skf.skf2050.domain.dto.skf2050Sc001common;
 
 import java.util.*;
-import jp.co.c_nexco.skf.skf2050.domain.dto.common.Skf205010CommonDto;
+import jp.co.c_nexco.skf.skf2050.domain.dto.common.Skf205010CommonAsyncDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf2050Sc001CommonDto extends Skf205010CommonDto {
+public class Skf2050Sc001CommonAsyncDto extends Skf205010CommonAsyncDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 

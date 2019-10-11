@@ -88,6 +88,11 @@ public class Skf2020Sc003SharedService {
 	private final String SHATAKU_TEIJI_COMP = "（社宅提示データが作成完了されていません。）";
 	private final String BIHIN_STATE_SONAETSUKE = "備付";
 
+	// 排他処理用
+	private final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
+	private final String BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_kibo_shinsei_UpdateDate";
+	private final String BIHIN_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_UpdateDate";
+
 	@Autowired
 	private Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
 	@Autowired
@@ -287,8 +292,11 @@ public class Skf2020Sc003SharedService {
 				break;
 			}
 
+			Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
+
 			boolean resultUpdateApplInfo = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, shainNo,
-					applNo, applInfo.getApplId(), null, null, newStatus, null, shonin1, shonin2, errorMsg);
+					applNo, applInfo.getApplId(), null, null, newStatus, null, shonin1, shonin2, lastUpdateDate,
+					errorMsg);
 			if (!resultUpdateApplInfo) {
 				errorMsg.put("error", MessageIdConstant.E_SKF_1075);
 				return false;
