@@ -624,7 +624,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		WorkBookDataBean wbdb = new WorkBookDataBean(fileName);
 		wbdb.setSheetDataBeanList(sheetDataBeanList);
 		// Excelファイルへ出力
-		SkfFileOutputUtils.fileOutputExcel(wbdb, cellparams, "skf3010.skf3010_sc001.excelTemplateFile", "SKF3010SC001",
+		SkfFileOutputUtils.fileOutputExcel(wbdb, cellparams, "skf3010.skf3010_sc001.excelTemplateFile", "SKF3010RP001",
 				excelOutPutStartLine, null, resultMap);
 		byte[] writeFileData = (byte[]) resultMap.get("fileData");
 		downloadDto.setFileData(writeFileData);

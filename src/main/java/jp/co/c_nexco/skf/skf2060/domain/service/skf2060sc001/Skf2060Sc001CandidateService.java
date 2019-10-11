@@ -16,8 +16,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplComment;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukken;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukkenKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetMaxTeijiKaisuExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -49,6 +52,8 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	private Skf2060Sc001GetMaxTeijiKaisuExpRepository skf2060Sc001GetMaxTeijiKaisuExpRepository;
 	@Autowired
 	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
+	@Autowired
+	private Skf2060TKariageBukkenRepository skf2060TKariageBukkenRepository;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
@@ -227,7 +232,18 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			}
 			
 			//借上候補物件番号をもとに借上候補物件テーブルの提示可能フラグを"1"（提示不可）に更新する
+
 			for(int j = 0; j < checkDataParamList.size(); j++){
+				
+				// 楽観的排他チェック用データ取得
+				Skf2060TKariageBukken data = new Skf2060TKariageBukken();
+				Skf2060TKariageBukkenKey key = new Skf2060TKariageBukkenKey();
+				key.setCompanyCd(companyCd);
+				key.setCandidateNo((long)checkDataParamList.get(j).get("candidateNo"));
+				data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+				// 楽観的排他チェック
+	            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate + checkDataParamList.get(j).get("candidateNo").toString())
+	            		, data.getUpdateDate());
 				boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd, (long)checkDataParamList.get(j).get("candidateNo"));
 				//登録に失敗した場合
 				if(!(updateKariageKohoCheck))	{
@@ -240,8 +256,10 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			
 		//新規作成フラグがFalseの時
 		}else{
-			//楽観的排他チェック
+			//楽観的排他チェック用データ取得
 			Skf2060Sc001GetApplHistoryInfoForUpdateExp existCheckData = skf2060Sc001SharedService.getApplHistoryInfoForUpdate(companyCd, applNo);
+			//楽観的排他チェック
+            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.applHistoryLastUpdateDate) ,existCheckData.getUpdateDate());
 			//該当する「申請書類履歴テーブル」のデータが取得できた場合
 			if(existCheckData != null){
 				//申請書類履歴テーブルよりステータスを更新
@@ -307,7 +325,18 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 				}
 				
 				//借上候補物件番号をもとに借上候補物件テーブルの提示可能フラグを"1"（提示不可）に更新する
+
 				for(int j = 0; j < checkDataParamList.size(); j++){
+					
+					// 楽観的排他チェック用データ取得
+					Skf2060TKariageBukken data = new Skf2060TKariageBukken();
+					Skf2060TKariageBukkenKey key = new Skf2060TKariageBukkenKey();
+					key.setCompanyCd(companyCd);
+					key.setCandidateNo((long)checkDataParamList.get(j).get("candidateNo"));
+					data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+					// 楽観的排他チェック
+		            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate + checkDataParamList.get(j).get("candidateNo").toString())
+		            		, data.getUpdateDate());
 					boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd, (long)checkDataParamList.get(j).get("candidateNo"));
 					//登録に失敗した場合
 					if(!(updateKariageKohoCheck))	{

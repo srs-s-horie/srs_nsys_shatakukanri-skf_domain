@@ -245,6 +245,8 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 					String contractEndDate = skf3010Sc007SharedService.createObjToString(map.get("contractEndDate"));
 					String landRent = skf3010Sc007SharedService.createObjToString(map.get("landRent"));
 					String biko = skf3010Sc007SharedService.createObjToString(map.get("biko"));
+//					contractStartDate = contractStartDate.replace("/", "");
+//					contractEndDate = contractEndDate.replace("/", "");
 					selectDto.setOwnerName(ownerName);
 					selectDto.setOwnerNo(ownerNo);
 					selectDto.setParkingZipCd(parkingZipCd);

@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc002.Skf2060Sc002AttachedDownloadDto;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
@@ -29,7 +31,10 @@ public class Skf2060Sc002AttachedDownloadService extends BaseServiceAbstract<Skf
 
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtils;
-
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 	
 
 	/**
@@ -44,10 +49,11 @@ public class Skf2060Sc002AttachedDownloadService extends BaseServiceAbstract<Skf
 		
 		long candidateNo = Long.parseLong(adlDto.getHdnCandidateNo());
 		String attachedNo = adlDto.getHdnAttachedNo();
+		String sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY+adlDto.getHdnCandidateNo()+"_"+attachedNo;
 		
 		//セッションキーから添付ファイル情報を取得
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-		attachedFileList = skfAttachedFileUtils.getKariageBukkenFileInfo(menuScopeSessionBean, candidateNo, attachedNo, SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY+attachedNo);
+		attachedFileList = skfAttachedFileUtils.getKariageTeijiFileInfo(menuScopeSessionBean, candidateNo, attachedNo, sessionKey);
 		
 		//添付ファイル情報が取得できなかった場合
 		if(!(attachedFileList != null && attachedFileList.size() > 0)){
