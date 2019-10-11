@@ -47,8 +47,6 @@ public class Skf3090Sc006InitService extends BaseServiceAbstract<Skf3090Sc006Ini
 	@Override
 	public BaseDto index(Skf3090Sc006InitDto initDto) throws Exception {
 
-		// デリゲート処理の設定
-
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示処理開始", CodeConstant.C001, initDto.getPageId());
 
@@ -63,12 +61,6 @@ public class Skf3090Sc006InitService extends BaseServiceAbstract<Skf3090Sc006Ini
 	}
 
 	private void setInitDisp(Skf3090Sc006InitDto initDto) {
-		// コントロール名の設定
-
-		// パンくず
-
-		// マスタの設定
-
 		// 「会社」ドロップダウンリストの設定
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();
 		companyList = skfDropDownUtils.getDdlCompanyByCd(initDto.getCompanyCd(), true);
@@ -76,28 +68,9 @@ public class Skf3090Sc006InitService extends BaseServiceAbstract<Skf3090Sc006Ini
 
 		// 組織登録画面から遷移時、ドロップダウンリストの設定
 		setListValue(initDto);
-
-		// 確認ダイアログメッセージ設定
 	}
 
 	private void setListValue(Skf3090Sc006InitDto initDto) {
-
-		// TODO 次画面からの戻り制御
-
-		// // リストテーブルデータ取得用
-		// List<Map<String, Object>> createTableList = new ArrayList<Map<String,
-		// Object>>();
-		// if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-		// && initDto.getPrePageId().equals(FunctionIdConstant.SKF3090_SC007)) {
-		// /** 組織マスタ登録画面からの遷移が、元々リストテーブルからの遷移での復帰だった場合、リストテーブルの情報を取得する */
-		// // 登録画面のhidden項目をinitDtoに詰めなおす
-		// initDto.setHdnCompanyCd(initDto.getHdnCompanyCd());
-		// initDto.setHdnAgencyCd(initDto.getHdnAgencyCd());
-		// initDto.setHdnAffiliation1Cd(initDto.getHdnAffiliation1Cd());
-		// initDto.setHdnAffiliation2Cd(initDto.getAffiliation2Cd());
-		// initDto.setHdnBusinessAreaCd(initDto.getHdnBusinessAreaCd());
-		// }
-
 		String companyCd = initDto.getCompanyCd();
 		String agencyCd = initDto.getAgencyCd();
 		String affiliation1Cd = initDto.getAffiliation1Cd();
