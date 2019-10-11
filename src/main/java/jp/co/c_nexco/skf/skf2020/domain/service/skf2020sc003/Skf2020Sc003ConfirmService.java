@@ -44,11 +44,9 @@ public class Skf2020Sc003ConfirmService extends BaseServiceAbstract<Skf2020Sc003
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param updDto
-	 *            インプットDTO
+	 * @param updDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public BaseDto index(Skf2020Sc003ConfirmDto confDto) throws Exception {
@@ -58,21 +56,18 @@ public class Skf2020Sc003ConfirmService extends BaseServiceAbstract<Skf2020Sc003
 
 		confirmClickProcess(confDto);
 
-		// 送信用データリストを作成し、セッションに保存する。
-		List<Map<String, String>> sendDataList = new ArrayList<Map<String, String>>();
-		Map<String, String> sendDataMap = new HashMap<String, String>();
-		sendDataMap.put(SkfCommonConstant.KEY_APPL_NO, confDto.getApplNo());
-		sendDataMap.put(SkfCommonConstant.KEY_STATUS, confDto.getApplStatus());
-		sendDataList.add(sendDataMap);
-		menuScopeSessionBean.put(SessionCacheKeyConstant.APPL_INFO_SESSION_KEY, sendDataList);
-
 		// フォームデータを設定
 		confDto.setPrePageId(confDto.getPageId());
 		BaseForm form = new BaseForm();
 		CopyUtils.copyProperties(form, confDto);
 		FormHelper.setFormBean(FunctionIdConstant.SKF2010_SC002, form);
 
+		Map<String, Object> attribute = new HashMap<String, Object>();
+		attribute.put(SkfCommonConstant.KEY_APPL_NO, confDto.getApplNo());
+		attribute.put(SkfCommonConstant.KEY_STATUS, confDto.getApplStatus());
+
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC002);
+		tpi.setTransferAttributes(attribute);
 		confDto.setTransferPageInfo(tpi);
 
 		return confDto;

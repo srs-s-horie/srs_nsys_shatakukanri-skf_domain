@@ -1,8 +1,8 @@
-package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc005;
-
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
+package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc005;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

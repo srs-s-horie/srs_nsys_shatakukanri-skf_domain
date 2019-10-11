@@ -427,7 +427,8 @@ public class Skf2030Sc001SharedService {
 		 */
 
 		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("shainNo"),
-				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, null, null, null, errorMsg)) {
+				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, null, CodeConstant.NONE,
+				CodeConstant.NONE, errorMsg)) {
 			return false;
 		}
 

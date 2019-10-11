@@ -115,7 +115,17 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 			skf3010Sc007SharedService.getDoropDownList(registDto.getParkingContractType(), parkingContractTypeList,
 					registDto.getParkinglendKbn(), parkinglendKbnList);
 			registDto.setParkinglendKbnList(parkinglendKbnList);
-			
+			registDto.setParkingContractTypeList(parkingContractTypeList);
+						
+			if(registDto.getParkingContractType().compareTo(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_2) == 0){
+				//社宅と別契約
+				//駐車場契約情報の「支援」「住所検索」ボタンを活性にする。
+				registDto.setContractInfoDisabled(FALSE);
+			}else{
+				//社宅と一括契約の場合
+				//駐車場契約情報の「支援」「住所検索」ボタンを非活性にする。
+				registDto.setContractInfoDisabled(TRUE);
+			}
 			return registDto;
 		}
 		
@@ -324,7 +334,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 			}
 			
 			// 契約開始日
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractStartDate())) {
+			if (SkfCheckUtils.isNullOrEmpty(registDto.getSetContractStartDate())) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "契約開始日");
 				registDto.setContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
@@ -332,36 +342,45 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 			}
 			
 			// 駐車場代（地代） 
-			if(registDto.getLandRent() == null){
+			String rentStr = registDto.getLandRentNum();
+			if(SkfCheckUtils.isNullOrEmpty(rentStr)){
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
 				registDto.setLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 駐車場代（地代） ";
-			}else if (SkfCheckUtils.isNullOrEmpty(registDto.getLandRent().toString())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
-				registDto.setLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 駐車場代（地代） ";
+				debugMessage += " 必須入力チェック - 駐車場代（地代）";
 			}
+//			if(registDto.getLandRent() == null){
+//				isCheckOk = false;
+//				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
+//				registDto.setLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
+//				debugMessage += " 必須入力チェック - 駐車場代（地代）NULL ";
+//			}else if (SkfCheckUtils.isNullOrEmpty(registDto.getLandRent().toString())) {
+//				isCheckOk = false;
+//				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
+//				registDto.setLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
+//				debugMessage += " 必須入力チェック - 駐車場代（地代） ";
+//			}
 			
 			/** 必須チェックOKなら形式チェック */
 			if (isCheckOk) {
 				// 契約開始日
-				if (!SkfCheckUtils.isSkfDateFormat(registDto.getContractStartDate(),CheckUtils.DateFormatType.YYYYMMDD)) {
+				String contractStartDate = registDto.getSetContractStartDate();
+				if (!SkfCheckUtils.isSkfDateFormat(contractStartDate,CheckUtils.DateFormatType.YYYYMMDD)) {
 					isCheckOk = false;
 					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約開始日");
 					registDto.setContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 形式チェック - 契約開始日 - " +registDto.getContractStartDate();
+					debugMessage += " 形式チェック - 契約開始日 - " + contractStartDate;
 				}
 				
 				// 契約終了日
-				if (!SkfCheckUtils.isNullOrEmpty(registDto.getContractEndDate())) {
+				String contractEndDate = registDto.getSetContractEndDate();
+				if (!SkfCheckUtils.isNullOrEmpty(contractEndDate)) {
 					//形式
-					if (!SkfCheckUtils.isSkfDateFormat(registDto.getContractEndDate(),CheckUtils.DateFormatType.YYYYMMDD)) {
+					if (!SkfCheckUtils.isSkfDateFormat(contractEndDate,CheckUtils.DateFormatType.YYYYMMDD)) {
 						isCheckOk = false;
 						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
 						registDto.setContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
-						debugMessage += " 形式チェック - 契約終了日 - " +registDto.getContractEndDate();
+						debugMessage += " 形式チェック - 契約終了日 - " + contractEndDate;
 					}
 					
 					if(isCheckOk){
@@ -370,15 +389,15 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 						Date startDate = null;
 						Date endDate = null;
 						try{
-							startDate = dateFormat.parse(registDto.getContractStartDate());
-							endDate = dateFormat.parse(registDto.getContractEndDate());
+							startDate = dateFormat.parse(contractStartDate);
+							endDate = dateFormat.parse(contractEndDate);
 							
 							if(!startDate.before(endDate)){
 								//契約開始日＞契約終了日の場合(開始日が終了日より前で無い場合）
 								isCheckOk = false;
 								ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
 								registDto.setContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
-								debugMessage += " 形式チェック - 契約終了日(開始日以前) - " +registDto.getContractEndDate();
+								debugMessage += " 形式チェック - 契約終了日(開始日以前) - " +contractEndDate;
 							}
 							
 						}catch(ParseException ex){
@@ -386,12 +405,12 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 							if(startDate == null){
 								ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約開始日");
 								registDto.setContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
-								debugMessage += " 形式チェック - 契約開始日 - " +registDto.getContractStartDate();
+								debugMessage += " 形式チェック - 契約開始日 - " + contractStartDate;
 							}
 							if(endDate == null){
 								ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
 								registDto.setContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
-								debugMessage += " 形式チェック - 契約終了日 - " +registDto.getContractEndDate();
+								debugMessage += " 形式チェック - 契約終了日 - " + contractEndDate;
 							}
 							
 						}
@@ -460,7 +479,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				Long num = (long) 1111;
 				setValue.setOwnerNo(num);
 			}
-		}
+		}//デバッグ用コードここまで
 		
 		//経理連携用資産番号
 		if(dto.getAssetRegisterNo() != null){
@@ -468,14 +487,14 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		}
 		
 		//契約開始日
-		if(dto.getContractStartDate() != null){
-			String startDate = skfDateFormatUtils.dateFormatFromString(dto.getContractStartDate(), "yyyyMMdd");
+		if(dto.getSetContractStartDate() != null){
+			String startDate = skfDateFormatUtils.dateFormatFromString(dto.getSetContractStartDate(), "yyyyMMdd");
 			setValue.setContractStartDate(startDate);
 		}
 		
 		//契約終了日
-		if(dto.getContractEndDate() != null){
-			String endDate = skfDateFormatUtils.dateFormatFromString(dto.getContractEndDate(), "yyyyMMdd");
+		if(dto.getSetContractEndDate() != null){
+			String endDate = skfDateFormatUtils.dateFormatFromString(dto.getSetContractEndDate(), "yyyyMMdd");
 			setValue.setContractEndDate(endDate);
 		}
 		
@@ -483,8 +502,9 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 //		if(dto.getLandRent() != null){
 //			setValue.setLandRent(dto.getLandRent().intValue());
 //		}
-		if(!SkfCheckUtils.isNullOrEmpty(dto.getLandRent())){
-			String tempLandRent = dto.getLandRent().replace(",", "");
+		String landRentNum = dto.getLandRentNum();
+		if(!SkfCheckUtils.isNullOrEmpty(landRentNum)){
+			String tempLandRent = landRentNum.replace(",", "");
 			int landRent =  Integer.parseInt(tempLandRent);
 			setValue.setLandRent(landRent);
 		}
