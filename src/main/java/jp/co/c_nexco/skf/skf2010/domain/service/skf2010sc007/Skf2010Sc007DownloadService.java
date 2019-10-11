@@ -42,10 +42,10 @@ public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		skfOperationLogUtils.setAccessLog("申請要件を確認する", companyCd, dto.getPageId());
 
 		// ダウンロードファイル名
-		String downloadFileName = "skf2010.skf2010_sc007.FileId";
+		String downloadFileName = "skf.skf_appl_requirement.FileId";
 
 		// 機能ID
-		String functionId = "skf201040007";
+		String functionId = "skfapplfiles";
 
 		// DTOに値をセット
 		dto.setDownloadFileName(downloadFileName);
