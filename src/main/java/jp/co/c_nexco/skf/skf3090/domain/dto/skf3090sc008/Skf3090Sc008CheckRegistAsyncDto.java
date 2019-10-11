@@ -3,8 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc008;
 
-import java.util.*;
-import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc008common.Skf3090Sc008CommonDto;
+import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc008common.Skf3090Sc008CommonAsyncDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -13,11 +12,15 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3090Sc008InitDto extends Skf3090Sc008CommonDto {
+public class Skf3090Sc008CheckRegistAsyncDto extends Skf3090Sc008CommonAsyncDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
-    
-    // 操作ガイド
-    private String operationGuide;
 
+	//お知らせ内容
+	private String note;
+	//公開開始日カレンダー
+	private String openDateBox;
+	
+	//確認ダイアログフラグ
+	private boolean dialogFlg;
 }

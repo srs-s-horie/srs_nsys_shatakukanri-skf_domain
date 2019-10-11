@@ -4,6 +4,7 @@
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc003;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,9 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 		// 操作ガイドの設定
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
 		
+		//更新日を設定
+		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
+		
         // 提示状況汎用コード取得(反転)
         Map<String, String> applStatusGenCodeMap = new HashMap<String, String>();
         applStatusGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
@@ -95,6 +99,9 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}
+		
+		//申請書類履歴テーブル用更新日
+		lastUpdateDateMap.put(initDto.applHistoryLastUpdateDate, applHistoryData.getUpdateDate());
 		
 		String applNo = applHistoryData.getApplNo();
 		String applStatus = applHistoryData.getApplStatus();
@@ -139,11 +146,16 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}
 		
+		
 		//提示回数
 		short teijiKaisu =(short)kariageTeijiDataList.get(0).getTeijiKaisu();
 		
 		List<Map<String, String>> kariageTeijiList = new ArrayList<Map<String, String>>();
 		for(Skf2060Sc003GetKariageTeijiInfoExp kariageTeijiData : kariageTeijiDataList){
+			
+			//借上候補物件テーブル用更新日
+			lastUpdateDateMap.put(initDto.KariageBukkenLastUpdateDate + kariageTeijiData.getCandidateNo(), kariageTeijiData.getUpdateDate());
+			
 			Map<String, String> kariageTeijiMap = new HashMap<String, String>();
 			kariageTeijiMap = this.getKariageTeijiMap(kariageTeijiData, applNo);
 			kariageTeijiList.add(kariageTeijiMap);
@@ -181,6 +193,8 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			//「完了」ボタン、「再掲示」ボタンを非表示
 			initDto.setButtonViewFlag(false);
 		}
+		
+		initDto.setLastUpdateDateMap(lastUpdateDateMap);
 		  
 		return initDto;
 	}

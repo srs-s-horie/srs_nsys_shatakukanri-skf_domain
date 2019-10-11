@@ -16,21 +16,23 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc002.Skf2060Sc002GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc002.Skf2060Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc002.Skf2060Sc002GetKariageTeijiInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc002.Skf2060Sc002UpdateKariageTeijiExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukken;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeiji;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiDetail;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetApplHistoryInfoForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002UpdateKariageTeijiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiDetailRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc002.Skf2060Sc002SelectDto;
 
@@ -46,11 +48,13 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 	@Autowired
 	private Skf2060TKariageTeijiDetailRepository skf2060TKariageTeijiDetailRepository;
 	@Autowired
-	private Skf2060TKariageTeijiRepository skf2060TKariageTeijiRepository;
-	@Autowired
 	private Skf2060TKariageBukkenRepository skf2060TKariageBukkenRepository;
 	@Autowired
+	private Skf2060Sc002UpdateKariageTeijiExpRepository skf2060Sc002UpdateKariageTeijiExpRepository;
+	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private Skf2060Sc002GetApplHistoryInfoForUpdateExpRepository skf2060Sc002GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
@@ -94,6 +98,12 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 		//「備考」テキストボックス
 		String biko = null;
 		
+		//ログインセッションのユーザ情報
+		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		//ログインセッションユーザ情報のユーザ名
+		String updateUserId = userInfoMap.get("userCd");
+		String updateProgramId = selectDto.getPageId();
+		
 		//更新ステータスを設定する
 		//「選択しない」ラベルが表示されている行が選択されている場合,更新ステータスを"選択しない"に設定
 		if(candidateNo.equals("0")){    //applCgeckFlgとは関係ない
@@ -112,8 +122,12 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 		Skf2060Sc002GetApplHistoryInfoForUpdateExp applHistoryData = this.getApplHistoryInfoForUpdate(companyCd, applNo);
 		if(applHistoryData == null){
 			ServiceHelper.addErrorResultMessage(selectDto, null, MessageIdConstant.E_SKF_1078);
-			throwBusinessExceptionIfErrors(selectDto.getResultMessages());
+
+
 		}
+		
+		// 楽観的排他チェック
+        super.checkLockException(selectDto.getLastUpdateDate(selectDto.applHistoryLastUpdateDate), applHistoryData.getUpdateDate());
 		
 		//申請書類履歴テーブルを更新する
 		Map<String, String> applHistoryMap = new HashMap<String, String>();
@@ -146,6 +160,11 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 			//借上候補物件提示明細テーブルを更新する（「選択しない」ラベル行以外の場合）
 			//「選択しない」ラベル行以外の場合（現行だと借上候補物件番号が空じゃない場合）
 			if(kariageTeijiData.getCandidateNo() != 0){
+				
+				// 楽観的排他チェック
+				Skf2060TKariageTeijiDetail ktdData = ｓkf2060Sc002SharedService.getKariageTeijiDetailForUpdate(companyCd, applNo, Short.parseShort(teijiKaisu), kariageTeijiData.getCandidateNo());
+				super.checkLockException(selectDto.getLastUpdateDate(selectDto.KariageTeijiDetailLastUpdateDate + ktdData.getCandidateNo()), ktdData.getUpdateDate());
+				
 				Map<String, String> kariageTeijiDetailMap = new HashMap<String, String>();
 				kariageTeijiDetailMap.put("companyCd", companyCd);
 				kariageTeijiDetailMap.put("applNo", applNo);
@@ -164,6 +183,11 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 			
 			//選択された行の場合
 			if(applCheckFlg.equals(SELECT)){
+				
+				// 楽観的排他チェック
+				Skf2060TKariageTeiji ktData = ｓkf2060Sc002SharedService.getKariageTeijiForUpdate(companyCd, applNo, Short.parseShort(teijiKaisu));
+				super.checkLockException(selectDto.getLastUpdateDate(selectDto.KariageTeijiLastUpdateDate), ktData.getUpdateDate());
+				
 				//借上候補物件提示テーブルの更新
 				Map<String, String> kariageTeijiMap = new HashMap<String, String>();
 				kariageTeijiMap.put("companyCd", companyCd);
@@ -172,6 +196,8 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 				kariageTeijiMap.put("candidateNo", String.valueOf(kariageTeijiData.getCandidateNo()));
 				kariageTeijiMap.put("riyu", riyu);
 				kariageTeijiMap.put("biko", biko);
+				kariageTeijiMap.put("updateUserId", updateUserId);
+				kariageTeijiMap.put("updateProgramId", updateProgramId);
 				
 				boolean ktUpdateCheck = this.UpdateKariageTeiji(kariageTeijiMap);
 				//更新失敗
@@ -186,6 +212,11 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 				//提示された物件が選択されなかったため、同じ物件を他の人に提示できるように、提示フラグを0:選択可に更新する
 				//「選択しない」ラベル行以外の場合（現行だと借上候補物件番号が空じゃない場合）
 				if(kariageTeijiData.getCandidateNo() != 0){
+					
+					// 楽観的排他チェック
+					Skf2060TKariageBukken kbData = ｓkf2060Sc002SharedService.getKariageBukkenForUpdate(companyCd, (kariageTeijiData.getCandidateNo()));
+					super.checkLockException(selectDto.getLastUpdateDate(selectDto.KariageBukkenLastUpdateDate + kbData.getCandidateNo()), kbData.getUpdateDate());
+					
 					Map<String, String> kariageBukkenMap = new HashMap<String, String>();
 					kariageBukkenMap.put("companyCd", companyCd);
 					kariageBukkenMap.put("candidateNo", String.valueOf(kariageTeijiData.getCandidateNo()));
@@ -315,17 +346,20 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 	 * @return 更新チェック判定<br>trueの場合OK<br>falseの場合NG
 	 */
 	public boolean UpdateKariageTeiji(Map<String, String> kariageTeijiMap){
+		
 		boolean updateCheck = true;
 		int updateCount = 0;
-		Skf2060TKariageTeiji updateData = new Skf2060TKariageTeiji();
+		Skf2060Sc002UpdateKariageTeijiExp updateData = new Skf2060Sc002UpdateKariageTeijiExp();
 		updateData.setCompanyCd(kariageTeijiMap.get("companyCd"));
 		updateData.setApplNo(kariageTeijiMap.get("applNo"));
 		updateData.setTeijiKaisu(Short.parseShort(kariageTeijiMap.get("teijiKaisu")));
 		updateData.setCheckCandidateNo(Long.parseLong(kariageTeijiMap.get("candidateNo")));
 		updateData.setRiyu(kariageTeijiMap.get("riyu"));
 		updateData.setBiko(kariageTeijiMap.get("biko"));
+		updateData.setUpdateUserId(kariageTeijiMap.get("updateUserId"));
+		updateData.setUpdateProgramId(kariageTeijiMap.get("updateProgramId"));
 		
-		updateCount = skf2060TKariageTeijiRepository.updateByPrimaryKeySelective(updateData);
+		updateCount = skf2060Sc002UpdateKariageTeijiExpRepository.updateKariageTeiji(updateData);
 		
 		if(updateCount <= 0){
 			updateCheck = false;
