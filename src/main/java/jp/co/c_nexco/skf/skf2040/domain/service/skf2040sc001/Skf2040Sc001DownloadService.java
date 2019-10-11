@@ -43,7 +43,7 @@ public class Skf2040Sc001DownloadService extends BaseServiceAbstract<Skf2040Sc00
         String downloadFileName = "skf.skf_appl_requirement.FileId";
 
         // 機能ID
-        String functionId = "skfapplfiles";
+        String functionId = "skfapplrequirement";
 
         // DTOに値をセット
         dto.setDownloadFileName(downloadFileName);
