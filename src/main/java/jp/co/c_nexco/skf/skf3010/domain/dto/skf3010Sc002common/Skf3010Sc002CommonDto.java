@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
 public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
-	
+
 	private static final long serialVersionUID = -1902278406295003652L;
 	/** 定数 */
 	// 契約情報変更モード：追加
@@ -30,8 +30,18 @@ public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
 	public static final String CONTRACT_MODE_INIT = "init";
 	// 選択タブインデックス(基本情報タブ)
 	public static final String SELECT_TAB_INDEX_KIHON = "0";
+	// 選択タブインデックス(駐車場情報タブ)
+	public static final String SELECT_TAB_INDEX_PARKING = "1";
+	// 選択タブインデックス(管理者情報タブ)
+	public static final String SELECT_TAB_INDEX_ADMIN = "3";
 	// 選択タブインデックス(契約情報タブ)
 	public static final String SELECT_TAB_INDEX_CONTRACT = "4";
+	// 管理者区分：寮長・自治会長
+	public static final String MANAGE_KBN_DOMITRY_LEADER = "1";
+	// 管理者区分：鍵管理者
+	public static final String MANAGE_KBN_KEY_MANAGER = "2";
+	// 管理者区分：寮母・管理会社
+	public static final String MANAGE_KBN_MATRON = "3";
 
 	/** 画面上部 */
 	// 空き部屋数
@@ -47,7 +57,9 @@ public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
 	/** 基本情報 */
 	// 郵便番号
 	private String zipCd;
-	// 社宅住所
+	// 都道府県コード
+	private String pref;
+	// 社宅住所(継承元にある)
 //	private String shatakuAddress;
 	// 社宅構造詳細
 	private String shatakuStructureDetail;
@@ -65,12 +77,24 @@ public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
 	private String shatakuHosokuFileName2;
 	// 社宅補足ファイル名3
 	private String shatakuHosokuFileName3;
-	// 社宅補足リンク1
+	// 社宅補足リンク名1
 	private String shatakuHosokuLink1;
 	// 社宅補足リンク名2
 	private String shatakuHosokuLink2;
 	// 社宅補足リンク名3
 	private String shatakuHosokuLink3;
+	// 社宅補足サイズ1
+	private String shatakuHosokuSize1;
+	// 社宅補足サイズ2
+	private String shatakuHosokuSize2;
+	// 社宅補足サイズ3
+	private String shatakuHosokuSize3;
+	// 社宅補足ファイル1
+	private byte[] shatakuHosokuFile1;
+	// 社宅補足ファイル2
+	private byte[] shatakuHosokuFile2;
+	// 社宅補足ファイル3
+	private byte[] shatakuHosokuFile3;
 	// 備考
 	private String biko;
 	// 基本情報更新日時(排他用)
@@ -94,12 +118,24 @@ public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
 	private String parkingHosokuLink2;
 	// 駐車場補足リンク3
 	private String parkingHosokuLink3;
+	// 駐車場補足サイズ1
+	private String parkingHosokuSize1;
+	// 駐車場補足サイズ2
+	private String parkingHosokuSize2;
+	// 駐車場補足サイズ3
+	private String parkingHosokuSize3;
+	// 駐車場補足ファイル1
+	private byte[] parkingHosokuFile1;
+	// 駐車場補足ファイル2
+	private byte[] parkingHosokuFile2;
+	// 駐車場補足ファイル3
+	private byte[] parkingHosokuFile3;
 	// 駐車場備考
 	private String parkingBiko;
 	// 駐車場情報更新日時(排他用)
 	private Date parkingUpdateDate;
 	/** 管理者情報 */
-	/** 寮長・自治解消 */
+	/** 寮長・自治会長 */
 	// 部屋番号：寮長・自治会長
 	private String dormitoryLeaderRoomNo;
 	// 氏名：寮長・自治会長
@@ -250,6 +286,26 @@ public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
 	// 駐車場契約情報ボタン(非活性：true, 活性:false)
 	private Boolean parkingContractDisableFlg;
 
+	/** JSON(連携用) */
+	// JSON駐車場区画情報 リスト
+	private String jsonParking;
+	// JSON備品情報 リスト
+	private String jsonBihin;
+	// ドロップダウン選択値リスト
+	private String jsonDrpDwnList;
+	// 可変ラベルリスト
+	private String jsonLabelList;
+
+	/** データ比較用 */
+	// 建築年月日
+	private String startingBuildDate;
+	// 社宅構造
+	private String startingShatakuStructure;
+	// 駐車場構造リスト
+	private String startingParkingStructure;
+	// 地域区分
+	private String startingAreaKbn;
+
 	/** エラー系 **/
 	// 社宅名
 	private String shatakuNameErr;
@@ -277,4 +333,36 @@ public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
 	private String buildDateErr;
 	// 駐車場構造
 	private String parkingStructureErr;
+	// 寮長・自治会長 メールアドレス
+	private String dormitoryLeaderMailAddressErr;
+	// 鍵管理者 メールアドレス
+	private String keyManagerMailAddressErr;
+	// 寮母・管理会社 メールアドレス
+	private String matronMailAddressErr;
+	// 寮長・自治会長 電話番号
+	private String dormitoryLeaderTelNumberErr;
+	// 鍵管理者 電話番号
+	private String keyManagerTelNumberErr;
+	// 寮母・管理会社 電話番号
+	private String matronTelNumberErr;
+	// 寮長・自治会長 内線番号
+	private String dormitoryLeaderExtentionNoErr;
+	// 鍵管理者 内線番号
+	private String keyManagerExtentionNoErr;
+	// 寮母・管理会社 内線番号
+	private String matronExtentionNoErr;
+	// 賃貸人（代理人）名
+	private String contractOwnerNameErr;
+	// 経理連携用管理番号
+	private String assetRegisterNoErr;
+	// 契約開始日
+	private String contractStartDayErr;
+	// 契約終了日
+	private String contractEndDayErr;
+	// 家賃
+	private String contractRentErr;
+	// 共益費
+	private String contractKyoekihiErr;
+	// 駐車場料（地代）
+	private String contractLandRentErr;
 }
