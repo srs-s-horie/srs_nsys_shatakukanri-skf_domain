@@ -26,6 +26,8 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001CheckAsyncD
 @Service
 public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2040Sc001CheckAsyncDto> {
 
+    private static final String FALSE = "false";
+    
     /**
      * サービス処理を行う。　
      * 
@@ -78,8 +80,8 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 
         /** 単項目 */
         // 社宅名
-        LogUtils.debugByMsg(msg + "保有社宅名" + checkDto.getNowShataku());
-        if (NfwStringUtils.isBlank(checkDto.getNowShataku())) {
+        LogUtils.debugByMsg(msg + "保有社宅名" + checkDto.getNowShatakuName());
+        if (NfwStringUtils.isBlank(checkDto.getNowShatakuName())) {
             ServiceHelper.addErrorResultMessage(checkDto, new String[] { "nowShatakuName" },
                     MessageIdConstant.E_SKF_1054, "保有社宅名");
             isError = true;
@@ -146,11 +148,11 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
         LogUtils.debugByMsg(msg + "退居（返還）する社宅又は、自動車の保管場所:社宅" + checkDto.getTaikyoTypeShataku());
         LogUtils.debugByMsg(msg + "退居（返還）する社宅又は、自動車の保管場所:駐車場1" + checkDto.getTaikyoTypeParking1());
         LogUtils.debugByMsg(msg + "退居（返還）する社宅又は、自動車の保管場所:駐車場2" + checkDto.getTaikyoTypeParking2());
-        if (NfwStringUtils.isBlank(checkDto.getTaikyoTypeShataku())
-                && NfwStringUtils.isBlank(checkDto.getTaikyoTypeParking1())
-                && NfwStringUtils.isBlank(checkDto.getTaikyoTypeParking2()) ) {
-            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoType" },
-                    MessageIdConstant.E_SKF_1048, "退居（返還）する社宅又は、自動車の保管場所");
+        if (FALSE.equals(checkDto.getTaikyoTypeShataku())
+                && FALSE.equals(checkDto.getTaikyoTypeParking1())
+                && FALSE.equals(checkDto.getTaikyoTypeParking2()) ) {
+            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoTypeTable" },
+                    MessageIdConstant.E_SKF_1054, "退居（返還）する社宅又は、自動車の保管場所");
             isError = true;
         }
         
@@ -160,7 +162,7 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
         LogUtils.debugByMsg(msg + "退居（返還）理由　その他" + checkDto.getTaikyoHenkanRiyu());
         if (CodeConstant.TAIKYO_RIYU_OTHERS.equals( checkDto.getTaikyoRiyuKbn() )
                 && NfwStringUtils.isBlank(checkDto.getTaikyoHenkanRiyu())) {
-            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyu" },
+            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoHenkanRiyu" },
                     MessageIdConstant.E_SKF_1048, "退居（返還）理由");
             isError = true;
         }
@@ -205,7 +207,7 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
         LogUtils.debugByMsg("桁数チェック " + "退居（返還）理由　その他" + checkDto.getTaikyoHenkanRiyu());
         if (NfwStringUtils.isNotBlank(checkDto.getTaikyoHenkanRiyu())
                 && CheckUtils.isMoreThanByteSize(checkDto.getTaikyoHenkanRiyu().trim(), 256)) {
-            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyu" },
+            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoHenkanRiyu" },
                     MessageIdConstant.E_SKF_1071, "退居（返還）理由　その他", "全角128");
             isError = true;
         }
@@ -223,7 +225,7 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
         LogUtils.debugByMsg("桁数チェック " + "退居後の連絡先" + checkDto.getTaikyogoRenrakuSaki());
         if (NfwStringUtils.isNotBlank(checkDto.getTaikyogoRenrakuSaki())
                 && CheckUtils.isMoreThanByteSize(checkDto.getTaikyogoRenrakuSaki().trim(), 128)) {
-            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "shatakuJyotai" },
+            ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyogoRenrakuSaki" },
                     MessageIdConstant.E_SKF_1071, "退居後の連絡先", "全角64");
             isError = true;
         }

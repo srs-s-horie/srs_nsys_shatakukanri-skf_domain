@@ -64,8 +64,12 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     private String genderName;
     // ユーザＩＤ
     private String userId;
+    // 勤務先のTEL
+    private String tel;
     // 等級
-    private String Tokyu;
+    private String tokyu;
+    // 等級名
+    private String tokyuName;
 
     // 駐車場1台目
     private String parking1stPlace;
@@ -114,6 +118,8 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     // 連絡先
     private String renrakuSakiDisabled;
 
+    // クリアボタン
+    private String btnClearRemoved;
     // 申請内容を確認ボタン
     private String btnCheckDisabled;
     // 一時保存ボタン
