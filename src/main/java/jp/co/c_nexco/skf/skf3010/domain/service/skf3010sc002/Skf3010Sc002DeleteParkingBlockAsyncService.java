@@ -68,7 +68,7 @@ public class Skf3010Sc002DeleteParkingBlockAsyncService
 			deleteParkingBlockNo = asyncDto.getDeleteParkingBlockNo();
 		}
 		// 駐車場区画貸与履歴数取得
-		historyCount += skf3010Sc002SharedService.getSyatakuParkingHistroyCount(shatakuKanriNo, deleteParkingKanriNo);
+		historyCount += skf3010Sc002SharedService.getShatakuParkingHistroyCount(shatakuKanriNo, deleteParkingKanriNo);
 		// 駐車場区画提示数取得
 		historyCount += skf3010Sc002SharedService.getTeijiDataCountForParkingBlock(shatakuKanriNo, deleteParkingKanriNo);
 		// 貸与履歴提示数判定
