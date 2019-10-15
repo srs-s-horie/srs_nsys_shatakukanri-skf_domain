@@ -13,11 +13,21 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3090Sc008InitDto extends Skf3090Sc008CommonDto {
+public class Skf3090Sc008DeleteDto extends Skf3090Sc008CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
+	
+	/**
+	 * listTable用
+	 */
+	//リストテーブル
+    private List<Map<String, Object>> listTableData;
+    //最大表示行数
+    private String listTableMaxRowCount;
     
     // 操作ガイド
     private String operationGuide;
+		
+	
 
 }

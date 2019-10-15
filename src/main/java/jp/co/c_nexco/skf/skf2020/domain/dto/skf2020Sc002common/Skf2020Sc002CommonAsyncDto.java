@@ -12,6 +12,9 @@ public class Skf2020Sc002CommonAsyncDto extends Skf202010CommonAsyncDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
+	// ユーザＩＤ
+	private String userId;
+
 	// 機関 コード
 	private String agencyCd;
 	// 部等 コード

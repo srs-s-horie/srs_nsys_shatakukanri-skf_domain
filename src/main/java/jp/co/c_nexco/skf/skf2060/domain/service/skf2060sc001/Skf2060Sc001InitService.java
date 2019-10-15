@@ -66,6 +66,9 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 		
 		//前画面から送られてくる値 shainNo, applNo, applStatus
 		
+		//更新日を設定
+		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
+		
 		//申請書類情報が取得できた場合
 		if(!(initDto.getShainNo() == null || CheckUtils.isEmpty(initDto.getShainNo().trim())) && !(initDto.getApplNo() == null || CheckUtils.isEmpty(initDto.getApplNo().trim()))){
 			// 操作ログを出力
@@ -84,6 +87,8 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			applHistoryData = skf2060Sc001SharedService.getApplHistoryInfo(companyCd, initDto.getShainNo(), initDto.getApplNo());
 			//申請履歴テーブルより申請情報を取得出来た場合
 			if(applHistoryData != null){
+				//申請書類履歴テーブル用更新日
+				lastUpdateDateMap.put(initDto.applHistoryLastUpdateDate, applHistoryData.getUpdateDate());
 				//社宅社員マスタから社員情報を取得
 				Skf1010MShain shainData = new Skf1010MShain();
 				Skf1010MShainKey param = new Skf1010MShainKey();
@@ -118,6 +123,17 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 		List<Map<String, Object>> dataParamList = new ArrayList<Map<String, Object>>();
 		boolean itiranFlg = true;
 		dataParamList = skf2060Sc001SharedService.getDataParamList(itiranFlg ,initDto.getShainNo(), initDto.getApplNo());
+		
+
+		//借上候補物件テーブル用更新日
+		for(Map<String, Object> dataParam:dataParamList){
+			Date lastUpdateDate = skfDateFormatUtils.formatStringToDate(dataParam.get("lastUpdateDate").toString());
+			lastUpdateDateMap.put(initDto.KariageBukkenLastUpdateDate + dataParam.get("candidateNo").toString(), lastUpdateDate);
+		}
+		
+		//更新日設定
+		initDto.setLastUpdateDateMap(lastUpdateDateMap);
+		
 		initDto.setListTableData(dataParamList);
 		
 		return initDto;

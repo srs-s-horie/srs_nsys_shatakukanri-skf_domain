@@ -95,7 +95,9 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		// 画面内容の設定
 		if (setDisplayData(initDto)) {
 			// 「添付資料」欄の更新を行う
-			refreshHeaderAttachedFile(initDto);
+			List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
+			attachedFileList = refreshHeaderAttachedFile(initDto.getApplNo(), attachedFileList);
+			initDto.setAttachedFileList(attachedFileList);
 		} else {
 			// 初期表示に失敗した場合次処理のボタンを押せなくする。
 			setInitializeError(initDto);
@@ -109,12 +111,13 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * 
 	 * @param initDto
 	 */
-	private void refreshHeaderAttachedFile(Skf2040Sc002InitDto initDto) {
-		// 添付ファイルを取得し、セッションに保存
-		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
-				initDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+	private List<Map<String, Object>> refreshHeaderAttachedFile(String applNo,
+			List<Map<String, Object>> attachedFileList) {
 
-		initDto.setAttachedFileList(attachedFileList);
+		// 添付ファイルを取得し、セッションに保存
+		attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, applNo,
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		return attachedFileList;
 	}
 
 	/**
@@ -175,7 +178,10 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		}
 
 		// コメントボタンの設定
-		setInputComment(initDto);
+		String commetFlg = setInputComment(initDto.getApplNo());
+		if (NfwStringUtils.isNotEmpty(commetFlg)) {
+			initDto.setCommentViewFlg(commetFlg);
+		}
 
 		// コントロール制御
 		initDto.setApplId(applHistoryList.get(0).getApplId());
@@ -327,7 +333,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// 【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_E
 				// 【PDFダウンロードボタン：表示】
 				skf2040Sc002ShareService.setButtonVisible("PTN_E", sTrue, initDto);
-
 			} else {
 				// 備品返却あり
 				// 【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_C
@@ -360,10 +365,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					// 提示不可で中断
 					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "社宅管理システムで提示データを確認",
 							"（社宅提示データが取得できませんでした。）");
-
 				}
 			}
-
 			break;
 		case CodeConstant.STATUS_SHONIN1:
 		case CodeConstant.STATUS_SHONIN2:
@@ -446,11 +449,11 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		switch (initDto.getApplId()) {
 		case FunctionIdConstant.R0105:
 			// 備品返却申請の場合
-			returnValue = getBihinInfo_Henkyaku(initDto);
+			returnValue = getBihinInfoHenkyaku(initDto);
 			break;
 		case FunctionIdConstant.R0103:
 			// 退居（自動車の保管場所返還）届の場合
-			returnValue = getBihinInfo_Taikyo(initDto);
+			returnValue = getBihinInfoTaikyo(initDto);
 			break;
 		}
 		return returnValue;
@@ -462,17 +465,14 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * @param initDto
 	 * @return true：正常、false：異常
 	 */
-	private boolean getBihinInfo_Taikyo(Skf2040Sc002InitDto initDto) {
-
-		boolean returnValue = true;
+	private boolean getBihinInfoTaikyo(Skf2040Sc002InitDto initDto) {
 
 		// 退居届テーブルから退居情報を取得
 		Skf2040TTaikyoReport taikyoRepDt = skf2040Sc002ShareService.getTaikyoReport(initDto.getApplNo());
 
 		// 取得できなかった、社宅退居区分が設定されていない場合は戻り値をfalse
 		if (taikyoRepDt == null || NfwStringUtils.isEmpty(taikyoRepDt.getShatakuTaikyoKbn())) {
-			returnValue = false;
-			return returnValue;
+			return false;
 		} else {
 			// 社宅退居区分を設定
 			initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn());
@@ -499,8 +499,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 						shatakuNo, roomNo, henkyakuDt);
 				// リストが設定できなかった場合はfalseでリターン
 				if (henkyakuList == null) {
-					returnValue = false;
-					return returnValue;
+					return false;
 				} else {
 					initDto.setHenkyakuList(henkyakuList);
 					// 返却備品項目表示
@@ -512,13 +511,12 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				for (Map<String, Object> list : henkyakuList) {
 					String bihinLentStatusKbn = list.get("bihinLentStatusKbn").toString();
 					// 返却対象備品(会社保有かレンタル)がある場合は「返却備品なしフラグ」を折る
-					if (NfwStringUtils.isNotEmpty(bihinLentStatusKbn)) {
-						if (CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU.equals(bihinLentStatusKbn)
-								|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU.equals(bihinLentStatusKbn)) {
-							// 返却対象備品がある場合は「返却備品なしフラグ」を折る
-							initDto.setHenkyakuBihinNothing(sFalse);
-							break;
-						}
+					if (NfwStringUtils.isNotEmpty(bihinLentStatusKbn)
+							&& (CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU.equals(bihinLentStatusKbn)
+									|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU.equals(bihinLentStatusKbn))) {
+						// 返却対象備品がある場合は「返却備品なしフラグ」を折る
+						initDto.setHenkyakuBihinNothing(sFalse);
+						break;
 					}
 				}
 			}
@@ -528,8 +526,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					shatakuNo, roomNo);
 			if (NfwStringUtils.isEmpty(BihinHenkyakuApplNo)) {
 				// 取得できなかった場合は戻り値をfalse
-				returnValue = false;
-				return returnValue;
+				return false;
 			}
 			// Hidden項目に備品返却申請の書類管理番号を保存する
 			initDto.setHdnBihinHenkyakuApplNo(BihinHenkyakuApplNo);
@@ -571,12 +568,14 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// 備品がある場合の表示項目の設定
 				skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt);
 			}
-		} else {
+		} else
+
+		{
 			// 退居届情報の退居する社宅区分が3：駐車場のみの場合
 			// 「返却備品なしフラグ」を立てる
 			initDto.setHenkyakuBihinNothing(sTrue);
 		}
-		return returnValue;
+		return true;
 	}
 
 	/**
@@ -586,7 +585,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * @param teijiDataInfo
 	 * @return true：正常、false：異常
 	 */
-	private boolean getBihinInfo_Henkyaku(Skf2040Sc002InitDto initDto) {
+	private boolean getBihinInfoHenkyaku(Skf2040Sc002InitDto initDto) {
 
 		boolean returnValue = true;
 
@@ -695,16 +694,20 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * 
 	 * @param initDto
 	 */
-	private void setInputComment(Skf2040Sc002InitDto initDto) {
+	private String setInputComment(String applNo) {
 		// コメント一覧取得
-		List<SkfCommentUtilsGetCommentInfoExp> commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001,
-				initDto.getApplNo(), null);
+		List<SkfCommentUtilsGetCommentInfoExp> commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applNo,
+				null);
 		// コメントがあれば「コメント表示」ボタンを表示
-		if (commentList != null && commentList.size() > 0) {
-			initDto.setCommentViewFlg(sTrue);
+		String commentViewFlag = CodeConstant.NONE;
+		if (commentList == null || commentList.size() <= 0) {
+			// コメントが無ければ非表示
+			commentViewFlag = sFalse;
 		} else {
-			initDto.setCommentViewFlg(sFalse);
+			// コメントがあれば表示
+			commentViewFlag = sTrue;
 		}
+		return commentViewFlag;
 
 	}
 

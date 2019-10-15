@@ -126,16 +126,16 @@ public class Skf2010Sc002SharedService {
 	/**
 	 * 申請書類履歴の更新 + 申請書類コメント更新処理メソッド
 	 * 
-	 * @param applInfo
+	 * @param applInfoMap
 	 * @param lastUpdateDate
 	 * @return
 	 */
-	protected String updateShinseiHistory(Map<String, String> applInfo, Date lastUpdateDate) {
+	protected String updateShinseiHistory(Map<String, String> applInfoMap, Date lastUpdateDate) {
 
 		String result = CodeConstant.NONE;
 
 		// 更新対象の申請情報を取得
-		String applNo = applInfo.get("applNo");
+		String applNo = applInfoMap.get("applNo");
 		Skf2010Sc002GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc002GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = getApplHistoryInfoByParameter(applNo);
 
@@ -144,6 +144,10 @@ public class Skf2010Sc002SharedService {
 			// 排他チェックエラー
 			return "exclusiveError";
 		}
+
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+
 		// 更新処理
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 		// プライマリキー設定
@@ -153,7 +157,8 @@ public class Skf2010Sc002SharedService {
 		updateData.setApplId(tApplHistoryData.getApplId());
 		updateData.setApplNo(tApplHistoryData.getApplNo());
 		// 更新項目
-		updateData.setApplStatus(applInfo.get("status"));
+		updateData.setApplStatus(applInfoMap.get("status"));
+		updateData.setAgreName1(loginUserInfoMap.get("userName"));
 		// 申請情報履歴更新
 		int applHistoryRes = skf2010TApplHistoryRepository.updateByPrimaryKeySelective(updateData);
 		if (applHistoryRes <= 0) {
@@ -162,7 +167,7 @@ public class Skf2010Sc002SharedService {
 		}
 
 		// コメントの更新
-		if (!updateCommentInfo(applInfo)) {
+		if (!updateCommentInfo(applInfoMap, loginUserInfoMap)) {
 			result = "updateError";
 			return result;
 		}
@@ -173,16 +178,14 @@ public class Skf2010Sc002SharedService {
 	/**
 	 * 申請書類コメントを更新する。
 	 * 
-	 * @param applInfo
+	 * @param applInfoMap
+	 * @param loginUserInfoMap ログインユーザー情報
 	 * @return
 	 */
-	private boolean updateCommentInfo(Map<String, String> applInfo) {
-
-		// ログインユーザー情報取得
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+	private boolean updateCommentInfo(Map<String, String> applInfoMap, Map<String, String> loginUserInfoMap) {
 
 		// 承認2済から承認4済は、承認1済にする
-		String applStatus = applInfo.get("status");
+		String applStatus = applInfoMap.get("status");
 		if (CodeConstant.STATUS_SHONIN1.compareTo(applStatus) < 0
 				&& CodeConstant.STATUS_SHONIN_ZUMI.compareTo(applStatus) > 0) {
 			applStatus = CodeConstant.STATUS_SHONIN1;
@@ -192,7 +195,7 @@ public class Skf2010Sc002SharedService {
 		// コメントが登録されている、かつ、承認1済～承認済の場合、削除処理をする（承認のコメントを上書きのため）→ルート上こないためいらない？
 
 		// コメントが入力されていない場合、処理を終了
-		String comment = applInfo.get("commentNote");
+		String comment = applInfoMap.get("commentNote");
 		if (NfwStringUtils.isEmpty(comment)) {
 			return true;
 		}
@@ -210,8 +213,8 @@ public class Skf2010Sc002SharedService {
 		if (comment != null && !CheckUtils.isEmpty(comment)) {
 			Skf2010TApplComment skf2010TApplComment = new Skf2010TApplComment();
 			skf2010TApplComment.setCompanyCd(CodeConstant.C001);
-			skf2010TApplComment.setApplNo(applInfo.get("applNo"));
-			skf2010TApplComment.setApplStatus(applInfo.get("status"));
+			skf2010TApplComment.setApplNo(applInfoMap.get("applNo"));
+			skf2010TApplComment.setApplStatus(applInfoMap.get("status"));
 			skf2010TApplComment.setCommentDate(commentDate);
 			skf2010TApplComment.setCommentName(commentName);
 			skf2010TApplComment.setCommentNote(comment);

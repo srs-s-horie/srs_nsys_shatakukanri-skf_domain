@@ -73,10 +73,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// セッション情報初期化
 		skf2010Sc002SharedService.clearMenuScopeSessionBean();
 
-		// initDto.setPageId("Skf2010Sc002");
-		// initDto.setApplNo("R0103-00512272-20190208-01");
-		// initDto.setPrePageId("Skf2040Sc001");
-
 		// 前画面IDの取得
 		BaseForm beforeForm = FormHelper.getFormBean(initDto.getPageId(), CommonConstant.C_PAGEMODE_STANDARD);
 		String prePageId = beforeForm.getPrePageId();
@@ -847,25 +843,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShainNo())) {
 			initDto.setShainNo(taikyoRepDt.getShainNo());
 		}
-		// 氏名
-		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getName())) {
-			initDto.setName(taikyoRepDt.getName());
-		}
-
-		// 所属
-		// 現所属：機関
-		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAgency())) {
-			initDto.setNowAgency(taikyoRepDt.getAgency());
-		}
-		// 現所属：部等
-		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation1())) {
-			initDto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
-		}
-		// 現所属：室、チーム又は課
-		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation2())) {
-			initDto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
-		}
-
 		// 申請書類管理番号
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getApplNo())) {
 			initDto.setApplNo(taikyoRepDt.getApplNo());
@@ -913,37 +890,38 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		// 退居日 社宅等
 		// 退居日
 		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
+			// 退居日 年月日形式で設定、日付変更フラグを0にする
 			initDto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+			initDto.setTaikyoDateFlg(SkfCommonConstant.NOT_CHANGE);
+
 			// 日付変更フラグが1:変更ありなら赤文字にする
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
 					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
-
-				String taikyoDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
-				// fontColorタグ設定
-				taikyoDate = sfontColor + taikyoDate + eFontColoor;
-				initDto.setTaikyoDate(taikyoDate);
+				initDto.setTaikyoDateFlg(taikyoRepDt.getTaikyoDateFlg());
 			}
+		} else {
+			initDto.setTaikyoDateFlg(SkfCommonConstant.NOT_CHANGE);
 		}
+
 		// 駐車場返還日
 		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
+
+			// 駐車場返還日 年月日形式で設定、日付変更フラグを0にする
 			initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+			initDto.setParkingEDateFlg(SkfCommonConstant.NOT_CHANGE);
+
 			// 日付変更フラグが1:変更ありなら赤文字にする
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
 					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
-
-				String parkingHenkanDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
-				// fontColorタグ設定
-				parkingHenkanDate = sfontColor + parkingHenkanDate + eFontColoor;
-				initDto.setParkingHenkanDate(parkingHenkanDate);
+				initDto.setParkingEDateFlg(taikyoRepDt.getParkingEDateFlg());
 			}
 		} else {
 			// 駐車場返還日がない場合は、退居日を設定
 			initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+			initDto.setParkingEDateFlg(SkfCommonConstant.NOT_CHANGE);
 		}
 		// 退居（返還）理由
 		Map<String, String> taikyoRiyuMap = skfGenericCodeUtils

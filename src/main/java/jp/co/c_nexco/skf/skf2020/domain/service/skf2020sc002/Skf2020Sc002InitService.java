@@ -26,7 +26,6 @@ import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002InitDto;
 import jp.co.intra_mart.foundation.context.Contexts;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
@@ -89,7 +88,13 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2020_SC002));
 
 		// コメント設定の有無
-		setCommentBtnDisabled(initDto);
+		if (setCommentBtnDisabled(initDto.getApplNo())) {
+			// コメントがあれば表示
+			initDto.setCommentViewFlag(Skf2020Sc002SharedService.sTrue);
+		} else {
+			// なければ非表示
+			initDto.setCommentViewFlag(Skf2020Sc002SharedService.sFalse);
+		}
 
 		return initDto;
 
@@ -214,16 +219,16 @@ public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002Ini
 	 * 
 	 * @param dto
 	 */
-	protected void setCommentBtnDisabled(Skf2020Sc002CommonDto dto) {
+	protected boolean setCommentBtnDisabled(String applNo) {
 		// コメントの設定
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, dto.getApplNo(), null);
-		if (commentList == null || commentList.size() <= 0) {
+		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applNo, null);
+		if (commentList == null || commentList.size() == 0) {
 			// コメントが無ければ非表示
-			dto.setCommentViewFlag(Skf2020Sc002SharedService.sFalse);
+			return false;
 		} else {
 			// コメントがあれば表示
-			dto.setCommentViewFlag(Skf2020Sc002SharedService.sTrue);
+			return true;
 		}
 	}
 

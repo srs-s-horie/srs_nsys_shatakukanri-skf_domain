@@ -81,7 +81,7 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 				applyDto.getLastUpdateDate(Skf2010Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY));
 		if ("updateError".equals(res)) {
 			// 更新エラー
-			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1073);
+			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1075);
 			return applyDto;
 		} else if ("exclusiveError".equals(res)) {
 			// 排他チェックエラー

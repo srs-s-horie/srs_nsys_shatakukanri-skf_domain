@@ -145,12 +145,11 @@ public class Skf2040Sc002SharedService {
 	 * @param dto
 	 */
 	@SuppressWarnings("unchecked")
-	protected void setAttachedFileList(Skf2040Sc002CommonDto dto) {
+	protected List<Map<String, Object>> setAttachedFileList() {
 		// セッションの添付資料情報を取得
 		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
-		dto.setAttachedFileList(attachedFileList);
-		return;
+		return attachedFileList;
 	}
 
 	/**
@@ -446,12 +445,7 @@ public class Skf2040Sc002SharedService {
 			// 日付変更フラグが1:変更ありなら赤文字にする
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
 					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
-
-				String taikyoDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
-				// fontColorタグ設定
-				taikyoDate = sfontColor + taikyoDate + eFontColoor;
-				dto.setTaikyoDate(taikyoDate);
+				dto.setTaikyoDateFlg(taikyoRepDt.getTaikyoDateFlg());
 			}
 		}
 		// 駐車場返還日
@@ -461,12 +455,7 @@ public class Skf2040Sc002SharedService {
 			// 日付変更フラグが1:変更ありなら赤文字にする
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
 					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
-
-				String parkingHenkanDate = skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
-				// fontColorタグ設定
-				parkingHenkanDate = sfontColor + parkingHenkanDate + eFontColoor;
-				dto.setParkingHenkanDate(parkingHenkanDate);
+				dto.setParkingEDateFlg(taikyoRepDt.getParkingEDateFlg());
 			}
 		} else {
 			// 駐車場返還日がない場合は、退居日を設定
@@ -1079,35 +1068,35 @@ public class Skf2040Sc002SharedService {
 	/**
 	 * 差戻し、修正依頼以外のメール送付
 	 * 
-	 * 
-	 * @param dto
+	 * @param applNo 申請書類管理番号
+	 * @param applId 申請書類ID
+	 * @param shainNo 社員番号
+	 * @param commentNote コメント
+	 * @param mailKbn メール区分
 	 * @param fromTeijiButton 提示ボタンから来たかフラグ
 	 * @throws Exception
 	 */
-	public void sendMail(Skf2040Sc002CommonDto dto, boolean fromTeijiButton) throws Exception {
+	public void sendMail(String applNo, String applId, String shainNo, String commentNote, String mailKbn,
+			boolean fromTeijiButton) throws Exception {
 
 		// メール送信
 		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("applNo", dto.getApplNo());
-		applInfo.put("applId", dto.getApplId());
-		applInfo.put("applShainNo", dto.getShainNo());
+		applInfo.put("applNo", applNo);
+		applInfo.put("applId", applId);
+		applInfo.put("applShainNo", shainNo);
 
 		// URL
 		String urlBase = "skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
-		// コメント
-		String commentNote = dto.getCommentNote();
 		// 送付者
 		String sendUser = CodeConstant.DOUBLE_QUOTATION;
-		// メール区分
-		String mailKbn = CodeConstant.DOUBLE_QUOTATION;
 		// 案内
 		String annai = CodeConstant.DOUBLE_QUOTATION;
 
-		if (CodeConstant.SHONIN_KANRYO_TSUCHI.equals(dto.getMailKbn())) {
+		if (CodeConstant.SHONIN_KANRYO_TSUCHI.equals(mailKbn)) {
 			// 承認完了通知の場合
 			// メール区分が承認完了通知だった場合は送信先の社員番号を設定
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			sendUser = dto.getShainNo();
+			sendUser = shainNo;
 
 			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, annai, sendUser,
 					CodeConstant.DOUBLE_QUOTATION, urlBase);
@@ -1115,7 +1104,7 @@ public class Skf2040Sc002SharedService {
 		} else if (fromTeijiButton) {
 			// 提示ボタンからの処理の場合
 			mailKbn = CodeConstant.BIHIN_HENKYAKU_ANNAI;
-			sendUser = dto.getShainNo();
+			sendUser = shainNo;
 
 			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, annai, sendUser,
 					CodeConstant.DOUBLE_QUOTATION, urlBase);

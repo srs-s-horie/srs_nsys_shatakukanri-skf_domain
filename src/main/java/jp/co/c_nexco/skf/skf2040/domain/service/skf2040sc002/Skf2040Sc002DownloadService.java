@@ -6,12 +6,15 @@ package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002DownloadDto;
 
 /**
@@ -22,9 +25,15 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002DownloadDto
 @Service
 public class Skf2040Sc002DownloadService extends BaseServiceAbstract<Skf2040Sc002DownloadDto> {
 
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected BaseDto index(Skf2040Sc002DownloadDto dlDto) throws Exception {
+
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("添付ファイルダウンロード", CodeConstant.C001, dlDto.getPageId());
 
 		// 添付資料番号
 		String attachedNo = dlDto.getAttachedNo();
@@ -37,7 +46,7 @@ public class Skf2040Sc002DownloadService extends BaseServiceAbstract<Skf2040Sc00
 		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 
-		if (attachedFileList == null || attachedFileList.size() <= 0) {
+		if (attachedFileList == null || attachedFileList.size() == 0) {
 			ServiceHelper.addErrorResultMessage(dlDto, null, MessageIdConstant.E_SKF_1067, "添付資料");
 		}
 

@@ -62,32 +62,33 @@ public class Skf3010Sc002AddressSearchAsyncService extends AsyncBaseServiceAbstr
 		String adderss = "";
 		String prefNm = "";
 
-		//入力チェック
+		// 郵便番号
+		String zipCode = asyncDto.getZipCd();
+		// 郵便番号エラー
+		String[] errCtrl = {"zipCd"};
+		
 		//必須チェック
-		if (SkfCheckUtils.isNullOrEmpty(asyncDto.getZipCd())) {
-			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.E_SKF_1048, "郵便番号");
-			asyncDto.setZipCdErr(CodeConstant.NFW_VALIDATION_ERROR);
+		if (SkfCheckUtils.isNullOrEmpty(zipCode)) {
+			ServiceHelper.addErrorResultMessage(asyncDto, errCtrl, MessageIdConstant.E_SKF_1048, "郵便番号");
 			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
 		}
 		//形式チェック
-		String parkingZipCode = asyncDto.getZipCd();
-		if(!CheckUtils.isNumeric(parkingZipCode) || parkingZipCode.length() != 7){
-			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.E_SKF_1042, "郵便番号");
-			asyncDto.setZipCdErr(CodeConstant.NFW_VALIDATION_ERROR);
+//		if(!CheckUtils.isNumeric(zipCode) || zipCode.length() != 7){
+		if(!CheckUtils.isNumeric(zipCode)){
+			ServiceHelper.addErrorResultMessage(asyncDto, errCtrl, MessageIdConstant.E_SKF_1042, "郵便番号");
 			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
 		}
 
 		//住所情報取得
 		Skf3010Sc002GetZipToAddressExpParameter param = new Skf3010Sc002GetZipToAddressExpParameter();
-		param.setPost7Cd(parkingZipCode);
+		param.setPost7Cd(zipCode);
 		List<Skf3010Sc002GetZipToAddressExp> resultList = new ArrayList<Skf3010Sc002GetZipToAddressExp>();
 		resultList = skf3010Sc002GetZipToAddressExpRepository.getZipToAddress(param);
 		
 		// 取得データレコード数判定
 		if (resultList.size() <= 0) {
 			// 取得データレコード数が0件場合、エラー設定して処理終了
-			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.E_SKF_1047);
-			asyncDto.setZipCdErr(CodeConstant.NFW_VALIDATION_ERROR);
+			ServiceHelper.addErrorResultMessage(asyncDto, errCtrl, MessageIdConstant.E_SKF_1047);
 			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
 		}
 		// 都道府県名
