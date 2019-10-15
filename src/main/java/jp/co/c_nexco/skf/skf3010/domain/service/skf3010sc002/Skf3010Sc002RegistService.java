@@ -245,21 +245,6 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		registDto.setHdnNowSelectTabIndex(tabIndex);
 		return registDto;
 	}
-
-	/**
-	 * DB更新時文字列エスケープ
-	 * 「\」、「'」文字をエスケープする
-	 * 
-	 * @param targetString
-	 * @return
-	 */
-	private String escapeDbUpdateString(String targetString) {
-		String resultString = targetString;
-		if (resultString != null && resultString.trim().length() > 0) {
-			resultString = resultString.replace("\\", "\\\\").replace("'", "''");
-		}
-		return resultString;
-	}
 	/**
 	 * 保有社宅更新
 	 * 
@@ -662,7 +647,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		String shatakuSupplementSize3 = ("".equals(registDto.getShatakuHosokuSize3())) ? null : registDto.getShatakuHosokuSize3();
 
 		// 社宅名
-		mShataku.setShatakuName(escapeDbUpdateString(registDto.getShatakuName()));
+		mShataku.setShatakuName(registDto.getShatakuName());
 		// 社宅区分
 		mShataku.setShatakuKbn(drpDwnSelectedMap.get("shatakuKbn").toString());
 		// 地域区分
@@ -680,21 +665,21 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 都道府県コード
 		mShataku.setPrefCd(drpDwnSelectedMap.get("pref").toString());
 		// 住所
-		mShataku.setAddress(escapeDbUpdateString(registDto.getShatakuAddress()));
+		mShataku.setAddress(registDto.getShatakuAddress());
 		// 建築年月日
 		mShataku.setBuildDate(registDto.getBuildDate().replace("/", ""));
 		// 社宅構造区分
 		mShataku.setStructureKbn(drpDwnSelectedMap.get("shatakuStructure").toString());
 		// 社宅構造補足
-		mShataku.setStructureSupplement(escapeDbUpdateString(structureSupplement));
+		mShataku.setStructureSupplement(structureSupplement);
 		// エレベーター区分
 		mShataku.setElevatorKbn(elevatorKbn);
 		// 次回算定年月日
 		mShataku.setNextCalculateDate(labelMap.get("nextCalculateDate").toString().replace("/", ""));
 		// 社宅補足ファイル名
-		mShataku.setShatakuSupplementName1(escapeDbUpdateString(shatakuSupplementName1));
-		mShataku.setShatakuSupplementName2(escapeDbUpdateString(shatakuSupplementName2));
-		mShataku.setShatakuSupplementName3(escapeDbUpdateString(shatakuSupplementName3));
+		mShataku.setShatakuSupplementName1(shatakuSupplementName1);
+		mShataku.setShatakuSupplementName2(shatakuSupplementName2);
+		mShataku.setShatakuSupplementName3(shatakuSupplementName3);
 		// 社宅補足ファイルサイズ
 		mShataku.setShatakuSupplementSize1(shatakuSupplementSize1);
 		mShataku.setShatakuSupplementSize2(shatakuSupplementSize2);
@@ -704,7 +689,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		mShataku.setShatakuSupplementFile2(registDto.getShatakuHosokuFile2());
 		mShataku.setShatakuSupplementFile3(registDto.getShatakuHosokuFile3());
 		// 備考
-		mShataku.setBiko(escapeDbUpdateString(biko));
+		mShataku.setBiko(biko);
 		// 更新日時
 		mShataku.setLastUpdateDate(registDto.getKihonUpdateDate());
 	}
@@ -741,9 +726,9 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 駐車場構造
 		mShatakuParking.setParkingStructureKbn(drpDwnSelectedMap.get("parkingStructure").toString());
 		// 駐車場補足ファイル名
-		mShatakuParking.setParkingSupplementName1(escapeDbUpdateString(fileName1));
-		mShatakuParking.setParkingSupplementName2(escapeDbUpdateString(fileName2));
-		mShatakuParking.setParkingSupplementName3(escapeDbUpdateString(fileName3));
+		mShatakuParking.setParkingSupplementName1(fileName1);
+		mShatakuParking.setParkingSupplementName2(fileName2);
+		mShatakuParking.setParkingSupplementName3(fileName3);
 		// 駐車王補足ファイルサイズ
 		mShatakuParking.setParkingSupplementSize1(fileSize1);
 		mShatakuParking.setParkingSupplementSize2(fileSize2);
@@ -753,7 +738,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		mShatakuParking.setParkingSupplementFile2(registDto.getParkingHosokuFile2());
 		mShatakuParking.setParkingSupplementFile3(registDto.getParkingHosokuFile3());
 		// 備考
-		mShatakuParking.setParkingBiko(escapeDbUpdateString(biko));
+		mShatakuParking.setParkingBiko(biko);
 		// 駐車場基本使用料
 		mShatakuParking.setParkingRental(Integer.parseInt(labelMap.get("parkingBasicRent").toString().replace(",", "")));
 		// 更新日時
@@ -789,7 +774,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			}
 			mShatakuParkingBlock.setParkingKanriNo(parkingKanriNo);
 			// 区画番号
-			mShatakuParkingBlock.setParkingBlock(escapeDbUpdateString(parkingMap.get("parkingBlock").toString()));
+			mShatakuParkingBlock.setParkingBlock(parkingMap.get("parkingBlock").toString());
 			// 貸与区分
 			mShatakuParkingBlock.setParkingLendKbn(parkingMap.get("parkingLendKbn").toString());
 			// 貸与状況
@@ -798,7 +783,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			mShatakuParkingBlock.setParkingRentalAdjust(Integer.parseInt(parkingMap.get("parkingRentalAdjust").toString()));
 			// 備考
 			String biko = ("".equals(parkingMap.get("parkingBiko").toString())) ? null: parkingMap.get("parkingBiko").toString();
-			mShatakuParkingBlock.setParkingBiko(escapeDbUpdateString(biko));
+			mShatakuParkingBlock.setParkingBiko(biko);
 			// 更新日時
 			if (parkingMap.get("updateDate") != null && parkingMap.get("updateDate").toString().length() > 0) {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
@@ -835,22 +820,22 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		domitoryLeaderMap.setManegeKbn(Skf3010Sc002CommonDto.MANAGE_KBN_DOMITRY_LEADER);
 		// 部屋番号：寮長・自治会長
 		roomNo = ("".equals(registDto.getDormitoryLeaderRoomNo())) ? null: registDto.getDormitoryLeaderRoomNo();
-		domitoryLeaderMap.setManegeShatakuNo(escapeDbUpdateString(roomNo));
+		domitoryLeaderMap.setManegeShatakuNo(roomNo);
 		// 氏名：寮長・自治会長
 		name = ("".equals(registDto.getDormitoryLeaderName())) ? null: registDto.getDormitoryLeaderName();
-		domitoryLeaderMap.setManegeName(escapeDbUpdateString(name));
+		domitoryLeaderMap.setManegeName(name);
 		// 電子メールアドレス：寮長・自治会長
 		mailAddress = ("".equals(registDto.getDormitoryLeaderMailAddress())) ? null: registDto.getDormitoryLeaderMailAddress();
-		domitoryLeaderMap.setManegeMailAddress(escapeDbUpdateString(mailAddress));
+		domitoryLeaderMap.setManegeMailAddress(mailAddress);
 		// 電話番号：寮長・自治会長
 		telNumber = ("".equals(registDto.getDormitoryLeaderTelNumber())) ? null: registDto.getDormitoryLeaderTelNumber();
-		domitoryLeaderMap.setManegeTelNo(escapeDbUpdateString(telNumber));
+		domitoryLeaderMap.setManegeTelNo(telNumber);
 		// 内線番号：寮長・自治会長
 		extensionNo = ("".equals(registDto.getDormitoryLeaderExtentionNo())) ? null: registDto.getDormitoryLeaderExtentionNo();
-		domitoryLeaderMap.setManegeExtensionNo(escapeDbUpdateString(escapeDbUpdateString(extensionNo)));
+		domitoryLeaderMap.setManegeExtensionNo(extensionNo);
 		// 備考：寮長・自治会長
 		biko = ("".equals(registDto.getDormitoryLeaderBiko())) ? null: registDto.getDormitoryLeaderBiko();
-		domitoryLeaderMap.setBiko(escapeDbUpdateString(biko));
+		domitoryLeaderMap.setBiko(biko);
 		// 更新日時
 		domitoryLeaderMap.setLastUpdateDate(registDto.getDormitoryLeaderUpdateDate());
 
@@ -860,22 +845,22 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		keyMngMap.setManegeKbn(Skf3010Sc002CommonDto.MANAGE_KBN_KEY_MANAGER);
 		// 部屋番号 ：鍵管理者
 		roomNo = ("".equals(registDto.getKeyManagerRoomNo())) ? null: registDto.getKeyManagerRoomNo();
-		keyMngMap.setManegeShatakuNo(escapeDbUpdateString(roomNo));
+		keyMngMap.setManegeShatakuNo(roomNo);
 		// 氏名：鍵管理者
 		name = ("".equals(registDto.getKeyManagerName())) ? null: registDto.getKeyManagerName();
-		keyMngMap.setManegeName(escapeDbUpdateString(name));
+		keyMngMap.setManegeName(name);
 		// 電子メールアドレス：鍵管理者
 		mailAddress = ("".equals(registDto.getKeyManagerMailAddress())) ? null: registDto.getKeyManagerMailAddress();
-		keyMngMap.setManegeMailAddress(escapeDbUpdateString(mailAddress));
+		keyMngMap.setManegeMailAddress(mailAddress);
 		// 電話番号：鍵管理者
 		telNumber = ("".equals(registDto.getKeyManagerTelNumber())) ? null: registDto.getKeyManagerTelNumber();
-		keyMngMap.setManegeTelNo(escapeDbUpdateString(telNumber));
+		keyMngMap.setManegeTelNo(telNumber);
 		// 内線番号：鍵管理者
 		extensionNo = ("".equals(registDto.getKeyManagerExtentionNo())) ? null: registDto.getKeyManagerExtentionNo();
-		keyMngMap.setManegeExtensionNo(escapeDbUpdateString(extensionNo));
+		keyMngMap.setManegeExtensionNo(extensionNo);
 		// 備考：鍵管理者
 		biko = ("".equals(registDto.getKeyManagerBiko())) ? null: registDto.getKeyManagerBiko();
-		keyMngMap.setBiko(escapeDbUpdateString(biko));
+		keyMngMap.setBiko(biko);
 		// 更新日時
 		keyMngMap.setLastUpdateDate(registDto.getKeyManagerUpdateDate());
 
@@ -885,22 +870,22 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		matronMap.setManegeKbn(Skf3010Sc002CommonDto.MANAGE_KBN_MATRON);
 		// 部屋番号 ：鍵管理者
 		roomNo = ("".equals(registDto.getMatronRoomNo())) ? null: registDto.getMatronRoomNo();
-		matronMap.setManegeShatakuNo(escapeDbUpdateString(roomNo));
+		matronMap.setManegeShatakuNo(roomNo);
 		// 氏名：鍵管理者
 		name = ("".equals(registDto.getMatronName())) ? null: registDto.getMatronName();
-		matronMap.setManegeName(escapeDbUpdateString(name));
+		matronMap.setManegeName(name);
 		// 電子メールアドレス：鍵管理者
 		mailAddress = ("".equals(registDto.getMatronMailAddress())) ? null: registDto.getMatronMailAddress();
-		matronMap.setManegeMailAddress(escapeDbUpdateString(mailAddress));
+		matronMap.setManegeMailAddress(mailAddress);
 		// 電話番号：鍵管理者
 		telNumber = ("".equals(registDto.getMatronTelNumber())) ? null: registDto.getMatronTelNumber();
-		matronMap.setManegeTelNo(escapeDbUpdateString(telNumber));
+		matronMap.setManegeTelNo(telNumber);
 		// 内線番号：鍵管理者
 		extensionNo = ("".equals(registDto.getMatronExtentionNo())) ? null: registDto.getMatronExtentionNo();
-		matronMap.setManegeExtensionNo(escapeDbUpdateString(extensionNo));
+		matronMap.setManegeExtensionNo(extensionNo);
 		// 備考：鍵管理者
 		biko = ("".equals(registDto.getMatronBiko())) ? null: registDto.getMatronBiko();
-		matronMap.setBiko(escapeDbUpdateString(biko));
+		matronMap.setBiko(biko);
 		// 更新日時
 		matronMap.setLastUpdateDate(registDto.getMatronUpdateDate());
 		// リストに追加
@@ -978,7 +963,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 賃貸人番号
 		mShatakuContract.setOwnerNo(Long.parseLong(registDto.getContractOwnerNo()));
 		// 経理連携用管理番号
-		mShatakuContract.setAssetRegisterNo(escapeDbUpdateString(registDto.getAssetRegisterNo()));
+		mShatakuContract.setAssetRegisterNo(registDto.getAssetRegisterNo());
 		// 契約開始日
 		mShatakuContract.setContractStartDate(registDto.getContractStartDay().replace("/", ""));
 		// 契約終了日
@@ -990,7 +975,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 駐車場料(地代)
 		mShatakuContract.setLandRent(Integer.parseInt(registDto.getContractLandRent().replace(",", "")));
 		// 備考
-		mShatakuContract.setBiko(escapeDbUpdateString(registDto.getContractBiko()));
+		mShatakuContract.setBiko(registDto.getContractBiko());
 		// 更新日時
 		mShatakuContract.setLastUpdateDate(registDto.getContractUpdateDate());
 	}
