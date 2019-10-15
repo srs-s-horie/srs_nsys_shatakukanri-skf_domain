@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007InitDto;
 
 
 /**
- * 駐車場契約情報登録画面のInitサービス処理クラス。　 
+ * Skf3010Sc007InitService 駐車場契約情報登録画面のInitサービス処理クラス。　 
  * 
  * @author NEXCOシステムズ
  */
@@ -74,13 +74,6 @@ public class Skf3010Sc007InitService extends BaseServiceAbstract<Skf3010Sc007Ini
 		initDto.setShatakuName(initDto.getHdnShatakuName());
 		initDto.setAreaKbn(initDto.getHdnAreaKbn());
 		initDto.setShatakuKbn(initDto.getHdnShatakuKbn());
-
-		//TODO デバッグコード
-		initDto.setHdnShatakuKanriNo("2015120002");//柏住宅,3,1
-		initDto.setShatakuName("柏住宅");
-		initDto.setHdnAreaKbn("3");
-		initDto.setHdnShatakuKbn("4");
-		//デバッグコードここまで
 		
 		setShatakuInfo(initDto);
 		

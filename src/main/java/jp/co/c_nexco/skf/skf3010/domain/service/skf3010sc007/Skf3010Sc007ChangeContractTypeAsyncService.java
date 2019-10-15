@@ -4,7 +4,6 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc007;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +15,10 @@ import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007ChangeContractTypeAsyncDto;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007ContractInfoSelectAsyncDto;
-
 
 /**
- * Skf3010Sc007ContractInfoSelectAsyncService 駐車場契約情報変更チェック非同期処理クラス
+ * Skf3010Sc007ContractInfoSelectAsyncService 駐車場契約形態変更非同期処理クラス
  * 
  * @author NEXCOシステムズ
  *

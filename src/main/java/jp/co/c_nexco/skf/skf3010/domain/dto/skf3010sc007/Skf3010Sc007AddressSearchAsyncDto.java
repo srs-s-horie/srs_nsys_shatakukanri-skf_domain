@@ -7,7 +7,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc007common.Skf3010Sc007Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3010Sc007OnCellSelectAsyncDto 駐車場契約情報住所検索Dto
+ * Skf3010Sc007AddressSearchAsyncDto 駐車場契約情報住所検索Dto
  * 
  * @author NEXCOシステムズ
  *

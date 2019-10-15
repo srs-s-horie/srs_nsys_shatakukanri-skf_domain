@@ -7,7 +7,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc007common.Skf3010Sc007Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3010Sc007OnCellSelectAsyncDto 駐車場契約情報契約形態選択イベントDto
+ * Skf3010Sc007ChangeContractTypeAsyncDto 駐車場契約情報契約形態選択イベントDto
  * 
  * @author NEXCOシステムズ
  *

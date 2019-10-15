@@ -52,7 +52,7 @@ public class Skf3010Sc005SharedService {
 	 * @param coldExemptionKbn　寒冷地減免事由区分
 	 * @param coldExemptionKbnList
 	 */
-	public void getDoropDownList(String originalKikaku,List<Map<String, Object>> kikakuList,
+	public void getDropDownList(String originalKikaku,List<Map<String, Object>> kikakuList,
 			String originalAuse, List<Map<String, Object>> auseList, 
 			String lendKbn,	List<Map<String, Object>> lendList,
 			String coldExemptionKbn,List<Map<String, Object>> coldExemptionKbnList) {
@@ -220,8 +220,8 @@ public class Skf3010Sc005SharedService {
 				if (tmpData.getBihinStatusKbn() != null) {
 					bihinStatus = tmpData.getBihinStatusKbn();
 				}else{
-					//未指定時は「なし(0)」を選択
-					bihinStatus = "0";
+					//未指定時は「なし(1)」を選択
+					bihinStatus = "1";
 				}
 
 				String statusListCode = createBihinStatusSelect(bihinStatus,statusList);
@@ -272,8 +272,12 @@ public class Skf3010Sc005SharedService {
 				}
 				tmpMap.put("bihinStatus",bihinStatus);
 				tmpMap.put("bihinLatestStatus", tmpData.getBihinLatestStatusKbn());
-				tmpMap.put("updateDate", dateFormat.format(tmpData.getUpdateDate()));
-
+				
+				if(tmpData.getUpdateDate() != null){
+					tmpMap.put("updateDate", dateFormat.format(tmpData.getUpdateDate()));
+				}else{
+					tmpMap.put("updateDate", "");
+				}
 				setViewList.add(tmpMap);
 			}
 		}
