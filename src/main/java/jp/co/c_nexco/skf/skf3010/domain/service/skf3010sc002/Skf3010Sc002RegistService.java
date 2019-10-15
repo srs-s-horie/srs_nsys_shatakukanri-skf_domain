@@ -255,7 +255,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	 */
 	private String escapeDbUpdateString(String targetString) {
 		String resultString = targetString;
-		if (targetString == null || targetString.trim().length() < 1) {
+		if (resultString != null && resultString.trim().length() > 0) {
 			resultString = resultString.replace("\\", "\\\\").replace("'", "''");
 		}
 		return resultString;
