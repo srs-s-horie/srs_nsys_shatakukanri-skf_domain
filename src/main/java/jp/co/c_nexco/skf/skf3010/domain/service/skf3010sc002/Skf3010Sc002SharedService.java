@@ -35,6 +35,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuParkingBlockTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuParkingInfoTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuRoomExlusiveCntrlExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatkuInfoTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetBihinInfoTableDataExpRepository;
@@ -50,11 +51,13 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuParkingHistroyCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetTeijiDataCountForParkingBlockExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -111,6 +114,8 @@ public class Skf3010Sc002SharedService {
 	private Skf3010Sc002GetMaxParkingKanriNoExpRepository skf3010Sc002GetMaxParkingKanriNoExpRepository;
 	@Autowired
 	private Skf3010Sc002GetMaxShatakuKanriNoExpRepository skf3010Sc002GetMaxShatakuKanriNoExpRepository;
+	@Autowired
+	private Skf3010Sc002GetShatakuInfoExpRepository skf3010Sc002GetShatakuInfoExpRepository;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
@@ -2539,7 +2544,6 @@ public class Skf3010Sc002SharedService {
 		List<Map<String, Object>> areaKbnList = new ArrayList<Map<String, Object>>();
 		// 社宅区分リスト
 		List<Map<String, Object>> shatakuKbnList = new ArrayList<Map<String, Object>>();
-
 		// 「社宅名」の設定
 		initDto.setShatakuName(null);
 		initDto.setShatakuName(shatakuName);
@@ -2574,6 +2578,17 @@ public class Skf3010Sc002SharedService {
 		// 「空き部屋数」を設定する
 		initDto.setEmptyRoomCount(null);
 		initDto.setEmptyRoomCount(emptyRoomCount + CodeConstant.SLASH + roomCnt.toString());
+
+		// 「空き駐車場数」を設定する
+		// 駐車場総数を取得する
+		Integer parkingCnt = getParkingCount(shatakuKanriNo);
+		// （登録時対応）空き駐車場数判定
+		if (emptyParkingCount == null || emptyParkingCount.length() == 0) {
+			// （登録時対応）空き社宅数が存在しない場合は、0を設定する。
+			emptyParkingCount = CodeConstant.STRING_ZERO;
+		}
+		initDto.setEmptyParkingCount(null);
+		initDto.setEmptyParkingCount(emptyParkingCount + CodeConstant.SLASH + parkingCnt.toString());
 
 		// 解放
 		areaKbnList = null;
@@ -2644,23 +2659,45 @@ public class Skf3010Sc002SharedService {
 		if (!NfwStringUtils.isEmpty(initDto.getHdnShatakuKanriNo())) {
 			// 駐車場契約からの画面遷移 or 自画面
 			shatakuKanriNo = (initDto.getHdnShatakuKanriNo() != null) ? initDto.getHdnShatakuKanriNo() : "";
-			shatakuName = (initDto.getHdnShatakuName() != null) ? initDto.getHdnShatakuName() : "";
-			shatakuKbnCd = (initDto.getHdnShatakuKbn() != null) ? initDto.getHdnShatakuKbn() : "";
-			areaKbnCd = (initDto.getHdnAreaKbn() != null) ? initDto.getHdnAreaKbn() : "";
-			emptyRoomCount = (initDto.getHdnEmptyRoomCount() != null) ?
-					initDto.getHdnEmptyRoomCount() : CodeConstant.STRING_ZERO;
-			emptyParkingCount = (initDto.getHdnEmptyParkingCount() != null) ?
-					initDto.getHdnEmptyParkingCount() : CodeConstant.STRING_ZERO;
+
+			// 社宅ヘッダ部情報
+			List<Skf3010Sc002GetShatkuInfoTableDataExp> shatakuInfoList = new ArrayList<Skf3010Sc002GetShatkuInfoTableDataExp>();
+			Skf3010Sc002GetHoyuShatakuInfoExpParameter param = new Skf3010Sc002GetHoyuShatakuInfoExpParameter();
+			param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
+			shatakuInfoList = skf3010Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
+			if (shatakuInfoList.size() < 1) {
+				//件数が0未満（排他エラー）
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
+				logger.debug("社宅情報取得エラー");
+				return;
+			}
+			Skf3010Sc002GetShatkuInfoTableDataExp shatakuInfo = shatakuInfoList.get(0);
+			shatakuName = shatakuInfo.getShatakuName();
+			shatakuKbnCd = shatakuInfo.getShatakuKbn();
+			areaKbnCd = shatakuInfo.getAreaKbn();
+			emptyRoomCount = shatakuInfo.getEmptyRoomCount();
+			emptyParkingCount = shatakuInfo.getEmptyParkingCount();
 		} else if (!NfwStringUtils.isEmpty(initDto.getHdnRowShatakuKanriNo())) {
 			// 社宅一覧からの遷移
 			shatakuKanriNo =(initDto.getHdnRowShatakuKanriNo() != null) ? initDto.getHdnRowShatakuKanriNo(): "";
-			shatakuName = (initDto.getHdnRowShatakuName() != null) ? initDto.getHdnRowShatakuName() : "";
-			shatakuKbnCd = (initDto.getHdnRowShatakuKbn() != null) ? initDto.getHdnRowShatakuKbn() : "";
-			areaKbnCd = (initDto.getHdnRowAreaKbn() != null) ? initDto.getHdnRowAreaKbn() : "";
-			emptyRoomCount = (initDto.getHdnRowEmptyRoomCount() != null) ?
-					initDto.getHdnRowEmptyRoomCount() : CodeConstant.STRING_ZERO;
-			emptyParkingCount = (initDto.getHdnRowEmptyParkingCount() != null) ?
-						initDto.getHdnRowEmptyParkingCount() : CodeConstant.STRING_ZERO;
+
+			// 社宅ヘッダ部情報
+			List<Skf3010Sc002GetShatkuInfoTableDataExp> shatakuInfoList = new ArrayList<Skf3010Sc002GetShatkuInfoTableDataExp>();
+			Skf3010Sc002GetHoyuShatakuInfoExpParameter param = new Skf3010Sc002GetHoyuShatakuInfoExpParameter();
+			param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
+			shatakuInfoList = skf3010Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
+			if (shatakuInfoList.size() < 1) {
+				//件数が0未満（排他エラー）
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
+				logger.debug("社宅情報取得エラー");
+				return;
+			}
+			Skf3010Sc002GetShatkuInfoTableDataExp shatakuInfo = shatakuInfoList.get(0);
+			shatakuName = shatakuInfo.getShatakuName();
+			shatakuKbnCd = shatakuInfo.getShatakuKbn();
+			areaKbnCd = shatakuInfo.getAreaKbn();
+			emptyRoomCount = shatakuInfo.getEmptyRoomCount();
+			emptyParkingCount = shatakuInfo.getEmptyParkingCount();
 		} else {
 			// 新規
 			shatakuKbnCd = (initDto.getHdnRowShatakuKbn() != null) ? initDto.getHdnRowShatakuKbn() : "";
@@ -2680,10 +2717,6 @@ public class Skf3010Sc002SharedService {
 			setKihonInfo(shatakuKanriNo, areaKbnCd, initDto);
 			// 駐車場情報タブの値をセット
 			setShatakuParkingInfo(shatakuKanriNo, initDto);
-			// 「空き駐車場数」を設定する
-			Integer parkingCnt = getParkingCount(shatakuKanriNo);
-			initDto.setEmptyParkingCount(null);
-			initDto.setEmptyParkingCount(initDto.getLendPossibleCount() + CodeConstant.SLASH + parkingCnt.toString());
 			// 駐車場区画情報の値を取得
 			getShatakuParkingBlockInfo(shatakuKanriNo, initDto.getParkingRent(), parkingBlockListTableData);
 			// 備品情報タブの値をセット

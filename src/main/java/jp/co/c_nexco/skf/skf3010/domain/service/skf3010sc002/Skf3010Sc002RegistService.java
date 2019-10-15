@@ -232,7 +232,8 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// DTO設定
 		registDto.setHdnShatakuKanriNo(mShataku.getShatakuKanriNo().toString());
 		registDto.setHdnShatakuName(mShataku.getShatakuName());
-		registDto.setAreaKbnCd(mShataku.getAddress());
+		registDto.setHdnShatakuKbn(mShataku.getShatakuKbn());
+		registDto.setHdnAreaKbn(mShataku.getAreaKbn());
 		registDto.setHdnEmptyParkingCount(labelMap.get("lendPossibleCount").toString());
 		// 初期表示
 		// 契約番号
@@ -240,8 +241,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		if (mShatakuContract.getContractPropertyId() != null) {
 			contractNo = mShatakuContract.getContractPropertyId().toString();
 		}
-		skf3010Sc002SharedService.setHoyuShatakuInfo(
-				Skf3010Sc002CommonDto.CONTRACT_MODE_INIT, contractNo, registDto);
+		skf3010Sc002SharedService.setHoyuShatakuInfo(Skf3010Sc002CommonDto.CONTRACT_MODE_INIT, contractNo, registDto);
 		registDto.setHdnNowSelectTabIndex(tabIndex);
 		return registDto;
 	}
