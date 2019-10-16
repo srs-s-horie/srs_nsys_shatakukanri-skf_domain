@@ -4,6 +4,7 @@
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc002;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,9 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc002.Skf2060Sc002GetK
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc002.Skf2060Sc002GetShainSoshikiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc002.Skf2060Sc002GetShainSoshikiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukken;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeiji;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiDetail;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetKariageTeijiFileDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetShainSoshikiInfoExpRepository;
@@ -79,6 +83,9 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 		// 操作ガイドの設定
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
 		
+		//更新日を設定
+		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
+		
         // 提示状況汎用コード取得(反転)
         Map<String, String> applStatusGenCodeMap = new HashMap<String, String>();
         applStatusGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
@@ -91,6 +98,8 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}
+		//申請書類履歴テーブル用更新日
+		lastUpdateDateMap.put(initDto.applHistoryLastUpdateDate, applHistoryData.getUpdateDate());
 		
 		String applNo = applHistoryData.getApplNo();
 		String applStatus = applHistoryData.getApplStatus();
@@ -134,7 +143,25 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}
-		
+
+		for(Skf2060Sc002GetKariageTeijiInfoExp kariageTeijiData:kariageTeijiDataList){
+			long candidateNo = kariageTeijiData.getCandidateNo();
+			short teijiKaisu = (short)kariageTeijiData.getTeijiKaisu();
+			if(candidateNo != 0){
+				//借上候補物件テーブル用更新日
+				Skf2060TKariageBukken kbData = ｓkf2060Sc002SharedService.getKariageBukkenForUpdate(companyCd, candidateNo);
+				lastUpdateDateMap.put(initDto.KariageBukkenLastUpdateDate + String.valueOf(candidateNo), kbData.getUpdateDate());
+				//借上候補物件提示明細テーブル用更新日
+				Skf2060TKariageTeijiDetail ktdData = ｓkf2060Sc002SharedService.getKariageTeijiDetailForUpdate(companyCd, applNo, teijiKaisu, candidateNo);
+				lastUpdateDateMap.put(initDto.KariageTeijiDetailLastUpdateDate + String.valueOf(candidateNo), ktdData.getUpdateDate());
+			}
+		}
+
+		//借上候補物件提示テーブル用更新日
+		Skf2060TKariageTeiji ktData = ｓkf2060Sc002SharedService.getKariageTeijiForUpdate(companyCd, applNo, (short)kariageTeijiDataList.get(0).getTeijiKaisu());
+		lastUpdateDateMap.put(initDto.KariageTeijiLastUpdateDate, ktData.getUpdateDate());
+
+
 		//現行ではラベルに提示回数を保存していたので隠し要素で設定
 		initDto.setTeijiKaisu(String.valueOf(kariageTeijiDataList.get(0).getTeijiKaisu()));
 		
@@ -191,6 +218,10 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 			initDto.setRiyuDropdownDisabled("true");
 			initDto.setSelectViewFlag(false);
 		}
+		
+		//更新日設定
+		initDto.setLastUpdateDateMap(lastUpdateDateMap);
+		
 		return initDto;
 	}
 	

@@ -34,6 +34,9 @@ public class Skf2010CommonDto extends BaseDto {
 	private String level3Open;
 	private String level4Open;
 
+	// コメント欄表示フラグ
+	private boolean commentAreaVisibled = true;
+
 	/** 入居希望申請調書 **/
 	// 社宅必要可否
 	private String taiyoHitsuyoTrue; // 必要

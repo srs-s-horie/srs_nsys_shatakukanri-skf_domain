@@ -59,11 +59,10 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(appDto.getApplNo());
 		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
-
 		// 一般添付資料取得
 		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
 				appDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
-		String applTacFlg = CodeConstant.DOUBLE_QUOTATION;
+		String applTacFlg = CodeConstant.NONE;
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			// 添付ファイルあり
 			applTacFlg = CodeConstant.YES;
@@ -72,10 +71,10 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		}
 
 		// コメント入力欄のチェック
-		boolean validate = skf2040Sc002SharedService.checkValidation(appDto, sFalse);
-		if (!validate) {
+		if (!skf2040Sc002SharedService.checkValidation(appDto, sFalse)) {
 			// 添付資料だけはセッションから再取得の必要あり
-			skf2040Sc002SharedService.setAttachedFileList(appDto);
+			List<Map<String, Object>> reAttachedFileList = skf2040Sc002SharedService.setAttachedFileList();
+			appDto.setAttachedFileList(reAttachedFileList);
 			return appDto;
 		}
 
@@ -110,32 +109,44 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		appDto.setMailKbn(mailKbn);
 
 		// 申請書類履歴テーブル」よりステータスを更新
-		boolean resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
-				appDto.getShainNo(), appDto.getApplNo(), shoninName1, shoninName2, appDto.getApplId(), applTacFlg);
-		if (!resultUpdateApplInfo) {
+		String resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
+				appDto.getShainNo(), appDto.getApplNo(), shoninName1, shoninName2, appDto.getApplId(), applTacFlg,
+				userInfo.get("userCd"), appDto.getPageId(), applInfo.getUpdateDate(),
+				appDto.getLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_TAIKYO));
+		if (resultUpdateApplInfo.equals("updateError")) {
+			// 更新エラー
 			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
 			return appDto;
+		} else if (resultUpdateApplInfo.equals("exclusiveError")) {
+			// 排他チェックエラー
+			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1134, "skf2010_t_appl_history");
 		}
 
 		// コメント更新
-		if (NfwStringUtils.isNotEmpty(appDto.getCommentNote())) {
+		String comment = appDto.getCommentNote();
+		if (NfwStringUtils.isNotEmpty(comment)) {
 			if (!skf2040Sc002SharedService.insertCommentTable(userInfo, appDto.getApplNo(), nextStatus, errorMsg,
-					appDto.getCommentNote())) {
+					comment)) {
 				ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
 				return appDto;
 			}
+		} else {
+			comment = CodeConstant.NONE;
 		}
 
 		// 添付ファイル管理テーブル更新処理
 		boolean resultUpdateFile = skf2040Sc002SharedService.updateAttachedFileInfo(nextStatus, appDto.getApplNo(),
-				appDto.getShainNo(), attachedFileList, applTacFlg, applInfo, errorMsg);
+				appDto.getShainNo(), attachedFileList, applTacFlg, applInfo, errorMsg, userInfo.get("userCd"),
+				appDto.getPageId());
 		if (!resultUpdateFile) {
+			// 更新エラー
 			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
 			return appDto;
 		}
 
 		// メール送信処理
-		skf2040Sc002SharedService.sendMail(appDto, false);
+		skf2040Sc002SharedService.sendMail(appDto.getApplNo(), appDto.getApplId(), appDto.getShainNo(), comment,
+				appDto.getMailKbn(), false);
 
 		// TODO 社宅管理データ連携処理実行
 

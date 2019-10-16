@@ -68,9 +68,18 @@ public class Skf2010Sc010SharedService {
 
 				commentMap.put("applShainName", result.getApplShainName());
 
-				commentMap.put("commentName", result.getCommentName().replace("\r\n", "</br>"));
+				String commentName = result.getCommentName().replace("\r\n", "<br />");
+				commentMap.put("commentName", commentName);
+				String[] commentNames = commentName.split("<br />");
+				String titleCommentName = CodeConstant.NONE;
+				if (commentNames.length > 1) {
+					titleCommentName = commentNames[1];
+				} else if (commentNames.length == 1) {
+					titleCommentName = commentNames[0];
+				}
+				commentMap.put("titleCommentName", titleCommentName);
 
-				commentMap.put("commentNote", result.getCommentNote().replace("\r\n", "</br>"));
+				commentMap.put("commentNote", result.getCommentNote().replace("\r\n", "<br />"));
 
 				Date commentDate = result.getCommentDate();
 				String commentDateStr = skfDateFormatUtils.dateFormatFromDate(commentDate, "yyyy/MM/dd HH:mm:ss");
@@ -78,7 +87,18 @@ public class Skf2010Sc010SharedService {
 
 				commentMap.put("applStatus", genericCodeMap.get(result.getApplStatus()));
 
-				commentMap.put("applStatusCd", result.getApplStatus());
+				String isToShouninTitle = "false";
+				switch (result.getApplStatus()) {
+				case CodeConstant.STATUS_SHINSEICHU:
+				case CodeConstant.STATUS_DOI_ZUMI:
+				case CodeConstant.STATUS_DOI_SHINAI:
+				case CodeConstant.STATUS_HANNYU_ZUMI:
+				case CodeConstant.STATUS_HANSYUTSU_ZUMI:
+				case CodeConstant.STATUS_SENTAKU_ZUMI:
+					isToShouninTitle = "true";
+					break;
+				}
+				commentMap.put("isShouninTitle", isToShouninTitle);
 
 				commentList.add(commentMap);
 			}

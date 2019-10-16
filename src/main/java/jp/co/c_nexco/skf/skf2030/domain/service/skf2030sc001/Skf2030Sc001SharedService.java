@@ -1,6 +1,7 @@
 package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -425,9 +426,11 @@ public class Skf2030Sc001SharedService {
 		 * applInfo.get("applId"), applInfo.get("applStatus"), updateStatus,
 		 * applInfo.get("shainNo"))) { return false; }
 		 */
+		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
 
 		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("shainNo"),
-				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, null, null, null, errorMsg)) {
+				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, null, CodeConstant.NONE,
+				CodeConstant.NONE, lastUpdateDate, errorMsg)) {
 			return false;
 		}
 

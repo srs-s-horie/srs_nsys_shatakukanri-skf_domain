@@ -136,6 +136,11 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	// 返却備品なしフラグ true:あり false:なし
 	private String henkyakuBihinNothing;
 
+	// 退居日日付変更フラグ
+	private String taikyoDateFlg;
+	// 駐車場日付変更フラグ
+	private String parkingEDateFlg;
+
 	/*
 	 * hidden
 	 */

@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc002common;
 
+import java.util.List;
+import java.util.Map;
 import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -21,5 +23,7 @@ public class Skf2010Sc002CommonDto extends Skf2010CommonDto {
 	private String applStatus;
 	// コメント表示レベル
 	private String commentDisplayLevel;
+	// 社宅添付資料情報
+	private List<Map<String, Object>> shatakuAttachedFileList;
 
 }

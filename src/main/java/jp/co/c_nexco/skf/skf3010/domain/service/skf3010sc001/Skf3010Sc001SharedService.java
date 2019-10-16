@@ -296,22 +296,22 @@ public class Skf3010Sc001SharedService {
 			keinen = skfBaseBusinessLogicUtils.getAging(buildDate, areaKbn, tmpData.getStructureKbn());
 			tmpMap.put("aging", Long.toString(keinen) + AGING_YEAR);
 
-			// 空きbr部屋数
+			// 空き部屋数
 			if (tmpData.getEmptyRoomCount() != null && !tmpData.getEmptyRoomCount().equals("0")
 					&& tmpData.getEmptyRoomCount().length() > 0) {
-				emptyRoomCount = tmpData.getEmptyRoomCount() + ROOM;
+				emptyRoomCount = tmpData.getEmptyRoomCount();
 			} else {
-				emptyRoomCount = "0" + ROOM;
+				emptyRoomCount = "0";
 			}
-			tmpMap.put("emptyRoomCount", emptyRoomCount);
-			// 空きbr駐車場数
+			tmpMap.put("emptyRoomCount", emptyRoomCount + ROOM);
+			// 空き駐車場数
 			if (tmpData.getEmptyParkingCount() != null && !tmpData.getEmptyParkingCount().equals("0")
 					&& tmpData.getEmptyParkingCount().length() > 0) {
-				emptyParkingCount = tmpData.getEmptyParkingCount() + PARKING;
+				emptyParkingCount = tmpData.getEmptyParkingCount();
 			} else {
-				emptyParkingCount = "0" + PARKING;
+				emptyParkingCount = "0";
 			}
-			tmpMap.put("emptyParkingCount", emptyParkingCount);
+			tmpMap.put("emptyParkingCount", emptyParkingCount + PARKING);
 			// 対象行の社宅区分
 			tmpMap.put("hdnShatakuKbn", tmpData.getShatakuKbn());
 			// 対象行の社宅管理番号
@@ -321,9 +321,9 @@ public class Skf3010Sc001SharedService {
 			// 対象行の地域区分
 			tmpMap.put("hdnAreaKbn", tmpData.getAreaKbn());
 			// 対象行の空き部屋数
-			tmpMap.put("hdnEmptyRoomCount", tmpData.getEmptyRoomCount());
+			tmpMap.put("hdnEmptyRoomCount", emptyRoomCount);
 			// 対象行の空き駐車場数
-			tmpMap.put("hdnEmptyParkingCount", tmpData.getEmptyParkingCount());
+			tmpMap.put("hdnEmptyParkingCount", emptyParkingCount);
 			// 対象行の部屋番号
 			tmpMap.put("hdnRoomNo", tmpData.getRoomNo());
 			// 基本

@@ -81,7 +81,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			registDto.setHdnNyukyo(null);
 		}
 		
-		// 退去設定（検索キー）
+		// 退居設定（検索キー）
 		if (skf3020Sc004SharedService.checkBoxcheck(registDto.getTaikyo()) != null) {
 			registDto.setHdnTaikyoChkFlg(true);
 			registDto.setHdnTaikyo(setone);
@@ -103,7 +103,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 		registDto.setHdnGenShozoku(registDto.getGenShozoku());
 		// 新所属設定（検索キー）
 		registDto.setHdnShinShozoku(registDto.getShinShozoku());
-		// 入退去予定作成区分（検索キー）
+		// 入退居予定作成区分（検索キー）
 		registDto.setHdnNyutaikyoYoteiSakuseiKubun(registDto.getNyutaikyoYoteiSakuseiKubun());
 		// 備考設定（検索キー）
 		registDto.setHdnBiko(registDto.getBiko());
@@ -120,7 +120,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 		
 		// 入居チェックボックスのチェック状態を取得
 		List<String> nyukyoChkValList = Arrays.asList(registDto.getNyukyoChkVal());			
-		// 退去チェックボックスのチェック状態を取得
+		// 退居チェックボックスのチェック状態を取得
 		List<String> taikyoChkValList = Arrays.asList(registDto.getTaikyoChkVal());			
 		// 変更チェックボックスのチェック状態を取得
 		List<String> henkouChkValList = Arrays.asList(registDto.getHenkouChkVal());			
@@ -156,14 +156,14 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 		registDto.setTaikyoChkVal(null);
 		registDto.setHenkouChkVal(null);
 		
-		// 入居・退去・変更にチェックが1つも入っていない（error.skf.e_skf_3040）
+		// 入居・退居・変更にチェックが1つも入っていない（error.skf.e_skf_3040）
 		if(checkCnt == 0){
 			ServiceHelper.addWarnResultMessage(registDto, MessageIdConstant.E_SKF_3040);			
 			return registDto;
 		}
 		
 		
-		// 入居・退去・変更のすべてにチェックが入っている（error.skf.e_skf_3016）
+		// 入居・退居・変更のすべてにチェックが入っている（error.skf.e_skf_3016）
 		if(chkFlg == true){
 			ServiceHelper.addWarnResultMessage(registDto, MessageIdConstant.E_SKF_3016);			
 			return registDto;
@@ -215,7 +215,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			/** 更新項目をセット **/
 			// - 入居フラグ
 			String nyukyoFlgStr = null;
-			// - 退去フラグ
+			// - 退居フラグ
 			String taikyoFlgStr = null;;
 			// - 変更フラグ
 			String henkouFlgStr = null;
@@ -229,7 +229,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 				setVal.setNyukyoFlg("1");
 				nyukyoFlgStr = "1";
 			}
-			// 退去フラグ
+			// 退居フラグ
 			if(indexTaikyo == -1){
 				// チェックなし
 				setVal.setTaikyoFlg("0");
@@ -311,12 +311,12 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getShainNoHenkoKbn())){
 				setVal.setShainNoHenkoKbn(tenninshaInfo.getShainNoHenkoKbn());
 			}
-			// - 入居フラグ、退去フラグ、変更フラグ ：設定済み
+			// - 入居フラグ、退居フラグ、変更フラグ ：設定済み
 			// - 現社宅区分
 			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNowShatakuKbn())){
 				setVal.setNowShatakuKbn(tenninshaInfo.getNowShatakuKbn());
 			}
-			// - 入退去予定作成区分
+			// - 入退居予定作成区分
 			setVal.setNyutaikyoYoteiKbn("1");
 			// - 転任者調書取込日
 			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getDataTakinginDate())){
@@ -332,7 +332,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 				return 0;
 			}
 
-			// 入退去予定データ更新
+			// 入退居予定データ更新
 			// - 入居("1")
 			if(nyukyoFlgStr.equals("1")){
 				int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "1", takingDateStr);
@@ -342,7 +342,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 					return 0;
 				}
 			}
-			// - 退去("2")
+			// - 退居("2")
 			if(taikyoFlgStr.equals("1")){
 				int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "2", takingDateStr);
 				if(resultNyutaikyo > 0){
@@ -368,7 +368,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 	
 	
 	/**
-	 * 入退去予定データ更新（Update)リポジトリ呼び出し
+	 * 入退居予定データ更新（Update)リポジトリ呼び出し
 	 * @param setValue
 	 * @return　更新件数
 	 */
@@ -376,27 +376,27 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 		
 		int updateCount=0;
 
-		// 入退去予定テーブルに登録するデータ準備
+		// 入退居予定テーブルに登録するデータ準備
 		Skf3021TNyutaikyoYoteiData yoteiData = new Skf3021TNyutaikyoYoteiData();
 		// - 社員番号
 		yoteiData.setShainNo(shaiNoStr);
 		// - 社員氏名
 		yoteiData.setName(shaiNameStr);
-		// - 入退去区分
+		// - 入退居区分
 		yoteiData.setNyutaikyoKbn(flag);
 		// - 転任者調書取込日
 		yoteiData.setDataTakinginDate(takingDateStr);
 		// - 削除フラグ
 		yoteiData.setDeleteFlag("0");
 
-		// - 入退去予定データの登録状態をチェック
+		// - 入退居予定データの登録状態をチェック
 		Skf3021TNyutaikyoYoteiDataKey yoteiDataKey = new Skf3021TNyutaikyoYoteiDataKey();
 		yoteiDataKey.setShainNo(shaiNoStr);
 		yoteiDataKey.setNyutaikyoKbn(flag);
 		
 		Skf3021TNyutaikyoYoteiData nyutaikyoInfo = skf3021TNyutaikyoYoteiDataRepository.selectByPrimaryKey(yoteiDataKey);
 		if(nyutaikyoInfo == null){
-			LogUtils.debugByMsg("入退去予定データ取得結果NULL");
+			LogUtils.debugByMsg("入退居予定データ取得結果NULL");
 			// - 提示データ作成区分
 			yoteiData.setTeijiCreateKbn("0");
 			// - 転任者調書発令日
@@ -404,13 +404,13 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			
 			updateCount = skf3021TNyutaikyoYoteiDataRepository.insertSelective(yoteiData);
 		}else{
-			// 入退去予定データを更新する
+			// 入退居予定データを更新する
 			// 更新の場合、取得したデータを設定して更新する（出ないと、デフォルト値で更新されてしまうみたい）
 			// - 入居予定日
 			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getNyukyoYoteiDate())){
 				yoteiData.setNyukyoYoteiDate(nyutaikyoInfo.getNyukyoYoteiDate());
 			}
-			// - 退去予定日
+			// - 退居予定日
 			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getTaikyoYoteiDate())){
 				yoteiData.setTaikyoYoteiDate(nyutaikyoInfo.getTaikyoYoteiDate());
 			}

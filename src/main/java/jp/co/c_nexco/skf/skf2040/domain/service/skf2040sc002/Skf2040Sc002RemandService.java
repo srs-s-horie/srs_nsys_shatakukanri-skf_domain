@@ -4,6 +4,7 @@
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,8 @@ public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002R
 		boolean validate = skf2040sc002SharedService.checkValidation(remDto, sTrue);
 		if (!validate) {
 			// 添付資料だけはセッションから再取得の必要あり
-			skf2040sc002SharedService.setAttachedFileList(remDto);
+			List<Map<String, Object>> reAttachedFileList = skf2040sc002SharedService.setAttachedFileList();
+			remDto.setAttachedFileList(reAttachedFileList);
 			return remDto;
 		}
 
@@ -68,6 +70,9 @@ public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002R
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
 					remDto.getShainNo(), CodeConstant.NONE, urlBase);
 
+		} else {
+			throwBusinessExceptionIfErrors(remDto.getResultMessages());
+			return remDto;
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);

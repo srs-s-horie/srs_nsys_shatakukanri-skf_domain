@@ -76,7 +76,7 @@ public class Skf3020Sc004ShainDeleteService extends BaseServiceAbstract<Skf3020S
 			shainDelete.setHdnNyukyo(null);
 		}
 		
-		// 退去設定（検索キー）
+		// 退居設定（検索キー）
 		if (skf3020Sc004SharedService.checkBoxcheck(shainDelete.getTaikyo()) != null) {
 			shainDelete.setHdnTaikyoChkFlg(true);
 			shainDelete.setHdnTaikyo(setone);
@@ -98,7 +98,7 @@ public class Skf3020Sc004ShainDeleteService extends BaseServiceAbstract<Skf3020S
 		shainDelete.setHdnGenShozoku(shainDelete.getGenShozoku());
 		// 新所属設定（検索キー）
 		shainDelete.setHdnShinShozoku(shainDelete.getShinShozoku());
-		// 入退去予定作成区分（検索キー）
+		// 入退居予定作成区分（検索キー）
 		shainDelete.setHdnNyutaikyoYoteiSakuseiKubun(shainDelete.getNyutaikyoYoteiSakuseiKubun());
 		// 備考設定（検索キー）
 		shainDelete.setHdnBiko(shainDelete.getBiko());
@@ -166,7 +166,7 @@ public class Skf3020Sc004ShainDeleteService extends BaseServiceAbstract<Skf3020S
 				return -1;
 			}
 			
-			// 入退去予定作成区分が"1"だったら次のループへ
+			// 入退居予定作成区分が"1"だったら次のループへ
 			String nyutaikyoYoteiKbnStr = listTableData.get("col12").toString();
 			if(StringUtils.isEmpty(nyutaikyoYoteiKbnStr) == false){
 				if(nyutaikyoYoteiKbnStr.equals("作成済")){

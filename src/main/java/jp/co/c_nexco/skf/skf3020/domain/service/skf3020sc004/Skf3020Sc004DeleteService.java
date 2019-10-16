@@ -72,7 +72,7 @@ public class Skf3020Sc004DeleteService extends BaseServiceAbstract<Skf3020Sc004D
 			deleteDto.setHdnNyukyo(null);
 		}
 		
-		// 退去設定（検索キー）
+		// 退居設定（検索キー）
 		if (skf3020Sc004SharedService.checkBoxcheck(deleteDto.getTaikyo()) != null) {
 			deleteDto.setHdnTaikyoChkFlg(true);
 			deleteDto.setHdnTaikyo(setone);
@@ -94,7 +94,7 @@ public class Skf3020Sc004DeleteService extends BaseServiceAbstract<Skf3020Sc004D
 		deleteDto.setHdnGenShozoku(deleteDto.getGenShozoku());
 		// 新所属設定（検索キー）
 		deleteDto.setHdnShinShozoku(deleteDto.getShinShozoku());
-		// 入退去予定作成区分（検索キー）
+		// 入退居予定作成区分（検索キー）
 		deleteDto.setHdnNyutaikyoYoteiSakuseiKubun(deleteDto.getNyutaikyoYoteiSakuseiKubun());
 		// 備考設定（検索キー）
 		deleteDto.setHdnBiko(deleteDto.getBiko());

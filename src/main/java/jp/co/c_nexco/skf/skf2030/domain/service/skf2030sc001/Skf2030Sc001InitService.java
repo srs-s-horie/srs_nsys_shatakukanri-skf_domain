@@ -45,7 +45,7 @@ public class Skf2030Sc001InitService extends BaseServiceAbstract<Skf2030Sc001Ini
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("status", initDto.getSendApplStatus());
+		applInfo.put("status", initDto.getApplStatus());
 		applInfo.put("applNo", initDto.getApplNo());
 		applInfo.put("applId", initDto.getApplId());
 

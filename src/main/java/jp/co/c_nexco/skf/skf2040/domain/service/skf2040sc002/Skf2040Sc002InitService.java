@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
@@ -21,6 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinse
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinUpdateDateExpRepository;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -46,9 +48,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	private String sTrue = "true";
 	private String sFalse = "false";
 
-	// 最終更新日付のキャッシュキー
-	public static final String KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history";
-
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
@@ -63,6 +62,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	Skf2040Sc002GetBihinHenkyakuShinseiApplNoExpRepository skf2040Sc002GetBihinHenkyakuShinseiApplNoExpRepository;
 	@Autowired
 	Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExpRepository skf2040Sc002GetBihinHenkyakuShinseiApplStatusExpRepository;
+	@Autowired
+	Skf2040Sc002GetBihinUpdateDateExpRepository skf2040Sc002GetBihinUpdateDateExpRepository;
 
 	/**
 	 * サービス処理を行う。
@@ -86,7 +87,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 
 		// 操作ログを出力
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
-
 		// セッション情報引き渡し
 		skf2040Sc002ShareService.setMenuScopeSessionBean(menuScopeSessionBean);
 		// セッション情報初期化
@@ -95,7 +95,9 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		// 画面内容の設定
 		if (setDisplayData(initDto)) {
 			// 「添付資料」欄の更新を行う
-			refreshHeaderAttachedFile(initDto);
+			List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
+			attachedFileList = refreshHeaderAttachedFile(initDto.getApplNo(), attachedFileList);
+			initDto.setAttachedFileList(attachedFileList);
 		} else {
 			// 初期表示に失敗した場合次処理のボタンを押せなくする。
 			setInitializeError(initDto);
@@ -109,12 +111,13 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * 
 	 * @param initDto
 	 */
-	private void refreshHeaderAttachedFile(Skf2040Sc002InitDto initDto) {
-		// 添付ファイルを取得し、セッションに保存
-		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
-				initDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+	private List<Map<String, Object>> refreshHeaderAttachedFile(String applNo,
+			List<Map<String, Object>> attachedFileList) {
 
-		initDto.setAttachedFileList(attachedFileList);
+		// 添付ファイルを取得し、セッションに保存
+		attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean, applNo,
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		return attachedFileList;
 	}
 
 	/**
@@ -136,12 +139,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			returnValue = false;
 			return returnValue;
 		}
-
-		// 排他チェック用の日付設定
-		LogUtils.debugByMsg("更新日時" + applHistoryList.get(0).getUpdateDate());
-		initDto.addLastUpdateDate(KEY_LAST_UPDATE_DATE, applHistoryList.get(0).getUpdateDate());
-
-		// 申請書類履歴情報を画面のに設定
+		// 申請書類履歴情報を画面に設定
 		initDto.setShainNo(applHistoryList.get(0).getShainNo());
 		initDto.setHdnApplShainNo(applHistoryList.get(0).getShainNo());
 		initDto.setApplHistoryDate(applHistoryList.get(0).getApplDate());
@@ -155,8 +153,35 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		initDto.setApplStatus(applHistoryList.get(0).getApplStatus());
 		initDto.setApplStatusText(changeApplStatusText(applHistoryList.get(0).getApplStatus()));
 
-		// コメント入力欄の設定
-		setInputComment(initDto);
+		// 排他チェック用の日付設定
+		if (FunctionIdConstant.R0105.equals(initDto.getApplId())) {
+			// 備品返却申請からの遷移
+			// 申請書類履歴（退居届）の最終更新日付保持
+			LogUtils.debugByMsg("更新日時" + applHistoryList.get(0).getUpdateDate());
+			initDto.addLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_BIHIN,
+					applHistoryList.get(0).getUpdateDate());
+
+			// 備品申請の取得
+			Skf2040Sc002GetBihinUpdateDateExp record = new Skf2040Sc002GetBihinUpdateDateExp();
+			record = skf2040Sc002GetBihinUpdateDateExpRepository.getBihinUpdateDate(initDto.getApplNo());
+			if (record != null) {
+				// 備品申請の最終更新日付保持
+				LogUtils.debugByMsg("更新日時" + record.getUpdateDate());
+				initDto.addLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_BIHIN, record.getUpdateDate());
+			}
+
+		} else {
+			// 退居（自動車の保管場所返還）届
+			LogUtils.debugByMsg("更新日時" + applHistoryList.get(0).getUpdateDate());
+			initDto.addLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_TAIKYO,
+					applHistoryList.get(0).getUpdateDate());
+		}
+
+		// コメントボタンの設定
+		String commetFlg = setInputComment(initDto.getApplNo());
+		if (NfwStringUtils.isNotEmpty(commetFlg)) {
+			initDto.setCommentViewFlg(commetFlg);
+		}
 
 		// コントロール制御
 		initDto.setApplId(applHistoryList.get(0).getApplId());
@@ -253,10 +278,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			} else {
 				// 申請状況が「審査中」以外
 
-				// 返却情報欄の表示
-				initDto.setHenkyakuInfoViewFlg(sTrue);
-				// 申請状況が「審査中」以外は「社宅の状態」を表示する
-				initDto.setShatakuJyotaiViewFlg(sTrue);
 				// 返却備品があるかどうか
 				initDto.setHenkyakuBihinNothing(sTrue);
 
@@ -272,6 +293,11 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// 退居届情報の退居する社宅区分が１（社宅、駐車場を退居および返還）または２（社宅を退居）の場合
 				if (CodeConstant.SHATAKU_CHUSHAJO_WO_TAIKYO_HENKAN.equals(initDto.getShatakuTaikyoKbn())
 						|| CodeConstant.SHATAKU_WO_TAIKYO.equals(initDto.getShatakuTaikyoKbn())) {
+
+					// 返却情報欄の表示
+					initDto.setHenkyakuInfoViewFlg(sTrue);
+					// 申請状況が「審査中」以外は「社宅の状態」を表示する
+					initDto.setShatakuJyotaiViewFlg(sTrue);
 					// 「社宅の状態」の設定
 					if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuJotai())) {
 						initDto.setShatakuJyotai(taikyoRepDt.getShatakuJotai());
@@ -280,7 +306,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			}
 
 			// ボタン制御
-			setButtonVisible(initDto, teijiDataInfo);
+			setButtonControl(initDto, teijiDataInfo);
 			break;
 		}
 
@@ -295,7 +321,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * @param initDto
 	 * @param teijiDataInfo
 	 */
-	private void setButtonVisible(Skf2040Sc002InitDto initDto, Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo) {
+	private void setButtonControl(Skf2040Sc002InitDto initDto, Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo) {
 
 		// ◆退居（自動車の保管場所返還）届
 		switch (initDto.getApplStatus()) {
@@ -307,7 +333,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// 【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_E
 				// 【PDFダウンロードボタン：表示】
 				skf2040Sc002ShareService.setButtonVisible("PTN_E", sTrue, initDto);
-
 			} else {
 				// 備品返却あり
 				// 【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_C
@@ -315,16 +340,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				skf2040Sc002ShareService.setButtonVisible("PTN_C", sTrue, initDto);
 
 				// 社宅管理の提示データが作成完了か判定し、提示ボタン活性化
-				// 社宅提示データが取得できなかった場合
-				if (teijiDataInfo == null) {
-					// 承認ボタン
-					initDto.setBtnApproveDisabled(sTrue);
-					// 提示ボタン
-					initDto.setBtnPresentDisabeld(sTrue);
-					// 提示不可で中断
-					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "社宅管理システムで提示データを確認",
-							"（社宅提示データが取得できませんでした。）");
-				} else {
+				if (teijiDataInfo != null && teijiDataInfo.getTeijiNo() > 0) {
 					// 社宅提示データの備品提示ステータスが作成完了されていない場合
 					if (NfwStringUtils.isNotEmpty(teijiDataInfo.getCreateCompleteKbn())) {
 						switch (teijiDataInfo.getCreateCompleteKbn()) {
@@ -340,9 +356,17 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 							break;
 						}
 					}
+				} else {
+					// 社宅提示データが取得できなかった場合
+					// 承認ボタン
+					initDto.setBtnApproveDisabled(sTrue);
+					// 提示ボタン
+					initDto.setBtnPresentDisabeld(sTrue);
+					// 提示不可で中断
+					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "社宅管理システムで提示データを確認",
+							"（社宅提示データが取得できませんでした。）");
 				}
 			}
-
 			break;
 		case CodeConstant.STATUS_SHONIN1:
 		case CodeConstant.STATUS_SHONIN2:
@@ -425,33 +449,30 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		switch (initDto.getApplId()) {
 		case FunctionIdConstant.R0105:
 			// 備品返却申請の場合
-			returnValue = getBihinInfo_Henkyaku(initDto);
+			returnValue = getBihinInfoHenkyaku(initDto);
 			break;
 		case FunctionIdConstant.R0103:
-			// 退居届の場合
-			returnValue = getBihinInfo_Taikyo(initDto);
+			// 退居（自動車の保管場所返還）届の場合
+			returnValue = getBihinInfoTaikyo(initDto);
 			break;
 		}
 		return returnValue;
 	}
 
 	/**
-	 * 備品情報の表示（退居届の場合）
+	 * 備品情報の表示（退居（自動車の保管場所返還）届の場合）
 	 * 
 	 * @param initDto
-	 * @param teijiDataInfo
 	 * @return true：正常、false：異常
 	 */
-	private boolean getBihinInfo_Taikyo(Skf2040Sc002InitDto initDto) {
+	private boolean getBihinInfoTaikyo(Skf2040Sc002InitDto initDto) {
 
-		boolean returnValue = true;
 		// 退居届テーブルから退居情報を取得
 		Skf2040TTaikyoReport taikyoRepDt = skf2040Sc002ShareService.getTaikyoReport(initDto.getApplNo());
 
 		// 取得できなかった、社宅退居区分が設定されていない場合は戻り値をfalse
 		if (taikyoRepDt == null || NfwStringUtils.isEmpty(taikyoRepDt.getShatakuTaikyoKbn())) {
-			returnValue = false;
-			return returnValue;
+			return false;
 		} else {
 			// 社宅退居区分を設定
 			initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn());
@@ -478,8 +499,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 						shatakuNo, roomNo, henkyakuDt);
 				// リストが設定できなかった場合はfalseでリターン
 				if (henkyakuList == null) {
-					returnValue = false;
-					return returnValue;
+					return false;
 				} else {
 					initDto.setHenkyakuList(henkyakuList);
 					// 返却備品項目表示
@@ -491,13 +511,12 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				for (Map<String, Object> list : henkyakuList) {
 					String bihinLentStatusKbn = list.get("bihinLentStatusKbn").toString();
 					// 返却対象備品(会社保有かレンタル)がある場合は「返却備品なしフラグ」を折る
-					if (NfwStringUtils.isNotEmpty(bihinLentStatusKbn)) {
-						if (CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU.equals(bihinLentStatusKbn)
-								|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU.equals(bihinLentStatusKbn)) {
-							// 返却対象備品がある場合は「返却備品なしフラグ」を折る
-							initDto.setHenkyakuBihinNothing(sFalse);
-							break;
-						}
+					if (NfwStringUtils.isNotEmpty(bihinLentStatusKbn)
+							&& (CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU.equals(bihinLentStatusKbn)
+									|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU.equals(bihinLentStatusKbn))) {
+						// 返却対象備品がある場合は「返却備品なしフラグ」を折る
+						initDto.setHenkyakuBihinNothing(sFalse);
+						break;
 					}
 				}
 			}
@@ -507,11 +526,32 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					shatakuNo, roomNo);
 			if (NfwStringUtils.isEmpty(BihinHenkyakuApplNo)) {
 				// 取得できなかった場合は戻り値をfalse
-				returnValue = false;
-				return returnValue;
+				return false;
 			}
 			// Hidden項目に備品返却申請の書類管理番号を保存する
 			initDto.setHdnBihinHenkyakuApplNo(BihinHenkyakuApplNo);
+
+			// 申請書類履歴取得
+			List<Skf2040Sc002GetApplHistoryInfoExp> applHistoryList = new ArrayList<Skf2040Sc002GetApplHistoryInfoExp>();
+			applHistoryList = getApplHistoryList(initDto.getHdnBihinHenkyakuApplNo());
+
+			// 備品返却申請の申請書類履歴レコードの更新日を保持
+			if (applHistoryList != null && applHistoryList.size() > 0) {
+				// 排他チェック用の日付設定
+				LogUtils.debugByMsg("更新日時" + applHistoryList.get(0).getUpdateDate());
+				initDto.addLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_BIHIN,
+						applHistoryList.get(0).getUpdateDate());
+			}
+
+			// 備品申請情報の取得
+			Skf2040Sc002GetBihinUpdateDateExp record = new Skf2040Sc002GetBihinUpdateDateExp();
+			record = skf2040Sc002GetBihinUpdateDateExpRepository
+					.getBihinUpdateDate(initDto.getHdnBihinHenkyakuApplNo());
+			if (record != null) {
+				// 備品申請の最終更新日付のキャッシュキー
+				LogUtils.debugByMsg("更新日時" + record.getUpdateDate());
+				initDto.addLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_BIHIN, record.getUpdateDate());
+			}
 
 			// 社宅の状態の設定
 			initDto.setShatakuJyotaiViewFlg(sTrue);
@@ -528,12 +568,14 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// 備品がある場合の表示項目の設定
 				skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt);
 			}
-		} else {
+		} else
+
+		{
 			// 退居届情報の退居する社宅区分が3：駐車場のみの場合
 			// 「返却備品なしフラグ」を立てる
 			initDto.setHenkyakuBihinNothing(sTrue);
 		}
-		return returnValue;
+		return true;
 	}
 
 	/**
@@ -543,7 +585,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * @param teijiDataInfo
 	 * @return true：正常、false：異常
 	 */
-	private boolean getBihinInfo_Henkyaku(Skf2040Sc002InitDto initDto) {
+	private boolean getBihinInfoHenkyaku(Skf2040Sc002InitDto initDto) {
 
 		boolean returnValue = true;
 
@@ -648,20 +690,24 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	}
 
 	/**
-	 * コメント入力欄の設定
+	 * コメントボタンの設定
 	 * 
 	 * @param initDto
 	 */
-	private void setInputComment(Skf2040Sc002InitDto initDto) {
+	private String setInputComment(String applNo) {
 		// コメント一覧取得
-		List<SkfCommentUtilsGetCommentInfoExp> commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001,
-				initDto.getApplNo(), null);
+		List<SkfCommentUtilsGetCommentInfoExp> commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applNo,
+				null);
 		// コメントがあれば「コメント表示」ボタンを表示
-		if (commentList != null && commentList.size() > 0) {
-			initDto.setCommentViewFlg(sTrue);
+		String commentViewFlag = CodeConstant.NONE;
+		if (commentList == null || commentList.size() <= 0) {
+			// コメントが無ければ非表示
+			commentViewFlag = sFalse;
 		} else {
-			initDto.setCommentViewFlg(sFalse);
+			// コメントがあれば表示
+			commentViewFlag = sTrue;
 		}
+		return commentViewFlag;
 
 	}
 

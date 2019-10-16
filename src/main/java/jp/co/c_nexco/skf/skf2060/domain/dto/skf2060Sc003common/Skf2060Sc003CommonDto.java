@@ -18,4 +18,20 @@ public class Skf2060Sc003CommonDto extends Skf206010CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 	
+	/** 楽観的排他制御に使用するテーブルプレフィクス */
+	public final String applHistoryLastUpdateDate = "Skf2060Sc003applHistoryLastUpdateDate";
+	public final String KariageBukkenLastUpdateDate = "Skf2060Sc003kariageBukkenLastUpdateDate";
+	
+	//申請状況
+	private String applStatus;
+    
+    //隠し要素
+    //申請書類管理番号
+    private String applNo;
+    
+    //借上物件リスト
+    private List<Map<String, String>> kariageTeijiList;
+    //ラジオボタン用借上物件番号
+    private String radioCandidateNo;
+	
 }

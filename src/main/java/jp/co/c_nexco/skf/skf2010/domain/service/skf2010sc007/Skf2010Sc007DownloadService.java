@@ -13,7 +13,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007DownloadDto;
 
 /**
- * Skf2010Sc007DownloadService 申請条件確認画面、申請要件確認押下時のサービス処理クラス。
+ * Skf2010Sc007 申請条件確認画面、申請要件確認押下時のサービス処理クラス。
  * 
  * @author NEXCOシステムズ
  *
@@ -42,11 +42,10 @@ public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		skfOperationLogUtils.setAccessLog("申請要件を確認する", companyCd, dto.getPageId());
 
 		// ダウンロードファイル名
-		String downloadFileName = "skf2010.skf2010_sc007.FileId";
+        String downloadFileName = "skf.skf_appl_requirement.FileId";
 
-		// 機能ID
-		String functionId = "skf201040007";
-
+        // 機能ID
+        String functionId = "skfapplrequirement";
 		// DTOに値をセット
 		dto.setDownloadFileName(downloadFileName);
 		dto.setFunctionId(functionId);

@@ -7,8 +7,9 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc007common.Skf3010Sc007Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3010Sc007RegistDto
+ * Skf3010Sc007RegistDto 駐車場契約情報登録画面のRegistDto
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

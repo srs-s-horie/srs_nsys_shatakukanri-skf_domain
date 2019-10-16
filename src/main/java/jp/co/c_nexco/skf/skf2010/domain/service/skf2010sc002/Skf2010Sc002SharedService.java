@@ -6,50 +6,45 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc002;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetShatakuAttachedFileExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetShatakuAttachedFileExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplComment;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReportKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetAttachedFileInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetShatakuAttachedFileExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc002common.Skf2010Sc002CommonDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
- * Skf2010Sc002 申請書類確認の共通処理クラス。
+ * Skf2010Sc002 申請書類確認画面の共通処理クラス。
  * 
  * @author NEXCOシステムズ
  */
 @Service
 public class Skf2010Sc002SharedService {
 
-	@Autowired
-	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
 	@Autowired
@@ -65,28 +60,47 @@ public class Skf2010Sc002SharedService {
 	@Autowired
 	private Skf2010Sc002GetApplHistoryInfoByParameterExpRepository skf2010Sc002GetApplHistoryInfoByParameterExpRepository;
 	@Autowired
-	private Skf2010Sc002GetAttachedFileInfoExpRepository skf2010Sc002GetAttachedFileInfoExpRepository;
+	Skf2040TTaikyoReportRepository skf2040TTaikyoReportRepository;
+	@Autowired
+	Skf2010Sc002GetShatakuAttachedFileExpRepository skf2010Sc002GetShatakuAttachedFileExpRepository;
 
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
+	// 申請書類履歴の最終更新日付のキャッシュキー
+	protected static final String KEY_LAST_UPDATE_DATE_HISTORY = "skf2010_t_appl_history";
 
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
+	/**
+	 * セッション情報を取得
+	 * 
+	 * @param bean
+	 */
+	protected void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
+		menuScopeSessionBean = bean;
+	}
+
+	/**
+	 * セッションの添付資料情報の初期化
+	 * 
+	 * @param bean
+	 */
+	protected void clearMenuScopeSessionBean() {
+		if (menuScopeSessionBean == null) {
+			return;
+		}
+		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
+				SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
+	}
 
 	/**
 	 * 社宅入居希望等申請情報を取得する
 	 * 
 	 * @param companyCd
-	 * @param shainNo
-	 * @param name
-	 * @param nameKk
-	 * @param agencyName
+	 * @param applNo
 	 * @return
 	 */
-	public Skf2020TNyukyoChoshoTsuchi getNyukyoChoshoTsuchiInfo(String companyCd, String applNo) {
+	protected Skf2020TNyukyoChoshoTsuchi getNyukyoChoshoTsuchiInfo(String applNo) {
+
 		Skf2020TNyukyoChoshoTsuchi nyukyoChoshoTsuchiInfo = new Skf2020TNyukyoChoshoTsuchi();
 		Skf2020TNyukyoChoshoTsuchiKey key = new Skf2020TNyukyoChoshoTsuchiKey();
-		key.setCompanyCd(companyCd);
+		key.setCompanyCd(CodeConstant.C001);
 		key.setApplNo(applNo);
 		nyukyoChoshoTsuchiInfo = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
 		return nyukyoChoshoTsuchiInfo;
@@ -98,7 +112,7 @@ public class Skf2010Sc002SharedService {
 	 * @param applNo
 	 * @return
 	 */
-	public Skf2010Sc002GetApplHistoryInfoByParameterExp getApplHistoryInfo(String applNo) {
+	protected Skf2010Sc002GetApplHistoryInfoByParameterExp getApplHistoryInfoByParameter(String applNo) {
 		Skf2010Sc002GetApplHistoryInfoByParameterExpParameter param = new Skf2010Sc002GetApplHistoryInfoByParameterExpParameter();
 		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(applNo);
@@ -110,71 +124,30 @@ public class Skf2010Sc002SharedService {
 	}
 
 	/**
-	 * 添付ファイルを取得し、セッションに保存します
-	 * 
-	 * @param applNo
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> getAttachedFileInfo(String applNo) {
-		List<Map<String, Object>> resultAttachedFileList = null;
-
-		resultAttachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
-		if (resultAttachedFileList != null) {
-			return resultAttachedFileList;
-		}
-		// 初期化
-		resultAttachedFileList = new ArrayList<Map<String, Object>>();
-
-		// 添付ファイル管理テーブルから添付ファイル情報を取得
-		List<Skf2010Sc002GetAttachedFileInfoExp> attachedFileList = new ArrayList<Skf2010Sc002GetAttachedFileInfoExp>();
-		Skf2010Sc002GetAttachedFileInfoExpParameter param = new Skf2010Sc002GetAttachedFileInfoExpParameter();
-		param.setCompanyCd(CodeConstant.C001);
-		param.setApplNo(applNo);
-		attachedFileList = skf2010Sc002GetAttachedFileInfoExpRepository.getAttachedFileInfo(param);
-		if (attachedFileList != null && attachedFileList.size() > 0) {
-			int attachedNo = 0;
-			Map<String, Object> attachedFileMap = null;
-			for (Skf2010Sc002GetAttachedFileInfoExp attachedFileInfo : attachedFileList) {
-				attachedFileMap = new HashMap<String, Object>();
-				// 添付資料番号
-				attachedFileMap.put("attachedNo", String.valueOf(attachedNo));
-				// 添付資料名
-				attachedFileMap.put("attachedName", attachedFileInfo.getAttachedName());
-				// ファイルサイズ
-				attachedFileMap.put("fileSize", attachedFileInfo.getFileSize());
-				// 更新日
-				String applDate = skfDateFormatUtils.dateFormatFromDate(attachedFileInfo.getApplDate(),
-						"yyyy/MM/dd HH:mm:ss.SS");
-				attachedFileMap.put("applDate", applDate);
-				// 添付資料
-				attachedFileMap.put("fileStream", attachedFileInfo.getFileStream());
-				// ファイルタイプ
-				String fileType = skfAttachedFileUtils.getFileTypeInfo(attachedFileInfo.getAttachedName());
-				attachedFileMap.put("fileType", fileType);
-
-				resultAttachedFileList.add(attachedFileMap);
-
-				attachedNo++;
-			}
-
-			// 取得した添付ファイル情報をセッションに保持
-			menuScopeSessionBean.put(sessionKey, resultAttachedFileList);
-		}
-		return resultAttachedFileList;
-	}
-
-	/**
 	 * 申請書類履歴の更新 + 申請書類コメント更新処理メソッド
 	 * 
-	 * @param applInfo
+	 * @param applInfoMap
+	 * @param lastUpdateDate
 	 * @return
 	 */
-	public boolean updateShinseiHistory(Map<String, String> applInfo) {
+	protected String updateShinseiHistory(Map<String, String> applInfoMap, Date lastUpdateDate) {
+
+		String result = CodeConstant.NONE;
 
 		// 更新対象の申請情報を取得
-		String applNo = applInfo.get("applNo");
+		String applNo = applInfoMap.get("applNo");
 		Skf2010Sc002GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc002GetApplHistoryInfoByParameterExp();
-		tApplHistoryData = getApplHistoryInfo(applNo);
+		tApplHistoryData = getApplHistoryInfoByParameter(applNo);
+
+		// 楽観的排他チェック（申請情報履歴）
+		if (!CheckUtils.isEqual(tApplHistoryData.getUpdateDate(), lastUpdateDate)) {
+			// 排他チェックエラー
+			return "exclusiveError";
+		}
+
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+
 		// 更新処理
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 		// プライマリキー設定
@@ -183,34 +156,36 @@ public class Skf2010Sc002SharedService {
 		updateData.setApplDate(tApplHistoryData.getApplDate());
 		updateData.setApplId(tApplHistoryData.getApplId());
 		updateData.setApplNo(tApplHistoryData.getApplNo());
-		updateData.setApplStatus(applInfo.get("status"));
+		// 更新項目
+		updateData.setApplStatus(applInfoMap.get("status"));
+		updateData.setAgreName1(loginUserInfoMap.get("userName"));
 		// 申請情報履歴更新
 		int applHistoryRes = skf2010TApplHistoryRepository.updateByPrimaryKeySelective(updateData);
 		if (applHistoryRes <= 0) {
-			return false;
+			result = "updateError";
+			return result;
 		}
 
 		// コメントの更新
-		if (!updateCommentInfo(applInfo)) {
-			return false;
+		if (!updateCommentInfo(applInfoMap, loginUserInfoMap)) {
+			result = "updateError";
+			return result;
 		}
 
-		return true;
+		return result;
 	}
 
 	/**
 	 * 申請書類コメントを更新する。
 	 * 
-	 * @param applInfo
+	 * @param applInfoMap
+	 * @param loginUserInfoMap ログインユーザー情報
 	 * @return
 	 */
-	private boolean updateCommentInfo(Map<String, String> applInfo) {
-
-		// ログインユーザー情報取得
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+	private boolean updateCommentInfo(Map<String, String> applInfoMap, Map<String, String> loginUserInfoMap) {
 
 		// 承認2済から承認4済は、承認1済にする
-		String applStatus = applInfo.get("status");
+		String applStatus = applInfoMap.get("status");
 		if (CodeConstant.STATUS_SHONIN1.compareTo(applStatus) < 0
 				&& CodeConstant.STATUS_SHONIN_ZUMI.compareTo(applStatus) > 0) {
 			applStatus = CodeConstant.STATUS_SHONIN1;
@@ -220,7 +195,7 @@ public class Skf2010Sc002SharedService {
 		// コメントが登録されている、かつ、承認1済～承認済の場合、削除処理をする（承認のコメントを上書きのため）→ルート上こないためいらない？
 
 		// コメントが入力されていない場合、処理を終了
-		String comment = applInfo.get("commentNote");
+		String comment = applInfoMap.get("commentNote");
 		if (NfwStringUtils.isEmpty(comment)) {
 			return true;
 		}
@@ -238,8 +213,8 @@ public class Skf2010Sc002SharedService {
 		if (comment != null && !CheckUtils.isEmpty(comment)) {
 			Skf2010TApplComment skf2010TApplComment = new Skf2010TApplComment();
 			skf2010TApplComment.setCompanyCd(CodeConstant.C001);
-			skf2010TApplComment.setApplNo(applInfo.get("applNo"));
-			skf2010TApplComment.setApplStatus(applInfo.get("status"));
+			skf2010TApplComment.setApplNo(applInfoMap.get("applNo"));
+			skf2010TApplComment.setApplStatus(applInfoMap.get("status"));
 			skf2010TApplComment.setCommentDate(commentDate);
 			skf2010TApplComment.setCommentName(commentName);
 			skf2010TApplComment.setCommentNote(comment);
@@ -256,59 +231,166 @@ public class Skf2010Sc002SharedService {
 	/**
 	 * コメントエラーチェック
 	 * 
-	 * @param applyDto
+	 * @param comment
+	 * @return エラー結果
 	 * @throws UnsupportedEncodingException
 	 */
-	protected boolean validateComment(Skf2010Sc002CommonDto dto) throws UnsupportedEncodingException {
-		// コメント
-		LogUtils.debugByMsg("桁数チェック " + "コメント - " + dto.getCommentNote());
-
-		String commentMes = "";
-
-		if (CodeConstant.COMMENT_DISPLAY_LEVEL_1.equals(dto.getCommentDisplayLevel())) {
-			// 申請者から承認者へ
-			commentMes = "承認者へのコメント";
-
-		} else if (CodeConstant.COMMENT_DISPLAY_LEVEL_2.equals(dto.getCommentDisplayLevel())) {
-			// 承認者から申請者へ
-			commentMes = "申請者へのコメント";
-		}
-
-		if (dto.getCommentNote() != null && CheckUtils.isMoreThanByteSize(dto.getCommentNote().trim(), 4000)) {
-			ServiceHelper.addErrorResultMessage(dto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1071,
-					commentMes, "2000");
+	protected boolean validateComment(String comment) throws UnsupportedEncodingException {
+		// コメント欄の入力文字数が4000バイト以上ならエラー
+		if (comment != null && CheckUtils.isMoreThanByteSize(comment.trim(), 4000)) {
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * 情報のチェック
+	 * 退居届情報取得
 	 * 
-	 * @param applyDto
-	 * @throws Exception
+	 * @param applNo
+	 * @return
 	 */
-	protected void checktApplSession(Skf2010Sc002CommonDto applyDto) throws Exception {
+	protected Skf2040TTaikyoReport getTaikyoReportInfo(String applNo) {
 
-		// 申請書類IDの有無チェック
-
-		if (applyDto.getApplId() == null) {
-			String errorMessage = "エラーが発生しました。ヘルプデスクへ連絡してください。";
-			logger.error(errorMessage);
-			throw new Exception(errorMessage);
-		}
-
-		// ステータスの有無チェック
-		if (applyDto.getApplStatus() == null) {
-			String errorMessage = "エラーが発生しました。ヘルプデスクへ連絡してください。";
-			logger.error(errorMessage);
-			throw new Exception(errorMessage);
-		}
+		Skf2040TTaikyoReport taikyoRepDt = new Skf2040TTaikyoReport();
+		Skf2040TTaikyoReportKey setKey = new Skf2040TTaikyoReportKey();
+		setKey.setCompanyCd(CodeConstant.C001);
+		setKey.setApplNo(applNo);
+		taikyoRepDt = skf2040TTaikyoReportRepository.selectByPrimaryKey(setKey);
+		return taikyoRepDt;
 	}
 
-	protected Skf2040TTaikyoReport getTaikyoReportInfo(String c001, String applNo) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	/**
+	 * 社宅添付ファイル情報の取得
+	 * 
+	 * @param shainNo
+	 * @param applNo
+	 * @param dto
+	 */
+	protected void setAttachedFileList(String shainNo, String applNo, Skf2010Sc002CommonDto dto) {
+
+		// 社宅添付ファイル情報の取得
+		List<Skf2010Sc002GetShatakuAttachedFileExp> shatakuAttachedDtList = new ArrayList<Skf2010Sc002GetShatakuAttachedFileExp>();
+		String nyutaikyoKbn = CodeConstant.NONE;
+		switch (dto.getPrePageId()) {
+		case FunctionIdConstant.SKF2020_SC002:
+		case FunctionIdConstant.SKF2020_SC003:
+			// 入居希望申請情報の取得
+			nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_NYUKYO;
+			break;
+		case FunctionIdConstant.SKF2040_SC001:
+			// 退居（自動車の保管場所返還）届情報の取得
+			nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_TAIKYO;
+			break;
+		}
+		shatakuAttachedDtList = getshatakuAttachedDt(shainNo, nyutaikyoKbn, applNo);
+
+		// 社宅添付ファイル情報の設定
+		Skf2010Sc002GetShatakuAttachedFileExp shatakuAttachedDt = new Skf2010Sc002GetShatakuAttachedFileExp();
+		shatakuAttachedDt = shatakuAttachedDtList.get(0);
+
+		// 既存の添付資料をクリアする
+		List<Map<String, Object>> shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
+
+		// 社宅補足ファイル1
+		if (shatakuAttachedDt.getShatakuSupplementFile1() != null
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName1())
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize1())) {
+			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName1(),
+					shatakuAttachedDt.getShatakuSupplementFile1(), shatakuAttachedDt.getShatakuSupplementSize1(),
+					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		}
+		// 社宅補足ファイル2
+		if (shatakuAttachedDt.getShatakuSupplementFile2() != null
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName2())
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize2())) {
+			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName2(),
+					shatakuAttachedDt.getShatakuSupplementFile2(), shatakuAttachedDt.getShatakuSupplementSize2(),
+					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		}
+		// 社宅補足ファイル3
+		if (shatakuAttachedDt.getShatakuSupplementFile3() != null
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName3())
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize3())) {
+			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName3(),
+					shatakuAttachedDt.getShatakuSupplementFile3(), shatakuAttachedDt.getShatakuSupplementSize3(),
+					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		}
+		// 駐車場補足ファイル1
+		if (shatakuAttachedDt.getParkingSupplementFile1() != null
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName1())
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize1())) {
+			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName1(),
+					shatakuAttachedDt.getParkingSupplementFile1(), shatakuAttachedDt.getParkingSupplementSize1(),
+					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		}
+		// 駐車場補足ファイル2
+		if (shatakuAttachedDt.getParkingSupplementFile2() != null
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName2())
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize2())) {
+			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName2(),
+					shatakuAttachedDt.getParkingSupplementFile2(), shatakuAttachedDt.getParkingSupplementSize2(),
+					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		}
+		// 駐車場補足ファイル3
+		if (shatakuAttachedDt.getParkingSupplementFile3() != null
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName3())
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize3())) {
+			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName3(),
+					shatakuAttachedDt.getParkingSupplementFile3(), shatakuAttachedDt.getParkingSupplementSize3(),
+					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		}
+		// 資料補足ファイル
+		if (shatakuAttachedDt.getShiryoHosokuFile() != null
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuName())
+				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuSize())) {
+			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShiryoHosokuName(),
+					shatakuAttachedDt.getShiryoHosokuFile(), shatakuAttachedDt.getShiryoHosokuSize(),
+					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		}
+
+		menuScopeSessionBean.put(SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY, shatakuAttachedFileList);
+
+		// 添付ファイルの設定
+		List<Map<String, Object>> tmpAttachedFileList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
+		tmpAttachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, dto.getApplNo(),
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
+			int defaultAttachedNo = 0;
+			if (shatakuAttachedFileList != null && shatakuAttachedFileList.size() > 0) {
+				defaultAttachedNo = Integer.parseInt(
+						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString())
+						+ 1;
+			}
+			for (Map<String, Object> tmpAttachedFileMap : tmpAttachedFileList) {
+				skfAttachedFileUtils.addShatakuAttachedFile(tmpAttachedFileMap.get("attachedName").toString(),
+						(byte[]) tmpAttachedFileMap.get("fileStream"), tmpAttachedFileMap.get("fileSize").toString(),
+						defaultAttachedNo, attachedFileList);
+			}
+		}
+		// 添付ファイル情報設定（社宅添付ファイルと通常添付ファイルを別に保持）
+		dto.setShatakuAttachedFileList(shatakuAttachedFileList);
+		dto.setAttachedFileList(attachedFileList);
+
+	}
+
+	/**
+	 * 条件を指定して社宅添付ファイル情報を取得
+	 * 
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @param applNo
+	 * @return
+	 */
+	private List<Skf2010Sc002GetShatakuAttachedFileExp> getshatakuAttachedDt(String shainNo, String nyutaikyoKbn,
+			String applNo) {
+		List<Skf2010Sc002GetShatakuAttachedFileExp> teijiDataList = new ArrayList<Skf2010Sc002GetShatakuAttachedFileExp>();
+		Skf2010Sc002GetShatakuAttachedFileExpParameter param = new Skf2010Sc002GetShatakuAttachedFileExpParameter();
+		param.setShainNo(shainNo);
+		param.setNyutaikyoKbn(nyutaikyoKbn);
+		param.setApplNo(applNo);
+		teijiDataList = skf2010Sc002GetShatakuAttachedFileExpRepository.getShatakuAttachedFile(param);
+		return teijiDataList;
 	}
 
 }

@@ -97,7 +97,7 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 			initDto.setMaskPattern("");
 			initDto.setDeleteBtnFlg("false");
 			//ドロップダウンリストの設定
-			skf3010Sc005SharedService.getDoropDownList(initDto.getOriginalKikaku(), originalKikakuList, 
+			skf3010Sc005SharedService.getDropDownList(initDto.getOriginalKikaku(), originalKikakuList, 
 					initDto.getOriginalAuse(), originalAuseList,
 					initDto.getLendKbn(), lendKbnList, 
 					initDto.getColdExemptionKbn(), coldExemptionKbnList);
@@ -116,7 +116,7 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 			initDto.setDeleteBtnFlg("true");
 			
 			//ドロップダウンリストの設定
-			skf3010Sc005SharedService.getDoropDownList("", originalKikakuList, 
+			skf3010Sc005SharedService.getDropDownList("", originalKikakuList, 
 					"", originalAuseList,
 					"", lendKbnList, 
 					"", coldExemptionKbnList);
