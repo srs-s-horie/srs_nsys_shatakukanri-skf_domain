@@ -1079,7 +1079,7 @@ public class Skf3010Sc006SharedService {
 		Skf3010Sc002GetHoyuShatakuInfoExpParameter param = new Skf3010Sc002GetHoyuShatakuInfoExpParameter();
 		param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
 		// DBより社宅部屋情報を取得する
-		skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository.getSRoomExlusiveCntr(param);
+		skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository.getRoomExlusiveCntr(param);
 
 		// 取得レコード数を設定
 		resultCnt = shatakuRoomList.size();
@@ -1838,7 +1838,7 @@ public class Skf3010Sc006SharedService {
 		initDto.setContractDelDisableFlg(null);
 		initDto.setHdnChangeContractSelectedIndex(null);
 		initDto.setHdnDispContractSelectedIndex(null);
-		initDto.setSelectMode(null);
+//		initDto.setSelectMode(null);
 		initDto.setContractInfoListTableData(listTableData);
 		initDto.setContractNoList(contractNoList);
 		initDto.setContractOwnerName(contractOwnerName);
