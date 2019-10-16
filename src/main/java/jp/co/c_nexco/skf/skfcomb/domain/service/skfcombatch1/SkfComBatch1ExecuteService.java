@@ -4,8 +4,6 @@
  */
 package jp.co.c_nexco.skf.skfcomb.domain.service.skfcombatch1;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -22,8 +20,7 @@ import jp.co.c_nexco.skf.skfcomb.domain.dto.skfcombatch1.SkfComBatch1ExecuteDto;
  *
  */
 @Service
-public class SkfComBatch1ExecuteService
-		extends BaseServiceAbstract<SkfComBatch1ExecuteDto> {
+public class SkfComBatch1ExecuteService extends BaseServiceAbstract<SkfComBatch1ExecuteDto> {
 
 	@Autowired
 	SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
@@ -35,6 +32,9 @@ public class SkfComBatch1ExecuteService
 	public BaseDto index(SkfComBatch1ExecuteDto dto) throws Exception {
 
 		LogUtils.debugByMsg("updateShatakuKanriDaichoShatakuData-UTTest：テスト実行クラス処理開始");
+
+		// 処理時間計測開始
+		long startTime = System.currentTimeMillis();
 
 		// 何も入力されてなければnullに置き換える
 		Long teijiNo = null;
@@ -51,21 +51,31 @@ public class SkfComBatch1ExecuteService
 		if (NfwStringUtils.isEmpty(returnStatus))
 			returnStatus = null;
 
-		try {
-			returnStatus = String
-					.valueOf(skfBatchBusinessLogicUtils.updateShatakuKanriDaichoShatakuData(teijiNo, yearMonth));
-
-		} catch (Exception e) {
-			returnStatus = "何かの理由で異常終了";
-			// stackTrace出力
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			LogUtils.debugByMsg(sw.toString());
-		}
+		returnStatus = String.valueOf(skfBatchBusinessLogicUtils.updateShatakuKanriDaichoShatakuData(teijiNo, yearMonth,
+				"ユーザID", dto.getPageId()));
+		// try {
+		// returnStatus =
+		// String.valueOf(skfBatchBusinessLogicUtils.updateShatakuKanriDaichoShatakuData(teijiNo,
+		// yearMonth, "ユーザID", dto.getPageId()));
+		//
+		// }catch(OptimisticLockingFailureException e){
+		//
+		// }
+		// catch (Exception e) {
+		// returnStatus = "何かの理由で異常終了";
+		// // stackTrace出力
+		// StringWriter sw = new StringWriter();
+		// PrintWriter pw = new PrintWriter(sw);
+		// e.printStackTrace(pw);
+		// LogUtils.debugByMsg(sw.toString());
+		// }
 
 		dto.setReturnStatus(returnStatus);
 
+		// 処理時間計測終了
+		long endTime = System.currentTimeMillis();
+
+		LogUtils.debugByMsg("updateShatakuKanriDaichoShatakuData-UTTest：テスト実行に掛かった時間：" + (endTime - startTime) + "ミリ秒");
 		LogUtils.debugByMsg("updateShatakuKanriDaichoShatakuData-UTTest：テスト実行クラス処理終了");
 		return dto;
 	}
