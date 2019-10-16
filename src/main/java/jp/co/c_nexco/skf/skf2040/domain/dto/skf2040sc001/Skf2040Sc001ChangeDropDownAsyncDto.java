@@ -57,11 +57,15 @@ public class Skf2040Sc001ChangeDropDownAsyncDto extends Skf2040Sc001CommonAsyncD
     private String nowShatakuMenseki;
     // 社宅管理ID
     private long shatakuKanriId;
+    // 現住所
+    private String nowAddress;
     // 駐車場1台目
     private String parking1stPlace;
     // 駐車場2台目
     private String parking2ndPlace;
 
+    // 返却備品HTML
+    private String returnEquipment;
     
     /**
      * Hidden

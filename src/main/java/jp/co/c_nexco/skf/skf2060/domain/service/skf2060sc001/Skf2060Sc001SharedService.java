@@ -180,6 +180,7 @@ public class Skf2060Sc001SharedService {
 			tmpMap.put("companyCd", HtmlUtils.htmlEscape(tmpData.getCompanyCd()));
 			tmpMap.put("candidateNo", tmpData.getCandidateNo());
 			tmpMap.put("money", tmpData.getMoney());
+			tmpMap.put("lastUpdateDate", HtmlUtils.htmlEscape(tmpData.getUpdateDate().toString()));
 
 			setViewList.add(tmpMap);
 		}

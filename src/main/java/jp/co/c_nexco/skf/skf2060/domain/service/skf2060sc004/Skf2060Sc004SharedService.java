@@ -45,7 +45,8 @@ public class Skf2060Sc004SharedService {
     //Utils
     @Autowired
     private SkfGenericCodeUtils skfGenericCodeUtils;
-    
+    /** listtableのチェックボックスに付与するタブインデックス初期値 */
+    private static final int TAB_INDEX_DEFAULT_NUM = 16;
     /**
      * 借上候補物件状況一覧を取得して、画面のlistTableに表示するための情報を作成する。
      * @param param
@@ -107,9 +108,9 @@ public class Skf2060Sc004SharedService {
             }
             String applNo = tmpData.getApplNo();
             tmpMap.put("completeChk", "<INPUT type='checkbox' name='completeChkVal' id='completeChkVal" + i + "'"
-                       + " value='" + applNo + "' " + completeChkDisabled + ">");
+                       + " tabindex='" + (TAB_INDEX_DEFAULT_NUM + i) + "' value='" + applNo + "' " + completeChkDisabled + ">");
             tmpMap.put("reminderChk", "<INPUT type='checkbox' name='reminderChkVal' id='reminderChkVal" + i + "'"
-                       + " value='" + applNo + "' " + reminderChkDisabled + ">");
+                       + " tabindex='" + (TAB_INDEX_DEFAULT_NUM + i) + "' value='" + applNo + "' " + reminderChkDisabled + ">");
     
             // 提示状況表示文言を汎用コードから取得
             String candidateStatus = candidateStatusGenCodeMap.get(tmpData.getCandidateStatus());

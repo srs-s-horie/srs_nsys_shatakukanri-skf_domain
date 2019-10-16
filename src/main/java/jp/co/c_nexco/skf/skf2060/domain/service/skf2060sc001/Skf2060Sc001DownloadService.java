@@ -68,7 +68,7 @@ public class Skf2060Sc001DownloadService extends BaseServiceAbstract<Skf2060Sc00
 			rowdatas.add(csvData);
 		}
 		//CSV出力を行う
-		FileOutput.fileOutputCsv(rowdatas, fileName, "skf2060r0106", 1, null, downloadDto);
+		FileOutput.fileOutputCsv(rowdatas, fileName, "skf2060fl001", 1, null, downloadDto);
 		
 		return downloadDto;
 	}

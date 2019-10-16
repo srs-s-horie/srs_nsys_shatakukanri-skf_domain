@@ -55,7 +55,7 @@ public class Skf3020Sc004SearchService extends BaseServiceAbstract<Skf3020Sc004S
 		// 戻り値に設定するドロップダウンリストのインスタンスを生成
 		// - 現社宅区分
 		List<Map<String, Object>> genShatakuKubunList = new ArrayList<Map<String, Object>>();
-		// - 入退去予定作成区分
+		// - 入退居予定作成区分
 		List<Map<String, Object>> yoteiSakuseiList = new ArrayList<Map<String, Object>>();
 
 		// ドロップダウンリストの値を設定
@@ -86,7 +86,7 @@ public class Skf3020Sc004SearchService extends BaseServiceAbstract<Skf3020Sc004S
 			searchDto.setHdnNyukyo(null);
 		}
 		
-		// 退去設定（検索キー）
+		// 退居設定（検索キー）
 		if (skf3020Sc004SharedService.checkBoxcheck(searchDto.getTaikyo()) != null) {
 			searchDto.setHdnTaikyoChkFlg(true);
 			searchDto.setHdnTaikyo(setone);
@@ -108,7 +108,7 @@ public class Skf3020Sc004SearchService extends BaseServiceAbstract<Skf3020Sc004S
 		searchDto.setHdnGenShozoku(searchDto.getGenShozoku());
 		// 新所属設定（検索キー）
 		searchDto.setHdnShinShozoku(searchDto.getShinShozoku());
-		// 入退去予定作成区分（検索キー）
+		// 入退居予定作成区分（検索キー）
 		searchDto.setHdnNyutaikyoYoteiSakuseiKubun(searchDto.getNyutaikyoYoteiSakuseiKubun());
 		// 備考設定（検索キー）
 		searchDto.setHdnBiko(searchDto.getBiko());
@@ -132,7 +132,7 @@ public class Skf3020Sc004SearchService extends BaseServiceAbstract<Skf3020Sc004S
 		if(nyukyoArr != null && nyukyoArr.length != 0){
 			nyukyoStr = nyukyoArr[0];
 		}
-		// ― 退去
+		// ― 退居
 		String taikyoStr = null;
 		String[] taikyoArr = searchDto.getTaikyo();
 		if(taikyoArr !=  null && taikyoArr.length != 0){

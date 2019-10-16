@@ -16,6 +16,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinHenkyakuApplNoInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinHenkyakuApplNoInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetShainInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetShainInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfShatakuInfoUtils.SkfShatakuInfoUtilsGetShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfShatakuInfoUtils.SkfShatakuInfoUtilsGetShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
@@ -24,6 +26,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReportKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinsei;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinHenkyakuApplNoInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc001.Skf2040Sc001GetShainInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc001.Skf2040Sc001UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfShatakuInfoUtils.SkfShatakuInfoUtilsGetShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
@@ -39,6 +42,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040Sc001common.Skf2040Sc001CommonDto;
 
@@ -55,7 +59,8 @@ public class Skf2040Sc001SharedService{
     private SkfShinseiUtils skfShinseiUtils;
     @Autowired
     private CodeCacheUtils codeCacheUtils;
-
+    @Autowired
+    private SkfGenericCodeUtils skfGenericCodeUtils;
     
     
     @Autowired
@@ -64,6 +69,8 @@ public class Skf2040Sc001SharedService{
     @Autowired
     // 申請書類履歴リポジトリ
     private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
+    @Autowired
+    private Skf2040Sc001GetShainInfoExpRepository skf2040Sc001GetShainInfoExpRepository;
     @Autowired
     private Skf2040Sc001GetApplInfoExpRepository skf2040Sc001GetApplInfoExpRepository;
     @Autowired
@@ -74,6 +81,9 @@ public class Skf2040Sc001SharedService{
     private Skf2040Sc001UpdateApplHistoryAgreeStatusExpRepository skf2040Sc001UpdateApplHistoryAgreeStatusExpRepository;
     @Autowired
     private SkfShatakuInfoUtilsGetShatakuInfoExpRepository skfShatakuInfoUtilsGetShatakuInfoExpRepository;
+    
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
     
     /**
      * 退居（返還）理由ドロップダウンリスト取得
@@ -106,7 +116,7 @@ public class Skf2040Sc001SharedService{
     public List<Map<String, Object>> getSessionTimeList(String defaultSelectTime){
         // 返却立会希望日(時)ドロップダウンリストの設定
         return skfDropDownUtils.getGenericForDoropDownList(
-                FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, defaultSelectTime, true);
+                FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, defaultSelectTime, false);
     }
     
     /**
@@ -146,9 +156,12 @@ public class Skf2040Sc001SharedService{
                 taikyoInfo.getTaikyoParking2()
         };
         dto.setTaikyoType(taikyoTypeArray);
-        
+
         dto.setTaikyoRiyuKbn(taikyoInfo.getTaikyoRiyuKbn());
-        dto.setTaikyoHenkanRiyu(taikyoInfo.getTaikyoRiyu());
+        if (CodeConstant.TAIKYO_RIYU_OTHERS.equals(dto.getTaikyoRiyuKbn())) {
+            // 退居返還理由が「その他」である場合のみ退居理由をdtoに設定
+            dto.setTaikyoHenkanRiyu(taikyoInfo.getTaikyoRiyu());
+        }
         dto.setShatakuJyotai(taikyoInfo.getShatakuJotai());
         dto.setTaikyogoRenrakuSaki(taikyoInfo.getTaikyogoRenrakusaki());
         dto.setSessionDay(taikyoInfo.getSessionDay());
@@ -168,7 +181,6 @@ public class Skf2040Sc001SharedService{
     public Skf2040TTaikyoReport getExistTaikyoInfo(String applNo){
         Skf2040TTaikyoReport taikyoInfo = this.getTaikyoInfo(CodeConstant.C001, applNo);
         if (taikyoInfo == null) {
-            // TODO 退居届情報の取得に失敗した場合はエラーメッセージを表示してボタンを使用不可にする
             LogUtils.debugByMsg("該当する退居届情報が存在しません。");
             return null;
         }
@@ -198,6 +210,32 @@ public class Skf2040Sc001SharedService{
     }
 
     /**
+     * 引数で指定された会社コード、社員番号に該当する社員情報エンティティを取得する。
+     * 
+     * @param companyCd
+     * @param shainNo
+     * @return 社員情報エンティティ
+     */
+    public Skf2040Sc001GetShainInfoExp getShainInfo(String companyCd, String shainNo) {
+
+        // 社員情報情報取得
+        List<Skf2040Sc001GetShainInfoExp> resultList = new ArrayList<Skf2040Sc001GetShainInfoExp>();
+        // DB検索処理
+        Skf2040Sc001GetShainInfoExpParameter param = new Skf2040Sc001GetShainInfoExpParameter();
+        param.setCompanyCd(companyCd);
+        param.setShainNo(shainNo);
+        resultList = skf2040Sc001GetShainInfoExpRepository.getShainInfo(param);
+
+        if (resultList != null && resultList.size() > 0) {
+            // 検索結果の1件目を取得
+            return resultList.get(0);
+        } else {
+            // 取得できなかった場合nullを返す
+            return null;
+        }
+    }
+
+    /**
      * 引数で指定された社宅情報エンティティの内容を、引数で指定されたDTOに設定する。
      * 
      * @param dto 退居届DTO
@@ -208,6 +246,12 @@ public class Skf2040Sc001SharedService{
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getShatakuName())) {
             dto.setHdnSelectedNowShatakuName(shatakuInfo.getShatakuName());
             LogUtils.debugByMsg("社宅名" + dto.getHdnSelectedNowShatakuName());
+        }
+
+        // 社宅住所
+        if (NfwStringUtils.isNotEmpty(shatakuInfo.getAddress())) {
+            dto.setNowAddress(shatakuInfo.getAddress());
+            LogUtils.debugByMsg("社宅住所" + shatakuInfo.getAddress());
         }
 
         // 室番号
@@ -250,7 +294,9 @@ public class Skf2040Sc001SharedService{
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getParkingAddress1())) {
             dto.setParking1stPlace(wkPrefName + shatakuInfo.getParkingAddress1());
             LogUtils.debugByMsg("現在の保管場所" + dto.getParking1stPlace());
-
+        }else{
+            // 駐車場１を借りていない場合は「駐車場１を返却する」チェックを非活性とする
+            dto.setNowParking1TaikyoDisabled("true");
         }
 
         // 駐車場 １台目 位置番号
@@ -263,6 +309,9 @@ public class Skf2040Sc001SharedService{
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getParkingAddress2())) {
             dto.setParking2ndPlace(wkPrefName + shatakuInfo.getParkingAddress2());
             LogUtils.debugByMsg("現在の保管場所2" + dto.getParking2ndPlace());
+        }else{
+            // 駐車場２を借りていない場合は「駐車場２を返却する」チェックを非活性とする
+            dto.setNowParking2TaikyoDisabled("true");
         }
 
         // 駐車場 ２台目 位置番号
@@ -283,6 +332,19 @@ public class Skf2040Sc001SharedService{
     }
     
     /**
+     * エラー発生時などに退居届画面のボタンを非活性とし、後続処理を行えないようにする。
+     * @param dto
+     */
+    public <DTO extends Skf2040Sc001CommonDto> void setDisableBtn(DTO dto){
+        // 確認ボタン非活性
+        dto.setBtnCheckDisabled(TRUE);
+        // 一時保存ボタン非活性
+        dto.setBtnSaveDisabled(TRUE);
+        // クリアボタン非表示
+        dto.setBtnClearRemoved(TRUE);
+    }
+    
+    /**
      * 引数で指定されたDtoが保持している申請書類管理番号をもとに、
      * 既存の退居届情報を取得してDtoに設定する。
      * @param dto 申請書類管理番号を保持したDto
@@ -290,8 +352,10 @@ public class Skf2040Sc001SharedService{
     public <DTO extends Skf2040Sc001CommonDto> void setExistTaikyoInfo(DTO dto){
         Skf2040TTaikyoReport taikyoInfo = this.getTaikyoInfo(CodeConstant.C001, dto.getApplNo());
         if (taikyoInfo == null) {
-            // TODO 退居届情報の取得に失敗した場合はエラーメッセージを表示してボタンを使用不可にする
+            // 退居届情報の取得に失敗した場合はエラーメッセージを表示してボタンを使用不可にする
+            this.setDisableBtn(dto);
             LogUtils.debugByMsg("該当する退居届情報が存在しません。");
+            ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
             return;
         }
         this.convTaikyoEntityToDto(dto, taikyoInfo);
@@ -346,7 +410,7 @@ public class Skf2040Sc001SharedService{
      */
     public <DTO extends Skf2040Sc001CommonDto> void cutByte(DTO dto) throws UnsupportedEncodingException {
         String Msg = "バイト数カット処理：　";
-        // 退居(返還)日 TODO スラッシュを除いた状態でカット
+        // 退居(返還)日
         dto.setTaikyoHenkanDate(NfwStringUtils.rightTrimbyByte(dto.getTaikyoHenkanDate(), 8));
         LogUtils.debugByMsg(Msg + "退居(返還)日" + dto.getTaikyoHenkanDate());
         // 退居(返還)理由
@@ -358,7 +422,7 @@ public class Skf2040Sc001SharedService{
         // 退居後の連絡先
         dto.setTaikyogoRenrakuSaki(NfwStringUtils.rightTrimbyByte(dto.getTaikyogoRenrakuSaki(), 128));
         LogUtils.debugByMsg(Msg + "退居後の連絡先" + dto.getTaikyogoRenrakuSaki());
-        // 返却立合希望日（日） TODO スラッシュを除いた状態でカット
+        // 返却立合希望日（日）
         dto.setSessionDay(NfwStringUtils.rightTrimbyByte(dto.getSessionDay(), 8));
         LogUtils.debugByMsg(Msg + "返却立合希望日（日）" + dto.getSessionDay());
         // 連絡先
@@ -465,7 +529,7 @@ public class Skf2040Sc001SharedService{
         boolean isParking1stHenkanChecked = false;
         boolean isParking2ndHenkanChecked = false;
         
-        // 社宅退居のチェック状況を取得する。 //TODO 定数化
+        // 社宅退居のチェック状況を取得する。
         String[] taikyoTypeArray = dto.getTaikyoType();
         if (taikyoTypeArray!=null && taikyoTypeArray.length > 0) {
             for(String taikyoType : taikyoTypeArray){
@@ -495,42 +559,39 @@ public class Skf2040Sc001SharedService{
         // 課等名
         param.setAffiliation2(dto.getAffiliation2Name());
         // 現住所
-        param.setAddress(dto.getNowShatakuName()); // TODO 社宅住所を表示する事
+        param.setAddress(dto.getNowAddress());
         // 氏名
         param.setName(dto.getName());
+        // 性別
+        param.setGender(dto.getGender());
         // 退居返還日
         param.setTaikyoDate(dto.getTaikyoHenkanDate());
+        // 駐車場返還日
+        if (isParking1stHenkanChecked || isParking2ndHenkanChecked) {
+            // 駐車場返還を行う場合のみ退居返還日を設定する
+            param.setParkingHenkanDate(dto.getTaikyoHenkanDate());
+        }
+        
+        // 退居理由区分
+        param.setTaikyoRiyuKbn(dto.getTaikyoRiyuKbn());
         
         // 退居理由
-        // 退居理由区分
         if (CodeConstant.TAIKYO_RIYU_OTHERS.equals(dto.getTaikyoRiyuKbn())) {
             // ドロップダウンリストが”その他”選択時：「退居（返還）理由」テキスト
             param.setTaikyoRiyu(dto.getTaikyoHenkanRiyu());
-            // ドロップダウンリストが”その他”選択時：”1”
-            param.setTaikyoRiyuKbn(CodeConstant.TAIKYO_RIYU_KBN_OTHERS);
         } else {
-            // ドロップダウンリストが”その他”以外を選択時：「退居（返還）理由」ドロップダウン選択値
-            param.setTaikyoRiyu(dto.getTaikyoRiyuKbn());
-            // ドロップダウンリストが”その他”以外を選択時”2”
-            param.setTaikyoRiyuKbn(CodeConstant.TAIKYO_RIYU_KBN_NON_OTHERS);
+            // ドロップダウンリストが”その他”以外を選択時：選択された理由区分のドロップダウンテキスト
+            String taikyoRiyuKbnTxt = skfGenericCodeUtils.getGenericCodeNameReverse(
+                    FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn());
+            param.setTaikyoRiyu(taikyoRiyuKbnTxt);
         }
-        
+        // 退居後連絡先
         param.setTaikyogoRenrakusaki(dto.getTaikyogoRenrakuSaki());
         
         // 退居場所
-        if (isShatakuTaikyoChecked) {
-            //  「社宅を退居する」選択時:社宅名＋部屋番号 TODO 選択された退居対象社宅の部屋番号を取得しておくこと
-            param.setTaikyoArea(dto.getNowShatakuName() + dto.getHdnNowShatakuRoomKanriNo());
-        }
-//        if (isParking1stHenkanChecked){
-//            //  「駐車場１を返還する」選択時:1台目の保管場所＋位置番号 TODO いらない疑惑
-//            insertParam.setTaikyoArea(dto.getParking1stPlace() + dto.getHdnParking1stNumber());
-//        }
-//        if (isParking2ndHenkanChecked) {
-//            //  「駐車場２を返還する」選択時:2台目の保管場所＋位置番号 TODO いらない疑惑
-//            insertParam.setTaikyoArea(dto.getParking2ndPlace() + dto.getHdnParking2ndNumber());
-//        }
-        
+        // 社宅名＋部屋番号
+        param.setTaikyoArea(dto.getHdnSelectedNowShatakuName() + dto.getHdnNowShatakuRoomKanriNo());
+
         // 退居する社宅区分
         // 社宅退居と駐車場１、２返還の組み合わせによって決まる。
         param.setShatakuTaikyoKbn(this.getShatakuTaikyoKbn1(
@@ -541,7 +602,7 @@ public class Skf2040Sc001SharedService{
         param.setShatakuTaikyoKbn2(this.getShatakuTaikyoKbn2(
                 isParking1stHenkanChecked, isParking2ndHenkanChecked));
         
-        // 社宅退居フラグ TODO 定数化
+        // 社宅退居フラグ
         param.setTaikyoShataku(BooleanUtils.toString(isShatakuTaikyoChecked, "1", "0"));
         // 駐車場１返還フラグ
         param.setTaikyoParking1(BooleanUtils.toString(isParking1stHenkanChecked, "1", "0"));
@@ -560,6 +621,9 @@ public class Skf2040Sc001SharedService{
         param.setSessionTime(dto.getSessionTime());
         // 連絡先
         param.setRenrakuSaki(dto.getRenrakuSaki());
+        // 駐車場保管場所１、２
+        param.setParkingAddress1(dto.getParking1stPlace());
+        param.setParkingAddress2(dto.getParking2ndPlace());
         return param;
     }
 
@@ -771,11 +835,11 @@ public class Skf2040Sc001SharedService{
             // 所属 室、チーム又は課
             setValue.setAffiliation2(dto.getAffiliation2Name());
             // TEL
-            //setValue.setTel(dto.getTel()); TODO いる？
+            setValue.setTel(dto.getTel());
             // 氏名
             setValue.setName(dto.getName());
             // 等級
-            //setValue.setTokyu(dto.getTokyuName()); TODO いる？
+            setValue.setTokyu(dto.getTokyuName());
             // 性別
             setValue.setGender(dto.getGender());
 

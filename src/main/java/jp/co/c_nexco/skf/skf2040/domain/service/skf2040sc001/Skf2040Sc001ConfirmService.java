@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -95,19 +96,7 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
             
             // 申請履歴、退居届の登録
             isExecSave = skf2040Sc001SharedService.saveNewTaikyoData(confirmDto);
-            
-            // 社宅退居のチェック状況を取得する。 //TODO まるっといらない疑惑
-            boolean isShatakuTaikyoChecked = false;
-            String[] taikyoTypeArray = confirmDto.getTaikyoType();
-            if (taikyoTypeArray!=null && taikyoTypeArray.length > 0) {
-                for(String taikyoType : taikyoTypeArray){
-                    if (taikyoType.equals("shataku_checked")) {
-                        //「社宅を退居する」にチェックがされている場合
-                        isShatakuTaikyoChecked = true;
-                    }
-                }
-            }
-            
+
             // 退居社宅がある場合は備品返却の作成 ※旧システムでは駐車場返還のみの場合でも備品返却情報を作成している
             // 備品返却申請テーブル登録処理
             skf2040Sc001SharedService.registrationBihinShinsei(confirmDto);
@@ -118,6 +107,11 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
             // 排他チェック（退居届テーブルの更新有無で判定）
             Skf2040TTaikyoReport taikyoInfo = 
                     skf2040Sc001SharedService.getExistTaikyoInfo(confirmDto.getApplNo());
+            if (taikyoInfo == null) {
+                // 退居届情報が見つからなかった場合エラーメッセージを表示して処理終了
+                skf2040Sc001SharedService.setDisableBtn(confirmDto);
+                ServiceHelper.addErrorResultMessage(confirmDto, null, MessageIdConstant.E_SKF_1077);
+            }
             
             super.checkLockException(
                     confirmDto.getLastUpdateDate(confirmDto.UPDATE_TABLE_PREFIX_APPL_HIST + confirmDto.getApplNo()),

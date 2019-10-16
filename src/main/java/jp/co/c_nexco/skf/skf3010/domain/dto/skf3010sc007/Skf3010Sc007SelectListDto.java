@@ -7,8 +7,9 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc007common.Skf3010Sc007Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3010_Sc007画面のInitDto。
+ * Skf3010Sc007SelectListDto 駐車場契約情報登録画面のリスト選択時Dto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

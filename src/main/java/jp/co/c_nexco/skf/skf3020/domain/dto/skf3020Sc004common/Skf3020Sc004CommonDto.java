@@ -31,7 +31,7 @@ public class Skf3020Sc004CommonDto extends Skf302010CommonDto {
 	private String shainName;
 	// 入居
 	private String[] nyukyo;
-	// 退去
+	// 退居
 	private String[] taikyo;
 	// 変更
 	private String[] henko;
@@ -53,14 +53,14 @@ public class Skf3020Sc004CommonDto extends Skf302010CommonDto {
 	/** チェック／非チェックフラグ */
 	// 入居
 	private Boolean nyukyoChkFlg;
-	// 退去
+	// 退居
 	private Boolean taikyoChkFlg;
 	// 変更
 	private Boolean henkoChkFlg;
 
 	// チェックされた入居チェックボックス値の配列
 	private String[] nyukyoChkVal;
-	// チェックされた退去チェックボックス値の配列
+	// チェックされた退居チェックボックス値の配列
 	private String[] taikyoChkVal;
 	// チェックされた変更チェックボックス値の配列
 	private String[] henkouChkVal;	
@@ -89,7 +89,7 @@ public class Skf3020Sc004CommonDto extends Skf302010CommonDto {
 	/** チェック／非チェックフラグ */
 	// 入居
 	private Boolean hdnNyukyoChkFlg;
-	// 退去
+	// 退居
 	private Boolean hdnTaikyoChkFlg;
 	// 変更
 	private Boolean hdnHenkoChkFlg;
@@ -98,7 +98,7 @@ public class Skf3020Sc004CommonDto extends Skf302010CommonDto {
 	/** 画面連携用 */
 	// 対象行の入居
 	private String hdnRowNyukyo;
-	// 対象行の退去
+	// 対象行の退居
 	private String hdnRowTaikyo;
 	// 対象行の変更
 	private String hdnRowHenko;
@@ -118,7 +118,7 @@ public class Skf3020Sc004CommonDto extends Skf302010CommonDto {
 	private String hdnRowBiko;
 	// 対象行の取込日
 	private String hdnRowTakingDate;
-	// 対象行の入退去予定作成区分
+	// 対象行の入退居予定作成区分
 	private String hdnRowNyutaikyoKbn;
 	// 対象行の更新日時
 	private String hdnRowUpdateDate;	

@@ -31,6 +31,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007RegistDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
@@ -61,6 +62,8 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	
 	private final static String TRUE = "true";
 	private final static String FALSE = "false";
@@ -546,7 +549,10 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		int registCount = 0;
 		if (modeUpdate) {
 			// 更新の場合はUPDATE
-			
+			Map<String, String> userInfo = new HashMap<String, String>();
+			userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+			setValue.setUpdateUserId(userInfo.get("userName"));
+			setValue.setUpdateProgramId(dto.getPageId());
 			try{
 				//更新日時設定
 				setValue.setLastUpdateDate(dateFormat.parse(dto.getContractUpdateDate()));

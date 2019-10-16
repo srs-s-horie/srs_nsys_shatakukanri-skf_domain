@@ -11,55 +11,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetInformationNewInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetInformationNewInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoAgreedExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoAgreedExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoApplicationExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoApplicationExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoDisagreedExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoDisagreedExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyo1Exp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyo1ExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyo2Exp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyo2ExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountTaikyoApplicationExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountTaikyoApplicationExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetShinseiStatusAdminExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetShinseiStatusAdminExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetShinseiStatusUserExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetShinseiStatusUserExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetInformationNewInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoAgreedExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoApplicationExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoDisagreedExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinKiboExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyo1ExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyo2ExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountTaikyoApplicationExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountNyutaikyoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetShinseiStatusAdminExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetShinseiStatusUserExpRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001.Skf1010Sc001InitDto;
 
@@ -71,20 +56,24 @@ import jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001.Skf1010Sc001InitDto;
 public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001InitDto> {
 
 	/** 定数 */
-	// 申請者
-	private static final String APPLICANTS = "SKF_001";
-	// 社宅管理業務者
-	private static final String SYATAKU_ADMINISTRATOR = "SKF_010";
-	// システム管理者
-	private static final String SYSTEM_ADMINISTRATOR = "SKF_090";
-	// 中サ（給与・厚生）担当
-	private static final String NAKANIHON_SALARY_WELFARE = "SKF_020";
-	// 中サ（社宅）担当
-	private static final String NAKANIHON_SYATAKU = "SKF_021";
-	// 中サ（社宅）管理者
-	private static final String NAKANIHON_ADIMINISTRATOR = "SKF_030";
 	// 会社コード（中日本）
 	private final String COMPANYCD = "C001";
+	// ワークフローレベル1
+	private final String workFlowLevel1 = "01";
+	// ワークフローレベル2
+	private final String workFlowLevel2 = "02";
+	// 申請者のロールID
+	private final String shinseisha = CodeConstant.SHINSEISHA;
+	// 社宅管理業務者のロールID
+	private final String shatakuGyomuKanri = CodeConstant.SHATAKU_GYOMU_KANRI;
+	// システム管理者のロールID
+	private final String systemyKanri = CodeConstant.SYSTEM_KANRI;
+	// 中サ（給与・厚生）担当のロールID
+	private final String nakasaKyuyoTanto = CodeConstant.NAKASA_KYUYO_TANTO;
+	// 中サ（社宅）担当のロールID
+	private final String nakasaShatakutanto = CodeConstant.NAKASA_SHATAKU_TANTO;
+	// 中サ（社宅）管理者のロールID
+	private final String nakasashatakuKanri = CodeConstant.NAKASA_SHATAKU_KANRI;
 
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
@@ -99,43 +88,28 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 	private Skf1010Sc001GetOshiraseCountNyutaikyo2ExpRepository skf1010Sc001GetOshiraseCountNyutaikyo2ExpRepository;
 
 	@Autowired
-	private Skf1010Sc001GetOshiraseCountNyukyoApplicationExpRepository skf1010Sc001GetOshiraseCountNyukyoApplicationExpRepository;
+	private Skf1010Sc001GetOshiraseCountNyutaikyoExpRepository skf1010Sc001GetOshiraseCountNyutaikyoExpRepository;
 
 	@Autowired
-	private Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExpRepository skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExpRepository;
-
-	@Autowired
-	private Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExpRepository skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExpRepository;
-
-	@Autowired
-	private Skf1010Sc001GetOshiraseCountNyukyoAgreedExpRepository skf1010Sc001GetOshiraseCountNyukyoAgreedExpRepository;
-
-	@Autowired
-	private Skf1010Sc001GetOshiraseCountNyukyoDisagreedExpRepository skf1010Sc001GetOshiraseCountNyukyoDisagreedExpRepository;
-
-	@Autowired
-	private Skf1010Sc001GetOshiraseCountTaikyoApplicationExpRepository skf1010Sc001GetOshiraseCountTaikyoApplicationExpRepository;
-
-	@Autowired
-	private Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExpRepository skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExpRepository;
-
-	@Autowired
-	private Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExpRepository skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExpRepository;
-
-	@Autowired
-	private Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExpRepository skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExpRepository;
+	private Skf1010Sc001GetOshiraseCountBihinKiboExpRepository skf1010Sc001GetOshiraseCountBihinKiboExpRepository;
 
 	@Autowired
 	private Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExpRepository skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExpRepository;
 
 	@Autowired
-	private Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExpRepository skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExpRepository;
+	private Skf1010Sc001GetOshiraseCountBihinHenkyakuExpRepository skf1010Sc001GetOshiraseCountBihinHenkyakuExpRepository;
 
 	@Autowired
-	private Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExpRepository skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExpRepository;
+	private Skf1010Sc001GetShinseiStatusUserExpRepository skf1010Sc001GetShinseiStatusUserExpRepository;
 
 	@Autowired
-	private Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExpRepository skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExpRepository;
+	private Skf1010Sc001GetShinseiStatusAdminExpRepository skf1010Sc001GetShinseiStatusAdminExpRepository;
+
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
+
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -151,8 +125,6 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		String level1 = CodeConstant.DOUBLE_QUOTATION;
 		// 窓口全体
 		String level2 = CodeConstant.DOUBLE_QUOTATION;
-		// 窓口（申請書類を承認する）
-		String level2_1 = CodeConstant.DOUBLE_QUOTATION;
 		// 窓口（社宅を管理する～社員情報を一括更新する）
 		String level2_2 = CodeConstant.DOUBLE_QUOTATION;
 		// 窓口（月締め処理を行う）
@@ -165,13 +137,10 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		String level2_6 = CodeConstant.DOUBLE_QUOTATION;
 		// 管理者全体
 		String level3 = CodeConstant.DOUBLE_QUOTATION;
-		// 操作に困ったときは全体
-		String level4 = CodeConstant.DOUBLE_QUOTATION;
 		// 操作に困ったときは（マニュアル 管理者）
 		String level4_1 = CodeConstant.DOUBLE_QUOTATION;
 		// 未承認処理（全体）
 		String level5 = CodeConstant.DOUBLE_QUOTATION;
-		String note = CodeConstant.DOUBLE_QUOTATION;
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF1010_SC001_TITLE);
 
@@ -180,16 +149,20 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		LoginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		// ログインユーザのロールIDを取得
 		String roleId = LoginUserInfoMap.get("roleId");
+		initDto.setRoleId(roleId);
 		// ログインユーザのユーザ名を取得する
 		String userName = LoginUserInfoMap.get("userName");
 		initDto.setUserName(userName);
+		// ログインユーザの社員番号を取得する
+		String shainNo = LoginUserInfoMap.get("shainNo");
+		initDto.setShainNo(shainNo);
 
 		/**
 		 * ログインユーザのロールIDによって表示する画面を切り替える。<br>
 		 * 表示しないものはtrue、表示するものはfalse。
 		 */
 		// 申請者
-		if (APPLICANTS.equals(roleId)) {
+		if (shinseisha.equals(roleId)) {
 			level2 = "true";
 			level3 = "true";
 			level4_1 = "true";
@@ -198,13 +171,15 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 			initDto.setLevel3(level3);
 			initDto.setLevel4_1(level4_1);
 			initDto.setLevel5(level5);
-		}
-		// 社宅管理業務者又はシステム管理者
-		else if (SYATAKU_ADMINISTRATOR.equals(roleId) || SYSTEM_ADMINISTRATOR.equals(roleId)) {
 
 		}
+		// 社宅管理業務者
+		else if (shatakuGyomuKanri.equals(roleId) || systemyKanri.equals(roleId)) {
+
+		}
+
 		// 中サ（給与・厚生）担当
-		else if (NAKANIHON_SALARY_WELFARE.equals(roleId)) {
+		else if (nakasaKyuyoTanto.equals(roleId)) {
 			level1 = "true";
 			level2_2 = "true";
 			level2_3 = "true";
@@ -223,9 +198,10 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 			initDto.setLevel3(level3);
 			initDto.setLevel4_1(level4_1);
 			initDto.setLevel5(level5);
+
 		}
 		// 中サ（社宅）担当
-		else if (NAKANIHON_SYATAKU.equals(roleId)) {
+		else if (nakasaShatakutanto.equals(roleId)) {
 			level1 = "true";
 			level2_3 = "true";
 			level2_5 = "true";
@@ -238,7 +214,7 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 			initDto.setLevel3(level3);
 		}
 		// 中サ（社宅）管理者
-		else if (NAKANIHON_ADIMINISTRATOR.equals(roleId)) {
+		else if (nakasashatakuKanri.equals(roleId)) {
 			level2_6 = "true";
 			level3 = "true";
 			initDto.setLevel2_6(level2_6);
@@ -248,53 +224,135 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		/** システムに関するお知らせ取得 */
 		getInformation(initDto);
 
-		/**
-		 * 未処理情報 社宅入居希望等調書の申請が無い入居情報があります。督促メールを送信してください。
-		 */
-		String nyutaikyoCount1 = String.valueOf(getOshiraseCount1());
-		initDto.setNyutaikyoCount1(nyutaikyoCount1);
+		if (nakasaShatakutanto.equals(initDto.getRoleId()) || nakasashatakuKanri.equals(initDto.getRoleId())
+				|| systemyKanri.equals(initDto.getRoleId())) {
+			// 個人のお知らせ（管理）
+			List<Map<String, Object>> oshiraseList2 = new ArrayList<Map<String, Object>>();
+			oshiraseList2 = oshiraseAdmin(COMPANYCD, initDto.getShainNo(), 30, initDto.getRoleId());
+			initDto.setOshiraseList(oshiraseList2);
+		} else {
+			// 個人のお知らせ（一般）
+			List<Map<String, Object>> oshiraseList = new ArrayList<Map<String, Object>>();
+			oshiraseList = oshiraseUser(COMPANYCD, initDto.getShainNo(), 30);
+			initDto.setOshiraseList(oshiraseList);
+		}
 
+		/**
+		 * 未処理情報上部 社宅入居希望等調書の申請が無い入居情報がある。督促メールを送信してください。
+		 */
+		getOshiraseCount1(initDto);
+
+		/**
+		 * 未処理情報上部 退居届の無い退居情報がある。 督促メールを送信してください。
+		 */
 		String nyutaikyoCount2 = String.valueOf(getOshiraseCount2());
 		initDto.setNyutaikyoCount2(nyutaikyoCount2);
 
-		// 社宅入居希望等調書の申請の件数取得
-		nyukyoApplication(initDto);
+		/**
+		 * 未処理情報<br>
+		 * 社宅入居希望等調書の申請<br>
+		 * 社宅希望者に社宅提示が完了していないデータ<br>
+		 * 提示社宅の本人確認が完了していないデータ<br>
+		 * 入居希望者の同意済のデータ<br>
+		 * 入居希望者の同意されなかったデータ<br>
+		 */
 
-		// 入居希望者への社宅提示未完了の件数取得
-		nyukyoUnfinishedTips(initDto);
+		// 入退居申請状況区分を配列に格納
+		String[] nyutaikyoApplStatusKbns = new String[] { CodeConstant.NYUTAIKYO_APPL_STATUS_SHINSEICHU,
+				CodeConstant.NYUTAIKYO_APPL_STATUS_SHINSACHU, CodeConstant.NYUTAIKYO_APPL_STATUS_KAKUNIN_IRAI,
+				CodeConstant.NYUTAIKYO_APPL_STATUS_DOI_ZUMI, CodeConstant.NYUTAIKYO_APPL_STATUS_DOI_SHINAI };
 
-		// 提示社宅の本人確認が未完了の件数取得
-		nyukyoUnfinishedCheck(initDto);
+		// 件数部分の遷移先を配列に格納
+		String[] linkNyutaikyo = new String[] { "/imart/skf/Skf2010Sc005/init", "/imart/skf/skf3022Sc005/init",
+				"/imart/skf/skf3022Sc005/init", "/imart/skf/Skf2010Sc005/init", "/imart/skf/skf3022Sc005/init" };
 
-		// 入居希望者の同意済の件数取得
-		nyukyoAgreed(initDto);
+		// メッセージ部分のラベルを配列に格納
+		String[] labelNyutaikyo = new String[] { MessageIdConstant.SKF1010_SC001_SYATAKU_KIBO_APPLICATION,
+				MessageIdConstant.SKF1010_SC001_SYATAKU_KIBOSYA_UNFINISHED_TIP,
+				MessageIdConstant.SKF1010_SC001_SYATAKU_TEIJI_UNFINISHED_CHECK,
+				MessageIdConstant.SKF1010_SC001_NYUKYO_KIBOSYA_AGREED,
+				MessageIdConstant.SKF1010_SC001_NYUKYO_KIBOSYA_DISAGREED };
 
-		// 入居希望者の同意されなかった件数の取得
-		nyukyoDisagreed(initDto);
+		List<Map<String, Object>> nyutaikyoInformationList = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < nyutaikyoApplStatusKbns.length; i++) {
+			Map<String, Object> dataList = new HashMap<String, Object>();
+			dataList = nyukyotaikyo(CodeConstant.SYS_NYUKYO_KBN, nyutaikyoApplStatusKbns[i], labelNyutaikyo[i],
+					linkNyutaikyo[i], i + 1);
+			nyutaikyoInformationList.add(dataList);
+		}
 
-		// 退居届の申請の件数取得
-		taikyoApplication(initDto);
+		/**
+		 * 未処理情報 <br>
+		 * 退居届の申請
+		 */
+		Map<String, Object> dataList = new HashMap<String, Object>();
+		dataList = nyukyotaikyo(CodeConstant.SYS_TAIKYO_KBN, nyutaikyoApplStatusKbns[0],
+				MessageIdConstant.SKF1010_SC001_TAIKYO_APPLICATION, "/imart/skf/Skf2010Sc005/init",
+				nyutaikyoInformationList.size() + 1);
+		nyutaikyoInformationList.add(dataList);
 
-		// 備品希望の申請が無い入居情報の件数取得
-		bihinKiboNotApplication(initDto);
+		initDto.setNyutaikyoInformationList(nyutaikyoInformationList);
 
-		// 備品希望の提示が未完了の件数取得
-		bihinKiboUnfinishedTips(initDto);
+		/**
+		 * 未処理情報<br>
+		 * 備品希望の申請が無い入居情報<br>
+		 * 備品希望の提示が完了していないデータ<br>
+		 * 備品希望の搬入が完了していないデータ<br>
+		 */
 
-		// 備品希望の搬入が未完了の件数の取得
-		bihinKiboUnfinishedEmplacement(initDto);
+		// 備品提示ステータスを配列に格納
+		String[] bihinTeijiStatuses1 = new String[] { CodeConstant.BIHIN_STATUS_MI_SAKUSEI,
+				CodeConstant.BIHIN_STATUS_SAKUSEI_CHU, CodeConstant.BIHIN_STATUS_HANNYU_MACHI };
+
+		// メッセージ部分のラベルを配列に格納
+		String[] labelBihinKibo = new String[] { MessageIdConstant.SKF1010_SC001_BIHIN_KIBO_NOT_APPLICATION,
+				MessageIdConstant.SKF1010_SC001_BIHIN_KIBO_UNFINISHED_TIPS,
+				MessageIdConstant.SKF1010_SC001_BIHIN_KIBO_UNFINISHED_HANNYU };
+
+		List<Map<String, Object>> bihinKiboInformationList = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < labelBihinKibo.length; i++) {
+			Map<String, Object> bihinDataList = new HashMap<String, Object>();
+			bihinDataList = bihinKibo(CodeConstant.SYS_NYUKYO_KBN, CodeConstant.BIHIN_TAIYO_KBN_HITSUYO,
+					bihinTeijiStatuses1[i], labelBihinKibo[i], "/imart/skf/Skf3022Sc005/init",
+					nyutaikyoInformationList.size() + 1 + i);
+			bihinKiboInformationList.add(bihinDataList);
+		}
+
+		initDto.setBihinKiboInformationList(bihinKiboInformationList);
 
 		// 備品返却の提示が未完了の件数の取得
 		bihinHenkyakuUnfinishedTips(initDto);
 
-		// 備品返却提示の本人確認が未完了の件数の取得
-		bihinHenkyakuUnfinishedCheck(initDto);
+		/**
+		 * 未処理情報<br>
+		 * 備品返却提示の本人確認が完了していないデータ<br>
+		 * 備品返却提示の同意済のデータ<br>
+		 * 備品の搬出が完了していないデータ<br>
+		 */
 
-		// 備品返却提示の同意済の件数の取得
-		bihinHenkyakuAgreed(initDto);
+		// 備品提示ステータスを配列に格納
+		String[] bihinTeijiStatuses2 = new String[] { CodeConstant.BIHIN_STATUS_TEIJI_CHU,
+				CodeConstant.BIHIN_STATUS_DOI_SUMI, CodeConstant.BIHIN_STATUS_HANSHUTSU_MACHI };
 
-		// 備品の搬出が未完了の件数の取得
-		bihinUnfinishedMovement(initDto);
+		// 件数部分の遷移先を配列に格納
+		String[] linkBihinHenkyaku = new String[] { "/imart/skf/Skf3022Sc005/init", "/imart/skf/Skf2010Sc005/init",
+				"/imart/skf/Skf3022Sc005/init" };
+
+		// メッセージ部分のラベルを配列に格納
+		String[] labelBihinHenkyaku = new String[] { MessageIdConstant.SKF1010_SC001_BIHIN_HENKYAKU_UNFINISHED_CHECK,
+				MessageIdConstant.SKF1010_SC001_BIHIN_HENKYAKU_AGREED,
+				MessageIdConstant.SKF1010_SC001_BIHIN_HENKYAKU_UNFINISHED_MOVEMENT };
+
+		List<Map<String, Object>> bihinHenkyakuInformationList = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < labelBihinHenkyaku.length; i++) {
+			Map<String, Object> bihinHenkyakuDataList = new HashMap<String, Object>();
+			bihinHenkyakuDataList = bihinHenkyaku(CodeConstant.SYS_TAIKYO_KBN, bihinTeijiStatuses2[i],
+					labelBihinHenkyaku[i], linkBihinHenkyaku[i],
+					nyutaikyoInformationList.size() + bihinKiboInformationList.size() + 1 + i);
+			bihinHenkyakuInformationList.add(bihinHenkyakuDataList);
+		}
+
+		initDto.setBihinHenkyakuInformationList(bihinHenkyakuInformationList);
 
 		return initDto;
 	}
@@ -306,16 +364,30 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 
 		param.setCompanyCd(COMPANYCD);
 		resultData = skf1010Sc001GetInformationNewInfoExpRepository.getInformationNewInfo(param);
-		initDto.setNote(resultData.getNote());
+		/** 「システムに関するお知らせ」のデータがあるかの確認 */
+		// 「システムに関するお知らせ」のデータがある場合、最新内容を取得して表示する。
+		if (resultData != null) {
+			initDto.setNote(resultData.getNote());
+		}
+		// 「システムに関するお知らせ」のデータが無い場合、空白を設定して、システムに関するお知らせのエリアのみを表示する。
+		else {
+			initDto.setNote(CodeConstant.DOUBLE_QUOTATION);
+		}
 	}
 
-	public int getOshiraseCount1() {
+	/**
+	 * 未処理情報上部 <br>
+	 * 社宅入居希望等調書の申請がない入居情報がある。 督促メールを送信してください。
+	 * 
+	 * @return
+	 */
+	public void getOshiraseCount1(Skf1010Sc001InitDto initDto) {
 		// 入退居区分
-		String nyutaikyoKbn = "1";
+		String nyutaikyoKbn = CodeConstant.SYS_NYUKYO_KBN;
 		// 入退居申請状況区分
 		String nyutaikyoApplStatusKbn = CodeConstant.DOUBLE_QUOTATION;
 
-		int expr1 = 0;
+		int nyutaikyoCount1 = 0;
 
 		Skf1010Sc001GetOshiraseCountNyutaikyo1Exp nyutaikyoData1 = new Skf1010Sc001GetOshiraseCountNyutaikyo1Exp();
 		Skf1010Sc001GetOshiraseCountNyutaikyo1ExpParameter param1 = new Skf1010Sc001GetOshiraseCountNyutaikyo1ExpParameter();
@@ -323,24 +395,29 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		param1.setNyutaikyoKbn(nyutaikyoKbn);
 		param1.setNyutaikyoApplStatusKbn(nyutaikyoApplStatusKbn);
 
+		LogUtils.debugByMsg("未処理情報_社宅入居希望等調書の申請が無い入居情報があります。SQL");
+
 		nyutaikyoData1 = skf1010Sc001GetOshiraseCountNyutaikyo1ExpRepository.getOshiraseCountNyutaikyo1(param1);
 
 		if (nyutaikyoData1 != null) {
-			expr1 += nyutaikyoData1.getExpr1();
+			nyutaikyoCount1 += nyutaikyoData1.getExpr1();
 		}
 
-		String nyutaikyoApplStatusKbnSave = "00";
-		String nyutaikyoApplStatusKbnRepair = "50";
+		String nyutaikyoApplStatusKbnSave = CodeConstant.NYUTAIKYO_APPL_STATUS_ICHIJIHOZON;
+		String nyutaikyoApplStatusKbnRepair = CodeConstant.NYUTAIKYO_APPL_STATUS_SHUSEI_IRAI;
 
 		Skf1010Sc001GetOshiraseCountNyutaikyo2Exp nyutaikyoData2 = new Skf1010Sc001GetOshiraseCountNyutaikyo2Exp();
 		Skf1010Sc001GetOshiraseCountNyutaikyo2ExpParameter param2 = new Skf1010Sc001GetOshiraseCountNyutaikyo2ExpParameter();
 
 		param2.setNyutaikyoKbn(nyutaikyoKbn);
 		param2.setNyutaikyoApplStatusKbn(nyutaikyoApplStatusKbnSave);
+
+		LogUtils.debugByMsg("未処理情報_社宅入居希望等調書の申請が無い入居情報があります。SQL");
+
 		nyutaikyoData2 = skf1010Sc001GetOshiraseCountNyutaikyo2ExpRepository.getOshiraseCountNyutaikyo2(param2);
 
 		if (nyutaikyoData2 != null) {
-			expr1 += nyutaikyoData2.getExpr1();
+			nyutaikyoCount1 += nyutaikyoData2.getExpr1();
 		}
 
 		Skf1010Sc001GetOshiraseCountNyutaikyo2Exp nyutaikyoData3 = new Skf1010Sc001GetOshiraseCountNyutaikyo2Exp();
@@ -349,18 +426,27 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		param3.setNyutaikyoKbn(nyutaikyoKbn);
 		param3.setNyutaikyoApplStatusKbn(nyutaikyoApplStatusKbnRepair);
 
+		LogUtils.debugByMsg("未処理情報_社宅入居希望等調書の申請が無い入居情報があります。SQL");
+
 		nyutaikyoData3 = skf1010Sc001GetOshiraseCountNyutaikyo2ExpRepository.getOshiraseCountNyutaikyo2(param3);
 
 		if (nyutaikyoData3 != null) {
-			expr1 += nyutaikyoData3.getExpr1();
+			nyutaikyoCount1 += nyutaikyoData3.getExpr1();
 		}
 
-		return expr1;
+		initDto.setNyutaikyoCount1(nyutaikyoCount1);
 	}
 
+	/**
+	 * 未処理情報上部 <br>
+	 * 退居届の申請が無い退居情報があります。<br>
+	 * 督促メールを送信してください。
+	 * 
+	 * @return
+	 */
 	public int getOshiraseCount2() {
 		// 入退居区分
-		String nyutaikyoKbn = "2";
+		String nyutaikyoKbn = CodeConstant.SYS_TAIKYO_KBN;
 		// 入退居申請状況区分
 		String nyutaikyoApplStatusKbn = CodeConstant.DOUBLE_QUOTATION;
 
@@ -372,20 +458,25 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		param1.setNyutaikyoKbn(nyutaikyoKbn);
 		param1.setNyutaikyoApplStatusKbn(nyutaikyoApplStatusKbn);
 
+		LogUtils.debugByMsg("未処理情報_退居届の申請が無い退居情報があります。SQL");
+
 		nyutaikyoData1 = skf1010Sc001GetOshiraseCountNyutaikyo1ExpRepository.getOshiraseCountNyutaikyo1(param1);
 
 		if (nyutaikyoData1 != null) {
 			expr1 += nyutaikyoData1.getExpr1();
 		}
 
-		String nyutaikyoApplStatusKbnSave = "00";
-		String nyutaikyoApplStatusKbnRepair = "50";
+		String nyutaikyoApplStatusKbnSave = CodeConstant.NYUTAIKYO_APPL_STATUS_ICHIJIHOZON;
+		String nyutaikyoApplStatusKbnRepair = CodeConstant.NYUTAIKYO_APPL_STATUS_SHUSEI_IRAI;
 
 		Skf1010Sc001GetOshiraseCountNyutaikyo2Exp nyutaikyoData2 = new Skf1010Sc001GetOshiraseCountNyutaikyo2Exp();
 		Skf1010Sc001GetOshiraseCountNyutaikyo2ExpParameter param2 = new Skf1010Sc001GetOshiraseCountNyutaikyo2ExpParameter();
 
 		param2.setNyutaikyoKbn(nyutaikyoKbn);
 		param2.setNyutaikyoApplStatusKbn(nyutaikyoApplStatusKbnSave);
+
+		LogUtils.debugByMsg("未処理情報_退居届の申請が無い退居情報があります。SQL");
+
 		nyutaikyoData2 = skf1010Sc001GetOshiraseCountNyutaikyo2ExpRepository.getOshiraseCountNyutaikyo2(param2);
 
 		if (nyutaikyoData2 != null) {
@@ -398,6 +489,8 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		param3.setNyutaikyoKbn(nyutaikyoKbn);
 		param3.setNyutaikyoApplStatusKbn(nyutaikyoApplStatusKbnRepair);
 
+		LogUtils.debugByMsg("未処理情報_退居届の申請が無い退居情報があります。SQL");
+
 		nyutaikyoData3 = skf1010Sc001GetOshiraseCountNyutaikyo2ExpRepository.getOshiraseCountNyutaikyo2(param3);
 
 		if (nyutaikyoData3 != null) {
@@ -408,210 +501,343 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 	}
 
 	/**
-	 * 未処理情報 社宅入居希望等調書の申請の件数
-	 */
-	public void nyukyoApplication(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountNyukyoApplicationExp> nyukyoApplicationData = new ArrayList<Skf1010Sc001GetOshiraseCountNyukyoApplicationExp>();
-		Skf1010Sc001GetOshiraseCountNyukyoApplicationExpParameter param = new Skf1010Sc001GetOshiraseCountNyukyoApplicationExpParameter();
-
-		nyukyoApplicationData = skf1010Sc001GetOshiraseCountNyukyoApplicationExpRepository
-				.getOshiraseCountNyukyoApplication(param);
-		initDto.setNyukyoApplicationHonsya(nyukyoApplicationData.get(0).getCnt());
-		initDto.setNyukyoApplicationTokyo(nyukyoApplicationData.get(1).getCnt());
-		initDto.setNyukyoApplicationHatiouzi(nyukyoApplicationData.get(2).getCnt());
-		initDto.setNyukyoApplicationNagoya(nyukyoApplicationData.get(3).getCnt());
-		initDto.setNyukyoApplicationKanazawa(nyukyoApplicationData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 入居希望者への社宅の提示が未完了の件数
-	 */
-	public void nyukyoUnfinishedTips(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExp> nyukyoUnfinishedTipsData = new ArrayList<Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExp>();
-		Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExpParameter param = new Skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExpParameter();
-
-		nyukyoUnfinishedTipsData = skf1010Sc001GetOshiraseCountNyukyoUnfinishedTipsExpRepository
-				.getOshiraseCountNyukyoUnfinishedTips(param);
-		initDto.setNyukyoUnfinishedTipsHonsya(nyukyoUnfinishedTipsData.get(0).getCnt());
-		initDto.setNyukyoUnfinishedTipsTokyo(nyukyoUnfinishedTipsData.get(1).getCnt());
-		initDto.setNyukyoUnfinishedTipsHatiouzi(nyukyoUnfinishedTipsData.get(2).getCnt());
-		initDto.setNyukyoUnfinishedTipsNagoya(nyukyoUnfinishedTipsData.get(3).getCnt());
-		initDto.setNyukyoUnfinishedTipsKanazawa(nyukyoUnfinishedTipsData.get(4).getCnt());
-
-	}
-
-	/**
-	 * 未処理情報 提示社宅の本人確認が未完了の件数
-	 */
-	public void nyukyoUnfinishedCheck(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExp> nyukyoUnfinishedCheckData = new ArrayList<Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExp>();
-		Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExpParameter param = new Skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExpParameter();
-
-		nyukyoUnfinishedCheckData = skf1010Sc001GetOshiraseCountNyukyoUnfinishedCheckExpRepository
-				.getOshiraseCountNyukyoUnfinishedCheck(param);
-		initDto.setNyukyoUnfinishedCheckHonsya(nyukyoUnfinishedCheckData.get(0).getCnt());
-		initDto.setNyukyoUnfinishedCheckTokyo(nyukyoUnfinishedCheckData.get(1).getCnt());
-		initDto.setNyukyoUnfinishedCheckHatiouzi(nyukyoUnfinishedCheckData.get(2).getCnt());
-		initDto.setNyukyoUnfinishedCheckNagoya(nyukyoUnfinishedCheckData.get(3).getCnt());
-		initDto.setNyukyoUnfinishedCheckKanazawa(nyukyoUnfinishedCheckData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 入居希望者の同意済の件数
-	 */
-	public void nyukyoAgreed(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountNyukyoAgreedExp> nyukyoAgreedData = new ArrayList<Skf1010Sc001GetOshiraseCountNyukyoAgreedExp>();
-		Skf1010Sc001GetOshiraseCountNyukyoAgreedExpParameter param = new Skf1010Sc001GetOshiraseCountNyukyoAgreedExpParameter();
-
-		nyukyoAgreedData = skf1010Sc001GetOshiraseCountNyukyoAgreedExpRepository.getOshiraseCountNyukyoAgreed(param);
-		initDto.setNyukyoAgreedHonsya(nyukyoAgreedData.get(0).getCnt());
-		initDto.setNyukyoAgreedTokyo(nyukyoAgreedData.get(1).getCnt());
-		initDto.setNyukyoAgreedHatiouzi(nyukyoAgreedData.get(2).getCnt());
-		initDto.setNyukyoAgreedNagoya(nyukyoAgreedData.get(3).getCnt());
-		initDto.setNyukyoAgreedKanazawa(nyukyoAgreedData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 入居希望者の同意されなかった件数
-	 */
-	public void nyukyoDisagreed(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountNyukyoDisagreedExp> nyukyoDisagreedData = new ArrayList<Skf1010Sc001GetOshiraseCountNyukyoDisagreedExp>();
-		Skf1010Sc001GetOshiraseCountNyukyoDisagreedExpParameter param = new Skf1010Sc001GetOshiraseCountNyukyoDisagreedExpParameter();
-
-		nyukyoDisagreedData = skf1010Sc001GetOshiraseCountNyukyoDisagreedExpRepository
-				.getOshiraseCountNyukyoDisagreed(param);
-		initDto.setNyukyoDisagreedHonsya(nyukyoDisagreedData.get(0).getCnt());
-		initDto.setNyukyoDisagreedTokyo(nyukyoDisagreedData.get(1).getCnt());
-		initDto.setNyukyoDisagreedHatiouzi(nyukyoDisagreedData.get(2).getCnt());
-		initDto.setNyukyoDisagreedNagoya(nyukyoDisagreedData.get(3).getCnt());
-		initDto.setNyukyoDisagreedKanazawa(nyukyoDisagreedData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 退居届の申請の件数
-	 */
-	public void taikyoApplication(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountTaikyoApplicationExp> taikyoApplicationData = new ArrayList<Skf1010Sc001GetOshiraseCountTaikyoApplicationExp>();
-		Skf1010Sc001GetOshiraseCountTaikyoApplicationExpParameter param = new Skf1010Sc001GetOshiraseCountTaikyoApplicationExpParameter();
-
-		taikyoApplicationData = skf1010Sc001GetOshiraseCountTaikyoApplicationExpRepository
-				.getOshiraseCountTaikyoApplication(param);
-		initDto.setTaikyoApplicationHonsya(taikyoApplicationData.get(0).getCnt());
-		initDto.setTaikyoApplicationTokyo(taikyoApplicationData.get(1).getCnt());
-		initDto.setTaikyoApplicationHatiouzi(taikyoApplicationData.get(2).getCnt());
-		initDto.setTaikyoApplicationNagoya(taikyoApplicationData.get(3).getCnt());
-		initDto.setTaikyoApplicationKanazawa(taikyoApplicationData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 備品希望の申請が無い入居情報の件数
-	 */
-	public void bihinKiboNotApplication(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExp> bihinKiboNotApplicationData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExp>();
-		Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExpParameter param = new Skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExpParameter();
-
-		bihinKiboNotApplicationData = skf1010Sc001GetOshiraseCountBihinKiboNotApplicationExpRepository
-				.getOshiraseCountBihinKiboNotApplication(param);
-		initDto.setBihinNotApplicationHonsya(bihinKiboNotApplicationData.get(0).getCnt());
-		initDto.setBihinNotApplicationTokyo(bihinKiboNotApplicationData.get(1).getCnt());
-		initDto.setBihinNotApplicationHatiouzi(bihinKiboNotApplicationData.get(2).getCnt());
-		initDto.setBihinNotApplicationNagoya(bihinKiboNotApplicationData.get(3).getCnt());
-		initDto.setBihinNotApplicationKanazawa(bihinKiboNotApplicationData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 備品希望の提示が未完了の件数
-	 */
-	public void bihinKiboUnfinishedTips(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExp> bihinKiboUnfinishedTipsData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExp>();
-		Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExpParameter param = new Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExpParameter();
-
-		bihinKiboUnfinishedTipsData = skf1010Sc001GetOshiraseCountBihinKiboUnfinishedTipsExpRepository
-				.getOshiraseCountBihinKiboUnfinishedTips(param);
-		initDto.setBihinKiboUnfinishedTipsHonsya(bihinKiboUnfinishedTipsData.get(0).getCnt());
-		initDto.setBihinKiboUnfinishedTipsTokyo(bihinKiboUnfinishedTipsData.get(1).getCnt());
-		initDto.setBihinKiboUnfinishedTipsHatiouzi(bihinKiboUnfinishedTipsData.get(2).getCnt());
-		initDto.setBihinKiboUnfinishedTipsNagoya(bihinKiboUnfinishedTipsData.get(3).getCnt());
-		initDto.setBihinKiboUnfinishedTipsKanazawa(bihinKiboUnfinishedTipsData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 備品希望の搬入が未完了の件数
-	 */
-	public void bihinKiboUnfinishedEmplacement(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExp> bihinKinoUnfinishedEmplacementData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExp>();
-		Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExpParameter param = new Skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExpParameter();
-
-		bihinKinoUnfinishedEmplacementData = skf1010Sc001GetOshiraseCountBihinKiboUnfinishedEmplacementExpRepository
-				.getOshiraseCountBihinKiboUnfinishedEmplacement(param);
-		initDto.setBihinKiboUnfinishedEmplacementHonsya(bihinKinoUnfinishedEmplacementData.get(0).getCnt());
-		initDto.setBihinKiboUnfinishedEmplacementTokyo(bihinKinoUnfinishedEmplacementData.get(1).getCnt());
-		initDto.setBihinKiboUnfinishedEmplacementHatiouzi(bihinKinoUnfinishedEmplacementData.get(2).getCnt());
-		initDto.setBihinKiboUnfinishedEmplacementNagoya(bihinKinoUnfinishedEmplacementData.get(3).getCnt());
-		initDto.setBihinKiboUnfinishedEmplacementKanazawa(bihinKinoUnfinishedEmplacementData.get(4).getCnt());
-	}
-
-	/**
-	 * 未処理情報 備品返却の提示が未完了の件数
+	 * 未処理情報 <br>
+	 * 「備品の返却の提示が完了していないデータがあります。」の件数
 	 */
 	public void bihinHenkyakuUnfinishedTips(Skf1010Sc001InitDto initDto) {
 		List<Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExp> bihinHenkyakuUnfinishedTipsData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExp>();
 		Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExpParameter param = new Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExpParameter();
 
+		param.setNyutaikyoKbn(CodeConstant.SYS_TAIKYO_KBN);
+		param.setBihinTeijiStatus1(CodeConstant.BIHIN_STATUS_SAKUSEI_CHU);
+		param.setBihinTeijiStatus2(CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI);
+		param.setHonsha(SkfCommonConstant.SISHA_HONSHA);
+		param.setTokyo(SkfCommonConstant.SISHA_TOKYO);
+		param.setHatiouzi(SkfCommonConstant.SISHA_HATIOUZI);
+		param.setNagoya(SkfCommonConstant.SISHA_NAGOYA);
+		param.setKanazawa(SkfCommonConstant.SISHA_KANAZAWA);
+
+		LogUtils.debugByMsg("未処理情報_備品の返却提示が完了していないデータがあります。SQL");
+
 		bihinHenkyakuUnfinishedTipsData = skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedTipsExpRepository
 				.getOshiraseCountBihinHenkyakuUnfinishedTips(param);
-		initDto.setBihinHenkyakuUnfinishedTipsHonsya(bihinHenkyakuUnfinishedTipsData.get(0).getCnt());
+		initDto.setBihinHenkyakuUnfinishedTipsHonsha(bihinHenkyakuUnfinishedTipsData.get(0).getCnt());
 		initDto.setBihinHenkyakuUnfinishedTipsTokyo(bihinHenkyakuUnfinishedTipsData.get(1).getCnt());
 		initDto.setBihinHenkyakuUnfinishedTipsHatiouzi(bihinHenkyakuUnfinishedTipsData.get(2).getCnt());
 		initDto.setBihinHenkyakuUnfinishedTipsNagoya(bihinHenkyakuUnfinishedTipsData.get(3).getCnt());
 		initDto.setBihinHenkyakuUnfinishedTipsKanazawa(bihinHenkyakuUnfinishedTipsData.get(4).getCnt());
+
 	}
 
 	/**
-	 * 未処理情報 備品返却提示の本人確認が未完了の件数
+	 * 未処理情報<br>
+	 * 社宅入居希望等調書の申請<br>
+	 * 社宅希望者に社宅提示が完了していないデータ<br>
+	 * 提示社宅の本人確認が完了していないデータ<br>
+	 * 入居希望者の同意済のデータ<br>
+	 * 入居希望者の同意されなかったデータ<br>
+	 * 退居届の申請<br>
+	 * 
+	 * @param nyutaikyoKbn
+	 * @param nyutaikyoApplStatusKbn
+	 * @param label
+	 * @param link
+	 * @param index
+	 * @return
 	 */
-	public void bihinHenkyakuUnfinishedCheck(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExp> bihinHenkyakuUnfinishedCheckData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExp>();
-		Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExpParameter param = new Skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExpParameter();
+	public Map<String, Object> nyukyotaikyo(String nyutaikyoKbn, String nyutaikyoApplStatusKbn, String label,
+			String link, int index) {
 
-		bihinHenkyakuUnfinishedCheckData = skf1010Sc001GetOshiraseCountBihinHenkyakuUnfinishedCheckExpRepository
-				.getOshiraseCountBihinHenkyakuUnfinishedCheck(param);
-		initDto.setBihinHenkyakuUnfinishedCheckHonsya(bihinHenkyakuUnfinishedCheckData.get(0).getCnt());
-		initDto.setBihinHenkyakuUnfinishedCheckTokyo(bihinHenkyakuUnfinishedCheckData.get(1).getCnt());
-		initDto.setBihinHenkyakuUnfinishedCheckHatiouzi(bihinHenkyakuUnfinishedCheckData.get(2).getCnt());
-		initDto.setBihinHenkyakuUnfinishedCheckNagoya(bihinHenkyakuUnfinishedCheckData.get(3).getCnt());
-		initDto.setBihinHenkyakuUnfinishedCheckKanazawa(bihinHenkyakuUnfinishedCheckData.get(4).getCnt());
+		List<Skf1010Sc001GetOshiraseCountNyutaikyoExp> nyutaikyoData = new ArrayList<Skf1010Sc001GetOshiraseCountNyutaikyoExp>();
+		Skf1010Sc001GetOshiraseCountNyutaikyoExpParameter param = new Skf1010Sc001GetOshiraseCountNyutaikyoExpParameter();
+		param.setNyutaikyoKbn(nyutaikyoKbn);
+		param.setNyutaikyoApplStatusKbn(nyutaikyoApplStatusKbn);
+		param.setHonsha(SkfCommonConstant.SISHA_HONSHA);
+		param.setTokyo(SkfCommonConstant.SISHA_TOKYO);
+		param.setHatiouzi(SkfCommonConstant.SISHA_HATIOUZI);
+		param.setNagoya(SkfCommonConstant.SISHA_NAGOYA);
+		param.setKanazawa(SkfCommonConstant.SISHA_KANAZAWA);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		nyutaikyoData = skf1010Sc001GetOshiraseCountNyutaikyoExpRepository.getOshiraseCountNyutaikyo(param);
+		resultMap.put("label", label);
+		resultMap.put("link", link);
+		resultMap.put("index", index);
+		resultMap.put("nyutaikyoHonsha", nyutaikyoData.get(0).getCnt());
+		resultMap.put("nyutaikyoTokyo", nyutaikyoData.get(1).getCnt());
+		resultMap.put("nyutaikyoHatiouzi", nyutaikyoData.get(2).getCnt());
+		resultMap.put("nyutaikyoNagoya", nyutaikyoData.get(3).getCnt());
+		resultMap.put("nyutaikyoKanazawa", nyutaikyoData.get(4).getCnt());
+
+		return resultMap;
+
 	}
 
 	/**
-	 * 未処理情報 備品返却提示の同意済の件数
+	 * 未処理情報<br>
+	 * 備品希望の申請が無い入居情報<br>
+	 * 備品希望の提示が完了していないデータ<br>
+	 * 備品希望の搬入が完了していないデータ<br>
+	 * 
+	 * @param nyutaikyoKbn
+	 * @param bihinTaiyoKbn
+	 * @param bihinTeijiStatus
+	 * @param label
+	 * @param link
+	 * @param index
+	 * @return
 	 */
-	public void bihinHenkyakuAgreed(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExp> bihinHenkyakuAgreedData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExp>();
-		Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExpParameter param = new Skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExpParameter();
+	public Map<String, Object> bihinKibo(String nyutaikyoKbn, String bihinTaiyoKbn, String bihinTeijiStatus,
+			String label, String link, int index) {
+		List<Skf1010Sc001GetOshiraseCountBihinKiboExp> bihinKiboData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinKiboExp>();
+		Skf1010Sc001GetOshiraseCountBihinKiboExpParameter param = new Skf1010Sc001GetOshiraseCountBihinKiboExpParameter();
+		param.setNyutaikyoKbn(nyutaikyoKbn);
+		param.setBihinTaiyoKbn(bihinTaiyoKbn);
+		param.setBihinTeijiStatus(bihinTeijiStatus);
+		param.setHonsha(SkfCommonConstant.SISHA_HONSHA);
+		param.setTokyo(SkfCommonConstant.SISHA_TOKYO);
+		param.setHatiouzi(SkfCommonConstant.SISHA_HATIOUZI);
+		param.setNagoya(SkfCommonConstant.SISHA_NAGOYA);
+		param.setKanazawa(SkfCommonConstant.SISHA_KANAZAWA);
 
-		bihinHenkyakuAgreedData = skf1010Sc001GetOshiraseCountBihinHenkyakuAgreedExpRepository
-				.getOshiraseCountBihinHenkyakuAgreed(param);
-		initDto.setBihinHenkyakuAgreedHonsya(bihinHenkyakuAgreedData.get(0).getCnt());
-		initDto.setBihinHenkyakuAgreedTokyo(bihinHenkyakuAgreedData.get(1).getCnt());
-		initDto.setBihinHenkyakuAgreedHatiouzi(bihinHenkyakuAgreedData.get(2).getCnt());
-		initDto.setBihinHenkyakuAgreedNagoya(bihinHenkyakuAgreedData.get(3).getCnt());
-		initDto.setBihinHenkyakuAgreedKanazawa(bihinHenkyakuAgreedData.get(4).getCnt());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		bihinKiboData = skf1010Sc001GetOshiraseCountBihinKiboExpRepository.getOshiraseCountBihinKibo(param);
+		resultMap.put("label", label);
+		resultMap.put("link", link);
+		resultMap.put("index", index);
+		resultMap.put("bihinKiboHonsha", bihinKiboData.get(0).getCnt());
+		resultMap.put("bihinKiboTokyo", bihinKiboData.get(1).getCnt());
+		resultMap.put("bihinKiboHatiouzi", bihinKiboData.get(2).getCnt());
+		resultMap.put("bihinKiboNagoya", bihinKiboData.get(3).getCnt());
+		resultMap.put("bihinKiboKanazawa", bihinKiboData.get(4).getCnt());
+
+		return resultMap;
+
 	}
 
 	/**
-	 * 未処理情報 備品の搬出が未完了の件数
+	 * 未処理情報<br>
+	 * 備品返却提示の本人確認が完了していないデータ<br>
+	 * 備品返却提示の同意済のデータ<br>
+	 * 備品の搬出が完了していないデータ<br>
+	 * 
+	 * @param nyutaikyoKbn
+	 * @param bihinTeijiStatus
+	 * @param label
+	 * @param link
+	 * @param index
+	 * @return
 	 */
-	public void bihinUnfinishedMovement(Skf1010Sc001InitDto initDto) {
-		List<Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExp> bihinUnfinishedMovementData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExp>();
-		Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExpParameter param = new Skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExpParameter();
+	public Map<String, Object> bihinHenkyaku(String nyutaikyoKbn, String bihinTeijiStatus, String label, String link,
+			int index) {
+		List<Skf1010Sc001GetOshiraseCountBihinHenkyakuExp> bihinHenkyakuData = new ArrayList<Skf1010Sc001GetOshiraseCountBihinHenkyakuExp>();
+		Skf1010Sc001GetOshiraseCountBihinHenkyakuExpParameter param = new Skf1010Sc001GetOshiraseCountBihinHenkyakuExpParameter();
+		param.setNyutaikyoKbn(nyutaikyoKbn);
+		param.setBihinTeijiStatus(bihinTeijiStatus);
+		param.setHonsha(SkfCommonConstant.SISHA_HONSHA);
+		param.setTokyo(SkfCommonConstant.SISHA_TOKYO);
+		param.setHatiouzi(SkfCommonConstant.SISHA_HATIOUZI);
+		param.setNagoya(SkfCommonConstant.SISHA_NAGOYA);
+		param.setKanazawa(SkfCommonConstant.SISHA_KANAZAWA);
 
-		bihinUnfinishedMovementData = skf1010Sc001GetOshiraseCountBihinUnfinishedMovementExpRepository
-				.getOshiraseCountBihinUnfinishedMovement(param);
-		initDto.setBihinUnfinishedMovementHonsya(bihinUnfinishedMovementData.get(0).getCnt());
-		initDto.setBihinUnfinishedMovementTokyo(bihinUnfinishedMovementData.get(1).getCnt());
-		initDto.setBihinUnfinishedMovementHatiouzi(bihinUnfinishedMovementData.get(2).getCnt());
-		initDto.setBihinUnfinishedMovementNagoya(bihinUnfinishedMovementData.get(3).getCnt());
-		initDto.setBihinUnfinishedMovementKanazawa(bihinUnfinishedMovementData.get(4).getCnt());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		bihinHenkyakuData = skf1010Sc001GetOshiraseCountBihinHenkyakuExpRepository.getOshiraseCountBihinHenkyaku(param);
+		resultMap.put("label", label);
+		resultMap.put("link", link);
+		resultMap.put("index", index);
+		resultMap.put("bihinHenkyakuHonsha", bihinHenkyakuData.get(0).getCnt());
+		resultMap.put("bihinHenkyakuTokyo", bihinHenkyakuData.get(1).getCnt());
+		resultMap.put("bihinHenkyakuHatiouzi", bihinHenkyakuData.get(2).getCnt());
+		resultMap.put("bihinHenkyakuNagoya", bihinHenkyakuData.get(3).getCnt());
+		resultMap.put("bihinHenkyakuKanazawa", bihinHenkyakuData.get(4).getCnt());
+
+		return resultMap;
+	}
+
+	// 個人のお知らせ(一般ユーザ)内容取得
+	public List<Map<String, Object>> oshiraseUser(String companyCd, String shainNo, int dispTerm) {
+		List<Map<String, Object>> oshiraseList = new ArrayList<Map<String, Object>>();
+		List<Skf1010Sc001GetShinseiStatusUserExp> oshiraseDataList = new ArrayList<Skf1010Sc001GetShinseiStatusUserExp>();
+		Skf1010Sc001GetShinseiStatusUserExpParameter param = new Skf1010Sc001GetShinseiStatusUserExpParameter();
+
+		param.setCompanyCd(companyCd);
+		param.setShainNo(shainNo);
+		param.setDispTerm(dispTerm);
+
+		// 申請状況コード取得
+		Map<String, String> sinseiMap = new HashMap<String, String>();
+		sinseiMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
+
+		LogUtils.debugByMsg("個人の知らせ一般。SQL");
+
+		oshiraseDataList = skf1010Sc001GetShinseiStatusUserExpRepository.getShinseiStatusUser(param);
+		for (Skf1010Sc001GetShinseiStatusUserExp osiraseData : oshiraseDataList) {
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			if (osiraseData.getApplStatus().equals(CodeConstant.STATUS_KAKUNIN_IRAI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2041", updateDate, osiraseData.getApplName());
+				resultMap.put("message", message);
+			} else if (osiraseData.getApplStatus().equals(CodeConstant.STATUS_SHONIN_ZUMI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String applDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2045", updateDate, applDate,
+						osiraseData.getApplName(), sinseiMap.get(CodeConstant.STATUS_SHONIN_ZUMI));
+				resultMap.put("message", message);
+			} else if (osiraseData.getApplStatus().equals(CodeConstant.STATUS_SASHIMODOSHI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String applDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2045", updateDate, applDate,
+						osiraseData.getApplName(), sinseiMap.get(CodeConstant.STATUS_SASHIMODOSHI));
+				resultMap.put("message", message);
+			} else if (osiraseData.getApplStatus().equals(CodeConstant.STATUS_HININ)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String applDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2045", updateDate, applDate,
+						osiraseData.getApplName(), sinseiMap.get(CodeConstant.STATUS_HININ));
+				resultMap.put("message", message);
+			} else if (osiraseData.getApplStatus().equals(CodeConstant.STATUS_KANRYOU)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String applDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2060", updateDate, applDate,
+						osiraseData.getApplName(), sinseiMap.get(CodeConstant.STATUS_KANRYOU));
+				resultMap.put("message", message);
+			} else if (osiraseData.getApplStatus().equals(CodeConstant.STATUS_HANNYU_MACHI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String applDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2061", updateDate, applDate,
+						osiraseData.getApplName());
+				resultMap.put("message", message);
+			} else if (osiraseData.getApplStatus().equals(CodeConstant.STATUS_HANSYUTSU_MACHI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String applDate = skfDateFormatUtils.dateFormatFromDate(osiraseData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2062", updateDate, applDate,
+						osiraseData.getApplName());
+				resultMap.put("message", message);
+			} else {
+				continue;
+			}
+			if (resultMap != null) {
+				oshiraseList.add(resultMap);
+			}
+		}
+
+		return oshiraseList;
+
+	}
+
+	// 個人のお知らせ(管理者)内容取得
+	public List<Map<String, Object>> oshiraseAdmin(String companyCd, String shainNo, int dispTerm, String roleId) {
+		List<Map<String, Object>> oshiraseList2 = new ArrayList<Map<String, Object>>();
+		List<Skf1010Sc001GetShinseiStatusAdminExp> oshiraseDataList2 = new ArrayList<Skf1010Sc001GetShinseiStatusAdminExp>();
+		Skf1010Sc001GetShinseiStatusAdminExpParameter param = new Skf1010Sc001GetShinseiStatusAdminExpParameter();
+
+		param.setCompanyCd(companyCd);
+		param.setShainNo(shainNo);
+		param.setDispTerm(dispTerm);
+		param.setRoleId(roleId);
+		param.setWfLevel1(workFlowLevel1);
+		param.setWfLevel2(workFlowLevel2);
+		param.setStatus(CodeConstant.STATUS_SHINSEICHU);
+		param.setWf2Status(CodeConstant.STATUS_SHONIN1);
+
+		LogUtils.debugByMsg("個人の知らせ管理。SQL");
+
+		oshiraseDataList2 = skf1010Sc001GetShinseiStatusAdminExpRepository.getShinseiStatusAdmin(param);
+		for (Skf1010Sc001GetShinseiStatusAdminExp osiraseData2 : oshiraseDataList2) {
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSACHU)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2051", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getAgency(),
+						osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_DOI_SHINAI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2042", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getApplName(),
+						osiraseData2.getAgency(), osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_DOI_ZUMI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2043", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getAgency(),
+						osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SENTAKU_SHINAI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2050", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getApplName(),
+						osiraseData2.getAgency(), osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SENTAKU_ZUMI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2051", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getAgency(),
+						osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_HANNYU_ZUMI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2055", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getAgency(),
+						osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_HANSYUTSU_ZUMI)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2056", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getAgency(),
+						osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHONIN1)) {
+				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				String message = getOshirase("infomation.skf.i_skf_2044", updateDate, osiraseData2.getName(),
+						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getAgency(),
+						osiraseData2.getAffiliation1());
+				resultMap.put("message", message);
+			} else {
+				continue;
+			}
+
+			if (resultMap != null) {
+				oshiraseList2.add(resultMap);
+			}
+		}
+		return oshiraseList2;
+	}
+
+	// 個人のお知らせの内容の文章を整形
+	public String getOshirase(String messageId, String... words) {
+		String message = PropertyUtils.getValue(messageId);
+		for (int i = 0; i < words.length; i++) {
+			if (words[i] == null) {
+				words[i] = "";
+			}
+			message = message.replace("{" + i + "}", words[i]);
+		}
+		return message;
+
 	}
 }

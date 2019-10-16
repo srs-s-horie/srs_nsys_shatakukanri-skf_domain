@@ -3,14 +3,19 @@
  */
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc001;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinItemToBeReturnExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinItemToBeReturnExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfShatakuInfoUtils.SkfShatakuInfoUtilsGetShatakuInfoExp;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetBihinItemToBeReturnExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinItemToBeReturnExpRepository;
+import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
@@ -18,7 +23,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001ChangeDropDownAsyncDto;
 
@@ -32,23 +36,19 @@ public class Skf2040Sc001ChangeDropDownAsyncService
         extends AsyncBaseServiceAbstract<Skf2040Sc001ChangeDropDownAsyncDto> {
 
     @Autowired
-    private SkfDropDownUtils skfDropDownUtils;
-    @Autowired
     private Skf2040Sc001SharedService skf2040Sc001SharedService;
     @Autowired
-    private Skf2020Sc002GetShatakuInfoExpRepository skf2020Sc002GetShatakuInfoExpRepository;
+    private SkfHtmlCreateUtils skfHtmlCreationUtils;
     @Autowired
-    private Skf2020Sc002GetBihinItemToBeReturnExpRepository skf2020Sc002GetBihinItemToBeReturnExpRepository;
-    @Autowired
-    private SkfHtmlCreateUtils SkfHtmlCreationUtils;
+    private Skf2040Sc001GetBihinItemToBeReturnExpRepository skf2040Sc001GetBihinItemToBeReturnExpRepository;
 
     @Override
     public AsyncBaseDto index(Skf2040Sc001ChangeDropDownAsyncDto dto) throws Exception {
 
         // 社宅情報の設定
-        setShatakuInfo(dto);
-        // 返却備品の設定
-        //setReturnBihinInfo(dto);
+        this.setShatakuInfo(dto);
+        // 要返却備品情報を取得
+        this.setReturnBihinInfo(dto, false);
 
         return dto;
     }
@@ -83,16 +83,17 @@ public class Skf2040Sc001ChangeDropDownAsyncService
      */
     private void setShatakuInfo(Skf2040Sc001ChangeDropDownAsyncDto dto, SkfShatakuInfoUtilsGetShatakuInfoExp shatakuInfo){
         // 社宅名
-        if (NfwStringUtils.isNotEmpty(shatakuInfo.getShatakuName())) {
-            dto.setHdnSelectedNowShatakuName(shatakuInfo.getShatakuName());
-            LogUtils.debugByMsg("社宅名" + dto.getHdnSelectedNowShatakuName());
-        }
+        dto.setHdnSelectedNowShatakuName( ObjectUtils.defaultIfNull(shatakuInfo.getShatakuName(), "") );
+        LogUtils.debugByMsg("社宅名" + dto.getHdnSelectedNowShatakuName());
+
+        // 社宅住所
+        dto.setNowAddress( ObjectUtils.defaultIfNull(shatakuInfo.getAddress(), "") );
+        LogUtils.debugByMsg("社宅住所" + dto.getNowAddress());
 
         // 室番号
-        if (NfwStringUtils.isNotEmpty(shatakuInfo.getRoomNo())) {
-            dto.setNowShatakuNo(shatakuInfo.getRoomNo());
-            LogUtils.debugByMsg("室番号" + dto.getNowShatakuNo());
-        }
+        dto.setNowShatakuNo( ObjectUtils.defaultIfNull(shatakuInfo.getRoomNo(), "") );
+        LogUtils.debugByMsg("室番号" + dto.getNowShatakuNo());
+
         // 規格(間取り)
         // 規格があった場合は、貸与規格。それ以外は本来規格
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getKikaku())) {
@@ -125,6 +126,7 @@ public class Skf2040Sc001ChangeDropDownAsyncService
         }
 
         // 駐車場 １台目 保管場所
+        dto.setParking1stPlace("");
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getParkingAddress1())) {
             dto.setParking1stPlace(wkPrefName + shatakuInfo.getParkingAddress1());
             LogUtils.debugByMsg("現在の保管場所" + dto.getParking1stPlace());
@@ -132,18 +134,21 @@ public class Skf2040Sc001ChangeDropDownAsyncService
         }
 
         // 駐車場 １台目 位置番号
+        dto.setHdnParking1stNumber("");
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getParkingBlock1())) {
             dto.setHdnParking1stNumber(shatakuInfo.getParkingBlock1());
             LogUtils.debugByMsg("駐車場 １台目 位置番号" + dto.getHdnParking1stNumber());
         }
 
         // 駐車場 ２台目 保管場所
+        dto.setParking2ndPlace("");
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getParkingAddress2())) {
             dto.setParking2ndPlace(wkPrefName + shatakuInfo.getParkingAddress2());
             LogUtils.debugByMsg("現在の保管場所2" + dto.getParking2ndPlace());
         }
 
         // 駐車場 ２台目 位置番号
+        dto.setHdnParking2ndNumber("");
         if (NfwStringUtils.isNotEmpty(shatakuInfo.getParkingBlock2())) {
             dto.setHdnParking2ndNumber(shatakuInfo.getParkingBlock2());
             LogUtils.debugByMsg("駐車場 2台目 位置番号" + dto.getHdnParking2ndNumber());
@@ -166,4 +171,78 @@ public class Skf2040Sc001ChangeDropDownAsyncService
             dto.setParkingFullFlg(true);
         }
     }
+    
+    /**
+     * 
+     * 返却備品の設定 備品状態が2:保有備品または3:レンタルの表示の備品情報を取得する。<br>
+     * 返却備品有無に「1:備品返却する」を設定する。<br>
+     * 件数が取得できた場合は、備品の表示用リストを作成する。<br>
+     * List<String> bihinItemList →tr情報（列） List<List<String>>
+     * bihinItemNameList→td情報(行）
+     * 
+     * htmlBihinCreateTableに作成したbihinItemNameListと、表示したい列数を渡す
+     * 
+     * @param asyncDto
+     * @param isUpdate
+     */
+    protected void setReturnBihinInfo(Skf2040Sc001ChangeDropDownAsyncDto dto, boolean isUpdate) {
+
+        // 返却備品有無に「0:備品返却しない」を設定
+        dto.setHdnBihinHenkyakuUmu(CodeConstant.BIHIN_HENKYAKU_SHINAI);
+        String bihinItem = CodeConstant.DOUBLE_QUOTATION;
+        // 社宅管理番号の設定
+        long shatakuKanriId = dto.getShatakuKanriId();
+
+        // 備品状態が2:保有備品または3:レンタルの表示の備品取得
+        List<Skf2040Sc001GetBihinItemToBeReturnExp> resultBihinItemList = new ArrayList<Skf2040Sc001GetBihinItemToBeReturnExp>();
+        resultBihinItemList = this.getBihinItemToBeReturn(shatakuKanriId, dto.getShainNo(), resultBihinItemList);
+
+        // 件数が取得できた場合
+        if (resultBihinItemList.size() > 0 && CollectionUtils.isNotEmpty(resultBihinItemList)) {
+
+            // 返却備品有無に「1:備品返却する」を設定
+            dto.setHdnBihinHenkyakuUmu(CodeConstant.BIHIN_HENKYAKU_SURU);
+
+            // 【ラベル部分】
+            // 要返却備品の取得
+            List<String> bihinItemList = new ArrayList<String>();
+            List<List<String>> bihinItemNameList = new ArrayList<List<String>>();
+            for (Skf2040Sc001GetBihinItemToBeReturnExp bihinItemInfo : resultBihinItemList) {
+                // 表示・値を設定
+                bihinItemList = new ArrayList<String>();
+                bihinItemList.add(bihinItemInfo.getBihinName());
+                bihinItemNameList.add(bihinItemList);
+            }
+
+            // HTMLの作成
+            bihinItem = skfHtmlCreationUtils.htmlBihinCreateTable(bihinItemNameList, 2);
+            dto.setReturnEquipment(bihinItem);
+        } else {
+            dto.setReturnEquipment(bihinItem);
+        }
+    }
+    
+    /**
+     * 要返却備品の取得
+     * 
+     * @param shatakuKanriId
+     * @param shainNo
+     * @param yearMonth
+     * @param resultBihinItemList
+     * @return resultBihinItemList
+     */
+    private List<Skf2040Sc001GetBihinItemToBeReturnExp> getBihinItemToBeReturn(long shatakuKanriId, String shainNo,
+            List<Skf2040Sc001GetBihinItemToBeReturnExp> resultBihinItemList) {
+
+        String yearMonth = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMM_FLAT);
+
+        Skf2040Sc001GetBihinItemToBeReturnExpParameter param = new Skf2040Sc001GetBihinItemToBeReturnExpParameter();
+        param.setShainNo(shainNo);
+        param.setShatakuKanriId(shatakuKanriId);
+        param.setYearMonth(yearMonth);
+        resultBihinItemList = skf2040Sc001GetBihinItemToBeReturnExpRepository.getBihinItemToBeReturn(param);
+        return resultBihinItemList;
+
+    }
+
 }

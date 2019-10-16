@@ -3,6 +3,9 @@
  */
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc001;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
     
     @Autowired
     private Skf2040Sc001SharedService skf2040Sc001SharedService;
+
     /**
      * サービス処理を行う。　
      * 
@@ -41,6 +45,8 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
         
         // 申請書情報の取得
         skf2040Sc001SharedService.setSkfApplInfo(saveDto);
+        // 新規登録したかを判定するため、処理前の申請ステータスを保持しておく
+        String beforeApplStatus = saveDto.getStatus();
         
         // バイトカット処理
         skf2040Sc001SharedService.cutByte(saveDto);
@@ -50,10 +56,14 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
             return saveDto;
         }
         
+        // プルダウンリストの再設定（選択初期値反映）
+        this.setDropdownList(saveDto);
         // 正常終了
-        if (CodeConstant.STATUS_MISAKUSEI.equals(saveDto.getStatus())) {
+        if (CodeConstant.STATUS_MISAKUSEI.equals(beforeApplStatus)) {
+            // 新規登録時
             ServiceHelper.addResultMessage(saveDto, MessageIdConstant.I_SKF_1012);
         } else {
+            // 更新時
             ServiceHelper.addResultMessage(saveDto, MessageIdConstant.I_SKF_1011);
         }
         return saveDto;
@@ -81,18 +91,6 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
             // 申請履歴、退居届の登録
             isExecSave = skf2040Sc001SharedService.saveNewTaikyoData(saveDto);
             
-            // 社宅退居のチェック状況を取得する。 //TODO まるっといらない疑惑
-            boolean isShatakuTaikyoChecked = false;
-            String[] taikyoTypeArray = saveDto.getTaikyoType();
-            if (taikyoTypeArray!=null && taikyoTypeArray.length > 0) {
-                for(String taikyoType : taikyoTypeArray){
-                    if (taikyoType.equals("shataku_checked")) {
-                        //「社宅を退居する」にチェックがされている場合
-                        isShatakuTaikyoChecked = true;
-                    }
-                }
-            }
-            
             // 退居社宅がある場合は備品返却の作成 ※旧システムでは駐車場返還のみの場合でも備品返却情報を作成している
             // 備品返却申請テーブル登録処理
             skf2040Sc001SharedService.registrationBihinShinsei(saveDto);
@@ -100,9 +98,14 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
         } else {
             // 更新の場合
             
-            // 排他チェック（退居届テーブルの更新有無で判定） TODO 申請履歴でもチェックできなくもないが、必要か？
+            // 排他チェック（退居届テーブルの更新有無で判定）
             Skf2040TTaikyoReport taikyoInfo = 
                     skf2040Sc001SharedService.getExistTaikyoInfo(saveDto.getApplNo());
+            if (taikyoInfo == null) {
+                // 退居届情報が見つからなかった場合エラーメッセージを表示して処理終了
+                skf2040Sc001SharedService.setDisableBtn(saveDto);
+                ServiceHelper.addErrorResultMessage(saveDto, null, MessageIdConstant.E_SKF_1077);
+            }
             
             super.checkLockException(
                     saveDto.getLastUpdateDate(saveDto.UPDATE_TABLE_PREFIX_TAIKYO_REPORT + saveDto.getApplNo()),
@@ -116,5 +119,35 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
             skf2040Sc001SharedService.registrationBihinShinsei(saveDto);
         }
         return isExecSave;
+    }
+    
+    /**
+     * 退居届画面のドロップダウンリスト情報を設定する。
+     * @param saveDto
+     */
+    private void setDropdownList(Skf2040Sc001SaveDto saveDto){
+        // 退居(返還)理由ドロップダウンリストをDtoに設定
+        saveDto.setDdlTaikyoRiyuKbnList(
+                skf2040Sc001SharedService.getTaikyoHenkanRiyuList(saveDto.getTaikyoRiyuKbn()));
+        
+        // 現居住社宅名ドロップダウンリストをDtoに設定
+        List<Map<String, Object>> nowShatakuNameList = 
+                skf2040Sc001SharedService.getNowShatakuNameList(saveDto.getShainNo(), saveDto.getShatakuNo());
+        if ( null != nowShatakuNameList && nowShatakuNameList.size() > 0 ) {
+            saveDto.setDdlNowShatakuNameList(nowShatakuNameList);
+            // リスト一件目の物件の社宅管理IDを取得してDTOに設定しておく
+            long firstShatakuKanriId = (long) nowShatakuNameList.get(0).get("value");
+            saveDto.setShatakuKanriId(firstShatakuKanriId);
+        } else {
+            // データが取得できなかった場合、エラーメッセージを表示して初期表示処理を終了
+            skf2040Sc001SharedService.setDisableBtn(saveDto);
+            // エラーメッセージ表示
+            ServiceHelper.addErrorResultMessage(saveDto, null, MessageIdConstant.E_SKF_2015);
+            throwBusinessExceptionIfErrors(saveDto.getResultMessages());
+        }
+        
+        // 返却立合希望日（時）ドロップダウンリストをDtoに設定
+        saveDto.setDdlReturnWitnessRequestDateList(
+                skf2040Sc001SharedService.getSessionTimeList(saveDto.getSessionTime()));
     }
 }

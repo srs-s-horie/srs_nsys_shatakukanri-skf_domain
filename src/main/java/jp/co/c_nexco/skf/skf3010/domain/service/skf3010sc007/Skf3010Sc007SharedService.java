@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 
 /**
- * Skf3010Sc004SharedService 社宅部屋一覧内共通クラス
+ * Skf3010Sc007SharedService 駐車場契約情報登録内共通クラス
  * 
  * @author NEXCOシステムズ
  *

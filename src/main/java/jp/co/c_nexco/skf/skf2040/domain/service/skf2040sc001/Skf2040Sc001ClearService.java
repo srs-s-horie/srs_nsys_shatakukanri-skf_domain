@@ -24,7 +24,6 @@ public class Skf2040Sc001ClearService extends BaseServiceAbstract<Skf2040Sc001Cl
     
     @Autowired
     private SkfOperationLogUtils skfOperationLogUtils;
-    
     @Autowired
     private Skf2040Sc001SharedService skf2040Sc001SharedService;
     /**
@@ -66,12 +65,8 @@ public class Skf2040Sc001ClearService extends BaseServiceAbstract<Skf2040Sc001Cl
         if (clearDto.getApplNo() != null) {
             // 申請書管理番号がDtoに存在する場合、登録済の退居届情報をDtoに設定する
             skf2040Sc001SharedService.setExistTaikyoInfo(clearDto);
+            
         }
-        // 返却備品の設定
-        
-        // 表示項目の活性制御または表示制御
-        
-        
     }
     
     /**
