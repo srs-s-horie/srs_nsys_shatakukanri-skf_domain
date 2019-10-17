@@ -4,8 +4,6 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +11,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AttachedFileAddDto;
+import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002AttachedFileAddService 補足ファイル追加処理クラス
@@ -33,16 +34,14 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 	@Autowired
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;
 	@Autowired
-	private SkfAttachedFileUtils skfAttachedFileUtiles;
-	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-
-	@Value("${skf2010.skf2010_sc009.max_search_count}")
-	private String maxSearchCount;
 	@Value("${skf3010.hosoku_max_file_size}")
 	private String maxFileSize;
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
+
+	/** ロガー。 */
+	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	// 社宅補足リンクプレフィックス
 	private static final String SHATAKU_HOSOKU_LINK = "attached_shataku";
@@ -52,7 +51,7 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 	private static final String SHATAKU_HOSOKU = "shataku";
 	// 駐車場補足
 	private static final String PARKING_HOSOKU = "parking";
-	
+
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -65,6 +64,8 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, addDto.getPageId());
+		// デバッグログ
+		logger.info("補足資料追加");
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト
@@ -213,30 +214,6 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 				break;
 			}
 		}
-		
-//		// 添付ファイル情報の取得
-//		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
-//		if (!errFlag && (attachedFileList != null && attachedFileList.size() > Integer.parseInt(maxSearchCount))) {
-//			ServiceHelper.addErrorResultMessage(addDto, null, MessageIdConstant.E_SKF_1092, maxSearchCount);
-//		}
-//		throwBusinessExceptionIfErrors(addDto.getResultMessages());
-//		
-//		if(attachedFileList==null){
-//			attachedFileList = new ArrayList<Map<String, Object>>();
-//		}
-//		
-//		int attachedNo = Integer.parseInt(fileNo);
-//		addShatakuAttachedFile(fileName, fileStream, fileSize, attachedNo,
-//			attachedFileList);
-//		
-//		// セッションにデータを保存
-//		menuScopeSessionBean.put(sessionKey, attachedFileList);
-
-/* DS */
-//		//画面入力内容情報の保持
-//		skf3010Sc002SharedService.setShatakuInfoDropDownStay(addDto);
-/* DE */
-
 		return addDto;
 	}
 
@@ -343,45 +320,4 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 		}
 		return true;
 	}
-
-	public List<Map<String, Object>> addShatakuAttachedFile(String fileName, byte[] file, String fileSize, int attachedNo,
-			List<Map<String, Object>> shatakuAttachedFileList) {
-		// 添付資料のコレクションをSessionより取得
-
-		// リンクリストチェック
-		boolean findFlg = false;
-		if (shatakuAttachedFileList != null) {
-			for (Map<String, Object> attachedFileMap : shatakuAttachedFileList) {
-				if (fileName.equals(attachedFileMap.get("attachedName"))) {
-					findFlg = true;
-					break;
-				}
-			}
-		} else {
-			shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
-		}
-
-		// 添付ファイルリストに無い場合
-		if (!findFlg) {
-			Map<String, Object> addAttachedFileInfo = new HashMap<String, Object>();
-
-			addAttachedFileInfo.put("attachedNo", attachedNo);
-
-			// 添付資料名
-			addAttachedFileInfo.put("attachedName", fileName);
-			// ファイルサイズ
-			addAttachedFileInfo.put("attachedFileSize", fileSize);
-			// 更新日
-			addAttachedFileInfo.put("registDate", new Date());
-			// 添付資料
-			addAttachedFileInfo.put("fileStream", file);
-			// 添付ファイルステータス
-			// ファイルタイプ
-			addAttachedFileInfo.put("fileType", skfAttachedFileUtiles.getFileTypeInfo(fileName));
-
-			shatakuAttachedFileList.add(addAttachedFileInfo);
-		}
-		return shatakuAttachedFileList;
-	}
-
 }
