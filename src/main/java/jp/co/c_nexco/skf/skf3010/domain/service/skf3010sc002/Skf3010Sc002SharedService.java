@@ -2234,12 +2234,25 @@ public class Skf3010Sc002SharedService {
 		String nextCalculateDate = "";
 		// 社宅補足名1
 		String shatakuSupplementName1 = "";
+		// 社宅補足サイズ1
+		String shatakuSupplementSize1 = "";
+		// 社宅補足ファイル1
+		byte[] shatakuSupplementFile1 = null;
 		// 社宅補足名2
 		String shatakuSupplementName2 = "";
+		// 社宅補足サイズ2
+		String shatakuSupplementSize2 = "";
+		// 社宅補足ファイル2
+		byte[] shatakuSupplementFile2 = null;
 		// 社宅補足名3
 		String shatakuSupplementName3 = "";
+		// 社宅補足サイズ3
+		String shatakuSupplementSize3 = "";
+		// 社宅補足ファイル3
+		byte[] shatakuSupplementFile3 = null;
 		// 備考
 		String biko = "";
+
 
 		// 基本情報リストデータ(DBから取得したデータ保存用)
 		List<Skf3010Sc002GetKihonInfoTableDataExp> getKihonInfoListTableData = new ArrayList<Skf3010Sc002GetKihonInfoTableDataExp>();
@@ -2322,31 +2335,58 @@ public class Skf3010Sc002SharedService {
 			initDto.setNextCalcDate(nextCalculateDate);
 
 			// 社宅補足1
-			if (tmpData.getShatakuSupplementName1() != null) {
+			shatakuSupplementSize1 = (tmpData.getShatakuSupplementSize1() != null) ?
+											tmpData.getShatakuSupplementSize1() : "";
+			shatakuSupplementFile1 = tmpData.getShatakuSupplementFile1();
+			// 社宅補足1表示判定
+			if (tmpData.getShatakuSupplementName1() != null
+							&& shatakuSupplementSize1.length() > 0
+							&& shatakuSupplementFile1 != null) {
 				shatakuSupplementName1 = tmpData.getShatakuSupplementName1();
 				initDto.setShatakuHosokuLink1(null);
 				initDto.setShatakuHosokuLink1(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_1");
 			}
 			initDto.setShatakuHosokuFileName1(null);
 			initDto.setShatakuHosokuFileName1(shatakuSupplementName1);
+			initDto.setShatakuHosokuSize1(shatakuSupplementSize1);
+			initDto.setShatakuHosokuFile1(null);
+			initDto.setShatakuHosokuFile1(shatakuSupplementFile1);
 
 			// 社宅補足2
-			if (tmpData.getShatakuSupplementName2() != null) {
+			shatakuSupplementSize2 = (tmpData.getShatakuSupplementSize2() != null) ?
+										tmpData.getShatakuSupplementSize2() : "";
+			shatakuSupplementFile2 = tmpData.getShatakuSupplementFile2();
+			// 社宅補足2表示判定
+			if (tmpData.getShatakuSupplementName2() != null
+							&& shatakuSupplementSize2.length() > 0
+							&& shatakuSupplementFile2 != null) {
 				shatakuSupplementName2 = tmpData.getShatakuSupplementName2();
 				initDto.setShatakuHosokuLink2(null);
 				initDto.setShatakuHosokuLink2(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_2");
 			}
 			initDto.setShatakuHosokuFileName2(null);
 			initDto.setShatakuHosokuFileName2(shatakuSupplementName2);
+			initDto.setShatakuHosokuSize2(shatakuSupplementSize2);
+			initDto.setShatakuHosokuFile2(null);
+			initDto.setShatakuHosokuFile2(shatakuSupplementFile2);
 
 			// 社宅補足3
-			if (tmpData.getShatakuSupplementName3() != null) {
+			shatakuSupplementSize3 = (tmpData.getShatakuSupplementSize3() != null) ?
+										tmpData.getShatakuSupplementSize3() : "";
+			shatakuSupplementFile3 = tmpData.getShatakuSupplementFile3();
+			// 社宅補足3表示判定
+			if (tmpData.getShatakuSupplementName3() != null
+							&& shatakuSupplementSize3.length() > 0
+							&& shatakuSupplementFile3 != null) {
 				shatakuSupplementName3 = tmpData.getShatakuSupplementName3();
 				initDto.setShatakuHosokuLink3(null);
 				initDto.setShatakuHosokuLink3(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_3");
 			}
 			initDto.setShatakuHosokuFileName3(null);
 			initDto.setShatakuHosokuFileName3(shatakuSupplementName3);
+			initDto.setShatakuHosokuSize3(shatakuSupplementSize3);
+			initDto.setShatakuHosokuFile3(null);
+			initDto.setShatakuHosokuFile3(shatakuSupplementFile3);
 
 			// 備考
 			if (tmpData.getBiko() != null) {
