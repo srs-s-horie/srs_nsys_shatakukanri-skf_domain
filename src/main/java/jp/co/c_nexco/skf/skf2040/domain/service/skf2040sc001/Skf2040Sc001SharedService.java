@@ -82,9 +82,6 @@ public class Skf2040Sc001SharedService{
     @Autowired
     private SkfShatakuInfoUtilsGetShatakuInfoExpRepository skfShatakuInfoUtilsGetShatakuInfoExpRepository;
     
-    public static final String TRUE = "true";
-    public static final String FALSE = "false";
-    
     /**
      * 退居（返還）理由ドロップダウンリスト取得
      * @param defaultSelectVal 初期選択値 ※汎用コードSKF1142のコード値を指定すること
@@ -337,11 +334,11 @@ public class Skf2040Sc001SharedService{
      */
     public <DTO extends Skf2040Sc001CommonDto> void setDisableBtn(DTO dto){
         // 確認ボタン非活性
-        dto.setBtnCheckDisabled(TRUE);
+        dto.setBtnCheckDisabled(true);
         // 一時保存ボタン非活性
-        dto.setBtnSaveDisabled(TRUE);
+        dto.setBtnSaveDisabled(true);
         // クリアボタン非表示
-        dto.setBtnClearRemoved(TRUE);
+        dto.setBtnClearRemoved(true);
     }
     
     /**

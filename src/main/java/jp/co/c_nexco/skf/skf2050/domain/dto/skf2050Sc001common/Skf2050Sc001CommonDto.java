@@ -3,13 +3,15 @@
  */
 package jp.co.c_nexco.skf.skf2050.domain.dto.skf2050Sc001common;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import jp.co.c_nexco.skf.skf2050.domain.dto.common.Skf205010CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
- * 
+ * Skf2050Sc001 備品返却申請（申請者用)共通処理Dto
+ *
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

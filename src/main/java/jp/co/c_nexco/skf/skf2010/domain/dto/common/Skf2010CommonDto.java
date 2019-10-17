@@ -33,6 +33,8 @@ public class Skf2010CommonDto extends BaseDto {
 	private String level2Open;
 	private String level3Open;
 	private String level4Open;
+	// 同意する表示フラグ
+	private String representBtnFlg = "true";
 
 	// コメント欄表示フラグ
 	private boolean commentAreaVisibled = true;

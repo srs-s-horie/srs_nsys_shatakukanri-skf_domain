@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetAgreeAuthorityGroupIdExp;
@@ -40,13 +39,11 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetAttachedFileInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetBHSApplStatusInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetBKSApplStatusInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetCommentListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetSendApplMailInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
@@ -80,8 +77,6 @@ public class Skf2010Sc006SharedService {
 	@Autowired
 	private Skf2010Sc006GetTeijiDataInfoExpRepository skf2010Sc006GetTeijiDataInfoExpRepository;
 	@Autowired
-	private Skf2010Sc006GetCommentListExpRepository skf2010Sc006GetCommentListExpRepository;
-	@Autowired
 	private Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExpRepository skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExpRepository;
 	@Autowired
 	private Skf2010Sc006GetSendApplMailInfoExpRepository skf2010Sc006GetSendApplMailInfoExpRepository;
@@ -92,8 +87,6 @@ public class Skf2010Sc006SharedService {
 	@Autowired
 	private Skf2010Sc006GetAttachedFileInfoExpRepository skf2010Sc006GetAttachedFileInfoExpRepository;
 
-	@Autowired
-	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
 	@Autowired
 	private Skf2010MApplicationRepository skf2010MApplicationRepository;
 	@Autowired
@@ -369,7 +362,7 @@ public class Skf2010Sc006SharedService {
 	}
 
 	public boolean representData(String companyCd, String applNo, String comment, String applUpdateDate,
-			Map<String, String> errMap) {
+			String applTacFlag, Map<String, String> errMap) {
 		if ((companyCd == null || CheckUtils.isEmpty(companyCd) || (applNo == null || CheckUtils.isEmpty(applNo)))) {
 			return false;
 		}
@@ -428,6 +421,7 @@ public class Skf2010Sc006SharedService {
 
 		// 申請状況
 		updateData.setApplStatus(CodeConstant.STATUS_SHINSACHU);
+		updateData.setApplTacFlg(applTacFlag);
 		int applHistoryRes = skf2010TApplHistoryRepository.updateByPrimaryKeySelective(updateData);
 		if (applHistoryRes <= 0) {
 
@@ -457,12 +451,56 @@ public class Skf2010Sc006SharedService {
 	/**
 	 * 添付ファイル情報を登録する
 	 * 
-	 * @param insertData
+	 * @param applNo
+	 * @param shainNo
+	 * @param attachedFileList
+	 * @return
 	 */
-	public void insertAttachedFileInfo(Skf2010TAttachedFile insertData) {
-		// 添付ファイル情報を登録する
-		skf2010TAttachedFileRepository.insertSelective(insertData);
-		return;
+	@Transactional
+	public boolean updateAttachedFileInfo(String applNo, String shainNo, List<Map<String, Object>> attachedFileList) {
+		// 添付ファイル管理テーブルを更新する
+		Map<String, String> errorMsg = new HashMap<String, String>();
+		if (attachedFileList != null && attachedFileList.size() > 0) {
+			// 一度全削除してデータを入れ直す
+			boolean delRes = skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
+			if (!delRes) {
+				return false;
+			}
+			for (Map<String, Object> attachedFileMap : attachedFileList) {
+				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
+				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
+				int res = skf2010TAttachedFileRepository.insertSelective(insertData);
+				if (res <= 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+			String shainNo) {
+		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
+
+		// 会社コード
+		resultData.setCompanyCd(companyCd);
+		// 社員番号
+		resultData.setShainNo(shainNo);
+		// 登録日時
+		Date nowDate = new Date();
+		resultData.setApplDate(nowDate);
+		// 申請番号
+		resultData.setApplNo(applNo);
+		// 添付番号
+		resultData.setAttachedNo(attachedFileMap.get("attachedNo").toString());
+		// 添付資料名
+		resultData.setAttachedName(attachedFileMap.get("attachedName").toString());
+		// ファイル
+		resultData.setFileStream((byte[]) attachedFileMap.get("fileStream"));
+		// ファイルサイズ
+		resultData.setFileSize(attachedFileMap.get("fileSize").toString());
+
+		return resultData;
 	}
 
 	/**

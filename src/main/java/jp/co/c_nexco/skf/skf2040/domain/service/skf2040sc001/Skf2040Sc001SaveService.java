@@ -143,7 +143,6 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
             skf2040Sc001SharedService.setDisableBtn(saveDto);
             // エラーメッセージ表示
             ServiceHelper.addErrorResultMessage(saveDto, null, MessageIdConstant.E_SKF_2015);
-            throwBusinessExceptionIfErrors(saveDto.getResultMessages());
         }
         
         // 返却立合希望日（時）ドロップダウンリストをDtoに設定
