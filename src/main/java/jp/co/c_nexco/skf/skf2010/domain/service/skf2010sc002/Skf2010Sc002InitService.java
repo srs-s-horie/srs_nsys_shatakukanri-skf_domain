@@ -11,10 +11,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
@@ -24,11 +26,13 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
 
 /**
@@ -49,6 +53,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
 
 	private String sTrue = "true";
 	private String sFalse = "false";
@@ -62,6 +68,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 */
 	@Override
 	public Skf2010Sc002InitDto index(Skf2010Sc002InitDto initDto) throws Exception {
+
+		long dispStart = System.currentTimeMillis();
 
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC002_TITLE);
@@ -120,6 +128,21 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setCommentViewFlag(commetFlg);
 		}
 
+		long startTime = System.currentTimeMillis();
+		LogUtils.debugByMsg("排他用更新日取得テスト： 開始時間　：" + startTime + "ミリ秒");
+		// 排他用更新日取得
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> updateMap = skfBatchUtils
+				.getUpdateDateForUpdateSQL(initDto.getShainNo());
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002, updateMap);
+		long endTime = System.currentTimeMillis();
+		LogUtils.debugByMsg("排他用更新日取得テスト： 終了時間　：" + endTime + "ミリ秒");
+
+		long totalTime = endTime - startTime;
+		LogUtils.debugByMsg("排他用更新日取得テスト： 合計時間　：" + totalTime + "ミリ秒");
+
+		long dispEnd = System.currentTimeMillis();
+		long dispTotalTime = dispEnd - dispStart;
+		LogUtils.debugByMsg("init処理： 合計時間　：" + dispTotalTime + "ミリ秒");
 		return initDto;
 
 	}
