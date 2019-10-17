@@ -16,7 +16,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutAsyncDto;
 
@@ -30,16 +29,12 @@ public class Skf2050Sc001CarryOutAsyncService extends AsyncBaseServiceAbstract<S
 
 	private final String COMPLETION_DAY_LABEL = "搬出完了日";
 	private final String COMMENT_LABEL = "承認者へのコメント";
-	private final String PREFIX_VERIFY_MSG = "搬出完了日が退居日より後ですが";
-	private final String SUFFIX_VERIFY_MSG = "(退居日:";
 
 	@Autowired
 	private Skf2050Sc001SharedService skf2050Sc001SharedService;
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfOperationGuideUtils skfOperationGuideUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 

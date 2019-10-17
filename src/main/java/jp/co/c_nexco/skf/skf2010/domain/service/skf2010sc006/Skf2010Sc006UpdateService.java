@@ -1,14 +1,10 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -18,7 +14,6 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006UpdateDto;
 
 /**
@@ -57,9 +52,16 @@ public class Skf2010Sc006UpdateService extends BaseServiceAbstract<Skf2010Sc006U
 		if (!res) {
 			ServiceHelper.addErrorResultMessage(updDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(updDto.getResultMessages());
+			return updDto;
 		}
-		// TODO 添付ファイル管理テーブル更新処理
-		updateAttachedFileInfo(applNo, updDto.getShainNo(), attachedFileList, updDto);
+		// 添付ファイル管理テーブル更新処理
+		boolean commentRes = skf2010Sc006SharedService.updateAttachedFileInfo(applNo, updDto.getShainNo(),
+				attachedFileList);
+		if (!commentRes) {
+			ServiceHelper.addErrorResultMessage(updDto, null, MessageIdConstant.E_SKF_1073);
+			throwBusinessExceptionIfErrors(updDto.getResultMessages());
+			return updDto;
+		}
 
 		// TODO 社宅管理データ連携処理実行（オンラインバッチ）
 
@@ -70,51 +72,6 @@ public class Skf2010Sc006UpdateService extends BaseServiceAbstract<Skf2010Sc006U
 		updDto.setTransferPageInfo(nextPage);
 
 		return updDto;
-	}
-
-	/**
-	 * @param applNo
-	 * @param shainNo
-	 * @param attachedFileList
-	 * @param updDto
-	 */
-	@Transactional
-	private void updateAttachedFileInfo(String applNo, String shainNo, List<Map<String, Object>> attachedFileList,
-			Skf2010Sc006UpdateDto updDto) {
-		// 添付ファイル管理テーブルを更新する
-		if (attachedFileList != null && attachedFileList.size() > 0) {
-			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
-				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
-				skf2010Sc006SharedService.insertAttachedFileInfo(insertData);
-			}
-		}
-
-	}
-
-	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
-			String shainNo) {
-		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
-
-		// 会社コード
-		resultData.setCompanyCd(companyCd);
-		// 社員番号
-		resultData.setShainNo(shainNo);
-		// 登録日時
-		Date nowDate = new Date();
-		resultData.setApplDate(nowDate);
-		// 申請番号
-		resultData.setApplNo(applNo);
-		// 添付番号
-		resultData.setAttachedNo(attachedFileMap.get("attachedNo").toString());
-		// 添付資料名
-		resultData.setAttachedName(attachedFileMap.get("attachedName").toString());
-		// ファイル
-		resultData.setFileStream((byte[]) attachedFileMap.get("fileStream"));
-		// ファイルサイズ
-		resultData.setFileSize(attachedFileMap.get("fileSize").toString());
-
-		return resultData;
 	}
 
 }
