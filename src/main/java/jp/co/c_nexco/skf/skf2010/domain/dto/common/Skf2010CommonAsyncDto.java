@@ -5,7 +5,7 @@ package jp.co.c_nexco.skf.skf2010.domain.dto.common;
 
 import java.util.List;
 import java.util.Map;
-import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf2010CommonDto extends BaseDto {
+public class Skf2010CommonAsyncDto extends AsyncBaseDto {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,8 +33,6 @@ public class Skf2010CommonDto extends BaseDto {
 	private String level2Open;
 	private String level3Open;
 	private String level4Open;
-	// 同意する表示フラグ
-	private String representBtnFlg = "true";
 
 	// コメント欄表示フラグ
 	private boolean commentAreaVisibled = true;

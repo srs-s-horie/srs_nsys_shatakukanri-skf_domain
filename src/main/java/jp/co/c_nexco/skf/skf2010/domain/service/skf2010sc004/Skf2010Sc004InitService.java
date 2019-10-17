@@ -163,6 +163,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				 */
 				dto.setMaskPattern("PTN_A");
 				dto.setLevel1Open("true");
+				dto.setRepresentBtnFlg("false");
 				break;
 			case CodeConstant.STATUS_KAKUNIN_IRAI:
 				/**
@@ -179,12 +180,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				dto.setMaskPattern("PTN_C");
 				displayLevel = 3;
 				dto.setLevel3Open("true");
+				dto.setRepresentBtnFlg("false");
 				break;
 			}
 		} else if (applId.equals(FunctionIdConstant.R0103)) {
 			// 退居（自動車の保管場所変換）届
 			displayLevel = 4;
 			dto.setLevel4Open("true");
+			dto.setRepresentBtnFlg("false");
 			switch (applStatus) {
 			case CodeConstant.STATUS_SHINSEICHU:
 				// 申請中、審査中
