@@ -227,4 +227,7 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	private MultipartFile tmpFileBoxparking1;
 	private MultipartFile tmpFileBoxparking2;
 	private MultipartFile tmpFileBoxparking3;
+	
+	//複写フラグ
+	private String copyFlg;
 }
