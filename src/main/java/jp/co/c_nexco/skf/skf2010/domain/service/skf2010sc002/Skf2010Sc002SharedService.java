@@ -266,10 +266,14 @@ public class Skf2010Sc002SharedService {
 	 * @param applNo
 	 * @param dto
 	 */
+	/**
+	 * @param shainNo
+	 * @param applNo
+	 * @param dto
+	 */
 	protected void setAttachedFileList(String shainNo, String applNo, Skf2010Sc002CommonDto dto) {
 
 		// 社宅添付ファイル情報の取得
-		List<Skf2010Sc002GetShatakuAttachedFileExp> shatakuAttachedDtList = new ArrayList<Skf2010Sc002GetShatakuAttachedFileExp>();
 		String nyutaikyoKbn = CodeConstant.NONE;
 		switch (dto.getPrePageId()) {
 		case FunctionIdConstant.SKF2020_SC002:
@@ -282,70 +286,79 @@ public class Skf2010Sc002SharedService {
 			nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_TAIKYO;
 			break;
 		}
-		shatakuAttachedDtList = getshatakuAttachedDt(shainNo, nyutaikyoKbn, applNo);
 
-		// 社宅添付ファイル情報の設定
-		Skf2010Sc002GetShatakuAttachedFileExp shatakuAttachedDt = new Skf2010Sc002GetShatakuAttachedFileExp();
-		shatakuAttachedDt = shatakuAttachedDtList.get(0);
+		List<Skf2010Sc002GetShatakuAttachedFileExp> shatakuAttachedDtList = new ArrayList<Skf2010Sc002GetShatakuAttachedFileExp>();
+		shatakuAttachedDtList = getshatakuAttachedDt(shainNo, nyutaikyoKbn, applNo, shatakuAttachedDtList);
 
 		// 既存の添付資料をクリアする
+		Skf2010Sc002GetShatakuAttachedFileExp shatakuAttachedDt = new Skf2010Sc002GetShatakuAttachedFileExp();
 		List<Map<String, Object>> shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
 
-		// 社宅補足ファイル1
-		if (shatakuAttachedDt.getShatakuSupplementFile1() != null
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName1())
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize1())) {
-			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName1(),
-					shatakuAttachedDt.getShatakuSupplementFile1(), shatakuAttachedDt.getShatakuSupplementSize1(),
-					shatakuAttachedFileList.size(), shatakuAttachedFileList);
-		}
-		// 社宅補足ファイル2
-		if (shatakuAttachedDt.getShatakuSupplementFile2() != null
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName2())
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize2())) {
-			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName2(),
-					shatakuAttachedDt.getShatakuSupplementFile2(), shatakuAttachedDt.getShatakuSupplementSize2(),
-					shatakuAttachedFileList.size(), shatakuAttachedFileList);
-		}
-		// 社宅補足ファイル3
-		if (shatakuAttachedDt.getShatakuSupplementFile3() != null
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName3())
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize3())) {
-			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName3(),
-					shatakuAttachedDt.getShatakuSupplementFile3(), shatakuAttachedDt.getShatakuSupplementSize3(),
-					shatakuAttachedFileList.size(), shatakuAttachedFileList);
-		}
-		// 駐車場補足ファイル1
-		if (shatakuAttachedDt.getParkingSupplementFile1() != null
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName1())
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize1())) {
-			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName1(),
-					shatakuAttachedDt.getParkingSupplementFile1(), shatakuAttachedDt.getParkingSupplementSize1(),
-					shatakuAttachedFileList.size(), shatakuAttachedFileList);
-		}
-		// 駐車場補足ファイル2
-		if (shatakuAttachedDt.getParkingSupplementFile2() != null
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName2())
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize2())) {
-			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName2(),
-					shatakuAttachedDt.getParkingSupplementFile2(), shatakuAttachedDt.getParkingSupplementSize2(),
-					shatakuAttachedFileList.size(), shatakuAttachedFileList);
-		}
-		// 駐車場補足ファイル3
-		if (shatakuAttachedDt.getParkingSupplementFile3() != null
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName3())
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize3())) {
-			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName3(),
-					shatakuAttachedDt.getParkingSupplementFile3(), shatakuAttachedDt.getParkingSupplementSize3(),
-					shatakuAttachedFileList.size(), shatakuAttachedFileList);
-		}
-		// 資料補足ファイル
-		if (shatakuAttachedDt.getShiryoHosokuFile() != null
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuName())
-				&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuSize())) {
-			skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShiryoHosokuName(),
-					shatakuAttachedDt.getShiryoHosokuFile(), shatakuAttachedDt.getShiryoHosokuSize(),
-					shatakuAttachedFileList.size(), shatakuAttachedFileList);
+		if (shatakuAttachedDtList.size() > 0) {
+
+			// shatakuAttachedDtList = getshatakuAttachedDt(shainNo,
+			// nyutaikyoKbn,
+			// applNo);
+
+			// 社宅添付ファイル情報の設定
+			shatakuAttachedDt = shatakuAttachedDtList.get(0);
+
+			// 社宅補足ファイル1
+			if (shatakuAttachedDt.getShatakuSupplementFile1() != null
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName1())
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize1())) {
+				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName1(),
+						shatakuAttachedDt.getShatakuSupplementFile1(), shatakuAttachedDt.getShatakuSupplementSize1(),
+						shatakuAttachedFileList.size(), shatakuAttachedFileList);
+			}
+			// 社宅補足ファイル2
+			if (shatakuAttachedDt.getShatakuSupplementFile2() != null
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName2())
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize2())) {
+				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName2(),
+						shatakuAttachedDt.getShatakuSupplementFile2(), shatakuAttachedDt.getShatakuSupplementSize2(),
+						shatakuAttachedFileList.size(), shatakuAttachedFileList);
+			}
+			// 社宅補足ファイル3
+			if (shatakuAttachedDt.getShatakuSupplementFile3() != null
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName3())
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize3())) {
+				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName3(),
+						shatakuAttachedDt.getShatakuSupplementFile3(), shatakuAttachedDt.getShatakuSupplementSize3(),
+						shatakuAttachedFileList.size(), shatakuAttachedFileList);
+			}
+			// 駐車場補足ファイル1
+			if (shatakuAttachedDt.getParkingSupplementFile1() != null
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName1())
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize1())) {
+				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName1(),
+						shatakuAttachedDt.getParkingSupplementFile1(), shatakuAttachedDt.getParkingSupplementSize1(),
+						shatakuAttachedFileList.size(), shatakuAttachedFileList);
+			}
+			// 駐車場補足ファイル2
+			if (shatakuAttachedDt.getParkingSupplementFile2() != null
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName2())
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize2())) {
+				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName2(),
+						shatakuAttachedDt.getParkingSupplementFile2(), shatakuAttachedDt.getParkingSupplementSize2(),
+						shatakuAttachedFileList.size(), shatakuAttachedFileList);
+			}
+			// 駐車場補足ファイル3
+			if (shatakuAttachedDt.getParkingSupplementFile3() != null
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName3())
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize3())) {
+				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName3(),
+						shatakuAttachedDt.getParkingSupplementFile3(), shatakuAttachedDt.getParkingSupplementSize3(),
+						shatakuAttachedFileList.size(), shatakuAttachedFileList);
+			}
+			// 資料補足ファイル
+			if (shatakuAttachedDt.getShiryoHosokuFile() != null
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuName())
+					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuSize())) {
+				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShiryoHosokuName(),
+						shatakuAttachedDt.getShiryoHosokuFile(), shatakuAttachedDt.getShiryoHosokuSize(),
+						shatakuAttachedFileList.size(), shatakuAttachedFileList);
+			}
 		}
 
 		menuScopeSessionBean.put(SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY, shatakuAttachedFileList);
@@ -380,17 +393,19 @@ public class Skf2010Sc002SharedService {
 	 * @param shainNo
 	 * @param nyutaikyoKbn
 	 * @param applNo
+	 * @param shatakuAttachedDtList
 	 * @return
 	 */
 	private List<Skf2010Sc002GetShatakuAttachedFileExp> getshatakuAttachedDt(String shainNo, String nyutaikyoKbn,
-			String applNo) {
-		List<Skf2010Sc002GetShatakuAttachedFileExp> teijiDataList = new ArrayList<Skf2010Sc002GetShatakuAttachedFileExp>();
+			String applNo, List<Skf2010Sc002GetShatakuAttachedFileExp> shatakuAttachedDtList) {
+
 		Skf2010Sc002GetShatakuAttachedFileExpParameter param = new Skf2010Sc002GetShatakuAttachedFileExpParameter();
 		param.setShainNo(shainNo);
 		param.setNyutaikyoKbn(nyutaikyoKbn);
 		param.setApplNo(applNo);
-		teijiDataList = skf2010Sc002GetShatakuAttachedFileExpRepository.getShatakuAttachedFile(param);
-		return teijiDataList;
+		shatakuAttachedDtList = skf2010Sc002GetShatakuAttachedFileExpRepository.getShatakuAttachedFile(param);
+
+		return shatakuAttachedDtList;
 	}
 
 }

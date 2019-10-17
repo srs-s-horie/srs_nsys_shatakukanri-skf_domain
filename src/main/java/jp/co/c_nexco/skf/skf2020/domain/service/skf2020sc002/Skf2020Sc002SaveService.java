@@ -54,16 +54,6 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		String newStatus = CodeConstant.STATUS_ICHIJIHOZON;
 		applInfo.put("newStatus", newStatus);
 
-		// 画面表示項目の保持
-		skf2020Sc002SharedService.setInfo(saveDto);
-		// 返却備品の設定
-		skf2020Sc002SharedService.setReturnBihinInfo(saveDto, Skf2020Sc002SharedService.UPDATE_FLG);
-		// 画面表示制御再設定
-		skf2020Sc002SharedService.setControlValue(saveDto);
-
-		// バイトカット処理
-		skf2020Sc002SharedService.cutByte(saveDto);
-
 		// 一時保存処理
 		if (!skf2020Sc002SharedService.saveInfo(applInfo, saveDto)) {
 			return saveDto;
