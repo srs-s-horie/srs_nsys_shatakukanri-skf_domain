@@ -45,8 +45,6 @@ public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002Ini
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
-		// 契約情報変更モード
-		String selectMode = Skf3010Sc002CommonDto.CONTRACT_MODE_INIT;
 		// DTO初期化
 		// 選択タブインデックス
 		initDto.setHdnNowSelectTabIndex(null);
@@ -54,10 +52,8 @@ public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002Ini
 		initDto.setHdnChangeContractSelectedIndex(null);
 		// 削除済み契約番号初期化
 		initDto.setHdnDeleteContractSelectedValue(null);
-
 		// 保有社宅登録情報設定
-		skf3010Sc002SharedService.setHoyuShatakuInfo(selectMode, "", initDto);
-
+		skf3010Sc002SharedService.setHoyuShatakuInfo("", initDto);
 		// 選択タブインデックス設定：基本情報タブ
 		initDto.setHdnNowSelectTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON);
 
