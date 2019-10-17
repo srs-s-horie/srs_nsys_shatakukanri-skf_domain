@@ -18,16 +18,21 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
+import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
 
 /**
@@ -44,6 +49,11 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfMailUtils skfMailUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
+
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
 
@@ -258,12 +268,14 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 			applInfoBihin.put("applId", FunctionIdConstant.R0104);
 			applInfoBihin.put("applShainNo", shainNo);
 
-			PropertyUtils.getValue("skf2010.skf2010_sc004.mail_bihin_kibo");
+			// 案内文取得
+			String annai = PropertyUtils.getValue("skf2010.skf2010_sc004.mail_bihin_kibo");
+
+			String urlBase = "/skf/Skf2010Sc005/init";
 
 			// メール送信
-			// skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI,
-			// applInfoBihin, agreeDto.getCommentNote(), annai,
-			// shainNo, CodeConstant.NONE, urlBase);
+			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, agreeDto.getCommentNote(), annai,
+					shainNo, CodeConstant.NONE, urlBase);
 
 			// 備品申請の申請書類管理番号をセットされている場合は自動遷移のダイアログ表示
 			if (NfwStringUtils.isNotEmpty(applNoBihinShinsei)) {
