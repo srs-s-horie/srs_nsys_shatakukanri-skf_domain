@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
@@ -64,7 +65,7 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 		setApplDateDefault(initDto);
 
 		// オペレーションガイド取得
-		String operationGuide = skfOperationGuideUtils.getOperationGuide(initDto.getPageId());
+		String operationGuide = skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2010_SC003);
 		initDto.setOperationGuide(operationGuide);
 
 		// チェックボックスの選択

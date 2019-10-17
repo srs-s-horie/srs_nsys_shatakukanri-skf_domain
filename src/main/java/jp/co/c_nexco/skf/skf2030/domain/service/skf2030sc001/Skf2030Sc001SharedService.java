@@ -348,7 +348,7 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
-	public void setEnabled(Skf2030Sc001CommonDto initDto, Map<String, String> applInfo) {
+	public void setEnabled(Skf2030Sc001CommonDto dto, Map<String, String> applInfo) {
 		// ステータスによりコントロールの活性制御を行う
 		// 画面権限等の設定による制御もあるため、非表示化・非活性化のみ行う
 		switch (applInfo.get("status")) {
@@ -357,25 +357,25 @@ public class Skf2030Sc001SharedService {
 		case CodeConstant.STATUS_SASHIMODOSHI:
 			// 申請状況が「一時保存」「未作成」「差戻し」の場合
 			// 「申請内容（入力用）」の活性・非活性制御
-			initDto.setBihinReadOnly(false);
-			initDto.setStatus01Flag(false);
+			dto.setBihinReadOnly(false);
+			dto.setStatus01Flag(false);
 			break;
 		case CodeConstant.STATUS_SHINSEICHU:
-			initDto.setBihinReadOnly(false);
+			dto.setBihinReadOnly(false);
 			// 「申請中」の場合は入力項目は全て非活性
 			// コメント欄は非表示
-			initDto.setStatus01Flag(true);
-			initDto.setMaskPattern("ST01");
+			dto.setStatus01Flag(true);
+			dto.setMaskPattern("ST01");
 			break;
 		case CodeConstant.STATUS_HANNYU_MACHI:
-			initDto.setBihinReadOnly(true);
-			initDto.setCompletionDayDisabled(false);
-			initDto.setStatus24Flag(false);
+			dto.setBihinReadOnly(true);
+			dto.setCompletionDayDisabled(false);
+			dto.setStatus24Flag(false);
 			break;
 		default:
-			initDto.setBihinReadOnly(true);
-			initDto.setCompletionDayDisabled(true);
-			initDto.setStatus24Flag(true);
+			dto.setBihinReadOnly(true);
+			dto.setCompletionDayDisabled(true);
+			dto.setStatus24Flag(true);
 			break;
 		}
 
@@ -579,6 +579,9 @@ public class Skf2030Sc001SharedService {
 		String bihinStateText = bihinInfoMap.get(bihinInfo.getBihinState());
 		String bihinApplText = bihinApplMap.get(bihinAppl);
 		String bihinAdjustText = bihinAdjustMap.get(bihinInfo.getBihinAdjust());
+		if (NfwStringUtils.isEmpty(bihinAdjustText)) {
+			bihinAdjustText = CodeConstant.HYPHEN;
+		}
 
 		switch (bihinCd) {
 		case CodeConstant.BIHIN_WASHER:

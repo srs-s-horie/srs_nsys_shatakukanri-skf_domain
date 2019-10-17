@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
-import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001AgreeDto;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001NotAgreeDto;
@@ -122,17 +119,6 @@ public class Skf2050Sc001NotAgreeService extends BaseServiceAbstract<Skf2050Sc00
 			result = false;
 		}
 		return result;
-
-	}
-
-	/**
-	 * 
-	 * @param initDto
-	 */
-	private void setErr(Skf2050Sc001AgreeDto initDto) {
-		// 「同意する」「同意しない」「搬出完了」ボタンを非活性化
-		initDto.setMaskPattern("ERR");
-		return;
 
 	}
 

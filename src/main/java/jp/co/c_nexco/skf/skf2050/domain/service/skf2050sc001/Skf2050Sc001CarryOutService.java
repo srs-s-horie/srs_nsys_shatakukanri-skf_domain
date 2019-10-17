@@ -3,25 +3,14 @@
  */
 package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
-import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutDto;
 
 /**
@@ -32,20 +21,8 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutDto
 @Service
 public class Skf2050Sc001CarryOutService extends BaseServiceAbstract<Skf2050Sc001CarryOutDto> {
 
-	private final String COMPLETION_DAY_LABEL = "搬出完了日";
-	private final String COMMENT_LABEL = "承認者へのコメント";
-	private final String PREFIX_VERIFY_MSG = "搬出完了日が退居日より後ですが";
-	private final String SUFFIX_VERIFY_MSG = "(退居日:";
-
 	@Autowired
 	private Skf2050Sc001SharedService skf2050Sc001SharedService;
-
-	@Autowired
-	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfOperationGuideUtils skfOperationGuideUtils;
-	@Autowired
-	private SkfDateFormatUtils skfDateFormatUtils;
 
 	/**
 	 * サービス処理を行う。
