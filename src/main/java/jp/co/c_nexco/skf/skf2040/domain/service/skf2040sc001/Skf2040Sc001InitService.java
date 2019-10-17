@@ -137,7 +137,6 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
             skf2040Sc001SharedService.setDisableBtn(initDto);
             // エラーメッセージ表示
             ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_2005);
-            throwBusinessExceptionIfErrors(initDto.getResultMessages());
         }
 
         initDto.setGender(shainInfo.getGender());
@@ -181,16 +180,16 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
         // 退居届情報を設定
         this.setTaikyoInfo(initDto);
         
+        //　ボタン項目の活性制御
+        this.setInputControl(initDto);
+        
         // ドロップダウンリスト情報を設定
         this.setDropdownList(initDto);
         
         // 要返却備品情報を取得
-        this.setReturnBihinInfo(initDto, false);
+        this.setReturnBihinInfo(initDto);
         
-        //入力項目の活性制御
-        this.setInputControl(initDto);
-        
-        //社宅情報を取得
+        //　社宅情報を取得
         this.setShatakuInfo(initDto);
         
         // コメント設定の有無
@@ -219,7 +218,6 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
             skf2040Sc001SharedService.setDisableBtn(initDto);
             // エラーメッセージ表示
             ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_2015);
-            throwBusinessExceptionIfErrors(initDto.getResultMessages());
         }
         
         // 返却立合希望日（時）ドロップダウンリストをDtoに設定
@@ -238,10 +236,10 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
         commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), null);
         if (commentList == null || commentList.size() <= 0) {
             // コメントが無ければ非表示
-            initDto.setCommentViewFlag(Skf2040Sc001SharedService.FALSE);
+            initDto.setCommentViewFlag(false);
         } else {
             // コメントがあれば表示
-            initDto.setCommentViewFlag(Skf2040Sc001SharedService.TRUE);
+            initDto.setCommentViewFlag(true);
         }
     }
     
@@ -256,9 +254,8 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
      * htmlBihinCreateTableに作成したbihinItemNameListと、表示したい列数を渡す
      * 
      * @param initDto
-     * @param isUpdate
      */
-    protected void setReturnBihinInfo(Skf2040Sc001InitDto dto, boolean isUpdate) {
+    protected void setReturnBihinInfo(Skf2040Sc001InitDto dto) {
 
         // 返却備品有無に「0:備品返却しない」を設定
         dto.setHdnBihinHenkyakuUmu(CodeConstant.BIHIN_HENKYAKU_SHINAI);
@@ -266,14 +263,7 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
         // 社宅管理番号の設定
         long shatakuKanriId = CodeConstant.LONG_ZERO;
 
-        if (!isUpdate) {
-            shatakuKanriId = dto.getShatakuKanriId();
-        } else {
-            // 選択したプルダウンの値
-            if (NfwStringUtils.isNotBlank(dto.getNowShatakuName())) {
-                shatakuKanriId = Long.parseLong(dto.getNowShatakuName());
-            }
-        }
+        shatakuKanriId = dto.getShatakuKanriId();
 
         // 備品状態が2:保有備品または3:レンタルの表示の備品取得
         List<Skf2040Sc001GetBihinItemToBeReturnExp> resultBihinItemList = new ArrayList<Skf2040Sc001GetBihinItemToBeReturnExp>();
@@ -287,7 +277,7 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 
             // 【ラベル部分】
             // 要返却備品の取得
-            List<String> bihinItemList = new ArrayList<String>();
+            List<String> bihinItemList;
             List<List<String>> bihinItemNameList = new ArrayList<List<String>>();
             for (Skf2040Sc001GetBihinItemToBeReturnExp bihinItemInfo : resultBihinItemList) {
                 // 表示・値を設定
@@ -356,18 +346,18 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
                 initDto.getShainNo(), FunctionIdConstant.R0103, initDto.getApplNo())) {
             // 申請不可の場合
             // 確認ボタン非活性
-            initDto.setBtnCheckDisabled(Skf2040Sc001SharedService.TRUE);
+            initDto.setBtnCheckDisabled(true);
             // 一時保存ボタン非活性
-            initDto.setBtnSaveDisabled(Skf2040Sc001SharedService.TRUE);
+            initDto.setBtnSaveDisabled(true);
             // クリアボタン非表示
-            initDto.setBtnClearRemoved(Skf2040Sc001SharedService.TRUE);
+            initDto.setBtnClearRemoved(true);
         } else {
             // 確認ボタン活性
-            initDto.setBtnCheckDisabled(Skf2040Sc001SharedService.FALSE);
+            initDto.setBtnCheckDisabled(false);
             // 一時保存ボタン活性
-            initDto.setBtnSaveDisabled(Skf2040Sc001SharedService.FALSE);
+            initDto.setBtnSaveDisabled(false);
             // クリアボタン表示
-            initDto.setBtnClearRemoved(Skf2040Sc001SharedService.FALSE);
+            initDto.setBtnClearRemoved(false);
         }
     }
 }
