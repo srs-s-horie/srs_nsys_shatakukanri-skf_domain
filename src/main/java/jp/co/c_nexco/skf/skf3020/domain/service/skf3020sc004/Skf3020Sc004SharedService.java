@@ -156,7 +156,7 @@ public class Skf3020Sc004SharedService {
 
 		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
 
-		// 入退去予定作成区分を取得
+		// 入退居予定作成区分を取得
 		Map<String, String> genericCodeMapNyutaikyoYoteiKbn = new HashMap<String, String>();
 		genericCodeMapNyutaikyoYoteiKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_NYUTAIKYO_YOTEI_KBN);
 		
@@ -194,7 +194,7 @@ public class Skf3020Sc004SharedService {
 			}
 			tmpMap.put("col11", HtmlUtils.htmlEscape(takingDateStr));			
 			
-			// 入退去予定作成区分
+			// 入退居予定作成区分
 			// 汎用コードに変更
 			String NyutaikyoYoteiKbn = "";
 			if (tmpData.getNyutaikyoYoteiKbn() != null) {
@@ -333,7 +333,7 @@ public class Skf3020Sc004SharedService {
 	}
 
 	/**
-	 * 退去チェックボックスを生成
+	 * 退居チェックボックスを生成
 	 * 
 	 * @param taikyoFlg
 	 * @param enabled

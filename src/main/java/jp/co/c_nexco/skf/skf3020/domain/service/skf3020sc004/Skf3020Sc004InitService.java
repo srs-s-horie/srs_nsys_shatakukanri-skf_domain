@@ -151,7 +151,7 @@ public class Skf3020Sc004InitService extends BaseServiceAbstract<Skf3020Sc004Ini
 		// チェックボックスの状態を取得
 		// ― 入居
 		String nyukyoStr = skf3020Sc004SharedService.checkBoxcheck(initDto.getNyukyo());
-		// ― 退去
+		// ― 退居
 		String taikyoStr = skf3020Sc004SharedService.checkBoxcheck(initDto.getTaikyo());
 		// - 変更
 		String henkoStr = skf3020Sc004SharedService.checkBoxcheck(initDto.getHenko());
