@@ -1035,7 +1035,7 @@ public class Skf2020Sc003SharedService {
 		// なければ備品希望申請の書類管理番号を新規発行
 		if (NfwStringUtils.isEmpty(bihinShinseiApplNo)) {
 			// 備品希望申請用の申請書類管理番号を取得
-			bihinShinseiApplNo = skfShinseiUtils.getApplNo(companyCd, dto.getShainNo(), dto.getApplId());
+			bihinShinseiApplNo = skfShinseiUtils.getApplNo(companyCd, dto.getShainNo(), FunctionIdConstant.R0104);
 
 			Skf2030TBihinKiboShinsei record = getColumnInfoListForBihinKiboShinsei(bihinShinseiApplNo, applDate, applNo,
 					dto);
@@ -1237,6 +1237,12 @@ public class Skf2020Sc003SharedService {
 
 		// 等級
 		columnInfoList.setTokyu(dto.getTokyu());
+
+		// 性別
+		String genderText = dto.getGender();
+		Map<String, String> genderMap = skfGenericCodeUtils
+				.getGenericCodeReverse(FunctionIdConstant.GENERIC_CODE_GENDER);
+		columnInfoList.setGender(genderMap.get(genderText));
 
 		// 社宅情報 社宅名
 		columnInfoList.setNowShatakuName(dto.getNewShatakuName());
