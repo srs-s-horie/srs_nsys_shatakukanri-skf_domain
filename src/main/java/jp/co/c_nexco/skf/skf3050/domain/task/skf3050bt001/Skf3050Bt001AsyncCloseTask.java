@@ -19,7 +19,6 @@ import jp.co.c_nexco.ptp.common.constants.CommonConstant;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.skf3050.domain.service.skf3050sc001.Skf3050Sc001SharedService;
 
 /**
  * Skf3050Bt001AsyncCloseTask 締め処理（オンラインバッチ）クラス
@@ -56,7 +55,7 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 
 		List<String> endList = setEndList();
 
-		if (paramMap.size() == 0 || paramMap.size() != Skf3050Sc001SharedService.PARAMETER_NUM) {
+		if (paramMap.size() == 0 || paramMap.size() != Skf3050Bt001SharedTask.PARAMETER_NUM) {
 			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Bt001SharedTask.outputManagementLogEndProc(endList, sysDate);
 			return;
@@ -66,14 +65,14 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 
 		int registResult = skf3050Bt001SharedTask.registBatchControl(paramMap, sysDate, endList);
 
-		if (Skf3050Sc001SharedService.RETURN_STATUS_NG == registResult) {
+		if (Skf3050Bt001SharedTask.RETURN_STATUS_NG == registResult) {
 			return;
 		}
 
 		String result = skf3050Bt001SharedTask.updateTsukibetsuTsukiji(paramMap, endList);
 
-		Integer dbPrcRtn = skf3050Bt001SharedTask.endProc(result, paramMap.get(Skf3050Sc001SharedService.COMPANY_CD),
-				Skf3050Sc001SharedService.BATCH_ID_B5001, SkfCommonConstant.PROCESSING);
+		Integer dbPrcRtn = skf3050Bt001SharedTask.endProc(result, paramMap.get(Skf3050Bt001SharedTask.COMPANY_CD),
+				Skf3050Bt001SharedTask.BATCH_ID_B5001, SkfCommonConstant.PROCESSING);
 
 		if (dbPrcRtn > 0) {
 			skf3050Bt001SharedTask.outputManagementLogEndProc(endList, null);
@@ -99,8 +98,8 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 
 		String shoriNengetsu = CodeConstant.HYPHEN;
 
-		if (prm.size() >= Skf3050Sc001SharedService.PARAMETER_NUM) {
-			shoriNengetsu = prm.get(Skf3050Sc001SharedService.SHORI_NENGETSU);
+		if (prm.size() >= Skf3050Bt001SharedTask.PARAMETER_NUM) {
+			shoriNengetsu = prm.get(Skf3050Bt001SharedTask.SHORI_NENGETSU);
 		}
 
 		String log_2 = "対象年月：" + shoriNengetsu;
