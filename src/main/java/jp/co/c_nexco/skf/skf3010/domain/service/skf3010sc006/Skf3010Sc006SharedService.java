@@ -24,8 +24,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetHoyuShatakuInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetMaxShatakuKanriNoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockHistroyCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomBihinExlusiveCntrlExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuContExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuContractInfoTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuRoomExlusiveCntrlExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetBihinInfoExp;
@@ -40,8 +42,12 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetContractInfoTableDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetMaxParkingKanriNoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetMaxShatakuKanriNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomBihinExlusiveCntrTableDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetTeijiDataCountForParkingBlockExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006GetBihinInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006GetKihonInfoExpRepository;
@@ -102,6 +108,14 @@ public class Skf3010Sc006SharedService {
 	@Autowired
 	private Skf3010Sc006GetNewParkingKanriNoExpRepository skf3010Sc006GetNewParkingKanriNoExpRepository;
 	@Autowired
+	private Skf3010Sc002GetShatakuCountExpRepository skf3010Sc002GetShatakuCountExpRepository;
+	@Autowired
+	private Skf3010Sc002GetMaxParkingKanriNoExpRepository skf3010Sc002GetMaxParkingKanriNoExpRepository;
+	@Autowired
+	private Skf3010Sc002GetMaxShatakuKanriNoExpRepository skf3010Sc002GetMaxShatakuKanriNoExpRepository;
+	@Autowired
+	private Skf3010Sc002GetShatakuInfoExpRepository skf3010Sc002GetShatakuInfoExpRepository;
+	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
@@ -120,6 +134,11 @@ public class Skf3010Sc006SharedService {
 	private static final String SHATAKU_HOSOKU_LINK = "attached_shataku";
 	// 駐車場補足プレフィックス
 	private static final String PARKING_HOSOKU_LINK = "attached_parking";
+	// 備品備付状況デフォルト値(なし)
+	private static final String DEFAULT_BIHIN_STATUS = "1";
+	// 日付フォーマット
+	public static final String DATE_FORMAT = "yyyyMMdd HH:mm:ss.SSS";
+
 	//条件
 	private final static String TRUE = "true";
 	private final static String FALSE = "false";
@@ -129,7 +148,78 @@ public class Skf3010Sc006SharedService {
 	public static final String CONTRACT_TYPE_2 = "2";
 	//駐車場構造区分
 	public static final String PARKING_NASHI = "5";
+	
+	/**
+	 * 次社宅管理番号取得
+	 * パラメータのシステム処理年月をプリフィックスとする
+	 * 社宅管理番号最大値を取得し、1加算した値を返却する
+	 * 
+	 * @param shoriNengetsu	処理年月
+	 * @return	次社宅管理番号
+	 */
+	public Long getNextShatakuKanriNo(String shoriNengetsu) {
 
+		Long nextShatakuKanriNo = null;
+		Long maxShatakuKanriNo = null;
+		// 社宅管理番号指定時のみDBから最大値を取得する
+		Skf3010Sc002GetMaxShatakuKanriNoExpParameter param = new Skf3010Sc002GetMaxShatakuKanriNoExpParameter();
+		param.setSyoriNengetu(shoriNengetsu);
+		maxShatakuKanriNo = skf3010Sc002GetMaxShatakuKanriNoExpRepository.getMaxShatakuKanriNo(param);
+		if (maxShatakuKanriNo != null) {
+			nextShatakuKanriNo = maxShatakuKanriNo + 1L;
+		} else {
+			nextShatakuKanriNo = Long.parseLong(shoriNengetsu + "0001");
+		}
+		param = null;
+		return nextShatakuKanriNo;
+	}
+
+	/**
+	 * 次駐車場管理番号取得
+	 * 駐車場区画情報の駐車場管理番号の最大値を取得し、1加算した値を返却する
+	 * 
+	 * @param shatakuKanriNo	社宅管理番号
+	 * @return	次駐車場管理番号
+	 */
+	public Long getNextParkingKanriNo(String shatakuKanriNo) {
+
+		Long nextParkingKanriNo = 1L;
+		Long maxParkingKanriNo = null;
+		// 社宅管理番号判定
+		if (shatakuKanriNo != null && shatakuKanriNo.length() > 0) {
+			// 社宅管理番号指定時のみDBから最大値を取得する
+			Skf3010Sc002GetHoyuShatakuInfoExpParameter param = new Skf3010Sc002GetHoyuShatakuInfoExpParameter();
+			param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
+	
+			maxParkingKanriNo = skf3010Sc002GetMaxParkingKanriNoExpRepository.getMaxParkingKanriNo(param);
+			if (maxParkingKanriNo != null) {
+				nextParkingKanriNo = maxParkingKanriNo + 1L;
+			}
+			param = null;
+		}
+		return nextParkingKanriNo;
+	}
+
+	/**
+	 * 社宅件数取得。<br>
+	 * パラメータの社宅名、都道府県コード、社宅住所に一致する社宅件数をDBより取得する。
+	 * 
+	 * @param shatakuName		社宅名
+	 * @param prefCd			都道府県コード
+	 * @param shatakuAddress	社宅住所
+	 * @return	社宅件数
+	 */
+	public int getShatakuCountFromNameAndAddress(String shatakuName, String prefCd, String shatakuAddress) {
+		int shatakuCnt = 0;
+		Skf3010Sc002GetShatakuContExpParameter param = new Skf3010Sc002GetShatakuContExpParameter();
+		param.setShatakuName(shatakuName);
+		param.setPrefCd(prefCd);
+		param.setShatakuAddress(shatakuAddress);
+		shatakuCnt = skf3010Sc002GetShatakuCountExpRepository.getShatakuCountFromNameAndAddress(param);
+		param = null;
+		return shatakuCnt;
+	}
+	
 //	/**
 //	 * 駐車場区画貸与履歴数取得。<br>
 //	 * パラメータの社宅管理番号、駐車場管理番号の貸与履歴数をDBより取得する。
@@ -482,11 +572,6 @@ public class Skf3010Sc006SharedService {
 					contractMap.put("selected", true);
 					setSelectedValue = true;
 				}
-//				else if (Skf3010Sc002CommonDto.CONTRACT_MODE_DEL.equals(selectMode)) {
-//					// 削除対象の為、契約情報番号リストに追加しない
-//					contractMap = null;
-//					continue;
-//				}
 			}
 			// 削除済み契約番号除外判定
 			try {
@@ -806,7 +891,7 @@ public class Skf3010Sc006SharedService {
 	 * @param slectValueList	選択値リスト
 	 * @return	プルダウンの中身
 	 */
-	private String createStatusSelect(
+	public String createStatusSelect(
 			String selectedValue,List<Map<String, Object>> slectValueList){
 
 		String returnListCode = "";
@@ -946,7 +1031,7 @@ public class Skf3010Sc006SharedService {
 		List<Map<String, Object>> statusList = ddlUtils.getGenericForDoropDownList(
 							FunctionIdConstant.GENERIC_CODE_BIHINSTATUS_KBN, "",false);
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
+		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
 		for (int i = 0; i < originList.size(); i++) {
 			/** DTO設定用 */
@@ -955,7 +1040,7 @@ public class Skf3010Sc006SharedService {
 			// 備品名
 			String bihinName = "";
 			// 備付状況選択値
-			String bihinStatus = "0";
+			String bihinStatus = DEFAULT_BIHIN_STATUS;
 
 			Skf3010Sc006GetBihinInfoExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
@@ -974,9 +1059,6 @@ public class Skf3010Sc006SharedService {
 				// 「備付状況」選択値
 				if (tmpData.getBihinStatusKbn() != null) {
 					bihinStatus = tmpData.getBihinStatusKbn();
-				}else{
-					//未指定時は「なし(0)」を選択
-					bihinStatus = "0";
 				}
 
 				// 備付状況
@@ -1011,7 +1093,7 @@ public class Skf3010Sc006SharedService {
 
 		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
+		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
 		for (int i = 0; i < originList.size(); i++) {
 			/** DTO設定用 */
@@ -1020,7 +1102,7 @@ public class Skf3010Sc006SharedService {
 			// 備品名
 			String bihinName = "";
 			// 備付状況選択値
-			String bihinStatus = "0";
+			String bihinStatus = DEFAULT_BIHIN_STATUS;
 
 			Skf3010Sc006GetBihinInfoExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
@@ -1040,9 +1122,6 @@ public class Skf3010Sc006SharedService {
 				// 「備付状況」選択値
 				if (tmpData.getBihinStatusKbn() != null) {
 					bihinStatus = tmpData.getBihinStatusKbn();
-				}else{
-					//未指定時は「なし(1)」を選択
-					bihinStatus = "1";
 				}
 				tmpMap.put("bihinStatusKbn",bihinStatus);
 				
@@ -1700,9 +1779,10 @@ public class Skf3010Sc006SharedService {
 	 * @param deletedConstractNo		削除済み契約番号
 	 * @param selectMode				契約情報変更モード
 	 * @param initDto					*DTO
+	 * @throws ParseException 
 	 */
 	private void setContractInfo(String shatakuKanriNo, String contractSelectedIndex,
-					String deletedConstractNo, String selectMode, Skf3010Sc006CommonDto initDto) {
+					String deletedConstractNo, String selectMode, Skf3010Sc006CommonDto initDto) throws ParseException {
 
 		// 契約情報リスト
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
@@ -1776,10 +1856,12 @@ public class Skf3010Sc006SharedService {
 			}
 		}
 		// 選択契約情報取得
-		for (Map<String, Object> contractDataMap : listTableData) {
-			if (contractDataMap.get("contractNo").equals(selectIndex)) {
-				contractMap = contractDataMap;
-				break;
+		if (contractNoList.size() > 0) {
+			for (Map<String, Object> contractDataMap : listTableData) {
+				if (contractDataMap.get("contractNo").equals(selectIndex)) {
+					contractMap = contractDataMap;
+					break;
+				}
 			}
 		}
 
@@ -1819,7 +1901,6 @@ public class Skf3010Sc006SharedService {
 		if (contractMap.get("biko") != null) {
 			biko = contractMap.get("biko").toString();
 		}
-		contractMap = null;
 
 		/** 契約情報設定 */
 		initDto.setContractNoList(null);
@@ -1853,9 +1934,15 @@ public class Skf3010Sc006SharedService {
 		initDto.setContractAddDisableFlg(contractAddDisableFlg);
 		initDto.setContractDelDisableFlg(contractDelDisableFlg);
 		initDto.setHdnDispContractSelectedIndex(selectIndex);
+		// 更新日時
+		if (contractMap.get("updateDate") != null && contractMap.get("updateDate").toString().length() > 0) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+			initDto.setContractUpdateDate(dateFormat.parse(contractMap.get("updateDate").toString()));
+		}
 		// 解放
 		listTableData = null;
 		contractNoList = null;
+		contractMap = null;
 	}
 
 	/**
@@ -2286,7 +2373,11 @@ public class Skf3010Sc006SharedService {
 		// 駐車場補足ファイル3
 		byte[] parkingSupplementFile3 = null;
 		// 駐車場備考
-		String parkingBiko = "";
+		String parkingBiko = CodeConstant.DOUBLE_QUOTATION;
+		// 区画番号
+		String parkingBlock = CodeConstant.DOUBLE_QUOTATION;
+		// 駐車場管理番号
+		String parkingKanriNo = CodeConstant.DOUBLE_QUOTATION;
 
 		// 駐車場情報リストデータ(DBから取得したデータ保存用)
 		List<Skf3010Sc006GetParkingInfoExp> getShatakuParkingInfoTableData = 
@@ -2332,18 +2423,58 @@ public class Skf3010Sc006SharedService {
 			//駐車場所在地
 			initDto.setParkingAddress(tmpData.getParkingAddress());
 
-			// 駐車場補足1
-			parkingSupplementSize1 = (tmpData.getParkingSupplementSize1() != null) ?
-												tmpData.getParkingSupplementSize1() : "";
-			parkingSupplementFile1 = tmpData.getParkingSupplementFile1();
-			// 駐車場補足1表示判定
-			if (tmpData.getParkingSupplementName1() != null
-								&& parkingSupplementSize1.length() > 0
-								&& parkingSupplementFile1 != null) {
-				parkingSupplementName1 = tmpData.getParkingSupplementName1();
-				initDto.setParkingHosokuLink1(null);
-				initDto.setParkingHosokuLink1(PARKING_HOSOKU_LINK + "_" + shatakuKanriNo + "_1");
+			if(FALSE.equals(initDto.getCopyFlg())){
+				//複写で無い場合設定する
+				// 駐車場補足1
+				parkingSupplementSize1 = (tmpData.getParkingSupplementSize1() != null) ?
+													tmpData.getParkingSupplementSize1() : "";
+				parkingSupplementFile1 = tmpData.getParkingSupplementFile1();
+				// 駐車場補足1表示判定
+				if (tmpData.getParkingSupplementName1() != null
+									&& parkingSupplementSize1.length() > 0
+									&& parkingSupplementFile1 != null) {
+					parkingSupplementName1 = tmpData.getParkingSupplementName1();
+					initDto.setParkingHosokuLink1(null);
+					initDto.setParkingHosokuLink1(PARKING_HOSOKU_LINK + "_" + shatakuKanriNo + "_1");
+				}
+				// 駐車場補足2
+				parkingSupplementSize2 = (tmpData.getParkingSupplementSize2() != null) ?
+													tmpData.getParkingSupplementSize2() : "";
+				parkingSupplementFile2 = tmpData.getParkingSupplementFile2();
+				// 駐車場補足2表示判定
+				if (tmpData.getParkingSupplementName2() != null
+								&& parkingSupplementSize2.length() > 0
+								&& parkingSupplementFile2 != null) {
+					parkingSupplementName2 = tmpData.getParkingSupplementName2();
+					initDto.setParkingHosokuLink2(null);
+					initDto.setParkingHosokuLink2(PARKING_HOSOKU_LINK + "_" + shatakuKanriNo + "_2");
+				}
+				// 駐車場補足3
+				parkingSupplementSize3 = (tmpData.getParkingSupplementSize3() != null) ?
+														tmpData.getParkingSupplementSize3() : "";
+				parkingSupplementFile3 = tmpData.getParkingSupplementFile3();
+				// 駐車場補足3表示判定
+				if (tmpData.getParkingSupplementName3() != null
+									&& parkingSupplementSize3.length() > 0
+									&& parkingSupplementFile3 != null) {
+					parkingSupplementName3 = tmpData.getParkingSupplementName3();
+					initDto.setParkingHosokuLink3(null);
+					initDto.setParkingHosokuLink3(PARKING_HOSOKU_LINK + "_" + shatakuKanriNo + "_3");
+				}
+				
+				//区画番号
+				parkingBlock = tmpData.getParkingBlock();
+				
+				//駐車場管理番号
+				if(tmpData.getParkingKanriNo() != null){
+					parkingKanriNo = String.valueOf(tmpData.getParkingKanriNo());
+				}else{
+					long newNo = GetNewParkingKanriNo(shatakuKanriNo);
+					parkingKanriNo = String.valueOf(newNo);
+				}
 			}
+			
+			// 駐車場補足1
 			initDto.setParkingHosokuFileName1(null);
 			initDto.setParkingHosokuFileName1(parkingSupplementName1);
 			initDto.setParkingHosokuSize1(null);
@@ -2352,17 +2483,6 @@ public class Skf3010Sc006SharedService {
 			initDto.setParkingHosokuFile1(parkingSupplementFile1);
 
 			// 駐車場補足2
-			parkingSupplementSize2 = (tmpData.getParkingSupplementSize2() != null) ?
-												tmpData.getParkingSupplementSize2() : "";
-			parkingSupplementFile2 = tmpData.getParkingSupplementFile2();
-			// 駐車場補足2表示判定
-			if (tmpData.getParkingSupplementName2() != null
-							&& parkingSupplementSize2.length() > 0
-							&& parkingSupplementFile2 != null) {
-				parkingSupplementName2 = tmpData.getParkingSupplementName2();
-				initDto.setParkingHosokuLink2(null);
-				initDto.setParkingHosokuLink2(PARKING_HOSOKU_LINK + "_" + shatakuKanriNo + "_2");
-			}
 			initDto.setParkingHosokuFileName2(null);
 			initDto.setParkingHosokuFileName2(parkingSupplementName2);
 			initDto.setParkingHosokuSize2(null);
@@ -2371,34 +2491,19 @@ public class Skf3010Sc006SharedService {
 			initDto.setParkingHosokuFile2(parkingSupplementFile2);
 			
 			// 駐車場補足3
-			parkingSupplementSize3 = (tmpData.getParkingSupplementSize3() != null) ?
-													tmpData.getParkingSupplementSize3() : "";
-			parkingSupplementFile3 = tmpData.getParkingSupplementFile3();
-			// 駐車場補足3表示判定
-			if (tmpData.getParkingSupplementName3() != null
-								&& parkingSupplementSize3.length() > 0
-								&& parkingSupplementFile3 != null) {
-				parkingSupplementName3 = tmpData.getParkingSupplementName3();
-				initDto.setParkingHosokuLink3(null);
-				initDto.setParkingHosokuLink3(PARKING_HOSOKU_LINK + "_" + shatakuKanriNo + "_3");
-			}
 			initDto.setParkingHosokuFileName3(null);
 			initDto.setParkingHosokuFileName3(parkingSupplementName3);
 			initDto.setParkingHosokuSize3(null);
 			initDto.setParkingHosokuSize3(parkingSupplementSize3);
 			initDto.setParkingHosokuFile3(null);
 			initDto.setParkingHosokuFile3(parkingSupplementFile3);
-
-			//駐車場管理番号
-			if(tmpData.getParkingKanriNo() != null){
-				initDto.setParkingKanriNo(String.valueOf(tmpData.getParkingKanriNo()));
-			}else{
-				long newNo = GetNewParkingKanriNo(shatakuKanriNo);
-				initDto.setParkingKanriNo(String.valueOf(newNo));
-			}
 			
 			//区画番号
-			initDto.setParkingBlock(tmpData.getParkingBlock());
+			initDto.setParkingBlock(parkingBlock);
+
+			//駐車場管理番号
+			initDto.setParkingKanriNo(parkingKanriNo);
+			
 			
 			//貸与区分
 			String lendKbn = CodeConstant.DOUBLE_QUOTATION;
@@ -2539,7 +2644,6 @@ public class Skf3010Sc006SharedService {
 		initDto.setNextCalcDate(null);
 		initDto.setNextCalcDate("");
 		// 社宅補足1
-		initDto.setShatakuHosokuLink1(SHATAKU_HOSOKU_LINK + "__1");
 		initDto.setShatakuHosokuFileName1(null);
 		initDto.setShatakuHosokuFileName1("");
 		// 社宅補足2
@@ -2607,6 +2711,68 @@ public class Skf3010Sc006SharedService {
 		elevatorList = null;
 	}
 
+	/**
+	 * 部屋情報タブをセットします。(新規)
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param shatakuKanriNo	社宅管理番号
+	 * @param areaKbnCd			地域区分コード
+	 * @param initDto			*DTO
+	 * @throws ParseException
+	 */
+	private void setRoomInfoShinki(Skf3010Sc006CommonDto initDto) {
+
+		//部屋情報リスト
+		// ' 「本来用途」ドロップダウンリストの設定
+		List<Map<String, Object>> originalAuseList = new ArrayList<Map<String, Object>>();
+		// ' 「貸与区分」ドロップダウンリストの設定
+		List<Map<String, Object>> lendKbnList = new ArrayList<Map<String, Object>>();
+		// ' 「本来規格」ドロップダウンリストの設定
+		List<Map<String, Object>> originalKikakuList = new ArrayList<Map<String, Object>>();
+		// ' 「寒冷地減免事由区分」ドロップダウンリストの設定
+		List<Map<String, Object>> coldExemptionKbnList = new ArrayList<Map<String, Object>>();
+	
+		
+		//部屋情報
+		//部屋管理番号
+		initDto.setShatakuRoomKanriNo(null);
+		//部屋番号
+		initDto.setRoomNo(CodeConstant.DOUBLE_QUOTATION);
+		//本来延面積
+		initDto.setOriginalMenseki(CodeConstant.DOUBLE_QUOTATION);
+		//階段面積
+		initDto.setStairsMenseki(CodeConstant.DOUBLE_QUOTATION);
+		//本来規格
+		initDto.setOriginalKikaku(CodeConstant.DOUBLE_QUOTATION);
+		//貸与面積
+		initDto.setLendMenseki(CodeConstant.DOUBLE_QUOTATION);
+		//本来用途
+		initDto.setOriginalAuse(CodeConstant.DOUBLE_QUOTATION);
+		//サンルーム面積
+		initDto.setSunRoomMenseki(CodeConstant.DOUBLE_QUOTATION);
+		//物置調整面積
+		initDto.setBarnMensekiAdjust(CodeConstant.DOUBLE_QUOTATION);
+		//貸与区分
+		initDto.setLendKbn(CodeConstant.DOUBLE_QUOTATION);
+		//貸与区分補足
+		initDto.setLendKbnHosoku(CodeConstant.DOUBLE_QUOTATION);
+		//寒冷地減免事由区分
+		initDto.setColdExemptionKbn(CodeConstant.DOUBLE_QUOTATION);
+		//備考
+		initDto.setRoomBiko(CodeConstant.DOUBLE_QUOTATION);
+		
+		//ドロップダウンリストの設定
+		getRoomDropDownList("", originalKikakuList, 
+				"", originalAuseList,
+				"", lendKbnList, 
+				"0", coldExemptionKbnList);
+		initDto.setOriginalKikakuList(originalKikakuList);
+		initDto.setOriginalAuseList(originalAuseList);
+		initDto.setLendKbnList(lendKbnList);
+		initDto.setColdExemptionKbnList(coldExemptionKbnList);
+		
+	}
+	
 	/**
 	 * 基本情報タブ設定
 	 * 「※」項目はアドレスとして戻り値になる。
@@ -2771,80 +2937,93 @@ public class Skf3010Sc006SharedService {
 			initDto.setNextCalcDate(null);
 			initDto.setNextCalcDate(nextCalculateDate);
 
-			// 社宅補足1
-			if (tmpData.getShatakuSupplementName1() != null) {
-				shatakuSupplementName1 = tmpData.getShatakuSupplementName1();
-				initDto.setShatakuHosokuLink1(null);
-				initDto.setShatakuHosokuLink1(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_1");
-			}
-			initDto.setShatakuHosokuFileName1(null);
-			initDto.setShatakuHosokuFileName1(shatakuSupplementName1);
-			initDto.setShatakuHosokuFile1(tmpData.getShatakuSupplementFile1());
-
-			// 社宅補足2
-			if (tmpData.getShatakuSupplementName2() != null) {
-				shatakuSupplementName2 = tmpData.getShatakuSupplementName2();
-				initDto.setShatakuHosokuLink2(null);
-				initDto.setShatakuHosokuLink2(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_2");
-			}
-			initDto.setShatakuHosokuFileName2(null);
-			initDto.setShatakuHosokuFileName2(shatakuSupplementName2);
-			initDto.setShatakuHosokuFile2(tmpData.getShatakuSupplementFile2());
-
-			// 社宅補足3
-			if (tmpData.getShatakuSupplementName3() != null) {
-				shatakuSupplementName3 = tmpData.getShatakuSupplementName3();
-				initDto.setShatakuHosokuLink3(null);
-				initDto.setShatakuHosokuLink3(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_3");
-			}
-			initDto.setShatakuHosokuFileName3(null);
-			initDto.setShatakuHosokuFileName3(shatakuSupplementName3);
-			initDto.setShatakuHosokuFile3(tmpData.getShatakuSupplementFile3());
-
 			// 備考
 			if (tmpData.getBiko() != null) {
 				biko = tmpData.getBiko();
 			}
 			initDto.setBiko(null);
 			initDto.setBiko(biko);
-
+			
 			// 更新日（排他処理用）
 			initDto.setKihonUpdateDate(null);
 			initDto.setKihonUpdateDate(tmpData.getUpdateDate());
 			
-			//部屋情報
-			//部屋管理番号
-			initDto.setShatakuRoomKanriNo(String.valueOf(tmpData.getShatakuRoomKanriNo()));
-			//部屋番号
-			initDto.setRoomNo(tmpData.getRoomNo());
-			//本来延面積
-			initDto.setOriginalMenseki(tmpData.getOriginalMenseki().toPlainString());
-			//階段面積
-			initDto.setStairsMenseki(tmpData.getStairsMenseki().toPlainString());
-			//本来規格
-			initDto.setOriginalKikaku(tmpData.getOriginalKikaku());
-			//貸与面積
-			initDto.setLendMenseki(tmpData.getLendMenseki().toPlainString());
-			//本来用途
-			initDto.setOriginalAuse(tmpData.getOriginalAuse());
-			//サンルーム面積
-			initDto.setSunRoomMenseki(tmpData.getSunRoomMenseki().toPlainString());
-			//物置調整面積
-			initDto.setBarnMensekiAdjust(tmpData.getBarnMensekiAdjust().toPlainString());
-			//貸与区分
-			initDto.setLendKbn(tmpData.getLendKbn());
-			//貸与区分補足
-			initDto.setLendKbnHosoku(tmpData.getLendKbnHosoku());
-			//寒冷地減免事由区分
-			initDto.setColdExemptionKbn(tmpData.getColdExemptionKbn());
-			//備考
-			initDto.setRoomBiko(tmpData.getRoomBiko());
-			
-			//ドロップダウンリストの設定
-			getRoomDropDownList(initDto.getOriginalKikaku(), originalKikakuList, 
-					initDto.getOriginalAuse(), originalAuseList,
-					initDto.getLendKbn(), lendKbnList, 
-					initDto.getColdExemptionKbn(), coldExemptionKbnList);
+			//複写フラグチェック
+			if(FALSE.equals(initDto.getCopyFlg())){
+				//複写フラグFalseの場合のみ実施
+				// 社宅補足1
+				if (tmpData.getShatakuSupplementName1() != null) {
+					shatakuSupplementName1 = tmpData.getShatakuSupplementName1();
+					initDto.setShatakuHosokuLink1(null);
+					initDto.setShatakuHosokuLink1(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_1");
+					initDto.setShatakuHosokuFile1(tmpData.getShatakuSupplementFile1());
+				}
+				
+				// 社宅補足2
+				if (tmpData.getShatakuSupplementName2() != null) {
+					shatakuSupplementName2 = tmpData.getShatakuSupplementName2();
+					initDto.setShatakuHosokuLink2(null);
+					initDto.setShatakuHosokuLink2(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_2");
+					initDto.setShatakuHosokuFile2(tmpData.getShatakuSupplementFile2());
+				}
+
+				// 社宅補足3
+				if (tmpData.getShatakuSupplementName3() != null) {
+					shatakuSupplementName3 = tmpData.getShatakuSupplementName3();
+					initDto.setShatakuHosokuLink3(null);
+					initDto.setShatakuHosokuLink3(SHATAKU_HOSOKU_LINK + "_" + shatakuKanriNo + "_3");
+					initDto.setShatakuHosokuFile3(tmpData.getShatakuSupplementFile3());
+				}
+
+				//部屋情報			
+				//部屋管理番号
+				initDto.setShatakuRoomKanriNo(String.valueOf(tmpData.getShatakuRoomKanriNo()));
+				//部屋番号
+				initDto.setRoomNo(tmpData.getRoomNo());
+				//本来延面積
+				initDto.setOriginalMenseki(tmpData.getOriginalMenseki().toPlainString());
+				//階段面積
+				initDto.setStairsMenseki(tmpData.getStairsMenseki().toPlainString());
+				//本来規格
+				initDto.setOriginalKikaku(tmpData.getOriginalKikaku());
+				//貸与面積
+				initDto.setLendMenseki(tmpData.getLendMenseki().toPlainString());
+				//本来用途
+				initDto.setOriginalAuse(tmpData.getOriginalAuse());
+				//サンルーム面積
+				initDto.setSunRoomMenseki(tmpData.getSunRoomMenseki().toPlainString());
+				//物置調整面積
+				initDto.setBarnMensekiAdjust(tmpData.getBarnMensekiAdjust().toPlainString());
+				//貸与区分
+				initDto.setLendKbn(tmpData.getLendKbn());
+				//貸与区分補足
+				initDto.setLendKbnHosoku(tmpData.getLendKbnHosoku());
+				//寒冷地減免事由区分
+				initDto.setColdExemptionKbn(tmpData.getColdExemptionKbn());
+				//備考
+				initDto.setRoomBiko(tmpData.getRoomBiko());
+				
+				//ドロップダウンリストの設定
+				getRoomDropDownList(initDto.getOriginalKikaku(), originalKikakuList, 
+						initDto.getOriginalAuse(), originalAuseList,
+						initDto.getLendKbn(), lendKbnList, 
+						initDto.getColdExemptionKbn(), coldExemptionKbnList);
+				
+				initDto.setOriginalKikakuList(originalKikakuList);
+				initDto.setOriginalAuseList(originalAuseList);
+				initDto.setLendKbnList(lendKbnList);
+				initDto.setColdExemptionKbnList(coldExemptionKbnList);
+			}else{
+				//複写の場合
+				//部屋情報は新規
+				setRoomInfoShinki(initDto);
+			}
+			initDto.setShatakuHosokuFileName1(null);
+			initDto.setShatakuHosokuFileName1(shatakuSupplementName1);
+			initDto.setShatakuHosokuFileName2(null);
+			initDto.setShatakuHosokuFileName2(shatakuSupplementName2);
+			initDto.setShatakuHosokuFileName3(null);
+			initDto.setShatakuHosokuFileName3(shatakuSupplementName3);
 			
 			
 			jituAge.append(initDto.getJituAge());
@@ -2878,10 +3057,11 @@ public class Skf3010Sc006SharedService {
 		initDto.setPrefList(prefList);
 		initDto.setShatakuStructureList(shatakuStructureList);
 		initDto.setElevatorList(elevatorList);
-		initDto.setOriginalKikakuList(originalKikakuList);
-		initDto.setOriginalAuseList(originalAuseList);
-		initDto.setLendKbnList(lendKbnList);
-		initDto.setColdExemptionKbnList(coldExemptionKbnList);
+		// データ比較用
+		initDto.setStartingBuildDate(null);
+		initDto.setStartingShatakuStructure(null);
+		initDto.setStartingBuildDate(buildDate);
+		initDto.setStartingShatakuStructure(structureKbn);
 
 		// 解放
 		getKihonInfoListTableData = null;
@@ -3086,6 +3266,9 @@ public class Skf3010Sc006SharedService {
 		// 解放
 		areaKbnList = null;
 		shatakuKbnList = null;
+		// データ比較用
+		initDto.setStartingAreaKbn(null);
+		initDto.setStartingAreaKbn(areaKbnCd);
 	}
 
 	/**
@@ -3146,35 +3329,10 @@ public class Skf3010Sc006SharedService {
 		String setLendKbnSelectListString = "";
 		// デフォルト貸与状況(追加ボタン押下用)
 		String defaultParkingLendStatus = CodeConstant.LEND_JOKYO_NASHI;
-		
-
+		// エラーコントロール初期化
+		clearVaridateErr(initDto);
 		// 画面に残っている添付資料情報セッションをクリア
-		// 社宅補足ファイル名1
-		initDto.setShatakuHosokuFileName1(null);
-		// 社宅補足ファイル名2
-		initDto.setShatakuHosokuFileName2(null);
-		// 社宅補足ファイル名3
-		initDto.setShatakuHosokuFileName3(null);
-		// 社宅補足リンク1
-		initDto.setShatakuHosokuLink1(null);
-		// 社宅補足リンク名2
-		initDto.setShatakuHosokuLink2(null);
-		// 社宅補足リンク名3
-		initDto.setShatakuHosokuLink3(null);
-
-		// 画面に残っている駐車場情報セッションをクリア
-		// 駐車場補足ファイル名1
-		initDto.setParkingHosokuFileName1(null);
-		// 駐車場補足ファイル名2
-		initDto.setParkingHosokuFileName2(null);
-		// 駐車場補足ファイル名3
-		initDto.setParkingHosokuFileName3(null);
-		// 駐車場補足リンク1
-		initDto.setParkingHosokuLink1(null);
-		// 駐車場補足リンク2
-		initDto.setParkingHosokuLink2(null);
-		// 駐車場補足リンク3
-		initDto.setParkingHosokuLink3(null);
+		clearSessionTmpFile(initDto);
 
 		/** DTO設定用 */
 		// 新規保有社宅フラグ(新規：true, 編集：false)
@@ -3257,7 +3415,7 @@ public class Skf3010Sc006SharedService {
 			// 新規
 			shatakuKbnCd = initDto.getHdnRowShatakuKbn();
 		}
-
+		initDto.setCopyFlg("false");
 		// セッション情報存在判定
 		if (!NfwStringUtils.isEmpty(shatakuKanriNo)) {
 			// ヘッダ部の値をセット
@@ -3267,15 +3425,33 @@ public class Skf3010Sc006SharedService {
 			setKihonInfo(shatakuKanriNo, areaKbnCd, initDto);
 			// 駐車場情報タブの値をセット
 			setParkingInfo(shatakuKanriNo, initDto);
-			// 備品情報タブの値をセット
-			String shatakuRoomKanriNo = initDto.getShatakuRoomKanriNo();
-			setBihinInfo(shatakuKanriNo, shatakuRoomKanriNo,bihinInfoListTableData, hdnBihinInfoListTableData);
+			
 			// 管理者情報タブの値をセット
 			setShatakuManageInfo(shatakuKanriNo, initDto);
-			// 契約情報タブの値設定
-			setContractInfo(shatakuKanriNo, contractSelectedIndex, deletedConstractNo, selectMode, initDto);
-//	        ' 契約情報(駐車場)を設定
-	        setParkingContractInfo(shatakuKanriNo, parkContractSelectedIndex, parkDeletedConstractNo, selectMode, initDto);
+			
+			if(FALSE.equals(initDto.getCopyFlg())){
+				//基本から
+				// 備品情報タブの値をセット
+				String shatakuRoomKanriNo = initDto.getShatakuRoomKanriNo();
+				setBihinInfo(shatakuKanriNo, shatakuRoomKanriNo,bihinInfoListTableData, hdnBihinInfoListTableData);
+				// 契約情報タブの値設定
+				setContractInfo(shatakuKanriNo, contractSelectedIndex, deletedConstractNo, selectMode, initDto);
+				// 契約情報(駐車場)を設定
+				setParkingContractInfo(shatakuKanriNo, parkContractSelectedIndex, parkDeletedConstractNo, selectMode, initDto);
+			}else{
+				//複写の場合
+				// 備品情報タブの値を新規でセット
+				setBihinInfoOfShinki(bihinInfoListTableData, hdnBihinInfoListTableData);
+				// 契約情報タブの値設定
+				setContractInfoShinki(selectMode, initDto);
+				// 駐車場契約情報ボタン(非活性：true, 活性:false)
+				parkingContractDisableFlg = true;
+				// 複写なので新規扱い
+				newShatakuFlg = true;
+				//管理番号クリア
+				shatakuKanriNo = CodeConstant.DOUBLE_QUOTATION;
+			}
+			
 //			// 社宅部屋情報取得(排他用)
 //			getShatakuRoomInfo(shatakuKanriNo, shatakuRoomExlusiveCntrllList);
 //			initDto.setRoomeBihinExlusiveCntrllList(null);
@@ -3291,6 +3467,8 @@ public class Skf3010Sc006SharedService {
 			setSearchInfoShinki(shatakuKbnCd, initDto);
 			// 基本情報タブの値をセット
 			setKihonInfoShinki(initDto);
+			// 部屋情報タブの値をセット
+			setRoomInfoShinki(initDto);
 			// 駐車場情報タブの値をセット
 			setShatakuParkingInfoShinki(initDto);
 			// 備品情報タブの値をセット
@@ -3396,7 +3574,137 @@ public class Skf3010Sc006SharedService {
 		}
 		return listData;
 	}
-	
+
+	/**
+	 * セッションの添付ファイル情報クリア
+	 * 
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param initDto	*DTO
+	 */
+	private void clearSessionTmpFile(Skf3010Sc002CommonDto initDto) {
+		// 画面に残っている添付資料情報セッションをクリア
+		// 社宅補足ファイル名1
+		initDto.setShatakuHosokuFileName1(null);
+		// 社宅補足ファイル名2
+		initDto.setShatakuHosokuFileName2(null);
+		// 社宅補足ファイル名3
+		initDto.setShatakuHosokuFileName3(null);
+		// 社宅補足リンク名1
+		initDto.setShatakuHosokuLink1(null);
+		// 社宅補足リンク名2
+		initDto.setShatakuHosokuLink2(null);
+		// 社宅補足リンク名3
+		initDto.setShatakuHosokuLink3(null);
+		// 社宅補足サイズ1
+		initDto.setShatakuHosokuSize1(null);
+		// 社宅補足サイズ2
+		initDto.setShatakuHosokuSize2(null);
+		// 社宅補足サイズ3
+		initDto.setShatakuHosokuSize3(null);
+		// 社宅補足ファイル1
+		initDto.setShatakuHosokuFile1(null);
+		// 社宅補足ファイル2
+		initDto.setShatakuHosokuFile2(null);
+		// 社宅補足ファイル3
+		initDto.setShatakuHosokuFile3(null);
+
+		// 画面に残っている駐車場情報セッションをクリア
+		// 駐車場補足ファイル名1
+		initDto.setParkingHosokuFileName1(null);
+		// 駐車場補足ファイル名2
+		initDto.setParkingHosokuFileName2(null);
+		// 駐車場補足ファイル名3
+		initDto.setParkingHosokuFileName3(null);
+		// 駐車場補足リンク1
+		initDto.setParkingHosokuLink1(null);
+		// 駐車場補足リンク2
+		initDto.setParkingHosokuLink2(null);
+		// 駐車場補足リンク3
+		initDto.setParkingHosokuLink3(null);
+		// 駐車場補足サイズ1
+		initDto.setParkingHosokuSize1(null);
+		// 駐車場補足サイズ2
+		initDto.setParkingHosokuSize2(null);
+		// 駐車場補足サイズ3
+		initDto.setParkingHosokuSize3(null);
+		// 駐車場補足ファイル1
+		initDto.setParkingHosokuFile1(null);
+		// 駐車場補足ファイル2
+		initDto.setParkingHosokuFile2(null);
+		// 駐車場補足ファイル3
+		initDto.setParkingHosokuFile3(null);
+	}
+
+	/**
+	 * エラーコントロール初期化
+	 * 
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param initDto	*DTO
+	 */
+	public void clearVaridateErr(Skf3010Sc002CommonDto initDto) {
+
+		// 社宅名
+		initDto.setShatakuNameErr(null);
+		// 地域区分
+		initDto.setAreaKbnErr(null);
+		// 社宅区分
+		initDto.setShatakuKbnErr(null);
+		// 利用区分
+		initDto.setUseKbnKbnErr(null);
+		// 管理会社
+		initDto.setManageCompanyErr(null);
+		// 管理機関
+		initDto.setManageAgencyErr(null);
+		// 管理事業領域
+		initDto.setManageBusinessAreaErr(null);
+		// 郵便番号
+		initDto.setZipCdErr(null);
+		// 都道府県
+		initDto.setPrefErr(null);
+		// 社宅住所
+		initDto.setShatakuAddressErr(null);
+		// 社宅構造
+		initDto.setShatakuStructureErr(null);
+		// 建築年月日
+		initDto.setBuildDateErr(null);
+		// 駐車場構造
+		initDto.setParkingStructureErr(null);
+		// 寮長・自治会長 メールアドレス
+		initDto.setDormitoryLeaderMailAddressErr(null);
+		// 鍵管理者 メールアドレス
+		initDto.setKeyManagerMailAddressErr(null);
+		// 寮母・管理会社 メールアドレス
+		initDto.setMatronMailAddressErr(null);
+		// 寮長・自治会長 電話番号
+		initDto.setDormitoryLeaderTelNumberErr(null);
+		// 鍵管理者 電話番号
+		initDto.setKeyManagerTelNumberErr(null);
+		// 寮母・管理会社 電話番号
+		initDto.setMatronTelNumberErr(null);
+		// 寮長・自治会長 内線番号
+		initDto.setDormitoryLeaderExtentionNoErr(null);
+		// 鍵管理者 内線番号
+		initDto.setKeyManagerExtentionNoErr(null);
+		// 寮母・管理会社 内線番号
+		initDto.setMatronExtentionNoErr(null);
+		// 賃貸人（代理人）名
+		initDto.setContractOwnerNameErr(null);
+		// 経理連携用管理番号
+		initDto.setAssetRegisterNoErr(null);
+		// 契約開始日
+		initDto.setContractStartDayErr(null);
+		// 契約終了日
+		initDto.setContractEndDayErr(null);
+		// 家賃
+		initDto.setContractRentErr(null);
+		// 共益費
+		initDto.setContractKyoekihiErr(null);
+		// 駐車場料（地代）
+		initDto.setContractLandRentErr(null);
+	}
+
 	/**
 	 * 備品情報復元
 	 * 備品情報を設定する。
