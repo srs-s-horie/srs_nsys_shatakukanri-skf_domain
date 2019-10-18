@@ -31,6 +31,7 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
@@ -53,7 +54,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	@Autowired
 	private SkfMailUtils skfMailUtils;
 	@Autowired
-	private SkfDateFormatUtils skfDateFormatUtils;
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -72,7 +73,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	 */
 	@Override
 	public AsyncBaseDto index(Skf2010Sc004AgreeAsyncDto agreeDto) throws Exception {
-		// TODO 操作ログの出力
+		// 操作ログの出力
+		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		// 初期化処理
 		init(agreeDto);
@@ -170,15 +172,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 
 		// 「新社宅先の駐車場使用開始日」
 		String shiyobi = agreeDto.getShiyobi();
-		if (shiyobi != null) {
-			shiyobi = shiyobi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-					CodeConstant.NONE);
-		}
 		String shiyobi2 = agreeDto.getShiyobi2();
-		if (shiyobi2 != null) {
-			shiyobi2 = shiyobi2.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-					CodeConstant.NONE);
-		}
 
 		// 初期駐車場使用開始日
 		String syokiShiyobi = agreeDto.getParkingUserDate();
@@ -189,13 +183,13 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		// 駐車場使用開始日の有無をチェック
 		// 駐車場使用開始日1,2が無い時にテキストボックスの入力があった場合、
 		// (1台目,2台目)変更フラグを1:変更ありにする。
-		if (!NfwStringUtils.isEmpty(syokiShiyobi) && !NfwStringUtils.isEmpty(syokiShiyobi2)) {
+		if (!CheckUtils.isEqual(syokiShiyobi, shiyobi) && !CheckUtils.isEqual(syokiShiyobi2, shiyobi2)) {
 			// 駐車場使用開始日変更フラグに3：変更ありを設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE_COM;
-		} else if (!NfwStringUtils.isEmpty(syokiShiyobi)) {
+		} else if (!CheckUtils.isEqual(syokiShiyobi, shiyobi)) {
 			// 駐車場使用開始日変更フラグに1：変更あり(1台目)を設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE;
-		} else if (!NfwStringUtils.isEmpty(syokiShiyobi2)) {
+		} else if (!CheckUtils.isEqual(syokiShiyobi2, shiyobi2)) {
 			// 駐車場使用開始日変更フラグに2：変更あり(2台目)を設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE2;
 		}
@@ -431,8 +425,12 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		return true;
 	}
 
+	/**
+	 * 申請情報の取得を行います
+	 * 
+	 * @param agreeDto
+	 */
 	private void getApplInfo(Skf2010Sc004AgreeAsyncDto agreeDto) {
-		// TODO 自動生成されたメソッド・スタブ
 		String applId = agreeDto.getApplId();
 		String applNo = agreeDto.getApplNo();
 
@@ -466,12 +464,18 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 	}
 
+	/**
+	 * コメントの入力チェック
+	 * 
+	 * @param agreeDto
+	 * @return
+	 */
 	private boolean validateReason(Skf2010Sc004AgreeAsyncDto agreeDto) {
 		String reasonText = agreeDto.getCommentNote();
 		if (reasonText != null) {
 			int byteCnt = reasonText.getBytes(Charset.forName("UTF-8")).length;
 			if (byteCnt >= 4000) {
-				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "4000");
+				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
 				return false;
 			}
 		}

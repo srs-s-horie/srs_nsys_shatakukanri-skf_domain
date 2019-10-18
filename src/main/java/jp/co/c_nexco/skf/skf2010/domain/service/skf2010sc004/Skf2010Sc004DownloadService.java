@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004DownloadDto;
 
 /**
@@ -22,11 +25,18 @@ public class Skf2010Sc004DownloadService extends BaseServiceAbstract<Skf2010Sc00
 
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+
+	private String companyCd = CodeConstant.C001;
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Skf2010Sc004DownloadDto index(Skf2010Sc004DownloadDto dlDto) throws Exception {
+		// 操作ログの出力
+		skfOperationLogUtils.setAccessLog("添付資料ダウンロード", companyCd, FunctionIdConstant.SKF2010_SC004);
+
 		// 添付資料番号
 		String attachedNo = dlDto.getAttachedNo();
 

@@ -58,7 +58,7 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public Skf2010Sc004NotAgreeDto index(Skf2010Sc004NotAgreeDto notAgreeDto) throws Exception {
 		// 操作ログの出力
-		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, notAgreeDto.getPageId());
+		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		// タイトル設定
 		notAgreeDto.setPageTitleKey(MessageIdConstant.SKF2010_SC004_TITLE);
