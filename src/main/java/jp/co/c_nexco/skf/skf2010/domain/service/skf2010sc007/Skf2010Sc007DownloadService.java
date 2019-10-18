@@ -13,10 +13,12 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007DownloadDto;
 
 /**
- * Skf2010Sc004 申請内容表示/引戻し同意しない処理クラス
- *
+ * Skf2010Sc007 申請条件確認画面、申請要件確認押下時のサービス処理クラス。
+ * 
  * @author NEXCOシステムズ
+ *
  */
+
 @Service
 public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc007DownloadDto> {
 
