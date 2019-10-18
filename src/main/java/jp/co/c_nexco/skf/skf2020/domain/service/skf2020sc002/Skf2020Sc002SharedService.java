@@ -217,7 +217,7 @@ public class Skf2020Sc002SharedService {
 		}
 
 		/**
-		 * 社宅入居希望等調査・入居決定通知テーブル情報の取得
+		 * 社宅入居希望等調書・入居決定通知テーブル情報の取得
 		 */
 		Skf2020TNyukyoChoshoTsuchi nyukyoChoshoList = new Skf2020TNyukyoChoshoTsuchi();
 		Skf2020TNyukyoChoshoTsuchiKey setValue = new Skf2020TNyukyoChoshoTsuchiKey();
@@ -225,7 +225,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setCompanyCd(CodeConstant.C001);
 		setValue.setApplNo(dto.getApplNo());
 		nyukyoChoshoList = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setValue);
-		LogUtils.debugByMsg("社宅入居希望等調査情報： " + nyukyoChoshoList);
+		LogUtils.debugByMsg("社宅入居希望等調書情報： " + nyukyoChoshoList);
 
 		// 初期表示エラー判定
 		if (initializeErrorFlg) {
@@ -2868,8 +2868,20 @@ public class Skf2020Sc002SharedService {
 	 * 
 	 * @param applInfo
 	 * @param saveDto
+	 * @throws UnsupportedEncodingException
 	 */
-	protected boolean saveInfo(Map<String, String> applInfo, Skf2020Sc002CommonDto dto) {
+	protected boolean saveInfo(Map<String, String> applInfo, Skf2020Sc002CommonDto dto)
+			throws UnsupportedEncodingException {
+
+		// 画面表示項目の保持
+		setInfo(dto);
+		// 返却備品の設定
+		setReturnBihinInfo(dto, UPDATE_FLG);
+		// 画面表示制御再設定
+		setControlValue(dto);
+
+		// バイトカット処理
+		cutByte(dto);
 
 		// 社員番号を設定
 		applInfo.put("shainNo", dto.getShainNo());
