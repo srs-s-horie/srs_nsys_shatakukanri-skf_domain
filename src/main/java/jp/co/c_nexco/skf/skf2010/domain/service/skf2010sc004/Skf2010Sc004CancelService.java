@@ -15,7 +15,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004CancelDto;
 
 /**
- * Skf2010Sc004 申請状況一覧取下げ処理クラス
+ * Skf2010Sc004 申請内容表示/引戻し取り下げ処理クラス
  *
  * @author NEXCOシステムズ
  */

@@ -78,12 +78,18 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 
+/**
+ * Skf2010Sc004 申請内容表示/引戻し共通処理クラス
+ *
+ * @author NEXCOシステムズ
+ */
 @Service
 public class Skf2010Sc004SharedService {
 
@@ -149,8 +155,7 @@ public class Skf2010Sc004SharedService {
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
-	@Value("${skf.common.attached_file_session_key}")
-	private String sessionKey;
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
 	private final String ERR_MSG_APPL_NAME = "申請書類名の取得";
 	private final String ERR_MSG_APPL_MAIL_INFO = "申請通知メール情報の取得";

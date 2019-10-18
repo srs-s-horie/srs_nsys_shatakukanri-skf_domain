@@ -36,8 +36,9 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncD
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
- * 
+ * Skf2010Sc004 申請内容表示/引戻し同意する非同期処理クラス
+ *
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2010Sc004AgreeAsyncDto> {
