@@ -32,8 +32,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004InitDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
- * 
+ * Skf2010Sc004 申請内容表示/引戻し初期表示処理クラス
+ *
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004InitDto> {

@@ -25,8 +25,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004NotAgreeDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
- * 
+ * Skf2010Sc004 申請内容表示/引戻し同意しない処理クラス
+ *
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc004NotAgreeDto> {
