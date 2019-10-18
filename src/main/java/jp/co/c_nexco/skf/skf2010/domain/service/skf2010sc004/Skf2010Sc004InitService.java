@@ -64,7 +64,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	@Override
 	public Skf2010Sc004InitDto index(Skf2010Sc004InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC004_TITLE);
 
