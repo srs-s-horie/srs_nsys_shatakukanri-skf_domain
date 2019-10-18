@@ -499,7 +499,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		if (!CheckUtils.isEmpty(agreeDto.getHenkanbi())
 				&& (!CheckUtils.isFormatDate(agreeDto.getHenkanbi(), "yyyy/MM/dd") || !SkfCheckUtils
 						.isSkfDateFormat(agreeDto.getHenkanbi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の駐車場返還日」");
 			agreeDto.setHenkanbiErr(validationErrorCode);
 			validateResult = false;
 		}
@@ -507,14 +507,14 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		if (!CheckUtils.isEmpty(agreeDto.getNyukyobi())
 				&& (!CheckUtils.isFormatDate(agreeDto.getNyukyobi(), "yyyy/MM/dd") || !SkfCheckUtils
 						.isSkfDateFormat(agreeDto.getNyukyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅の入居日」");
 			agreeDto.setNyukyobiErr(validationErrorCode);
 			validateResult = false;
 		}
 		// 「新社宅先の駐車場使用開始日」
 		if (!CheckUtils.isEmpty(agreeDto.getShiyobi()) && (!CheckUtils.isFormatDate(agreeDto.getShiyobi(), "yyyy/MM/dd")
 				|| !SkfCheckUtils.isSkfDateFormat(agreeDto.getShiyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅先の駐車場使用開始日」");
 			agreeDto.setShiyobiErr(validationErrorCode);
 			validateResult = false;
 		}
@@ -522,7 +522,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		if (!CheckUtils.isEmpty(agreeDto.getShiyobi2())
 				&& (!CheckUtils.isFormatDate(agreeDto.getShiyobi2(), "yyyy/MM/dd") || !SkfCheckUtils
 						.isSkfDateFormat(agreeDto.getShiyobi2(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅先の駐車場使用開始日2」");
 			agreeDto.setShiyobi2Err(validationErrorCode);
 			validateResult = false;
 		}
