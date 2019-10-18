@@ -621,7 +621,7 @@ public class Skf2020Sc002SharedService {
 	 * 
 	 * @param dto Skf2020Sc002CommonDto
 	 */
-	protected void setInitializeError(Skf2020Sc002CommonDto dto) {
+	private void setInitializeError(Skf2020Sc002CommonDto dto) {
 		// 更新処理を行わせないよ う一時保存、申請要件を確認ボタンを使用不可に
 		// 一時保存
 		dto.setBtnSaveDisabeld(sTrue);
@@ -810,8 +810,9 @@ public class Skf2020Sc002SharedService {
 			}
 
 		} else {
-
 			// 更新
+
+			// 現保有社宅ドロップダウンのコード値を取得してdtoに設定
 			if (NfwStringUtils.isNotBlank(dto.getNowShatakuName())) {
 				shatakuKanriId = Long.parseLong(dto.getNowShatakuName());
 			}
@@ -933,11 +934,10 @@ public class Skf2020Sc002SharedService {
 		String bihinItem = CodeConstant.DOUBLE_QUOTATION;
 		// 社宅管理番号の設定
 		long shatakuKanriId = CodeConstant.LONG_ZERO;
-
 		if (updateFlg.equals(NO_UPDATE_FLG)) {
 			shatakuKanriId = dto.getShatakuKanriId();
 		} else {
-			// 選択したプルダウンの値
+			// 現保有社宅プルダウンの選択した社宅の社宅管理台帳IDを取得
 			if (NfwStringUtils.isNotBlank(dto.getNowShatakuName())) {
 				shatakuKanriId = Long.parseLong(dto.getNowShatakuName());
 			}
@@ -946,7 +946,6 @@ public class Skf2020Sc002SharedService {
 		// 備品状態が2:保有備品または3:レンタルの表示の備品取得
 		List<Skf2020Sc002GetBihinItemToBeReturnExp> resultBihinItemList = new ArrayList<Skf2020Sc002GetBihinItemToBeReturnExp>();
 		resultBihinItemList = getBihinItemToBeReturn(shatakuKanriId, dto.getShainNo(), resultBihinItemList);
-
 		// 件数が取得できた場合
 		if (resultBihinItemList.size() > 0 && CollectionUtils.isNotEmpty(resultBihinItemList)) {
 
@@ -980,7 +979,7 @@ public class Skf2020Sc002SharedService {
 	 * @param shatakuList
 	 * @return List<Skf2020Sc002GetShatakuInfoExp>
 	 */
-	protected List<Skf2020Sc002GetShatakuInfoExp> getSelectShatakuInfo(long shatakuKanriId, String shainNo,
+	private List<Skf2020Sc002GetShatakuInfoExp> getSelectShatakuInfo(long shatakuKanriId, String shainNo,
 			List<Skf2020Sc002GetShatakuInfoExp> shatakuList) {
 
 		String yearMonth = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMM_FLAT);
@@ -1001,9 +1000,8 @@ public class Skf2020Sc002SharedService {
 	 * 
 	 * @param shatakuKanriId
 	 * @param shainNo
-	 * @param yearMonth
 	 * @param resultBihinItemList
-	 * @return resultBihinItemList
+	 * @return
 	 */
 	private List<Skf2020Sc002GetBihinItemToBeReturnExp> getBihinItemToBeReturn(long shatakuKanriId, String shainNo,
 			List<Skf2020Sc002GetBihinItemToBeReturnExp> resultBihinItemList) {
@@ -1022,7 +1020,8 @@ public class Skf2020Sc002SharedService {
 	/**
 	 * 表示項目の活性制御または表示制御を行う。
 	 * 
-	 * @param dto 補足：設定値 TRUE:活性or表示 FALSE：非活性or非表示
+	 * @param dto <br>
+	 *            補足：設定値 TRUE:活性or表示 FALSE：非活性or非表示
 	 */
 	protected void setControlValue(Skf2020Sc002CommonDto dto) {
 
@@ -1322,7 +1321,7 @@ public class Skf2020Sc002SharedService {
 	 * @param dto
 	 */
 	@SuppressWarnings("unchecked")
-	protected void setControlDdl(Skf2020Sc002CommonDto dto) {
+	private void setControlDdl(Skf2020Sc002CommonDto dto) {
 
 		List<Map<String, Object>> agencyList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> affiliation1List = new ArrayList<Map<String, Object>>();
@@ -1423,6 +1422,8 @@ public class Skf2020Sc002SharedService {
 	/**
 	 * 駐車場の有無判定
 	 * 
+	 * @param parking1stPlace
+	 * @param parking2stPlace
 	 * @return 判定結果(0:駐車場なし、1:駐車場1、2:駐車場2、3:駐車場1と2)
 	 */
 	protected int checkParking(String parking1stPlace, String parking2stPlace) {
