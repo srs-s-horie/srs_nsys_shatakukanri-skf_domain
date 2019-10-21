@@ -65,7 +65,7 @@ public class Skf2050Sc001AgreeService extends BaseServiceAbstract<Skf2050Sc001Ag
 
 		// 前の画面に遷移する
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);
-		tpi.addResultMessage(MessageIdConstant.I_SKF_2030);
+		tpi.addResultMessage(MessageIdConstant.I_SKF_2047);
 		agreeDto.setTransferPageInfo(tpi);
 
 		return agreeDto;
