@@ -20,7 +20,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutAsyncDto;
 
 /**
- * Skf2050Sc001 備品返却申請（申請者用)搬出完了処理クラス
+ * Skf2050Sc001 備品返却確認（申請者用)搬出完了処理クラス
  *
  * @author NEXCOシステムズ
  */
