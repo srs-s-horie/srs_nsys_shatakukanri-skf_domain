@@ -57,17 +57,13 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		String applStatus = initDto.getApplStatus();
 		initDto.setApplStatusText(changeApplStatusText(applStatus));
 
-		// アコーディオン初期表示指定
-		Map<String, Object> displayLevelMap = new HashMap<String, Object>();
-		displayLevelMap = checkDisplayLevel(applStatus);
-		initDto.setDisplayLevel(Integer.parseInt(displayLevelMap.get("level").toString()));
-		initDto.setLevel1Open(displayLevelMap.get("level1Open").toString());
-		initDto.setLevel2Open(displayLevelMap.get("level2Open").toString());
-		initDto.setLevel3Open(displayLevelMap.get("level3Open").toString());
-		initDto.setMaskPattern(displayLevelMap.get("mask").toString());
-
 		// 表示情報セット
 		setDisplayData(initDto);
+
+		String taiyoHitsuyo = initDto.getTaiyoHitsuyo();
+
+		// アコーディオン初期表示指定
+		checkDisplayLevel(applStatus, taiyoHitsuyo, initDto);
 
 		// コメントボタンの活性非活性処理
 		setCommentBtnDisabled(initDto);
@@ -104,7 +100,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			break;
 		default:
 			// 承認権限がないユーザーは「再提示」「資料添付」「承認」ボタンを非表示にする。
-			initDto.setMaskPattern("LV3");
+			initDto.setMaskPattern("NON");
 			break;
 		}
 
@@ -171,49 +167,72 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		return applStatusText;
 	}
 
-	private Map<String, Object> checkDisplayLevel(String applStatus) {
+	private void checkDisplayLevel(String applStatus, String taiyoHitsuyo, Skf2010Sc006InitDto initDto) {
 		/**
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
 		 */
-		Map<String, Object> result = new HashMap<String, Object>();
+		int defaultDisplayLevel = 0;
 		switch (applStatus) {
 		case CodeConstant.STATUS_ICHIJIHOZON:
 		case CodeConstant.STATUS_SASHIMODOSHI:
 		case CodeConstant.STATUS_HININ:
 		case CodeConstant.STATUS_SHINSACHU:
-			result.put("level", 1);
-			result.put("mask", "LV1");
-			result.put("level1Open", "true");
-			result.put("level2Open", "false");
-			result.put("level3Open", "false");
+			initDto.setDisplayLevel(1);
+			// 貸与必要フラグが「0：不要」だった場合
+			if (!CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+				initDto.setMaskPattern("NON");
+			}
+			initDto.setLevel1Open("true");
+			initDto.setLevel2Open("false");
+			initDto.setLevel3Open("false");
 			break;
 		case CodeConstant.STATUS_KAKUNIN_IRAI:
-			result.put("level", 2);
-			result.put("mask", "LV2");
-			result.put("level1Open", "false");
-			result.put("level2Open", "true");
-			result.put("level3Open", "false");
+			initDto.setDisplayLevel(2);
+			initDto.setMaskPattern("NON");
+			initDto.setLevel1Open("false");
+			initDto.setLevel2Open("true");
+			initDto.setLevel3Open("false");
 			break;
 		case CodeConstant.STATUS_DOI_ZUMI:
 		case CodeConstant.STATUS_SHONIN:
 		case CodeConstant.STATUS_SHONIN1:
-		case CodeConstant.STATUS_SHONIN2:
-			result.put("level", 3);
-			result.put("mask", "LV3");
-			result.put("level1Open", "false");
-			result.put("level2Open", "false");
-			result.put("level3Open", "true");
+			defaultDisplayLevel = 3;
+			if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+				defaultDisplayLevel = 1;
+				initDto.setLevel1Open("true");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("false");
+			} else {
+				initDto.setLevel1Open("false");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("true");
+			}
+			initDto.setDisplayLevel(defaultDisplayLevel);
 			break;
 		case CodeConstant.STATUS_SHONIN_ZUMI:
-			result.put("level", 3);
-			result.put("mask", "LV2");
-			result.put("level1Open", "false");
-			result.put("level2Open", "false");
-			result.put("level3Open", "true");
+			defaultDisplayLevel = 3;
+			if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+				defaultDisplayLevel = 1;
+				initDto.setLevel1Open("true");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("false");
+			} else {
+				initDto.setLevel1Open("false");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("true");
+			}
+			initDto.setDisplayLevel(defaultDisplayLevel);
+			initDto.setMaskPattern("NON");
 			break;
-
+		default:
+			initDto.setDisplayLevel(1);
+			initDto.setMaskPattern("NON");
+			initDto.setLevel1Open("true");
+			initDto.setLevel2Open("false");
+			initDto.setLevel3Open("false");
+			break;
 		}
-		return result;
+		return;
 	}
 
 	private void setDisplayData(Skf2010Sc006InitDto initDto) {
@@ -302,6 +321,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 				initDto.setTaiyoHitsuyoParking(CodeConstant.UNCHECKED);
 				break;
 			}
+			initDto.setTaiyoHitsuyo(tNyukyoChoshoTsuchi.getTaiyoHitsuyo());
 		} else {
 			initDto.setTaiyoHitsuyoTrue(CodeConstant.UNCHECKED);
 			initDto.setTaiyoHitsuyoFalse(CodeConstant.UNCHECKED);
