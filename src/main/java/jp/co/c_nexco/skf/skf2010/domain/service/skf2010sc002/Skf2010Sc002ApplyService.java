@@ -4,11 +4,9 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc002;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -20,6 +18,7 @@ import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002ApplyDto;
 
 /**
@@ -38,6 +37,8 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;
 	@Autowired
 	private SkfBatchUtils skfBatchUtils;
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 
 	@Override
 	public BaseDto index(Skf2010Sc002ApplyDto applyDto) throws Exception {
@@ -98,9 +99,12 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 		// TODO 支社担当者、事務所担当者にメールを送付→承認権限がないため不要と思われる
 
 		// TODO 社宅管理データ連携処理実行
-		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = null;
-		dateLinkageMap = (Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>) menuScopeSessionBean
-				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
+		// menuScopeSessionBeanからオブジェクトを取得
+		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
+		// ダウンキャスト
+		// Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>
+		// dateLinkageMap =
+		// skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forSetMap);
 
 		// 画面遷移（申請条件一覧へ）
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003, "init");

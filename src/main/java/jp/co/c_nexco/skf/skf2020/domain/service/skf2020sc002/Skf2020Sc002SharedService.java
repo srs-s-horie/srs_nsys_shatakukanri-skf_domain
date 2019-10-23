@@ -1759,7 +1759,7 @@ public class Skf2020Sc002SharedService {
 	 * @param applInfo
 	 * @return 登録成功 true 失敗 false
 	 */
-	protected boolean saveNewData(Skf2020Sc002CommonDto dto, Map<String, String> applInfo) {
+	private boolean saveNewData(Skf2020Sc002CommonDto dto, Map<String, String> applInfo) {
 		// 申請書類管理番号を取得
 		String newApplNo = skfShinseiUtils.getApplNo(CodeConstant.C001, applInfo.get("shainNo"),
 				FunctionIdConstant.R0100);
@@ -1767,7 +1767,7 @@ public class Skf2020Sc002SharedService {
 		// 取得に失敗した場合
 		if (newApplNo == null) {
 			// エラーメッセージを表示用に設定
-			ServiceHelper.addResultMessage(dto, null, MessageIdConstant.E_SKF_1094);
+			ServiceHelper.addResultMessage(dto, null, MessageIdConstant.E_SKF_1024);
 			// 保存処理を終了
 			return false;
 		} else {
@@ -1802,7 +1802,7 @@ public class Skf2020Sc002SharedService {
 	 * @param applInfo
 	 * @return
 	 */
-	protected Skf2020TNyukyoChoshoTsuchi setNyukyoChoshoTsuchi(Skf2020Sc002CommonDto dto,
+	private Skf2020TNyukyoChoshoTsuchi setNyukyoChoshoTsuchi(Skf2020Sc002CommonDto dto,
 			Skf2020TNyukyoChoshoTsuchi setValue, Map<String, String> applInfo) {
 
 		dto.setNyukyoApplDate(DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
@@ -2522,9 +2522,7 @@ public class Skf2020Sc002SharedService {
 		dto.setApplHistroyApplDate(DateUtils.getSysDate());
 
 		// 登録項目をセット
-		// 会社コード
 		setValue.setCompanyCd(CodeConstant.C001);
-		// 社員番号
 		setValue.setShainNo(dto.getShainNo());
 		setValue.setApplDate(dto.getApplHistroyApplDate());
 		setValue.setApplNo(applInfo.get("applNo"));
