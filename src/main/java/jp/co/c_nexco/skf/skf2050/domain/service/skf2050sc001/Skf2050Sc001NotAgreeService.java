@@ -24,7 +24,7 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001AgreeDto;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001NotAgreeDto;
 
 /**
- * Skf2050Sc001 備品返却申請（申請者用)同意しない処理クラス
+ * Skf2050Sc001 備品返却確認（申請者用)同意しない処理クラス
  *
  * @author NEXCOシステムズ
  */
