@@ -10,8 +10,10 @@ import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004CancelDto;
 
 /**
@@ -24,6 +26,10 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 
 	@Autowired
 	private Skf2010Sc004SharedService skf2010Sc004SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+
+	private String companyCd = CodeConstant.C001;
 
 	@Value("${skf2010.skf2010_sc005.search_max_count}")
 	private String searchMaxCount;
@@ -39,6 +45,8 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 	 */
 	@Override
 	public BaseDto index(Skf2010Sc004CancelDto cancelDto) throws Exception {
+		// 操作ログの出力
+		skfOperationLogUtils.setAccessLog("「取下げ」", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 

@@ -87,7 +87,7 @@ public class Skf2050Sc001NotAgreeService extends BaseServiceAbstract<Skf2050Sc00
 
 		// 前の画面に遷移する
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);
-		tpi.addResultMessage(MessageIdConstant.I_SKF_2030);
+		tpi.addResultMessage(MessageIdConstant.I_SKF_2047);
 		notAgreeDto.setTransferPageInfo(tpi);
 
 		return notAgreeDto;
