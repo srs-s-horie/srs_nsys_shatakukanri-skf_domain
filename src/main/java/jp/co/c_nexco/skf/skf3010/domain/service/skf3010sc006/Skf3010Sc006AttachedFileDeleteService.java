@@ -105,7 +105,7 @@ public class Skf3010Sc006AttachedFileDeleteService extends BaseServiceAbstract<S
 		}
 		
 		//画面入力内容情報の保持
-		skf3010Sc006SharedService.setShatakuInfoDropDownStay(deleteDto);
+		skf3010Sc006SharedService.setBeforeInfo(deleteDto);
 
 		return deleteDto;
 	}

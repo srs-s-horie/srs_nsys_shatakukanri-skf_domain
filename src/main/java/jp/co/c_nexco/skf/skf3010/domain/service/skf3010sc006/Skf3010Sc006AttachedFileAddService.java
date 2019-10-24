@@ -225,7 +225,7 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 //		menuScopeSessionBean.put(sessionKey, attachedFileList);
 		
 		//画面入力内容情報の保持
-		skf3010Sc006SharedService.setShatakuInfoDropDownStay(addDto);
+		skf3010Sc006SharedService.setBeforeInfo(addDto);
 
 		return addDto;
 	}

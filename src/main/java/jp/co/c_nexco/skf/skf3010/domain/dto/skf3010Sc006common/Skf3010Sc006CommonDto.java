@@ -22,12 +22,29 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	private static final long serialVersionUID = -1902278406295003652L;
 	
 	/** 定数 */
+	// 選択タブインデックス(基本情報タブ)
+	public static final String SELECT_TAB_INDEX_KIHON = "0";
+	// 選択タブインデックス(部屋情報タブ)
+	public static final String SELECT_TAB_INDEX_ROOM = "1";
+	// 選択タブインデックス(駐車場情報タブ)
+	public static final String SELECT_TAB_INDEX_PARKING = "2";
+	// 選択タブインデックス(備品情報タブ)
+	public static final String SELECT_TAB_INDEX_BIHIN = "3";
+	// 選択タブインデックス(管理者情報タブ)
+	public static final String SELECT_TAB_INDEX_ADMIN = "4";
+	// 選択タブインデックス(契約情報タブ)
+	public static final String SELECT_TAB_INDEX_CONTRACT = "5";
+
 	// 契約情報変更モード：追加
 	public static final String CONTRACT_MODE_ADD_PARKING = "addParking";
 	// 契約情報変更モード：変更
 	public static final String CONTRACT_MODE_CHANGE_PARKING = "changeParking";
 	// 契約情報変更モード：削除
 	public static final String CONTRACT_MODE_DEL_PARKING = "delParking";
+	
+	/** 前画面からの連携用 */
+	// 複写フラグ
+	private String copyFlg;
 	
 	/** 社宅情報 */
 	private String areaKbn;
@@ -83,7 +100,7 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	//物置調整面積
 	private String hdnBarnMensekiAdjust;
 	//更新日時（排他用）
-	private String roomUpdateDate;
+	private Date roomUpdateDate;
 	
 	/** 駐車場情報 */
 	//駐車場管理番号
@@ -100,10 +117,8 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	private String parkingRentalAdjust;
 	//駐車場月額使用料
 	private String parkingShiyoMonthFei;
-	// 更新日時
-	private String parkUpdateDate;
 	//駐車場区分情報更新日時
-	private String blockUpdateDate;
+	private Date blockUpdateDate;
 	//駐車場構造
 	private String parkingStructure;
 	
@@ -124,17 +139,10 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	/** 鍵管理者 */
 	// 会社名 ：鍵管理者
 	private String keyManagerCompanyName;
-//	// 担当者名 ：鍵管理者
-//	private String keyManagerName;
-//	// 電子メールアドレス ：鍵管理者
-//	private String keyManagerMailAddress;
-//	// 電話番号 ：鍵管理者
-//	private String keyManagerTelNumber;
-//	// 備考 ：鍵管理者
-//	private String keyManagerBiko;
-//	// 更新日時(排他用)：鍵管理者
-//	private Date keyManagerUpdateDate;
 	
+	/** 契約情報 （社宅）*/
+	//契約番号
+	private String contractNo;
 	/** 契約情報 （駐車場）*/
 	// 契約情報リスト
 	private List<Map<String, Object>> parkingContractInfoListTableData;
@@ -181,6 +189,7 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	// 契約情報削除プルダウンインデックス
 	private String hdnDeleteParkingContractSelectedValue;
 	
+	/**エラー**/
 	// 部屋番号
 	private String roomNoError;
 	// 本来延面積
@@ -201,21 +210,46 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	private String barnMensekiError;
 	//貸与区分（補助）
 	private String lendKbnHosokuError;
-	//駐車場契約
+	//駐車場区画
 	private String parkingBlockError;
+	//駐車場調整金額
+	private String parkingRentalAdjustError;
+	//賃貸人
 	private String parkingOwnerNameError;
+	//郵便番号
 	private String parkingZipCdError;
+	//所在地
 	private String parkingAddressError;
+	//駐車場名
 	private String parkingNameError;
+	//経理連携用管理番号
 	private String parkingAssetRegisterNoError;
+	//契約開始日
 	private String parkingContractStartDateError;
+	//契約終了日
 	private String parkingContractEndDateError;
-	private String landRentError;
+	//駐車場料
+	private String parkingLandRentError;
+	//契約形態
 	private String parkingContractTypeError;
+	// 会社名：管理会社
+	private String manageCompanyNameError;
+	// 担当者名：管理会社
+	private String manageNameError;
+	// 電子メールアドレス：管理会社
+	private String manageMailAddressError;
+	// 電話番号：管理会社
+	private String manageTelNumberError;
+	// 備考：管理会社
+	private String manageBikoError;
+
+	
 	//駐車場契約情報選択モード
 	private String parkingSelectMode;
+	//駐車場契約編集中フラグ
+	private String parkingEditFlg;
 	
-	
+	/** 添付ファイル **/
 	//ファイル番号
 	private String fileNo;
 	//種別
@@ -228,6 +262,16 @@ public class Skf3010Sc006CommonDto extends Skf3010Sc002CommonDto {
 	private MultipartFile tmpFileBoxparking2;
 	private MultipartFile tmpFileBoxparking3;
 	
-	//複写フラグ
-	private String copyFlg;
+	/** 契約情報編集チェック変数 **/
+	private String startingParkingContractType;
+	private String startingParkingContractOwnerName;
+	private String startingParkingAssetRegisterNo;
+	private String startingParkingContractStartDay;
+	private String startingParkingContractEndDay;
+	private String startingParkingZipCd;
+	private String startingParkingContractAddress;
+	private String startingParkingName;
+	private String startingParkingContractLandRent;
+	private String startingParkingContractBiko;
+
 }
