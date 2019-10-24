@@ -16,6 +16,8 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002ApplyDto;
 
 /**
@@ -32,6 +34,10 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 
 	@Override
 	public BaseDto index(Skf2010Sc002ApplyDto applyDto) throws Exception {
@@ -92,6 +98,15 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 		// TODO 支社担当者、事務所担当者にメールを送付→承認権限がないため不要と思われる
 
 		// TODO 社宅管理データ連携処理実行
+		// menuScopeSessionBeanからオブジェクトを取得
+		// Object forUpdateObject =
+		// menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
+		// if (FunctionIdConstant.R0100.equals(applyDto.getApplId())) {
+		// // 社宅入居希望等調書データ連携
+		// // Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>
+		// // dateLinkageMap = skf2020Fc001NyukyoKiboSinseiDataImport
+		// // .setUpdateDateForUpdateSQL(forSetMap);
+		//// ダウンキャスト
 
 		// 画面遷移（申請条件一覧へ）
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003, "init");

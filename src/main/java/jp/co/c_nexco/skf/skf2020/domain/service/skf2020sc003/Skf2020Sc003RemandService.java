@@ -9,9 +9,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -43,11 +45,9 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param updDto
-	 *            インプットDTO
+	 * @param updDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public BaseDto index(Skf2020Sc003RemandDto rmdDto) throws Exception {
@@ -77,6 +77,10 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
 					loginUserInfo.get("shainNo"), CodeConstant.NONE, CodeConstant.NONE);
 			;
+		} else if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
+			ServiceHelper.addErrorResultMessage(rmdDto, null, errorMsg.get("error"));
+			throwBusinessExceptionIfErrors(rmdDto.getResultMessages());
+			return rmdDto;
 		}
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);

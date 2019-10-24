@@ -3,6 +3,11 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,22 +45,72 @@ public class Skf3010Sc006AddContractListService extends BaseServiceAbstract<Skf3
 	 */
 	@Override
 	public Skf3010Sc006AddContractListDto index(Skf3010Sc006AddContractListDto initDto) throws Exception {
-
+		// デバッグログ
+		logger.debug("契約情報追加");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("駐車場契約情報", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約情報追加", CodeConstant.C001, initDto.getPageId());
 
-		// 契約情報変更モード
-		String selectMode = Skf3010Sc002CommonDto.CONTRACT_MODE_ADD;
-		logger.debug("駐車場契約-契約番号-" + selectMode);
+//		/** JSON(連携用) */
+//		// 駐車場区画情報リスト
+//		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
+//		// 備品情報リスト
+//		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
+//		// ドロップダウン選択値リスト
+//		List<Map<String, Object>> drpDwnSelectedList = new ArrayList<Map<String, Object>>();
+//		// 可変ラベルリスト
+//		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
+
+		// List変換
+//		parkingList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonParking()));
+//		bihinList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonBihin()));
+//		drpDwnSelectedList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonDrpDwnList()));
+//		labelList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 		
-		// 選択タブインデックス
-		String selectTabIndex = initDto.getHdnNowSelectTabIndex();
-		// 保有社宅登録情報設定
-		skf3010Sc006SharedService.setShatakuInfo(selectMode, initDto.getHdnChangeContractSelectedIndex(), initDto.getHdnDispParkingContractSelectedIndex(),initDto);
+		// エラーコントロール初期化
+		skf3010Sc006SharedService.clearVaridateErr(initDto);
+		// 一旦画面を戻す
+		skf3010Sc006SharedService.setBeforeInfo(initDto);
 
-		// 選択タブインデックス(契約情報タブ)
-//		initDto.setHdnNowSelectTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_CONTRACT);
-		initDto.setHdnNowSelectTabIndex(selectTabIndex);
+		// 契約番号ドロップダウンリスト取得
+		List<Map<String, Object>> contractNoList = new ArrayList<Map<String, Object>>();
+		if (initDto.getContractNoList() != null) {
+			contractNoList.addAll(initDto.getContractNoList());
+		}
+		// 選択設定解除
+		for (Map<String, Object> contractNoMap : contractNoList) {
+			if (contractNoMap.containsKey("selected")) {
+				contractNoMap.remove("selected");
+				break;
+			}
+		}
+		// 契約番号最大値取得
+		int maxContractNo = 0;
+		if (contractNoList.size() > 0) {
+			maxContractNo = Integer.parseInt(contractNoList.get(contractNoList.size() - 1).get("value").toString());
+		}
+		// 契約番号インクリメント
+		maxContractNo++;
+		// 新規契約番号を契約番号リストに追加し選択状態に設定する
+		Map<String, Object> contractMap = new HashMap<String, Object>();
+		contractMap.put("value", Integer.toString(maxContractNo));
+		contractMap.put("label", Integer.toString(maxContractNo) + "：");
+		contractMap.put("selected", true);
+		contractNoList.add(contractMap);
+		// 戻り値設定
+		initDto.setContractNoList(contractNoList);
+		initDto.setContractOwnerName("");
+		initDto.setContractOwnerNo("");
+		initDto.setAssetRegisterNo("");
+		initDto.setContractStartDay("");
+		initDto.setContractEndDay("");
+		initDto.setContractRent("");
+		initDto.setContractKyoekihi("");
+		initDto.setContractLandRent("");
+		initDto.setContractBiko("");
+		// 追加ボタン非活性
+		initDto.setContractAddDisableFlg(true);
+		// 削除ボタン活性
+		initDto.setContractDelDisableFlg(false);
 
 		return initDto;
 	}

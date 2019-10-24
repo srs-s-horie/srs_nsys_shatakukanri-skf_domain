@@ -19,6 +19,8 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
+import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -29,15 +31,18 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
- * 
+ * Skf2010Sc004 申請内容表示/引戻し同意する非同期処理クラス
+ *
+ * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004AgreeDto> {
+public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2010Sc004AgreeAsyncDto> {
 
 	@Autowired
 	private Skf2010Sc004SharedService skf2010Sc004SharedService;
@@ -49,7 +54,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 	@Autowired
 	private SkfMailUtils skfMailUtils;
 	@Autowired
-	private SkfDateFormatUtils skfDateFormatUtils;
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -67,11 +72,10 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 	 * @throws Exception 例外
 	 */
 	@Override
-	public Skf2010Sc004AgreeDto index(Skf2010Sc004AgreeDto agreeDto) throws Exception {
-		// TODO 操作ログの出力
+	public AsyncBaseDto index(Skf2010Sc004AgreeAsyncDto agreeDto) throws Exception {
+		// 操作ログの出力
+		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, FunctionIdConstant.SKF2010_SC004);
 
-		// タイトル設定
-		agreeDto.setPageTitleKey(MessageIdConstant.SKF2010_SC004_TITLE);
 		// 初期化処理
 		init(agreeDto);
 
@@ -168,15 +172,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 
 		// 「新社宅先の駐車場使用開始日」
 		String shiyobi = agreeDto.getShiyobi();
-		if (shiyobi != null) {
-			shiyobi = shiyobi.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-					CodeConstant.NONE);
-		}
 		String shiyobi2 = agreeDto.getShiyobi2();
-		if (shiyobi2 != null) {
-			shiyobi2 = shiyobi2.replace(CodeConstant.SLASH, CodeConstant.NONE).replace(CodeConstant.UNDER_SCORE,
-					CodeConstant.NONE);
-		}
 
 		// 初期駐車場使用開始日
 		String syokiShiyobi = agreeDto.getParkingUserDate();
@@ -187,13 +183,13 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		// 駐車場使用開始日の有無をチェック
 		// 駐車場使用開始日1,2が無い時にテキストボックスの入力があった場合、
 		// (1台目,2台目)変更フラグを1:変更ありにする。
-		if (!NfwStringUtils.isEmpty(syokiShiyobi) && !NfwStringUtils.isEmpty(syokiShiyobi2)) {
+		if (!CheckUtils.isEqual(syokiShiyobi, shiyobi) && !CheckUtils.isEqual(syokiShiyobi2, shiyobi2)) {
 			// 駐車場使用開始日変更フラグに3：変更ありを設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE_COM;
-		} else if (!NfwStringUtils.isEmpty(syokiShiyobi)) {
+		} else if (!CheckUtils.isEqual(syokiShiyobi, shiyobi)) {
 			// 駐車場使用開始日変更フラグに1：変更あり(1台目)を設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE;
-		} else if (!NfwStringUtils.isEmpty(syokiShiyobi2)) {
+		} else if (!CheckUtils.isEqual(syokiShiyobi2, shiyobi2)) {
 			// 駐車場使用開始日変更フラグに2：変更あり(2台目)を設定
 			kaishiChangeFlg = SkfCommonConstant.DATE_CHANGE2;
 		}
@@ -203,7 +199,8 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		String newApplNo = CodeConstant.NONE;
 		String nowAddress = CodeConstant.NONE;
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo");
 
 		if (NfwStringUtils.isEmpty(taikyobi) || NfwStringUtils.isEmpty(henkanbi)) {
@@ -221,6 +218,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		if (!updRes) {
 			// エラーが出た場合処理を中断する
 			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+			return agreeDto;
 		}
 
 		// 退居届の申請書類番号が存在する場合
@@ -241,6 +239,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 					ServiceHelper.addErrorResultMessage(agreeDto, null, errorMsg.get("error"));
 				}
 				throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+				return agreeDto;
 			}
 
 		}
@@ -255,6 +254,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 				// エラーの時のみNULL
 				ServiceHelper.addErrorResultMessage(agreeDto, null, errorMsg.get("error"));
 				throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+				return agreeDto;
 			}
 
 			// 同意確認通知のメールを送信する
@@ -266,30 +266,27 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 			// 案内文取得
 			String annai = PropertyUtils.getValue("skf2010.skf2010_sc004.mail_bihin_kibo");
 
-			String urlBase = "/skf/Skf2030Sc001/init?SKF2030_SC001&menuflg=1&tokenCheck=0";
+			String urlBase = "/skf/Skf2010Sc005/init";
 
 			// メール送信
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, agreeDto.getCommentNote(), annai,
 					shainNo, CodeConstant.NONE, urlBase);
 
-			// TODO 備品申請の申請書類管理番号をセットされている場合は自動遷移のダイアログ表示
+			// 備品申請の申請書類管理番号をセットされている場合は自動遷移のダイアログ表示
 			if (NfwStringUtils.isNotEmpty(applNoBihinShinsei)) {
 				ServiceHelper.addResultMessage(agreeDto, MessageIdConstant.I_SKF_2047);
 				// ダイアログ表示フラグをセットする
-
-				// return agreeDto;
+				agreeDto.setDialogFlg(true);
+				agreeDto.setBihinApplNo(applInfoBihin.get("applNo"));
 			}
 
 		}
 		// ページ遷移先は「申請状況一覧」
-		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);
-		tpi.addResultMessage(MessageIdConstant.I_SKF_2047);
-		agreeDto.setTransferPageInfo(tpi);
 
 		return agreeDto;
 	}
 
-	private boolean updateApplHistoryAgree(String newApplNo, Skf2010Sc004AgreeDto dto, String shainNo,
+	private boolean updateApplHistoryAgree(String newApplNo, Skf2010Sc004AgreeAsyncDto dto, String shainNo,
 			String nowAddress, Date commentUpdateDate, String commentName, String commentNote, String nyukyoChangeFlag,
 			String kaishiChangeFlg, String taikyoChangeFlag, String henkanChangeFlag) {
 		String applId = dto.getApplId();
@@ -428,8 +425,12 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		return true;
 	}
 
-	private void getApplInfo(Skf2010Sc004AgreeDto agreeDto) {
-		// TODO 自動生成されたメソッド・スタブ
+	/**
+	 * 申請情報の取得を行います
+	 * 
+	 * @param agreeDto
+	 */
+	private void getApplInfo(Skf2010Sc004AgreeAsyncDto agreeDto) {
 		String applId = agreeDto.getApplId();
 		String applNo = agreeDto.getApplNo();
 
@@ -463,12 +464,18 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 		}
 	}
 
-	private boolean validateReason(Skf2010Sc004AgreeDto agreeDto) {
+	/**
+	 * コメントの入力チェック
+	 * 
+	 * @param agreeDto
+	 * @return
+	 */
+	private boolean validateReason(Skf2010Sc004AgreeAsyncDto agreeDto) {
 		String reasonText = agreeDto.getCommentNote();
 		if (reasonText != null) {
 			int byteCnt = reasonText.getBytes(Charset.forName("UTF-8")).length;
 			if (byteCnt >= 4000) {
-				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "4000");
+				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
 				return false;
 			}
 		}
@@ -481,42 +488,46 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 	 * @param agreeDto
 	 * @return
 	 */
-	private boolean inputValidate(Skf2010Sc004AgreeDto dto) {
+	private boolean inputValidate(Skf2010Sc004AgreeAsyncDto agreeDto) {
 		// 入力チェック
 		boolean validateResult = true;
 		// 「現社宅の退居日」
-		if (!CheckUtils.isEmpty(dto.getTaikyobi()) && (!CheckUtils.isFormatDate(dto.getTaikyobi(), "yyyy/MM/dd")
-				|| !SkfCheckUtils.isSkfDateFormat(dto.getTaikyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
-			dto.setTaikyobiErr(validationErrorCode);
+		if (!CheckUtils.isEmpty(agreeDto.getTaikyobi())
+				&& (!CheckUtils.isFormatDate(agreeDto.getTaikyobi(), "yyyy/MM/dd") || !SkfCheckUtils
+						.isSkfDateFormat(agreeDto.getTaikyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
+			agreeDto.setTaikyobiErr(validationErrorCode);
 			validateResult = false;
 		}
 		// 「現社宅先の駐車場返還日」
-		if (!CheckUtils.isEmpty(dto.getHenkanbi()) && (!CheckUtils.isFormatDate(dto.getHenkanbi(), "yyyy/MM/dd")
-				|| !SkfCheckUtils.isSkfDateFormat(dto.getHenkanbi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
-			dto.setHenkanbiErr(validationErrorCode);
+		if (!CheckUtils.isEmpty(agreeDto.getHenkanbi())
+				&& (!CheckUtils.isFormatDate(agreeDto.getHenkanbi(), "yyyy/MM/dd") || !SkfCheckUtils
+						.isSkfDateFormat(agreeDto.getHenkanbi(), CheckUtils.DateFormatType.YYYYMMDD))) {
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の駐車場返還日」");
+			agreeDto.setHenkanbiErr(validationErrorCode);
 			validateResult = false;
 		}
 		// 「新社宅の入居日」
-		if (!CheckUtils.isEmpty(dto.getNyukyobi()) && (!CheckUtils.isFormatDate(dto.getNyukyobi(), "yyyy/MM/dd")
-				|| !SkfCheckUtils.isSkfDateFormat(dto.getNyukyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
-			dto.setNyukyobiErr(validationErrorCode);
+		if (!CheckUtils.isEmpty(agreeDto.getNyukyobi())
+				&& (!CheckUtils.isFormatDate(agreeDto.getNyukyobi(), "yyyy/MM/dd") || !SkfCheckUtils
+						.isSkfDateFormat(agreeDto.getNyukyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅の入居日」");
+			agreeDto.setNyukyobiErr(validationErrorCode);
 			validateResult = false;
 		}
 		// 「新社宅先の駐車場使用開始日」
-		if (!CheckUtils.isEmpty(dto.getShiyobi()) && (!CheckUtils.isFormatDate(dto.getShiyobi(), "yyyy/MM/dd")
-				|| !SkfCheckUtils.isSkfDateFormat(dto.getShiyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
-			dto.setShiyobiErr(validationErrorCode);
+		if (!CheckUtils.isEmpty(agreeDto.getShiyobi()) && (!CheckUtils.isFormatDate(agreeDto.getShiyobi(), "yyyy/MM/dd")
+				|| !SkfCheckUtils.isSkfDateFormat(agreeDto.getShiyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅先の駐車場使用開始日」");
+			agreeDto.setShiyobiErr(validationErrorCode);
 			validateResult = false;
 		}
 		// 「新社宅先の駐車場使用開始日2」
-		if (!CheckUtils.isEmpty(dto.getShiyobi2()) && (!CheckUtils.isFormatDate(dto.getShiyobi2(), "yyyy/MM/dd")
-				|| !SkfCheckUtils.isSkfDateFormat(dto.getShiyobi2(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
-			dto.setShiyobi2Err(validationErrorCode);
+		if (!CheckUtils.isEmpty(agreeDto.getShiyobi2())
+				&& (!CheckUtils.isFormatDate(agreeDto.getShiyobi2(), "yyyy/MM/dd") || !SkfCheckUtils
+						.isSkfDateFormat(agreeDto.getShiyobi2(), CheckUtils.DateFormatType.YYYYMMDD))) {
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅先の駐車場使用開始日2」");
+			agreeDto.setShiyobi2Err(validationErrorCode);
 			validateResult = false;
 		}
 
@@ -528,7 +539,7 @@ public class Skf2010Sc004AgreeService extends BaseServiceAbstract<Skf2010Sc004Ag
 	 * 
 	 * @param agreeDto
 	 */
-	private void init(Skf2010Sc004AgreeDto agreeDto) {
+	private void init(Skf2010Sc004AgreeAsyncDto agreeDto) {
 		// エラー背景色初期化
 		agreeDto.setTaikyobiErr("");
 		agreeDto.setHenkanbiErr("");

@@ -40,22 +40,12 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("申請内容を確認する", CodeConstant.C001, dto.getPageId());
 
-		// バイトカット処理
-		skf2020Sc002SharedService.cutByte(dto);
-
 		// 登録処理
 		// ステータスの設定
 		Map<String, String> applInfo = skf2020Sc002SharedService.getSkfApplInfo(dto);
 		// 申請者用のステータスをデフォルト設定
 		String newStatus = CodeConstant.STATUS_ICHIJIHOZON;
 		applInfo.put("newStatus", newStatus);
-
-		// 画面表示項目の保持
-		skf2020Sc002SharedService.setInfo(dto);
-		// 返却備品の設定
-		skf2020Sc002SharedService.setReturnBihinInfo(dto, Skf2020Sc002SharedService.UPDATE_FLG);
-		// 画面表示制御再設定
-		skf2020Sc002SharedService.setControlValue(dto);
 
 		// 一時保存処理を実行
 		if (!skf2020Sc002SharedService.saveInfo(applInfo, dto)) {

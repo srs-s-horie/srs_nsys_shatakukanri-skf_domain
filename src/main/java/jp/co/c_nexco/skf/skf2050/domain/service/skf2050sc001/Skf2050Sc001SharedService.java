@@ -167,7 +167,7 @@ public class Skf2050Sc001SharedService {
 			return false;
 		}
 
-		// 「同意する」の時のみ備品返却申請テーブル更新
+		// 「同意する」の時のみ備品返却確認テーブル更新
 		if (!CheckUtils.isEqual(newApplStatus, CodeConstant.STATUS_DOI_SHINAI)) {
 			// 備品返却テーブルの更新
 			String sessionDay = dto.getSessionDay();
@@ -298,7 +298,7 @@ public class Skf2050Sc001SharedService {
 	}
 
 	/**
-	 * 備品返却申請情報をセットします
+	 * 備品返却確認情報をセットします
 	 * 
 	 * @param bihinHenkyaku
 	 * @param dto
@@ -354,6 +354,15 @@ public class Skf2050Sc001SharedService {
 		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getNowShatakuMenseki())) {
 			dto.setShatakuMenseki(bihinHenkyaku.getNowShatakuMenseki() + SkfCommonConstant.SQUARE_MASTER);
 		}
+		// 代理人（立会人）
+		// 代理人氏名
+		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getTatiaiDairiName())) {
+			dto.setDairininName(bihinHenkyaku.getTatiaiDairiName());
+		}
+		// 代理人連絡先
+		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getTatiaiDairiApoint())) {
+			dto.setDairininName(bihinHenkyaku.getTatiaiDairiApoint());
+		}
 
 		return;
 	}
@@ -367,7 +376,7 @@ public class Skf2050Sc001SharedService {
 	}
 
 	/**
-	 * 備品返却申請テーブルのデータを更新します
+	 * 備品返却確認テーブルのデータを更新します
 	 * 
 	 * @param applNo
 	 * @param sessionDay
