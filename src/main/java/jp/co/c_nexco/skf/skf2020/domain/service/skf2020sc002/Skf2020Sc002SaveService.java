@@ -60,7 +60,7 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 		}
 
 		// 画面表示項目の保持
-		skf2020Sc002SharedService.setInfo(saveDto);
+		skf2020Sc002SharedService.setDispInfo(saveDto);
 		// 返却備品の設定
 		skf2020Sc002SharedService.setReturnBihinInfo(saveDto, Skf2020Sc002SharedService.UPDATE_FLG);
 		// 画面表示制御再設定
