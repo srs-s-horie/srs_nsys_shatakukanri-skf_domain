@@ -7,7 +7,7 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050Sc001common.Skf2050Sc001Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf2050Sc001 備品返却申請（申請者用)同意する処理Dto
+ * Skf2050Sc001 備品返却確認（申請者用)同意する処理Dto
  *
  * @author NEXCOシステムズ
  */
