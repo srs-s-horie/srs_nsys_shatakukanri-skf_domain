@@ -17,6 +17,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -248,10 +249,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			initDto.setApplUpdateDate(applDate);
 			// 社宅入居希望等調書
 			mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
-			if (initDto.getDisplayLevel() >= 2) {
-				// 貸与（予定）社宅等のご案内
-				mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
-			}
+			// 貸与（予定）社宅等のご案内
+			mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
 
 		}
 
@@ -665,13 +664,13 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// 使用料
 		String newRental = tNyukyoChoshoTsuchi.getNewRental();
-		if (newRental != null && !CheckUtils.isEmpty(newRental)) {
+		if (newRental != null && NfwStringUtils.isNotEmpty(newRental)) {
 			newRental = nfNum.format(Long.parseLong(newRental));
 		}
 		initDto.setNewRental(newRental);
 		// 共益費
 		String newKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
-		if (newKyoekihi != null && !CheckUtils.isEmpty(newKyoekihi)) {
+		if (newKyoekihi != null && NfwStringUtils.isNotEmpty(newKyoekihi)) {
 			newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
 		}
 		initDto.setNewKyoekihi(newKyoekihi);
@@ -683,7 +682,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo());
 		// 保管場所使用料
 		String parkingRental = tNyukyoChoshoTsuchi.getParkingRental();
-		if (parkingRental != null && !CheckUtils.isEmpty(parkingRental)) {
+		if (parkingRental != null && NfwStringUtils.isNotEmpty(parkingRental)) {
 			parkingRental = nfNum.format(Long.parseLong(parkingRental));
 		}
 		initDto.setParkingRental(parkingRental);
@@ -695,7 +694,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo2());
 		// 保管場所使用料
 		String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
-		if (parkingRental2 != null && !CheckUtils.isEmpty(parkingRental2)) {
+		if (parkingRental2 != null && NfwStringUtils.isNotEmpty(parkingRental2)) {
 			parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
 		}
 		initDto.setParkingRental2(parkingRental2);
