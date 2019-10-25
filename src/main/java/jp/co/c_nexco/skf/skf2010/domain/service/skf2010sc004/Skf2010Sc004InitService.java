@@ -176,6 +176,16 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				displayLevel = 2;
 				dto.setLevel2Open("true");
 				break;
+			case CodeConstant.STATUS_DOI_ZUMI:
+			case CodeConstant.STATUS_DOI_SHINAI:
+				/**
+				 * 同意済、同意しない： 案内＋誓約書追加（ボタンは全て非表示）
+				 */
+				dto.setMaskPattern("PTN_C");
+				displayLevel = 2;
+				dto.setLevel2Open("true");
+				dto.setRepresentBtnFlg("false");
+				break;
 			default:
 				/**
 				 * それ以外（同意済み以降）： 入居決定通知書追加
