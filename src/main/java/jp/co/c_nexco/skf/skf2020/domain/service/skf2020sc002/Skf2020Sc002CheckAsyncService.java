@@ -494,84 +494,88 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 				result = false;
 			}
 
-			// 現保有の社宅
-			LogUtils.debugByMsg(msg + "現保有の社宅(退居予定）" + checkDto.getTaiyoHituyo() + checkDto.getTaikyoYotei());
-			if ((!(CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(checkDto.getTaiyoHituyo())))
-					&& NfwStringUtils.isBlank(checkDto.getTaikyoYotei())) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoYotei" },
-						MessageIdConstant.E_SKF_1054, "現保有の社宅");
-				result = false;
-			}
-
-			// 現保有の社宅 「退居する」の場合
-			LogUtils.debugByMsg(msg + "現保有の社宅 「退居する」の場合" + checkDto.getTaikyoYotei());
-			if (CodeConstant.LEAVE.equals(checkDto.getTaikyoYotei())) {
-				// 退居予定日
-				LogUtils.debugByMsg(msg + "退居予定日" + checkDto.getTaikyoYoteiDate());
-				if (NfwStringUtils.isBlank(checkDto.getTaikyoYoteiDate())) {
-					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoYoteiDate" },
-							MessageIdConstant.E_SKF_1048, "退居予定日");
+			// 駐車場のみ以外の場合チェックする
+			if (!CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(checkDto.getTaiyoHituyo())) {
+				// 現保有の社宅
+				LogUtils.debugByMsg(msg + "現保有の社宅(退居予定）" + checkDto.getTaiyoHituyo() + checkDto.getTaikyoYotei());
+				if ((!(CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(checkDto.getTaiyoHituyo())))
+						&& NfwStringUtils.isBlank(checkDto.getTaikyoYotei())) {
+					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoYotei" },
+							MessageIdConstant.E_SKF_1054, "現保有の社宅");
 					result = false;
 				}
 
-				// 社宅を「必要としない」以外の場合
-				LogUtils.debugByMsg(msg + "退居理由" + checkDto.getTaikyoRiyuKbn() + checkDto.getTaiyoHituyo());
-				if (NfwStringUtils.isNotBlank(checkDto.getTaiyoHituyo())
-						&& !(CodeConstant.ASKED_SHATAKU_FUYOU.equals(checkDto.getTaiyoHituyo()))) {
-					// 退居理由
-					if (NfwStringUtils.isBlank(checkDto.getTaikyoRiyuKbn())) {
-						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyuKbn" },
-								MessageIdConstant.E_SKF_1054, "退居理由");
+				// 現保有の社宅 「退居する」の場合
+				LogUtils.debugByMsg(msg + "現保有の社宅 「退居する」の場合" + checkDto.getTaikyoYotei());
+				if (CodeConstant.LEAVE.equals(checkDto.getTaikyoYotei())) {
+					// 退居予定日
+					LogUtils.debugByMsg(msg + "退居予定日" + checkDto.getTaikyoYoteiDate());
+					if (NfwStringUtils.isBlank(checkDto.getTaikyoYoteiDate())) {
+						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoYoteiDate" },
+								MessageIdConstant.E_SKF_1048, "退居予定日");
 						result = false;
 					}
-					// 退居理由がその他の場合
-					LogUtils.debugByMsg(msg + "退居理由その他" + checkDto.getTaikyoRiyuKbn() + checkDto.getTaikyoRiyu());
-					if (NfwStringUtils.isNotBlank(checkDto.getTaikyoRiyuKbn())) {
-						if (CodeConstant.OTHER_RIYU_VALUE.equals(checkDto.getTaikyoRiyuKbn())) {
-							if (NfwStringUtils.isBlank(checkDto.getTaikyoRiyu())) {
-								ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyu" },
-										MessageIdConstant.E_SKF_1048, "退居理由その他");
+
+					// 社宅を「必要としない」以外の場合
+					LogUtils.debugByMsg(msg + "退居理由" + checkDto.getTaikyoRiyuKbn() + checkDto.getTaiyoHituyo());
+					if (NfwStringUtils.isNotBlank(checkDto.getTaiyoHituyo())
+							&& !(CodeConstant.ASKED_SHATAKU_FUYOU.equals(checkDto.getTaiyoHituyo()))) {
+						// 退居理由
+						if (NfwStringUtils.isBlank(checkDto.getTaikyoRiyuKbn())) {
+							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyuKbn" },
+									MessageIdConstant.E_SKF_1054, "退居理由");
+							result = false;
+						}
+						// 退居理由がその他の場合
+						LogUtils.debugByMsg(msg + "退居理由その他" + checkDto.getTaikyoRiyuKbn() + checkDto.getTaikyoRiyu());
+						if (NfwStringUtils.isNotBlank(checkDto.getTaikyoRiyuKbn())) {
+							if (CodeConstant.OTHER_RIYU_VALUE.equals(checkDto.getTaikyoRiyuKbn())) {
+								if (NfwStringUtils.isBlank(checkDto.getTaikyoRiyu())) {
+									ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyu" },
+											MessageIdConstant.E_SKF_1048, "退居理由その他");
+									result = false;
+								}
+							}
+						}
+
+						// 退居後連絡先
+						LogUtils.debugByMsg(msg + "退居後連絡先" + checkDto.getTaikyogoRenrakuSaki());
+						if (NfwStringUtils.isBlank(checkDto.getTaikyogoRenrakuSaki())) {
+							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyogoRenrakuSaki" },
+									MessageIdConstant.E_SKF_1048, "退居後連絡先");
+							result = false;
+						}
+						// 備品返却がある場合のみチェック
+						LogUtils.debugByMsg(msg + "返却有無" + checkDto.getHdnBihinHenkyakuUmu());
+						if (NfwStringUtils.isNotBlank(checkDto.getHdnBihinHenkyakuUmu())
+								&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(checkDto.getHdnBihinHenkyakuUmu())) {
+
+							// 返却立会希望日(日)
+							LogUtils.debugByMsg(msg + "返却立会希望日(日)" + checkDto.getSessionDay());
+							if (NfwStringUtils.isBlank(checkDto.getSessionDay())) {
+								ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionDay" },
+										MessageIdConstant.E_SKF_1048, "返却立会希望日(日)");
+								result = false;
+							}
+							// 返却立会希望日(時)
+							LogUtils.debugByMsg(msg + "返却立会希望日(時)" + checkDto.getSessionTime());
+							if (NfwStringUtils.isBlank(checkDto.getSessionTime())) {
+								ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionTime" },
+										MessageIdConstant.E_SKF_1054, "返却立会希望日(時)");
+								result = false;
+							}
+							// 連絡先
+							LogUtils.debugByMsg(msg + "連絡先" + checkDto.getRenrakuSaki());
+							if (NfwStringUtils.isBlank(checkDto.getRenrakuSaki())) {
+								ServiceHelper.addErrorResultMessage(checkDto, new String[] { "renrakuSaki" },
+										MessageIdConstant.E_SKF_1048, "連絡先");
 								result = false;
 							}
 						}
 					}
-
-					// 退居後連絡先
-					LogUtils.debugByMsg(msg + "退居後連絡先" + checkDto.getTaikyogoRenrakuSaki());
-					if (NfwStringUtils.isBlank(checkDto.getTaikyogoRenrakuSaki())) {
-						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyogoRenrakuSaki" },
-								MessageIdConstant.E_SKF_1048, "退居後連絡先");
-						result = false;
-					}
-					// 備品返却がある場合のみチェック
-					LogUtils.debugByMsg(msg + "返却有無" + checkDto.getHdnBihinHenkyakuUmu());
-					if (NfwStringUtils.isNotBlank(checkDto.getHdnBihinHenkyakuUmu())
-							&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(checkDto.getHdnBihinHenkyakuUmu())) {
-
-						// 返却立会希望日(日)
-						LogUtils.debugByMsg(msg + "返却立会希望日(日)" + checkDto.getSessionDay());
-						if (NfwStringUtils.isBlank(checkDto.getSessionDay())) {
-							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionDay" },
-									MessageIdConstant.E_SKF_1048, "返却立会希望日(日)");
-							result = false;
-						}
-						// 返却立会希望日(時)
-						LogUtils.debugByMsg(msg + "返却立会希望日(時)" + checkDto.getSessionTime());
-						if (NfwStringUtils.isBlank(checkDto.getSessionTime())) {
-							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionTime" },
-									MessageIdConstant.E_SKF_1054, "返却立会希望日(時)");
-							result = false;
-						}
-						// 連絡先
-						LogUtils.debugByMsg(msg + "連絡先" + checkDto.getRenrakuSaki());
-						if (NfwStringUtils.isBlank(checkDto.getRenrakuSaki())) {
-							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "renrakuSaki" },
-									MessageIdConstant.E_SKF_1048, "連絡先");
-							result = false;
-						}
-					}
 				}
 			}
+
 		}
 		return result;
 	}

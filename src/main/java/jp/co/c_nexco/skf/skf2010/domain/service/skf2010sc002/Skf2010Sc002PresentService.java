@@ -42,6 +42,9 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 	@Autowired
 	private Skf2010Sc002GetTeijiShatakuInfoExpRepository skf2010Sc002GetTeijiShatakuInfoExpRepository;
 
+	// 承認者更新フラグ
+	private String agreNameUpdate = "1";
+
 	@Override
 	protected BaseDto index(Skf2010Sc002PresentDto preDto) throws Exception {
 
@@ -81,8 +84,9 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 		applMap.put("name", preDto.getName());
 		applMap.put("status", status);
 		applMap.put("commentNote", preDto.getCommentNote());
+
 		String res = skf2010Sc002SharedService.updateShinseiHistory(applMap,
-				preDto.getLastUpdateDate(Skf2010Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY));
+				preDto.getLastUpdateDate(Skf2010Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY), agreNameUpdate);
 		if ("updateError".equals(res)) {
 			// 更新エラー
 			ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
