@@ -21,7 +21,7 @@ import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 import jp.co.intra_mart.product.pdfmaker.net.IOIntegration;
 
 /**
- * multiPdfBaseServiceAbstract 結合PDF出力処理の基盤クラス。
+ * PdfBaseServiceAbstract PDF出力処理の基盤クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -29,7 +29,6 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
     
     protected IOIntegration integratePdf;
     protected List<CSVDoc> pdfDataList;
-    protected String pdfOutputPath;
     
     /**
      * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード （「✓」のような特殊記号を表示するため、UTF-16に設定）
@@ -37,6 +36,11 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
     private static final String PDF_PROCESS_ENCODE = "UTF-16";
     /** ✓マーク */
     public static final String CHECK_MARK = "✓";
+    /** ファイル拡張子：PDF */
+    public static final String FILE_EXTENTION_PDF = ".pdf";
+    /** ファイル拡張子：IOD */
+    public static final String FILE_EXTENTION_IOD = ".iod";
+    
     
     /**
      * PDFに出力するデータを設定する。
@@ -95,13 +99,12 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
     abstract protected void afterIndexProc(DTO dto);
     
     /**
-     * PDF出力処理（１テンプレートによる単票出力）を実行する。
+     * PDF出力処理を実行する。
      */
     @Override
     protected DTO index(DTO pdfDto) throws Exception {
         // PDF処理前追加処理を実行する。
         this.beforeIndexProc(pdfDto);
-        
         
         // インスタンス生成
         this.integratePdf = new IOIntegration();
@@ -116,7 +119,8 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
         this.setPdfBaseSettings();
         
         // 出力ファイルパスの設定
-        this.setPdfOutputPath(this.getTempFolderPath());
+        String pdfOutputPath;
+        pdfOutputPath = this.getPdfOutputPath(this.getTempFolderPath());
         
         // 出力するPDFデータを設定する
         this.setPdfData(pdfDto);
@@ -125,13 +129,13 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
         this.pdfIntegration();
         
         // PDFを出力する
-        this.outputPdf();
+        this.outputPdf(pdfOutputPath);
         
         // PDF処理後追加処理を実行する
         this.afterIndexProc(pdfDto);
         
         // ファイル情報をDTOに設定する。
-        SkfFileOutputUtils.fileOutput(pdfDto, this.pdfOutputPath);
+        SkfFileOutputUtils.fileOutput(pdfDto, pdfOutputPath);
         pdfDto.setUploadFileName(this.getPdfFileName());
         
         // TODO PublicStorageに作成したPDFファイルを削除する
@@ -181,51 +185,57 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
     /**
      * PDFの一時ファイルの出力パスを設定する。
      * @param tempFolderPath 一時出力フォルダのパス
+     * @return iodOutputPath PDFファイルの出力パス
      * @throws IOException
      */
-    protected void setPdfOutputPath(String tempFolderPath) throws IOException{
+    protected String getPdfOutputPath(String tempFolderPath) throws IOException{
         // 出力ファイルパスの設定
-        // 一時ファイル名がユニークとなるようミリ秒を含めたシステム日付をファイル名に使用する
-        String prefix     = "temp-";
-        String sysDateMillisec = DateUtils.getSysDateString( "yyyyMMddhhmmss-SSS");
-        String suffix     = ".pdf"; // 出力ファイル拡張子
-        this.pdfOutputPath = tempFolderPath + prefix + sysDateMillisec + suffix;
-
-        PublicStorage ps = new PublicStorage(this.pdfOutputPath);
-        
-        while (ps.exists()) {
-            // ファイル名が重複した場合、重複しなくなるまでファイル名を取り直す
-            sysDateMillisec = DateUtils.getSysDateString( "yyyyMMddhhmmss-SSS");
-            this.pdfOutputPath = tempFolderPath + prefix + sysDateMillisec + suffix;
-            ps = new PublicStorage(this.pdfOutputPath);
-        }
-        return;
+        return this.getOutputPath(tempFolderPath, FILE_EXTENTION_PDF);
     }
     
     /**
      * PDF結合前のIODファイル出力パスを設定する。
      * @param tempFolderPath 一時出力フォルダのパス
-     * @return iodOutputPath 結合前IODファイルのパス
+     * @return iodOutputPath 結合前IODファイルの出力パス
      * @throws IOException
      */
     protected String getIodOutputPath(String tempFolderPath) throws IOException{
         // 出力ファイルパスの設定
+        return this.getOutputPath(tempFolderPath, FILE_EXTENTION_IOD);
+    }
+    
+    /**
+     * 引数で指定されたPublicStorage配下の一時フォルダに
+     * ユニークな名称の一時ファイルを作成し、パスを取得する。
+     * <pre>
+     * 本メソッドは以下の命名規則に則り一時ファイルを作成する。
+     *   固定文字列："temp-" + ミリ秒3桁までのシステム日付(yyyyMMddhhmmss-SSS) + ファイル拡張子
+     * 
+     * 同名ファイルが既に存在する場合、重複が解消されるまでファイル名を再取得する。
+     * ※厳密な一意性を保証するものでないことに注意。
+     * </pre>
+     * 
+     * @param tempFolderPath 一時出力フォルダのパス
+     * @param fileExtention ファイル拡張子
+     * @return iodOutputPath 一時ファイルの出力パス
+     * @throws IOException
+     */
+    protected String getOutputPath(String tempFolderPath, String fileExtention) throws IOException{
+        // 出力ファイルパスの設定
         // 一時ファイル名がユニークとなるようミリ秒を含めたシステム日付をファイル名に使用する
         String prefix     = "temp-";
         String sysDateMillisec = DateUtils.getSysDateString( "yyyyMMddhhmmss-SSS");
-        String suffix     = ".iod"; // 出力ファイル拡張子
+        String outputPath = tempFolderPath + prefix + sysDateMillisec + fileExtention;
         
-        String iodOutputPath = tempFolderPath + prefix + sysDateMillisec + suffix;
-
-        PublicStorage ps = new PublicStorage(iodOutputPath);
+        PublicStorage ps = new PublicStorage(outputPath);
         
         while (ps.exists()) {
-            // ファイル名が重複した場合、重複しなくなるまでファイル名を取り直す
+            // 同名ファイル名が既に存在する場合、重複しなくなるまでファイル名を取り直す
             sysDateMillisec = DateUtils.getSysDateString( "yyyyMMddhhmmss-SSS");
-            iodOutputPath = tempFolderPath + prefix + sysDateMillisec + suffix;
-            ps = new PublicStorage(iodOutputPath);
+            outputPath = tempFolderPath + prefix + sysDateMillisec + fileExtention;
+            ps = new PublicStorage(outputPath);
         }
-        return iodOutputPath;
+        return outputPath;
     }
     
     /**
@@ -248,9 +258,10 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
      * <pre>
      * 出力に失敗した場合はCSVDocが投げたエラーメッセージを表示する。
      * </pre>
+     * @param PDF出力先パス
      */
-    protected void outputPdf(){
-        int resultCode = this.integratePdf.makePDF(this.pdfOutputPath);
+    protected void outputPdf(String pdfOutputPath){
+        int resultCode = this.integratePdf.makePDF(pdfOutputPath);
         
         String resultMessage = CommonConstant.C_EMPTY;
         if (resultCode == 0) {
