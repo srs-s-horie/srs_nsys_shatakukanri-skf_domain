@@ -39,6 +39,9 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 
+	// 承認者更新フラグ
+	private String agreNameNoUpdate = "0";
+
 	@Override
 	public BaseDto index(Skf2010Sc002ApplyDto applyDto) throws Exception {
 
@@ -83,8 +86,10 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 		applMap.put("name", applyDto.getName());
 		applMap.put("status", status);
 		applMap.put("commentNote", applyDto.getCommentNote());
+
+		// 申請書類履歴の更新を行う。承認者の名前は更新しない
 		String res = skf2010Sc002SharedService.updateShinseiHistory(applMap,
-				applyDto.getLastUpdateDate(Skf2010Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY));
+				applyDto.getLastUpdateDate(Skf2010Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY), agreNameNoUpdate);
 		if ("updateError".equals(res)) {
 			// 更新エラー
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1075);
