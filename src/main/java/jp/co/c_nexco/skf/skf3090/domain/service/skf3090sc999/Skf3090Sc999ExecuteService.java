@@ -41,6 +41,9 @@ public class Skf3090Sc999ExecuteService extends BaseServiceAbstract<Skf3090Sc999
 		String applNoNyukyo = dto.getApplNoNyukyo();
 		String applNoTaikyo = dto.getApplNoTaikyo();
 		String applStatus = dto.getApplStatus();
+		String userID = dto.getUserID();
+		String pageID = dto.getPageID();
+
 		if (companyCd != null && companyCd.equals("null")) {
 			companyCd = null;
 		}
@@ -56,16 +59,26 @@ public class Skf3090Sc999ExecuteService extends BaseServiceAbstract<Skf3090Sc999
 		if (applStatus != null && applStatus.equals("null")) {
 			applStatus = null;
 		}
+		if (userID != null && userID.equals("null")) {
+			LogUtils.debugByMsg("B001-UTTest：ユーザIDのnull変換");
+			userID = null;
+		}
+		if (pageID != null && pageID.equals("null")) {
+			pageID = null;
+		}
 
 		try {
-			List<String> resultList = b2001.doProc(companyCd, shainNo, applNoNyukyo, applNoTaikyo, applStatus);
+			LogUtils.debugByMsg("B001-UTTest：データ連携に渡すパラメータ = 会社コード：" + companyCd + " 社員番号：" + shainNo + " 入居申請番号："
+					+ applNoNyukyo + " 退居申請番号：" + applNoTaikyo + " 申請ステータス：" + applStatus + " ユーザID：" + userID
+					+ " 画面ID：" + pageID);
+			List<String> resultList = b2001.doProc(companyCd, shainNo, applNoNyukyo, applNoTaikyo, applStatus, userID,
+					pageID);
 
 			if (resultList != null) {
 				String errorMessage = "";
 				for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
-					if (listIndex == Skf2020Fc001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID) {
-						dto.setErrorCodeID(
-								resultList.get(Skf2020Fc001NyukyoKiboSinseiDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID));
+					if (listIndex == 0) {
+						dto.setErrorCodeID(resultList.get(0));
 					} else {
 						if (errorMessage.equals("") == false) {
 							errorMessage += "/";

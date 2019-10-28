@@ -18,5 +18,7 @@ public class Skf2040Fc001ExecuteDto extends BaseDto {
 	private String applStatus;
 	private String errorCodeID;
 	private String errorStrings;
+	private String userID;
+	private String pageID;
 
 }

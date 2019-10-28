@@ -4,13 +4,17 @@
  */
 package jp.co.c_nexco.skf.skfcomb.domain.service.skfcombatch1;
 
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
-import jp.co.c_nexco.skf.common.util.batch.SkfBatchBusinessLogicUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skfcomb.domain.dto.skfcombatch1.SkfComBatch1ExecuteDto;
 
 /**
@@ -24,6 +28,10 @@ public class SkfComBatch1ExecuteService extends BaseServiceAbstract<SkfComBatch1
 
 	@Autowired
 	SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
+
+	private static final String DATA_LINKAGE_KEY_COMBATCH1 = "mapKeyOfComBatch1";
 
 	/**
 	 * 画面初期表示のメイン処理
@@ -50,6 +58,21 @@ public class SkfComBatch1ExecuteService extends BaseServiceAbstract<SkfComBatch1
 		String returnStatus = dto.getReturnStatus();
 		if (NfwStringUtils.isEmpty(returnStatus))
 			returnStatus = null;
+
+		// MAPセット
+		// データ連携機能使用時に更新対象となるテーブルの現在の更新日時を全て取得
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapBefore = skfBatchUtils
+				.getUpdateDateForUpdateSQL(null);
+
+		// 取得したMapをmenuScopeSessionBeanにMapでセットする
+		menuScopeSessionBean.put(DATA_LINKAGE_KEY_COMBATCH1, forUpdateMapBefore);
+
+		// menuScopeSessionBeanからオブジェクトを取得する
+		Object forUpdateObject = menuScopeSessionBean.get(DATA_LINKAGE_KEY_COMBATCH1);
+		// 取得したオブジェクトを専用メソッドを使ってダウンキャストする
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skfBatchBusinessLogicUtils
+				.forUpdateMapDownCaster(forUpdateObject);
+		skfBatchBusinessLogicUtils.setUpdateDateForUpdateSQL(forUpdateMap);
 
 		returnStatus = String.valueOf(skfBatchBusinessLogicUtils.updateShatakuKanriDaichoShatakuData(teijiNo, yearMonth,
 				"ユーザID", dto.getPageId()));

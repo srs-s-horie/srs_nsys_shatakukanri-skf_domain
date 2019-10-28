@@ -19,5 +19,7 @@ public class Skf3090Sc999ExecuteDto extends BaseDto {
 	private String applStatus;
 	private String errorCodeID;
 	private String errorStrings;
+	private String userID;
+	private String pageID;
 
 }

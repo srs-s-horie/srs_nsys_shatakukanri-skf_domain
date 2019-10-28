@@ -7,11 +7,14 @@ package jp.co.c_nexco.skf.skf2040.domain.service.skf2040fc001;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040fc001.Skf2040Fc001ExecuteDto;
 
@@ -24,6 +27,11 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040fc001.Skf2040Fc001ExecuteDto;
 @Service
 public class Skf2040Fc001ExecuteService extends BaseServiceAbstract<Skf2040Fc001ExecuteDto> {
 
+	// マップのキーはSessionCacheKeyConstantクラスに定義すること！
+	private static final String DATA_LINKAGE_KEY_SKF2040FC001 = "keyForUpdate";
+
+	@Autowired
+	SkfBatchUtils skfBatchUtils;
 	@Autowired
 	Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001;
 
@@ -54,14 +62,36 @@ public class Skf2040Fc001ExecuteService extends BaseServiceAbstract<Skf2040Fc001
 		}
 
 		try {
-			List<String> resultList = skf2040Fc001.doProc(companyCd, shainNo, applNo, applStatus);
+
+			/** 退居のデータ連携機能を例とする */
+			// menuScopeSessionBeanからオブジェクトを取得する
+			Object forUpdateObject = menuScopeSessionBean.get(DATA_LINKAGE_KEY_SKF2040FC001);
+
+			// 取得したオブジェクトを専用メソッドを使ってダウンキャストする
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skf2040Fc001
+					.forUpdateMapDownCaster(forUpdateObject);
+
+			// ダウンキャストしたMapをデータ連携クラスに格納する
+			skf2040Fc001.setUpdateDateForUpdateSQL(forUpdateMap);
+
+			// データ連携機能をキックする
+			List<String> resultList = skf2040Fc001.doProc(companyCd, shainNo, applNo, applStatus, dto.getUserID(),
+					dto.getPageID());
+
+			// セッションに保持しているデータ連携用のMapを削除する
+			menuScopeSessionBean.remove(DATA_LINKAGE_KEY_SKF2040FC001);
 
 			if (resultList != null) {
+				// エラーメッセージ出力
+				skf2040Fc001.addResultMessageForDataLinkage(dto, resultList);
+			}
+
+			if (resultList != null) {
+
 				String errorMessage = "";
 				for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
-					if (listIndex == Skf2040Fc001TaikyoTodokeDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID) {
-						dto.setErrorCodeID(
-								resultList.get(Skf2040Fc001TaikyoTodokeDataImport.INDEX_OF_EXCEPTION_MASSAGE_ID));
+					if (listIndex == 0) {
+						dto.setErrorCodeID(resultList.get(0));
 					} else {
 						if (errorMessage.equals("") == false) {
 							errorMessage += "/";

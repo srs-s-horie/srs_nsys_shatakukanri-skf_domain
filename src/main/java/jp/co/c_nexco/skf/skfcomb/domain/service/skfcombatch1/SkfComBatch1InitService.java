@@ -3,9 +3,11 @@
  */
 package jp.co.c_nexco.skf.skfcomb.domain.service.skfcombatch1;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skfcomb.domain.dto.skfcombatch1.SkfComBatch1InitDto;
 
 /**
@@ -15,14 +17,18 @@ import jp.co.c_nexco.skf.skfcomb.domain.dto.skfcombatch1.SkfComBatch1InitDto;
  *
  */
 @Service
-public class SkfComBatch1InitService
-		extends BaseServiceAbstract<SkfComBatch1InitDto> {
+public class SkfComBatch1InitService extends BaseServiceAbstract<SkfComBatch1InitDto> {
+
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
+	private static final String DATA_LINKAGE_KEY_COMBATCH1 = "mapKeyOfComBatch1";
 
 	/**
 	 * 画面初期表示のメイン処理
 	 */
 	@Override
 	protected BaseDto index(SkfComBatch1InitDto initDto) throws Exception {
+
 		return initDto;
 	}
 
