@@ -606,7 +606,7 @@ public class Skf2020Sc003SharedService {
 		// 現保有の社宅 社宅管理番号
 		dto.setNowShatakuKanriNo(String.valueOf(shatakuNyukyoKiboInfo.getNowShatakuKanriNo()));
 		// 現保有の社宅 部屋管理番号
-		dto.setNowShatakuRoomKanriNo(String.valueOf(shatakuNyukyoKiboInfo.getNowShatakuKanriNo()));
+		dto.setNowShatakuRoomKanriNo(String.valueOf(shatakuNyukyoKiboInfo.getNowRoomKanriNo()));
 		// 退居予定日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getTaikyoYoteiDate())) {
 			dto.setTaikyoYoteiDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getTaikyoYoteiDate(),
