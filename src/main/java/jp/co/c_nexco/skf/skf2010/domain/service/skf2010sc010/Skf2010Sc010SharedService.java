@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc010.Skf2010Sc010GetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc010.Skf2010Sc010GetCommentListExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc010.Skf2010Sc010GetCommentListExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc010.Skf2010Sc010GetShainInfoExpRepository;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -22,8 +21,6 @@ public class Skf2010Sc010SharedService {
 
 	@Autowired
 	private Skf2010Sc010GetCommentListExpRepository skf2010Sc010GetCommentListExpRepository;
-	@Autowired
-	private Skf2010Sc010GetShainInfoExpRepository skf2010Sc010GetShainInfoExpRepository;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired

@@ -8,8 +8,9 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.common.Skf205010CommonAsyncDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
- * 
+ * Skf2050Sc001 備品返却確認（申請者用)共通非同期処理Dto
+ *
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

@@ -25,8 +25,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004NotAgreeDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。
- * 
+ * Skf2010Sc004 申請内容表示/引戻し同意しない処理クラス
+ *
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc004NotAgreeDto> {
@@ -50,16 +51,14 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param notAgreeDto
-	 *            インプットDTO
+	 * @param notAgreeDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc004NotAgreeDto index(Skf2010Sc004NotAgreeDto notAgreeDto) throws Exception {
-		// TODO 操作ログの出力
-		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, notAgreeDto.getPageId());
+		// 操作ログの出力
+		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		// タイトル設定
 		notAgreeDto.setPageTitleKey(MessageIdConstant.SKF2010_SC004_TITLE);
@@ -81,7 +80,8 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		// 申請情報の取得を行う
 		getApplInfo(notAgreeDto);
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo");
 
 		String commentName = loginUserInfo.get("userName");
@@ -101,7 +101,7 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 
 		String urlBase = "skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 
-		// TODO 送信メールにコメントが表示されないようになっている（メール本文に表記箇所が無い）
+		// 送信メールにコメントが表示されないようになっている（メール本文に表記箇所が無い）
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
 				shainNo, CodeConstant.NONE, urlBase);
 
@@ -144,7 +144,6 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	}
 
 	private void getApplInfo(Skf2010Sc004NotAgreeDto agreeDto) {
-		// TODO 自動生成されたメソッド・スタブ
 		String applId = agreeDto.getApplId();
 		String applNo = agreeDto.getApplNo();
 
@@ -187,12 +186,12 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	private boolean validateReason(Skf2010Sc004NotAgreeDto agreeDto) {
 		String reasonText = agreeDto.getCommentNote();
 		if (reasonText == null || CheckUtils.isEmpty(reasonText)) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1048, "承認者へのコメント", "4000");
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1048, "承認者へのコメント");
 			return false;
 		}
 		int byteCnt = reasonText.getBytes(Charset.forName("UTF-8")).length;
 		if (byteCnt >= 4000) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "4000");
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
 			return false;
 		}
 		return true;
