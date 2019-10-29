@@ -166,7 +166,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			if (nyukyoList.size() > 0) {
 				Skf3022Sc003GetNyukyoInfoExp nyukyoInfo = nyukyoList.get(0);
 				// 規格2
-				kikaakuSelectedValue = nyukyoInfo.getNewRental();
+				kikaakuSelectedValue = nyukyoInfo.getNewShatakuKikaku();
 				// ①用途2
 				youtoSelectedValue = nyukyoInfo.getHitsuyoShataku();
 				// ②延べ面積2
@@ -339,7 +339,6 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		initDto.setSc003AddressKbn(shatakuInfo.getAreaKbn());
 
 		/** 画面左側（基本情報）の設定 */
-		codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN);
 		// 規格
 		initDto.setSc003Kikaku(codeCacheUtils.getGenericCodeName(
 				FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN, roomInfo.getOriginalKikaku()));
@@ -388,7 +387,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			// ⑩経年
 			initDto.setSc003Keinen(getNenEdit(calcResult.getSanteiKeinen()));
 			// ⑪経年調整　残価率
-			initDto.setSc003KeinenZankaritsu(calcResult.getKeinenZankaristu().stripTrailingZeros().toPlainString());
+			initDto.setSc003KeinenZankaritsu(calcResult.getKeinenZankaristu().toPlainString());
 			// ⑫使用料月額
 			initDto.setSc003PatternShiyoryo1(
 					skf3022Sc003SharedService.getKingakuEdit(calcResult.getPatternShiyoryouGetsugaku().stripTrailingZeros().toPlainString()));

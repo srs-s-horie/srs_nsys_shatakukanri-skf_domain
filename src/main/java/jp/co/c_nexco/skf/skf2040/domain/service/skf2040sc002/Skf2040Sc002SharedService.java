@@ -403,9 +403,6 @@ public class Skf2040Sc002SharedService {
 	 */
 	protected void setReportInfo(Skf2040Sc002CommonDto dto, Skf2040TTaikyoReport taikyoRepDt) {
 
-		String sfontColor = "<font color='red'>";
-		String eFontColoor = "</font>";
-
 		// 申請書類タイトル表記設定
 		dto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn()); // 社宅退居
 		dto.setShatakuTaikyoKbn2(taikyoRepDt.getShatakuTaikyoKbn2()); // 駐車場返還

@@ -67,6 +67,9 @@ public class Skf2010Sc002SharedService {
 	// 申請書類履歴の最終更新日付のキャッシュキー
 	protected static final String KEY_LAST_UPDATE_DATE_HISTORY = "skf2010_t_appl_history";
 
+	// 承認者更新フラグ
+	private String agreNameUpdate = "1";
+
 	/**
 	 * セッション情報を取得
 	 * 
@@ -128,9 +131,11 @@ public class Skf2010Sc002SharedService {
 	 * 
 	 * @param applInfoMap
 	 * @param lastUpdateDate
+	 * @param agreNameUpdateFlg 承認者更新フラグ 0:更新しない 1：更新する
 	 * @return
 	 */
-	protected String updateShinseiHistory(Map<String, String> applInfoMap, Date lastUpdateDate) {
+	protected String updateShinseiHistory(Map<String, String> applInfoMap, Date lastUpdateDate,
+			String agreNameUpdateFlg) {
 
 		String result = CodeConstant.NONE;
 
@@ -158,7 +163,10 @@ public class Skf2010Sc002SharedService {
 		updateData.setApplNo(tApplHistoryData.getApplNo());
 		// 更新項目
 		updateData.setApplStatus(applInfoMap.get("status"));
-		updateData.setAgreName1(loginUserInfoMap.get("userName"));
+		// 提示ボタンから来た場合は、承認者名を更新する
+		if (agreNameUpdate.equals(agreNameUpdateFlg)) {
+			updateData.setAgreName1(loginUserInfoMap.get("userName"));
+		}
 		// 申請情報履歴更新
 		int applHistoryRes = skf2010TApplHistoryRepository.updateByPrimaryKeySelective(updateData);
 		if (applHistoryRes <= 0) {

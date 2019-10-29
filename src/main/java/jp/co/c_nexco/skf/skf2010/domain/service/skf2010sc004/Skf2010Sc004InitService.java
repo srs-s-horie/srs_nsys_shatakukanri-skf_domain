@@ -176,6 +176,16 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				displayLevel = 2;
 				dto.setLevel2Open("true");
 				break;
+			case CodeConstant.STATUS_DOI_ZUMI:
+			case CodeConstant.STATUS_DOI_SHINAI:
+				/**
+				 * 同意済、同意しない： 案内＋誓約書追加（ボタンは全て非表示）
+				 */
+				dto.setMaskPattern("PTN_C");
+				displayLevel = 2;
+				dto.setLevel2Open("true");
+				dto.setRepresentBtnFlg("false");
+				break;
 			default:
 				/**
 				 * それ以外（同意済み以降）： 入居決定通知書追加
@@ -471,6 +481,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		initDto.setDokyoName3(tNyukyoChoshoTsuchi.getDokyoName3());
 		// 同居家族年齢3
 		initDto.setDokyoAge3(tNyukyoChoshoTsuchi.getDokyoAge3());
+		// 同居家族続柄4
+		initDto.setDokyoRelation4(tNyukyoChoshoTsuchi.getDokyoRelation4());
+		// 同居家族氏名4
+		initDto.setDokyoName4(tNyukyoChoshoTsuchi.getDokyoName4());
+		// 同居家族年齢4
+		initDto.setDokyoAge4(tNyukyoChoshoTsuchi.getDokyoAge4());
 		// 同居家族続柄5
 		initDto.setDokyoRelation5(tNyukyoChoshoTsuchi.getDokyoRelation5());
 		// 同居家族氏名5
@@ -696,7 +712,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 自動車の保管場所
 		initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
 		// 自動車の位置番号
-		initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo2());
+		initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getCarIchiNo2());
 		// 保管場所使用料
 		String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
 		if (parkingRental2 != null && NfwStringUtils.isNotEmpty(parkingRental2)) {

@@ -161,7 +161,7 @@ public class Skf2040Sc001SharedService{
             // 退居返還理由が「その他」である場合のみ退居理由をdtoに設定
             dto.setTaikyoHenkanRiyu(taikyoInfo.getTaikyoRiyu());
         }
-        dto.setShatakuJyotai(taikyoInfo.getShatakuJotai());
+        dto.setShatakuJotai(taikyoInfo.getShatakuJotai());
         dto.setTaikyogoRenrakuSaki(taikyoInfo.getTaikyogoRenrakusaki());
         dto.setSessionDay(taikyoInfo.getSessionDay());
         dto.setSessionTime(taikyoInfo.getSessionTime());
@@ -416,8 +416,8 @@ public class Skf2040Sc001SharedService{
         dto.setTaikyoHenkanRiyu(NfwStringUtils.rightTrimbyByte(dto.getTaikyoHenkanRiyu(), 256));
         LogUtils.debugByMsg(Msg + "退居(返還)理由" + dto.getTaikyoHenkanRiyu());
         // 社宅の状態
-        dto.setShatakuJyotai(NfwStringUtils.rightTrimbyByte(dto.getShatakuJyotai(), 128));
-        LogUtils.debugByMsg(Msg + "社宅の状態" + dto.getShatakuJyotai());
+        dto.setShatakuJotai(NfwStringUtils.rightTrimbyByte(dto.getShatakuJotai(), 128));
+        LogUtils.debugByMsg(Msg + "社宅の状態" + dto.getShatakuJotai());
         // 退居後の連絡先
         dto.setTaikyogoRenrakuSaki(NfwStringUtils.rightTrimbyByte(dto.getTaikyogoRenrakuSaki(), 128));
         LogUtils.debugByMsg(Msg + "退居後の連絡先" + dto.getTaikyogoRenrakuSaki());
@@ -613,7 +613,7 @@ public class Skf2040Sc001SharedService{
         // 部屋管理番号
         param.setRoomKanriNo(dto.getHdnNowShatakuRoomKanriNo());
         // 社宅状態
-        param.setShatakuJotai(dto.getShatakuJyotai());
+        param.setShatakuJotai(dto.getShatakuJotai());
         // 返却立合希望日
         param.setSessionDay(dto.getSessionDay());
         // 返却立合希望日（時間）

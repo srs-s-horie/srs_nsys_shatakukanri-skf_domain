@@ -15,7 +15,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003ChangeYoutDrpDwnAsyncDto;
+import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003ChangeYoutoDrpDwnAsyncDto;
 import jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003.Skf3022Sc003SharedService;
 import jp.co.intra_mart.common.platform.log.Logger;
 
@@ -26,7 +26,7 @@ import jp.co.intra_mart.common.platform.log.Logger;
  */
 @Service
 public class Skf3022Sc003ChangeYoutoDrpDwnAsyncService
-	extends AsyncBaseServiceAbstract<Skf3022Sc003ChangeYoutDrpDwnAsyncDto> {
+	extends AsyncBaseServiceAbstract<Skf3022Sc003ChangeYoutoDrpDwnAsyncDto> {
 
 	@Autowired
 	private Skf3022Sc003SharedService skf3022Sc003SharedService;
@@ -46,7 +46,7 @@ public class Skf3022Sc003ChangeYoutoDrpDwnAsyncService
 	 *             例外
 	 */
 	@Override
-	public Skf3022Sc003ChangeYoutDrpDwnAsyncDto index(Skf3022Sc003ChangeYoutDrpDwnAsyncDto asyncDto) throws Exception {
+	public Skf3022Sc003ChangeYoutoDrpDwnAsyncDto index(Skf3022Sc003ChangeYoutoDrpDwnAsyncDto asyncDto) throws Exception {
 
 		// デバッグログ
 		logger.info("用途変更");
@@ -71,7 +71,7 @@ public class Skf3022Sc003ChangeYoutoDrpDwnAsyncService
 	 * @param paramMap	再計算処理結果
 	 * @param initDto	*DTO
 	 */
-	private void setMapToDto(Map<String, String> paramMap, Skf3022Sc003ChangeYoutDrpDwnAsyncDto asyncDto) {
+	private void setMapToDto(Map<String, String> paramMap, Skf3022Sc003ChangeYoutoDrpDwnAsyncDto asyncDto) {
 
 
 		asyncDto.setKijunMenseki2(paramMap.get("kijunMenseki2"));

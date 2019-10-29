@@ -192,7 +192,7 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     // 退居(返還)理由
     private String taikyoHenkanRiyuErr;
     // 社宅の状態
-    private String shatakuJyotaiErr;
+    private String shatakuJotaiErr;
     // 退居後の連絡先
     private String taikyogoRenrakuSakiErr;
     // 返却立会希望日
