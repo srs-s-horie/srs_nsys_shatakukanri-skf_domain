@@ -207,7 +207,6 @@ public class Skf2010Sc006SharedService {
 		String shoninName2 = "";
 		String nextStatus = "";
 		String mailKbn = "";
-		String nextWorkflow = "";
 		String sendGroupId = "";
 		Map<String, String> applInfo = new HashMap<String, String>();
 		Date agreeDate = null;
@@ -240,41 +239,17 @@ public class Skf2010Sc006SharedService {
 			nextStatus = CodeConstant.STATUS_SHONIN1;
 			shoninName1 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_IRAI_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_1;
 			break;
 		case CodeConstant.STATUS_SHONIN1:
 			// 承認１
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
 			shoninName2 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
 			agreeDate = updateDate;
 			break;
 		default:
 			errMap.put("error", "");
 			return false;
-		}
-
-		if (!CheckUtils.isEmpty(nextWorkflow)) {
-			// 次のワークフロー設定がある場合、次権限グループを取得
-			Skf2010Sc006GetAgreeAuthorityGroupIdExpParameter mApplParam = new Skf2010Sc006GetAgreeAuthorityGroupIdExpParameter();
-			Skf2010Sc006GetAgreeAuthorityGroupIdExp mApplResult = new Skf2010Sc006GetAgreeAuthorityGroupIdExp();
-			mApplParam.setCompanyCd(companyCd);
-			mApplParam.setApplId(applNo);
-			mApplParam.setWfLevel(nextWorkflow);
-			mApplResult = skf2010Sc006GetAgreeAuthorityGroupIdExpRepository.getAgreeAuthorityGroupId(mApplParam);
-			if (mApplResult != null) {
-				sendGroupId = mApplResult.getRoleId();
-			}
-		}
-
-		if (!CheckUtils.isEmpty(sendGroupId)) {
-			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
-			shoninName1 = loginUserInfoMap.get("userName");
-			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
-			applInfo.get("applShainNo");
-			agreeDate = updateDate;
 		}
 
 		// 申請状況
