@@ -33,9 +33,10 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
     /**
      * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード （「✓」のような特殊記号を表示するため、UTF-16に設定）
      */
-    private static final String PDF_PROCESS_ENCODE = "UTF-16";
-    /** ✓マーク */
-    public static final String CHECK_MARK = "✓";
+    //private static final String PDF_PROCESS_ENCODE = "UTF-16";
+    private static final String PDF_PROCESS_ENCODE = "MS932";
+    /** チェック済のチェックボックスに表示するマーク */
+    public static final String CHECK_MARK = "■";
     /** ファイル拡張子：PDF */
     public static final String FILE_EXTENTION_PDF = ".pdf";
     /** ファイル拡張子：IOD */

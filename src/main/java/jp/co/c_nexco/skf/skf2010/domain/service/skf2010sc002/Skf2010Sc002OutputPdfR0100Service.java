@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.PdfBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002OutputPdfR0100Dto;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 
@@ -146,7 +147,7 @@ public class Skf2010Sc002OutputPdfR0100Service extends PdfBaseServiceAbstract<Sk
         // チェックボックス_社宅の貸与を必要とするか
         super.setCheckMark(pdfData, "taiyoHitsuyoTrue", dto.getTaiyoHitsuyoTrue());
         super.setCheckMark(pdfData, "taiyoHitsuyoFalse", dto.getTaiyoHitsuyoFalse());
-        super.setCheckMark(pdfData, "taikyoHitsuyoParking", dto.getTaiyoHitsuyoParking());
+        super.setCheckMark(pdfData, "taiyoHitsuyoParking", dto.getTaiyoHitsuyoParking());
         
         // チェックボックス_社宅を必要とする理由
         super.setCheckMark(pdfData, "hitsuyoRiyuIdou", dto.getHitsuyoRiyuIdou());
@@ -222,7 +223,8 @@ public class Skf2010Sc002OutputPdfR0100Service extends PdfBaseServiceAbstract<Sk
         // 文字枠データの埋め込み
         // 改行を要するデータの場合はこのように記述する
         pdfData.setTextBoxStart("tokushuJijo");
-        pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getTokushuJijo()));
+        // 旧システムにならい、改行を半角スペースに置換
+        pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getTokushuJijo()).replace("\r\n", CodeConstant.SPACE));
         pdfData.setTextBoxEnd();
     }
 }
