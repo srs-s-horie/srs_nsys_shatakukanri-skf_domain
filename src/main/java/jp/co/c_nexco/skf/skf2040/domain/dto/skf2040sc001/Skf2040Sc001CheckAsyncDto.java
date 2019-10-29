@@ -51,4 +51,6 @@ public class Skf2040Sc001CheckAsyncDto extends Skf2040Sc001CommonAsyncDto {
     private String sessionTime;
     // 連絡先
     private String renrakuSaki;
+    // 備品返却有無
+    private String hdnBihinHenkyakuUmu;
 }

@@ -137,6 +137,7 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
             skf2040Sc001SharedService.setDisableBtn(initDto);
             // エラーメッセージ表示
             ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_2005);
+            return;
         }
 
         initDto.setGender(shainInfo.getGender());

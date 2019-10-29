@@ -135,6 +135,8 @@ public class Skf2040Sc001SharedService{
      * @param taikyoInfo 退居届情報
      */
     private <DTO extends Skf2040Sc001CommonDto> void convTaikyoEntityToDto(DTO dto, Skf2040TTaikyoReport taikyoInfo){
+    	dto.setShainNo(taikyoInfo.getShainNo());
+    	dto.setName(taikyoInfo.getName());
         dto.setAgencyName(taikyoInfo.getAgency());
         dto.setAffiliation1Name(taikyoInfo.getAffiliation1());
         dto.setAffiliation2Name(taikyoInfo.getAffiliation2());
@@ -376,14 +378,14 @@ public class Skf2040Sc001SharedService{
             // 申請書ID
             dto.setApplId(applInfo.getApplId());
             // 申請ステータス
-            dto.setStatus(applInfo.getStatus());
+            dto.setApplStatus(applInfo.getStatus());
             // 添付ファイル有無フラグ
             dto.setApplTacFlg(Integer.parseInt(applInfo.getApplTacFlg()));
          // 排他チェック用更新日付
             dto.addLastUpdateDate(dto.UPDATE_TABLE_PREFIX_APPL_HIST + applInfo.getApplNo(), applInfo.getUpdateDate());
         } else {
             // 申請ステータス
-            dto.setStatus(CodeConstant.STATUS_MISAKUSEI);
+            dto.setApplStatus(CodeConstant.STATUS_MISAKUSEI);
         }
         
         // 添付ファイルの有無
@@ -448,7 +450,7 @@ public class Skf2040Sc001SharedService{
         // 新規裁判した申請書類管理番号をDTOに設定
         dto.setApplNo(newApplNo);
         // ステータスを更新（一時保存）
-        dto.setStatus(CodeConstant.STATUS_ICHIJIHOZON);
+        dto.setApplStatus(CodeConstant.STATUS_ICHIJIHOZON);
 
         // 登録時のシステム日付を取得
         dto.setApplDate(DateUtils.getSysDate());
@@ -710,7 +712,7 @@ public class Skf2040Sc001SharedService{
         setValue.setApplDate(dto.getApplHistroyApplDate());
         setValue.setApplNo(dto.getApplNo());
         setValue.setApplId(FunctionIdConstant.R0103); //退居届
-        setValue.setApplStatus(dto.getStatus());
+        setValue.setApplStatus(dto.getApplStatus());
         setValue.setApplTacFlg(String.valueOf(dto.getApplTacFlg()));
         setValue.setComboFlg(SkfCommonConstant.NOT_RENKEI);
         // 登録

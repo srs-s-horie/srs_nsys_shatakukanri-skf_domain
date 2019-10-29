@@ -157,7 +157,7 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
     // 添付書類有無フラグ
     private Integer applTacFlg;
     // ステータス
-    private String status;
+    private String applStatus;
     
     /**
      * フラグ

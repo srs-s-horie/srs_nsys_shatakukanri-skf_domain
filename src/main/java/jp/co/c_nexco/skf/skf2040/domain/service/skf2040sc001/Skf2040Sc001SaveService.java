@@ -46,7 +46,7 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
         // 申請書情報の取得
         skf2040Sc001SharedService.setSkfApplInfo(saveDto);
         // 新規登録したかを判定するため、処理前の申請ステータスを保持しておく
-        String beforeApplStatus = saveDto.getStatus();
+        String beforeApplStatus = saveDto.getApplStatus();
         
         // バイトカット処理
         skf2040Sc001SharedService.cutByte(saveDto);
@@ -85,7 +85,7 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
     private boolean execSave(Skf2040Sc001SaveDto saveDto){
         boolean isExecSave = false;
         
-        if (CodeConstant.STATUS_MISAKUSEI.equals(saveDto.getStatus())) {
+        if (CodeConstant.STATUS_MISAKUSEI.equals(saveDto.getApplStatus())) {
             // 新規保存の場合
             
             // 申請履歴、退居届の登録
@@ -105,6 +105,7 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
                 // 退居届情報が見つからなかった場合エラーメッセージを表示して処理終了
                 skf2040Sc001SharedService.setDisableBtn(saveDto);
                 ServiceHelper.addErrorResultMessage(saveDto, null, MessageIdConstant.E_SKF_1077);
+                return false;
             }
             
             super.checkLockException(

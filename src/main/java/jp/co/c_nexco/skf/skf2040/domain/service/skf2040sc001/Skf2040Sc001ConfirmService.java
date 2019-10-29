@@ -70,7 +70,7 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
         TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC002);
         Map<String, Object> attributeMap = new HashMap<String, Object>();
         attributeMap.put(SkfCommonConstant.KEY_APPL_NO, confirmDto.getApplNo());
-        attributeMap.put(SkfCommonConstant.KEY_STATUS, confirmDto.getStatus());
+        attributeMap.put(SkfCommonConstant.KEY_STATUS, confirmDto.getApplStatus());
         nextPage.setTransferAttributes(attributeMap);
         confirmDto.setTransferPageInfo(nextPage, true);
         return confirmDto;
@@ -91,7 +91,7 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
     private boolean execSave(Skf2040Sc001ConfirmDto confirmDto){
         boolean isExecSave = false;
         
-        if (CodeConstant.STATUS_MISAKUSEI.equals(confirmDto.getStatus())) {
+        if (CodeConstant.STATUS_MISAKUSEI.equals(confirmDto.getApplStatus())) {
             // 新規保存の場合
             
             // 申請履歴、退居届の登録
@@ -111,6 +111,7 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
                 // 退居届情報が見つからなかった場合エラーメッセージを表示して処理終了
                 skf2040Sc001SharedService.setDisableBtn(confirmDto);
                 ServiceHelper.addErrorResultMessage(confirmDto, null, MessageIdConstant.E_SKF_1077);
+                return false;
             }
             
             super.checkLockException(
