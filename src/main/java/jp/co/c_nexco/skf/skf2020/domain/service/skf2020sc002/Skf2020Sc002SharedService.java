@@ -574,7 +574,7 @@ public class Skf2020Sc002SharedService {
 			// 社宅の状態
 			if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getShatakuJotai())) {
 				LogUtils.debugByMsg("社宅の状態" + nyukyoChoshoList.getShatakuJotai());
-				dto.setShatakuJyotai(nyukyoChoshoList.getShatakuJotai());
+				dto.setShatakuJotai(nyukyoChoshoList.getShatakuJotai());
 			}
 
 			// 退居理由
@@ -1634,7 +1634,7 @@ public class Skf2020Sc002SharedService {
 			dto.setTaikyoYoteiDate(null);
 
 			// 社宅の状態
-			dto.setShatakuJyotai(null);
+			dto.setShatakuJotai(null);
 
 			// 退居理由
 			dto.setTaikyoRiyu(null);
@@ -1723,8 +1723,8 @@ public class Skf2020Sc002SharedService {
 		dto.setTaikyoYoteiDate(NfwStringUtils.rightTrimbyByte(dto.getTaikyoYoteiDate(), 10));
 		LogUtils.debugByMsg(Msg + "退居予定日" + dto.getTaikyoYoteiDate());
 		// 社宅の状態
-		dto.setShatakuJyotai(NfwStringUtils.rightTrimbyByte(dto.getShatakuJyotai(), 256));
-		LogUtils.debugByMsg(Msg + "社宅の状態" + dto.getShatakuJyotai());
+		dto.setShatakuJotai(NfwStringUtils.rightTrimbyByte(dto.getShatakuJotai(), 256));
+		LogUtils.debugByMsg(Msg + "社宅の状態" + dto.getShatakuJotai());
 		// 退居理由
 		dto.setTaikyoRiyu(NfwStringUtils.rightTrimbyByte(dto.getTaikyoRiyu(), 256));
 		LogUtils.debugByMsg(Msg + "退居理由" + dto.getTaikyoRiyu());
@@ -2119,6 +2119,7 @@ public class Skf2020Sc002SharedService {
 			// 申請書番号の設定
 			setValue.setApplNo(applInfo.get("applNo"));
 			LogUtils.debugByMsg(msg + applInfo.get("applNo"));
+
 		} else {
 			// 申請書番号の設定
 			setValue.setApplNo(dto.getApplNo());
@@ -2554,7 +2555,7 @@ public class Skf2020Sc002SharedService {
 						dto.getTaikyoYoteiDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			}
 			// 社宅の状態
-			setValue.setShatakuJotai(dto.getShatakuJyotai());
+			setValue.setShatakuJotai(dto.getShatakuJotai());
 			// 退居理由
 			if (NfwStringUtils.isNotEmpty(dto.getTaikyoRiyuKbn())
 					&& !(CodeConstant.OTHER_RIYU_VALUE.equals(dto.getTaikyoRiyuKbn()))) {
@@ -3021,7 +3022,7 @@ public class Skf2020Sc002SharedService {
 		dto.setTaikyoYoteiDate(dto.getTaikyoYoteiDate());
 
 		// 社宅の状態
-		dto.setShatakuJyotai(dto.getShatakuJyotai());
+		dto.setShatakuJotai(dto.getShatakuJotai());
 
 		// 退居理由
 		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils

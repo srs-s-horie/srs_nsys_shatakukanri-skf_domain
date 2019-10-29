@@ -238,7 +238,7 @@ public class Skf202010CommonDto extends BaseDto {
 	 * 社宅の状態
 	 */
 	// 社宅の状態
-	private String shatakuJyotai;
+	private String shatakuJotai;
 
 	/**
 	 * 退居理由

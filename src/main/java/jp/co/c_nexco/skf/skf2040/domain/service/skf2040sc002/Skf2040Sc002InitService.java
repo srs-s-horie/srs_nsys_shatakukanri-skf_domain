@@ -196,7 +196,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			// （添付資料欄は非表示）
 			initDto.setTenpViewFlg(sFalse);
 			// 社宅の状態は非表示
-			initDto.setShatakuJyotaiViewFlg(sFalse);
+			initDto.setShatakuJotaiViewFlg(sFalse);
 			// 返却情報欄の表示
 			initDto.setHenkyakuInfoViewFlg(sTrue);
 			// 返却備品なしフラグはありに設定
@@ -266,7 +266,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			if (CodeConstant.STATUS_SHINSACHU.equals(initDto.getApplStatus())) {
 
 				// 社宅の状態は非表示
-				initDto.setShatakuJyotaiViewFlg(sFalse);
+				initDto.setShatakuJotaiViewFlg(sFalse);
 
 				// 備品情報の表示
 				if (!getBihinInfoMain(initDto)) {
@@ -297,10 +297,10 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					// 返却情報欄の表示
 					initDto.setHenkyakuInfoViewFlg(sTrue);
 					// 申請状況が「審査中」以外は「社宅の状態」を表示する
-					initDto.setShatakuJyotaiViewFlg(sTrue);
+					initDto.setShatakuJotaiViewFlg(sTrue);
 					// 「社宅の状態」の設定
 					if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuJotai())) {
-						initDto.setShatakuJyotai(taikyoRepDt.getShatakuJotai());
+						initDto.setShatakuJotai(taikyoRepDt.getShatakuJotai());
 					}
 				}
 			}
@@ -554,9 +554,9 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			}
 
 			// 社宅の状態の設定
-			initDto.setShatakuJyotaiViewFlg(sTrue);
+			initDto.setShatakuJotaiViewFlg(sTrue);
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuJotai())) {
-				initDto.setShatakuJyotai(taikyoRepDt.getShatakuJotai());
+				initDto.setShatakuJotai(taikyoRepDt.getShatakuJotai());
 			}
 
 			// 備品がある場合は、タイトル変更。返却立会希望日、連絡先を表示
