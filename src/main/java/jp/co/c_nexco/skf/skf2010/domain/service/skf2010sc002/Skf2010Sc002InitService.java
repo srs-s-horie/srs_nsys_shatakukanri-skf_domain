@@ -16,7 +16,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUti
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
@@ -69,7 +68,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	@Override
 	public Skf2010Sc002InitDto index(Skf2010Sc002InitDto initDto) throws Exception {
 
-		long dispStart = System.currentTimeMillis();
+		// long dispStart = System.currentTimeMillis();
 
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC002_TITLE);
@@ -128,22 +127,31 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setCommentViewFlag(commetFlg);
 		}
 
-		long startTime = System.currentTimeMillis();
-		LogUtils.debugByMsg("排他用更新日取得テスト： 開始時間　：" + startTime + "ミリ秒");
-		// 排他用更新日取得
-		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> updateMap = skfBatchUtils
+		// データ連携用の排他制御用更新日を取得
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils
 				.getUpdateDateForUpdateSQL(initDto.getShainNo());
-		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002, updateMap);
-		long endTime = System.currentTimeMillis();
-		LogUtils.debugByMsg("排他用更新日取得テスト： 終了時間　：" + endTime + "ミリ秒");
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002, dateLinkageMap);
 
-		long totalTime = endTime - startTime;
-		LogUtils.debugByMsg("排他用更新日取得テスト： 合計時間　：" + totalTime + "ミリ秒");
-
-		long dispEnd = System.currentTimeMillis();
-		long dispTotalTime = dispEnd - dispStart;
-		LogUtils.debugByMsg("init処理： 合計時間　：" + dispTotalTime + "ミリ秒");
 		return initDto;
+
+		// // long startTime = System.currentTimeMillis();
+		// // LogUtils.debugByMsg("排他用更新日取得テスト： 開始時間 ：" + startTime + "ミリ秒");
+		// // 排他用更新日取得
+		// Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>
+		// updateMap = skfBatchUtils
+		// .getUpdateDateForUpdateSQL(initDto.getShainNo());
+		// menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002,
+		// updateMap);
+		// // long endTime = System.currentTimeMillis();
+		// // LogUtils.debugByMsg("排他用更新日取得テスト： 終了時間 ：" + endTime + "ミリ秒");
+		// //
+		// // long totalTime = endTime - startTime;
+		// // LogUtils.debugByMsg("排他用更新日取得テスト： 合計時間 ：" + totalTime + "ミリ秒");
+		// //
+		// // long dispEnd = System.currentTimeMillis();
+		// // long dispTotalTime = dispEnd - dispStart;
+		// // LogUtils.debugByMsg("init処理： 合計時間 ：" + dispTotalTime + "ミリ秒");
+		// return initDto;
 
 	}
 
@@ -850,9 +858,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 * @param tTaikyoReport
 	 */
 	private void mappingTaikyoReport(Skf2010Sc002InitDto initDto, Skf2040TTaikyoReport taikyoRepDt) {
-
-		String sfontColor = "<font color='red'>";
-		String eFontColoor = "</font>";
 
 		// 申請書類タイトル表記設定
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuTaikyoKbn())) {

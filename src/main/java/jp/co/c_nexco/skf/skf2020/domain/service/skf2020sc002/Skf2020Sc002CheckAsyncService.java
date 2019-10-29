@@ -956,10 +956,10 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		// 退居予定が退居するの場合
 		if (CodeConstant.LEAVE.equals(checkDto.getTaikyoYotei())) {
 			// 社宅の状態
-			LogUtils.debugByMsg("桁数チェック " + "社宅の状態　- " + checkDto.getShatakuJyotai());
-			if (NfwStringUtils.isNotBlank(checkDto.getShatakuJyotai())
-					&& CheckUtils.isMoreThanByteSize(checkDto.getShatakuJyotai().trim(), 256)) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "shatakuJyotai" },
+			LogUtils.debugByMsg("桁数チェック " + "社宅の状態　- " + checkDto.getShatakuJotai());
+			if (NfwStringUtils.isNotBlank(checkDto.getShatakuJotai())
+					&& CheckUtils.isMoreThanByteSize(checkDto.getShatakuJotai().trim(), 256)) {
+				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "shatakuJotai" },
 						MessageIdConstant.E_SKF_1071, "社宅の状態", "128");
 				result = false;
 			}

@@ -39,7 +39,7 @@ public class Skf2040Sc001CheckAsyncDto extends Skf2040Sc001CommonAsyncDto {
     // 退居(返還)理由
     private String taikyoHenkanRiyu;
     // 社宅の状態 
-    private String shatakuJyotai;
+    private String shatakuJotai;
     // 退居後の連絡先
     private String taikyogoRenrakuSaki;
 

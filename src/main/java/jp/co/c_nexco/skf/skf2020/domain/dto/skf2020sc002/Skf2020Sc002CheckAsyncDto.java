@@ -166,7 +166,7 @@ public class Skf2020Sc002CheckAsyncDto extends Skf2020Sc002CommonAsyncDto {
 	 * 社宅の状態
 	 */
 	// 社宅の状態
-	private String shatakuJyotai;
+	private String shatakuJotai;
 
 	/**
 	 * 退居理由
@@ -319,7 +319,7 @@ public class Skf2020Sc002CheckAsyncDto extends Skf2020Sc002CommonAsyncDto {
 	// 退居予定日
 	private String taikyoYoteiDateErr;
 	// 社宅の状態
-	private String shatakuJyotaiErr;
+	private String shatakuJotaiErr;
 	// 退居理由(ドロップダウン)
 	private String ddlTaikyoRiyuKbnListErr;
 	// 退居理由
