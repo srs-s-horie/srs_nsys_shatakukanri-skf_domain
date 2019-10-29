@@ -19,10 +19,12 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 
 /**
  * Skf2010Sc005 承認一覧内部処理クラス
@@ -47,6 +49,8 @@ public class Skf2010Sc003SharedService {
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -77,6 +81,9 @@ public class Skf2010Sc003SharedService {
 			param.setApplName(applName);
 		}
 		if (applStatus != null) {
+			if (applStatus.indexOf(CodeConstant.STATUS_SHINSACHU) >= 0) {
+				applStatus.add(CodeConstant.STATUS_SHONIN1);
+			}
 			param.setApplStatus(applStatus);
 		}
 		resultList = skf2010Sc003GetApplHistoryStatusInfoExpRepository.getApplHistoryStatusInfo(param);
@@ -95,6 +102,9 @@ public class Skf2010Sc003SharedService {
 		if (applHistoryList == null || applHistoryList.size() <= 0) {
 			return returnList;
 		}
+
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 汎用コード取得
 		Map<String, String> genericCodeMap = new HashMap<String, String>();
@@ -116,7 +126,13 @@ public class Skf2010Sc003SharedService {
 
 			// 申請状況をコードから汎用コードに変更
 			if (applHistoryData.getApplStatus() != null) {
-				applStatus = genericCodeMap.get(applHistoryData.getApplStatus());
+				// 申請状況が「31：承認１」で、ログインユーザーが管理者権限でない場合は表示を「審査中」に置き換える
+				if (CheckUtils.isEqual(applHistoryData.getApplStatus(), CodeConstant.STATUS_SHONIN1)
+						&& !checkAdminRole(loginUserInfo.get("roleId"))) {
+					applStatus = genericCodeMap.get(CodeConstant.STATUS_SHINSACHU);
+				} else {
+					applStatus = genericCodeMap.get(applHistoryData.getApplStatus());
+				}
 			}
 
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
@@ -218,5 +234,17 @@ public class Skf2010Sc003SharedService {
 			}
 		}
 		return true;
+	}
+
+	private boolean checkAdminRole(String roleId) {
+		if (NfwStringUtils.isNotEmpty(roleId)) {
+			if (CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE1)
+					|| CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE2)
+					|| CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE3)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
