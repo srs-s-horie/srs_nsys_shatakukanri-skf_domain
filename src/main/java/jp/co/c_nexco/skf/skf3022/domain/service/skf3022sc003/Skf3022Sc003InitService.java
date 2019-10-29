@@ -211,12 +211,9 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		// Map変換
 		dtoMap = createSaikeisanParam(initDto);
 		// 使用料再計算処理
-//		skf3022Sc003SharedService.saiKeisan(initDto);
 		if (skf3022Sc003SharedService.saiKeisan(dtoMap)) {
 			setMapToDto(dtoMap, initDto);
 		}
-//		// 社宅使用料月額の説明文設定
-//		initDto.setSc003ShatakuShiyoryo3("⑫×⑬　円未満切り捨て");
 	}
 
 	/**
