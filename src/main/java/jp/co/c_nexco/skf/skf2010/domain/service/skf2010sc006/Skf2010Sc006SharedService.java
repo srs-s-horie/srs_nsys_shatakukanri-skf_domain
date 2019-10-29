@@ -247,7 +247,6 @@ public class Skf2010Sc006SharedService {
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
 			shoninName2 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
 			agreeDate = updateDate;
 			break;
 		default:
@@ -260,20 +259,17 @@ public class Skf2010Sc006SharedService {
 			Skf2010Sc006GetAgreeAuthorityGroupIdExpParameter mApplParam = new Skf2010Sc006GetAgreeAuthorityGroupIdExpParameter();
 			Skf2010Sc006GetAgreeAuthorityGroupIdExp mApplResult = new Skf2010Sc006GetAgreeAuthorityGroupIdExp();
 			mApplParam.setCompanyCd(companyCd);
-			mApplParam.setApplId(applNo);
+			mApplParam.setApplId(applInfo.get("applId"));
 			mApplParam.setWfLevel(nextWorkflow);
 			mApplResult = skf2010Sc006GetAgreeAuthorityGroupIdExpRepository.getAgreeAuthorityGroupId(mApplParam);
 			if (mApplResult != null) {
 				sendGroupId = mApplResult.getRoleId();
 			}
 		}
-
-		if (!CheckUtils.isEmpty(sendGroupId)) {
+		// 次階層が無い場合、承認済みの設定をする
+		if (CheckUtils.isEmpty(sendGroupId)) {
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
-			shoninName1 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
-			applInfo.get("applShainNo");
 			agreeDate = updateDate;
 		}
 
