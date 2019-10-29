@@ -82,9 +82,13 @@ public class Skf2010Sc003SharedService {
 		}
 		if (applStatus != null) {
 			if (applStatus.indexOf(CodeConstant.STATUS_SHINSACHU) >= 0) {
-				applStatus.add(CodeConstant.STATUS_SHONIN1);
+				List<String> applStatusList = new ArrayList<String>();
+				applStatusList.addAll(applStatus);
+				applStatusList.add(CodeConstant.STATUS_SHONIN1);
+				param.setApplStatus(applStatusList);
+			} else {
+				param.setApplStatus(applStatus);
 			}
-			param.setApplStatus(applStatus);
 		}
 		resultList = skf2010Sc003GetApplHistoryStatusInfoExpRepository.getApplHistoryStatusInfo(param);
 
