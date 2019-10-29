@@ -163,40 +163,6 @@ public class Skf3022Sc003SharedService {
 	}
 
 	/**
-	 * objctをStringに変換する（NULLの場合は空文字を返却する）
-	 * @param obj
-	 * @return
-	 */
-	public String createObjToString(Object obj){
-		String resultTxt = CodeConstant.DOUBLE_QUOTATION;
-		
-		if(obj != null){
-			resultTxt = obj.toString();
-		}
-		
-		return resultTxt;
-	}
-
-	/**
-	 * パラメータ文字列のエスケープ処理
-	 * @param param
-	 * @return
-	 */
-	public String escapeParameter(String param){
-
-		String resultStr=CodeConstant.DOUBLE_QUOTATION;
-
-		// 文字エスケープ(% _ ' \)
-		if (param != null) {
-			// 「\」を「\\」に置換
-			resultStr = param.replace("\\", "\\\\");
-			// 「%」を「\%」に置換、「_」を「\_」に置換、「'」を「''」に置換
-			resultStr = resultStr.replace("%", "\\%").replace("_", "\\_").replace("'", "''");
-		}
-		return resultStr;
-	}
-
-	/**
 	 * 再計算処理
 	 * 
 	 * 「※」項目はアドレスとして戻り値になる。 
@@ -205,9 +171,7 @@ public class Skf3022Sc003SharedService {
 	 * @return
 	 * @throws ParseException
 	 */
-//	public Boolean saiKeisan(Skf3022Sc003CommonDto initDto) throws ParseException {
 	public Boolean saiKeisan(Map<String, String> paramMap) throws ParseException {
-// 更新してるのはKijunTanka2、PatternShiyoryo2、NenreikasanKeisu、ShatakuShiyoryo2
 
 		// 社宅利用料計算結果
 		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp calcResult = null;
@@ -375,14 +339,14 @@ public class Skf3022Sc003SharedService {
 			// 延べ面積 - サンルーム面積 - 階段面積
 			paramMap.put("kijunMenseki2", getMensekiEdit(nobeMenseki.subtract(		// 延べ面積
 							sunRoomMenseki.add(kaidanMenseki) // サンルーム面積 + 階段面積
-							).stripTrailingZeros()));
+							)));
 		} else {
 			// 延べ面積 - サンルーム面積 - 階段面積 - 物置調整面積
 			paramMap.put("kijunMenseki2", getMensekiEdit(
 					nobeMenseki.subtract(		// 貸与面積
 							sunRoomMenseki.add(	// サンルーム面積
 									kaidanMenseki.add(new BigDecimal(paramMap.get("hdnBarnMensekiAdjust")))) // 階段面積 + 物置調整面積
-							).stripTrailingZeros()));
+							)));
 		}
 		return true;
 	}
@@ -588,7 +552,7 @@ public class Skf3022Sc003SharedService {
 	/**
 	 * 数値項目を小数第2位までの文字列に変換
 	 * 小数第3位は四捨五入
-	 * null、空文字は「"0.00"」を返却する
+	 * nullは「"0.00"」を返却する
 	 * 
 	 * @param bigDecimal	数値
 	 * @return				小数第2位までの文字列
@@ -596,13 +560,13 @@ public class Skf3022Sc003SharedService {
 	public String getFloatEdit(BigDecimal bigDecimal) {
 
 		String changeString = null;
-		BigDecimal changeMenseki = new BigDecimal("0.00");
 		DecimalFormat df1 = new DecimalFormat("#,##0.00");
-		if (bigDecimal != null) {
-			changeMenseki = bigDecimal;
+		if (bigDecimal == null) {
+			return "0.00";
 		}
 		// 変換
-		changeString = df1.format(changeMenseki.setScale(3, BigDecimal.ROUND_HALF_UP));
+		changeString = df1.format(bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP));
+		
 		return changeString;
 	}
 
@@ -677,7 +641,7 @@ public class Skf3022Sc003SharedService {
 	/**
 	 * 面積項目にカンマと単位を付与(小数第2位)
 	 * 小数第3位は四捨五入
-	 * null、空文字は「"0.00㎡"」を返却する
+	 * nullは「"0.00㎡"」を返却する
 	 * 
 	 * @param str	面積項目
 	 * @return		面積文字列をカンマ区切りにし、「"㎡"」を付与した文字列
@@ -685,13 +649,12 @@ public class Skf3022Sc003SharedService {
 	public String getMensekiEdit(BigDecimal menseki) {
 
 		String changeString = null;
-		BigDecimal changeMenseki = new BigDecimal("0.00");
 		DecimalFormat df1 = new DecimalFormat("#,##0.00");
-		if (menseki != null) {
-			changeMenseki = menseki;
+		if (menseki == null) {
+			return ("0.00" + " " + SkfCommonConstant.SQUARE_MASTER);
 		}
 		// 変換
-		changeString = df1.format(changeMenseki.setScale(3, BigDecimal.ROUND_HALF_UP)) + " " + SkfCommonConstant.SQUARE_MASTER;
+		changeString = df1.format(menseki.setScale(2, BigDecimal.ROUND_HALF_UP)) + " " + SkfCommonConstant.SQUARE_MASTER;
 		return changeString;
 	}
 
