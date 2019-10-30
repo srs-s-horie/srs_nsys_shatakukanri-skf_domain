@@ -175,47 +175,6 @@ public class Skf3022Sc003SharedService {
 
 		// 社宅利用料計算結果
 		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp calcResult = null;
-
-//		// 用途判定
-//		if (CheckUtils.isEmpty(initDto.getSc003YoutoSelect())) {
-//			logger.debug("「用途」が選択されていないため、再計算を行わない");
-//			return false;
-//		}
-//		// 基準使用料算定上延べ面積設定
-//		if (!setKijunMenseki2(initDto)) {
-//			return false;
-//		}
-//		// 社宅使用料算定上延べ面積を算出し設定
-//		if (!setShatakuMenseki2(initDto)) {
-//			return false;
-//		}
-//		// 使用料計算
-//		calcResult = getShatakuShiyouryouKeisanJouhou2(initDto);
-//		// 計算結果判定
-//		if (calcResult != null) {
-//			// ⑧基準単価2設定
-//			initDto.setSc003KijunTanka2(getKingakuEdit(calcResult.getKijunShiyouryou().stripTrailingZeros().toPlainString()));
-//			// ⑫使用料月額2設定
-//			initDto.setSc003PatternShiyoryo2(
-//					getKingakuEdit(calcResult.getPatternShiyoryouGetsugaku().stripTrailingZeros().toPlainString()));
-//			// ⑬年齢加算係数
-//			initDto.setSc003NenreikasanKeisu(getFloatEdit(calcResult.getNenreiKasanKeisu()));
-//			// 社宅使用料計算月額2
-//			initDto.setSc003ShatakuShiyoryo2(getKingakuEdit(
-//					calcResult.getShatakuShiyouryouGetsugaku().stripTrailingZeros().toPlainString()));
-//		} else {
-//			// ⑧基準単価2設定
-//			initDto.setSc003KijunTanka2("");
-//			// ⑫使用料月額2設定
-//			initDto.setSc003PatternShiyoryo2("");
-//			// ⑬年齢加算係数
-//			initDto.setSc003NenreikasanKeisu("");
-//			// 社宅使用料計算月額2
-//			initDto.setSc003ShatakuShiyoryo2("");
-//		}
-//		// 経年調整なし使用料を算出し設定
-//		setKeinenChoseiNashiShiyoryo2(initDto);
-
 		// 用途判定
 		if (CheckUtils.isEmpty(paramMap.get("youtoSelect"))) {
 			logger.debug("「用途」が選択されていないため、再計算を行わない");
@@ -278,45 +237,12 @@ public class Skf3022Sc003SharedService {
 	 * @param initDto	*DTO
 	 * @return
 	 */
-//	private Boolean setKijunMenseki2(Skf3022Sc003CommonDto initDto) {
 	private Boolean setKijunMenseki2(Map<String, String> paramMap) {
-// 更新してるのはKijunMenseki2だけ
 
 		BigDecimal nobeMenseki = null;
 		BigDecimal sunRoomMenseki = null;
 		BigDecimal kaidanMenseki = null;
 
-//		// 延べ面積入力値判定
-//		if (!CheckUtils.isEmpty(initDto.getSc003InputNobeMenseki())) {
-//			try {
-//				nobeMenseki = new BigDecimal(initDto.getSc003InputNobeMenseki());
-//				sunRoomMenseki = new BigDecimal(getMensekiText(initDto.getSc003SunRoom()));
-//				kaidanMenseki = new BigDecimal(getMensekiText(initDto.getSc003Kaidan()));
-//			} catch (NumberFormatException e) {
-//				// デバッグログ
-//				logger.debug("数値変換失敗");
-//				return false;
-//			}
-//		} else {
-//			// デバッグログ
-//			logger.debug("面積が未入力のため、再計算は行わない");
-//			return false;
-//		}
-//		// ⑥基準使用料算定上延べ面積2設定
-//		// 使用料区分判定
-//		if (CodeConstant.SHIYOURYOU_KEISAN_KBN_SHIN.equals(shiyouryouKbn)) {
-//			// 延べ面積 - サンルーム面積 - 階段面積
-//			initDto.setSc003KijunMenseki2(getMensekiEdit(nobeMenseki.subtract(		// 延べ面積
-//							sunRoomMenseki.add(kaidanMenseki) // サンルーム面積 + 階段面積
-//							).stripTrailingZeros()));
-//		} else {
-//			// 延べ面積 - サンルーム面積 - 階段面積 - 物置調整面積
-//			initDto.setSc003KijunMenseki2(getMensekiEdit(
-//					nobeMenseki.subtract(		// 貸与面積
-//							sunRoomMenseki.add(	// サンルーム面積
-//									kaidanMenseki.add(initDto.getHdnBarnMensekiAdjust())) // 階段面積 + 物置調整面積
-//							).stripTrailingZeros()));
-//		}
 		// 延べ面積入力値判定
 		if (!CheckUtils.isEmpty(paramMap.get("inputNobeMenseki"))) {
 			try {
@@ -359,43 +285,10 @@ public class Skf3022Sc003SharedService {
 	 * @param initDto	*DTO
 	 * @return
 	 */
-//	private Boolean setShatakuMenseki2(Skf3022Sc003CommonDto initDto) {
 	private Boolean setShatakuMenseki2(Map<String, String> paramMap) {
-// 更新してるのはShatakuMenseki2だけ
 		BigDecimal nobeMenseki = null;
 		BigDecimal sunRoomMenseki = null;
 		BigDecimal monookiMenseki = null;
-//
-//		// 延べ面積入力値判定
-//		if (!CheckUtils.isEmpty(initDto.getSc003InputNobeMenseki())) {
-//			try {
-//				nobeMenseki = new BigDecimal(initDto.getSc003InputNobeMenseki());
-//				sunRoomMenseki = new BigDecimal(getMensekiText(initDto.getSc003SunRoom()));
-//				monookiMenseki = new BigDecimal(getMensekiText(initDto.getSc003Monooki()));
-//			} catch (NumberFormatException e) {
-//				// デバッグログ
-//				logger.debug("数値変換失敗");
-//				return false;
-//			}
-//		} else {
-//			// デバッグログ
-//			logger.debug("面積が未入力のため、再計算は行わない");
-//			return false;
-//		}
-//
-//		// ⑦社宅使用料算定上延べ面積2設定
-//		// 使用料区分判定
-//		if (CodeConstant.SHIYOURYOU_KEISAN_KBN_SHIN.equals(shiyouryouKbn)) {
-//			// 延べ面積 + 物置面積(小数切捨て)
-//			initDto.setSc003ShatakuMenseki2(getShatakuMensekiEdit(nobeMenseki.add(monookiMenseki)));
-//		} else {
-//			// 延べ面積 - サンルーム面積 / 2 - 物置調整面積(小数切捨て)
-//			initDto.setSc003ShatakuMenseki2(getShatakuMensekiEdit(
-//					nobeMenseki.subtract(		// 貸与面積
-//							(sunRoomMenseki.divide(new BigDecimal("2.00"))).subtract(	// サンルーム面積 / 2
-//									initDto.getHdnBarnMensekiAdjust()) // 物置調整面積
-//							)));
-//		}
 
 		// 延べ面積入力値判定
 		if (!CheckUtils.isEmpty(paramMap.get("inputNobeMenseki"))) {
@@ -437,51 +330,8 @@ public class Skf3022Sc003SharedService {
 	 * @return
 	 * @throws ParseException
 	 */
-//	private SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp 
-//			getShatakuShiyouryouKeisanJouhou2(Skf3022Sc003CommonDto initDto) throws ParseException {
 	private SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp 
 	getShatakuShiyouryouKeisanJouhou2(Map<String, String> paramMap) throws ParseException {
-// DTOの更新なし
-//		// 社宅利用料計算結果
-//		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp retEntity = null;
-//		// 社宅利用料計算情報引数
-//		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp inputEntity =
-//				new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
-//
-//		// 処理区分
-//		inputEntity.setShoriKbn("1");
-//		// 処理年月
-//		inputEntity.setShoriNengetsu(skfBaseBusinessLogicUtils.getSystemProcessNenGetsu());
-//		// 建築年月日
-//		inputEntity.setKenchikuNengappi(initDto.getHdnBuildDate());
-//		// 構造区分(入力した構造区分)
-//		inputEntity.setStructureKbn(initDto.getHdnStructureKbn());
-//		// 地域区分(選択された地域区分)
-//		inputEntity.setAreaKbn(initDto.getHdnAreaKbn());
-//		// 基準使用料算定上延べ面積
-//		inputEntity.setKijunMenseki(getMensekiText(initDto.getSc003KijunMenseki2()));
-//		// 社宅使用料算定上延べ面積
-//		inputEntity.setShatakuMenseki(getMensekiText(initDto.getSc003ShatakuMenseki2()));
-//		// 用途区分
-//		inputEntity.setAuseKbn(initDto.getSc003YoutoSelect());
-//		// 役員区分(なし：※パラメータの役員区分未使用)
-//		inputEntity.setYakuinKbn(CodeConstant.YAKUIN_KBN_NASHI);
-//		// 社宅賃貸料
-//		if (CheckUtils.isEmpty(initDto.getHdnShatakuChintairyo())) {
-//			inputEntity.setShatakuChintairyou(CodeConstant.STRING_ZERO);
-//		} else {
-//			inputEntity.setShatakuChintairyou(initDto.getHdnShatakuChintairyo());
-//		}
-//		// 延べ面積
-//		inputEntity.setNobeMenseki(getMensekiText(initDto.getSc003InputNobeMenseki()));
-//		// サンルーム面積
-//		inputEntity.setSunroomMenseki(getMensekiText(initDto.getSc003SunRoom()));
-//		// 階段面積
-//		inputEntity.setKaidanMenseki(getMensekiText(initDto.getSc003Kaidan()));
-//		// 物置面積
-//		inputEntity.setMonookiMenseki(getMensekiText(initDto.getSc003Monooki()));
-//		// 生年月日
-//		inputEntity.setSeinengappi(initDto.getHdnSeinengappi());
 
 		// 社宅利用料計算結果
 		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp retEntity = null;
@@ -577,28 +427,7 @@ public class Skf3022Sc003SharedService {
 	 * 
 	 * @param initDto	*DTO
 	 */
-//	private void setKeinenChoseiNashiShiyoryo2(Skf3022Sc003CommonDto initDto) {
 	private void setKeinenChoseiNashiShiyoryo2(Map<String, String> paramMap) {
-// 更新してるのはKeinenChouseinashiShiyoryo2だけ
-//
-//		// 経年調整なし使用料 = 基準使用料算定上延べ面積 * 基準単価
-//		try {
-//			// 基準使用料算定上延べ面積 
-//			BigDecimal shatakuMenseki = new BigDecimal(getMensekiText(initDto.getSc003ShatakuMenseki2()));
-//			// 基準単価
-//			BigDecimal kijuntanka = new BigDecimal(getKingakuText(initDto.getSc003KijunTanka2()));
-//			// 基準使用料算定上延べ面積 * 基準単価
-//			BigDecimal keinenChoseiNashiShiyoryo = shatakuMenseki.multiply(kijuntanka);
-//			// 整数変換して設定(小数切捨て)
-//			initDto.setSc003KeinenChouseinashiShiyoryo2(
-//					getKingakuEdit(keinenChoseiNashiShiyoryo.setScale(0, BigDecimal.ROUND_DOWN).stripTrailingZeros().toPlainString()));
-//		} catch (ArithmeticException e) {
-//			// デバッグログ
-//			logger.debug("数値変換失敗");
-//		} catch (NumberFormatException e) {
-//			// デバッグログ
-//			logger.debug("数値変換失敗");
-//		}
 
 		// 経年調整なし使用料 = 基準使用料算定上延べ面積 * 基準単価
 		try {

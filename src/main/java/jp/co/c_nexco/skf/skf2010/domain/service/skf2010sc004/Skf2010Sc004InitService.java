@@ -248,14 +248,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			Skf2040TTaikyoReport tTaikyoReport = new Skf2040TTaikyoReport();
 			tTaikyoReport = skf2010Sc004SharedService.getTaikkyoReportInfo(applNo);
 			if (tTaikyoReport != null && tTaikyoReport.getShatakuNo() != null) {
-				Skf2010Sc004GetShatakuInfoExp shatakuInfo = new Skf2010Sc004GetShatakuInfoExp();
-				shatakuInfo = skf2010Sc004SharedService.getShatakuInfo(tTaikyoReport.getShatakuNo(), shainNo);
-
-				if (shatakuInfo == null) {
-					ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_2004);
-				} else {
-					mappingTaikyoReport(initDto, tTaikyoReport, shatakuInfo);
-				}
+				mappingTaikyoReport(initDto, tTaikyoReport);
 			} else {
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_2004);
 				// throwBusinessExceptionIfErrors(initDto.getResultMessages());
@@ -729,8 +722,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		return;
 	}
 
-	private void mappingTaikyoReport(Skf2010Sc004InitDto initDto, Skf2040TTaikyoReport tTaikyoReport,
-			Skf2010Sc004GetShatakuInfoExp shatakuInfo) {
+	private void mappingTaikyoReport(Skf2010Sc004InitDto initDto, Skf2040TTaikyoReport tTaikyoReport) {
 		// 申請書類タイトル表記設定
 		initDto.setShatakuTaikyoKbn(tTaikyoReport.getShatakuTaikyoKbn()); // 社宅退居
 		initDto.setShatakuTaikyoKbn2(tTaikyoReport.getShatakuTaikyoKbn2()); // 駐車場返還
@@ -748,18 +740,18 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 室、チーム又は課
 		initDto.setNowAffiliation2(tTaikyoReport.getAffiliation2());
 		// 現住所
-		initDto.setAddress(shatakuInfo.getAddress());
+		initDto.setAddress(tTaikyoReport.getAddress());
 		// 氏名
 		initDto.setName(tTaikyoReport.getName());
 		tTaikyoReport.getShatakuTaikyoKbn();
 
 		// 自動車の保管場所返還取消線フラグ
 		// 社宅
-		initDto.setShatakuName(shatakuInfo.getShatakuName());
+		initDto.setTaikyoArea(tTaikyoReport.getTaikyoArea());
 		// 駐車場1
-		initDto.setParkingAddress1(shatakuInfo.getParkingAddress1());
+		initDto.setParkingAddress1(tTaikyoReport.getParkingAddress1());
 		// 駐車場2
-		initDto.setParkingAddress2(shatakuInfo.getParkingAddress2());
+		initDto.setParkingAddress2(tTaikyoReport.getParkingAddress2());
 		// 退居日 社宅等
 		String taikyoDate = tTaikyoReport.getTaikyoDate();
 		String taikyoDateText = skfDateFormatUtils.dateFormatFromString(taikyoDate, "yyyy年MM月dd日");
@@ -769,14 +761,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		String parkingHenkanDateText = skfDateFormatUtils.dateFormatFromString(parkingHenkanDate, "yyyy年MM月dd日");
 		initDto.setParkingHenkanDate(parkingHenkanDateText);
 		// 退居（返還）理由
-		Map<String, String> taikyoRiyuMap = skfGenericCodeUtils.getGenericCode("SKF1142");
-		String taikyoRiyu = "";
-		if (taikyoRiyuMap != null) {
-			taikyoRiyu = taikyoRiyuMap.get(tTaikyoReport.getTaikyoRiyuKbn());
-		}
-		initDto.setTaikyoRiyu(taikyoRiyu);
+		initDto.setTaikyoRiyu(tTaikyoReport.getTaikyoRiyu());
 		// 退居後の連絡先
 		initDto.setTaikyogoRenrakusaki(tTaikyoReport.getTaikyogoRenrakusaki());
+
+		// 退居日変更フラグ
+		initDto.setTaikyoDateFlg(tTaikyoReport.getTaikyoDateFlg());
+		// 駐車場返却日変更フラグ
+		initDto.setParkingEDateFlg(tTaikyoReport.getParkingEDateFlg());
 
 	}
 
