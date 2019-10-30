@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc001.Skf3022Sc001GetShatakuRoomExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc001.Skf3022Sc001GetShatakuRoomExpParameter;
@@ -157,12 +158,12 @@ public class Skf3022Sc001SharedService {
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 			tmpMap.put("colSelect", roomInfo.getAkiheyaState());
 			tmpMap.put("colhdnSelect", roomInfo.getAkiheyaState());
-			tmpMap.put("colShatakuName", roomInfo.getShatakuName());
-			tmpMap.put("colRoomNo", roomInfo.getRoomNo());
-			tmpMap.put("colAuse", genericCodeAuseKbn.get(roomInfo.getOriginalAuse()));
-			tmpMap.put("colKikaku", genericCodeKikakuKbn.get(roomInfo.getOriginalKikaku()));
-			tmpMap.put("colEmptyRoom", roomInfo.getAkiheya());
-			tmpMap.put("colEmptyParking", roomInfo.getAkichushajo());
+			tmpMap.put("colShatakuName", HtmlUtils.htmlEscape(roomInfo.getShatakuName()));
+			tmpMap.put("colRoomNo", HtmlUtils.htmlEscape(roomInfo.getRoomNo()));
+			tmpMap.put("colAuse", HtmlUtils.htmlEscape(genericCodeAuseKbn.get(roomInfo.getOriginalAuse())));
+			tmpMap.put("colKikaku", HtmlUtils.htmlEscape(genericCodeKikakuKbn.get(roomInfo.getOriginalKikaku())));
+			tmpMap.put("colEmptyRoom", HtmlUtils.htmlEscape(roomInfo.getAkiheya()));
+			tmpMap.put("colEmptyParking", HtmlUtils.htmlEscape(roomInfo.getAkichushajo()));
 			tmpMap.put("colShatakuKanriNo", roomInfo.getShatakuKanriNo());
 			tmpMap.put("colRoomKanriNo", roomInfo.getShatakuRoomKanriNo());
 			returnList.add(tmpMap);
