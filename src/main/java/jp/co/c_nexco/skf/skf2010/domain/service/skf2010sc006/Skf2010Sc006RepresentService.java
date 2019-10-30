@@ -45,13 +45,14 @@ public class Skf2010Sc006RepresentService extends BaseServiceAbstract<Skf2010Sc0
 		String applNo = reDto.getApplNo();
 		String comment = reDto.getCommentNote();
 		String applUpdateDate = reDto.getApplUpdateDate();
-		boolean res = skf2010Sc006SharedService.representData(companyCd, applNo, applTacFlag, comment, applUpdateDate,
+		boolean res = skf2010Sc006SharedService.representData(companyCd, applNo, comment, applUpdateDate, applTacFlag,
 				errMap);
 		if (!res) {
 			ServiceHelper.addErrorResultMessage(reDto, null, errMap.get("error"));
 			throwBusinessExceptionIfErrors(reDto.getResultMessages());
 			return reDto;
 		}
+		String applStatus = CodeConstant.STATUS_SHINSACHU;
 
 		// 添付ファイル管理テーブル更新処理
 		boolean commentRes = skf2010Sc006SharedService.updateAttachedFileInfo(applNo, reDto.getShainNo(),
@@ -68,6 +69,7 @@ public class Skf2010Sc006RepresentService extends BaseServiceAbstract<Skf2010Sc0
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2020_SC003);
 		Map<String, Object> attribute = new HashMap<String, Object>();
 		attribute.put("applNo", applNo);
+		attribute.put("applStatus", applStatus);
 		tpi.addResultMessage(MessageIdConstant.I_SKF_2048);
 		tpi.setTransferAttributes(attribute);
 		reDto.setTransferPageInfo(tpi);
