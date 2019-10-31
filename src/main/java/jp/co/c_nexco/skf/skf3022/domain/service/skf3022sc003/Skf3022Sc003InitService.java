@@ -174,7 +174,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			} else {
 				// 設定されていない場合、基本情報と同じ値を設定
 				// 規格2
-				kikaakuSelectedValue = initDto.getSc003KikakuSelecte();
+				kikaakuSelectedValue = initDto.getSc003KikakuSelect();
 				// ①用途2
 				youtoSelectedValue = initDto.getSc003YoutoSelect();
 				// ②延べ面積2
@@ -187,7 +187,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		}
 		/** ドロップダウン選択値設定 */
 		// 規格
-		initDto.setSc003KikakuSelecte(kikaakuSelectedValue);
+		initDto.setSc003KikakuSelect(kikaakuSelectedValue);
 		// 用途
 		initDto.setSc003YoutoSelect(youtoSelectedValue);
 
@@ -196,7 +196,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		kikakuSelecteList.clear();
 		kikakuSelecteList.addAll(ddlUtils.getGenericForDoropDownList(
 				FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN, kikaakuSelectedValue, true));
-		initDto.setSc003KikakuSelecteList(kikakuSelecteList);
+		initDto.setSc003KikakuSelectList(kikakuSelecteList);
 		// ②用途ドロップダウン
 		youtoSelecteList.clear();
 		youtoSelecteList.addAll(ddlUtils.getGenericForDoropDownList(
@@ -340,7 +340,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		initDto.setSc003Kikaku(codeCacheUtils.getGenericCodeName(
 				FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN, roomInfo.getOriginalKikaku()));
 		// 規格ドロップダウン選択値
-		initDto.setSc003KikakuSelecte(roomInfo.getOriginalKikaku());
+		initDto.setSc003KikakuSelect(roomInfo.getOriginalKikaku());
 		// ①用途
 		initDto.setSc003Youto(codeCacheUtils.getGenericCodeName(
 				FunctionIdConstant.GENERIC_CODE_AUSE_KBN, roomInfo.getOriginalAuse()));

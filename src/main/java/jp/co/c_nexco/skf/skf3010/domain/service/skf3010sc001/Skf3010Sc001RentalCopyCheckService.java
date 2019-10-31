@@ -55,13 +55,13 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 		// 社宅管理番号の有無チェック
 		if (hdnRowShatakuKanriNo == null || hdnRowShatakuKanriNo.length() < 1) {
 			logger.warn("社宅が選択されていません。");
-			ServiceHelper.addErrorResultMessage(rentalCopyDto, null, MessageIdConstant.W_SKF_3003);
+			ServiceHelper.addWarnResultMessage(rentalCopyDto, MessageIdConstant.W_SKF_3003);
 			return rentalCopyDto;
 		}
 		// 社宅区分判定
 		if (!SHATAKU_KBN_KARIAGE.equals(hdnRowShatakuKbn)) {
 			logger.warn("借上以外が選択されています。");
-			ServiceHelper.addErrorResultMessage(rentalCopyDto, null, MessageIdConstant.W_SKF_3002);
+			ServiceHelper.addWarnResultMessage(rentalCopyDto, null, MessageIdConstant.W_SKF_3002);
 			return rentalCopyDto;
 		}
 
