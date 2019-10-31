@@ -96,6 +96,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		// 承認者へのコメント欄の入力チェック
 		validateResult = validateReason(agreeDto);
 		if (!validateResult) {
+			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
 			return agreeDto;
 		}
 
@@ -472,10 +473,12 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	 */
 	private boolean validateReason(Skf2010Sc004AgreeAsyncDto agreeDto) {
 		String reasonText = agreeDto.getCommentNote();
+		int commentMaxLength = Integer.parseInt(PropertyUtils.getValue("skf.common.comment_max_length"));
 		if (reasonText != null) {
 			int byteCnt = reasonText.getBytes(Charset.forName("UTF-8")).length;
-			if (byteCnt >= 4000) {
-				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
+			if (byteCnt >= commentMaxLength) {
+				ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" },
+						MessageIdConstant.E_SKF_1049, "承認者へのコメント", Long.valueOf(commentMaxLength) / 2);
 				return false;
 			}
 		}
