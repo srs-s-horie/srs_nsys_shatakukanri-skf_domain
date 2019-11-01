@@ -351,6 +351,26 @@ public class Skf2020Sc002SharedService {
 						afflication1List.add(soshikiMap);
 					}
 					dto.setDdlAffiliation1List(afflication1List);
+
+				} else if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())) {
+					// 新所属 部等は、空。新所属 機関が空ではない
+					// 部等ドロップダウンリストの設定
+					List<Map<String, Object>> afflication1List = new ArrayList<Map<String, Object>>();
+					afflication1List = skfDropDownUtils.getDdlAffiliation1ByCd(CodeConstant.C001,
+							agensyList.getAgencyCd(), CodeConstant.NONE, true);
+					// その他を追加
+					if (afflication1List.size() > 0) {
+						Map<String, Object> soshikiMap = new HashMap<String, Object>();
+						soshikiMap.put("value", "99");
+						soshikiMap.put("label", "その他");
+
+						if ("1".equals(nyukyoChoshoList.getNewAffiliation1Other())) {
+							soshikiMap.put("selected", true);
+						}
+
+						afflication1List.add(soshikiMap);
+					}
+					dto.setDdlAffiliation1List(afflication1List);
 				}
 
 				// 新所属 部等その他に値がある場合は、新所属 部等その他テキストボックスに、部等名を設定
@@ -379,7 +399,29 @@ public class Skf2020Sc002SharedService {
 						afflication2List.add(teamMap);
 					}
 					dto.setDdlAffiliation2List(afflication2List);
+
+				} else if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())
+						&& NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation1())) {
+					// 新所属 室、チーム又は課は、空。新所属 機関と部が空ではない
+
+					// 室、チーム又は課ドロップダウンをセット
+					List<Map<String, Object>> afflication2List = new ArrayList<Map<String, Object>>();
+					afflication2List = skfDropDownUtils.getDdlAffiliation2ByCd(CodeConstant.C001,
+							agensyList.getAgencyCd(), agensyList.getAffiliation1Cd(), CodeConstant.NONE, true);
+					// その他を追加
+					if (afflication2List.size() > 0) {
+						Map<String, Object> teamMap = new HashMap<String, Object>();
+						teamMap.put("value", "99");
+						teamMap.put("label", "その他");
+
+						if ("1".equals(nyukyoChoshoList.getNewAffiliation2Other())) {
+							teamMap.put("selected", true);
+						}
+						afflication2List.add(teamMap);
+					}
+					dto.setDdlAffiliation2List(afflication2List);
 				}
+
 				// 新所属 室、チーム又は課その他に値がある場合は、新所属 室、チーム又は課その他テキストボックスに、室、チーム又は課名を設定
 				if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation2Other())) {
 					dto.setNewAffiliation2Other(nyukyoChoshoList.getNewAffiliation2());
@@ -1662,6 +1704,8 @@ public class Skf2020Sc002SharedService {
 	protected void cutByte(Skf2020Sc002CommonDto dto) throws UnsupportedEncodingException {
 
 		String Msg = "バイト数カット処理：　";
+		// 勤務先のTEL
+		dto.setTel(NfwStringUtils.rightTrimbyByte(dto.getTel(), 14));
 		// 新所属 部等 その他
 		dto.setNewAffiliation1Other(NfwStringUtils.rightTrimbyByte(dto.getNewAffiliation1Other(), 128));
 		LogUtils.debugByMsg(Msg + "新所属 部等" + dto.getNewAffiliation1Other());
@@ -1734,6 +1778,8 @@ public class Skf2020Sc002SharedService {
 		// 返却立会希望日
 		dto.setSessionDay(NfwStringUtils.rightTrimbyByte(dto.getSessionDay(), 10));
 		LogUtils.debugByMsg(Msg + "返却立会希望日" + dto.getSessionDay());
+		// 連絡先
+		dto.setRenrakuSaki((NfwStringUtils.rightTrimbyByte(dto.getRenrakuSaki(), 14)));
 	}
 
 	/**

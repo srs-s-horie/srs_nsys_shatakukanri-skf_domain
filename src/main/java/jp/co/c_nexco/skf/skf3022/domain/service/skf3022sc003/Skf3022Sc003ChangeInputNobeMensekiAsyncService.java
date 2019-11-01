@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003;
 
-
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,6 @@ public class Skf3022Sc003ChangeInputNobeMensekiAsyncService
 		setMapToDto(paramMap, asyncDto);
 		return asyncDto;
 	}
-
 
 	/**
 	 * 再計算結果DTO設定
