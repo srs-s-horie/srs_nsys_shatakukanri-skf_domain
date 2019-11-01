@@ -169,6 +169,9 @@ public class Skf2020Sc002SharedService {
 			// 登録済みデータの情報設定
 			setSinseiInfo(dto, true);
 
+			// 社宅情報の設定
+			setShatakuInfo(dto, UPDATE_FLG);
+
 		} else {
 			// 無い場合
 			if (dto.getShainList() != null && dto.getShainList().size() > 0) {
@@ -178,9 +181,9 @@ public class Skf2020Sc002SharedService {
 				// データが取得できなかった場合は更新ボタンを使用不可にする
 				setInitializeError(dto);
 			}
+			// 社宅情報の設定
+			setShatakuInfo(dto, NO_UPDATE_FLG);
 		}
-		// 社宅情報の設定
-		setShatakuInfo(dto, NO_UPDATE_FLG);
 	}
 
 	/**
@@ -669,6 +672,7 @@ public class Skf2020Sc002SharedService {
 				if (nowShatakuNameList.getShatakuKanriId() > 0) {
 					dto.setDdlNowShatakuNameList(skfDropDownUtils.getDdlNowShatakuNameByCd(dto.getShainNo(),
 							dto.getYearMonthDay(), nowShatakuNameList.getShatakuKanriId(), false));
+					dto.setNowShatakuName(String.valueOf(nowShatakuNameList.getShatakuKanriId()));
 				}
 			}
 
