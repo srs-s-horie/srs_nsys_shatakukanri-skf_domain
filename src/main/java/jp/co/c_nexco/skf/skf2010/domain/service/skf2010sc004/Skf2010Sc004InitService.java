@@ -201,13 +201,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			displayLevel = 4;
 			dto.setLevel4Open("true");
 			dto.setRepresentBtnFlg("false");
+			dto.setCommentAreaVisible(false);
 			switch (applStatus) {
 			case CodeConstant.STATUS_SHINSEICHU:
-				// 申請中、審査中
+				// 申請中
 				dto.setMaskPattern("PTN_A");
 				break;
-			case CodeConstant.STATUS_SHONIN_ZUMI:
-				// 承認済み
+			default:
+				// それ以外
 				dto.setMaskPattern("PTN_C");
 				break;
 			}
@@ -502,6 +503,9 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 入居予定日
 		initDto.setNyukyoYoteiDate(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoYoteiDate(), "yyyy年MM月dd日"));
+		// 入居可能日
+		initDto.setNyukyoKanoDate(
+				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(), "yyyy年MM月dd日"));
 
 		// 保管場所
 		if (tNyukyoChoshoTsuchi.getParkingUmu() != null) {

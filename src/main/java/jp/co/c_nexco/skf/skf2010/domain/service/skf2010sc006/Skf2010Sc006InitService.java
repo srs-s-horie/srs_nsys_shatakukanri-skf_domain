@@ -177,65 +177,75 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
 		 */
 		int defaultDisplayLevel = 0;
-		switch (applStatus) {
-		case CodeConstant.STATUS_ICHIJIHOZON:
-		case CodeConstant.STATUS_SASHIMODOSHI:
-		case CodeConstant.STATUS_HININ:
-		case CodeConstant.STATUS_SHINSACHU:
-			initDto.setDisplayLevel(1);
-			// 貸与必要フラグが「0：不要」だった場合
-			if (!CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+		if (CheckUtils.isEqual(initDto.getApplId(), FunctionIdConstant.R0100)) {
+			switch (applStatus) {
+			case CodeConstant.STATUS_ICHIJIHOZON:
+			case CodeConstant.STATUS_SASHIMODOSHI:
+			case CodeConstant.STATUS_HININ:
+			case CodeConstant.STATUS_SHINSACHU:
+				initDto.setDisplayLevel(1);
+				// 貸与必要フラグが「0：不要」だった場合
+				if (!CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+					initDto.setMaskPattern("NON");
+				}
+				initDto.setLevel1Open("true");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("false");
+				break;
+			case CodeConstant.STATUS_KAKUNIN_IRAI:
+				initDto.setDisplayLevel(2);
 				initDto.setMaskPattern("NON");
+				initDto.setLevel1Open("false");
+				initDto.setLevel2Open("true");
+				initDto.setLevel3Open("false");
+				break;
+			case CodeConstant.STATUS_DOI_ZUMI:
+			case CodeConstant.STATUS_SHONIN:
+			case CodeConstant.STATUS_SHONIN1:
+				defaultDisplayLevel = 3;
+				if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+					defaultDisplayLevel = 1;
+					initDto.setLevel1Open("true");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("false");
+				} else {
+					initDto.setLevel1Open("false");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("true");
+				}
+				initDto.setDisplayLevel(defaultDisplayLevel);
+				break;
+			case CodeConstant.STATUS_SHONIN_ZUMI:
+				defaultDisplayLevel = 3;
+				if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+					defaultDisplayLevel = 1;
+					initDto.setLevel1Open("true");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("false");
+				} else {
+					initDto.setLevel1Open("false");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("true");
+				}
+				initDto.setDisplayLevel(defaultDisplayLevel);
+				initDto.setMaskPattern("NON");
+				break;
+			default:
+				initDto.setDisplayLevel(1);
+				initDto.setMaskPattern("NON");
+				initDto.setLevel1Open("true");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("false");
+				break;
 			}
-			initDto.setLevel1Open("true");
-			initDto.setLevel2Open("false");
-			initDto.setLevel3Open("false");
-			break;
-		case CodeConstant.STATUS_KAKUNIN_IRAI:
-			initDto.setDisplayLevel(2);
+		} else if (CheckUtils.isEqual(initDto.getApplId(), FunctionIdConstant.R0103)) {
+			// 退居（自動車の保管場所返還）届用
+			initDto.setDisplayLevel(4);
 			initDto.setMaskPattern("NON");
 			initDto.setLevel1Open("false");
-			initDto.setLevel2Open("true");
-			initDto.setLevel3Open("false");
-			break;
-		case CodeConstant.STATUS_DOI_ZUMI:
-		case CodeConstant.STATUS_SHONIN:
-		case CodeConstant.STATUS_SHONIN1:
-			defaultDisplayLevel = 3;
-			if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
-				defaultDisplayLevel = 1;
-				initDto.setLevel1Open("true");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("false");
-			} else {
-				initDto.setLevel1Open("false");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("true");
-			}
-			initDto.setDisplayLevel(defaultDisplayLevel);
-			break;
-		case CodeConstant.STATUS_SHONIN_ZUMI:
-			defaultDisplayLevel = 3;
-			if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
-				defaultDisplayLevel = 1;
-				initDto.setLevel1Open("true");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("false");
-			} else {
-				initDto.setLevel1Open("false");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("true");
-			}
-			initDto.setDisplayLevel(defaultDisplayLevel);
-			initDto.setMaskPattern("NON");
-			break;
-		default:
-			initDto.setDisplayLevel(1);
-			initDto.setMaskPattern("NON");
-			initDto.setLevel1Open("true");
 			initDto.setLevel2Open("false");
 			initDto.setLevel3Open("false");
-			break;
+			initDto.setLevel4Open("true");
 		}
 		return;
 	}
@@ -507,6 +517,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 入居予定日
 		initDto.setNyukyoYoteiDate(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoYoteiDate(), "yyyy年MM月dd日"));
+		// 入居可能日
+		initDto.setNyukyoKanoDate(
+				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(), "yyyy年MM月dd日"));
 
 		// 保管場所
 		if (tNyukyoChoshoTsuchi.getParkingUmu() != null) {

@@ -43,6 +43,9 @@ public class Skf2010Sc004CommonDto extends Skf2010CommonDto {
 
 	private String commentViewFlag;
 
+	// コメント欄表示フラグ
+	private boolean commentAreaVisible = true;
+
 	// 入力フォーム表示フラグ
 	private String inputAreaVisible;
 
