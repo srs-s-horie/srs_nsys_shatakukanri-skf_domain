@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -42,6 +44,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
+
+	private static final String PLAN_TO_BUY_CAR = "購入を予定している";
 
 	/**
 	 * サービス処理を行う。
@@ -173,65 +177,75 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
 		 */
 		int defaultDisplayLevel = 0;
-		switch (applStatus) {
-		case CodeConstant.STATUS_ICHIJIHOZON:
-		case CodeConstant.STATUS_SASHIMODOSHI:
-		case CodeConstant.STATUS_HININ:
-		case CodeConstant.STATUS_SHINSACHU:
-			initDto.setDisplayLevel(1);
-			// 貸与必要フラグが「0：不要」だった場合
-			if (!CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+		if (CheckUtils.isEqual(initDto.getApplId(), FunctionIdConstant.R0100)) {
+			switch (applStatus) {
+			case CodeConstant.STATUS_ICHIJIHOZON:
+			case CodeConstant.STATUS_SASHIMODOSHI:
+			case CodeConstant.STATUS_HININ:
+			case CodeConstant.STATUS_SHINSACHU:
+				initDto.setDisplayLevel(1);
+				// 貸与必要フラグが「0：不要」だった場合
+				if (!CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+					initDto.setMaskPattern("NON");
+				}
+				initDto.setLevel1Open("true");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("false");
+				break;
+			case CodeConstant.STATUS_KAKUNIN_IRAI:
+				initDto.setDisplayLevel(2);
 				initDto.setMaskPattern("NON");
+				initDto.setLevel1Open("false");
+				initDto.setLevel2Open("true");
+				initDto.setLevel3Open("false");
+				break;
+			case CodeConstant.STATUS_DOI_ZUMI:
+			case CodeConstant.STATUS_SHONIN:
+			case CodeConstant.STATUS_SHONIN1:
+				defaultDisplayLevel = 3;
+				if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+					defaultDisplayLevel = 1;
+					initDto.setLevel1Open("true");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("false");
+				} else {
+					initDto.setLevel1Open("false");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("true");
+				}
+				initDto.setDisplayLevel(defaultDisplayLevel);
+				break;
+			case CodeConstant.STATUS_SHONIN_ZUMI:
+				defaultDisplayLevel = 3;
+				if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+					defaultDisplayLevel = 1;
+					initDto.setLevel1Open("true");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("false");
+				} else {
+					initDto.setLevel1Open("false");
+					initDto.setLevel2Open("false");
+					initDto.setLevel3Open("true");
+				}
+				initDto.setDisplayLevel(defaultDisplayLevel);
+				initDto.setMaskPattern("NON");
+				break;
+			default:
+				initDto.setDisplayLevel(1);
+				initDto.setMaskPattern("NON");
+				initDto.setLevel1Open("true");
+				initDto.setLevel2Open("false");
+				initDto.setLevel3Open("false");
+				break;
 			}
-			initDto.setLevel1Open("true");
-			initDto.setLevel2Open("false");
-			initDto.setLevel3Open("false");
-			break;
-		case CodeConstant.STATUS_KAKUNIN_IRAI:
-			initDto.setDisplayLevel(2);
+		} else if (CheckUtils.isEqual(initDto.getApplId(), FunctionIdConstant.R0103)) {
+			// 退居（自動車の保管場所返還）届用
+			initDto.setDisplayLevel(4);
 			initDto.setMaskPattern("NON");
 			initDto.setLevel1Open("false");
-			initDto.setLevel2Open("true");
-			initDto.setLevel3Open("false");
-			break;
-		case CodeConstant.STATUS_DOI_ZUMI:
-		case CodeConstant.STATUS_SHONIN:
-		case CodeConstant.STATUS_SHONIN1:
-			defaultDisplayLevel = 3;
-			if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
-				defaultDisplayLevel = 1;
-				initDto.setLevel1Open("true");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("false");
-			} else {
-				initDto.setLevel1Open("false");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("true");
-			}
-			initDto.setDisplayLevel(defaultDisplayLevel);
-			break;
-		case CodeConstant.STATUS_SHONIN_ZUMI:
-			defaultDisplayLevel = 3;
-			if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
-				defaultDisplayLevel = 1;
-				initDto.setLevel1Open("true");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("false");
-			} else {
-				initDto.setLevel1Open("false");
-				initDto.setLevel2Open("false");
-				initDto.setLevel3Open("true");
-			}
-			initDto.setDisplayLevel(defaultDisplayLevel);
-			initDto.setMaskPattern("NON");
-			break;
-		default:
-			initDto.setDisplayLevel(1);
-			initDto.setMaskPattern("NON");
-			initDto.setLevel1Open("true");
 			initDto.setLevel2Open("false");
 			initDto.setLevel3Open("false");
-			break;
+			initDto.setLevel4Open("true");
 		}
 		return;
 	}
@@ -239,27 +253,36 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	private void setDisplayData(Skf2010Sc006InitDto initDto) {
 		String applNo = initDto.getApplNo();
 		String applStatus = initDto.getApplStatus();
+		String applId = CodeConstant.NONE;
 
-		Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
-		tNyukyoChoshoTsuchi = skf2010Sc006SharedService.getNyukyoChoshoTsuchiInfo(companyCd, applNo);
-		if (tNyukyoChoshoTsuchi != null) {
-			// 更新用
-			String applDate = skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getApplDate(),
-					"yyyy/MM/dd HH:mm:ss");
-			initDto.setApplUpdateDate(applDate);
-			// 社宅入居希望等調書
-			mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
-			// 貸与（予定）社宅等のご案内
-			mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
-
-		}
-
-		// 申請書類種別IDを取得
+		// 申請情報履歴を取得
 		Skf2010Sc006GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc006GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc006SharedService.getApplHistoryInfo(applNo);
 		if (tApplHistoryData != null) {
 			initDto.setApplId(tApplHistoryData.getApplId());
+			applId = tApplHistoryData.getApplId();
 			initDto.setShonin1Name(tApplHistoryData.getAgreName1());
+		}
+
+		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)) {
+			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
+			tNyukyoChoshoTsuchi = skf2010Sc006SharedService.getNyukyoChoshoTsuchiInfo(companyCd, applNo);
+			if (tNyukyoChoshoTsuchi != null) {
+				// 更新用
+				String applDate = skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getApplDate(),
+						"yyyy/MM/dd HH:mm:ss");
+				initDto.setApplUpdateDate(applDate);
+				// 社宅入居希望等調書
+				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
+				// 貸与（予定）社宅等のご案内
+				mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
+
+			}
+		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0103)) {
+			Skf2040TTaikyoReport taikyoReport = new Skf2040TTaikyoReport();
+			taikyoReport = skf2010Sc006SharedService.getTaikyoReportInfo(companyCd, applNo);
+			// 退居届
+			mappingTaikyoTodoke(initDto, taikyoReport);
 		}
 
 		// 添付資料情報取得
@@ -494,6 +517,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 入居予定日
 		initDto.setNyukyoYoteiDate(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoYoteiDate(), "yyyy年MM月dd日"));
+		// 入居可能日
+		initDto.setNyukyoKanoDate(
+				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(), "yyyy年MM月dd日"));
 
 		// 保管場所
 		if (tNyukyoChoshoTsuchi.getParkingUmu() != null) {
@@ -517,7 +543,13 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 自動車番号登録フラグ
 		initDto.setCarNoInputFlg(tNyukyoChoshoTsuchi.getCarNoInputFlg());
 		// 自動車の車名
-		initDto.setCarName(tNyukyoChoshoTsuchi.getCarName());
+		String carName = tNyukyoChoshoTsuchi.getCarName();
+		if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getCarNoInputFlg(), CodeConstant.CAR_YOTEI)) {
+			if (NfwStringUtils.isEmpty(carName)) {
+				carName = PLAN_TO_BUY_CAR;
+			}
+		}
+		initDto.setCarName(carName);
 		// 自動車の登録番号
 		initDto.setCarNo(tNyukyoChoshoTsuchi.getCarNo());
 		// 自動車の使用者
@@ -531,7 +563,14 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 自動車番号登録フラグ2
 		initDto.setCarNoInputFlg2(tNyukyoChoshoTsuchi.getCarNoInputFlg2());
 		// 自動車の車名2
-		initDto.setCarName2(tNyukyoChoshoTsuchi.getCarName2());
+		String carName2 = tNyukyoChoshoTsuchi.getCarName2();
+		if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getCarNoInputFlg2(), CodeConstant.CAR_YOTEI)
+				&& NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
+			if (NfwStringUtils.isEmpty(carName2)) {
+				carName2 = PLAN_TO_BUY_CAR;
+			}
+		}
+		initDto.setCarName2(carName2);
 		// 自動車の登録番号2
 		initDto.setCarNo2(tNyukyoChoshoTsuchi.getCarNo2());
 		// 自動車の使用者2
@@ -676,10 +715,16 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		initDto.setNewRental(newRental);
 		// 共益費
 		String newKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
-		if (newKyoekihi != null && NfwStringUtils.isNotEmpty(newKyoekihi)) {
+		if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
 			newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
 		}
-		initDto.setNewKyoekihi(newKyoekihi);
+		// 部屋番号が登録されている場合のみ
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
+			initDto.setNewKyoekihi(newKyoekihi);
+		}
+		// 入居日
+		initDto.setNyukyoKanoDate(
+				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(), "yyyy年MM月dd日"));
 
 		// 自動車１台目
 		// 自動車の保管場所
@@ -711,7 +756,58 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 自動車保管場所（２台目）の使用開始予定日
 		initDto.setParkingKanoDate2(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingKanoDate2(), "yyyy年MM月dd日"));
+
+		// 入居日変更フラグ
+		initDto.setNyukyoDateFlg(tNyukyoChoshoTsuchi.getNyukyoDateFlg());
+		// 駐車場使用開始日変更フラグ
+		initDto.setParkingSDateFlg(tNyukyoChoshoTsuchi.getParkingSDateFlg());
 		return;
+	}
+
+	private void mappingTaikyoTodoke(Skf2010Sc006InitDto initDto, Skf2040TTaikyoReport taikyoReport) {
+		// 社員番号
+		initDto.setShainNo(taikyoReport.getShainNo());
+		// 氏名
+		initDto.setName(taikyoReport.getName());
+		// 現住所
+		initDto.setAddress(taikyoReport.getAddress());
+
+		// 退居区分
+		initDto.setShatakuTaikyoKbn(taikyoReport.getShatakuTaikyoKbn());
+		// 自動車保管場所返還区分
+		initDto.setShatakuTaikyoKbn2(taikyoReport.getShatakuTaikyoKbn2());
+
+		// 所属
+		// 現所属：機関
+		initDto.setNowAgency(taikyoReport.getAgency());
+		// 現所属：部等
+		initDto.setNowAffiliation1(taikyoReport.getAffiliation1());
+		// 現所属：室、チーム又は課
+		initDto.setNowAffiliation2(taikyoReport.getAffiliation2());
+
+		// 社宅情報
+		// 社宅名
+		initDto.setTaikyoArea(taikyoReport.getTaikyoArea());
+
+		// 自動車１台目
+		// 自動車の保管場所
+		initDto.setParkingAddress1(taikyoReport.getParkingAddress1());
+		// 自動車２台目
+		// 自動車の保管場所
+		initDto.setParkingAddress2(taikyoReport.getParkingAddress2());
+
+		// 退居日変更フラグ
+		initDto.setTaikyoDateFlg(taikyoReport.getTaikyoDateFlg());
+		// 退居日
+		String taikyoDate = taikyoReport.getTaikyoDate();
+		String taikyoDateText = skfDateFormatUtils.dateFormatFromString(taikyoDate, "yyyy年MM月dd日");
+		initDto.setTaikyoDate(taikyoDateText);
+
+		// 退居理由
+		initDto.setTaikyoRiyu(taikyoReport.getTaikyoRiyu());
+		// 退居後の連絡先
+		initDto.setTaikyogoRenrakusaki(taikyoReport.getTaikyogoRenrakusaki());
+
 	}
 
 }

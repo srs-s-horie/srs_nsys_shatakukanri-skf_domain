@@ -905,7 +905,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 社宅
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoArea())) {
-			initDto.setShatakuName(taikyoRepDt.getTaikyoArea());
+			initDto.setTaikyoArea(taikyoRepDt.getTaikyoArea());
 		}
 		// 駐車場1
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress1())) {

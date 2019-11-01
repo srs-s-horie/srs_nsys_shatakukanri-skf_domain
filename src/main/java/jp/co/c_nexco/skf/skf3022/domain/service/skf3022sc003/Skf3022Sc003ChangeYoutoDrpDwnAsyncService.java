@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003;
 
-
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,6 @@ public class Skf3022Sc003ChangeYoutoDrpDwnAsyncService
 		return asyncDto;
 	}
 
-
 	/**
 	 * 再計算結果DTO設定
 	 * 再計算処理結果のMapをDTOに設定する
@@ -72,7 +70,6 @@ public class Skf3022Sc003ChangeYoutoDrpDwnAsyncService
 	 * @param initDto	*DTO
 	 */
 	private void setMapToDto(Map<String, String> paramMap, Skf3022Sc003ChangeYoutoDrpDwnAsyncDto asyncDto) {
-
 
 		asyncDto.setKijunMenseki2(paramMap.get("kijunMenseki2"));
 		asyncDto.setShatakuMenseki2(paramMap.get("shatakuMenseki2"));
