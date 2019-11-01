@@ -62,9 +62,11 @@ public class Skf3022Sc001SearchAsyncService
 				asyncDto.getSc001YoutoSelect(), asyncDto.getRoomNo(),
 				asyncDto.getSc001EmptyRoomSelect(), asyncDto.getSc001EmptyParkingSelect(), roomList);
 		if (count == 0) {
-			ServiceHelper.addResultMessage(asyncDto, MessageIdConstant.W_SKF_1007);
+			ServiceHelper.addWarnResultMessage(asyncDto, MessageIdConstant.W_SKF_1007);
+			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
 		} else if (count == -1) {
-			ServiceHelper.addResultMessage(asyncDto, MessageIdConstant.E_SKF_1046, maxCount);
+			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.E_SKF_1046, maxCount);
+			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
 		}
 
 		asyncDto.setListTableList(roomList);

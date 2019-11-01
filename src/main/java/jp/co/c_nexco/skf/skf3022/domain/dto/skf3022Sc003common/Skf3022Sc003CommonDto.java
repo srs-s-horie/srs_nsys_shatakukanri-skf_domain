@@ -128,9 +128,9 @@ public class Skf3022Sc003CommonDto extends GridRelationDto {
 
 	/** ドロップダウン */
 	// 規格ドロップダウン値
-	private String sc003KikakuSelecte;
+	private String sc003KikakuSelect;
 	// 規格ドロップダウンリスト
-	private List<Map<String, Object>> sc003KikakuSelecteList;
+	private List<Map<String, Object>> sc003KikakuSelectList;
 	// 用途ドロップダウン値
 	private String sc003YoutoSelect;
 	// 用途ドロップダウンリスト
@@ -138,7 +138,7 @@ public class Skf3022Sc003CommonDto extends GridRelationDto {
 
 	/** エラー系 **/
 	// 規格ドロップダウン
-	private String sc003KikakuSelecteErr;
+	private String sc003KikakuSelectErr;
 	// 用途ドロップダウン
 	private String sc003YoutoSelectErr;
 	// 延べ面積テキストボックス
