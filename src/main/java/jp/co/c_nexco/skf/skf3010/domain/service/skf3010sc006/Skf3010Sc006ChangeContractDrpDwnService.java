@@ -3,7 +3,9 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,6 @@ import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006ChangeContractDrpDwnDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
@@ -36,7 +37,8 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends BaseServiceAbstract
 	private SkfOperationLogUtils skfOperationLogUtils;
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
-
+	// 日付フォーマット
+	public static final String DATE_FORMAT = "yyyyMMdd HH:mm:ss.SSS";
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -73,6 +75,8 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends BaseServiceAbstract
 		String landRent = "";
 		// 備考
 		String biko = "";
+		//更新日時
+		Date updateDate = null;
 		// 契約情報削除ボタン(非活性：true, 活性:false)
 		Boolean contractDelDisableFlg = true;
 
@@ -111,7 +115,7 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends BaseServiceAbstract
 		for (int i = 0; i < contractNoList.size(); i++) {
 			Map<String, Object> contractNoMap = contractNoList.get(i);
 			// 削除契約番号判定
-			if (!contractNoMap.get("label").toString().contains(Skf3010Sc002CommonDto.CONTRACT_NO_SEPARATOR)) {
+			if (contractNoMap.get("value").toString().contains("M")) {
 				// 削除インデックス取得
 				delContractIndex = i;
 				break;
@@ -169,6 +173,11 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends BaseServiceAbstract
 		if (contractMap.get("biko") != null) {
 			biko = contractMap.get("biko").toString();
 		}
+		// 更新日時
+		if (contractMap.get("updateDate") != null && contractMap.get("updateDate").toString().length() > 0) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+			updateDate = dateFormat.parse(contractMap.get("updateDate").toString());
+		}
 
 		// 戻り値設定
 		initDto.setContractNoList(contractNoList);
@@ -181,6 +190,8 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends BaseServiceAbstract
 		initDto.setContractKyoekihi(contractKyoekihi);
 		initDto.setContractLandRent(landRent);
 		initDto.setContractBiko(biko);
+		initDto.setContractUpdateDate(updateDate);
+		initDto.setHdnDispContractSelectedIndex(selectedContraceNo);
 		// 追加ボタン活性
 		initDto.setContractAddDisableFlg(false);
 		initDto.setContractDelDisableFlg(contractDelDisableFlg);

@@ -16,9 +16,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006DelContractListDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
@@ -135,11 +133,12 @@ public class Skf3010Sc006DelContractListService extends BaseServiceAbstract<Skf3
 		}
 		// 選択契約情報
 		Map<String, Object> contractMap = new HashMap<String, Object>();
+		String maxContractNo =CodeConstant.DOUBLE_QUOTATION;
 		if (contractNoList.size() > 0) {
 			// 削除ボタン活性
 			contractDelDisableFlg = false;
 			// 契約情報リストから最大契約番号の契約情報を取得
-			String maxContractNo = contractNoList.get(contractNoList.size() - 1).get("value").toString();
+			maxContractNo = contractNoList.get(contractNoList.size() - 1).get("value").toString();
 			for (Map<String, Object> contractDataMap : contractList) {
 				if (contractDataMap.get("contractNo").equals(maxContractNo)) {
 					contractMap = contractDataMap;
@@ -200,6 +199,7 @@ public class Skf3010Sc006DelContractListService extends BaseServiceAbstract<Skf3
 		delDto.setContractKyoekihi(contractKyoekihi);
 		delDto.setContractLandRent(landRent);
 		delDto.setContractBiko(biko);
+		delDto.setHdnDispContractSelectedIndex(maxContractNo);
 		delDto.setContractAddDisableFlg(contractAddDisableFlg);
 		delDto.setContractDelDisableFlg(contractDelDisableFlg);
 

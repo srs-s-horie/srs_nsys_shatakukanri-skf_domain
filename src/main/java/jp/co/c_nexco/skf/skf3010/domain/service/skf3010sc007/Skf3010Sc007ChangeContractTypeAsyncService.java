@@ -33,7 +33,7 @@ public class Skf3010Sc007ChangeContractTypeAsyncService
 	private final static String TRUE = "true";
 	private final static String FALSE = "false";
 	/**
-	 * 駐車場契約情報の編集有無チェック
+	 * 駐車場契約情報の契約形態変更
 	 */
 	@Override
 	public AsyncBaseDto index(Skf3010Sc007ChangeContractTypeAsyncDto changeDto) throws Exception {
@@ -80,7 +80,7 @@ public class Skf3010Sc007ChangeContractTypeAsyncService
 		changeDto.setContractStartDate(CodeConstant.DOUBLE_QUOTATION);
 		changeDto.setContractEndDate(CodeConstant.DOUBLE_QUOTATION);
 		changeDto.setLandRent(null);
-		changeDto.setBiko(CodeConstant.DOUBLE_QUOTATION);		
+		changeDto.setBiko(CodeConstant.DOUBLE_QUOTATION);
 		
 		//各リスト
 		changeDto.setParkingContractTypeList(parkingContractTypeList);

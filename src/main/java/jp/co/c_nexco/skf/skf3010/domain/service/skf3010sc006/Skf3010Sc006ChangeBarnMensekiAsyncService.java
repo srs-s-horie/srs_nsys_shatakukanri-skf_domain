@@ -9,7 +9,6 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005ChangeDropDownAsyncDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006ChangeBarnMensekiAsyncDto;
 
 /**
