@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.common;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,22 +20,16 @@ import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 public abstract class OutputPdfR0100BaseService<DTO extends Skf2010OutputPdfBaseDto>
 		extends PdfBaseServiceAbstract<DTO> {
 
-	@Value("${skf.pdf.skf2020rp001.pdf_title}")
-	private String pdfTitle;
 	@Value("${skf.pdf.skf2020rp001.pdf_file_name}")
 	private String pdfFileName;
 	@Value("${skf.pdf.skf2020rp001.pdf_temp_folder_path}")
 	private String pdfTempFolderPath;
 
 	/**
-	 * 出力するPDFのタイトルを設定する。
-	 * 
-	 * @return 出力するPDFのタイトル
+	 * 新所属情報を改行して表示するバイト数 PDFデザイナーでは文字枠の上下中央寄せが表現できないため、
+	 * 改行を要する場合のみ文字枠に表示するようにする。
 	 */
-	@Override
-	protected String getPdfTitle() {
-		return this.pdfTitle;
-	}
+	private static final int AFFILIATION_BREAK_LENGTH = 64;
 
 	/**
 	 * ダウンロード時のPDFファイル名を設定する。
@@ -134,8 +129,27 @@ public abstract class OutputPdfR0100BaseService<DTO extends Skf2010OutputPdfBase
 		pdfData.setData("nowAffiliation2", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 		pdfData.setData("nowTel", NfwStringUtils.defaultString(dto.getNowTel()));
 		pdfData.setData("newAgency", NfwStringUtils.defaultString(dto.getNewAgency()));
-		pdfData.setData("newAffiliation1", NfwStringUtils.defaultString(dto.getNewAffiliation1()));
-		pdfData.setData("newAffiliation2", NfwStringUtils.defaultString(dto.getNewAffiliation2()));
+
+		// 新所属1「部・事務所」
+		if (NfwStringUtils.defaultString(dto.getNewAffiliation1())
+				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AFFILIATION_BREAK_LENGTH) {
+			pdfData.setData("newAffiliation1", NfwStringUtils.defaultString(dto.getNewAffiliation1()));
+		} else {
+			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			pdfData.setTextBoxStart("newAffiliation1_long");
+			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNewAffiliation1()));
+			pdfData.setTextBoxEnd();
+		}
+		// 新所属2「課・チーム」
+		if (NfwStringUtils.defaultString(dto.getNewAffiliation2())
+				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AFFILIATION_BREAK_LENGTH) {
+			pdfData.setData("newAffiliation2", NfwStringUtils.defaultString(dto.getNewAffiliation2()));
+		} else {
+			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			pdfData.setTextBoxStart("newAffiliation2_long");
+			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNewAffiliation2()));
+			pdfData.setTextBoxEnd();
+		}
 
 		// チェックボックス_社宅の貸与を必要とするか
 		super.setCheckMark(pdfData, "taiyoHitsuyoTrue", dto.getTaiyoHitsuyoTrue());

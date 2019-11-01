@@ -13,6 +13,7 @@ import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.product.pdfmaker.PDFException;
@@ -30,12 +31,15 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	protected List<CSVDoc> pdfDataList;
 
 	/**
-	 * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード （「✓」のような特殊記号を表示するため、UTF-16に設定）
+	 * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード （「✓」のような特殊記号を表示するにはUTF-16に設定する必要があるが、
+	 * 現行のPDFデザイナーバージョンではUTFに対応していないため表示できない）
 	 */
-	// private static final String PDF_PROCESS_ENCODE = "UTF-16";
-	private static final String PDF_PROCESS_ENCODE = "MS932";
+	// public static final String PDF_PROCESS_ENCODE = "UTF-16";
+	public static final String PDF_PROCESS_ENCODE = "MS932";
 	/** チェック済のチェックボックスに表示するマーク */
 	public static final String CHECK_MARK = "■";
+	/** 一時ファイル接頭詞 */
+	public static final String TEMP_FILE_PREFIX = "temp-";
 	/** ファイル拡張子：PDF */
 	public static final String FILE_EXTENTION_PDF = ".pdf";
 	/** ファイル拡張子：IOD */
@@ -51,9 +55,16 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	/**
 	 * 出力するPDFのタイトルを設定する。
 	 * 
+	 * <pre>
+	 * 社宅管理の旧システムから出力されるPDFにはタイトルが設定されていないため、空文字を返すようにしている。
+	 * タイトルを設定する必要がある場合はオーバーライドすること。
+	 * </pre>
+	 * 
 	 * @return 出力するPDFのタイトル
 	 */
-	abstract protected String getPdfTitle();
+	protected String getPdfTitle() {
+		return CommonConstant.C_EMPTY;
+	}
 
 	/**
 	 * PDF_INFOのリストを設定する。
@@ -147,7 +158,8 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		SkfFileOutputUtils.fileOutput(pdfDto, pdfOutputPath);
 		pdfDto.setUploadFileName(this.getPdfFileName());
 
-		// TODO PublicStorageに作成したPDFファイルを削除する
+		// PublicStorageに作成したPDFファイルを削除する
+		this.deleteTempFile(pdfOutputPath);
 
 		return pdfDto;
 	}
@@ -178,13 +190,6 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	 * @throws PDFException
 	 */
 	protected void setPdfBaseSettings() throws PDFException {
-		// this.pdfData.setSecurityPassword("test");
-		// // 印刷可否：印刷可
-		// this.pdfData.printSecurity(PDFLibSecurity.PRINT_ENABLE);
-		// // 変更可否：変更許可 ("注釈の作成","フォームフィールドの入力", "既存の署名フィールドに署名"を許可)
-		// this.pdfData.modifySecurity(PDFLibSecurity.MODIFY_FORM_AND_ANNOTATION);
-		// // 複製可否:可
-		// this.pdfData.copySecurity(PDFLibSecurity.COPY_AND_ACCESSBILITY_ENABLE);
 		// 中間処理ファイル文字エンコード
 		this.integratePdf.setCharset(PDF_PROCESS_ENCODE);
 		// 出力した一時IODを削除するか
@@ -236,16 +241,15 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	protected String getOutputPath(String tempFolderPath, String fileExtention) throws IOException {
 		// 出力ファイルパスの設定
 		// 一時ファイル名がユニークとなるようミリ秒を含めたシステム日付をファイル名に使用する
-		String prefix = "temp-";
-		String sysDateMillisec = DateUtils.getSysDateString("yyyyMMddhhmmss-SSS");
-		String outputPath = tempFolderPath + prefix + sysDateMillisec + fileExtention;
+		String sysDateMillisec = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+		String outputPath = tempFolderPath + TEMP_FILE_PREFIX + sysDateMillisec + fileExtention;
 
 		PublicStorage ps = new PublicStorage(outputPath);
 
 		while (ps.exists()) {
 			// 同名ファイル名が既に存在する場合、重複しなくなるまでファイル名を取り直す
-			sysDateMillisec = DateUtils.getSysDateString("yyyyMMddhhmmss-SSS");
-			outputPath = tempFolderPath + prefix + sysDateMillisec + fileExtention;
+			sysDateMillisec = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			outputPath = tempFolderPath + TEMP_FILE_PREFIX + sysDateMillisec + fileExtention;
 			ps = new PublicStorage(outputPath);
 		}
 		return outputPath;
@@ -288,6 +292,20 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 			resultMessage = this.integratePdf.lastMessage();
 		}
 		LogUtils.debugByMsg(resultMessage);
+	}
+
+	/**
+	 * 引数で指定されたパスにファイルが存在する場合、対象ファイルを削除する。
+	 * 
+	 * @param targetPath 対象ファイルパス
+	 * @throws IOException
+	 */
+	protected void deleteTempFile(String targetPath) throws IOException {
+		PublicStorage ps = new PublicStorage(targetPath);
+		if (ps.exists()) {
+			// 対象ファイルが存在する場合、削除する。
+			ps.remove();
+		}
 	}
 
 	/**
