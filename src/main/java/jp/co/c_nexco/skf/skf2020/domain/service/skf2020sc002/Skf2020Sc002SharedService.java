@@ -272,20 +272,22 @@ public class Skf2020Sc002SharedService {
 				LogUtils.debugByMsg("等級：" + nyukyoChoshoList.getTokyu());
 				dto.setTokyuName(nyukyoChoshoList.getTokyu());
 			}
+
 			// 性別
-			if (NfwStringUtils.isNotEmpty(String.valueOf(nyukyoChoshoList.getGender()))) {
+			if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getGender())) {
 				LogUtils.debugByMsg("性別：" + nyukyoChoshoList.getGender());
-				dto.setGender(String.valueOf(nyukyoChoshoList.getGender()));
-			}
-			switch (dto.getGender()) {
-			case CodeConstant.MALE:
-				dto.setGenderName(CodeConstant.OUTPUT_MALE);
-				break;
-			case CodeConstant.FEMALE:
-				dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
-				break;
-			default:
-				break;
+
+				dto.setGender(nyukyoChoshoList.getGender());
+				switch (dto.getGender()) {
+				case CodeConstant.MALE:
+					dto.setGenderName(CodeConstant.OUTPUT_MALE);
+					break;
+				case CodeConstant.FEMALE:
+					dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
+					break;
+				default:
+					break;
+				}
 			}
 
 			// 氏名
@@ -1420,7 +1422,7 @@ public class Skf2020Sc002SharedService {
 	 * @param dto
 	 */
 	@SuppressWarnings("unchecked")
-	private void setControlDdl(Skf2020Sc002CommonDto dto) {
+	protected void setControlDdl(Skf2020Sc002CommonDto dto) {
 
 		List<Map<String, Object>> agencyList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> affiliation1List = new ArrayList<Map<String, Object>>();
@@ -1579,6 +1581,7 @@ public class Skf2020Sc002SharedService {
 
 			// 新所属-機関
 			dto.setDdlAgencyList(null);
+			dto.setAgencyCd(null);
 			LogUtils.debugByMsg(Msg + "新所属-機関" + dto.getDdlAgencyList());
 
 			// 新所属-機関 その他
@@ -1587,6 +1590,7 @@ public class Skf2020Sc002SharedService {
 
 			// 新所属-部等
 			dto.setDdlAffiliation1List(null);
+			dto.setAffiliation1Cd(null);
 			LogUtils.debugByMsg(Msg + "新所属-部等" + dto.getDdlAffiliation1List());
 
 			// 新所属-部等 その他
@@ -1595,6 +1599,7 @@ public class Skf2020Sc002SharedService {
 
 			// 新所属-室、チーム又は課
 			dto.setDdlAffiliation2List(null);
+			dto.setAffiliation2Cd(null);
 			LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課" + dto.getDdlAffiliation2List());
 
 			// 新所属-室、チーム又は課 その他

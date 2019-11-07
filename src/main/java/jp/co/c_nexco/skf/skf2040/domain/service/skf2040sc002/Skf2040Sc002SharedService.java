@@ -22,6 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetH
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
@@ -57,6 +58,8 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040Sc002common.Skf2040Sc002CommonDto;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002InitDto;
 
@@ -102,6 +105,10 @@ public class Skf2040Sc002SharedService {
 	Skf2040Sc002GetBihinShinseiInfoExpRepository skf2040Sc002GetBihinShinseiInfoExpRepository;
 	@Autowired
 	Skf2030TBihinRepository skf2030TBihinRepository;
+	@Autowired
+	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
+	@Autowired
+	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
 
 	private MenuScopeSessionBean menuScopeSessionBean;
 
@@ -676,7 +683,47 @@ public class Skf2040Sc002SharedService {
 			return false;
 		}
 
-		// TODO 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
+		// 社宅管理データ連携処理実行
+		if (FunctionIdConstant.R0105.equals(dto.getApplId())) {
+			// 備品返却の場合
+			// 社宅管理データ連携処理実行 ステータス審査中
+			// menuScopeSessionBeanからオブジェクトを取得
+			Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
+			// 連携用意
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkHenkyakuMap = skf2050Fc001BihinHenkyakuSinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkHenkyakuMap);
+			// 連携実行
+			List<String> resultList = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
+					dto.getShainNo(), dto.getApplNo(), newStatus, userInfo.get("userCd"), dto.getPageId());
+			// セッション情報の削除
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
+
+			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
+			if (resultList != null) {
+				skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(dto, resultList);
+			}
+
+		} else if (FunctionIdConstant.R0103.equals(dto.getApplId())) {
+			// 退居届の場合
+			// menuScopeSessionBeanからオブジェクトを取得
+			Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
+			// 連携用意
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkTaikyoMap = skf2040Fc001TaikyoTodokeDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(dateLinkTaikyoMap);
+			// 連携実行
+			List<String> resultList = skf2040Fc001TaikyoTodokeDataImport.doProc(CodeConstant.C001, dto.getShainNo(),
+					dto.getApplNo(), newStatus, userInfo.get("userCd"), dto.getPageId());
+			// セッション情報の削除
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
+
+			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
+			if (resultList != null) {
+				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(dto, resultList);
+			}
+		}
+
 		return true;
 	}
 

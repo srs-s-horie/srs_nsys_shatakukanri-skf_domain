@@ -136,34 +136,38 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 
 		// 社宅を必要とする理由が異動の場合
 		LogUtils.debugByMsg(msg + " 機関" + checkDto.getHitsuyoRiyu() + checkDto.getAgencyCd() + checkDto.getNewAgency());
-		if (NfwStringUtils.isNotBlank(checkDto.getHitsuyoRiyu())
-				&& checkDto.getHitsuyoRiyu().equals(CodeConstant.IDOU)) {
-			// 機関
-			if (NfwStringUtils.isBlank(checkDto.getAgencyCd())) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "agencyCd" }, MessageIdConstant.E_SKF_1054,
-						"機関");
-				result = false;
-			}
+		if (NfwStringUtils.isNotBlank(checkDto.getTaiyoHituyo())
+				&& CodeConstant.ASKED_SHATAKU_HITSUYO.equals(checkDto.getTaiyoHituyo())) {
+			if (NfwStringUtils.isNotBlank(checkDto.getHitsuyoRiyu())
+					&& checkDto.getHitsuyoRiyu().equals(CodeConstant.IDOU)) {
+				// 機関
+				if (NfwStringUtils.isBlank(checkDto.getAgencyCd())) {
+					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "agencyCd" },
+							MessageIdConstant.E_SKF_1054, "機関");
+					result = false;
+				}
 
-			// 機関 その他
+				// 機関 その他
 
-			// 部等 その他
-			LogUtils.debugByMsg(msg + " 部等 その他" + checkDto.getAffiliation1Cd() + checkDto.getNewAffiliation1Other());
-			if (CodeConstant.RELATION_OTHERS.equals(checkDto.getAffiliation1Cd())
-					&& NfwStringUtils.isBlank(checkDto.getNewAffiliation1Other())) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "newAffiliation1Other" },
-						MessageIdConstant.E_SKF_1048, "部等 その他");
-				result = false;
-			}
+				// 部等 その他
+				LogUtils.debugByMsg(
+						msg + " 部等 その他" + checkDto.getAffiliation1Cd() + checkDto.getNewAffiliation1Other());
+				if (CodeConstant.RELATION_OTHERS.equals(checkDto.getAffiliation1Cd())
+						&& NfwStringUtils.isBlank(checkDto.getNewAffiliation1Other())) {
+					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "newAffiliation1Other" },
+							MessageIdConstant.E_SKF_1048, "部等 その他");
+					result = false;
+				}
 
-			// 室、チーム又は課 その他
-			LogUtils.debugByMsg(
-					msg + " 室、チーム又は課 その他" + checkDto.getAffiliation1Cd() + checkDto.getNewAffiliation1Other());
-			if (CodeConstant.RELATION_OTHERS.equals(checkDto.getAffiliation2Cd())
-					&& NfwStringUtils.isBlank(checkDto.getNewAffiliation2Other())) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "newAffiliation2Other" },
-						MessageIdConstant.E_SKF_1048, "室、チーム又は課 その他");
-				result = false;
+				// 室、チーム又は課 その他
+				LogUtils.debugByMsg(
+						msg + " 室、チーム又は課 その他" + checkDto.getAffiliation1Cd() + checkDto.getNewAffiliation1Other());
+				if (CodeConstant.RELATION_OTHERS.equals(checkDto.getAffiliation2Cd())
+						&& NfwStringUtils.isBlank(checkDto.getNewAffiliation2Other())) {
+					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "newAffiliation2Other" },
+							MessageIdConstant.E_SKF_1048, "室、チーム又は課 その他");
+					result = false;
+				}
 			}
 		}
 
