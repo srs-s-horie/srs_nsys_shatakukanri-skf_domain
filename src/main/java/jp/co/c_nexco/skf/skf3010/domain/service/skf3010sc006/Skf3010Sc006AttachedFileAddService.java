@@ -8,22 +8,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AttachedFileAddDto;
 
 /**
@@ -37,13 +34,9 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 	@Autowired
 	private Skf3010Sc006SharedService skf3010Sc006SharedService;
 	@Autowired
-	private MenuScopeSessionBean menuScopeSessionBean;
-	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtiles;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-
-	private String sessionKey = "Skf3010Sc006AttachedFileSessionKey";//SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
 	@Value("${skf2010.skf2010_sc009.max_search_count}")
 	private String maxSearchCount;
@@ -206,24 +199,6 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 			}
 		}
 		
-//		// 添付ファイル情報の取得
-//		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
-//		if (!errFlag && (attachedFileList != null && attachedFileList.size() > Integer.parseInt(maxSearchCount))) {
-//			ServiceHelper.addErrorResultMessage(addDto, null, MessageIdConstant.E_SKF_1092, maxSearchCount);
-//		}
-//		throwBusinessExceptionIfErrors(addDto.getResultMessages());
-//		
-//		if(attachedFileList==null){
-//			attachedFileList = new ArrayList<Map<String, Object>>();
-//		}
-//		
-//		int attachedNo = Integer.parseInt(fileNo);
-//		addShatakuAttachedFile(fileName, fileStream, fileSize, attachedNo,
-//			attachedFileList);
-//		
-//		// セッションにデータを保存
-//		menuScopeSessionBean.put(sessionKey, attachedFileList);
-		
 		//画面入力内容情報の保持
 		skf3010Sc006SharedService.setBeforeInfo(addDto);
 
@@ -313,7 +288,7 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 		// 拡張子チェック
 		String extension = skfAttachedFileUtiles.getExtension(fileName);
 		if (CheckUtils.isEmpty(extension)) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1026);
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1042,"添付資料");
 			return false;
 		}
 		switch (extension) {
@@ -328,10 +303,10 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 			case CodeConstant.EXTENSION_XLS:
 			case CodeConstant.EXTENSION_XLSX:
 			case CodeConstant.EXTENSION_PPT:
-			case CodeConstant.EXTENSION_PPTX:			
+			case CodeConstant.EXTENSION_PPTX:
 				break;
 			default:
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1026);
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1042,"添付資料");
 				return false;
 		}
 

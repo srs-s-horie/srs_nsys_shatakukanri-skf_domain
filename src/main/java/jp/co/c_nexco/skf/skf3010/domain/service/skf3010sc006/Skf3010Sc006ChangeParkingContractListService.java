@@ -3,7 +3,9 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006ChangeParki
 import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
- * Skf3010Sc006ChangeParkingContractListService 保有社宅登録の駐車場契約情報イベントサービス処理クラス。
+ * Skf3010Sc006ChangeParkingContractListService 借上社宅登録の駐車場契約情報イベントサービス処理クラス。
  * 
  * @author NEXCOシステムズ
  */
@@ -47,6 +49,8 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 	public static final String CONTRACT_TYPE_1 = "1";
 	//社宅と別契約
 	public static final String CONTRACT_TYPE_2 = "2";
+	// 日付フォーマット
+	public static final String DATE_FORMAT = "yyyyMMdd HH:mm:ss.SSS";
 	
 	/**
 	 * 保有社宅登録の契約情報追加ボタン押下時処理を行う。　
@@ -60,7 +64,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 		// デバッグログ
 		logger.debug("駐車場契約情報:" + initDto.getParkingSelectMode());
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("駐車場契約情報イベント", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("駐車場契約情報", CodeConstant.C001, initDto.getPageId());
 
 		/** DTO設定値 */
 		//契約形態リスト
@@ -86,6 +90,8 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 		String parkingLandRent = CodeConstant.DOUBLE_QUOTATION;
 		// 備考
 		String parkingContractBiko = CodeConstant.DOUBLE_QUOTATION;
+		//更新日時
+		Date updateDate = null;
 		// 契約情報追加ボタン(非活性：true, 活性:false)
 		Boolean contractAddDisableFlg = true;
 		// 契約情報削除ボタン(非活性：true, 活性:false)
@@ -136,10 +142,11 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 			maxContractNo++;
 			// 新規契約番号を契約番号リストに追加し選択状態に設定する
 			Map<String, Object> contractMap = new HashMap<String, Object>();
-			contractMap.put("value", Integer.toString(maxContractNo));
+			contractMap.put("value", Integer.toString(maxContractNo) + "M");
 			contractMap.put("label", Integer.toString(maxContractNo) + " ： ");
 			contractMap.put("selected", true);
 			contractNoList.add(contractMap);
+			selectedContraceNo = Integer.toString(maxContractNo) + "M";
 			
 			//契約形態(初期値：社宅と一括）
 			parkingContractType = CONTRACT_TYPE_1;
@@ -169,7 +176,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 				for (int i = 0; i < contractNoList.size(); i++) {
 					Map<String, Object> contractNoMap = contractNoList.get(i);
 					// 削除契約番号判定
-					if (!contractNoMap.get("label").toString().contains(Skf3010Sc002CommonDto.CONTRACT_NO_SEPARATOR)) {
+					if (contractNoMap.get("value").toString().contains("M")) {
 						// 削除インデックス取得
 						delContractIndex = i;
 						break;
@@ -212,7 +219,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 							contractNoMap.remove("selected");
 						}
 						// 削除契約番号判定
-						if (deletedConstractNo.equals(contractNoMap.get("value"))) {
+						if (deletedConstractNo.equals(contractNoMap.get("value").toString())) {
 							// 削除インデックス取得
 							delContractIndex = i;
 						}
@@ -237,6 +244,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 					}
 					// 選択値を最大値に設定
 					contractNoList.get(contractNoList.size() - 1).put("selected", "true");
+					selectedContraceNo = maxContractNo;
 				}
 			}
 			
@@ -251,34 +259,31 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 				if (contractMap.get("parkingContractType") != null) {
 					parkingContractType = contractMap.get("parkingContractType").toString();
 				}
-				//契約形態リスト
-				parkingContractTypeList.clear();
-				parkingContractTypeList.addAll(ddlUtils.getGenericForDoropDownList(
-						FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN, parkingContractType, true));
+
 				
 				if(CONTRACT_TYPE_2.equals(parkingContractType)){
 					//入力可に設定する
 					parkingContractInfoDisabled = FALSE;
 					
 					// 「賃貸人(代理人)氏名または名称」取得
-					if (contractMap.get("ownerName") != null) {
-						parkingOwnerName = contractMap.get("ownerName").toString();
+					if (contractMap.get("parkingOwnerName") != null) {
+						parkingOwnerName = contractMap.get("parkingOwnerName").toString();
 					}
 					// 「賃貸人(代理人)番号」取得
-					if (contractMap.get("ownerNo") != null) {
-						parkingOwnerNo = contractMap.get("ownerNo").toString();
+					if (contractMap.get("parkingOwnerNo") != null) {
+						parkingOwnerNo = contractMap.get("parkingOwnerNo").toString();
 					}
 					// 「経理連携用管理番号」取得
-					if (contractMap.get("assetRegisterNo") != null) {
-						parkingAssetRegisterNo = contractMap.get("assetRegisterNo").toString();
+					if (contractMap.get("parkingAssetRegisterNo") != null) {
+						parkingAssetRegisterNo = contractMap.get("parkingAssetRegisterNo").toString();
 					}
 					// 「契約開始日」取得
-					if (contractMap.get("contractStartDate") != null) {
-						parkingContractStartDay = contractMap.get("contractStartDate").toString();
+					if (contractMap.get("parkingContractStartDay") != null) {
+						parkingContractStartDay = contractMap.get("parkingContractStartDay").toString();
 					}
 					// 「契約終了日」取得
-					if (contractMap.get("contractEndDate") != null) {
-						parkingContractEndDay = contractMap.get("contractEndDate").toString();
+					if (contractMap.get("parkingContractEndDay") != null) {
+						parkingContractEndDay = contractMap.get("parkingContractEndDay").toString();
 					}
 					// 「郵便番号」取得
 					if (contractMap.get("parkingZipCd") != null) {
@@ -293,19 +298,30 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 						parkingName = contractMap.get("parkingName").toString();
 					}
 					// 「駐車場料(地代)」取得
-					if (contractMap.get("landRent") != null) {
-						parkingLandRent = contractMap.get("landRent").toString();
+					if (contractMap.get("parkingLandRent") != null) {
+						parkingLandRent = contractMap.get("parkingLandRent").toString();
 					}
 					// 「備考」取得
-					if (contractMap.get("biko") != null) {
-						parkingContractBiko = contractMap.get("biko").toString();
+					if (contractMap.get("parkingContractBiko") != null) {
+						parkingContractBiko = contractMap.get("parkingContractBiko").toString();
 					}
+
 				}else{
 					//一括契約
 					//入力不可に設定する
 					parkingContractInfoDisabled = TRUE;
 				}
+				// 更新日時
+				if (contractMap.get("updateDate") != null && contractMap.get("updateDate").toString().length() > 0) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+					updateDate = dateFormat.parse(contractMap.get("updateDate").toString());
+				}
 			}
+			
+			//契約形態リスト
+			parkingContractTypeList.clear();
+			parkingContractTypeList.addAll(ddlUtils.getGenericForDoropDownList(
+					FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN, parkingContractType, true));
 		}
 		
 		/** 契約情報設定 */
@@ -327,6 +343,8 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 		initDto.setParkingContractTypeList(parkingContractTypeList);
 		initDto.setParkingContractInfoDisabled(parkingContractInfoDisabled);
 		initDto.setParkingEditFlg(parkingEditFlg);
+		initDto.setParkingContractUpdateDate(updateDate);
+		initDto.setHdnDispParkingContractSelectedIndex(selectedContraceNo);
 		
 		/** 契約情報編集チェック変数 **/
 		initDto.setStartingParkingContractType(parkingContractType);

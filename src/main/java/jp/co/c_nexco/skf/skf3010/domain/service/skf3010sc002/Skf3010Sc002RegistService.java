@@ -1070,6 +1070,8 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		} catch(NumberFormatException e) {}
 
 		if (TEMP_FILE_MAX_SIZE < sumFileSize) {
+			LogUtils.debugByMsg("ファイル合計サイズ超過：" + sumFileSize);
+			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1039);
 			return false;
 		}
 		return true;
