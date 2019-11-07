@@ -40,6 +40,9 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 	private Skf2020Sc002GetApplHistoryInfoExpRepository skf2020Sc002GetApplHistoryInfoExpRepository;
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
+	// 更新フラグ
+	protected static final String NO_UPDATE_FLG = "0";
+	protected static final String UPDATE_FLG = "1";
 
 	@Override
 	public BaseDto index(Skf2020Sc002SaveDto saveDto) throws Exception {
@@ -59,15 +62,30 @@ public class Skf2020Sc002SaveService extends BaseServiceAbstract<Skf2020Sc002Sav
 			return saveDto;
 		}
 
-		// 画面表示項目の保持
-		skf2020Sc002SharedService.setDispInfo(saveDto);
+		// 入力情報のクリア
+		skf2020Sc002SharedService.setClearInfo(saveDto);
+
+		// ドロップダウンの設定
+		skf2020Sc002SharedService.setControlDdl(saveDto);
+		// 登録済みデータの情報設定
+		skf2020Sc002SharedService.setSinseiInfo(saveDto, true);
+		// 社宅情報の設定
+		skf2020Sc002SharedService.setShatakuInfo(saveDto, UPDATE_FLG);
 		// 返却備品の設定
 		skf2020Sc002SharedService.setReturnBihinInfo(saveDto, Skf2020Sc002SharedService.UPDATE_FLG);
 		// 画面表示制御再設定
 		skf2020Sc002SharedService.setControlValue(saveDto);
 
+		// // 画面表示項目の保持
+		// skf2020Sc002SharedService.setDispInfo(saveDto);
+		// // 返却備品の設定
+		// skf2020Sc002SharedService.setReturnBihinInfo(saveDto,
+		// Skf2020Sc002SharedService.UPDATE_FLG);
+		// // 画面表示制御再設定
+		// skf2020Sc002SharedService.setControlValue(saveDto);
+
 		// 排他制御用の更新日再取得
-		setLastUpdateDate(saveDto);
+		// setLastUpdateDate(saveDto);
 
 		// 正常終了
 		if (CodeConstant.STATUS_MISAKUSEI.equals(applInfo.get("status"))) {

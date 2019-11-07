@@ -71,8 +71,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	@Override
 	public Skf2010Sc002InitDto index(Skf2010Sc002InitDto initDto) throws Exception {
 
-		// long dispStart = System.currentTimeMillis();
-
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC002_TITLE);
 

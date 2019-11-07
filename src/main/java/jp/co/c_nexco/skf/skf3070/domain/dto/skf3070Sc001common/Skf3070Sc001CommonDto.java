@@ -22,22 +22,19 @@ public class Skf3070Sc001CommonDto extends Skf307010CommonDto {
 
 	// 検索結果表示用
 	private List<Map<String, Object>> listTableData;
+	private String listTableMaxRowCount;
+	// 対象年プルダウン 基準月
+	private String standardYear;
 
-	// 賃貸人（代理人） 氏名又は名称
-	private String ownerName;
-	// 賃貸人（代理人） 氏名又は名称（フリガナ）
-	private String ownerNameKk;
-	// 住所(居所）又は所在地
-	private String address;
-	// 個人法人区分
-	private String businessKbn;
-	// 社宅名
-	private String shatakuName;
-	// 社宅住所
-	private String shatakuAddress;
-	// 対象年
-	private String targetYear;
-	// 個人番号受領状態
-	private String acceptStatus;
+	// 所持物件数
+	private String propertiesOwnedCnt;
+
+	/* ドロップダウン */
+	// 対象年ドロップダウン
+	private List<Map<String, Object>> ddlTargetYearList;
+	// 個人法人区分ドロップダウン
+	private List<Map<String, Object>> ddlBusinessKbnList;
+	// 個人番号ドロップダウン
+	private List<Map<String, Object>> ddlAcceptFlgList;
 
 }
