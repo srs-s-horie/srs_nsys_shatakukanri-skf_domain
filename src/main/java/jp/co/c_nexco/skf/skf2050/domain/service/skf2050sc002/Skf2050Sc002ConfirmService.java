@@ -32,9 +32,10 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc002.Skf2050Sc002ConfirmDto;
 @Service
 public class Skf2050Sc002ConfirmService extends BaseServiceAbstract<Skf2050Sc002ConfirmDto> {
 
+	// 会社コード
 	private String companyCd = CodeConstant.C001;
+
 	private final String COMMENT_LABEL = "申請者へのコメント";
-	private final String COMPLATION_DAY_LABEL = "搬出完了日";
 
 	@Autowired
 	private Skf2050Sc002SharedService skf2050Sc002SharedService;

@@ -35,7 +35,7 @@ public class Skf2050Sc002CommonDto extends Skf205010CommonDto {
 	// 搬出完了かどうか
 	private boolean isCarryOut;
 	// コメントボタン非表示
-	private boolean commentBtnVisibled = false;
+	private boolean commentBtnVisibled = true;
 	// コメント欄非表示
 	private boolean commentAreaVisibled = true;
 

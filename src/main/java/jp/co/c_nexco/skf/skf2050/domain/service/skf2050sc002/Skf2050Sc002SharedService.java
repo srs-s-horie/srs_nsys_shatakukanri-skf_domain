@@ -227,9 +227,24 @@ public class Skf2050Sc002SharedService {
 	 */
 	private void setDispItem(String applStatus, Skf2050TBihinHenkyakuShinsei bihinHenkyaku, Skf2050Sc002CommonDto dto,
 			boolean viewMode) {
+		// 搬出立会日
+		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getSessionDay())) {
+			dto.setSessionDay(bihinHenkyaku.getSessionDay());
+		}
+		// 搬出立会時刻
+		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getSessionTime())) {
+			dto.setSessionTime(bihinHenkyaku.getSessionTime());
+		}
+		// 備品返却完了日
+		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getCompletionDay())) {
+			String completionDay = skfDateFormatUtils.dateFormatFromString(bihinHenkyaku.getCompletionDay(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			dto.setCompletionDay(completionDay);
+		}
+
 		switch (applStatus) {
 		case CodeConstant.STATUS_KAKUNIN_IRAI:
-		case CodeConstant.STATUS_HANNYU_MACHI:
+		case CodeConstant.STATUS_HANSYUTSU_MACHI:
 			// ステータスが確認依頼、搬出待ちの場合の画面の表示
 			// 修正依頼、確認、承認ボタン全て非表示
 			dto.setAllButtonEscape(true);
@@ -293,19 +308,6 @@ public class Skf2050Sc002SharedService {
 			break;
 		}
 
-		// 搬出立会日
-		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getSessionDay())) {
-			dto.setSessionDay(bihinHenkyaku.getSessionDay());
-		}
-		// 搬出立会時刻
-		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getSessionTime())) {
-			dto.setSessionTime(bihinHenkyaku.getSessionTime());
-		}
-
-		// 備品返却完了日
-		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getCompletionDay())) {
-			dto.setCompletionDay(bihinHenkyaku.getCompletionDay());
-		}
 		return;
 	}
 
@@ -321,7 +323,7 @@ public class Skf2050Sc002SharedService {
 		String sessionTime = dto.getSessionTime();
 		if (NfwStringUtils.isNotEmpty(sessionTime)) {
 			Map<String, String> sessionTimeMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
+					.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN);
 			sessionTime = sessionTimeMap.get(sessionTime);
 		} else {
 			sessionTime = CodeConstant.NONE;
@@ -386,6 +388,10 @@ public class Skf2050Sc002SharedService {
 		// 面積
 		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getNowShatakuMenseki())) {
 			dto.setShatakuMenseki(bihinHenkyaku.getNowShatakuMenseki() + SkfCommonConstant.SQUARE_MASTER);
+		}
+		// 連絡先
+		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getRenrakuSaki())) {
+			dto.setRenrakuSaki(bihinHenkyaku.getRenrakuSaki());
 		}
 		// 代理人（立会人）
 		// 代理人氏名

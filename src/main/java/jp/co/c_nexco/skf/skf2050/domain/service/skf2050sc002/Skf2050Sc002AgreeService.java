@@ -33,8 +33,8 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc002.Skf2050Sc002AgreeDto;
 public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002AgreeDto> {
 
 	private String companyCd = CodeConstant.C001;
+
 	private final String COMMENT_LABEL = "申請者へのコメント";
-	private final String COMPLATION_DAY_LABEL = "搬出完了日";
 
 	@Autowired
 	private Skf2050Sc002SharedService skf2050Sc002SharedService;
@@ -76,7 +76,7 @@ public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002Ag
 			return agreeDto;
 		}
 
-		// メールを送信する
+		// 新ステータスが「40：承認済」の時のみメールを送信する
 		if (CheckUtils.isEqual(newApplStatus, CodeConstant.STATUS_SHONIN_ZUMI)) {
 			Map<String, String> applInfo = new HashMap<String, String>();
 			applInfo.put(CodeConstant.KEY_APPL_ID, agreeDto.getApplId());
