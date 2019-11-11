@@ -56,6 +56,7 @@ public class Skf2050Sc001AgreeService extends BaseServiceAbstract<Skf2050Sc001Ag
 		}
 
 		String newApplStatus = CodeConstant.STATUS_DOI_ZUMI;
+		skf2050Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// データを更新する
 		if (!skf2050Sc001SharedService.saveBihinHenkyakuInfo(newApplStatus, agreeDto, menuScopeSessionBean)) {

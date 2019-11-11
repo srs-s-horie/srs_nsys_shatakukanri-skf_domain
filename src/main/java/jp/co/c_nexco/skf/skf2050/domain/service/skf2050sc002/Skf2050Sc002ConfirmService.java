@@ -4,9 +4,12 @@
 package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc002;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -19,9 +22,11 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc002.Skf2050Sc002ConfirmDto;
 
 /**
@@ -44,6 +49,11 @@ public class Skf2050Sc002ConfirmService extends BaseServiceAbstract<Skf2050Sc002
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfMailUtils skfMailUtils;
+	@Autowired
+	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
+
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	/**
 	 * サービス処理を行う。
@@ -82,7 +92,19 @@ public class Skf2050Sc002ConfirmService extends BaseServiceAbstract<Skf2050Sc002
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HANSYUTSU_MACHI_TSUCHI, applInfo, confDto.getCommentNote(), null,
 				confDto.getShainNo(), null, baseUrl);
 
-		// TODO 社宅管理データ連携処理実行
+		// 社宅管理データ連携処理実行
+		String shainNo = confDto.getShainNo();
+		String applNo = confDto.getApplNo();
+		String status = CodeConstant.STATUS_HANSYUTSU_MACHI;
+		String pageId = FunctionIdConstant.SKF2050_SC002;
+		List<String> resultBatch = skf2050Sc002SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo,
+				status, pageId);
+		if (resultBatch != null) {
+			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(confDto, resultBatch);
+			throwBusinessExceptionIfErrors(confDto.getResultMessages());
+			skfRollBackExpRepository.rollBack();
+			return confDto;
+		}
 
 		// フォームデータを設定
 		confDto.setPrePageId(FunctionIdConstant.SKF1010_SC001); // TOPページを指定

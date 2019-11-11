@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsUpdateBihinHenkyakuShinseiExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
@@ -21,6 +22,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
@@ -30,6 +32,7 @@ import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050Sc002common.Skf2050Sc002CommonDto;
 
 @Service
@@ -46,6 +49,9 @@ public class Skf2050Sc002SharedService {
 	// 排他処理用
 	private final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
 	private final String BIHIN_HENKYAKU_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_henkyaku_shinsei_UpdateDate";
+
+	@Autowired
+	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
 
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
@@ -445,6 +451,34 @@ public class Skf2050Sc002SharedService {
 		}
 
 		return true;
+	}
+
+	/**
+	 * 社宅連携処理を実施する
+	 * 
+	 * @param shainNo
+	 * @param applNo
+	 * @param status
+	 * @param userId
+	 * @return
+	 */
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String shainNo, String applNo,
+			String status, String pageId) {
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String userId = loginUserInfoMap.get("userCd");
+		// 排他チェック用データ取得
+		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC002);
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skf2050Fc001BihinHenkyakuSinseiDataImport
+				.forUpdateMapDownCaster(forUpdateObject);
+		skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMap);
+
+		// 連携処理開始
+		List<String> resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, status,
+				userId, pageId);
+		// セッション情報削除
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC002);
+		return resultBatch;
 	}
 
 }
