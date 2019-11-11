@@ -23,7 +23,7 @@ public class Skf3070Sc001CommonDto extends Skf307010CommonDto {
 	// 検索結果表示用
 	private List<Map<String, Object>> listTableData;
 	private String listTableMaxRowCount;
-	// 対象年プルダウン 基準月
+	// 基準年（対象年プルダウン 作成基準値）
 	private String standardYear;
 
 	// 所持物件数

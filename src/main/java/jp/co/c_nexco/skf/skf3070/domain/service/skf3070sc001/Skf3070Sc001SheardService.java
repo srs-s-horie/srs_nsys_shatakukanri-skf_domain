@@ -15,9 +15,11 @@ import org.springframework.web.util.HtmlUtils;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExpRepository;
+import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070Sc001common.Skf3070Sc001CommonDto;
@@ -31,6 +33,8 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070Sc001common.Skf3070Sc001Commo
 @Service
 public class Skf3070Sc001SheardService {
 
+	@Autowired
+	private MenuScopeSessionBean sessionBean;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
@@ -67,43 +71,10 @@ public class Skf3070Sc001SheardService {
 			String checkOwnerNo = CodeConstant.NONE; // 判定用賃貸人（代理人）番号
 			for (Skf3070Sc001GetOwnerContractListExp list : ownerExpList) {
 				tmpMap = new HashMap<String, Object>();
-				if (NfwStringUtils.isEmpty(checkOwnerNo)) {
-					// 判定用賃貸人（代理人）番号が空の場合
+				if ((NfwStringUtils.isEmpty(checkOwnerNo)) || (!checkOwnerNo.equals(list.getOwnerNo()))) {
+					// 判定用賃貸人（代理人）番号が空の場合または判定用賃貸人（代理人）番号と賃貸人（代理人）番号が同じではない場合
 					checkOwnerNo = list.getOwnerNo(); // 賃貸人（代理人）番号
 
-					// 表示内容をmapに格納
-					tmpMap.put("ownerNo", HtmlUtils.htmlEscape(list.getOwnerNo()));
-					tmpMap.put("ownerName", HtmlUtils.htmlEscape(list.getOwnerName()));
-					tmpMap.put("ownerNameKk", HtmlUtils.htmlEscape(list.getOwnerNameKk()));
-					tmpMap.put("address", HtmlUtils.htmlEscape(list.getAddress()));
-					if (NfwStringUtils.isNotEmpty(list.getBusinessKbn())) {
-						// 個人法人区分汎用コードからセット
-						String businessKbnName = skfGenericCodeUtils.getGenericCodeNameReverse(
-								FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN, list.getBusinessKbn());
-						tmpMap.put("businessKbn", HtmlUtils.htmlEscape(businessKbnName));
-					}
-					if (NfwStringUtils.isNotEmpty(list.getAcceptFlg())) {
-						// 賃貸人（代理人）個人番号督促状況汎用コードからセット
-						String acceptFlgName = skfGenericCodeUtils.getGenericCodeNameReverse(
-								FunctionIdConstant.GENERIC_CODE_AGENT_INDIVIDUAL_NUMBER_DEMAND_SITUATION,
-								list.getBusinessKbn());
-						tmpMap.put("acceptFlg", HtmlUtils.htmlEscape(acceptFlgName));
-					}
-					if (NfwStringUtils.isNotEmpty(list.getDataCount())) {
-						// 所有物件件数
-						tmpMap.put("propertiesOwnedCnt", HtmlUtils.htmlEscape(list.getDataCount()));
-					} else {
-						tmpMap.put("propertiesOwnedCnt", HtmlUtils.htmlEscape(CodeConstant.STRING_ZERO));
-					}
-
-					tmpMap.put("edit", "");
-					tmpMap.put("properties", "");
-					// 排他チェック用に最終更新日を取得
-					lastUpdateDateMap.put("skf3070_t_owner_info_" + list.getOwnerNo(), list.getLastUpdateDate());
-					tableDataList.add(tmpMap);
-
-				} else if (!checkOwnerNo.equals(list.getOwnerNo())) {
-					// 判定用賃貸人（代理人）番号と賃貸人（代理人）番号が同じではない場合
 					// 表示内容をmapに格納
 					tmpMap.put("ownerNo", HtmlUtils.htmlEscape(list.getOwnerNo()));
 					tmpMap.put("ownerName", HtmlUtils.htmlEscape(list.getOwnerName()));
@@ -131,17 +102,15 @@ public class Skf3070Sc001SheardService {
 
 					tmpMap.put("edit", "");
 					tmpMap.put("properties", "");
+					tableDataList.add(tmpMap);
 					// 排他チェック用に最終更新日を取得
 					lastUpdateDateMap.put("skf3070_t_owner_info_" + list.getOwnerNo(), list.getLastUpdateDate());
-					tableDataList.add(tmpMap);
-
-					checkOwnerNo = list.getOwnerNo(); // 判定用賃貸人（代理人）番号
 				}
 			}
 
-			// 表示用リストに格納
-			dto.setLastUpdateDateMap(lastUpdateDateMap);
 		}
+		// 排他チェック用に最終更新日を格納
+		dto.setLastUpdateDateMap(lastUpdateDateMap);
 
 		return tableDataList;
 	}
@@ -161,13 +130,49 @@ public class Skf3070Sc001SheardService {
 	}
 
 	/**
+	 * 賃貸人（代理人）情報 検索条件設定
+	 * 
+	 * @param ownerName
+	 * @param ownerNameKk
+	 * @param address
+	 * @param businessKbn
+	 * @param shatakuName
+	 * @param shatakuAddress
+	 * @param setRecodeDadefrom
+	 * @param setRecodeDadeto
+	 * @param acceptFlg
+	 * @return
+	 */
+	protected Skf3070Sc001GetOwnerContractListExpParameter setDefaultSearchParam(String ownerName, String ownerNameKk,
+			String address, String businessKbn, String shatakuName, String shatakuAddress, String setRecodeDadefrom,
+			String setRecodeDadeto, String acceptFlg) {
+
+		Skf3070Sc001GetOwnerContractListExpParameter parame = new Skf3070Sc001GetOwnerContractListExpParameter();
+
+		parame.setOwnerName(ownerName);
+		parame.setOwnerNameKk(ownerNameKk);
+		parame.setAddress(address);
+		parame.setBusinessKbn(businessKbn);
+		parame.setShatakuName(shatakuName);
+		parame.setShatakuAddress(shatakuAddress);
+		parame.setRecodeDadefrom(setRecodeDadefrom);
+		parame.setRecodeDadeto(setRecodeDadeto);
+		parame.setAcceptFlg(acceptFlg);
+
+		// 検索条件をセッションに格納
+		sessionBean.put(SessionCacheKeyConstant.SKF3070SC001_SEARCH_COND_SESSION_KEY, parame);
+
+		return parame;
+	}
+
+	/**
 	 * ドロップダウンリストの値設定
 	 * 
 	 * @param Skf3070Sc001CommonDto
 	 * @throws ParseException
 	 */
 	@SuppressWarnings("unchecked")
-	protected void getDoropDownList(Skf3070Sc001CommonDto dto) throws ParseException {
+	protected void getDropDownList(Skf3070Sc001CommonDto dto) throws ParseException {
 
 		List<Map<String, Object>> targetYearList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> businessKbnList = new ArrayList<Map<String, Object>>();
