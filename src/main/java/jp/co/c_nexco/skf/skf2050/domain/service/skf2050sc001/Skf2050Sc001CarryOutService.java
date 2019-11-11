@@ -37,6 +37,7 @@ public class Skf2050Sc001CarryOutService extends BaseServiceAbstract<Skf2050Sc00
 	@Override
 	public BaseDto index(Skf2050Sc001CarryOutDto coDto) throws Exception {
 
+		skf2050Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		if (!skf2050Sc001SharedService.saveBihinHenkyakuInfo(CodeConstant.STATUS_HANSYUTSU_ZUMI, coDto,
 				menuScopeSessionBean)) {
 			throwBusinessExceptionIfErrors(coDto.getResultMessages());

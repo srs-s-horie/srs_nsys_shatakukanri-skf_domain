@@ -4,9 +4,11 @@
 package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc002;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -22,6 +24,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc002.Skf2050Sc002AgreeDto;
 
 /**
@@ -33,11 +36,15 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc002.Skf2050Sc002AgreeDto;
 public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002AgreeDto> {
 
 	private String companyCd = CodeConstant.C001;
+
 	private final String COMMENT_LABEL = "申請者へのコメント";
-	private final String COMPLATION_DAY_LABEL = "搬出完了日";
 
 	@Autowired
 	private Skf2050Sc002SharedService skf2050Sc002SharedService;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
+	@Autowired
+	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -76,7 +83,7 @@ public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002Ag
 			return agreeDto;
 		}
 
-		// メールを送信する
+		// 新ステータスが「40：承認済」の時のみメールを送信する
 		if (CheckUtils.isEqual(newApplStatus, CodeConstant.STATUS_SHONIN_ZUMI)) {
 			Map<String, String> applInfo = new HashMap<String, String>();
 			applInfo.put(CodeConstant.KEY_APPL_ID, agreeDto.getApplId());
@@ -89,8 +96,19 @@ public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002Ag
 					null, agreeDto.getShainNo(), null, baseUrl);
 		}
 
-		// TODO 社宅管理データ連携処理実行
-
+		// 社宅管理データ連携処理実行
+		String shainNo = agreeDto.getShainNo();
+		String applNo = agreeDto.getApplNo();
+		String status = newApplStatus;
+		String pageId = FunctionIdConstant.SKF2050_SC002;
+		List<String> resultBatch = skf2050Sc002SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo,
+				status, pageId);
+		if (resultBatch != null) {
+			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(agreeDto, resultBatch);
+			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+			skfRollBackExpRepository.rollBack();
+			return agreeDto;
+		}
 		// フォームデータを設定
 		agreeDto.setPrePageId(FunctionIdConstant.SKF1010_SC001); // TOPページを指定
 		BaseForm form = new BaseForm();

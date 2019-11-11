@@ -65,6 +65,7 @@ public class Skf2050Sc001NotAgreeService extends BaseServiceAbstract<Skf2050Sc00
 		}
 
 		String newApplStatus = CodeConstant.STATUS_DOI_SHINAI;
+		skf2050Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		if (!skf2050Sc001SharedService.saveBihinHenkyakuInfo(newApplStatus, notAgreeDto, menuScopeSessionBean)) {
 			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
 			return notAgreeDto;
