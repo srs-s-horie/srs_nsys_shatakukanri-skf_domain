@@ -166,7 +166,6 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 		if (initDto.getApplNo() != null) {
 			// 申請書管理番号がDtoに存在する場合、登録済の退居届情報をDtoに設定する
 			skf2040Sc001SharedService.setExistTaikyoInfo(initDto);
-
 		} else {
 			// 登録済退居情報が存在しない場合は初期表示を行う
 			// 代行ログインを含めたログインユーザ情報を取得
@@ -210,12 +209,14 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 
 		// 現居住社宅名ドロップダウンリストをDtoに設定
 		List<Map<String, Object>> nowShatakuNameList = skf2040Sc001SharedService
-				.getNowShatakuNameList(initDto.getShainNo(), initDto.getShatakuNo());
+				.getNowShatakuNameList(initDto.getShainNo(), initDto.getShatakuKanriId());
 		if (null != nowShatakuNameList && nowShatakuNameList.size() > 0) {
 			initDto.setDdlNowShatakuNameList(nowShatakuNameList);
-			// リスト一件目の物件の社宅管理IDを取得してDTOに設定しておく
-			long firstShatakuKanriId = (long) nowShatakuNameList.get(0).get("value");
-			initDto.setShatakuKanriId(firstShatakuKanriId);
+			if (NfwStringUtils.isEmpty(initDto.getApplNo())) {
+				// 新規申請時はリスト一件目の物件の社宅管理IDを取得してDTOに設定しておく
+				long firstShatakuKanriId = (long) nowShatakuNameList.get(0).get("value");
+				initDto.setShatakuKanriId(firstShatakuKanriId);
+			}
 		} else {
 			// データが取得できなかった場合、エラーメッセージを表示して初期表示処理を終了
 			skf2040Sc001SharedService.setDisableBtn(initDto);
@@ -330,7 +331,7 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 		List<SkfShatakuInfoUtilsGetShatakuInfoExp> shatakuList = skf2040Sc001SharedService
 				.getShatakuInfo(dto.getShatakuKanriId(), dto.getShainNo());
 
-		// 取得できた場合は現居住社宅の情報設定(初期表示字は現有社宅の最初の一件目の情報を表示)
+		// 取得できた場合は現居住社宅の情報設定(初期表示時は現有社宅の最初の一件目の情報を表示)
 		if (shatakuList.size() > 0) {
 			skf2040Sc001SharedService.setShatakuInfo(dto, shatakuList.get(0));
 		}

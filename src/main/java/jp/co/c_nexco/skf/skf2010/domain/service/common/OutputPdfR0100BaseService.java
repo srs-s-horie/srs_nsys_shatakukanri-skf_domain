@@ -13,7 +13,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010OutputPdfBaseDto;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 
 /**
- * PdfBaseServiceAbstract PDF出力処理の基盤クラス。
+ * OutputPdfR0100BaseService 社宅入居希望等調書PDFの出力処理基盤クラス。
  * 
  * @author NEXCOシステムズ
  */

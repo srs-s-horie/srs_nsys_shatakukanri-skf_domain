@@ -12,7 +12,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002OutputPdfR0
 import jp.co.c_nexco.skf.skf2010.domain.service.common.OutputPdfR0100BaseService;
 
 /**
- * Skf2010Sc004 申請書類確認画面の社宅入居希望等調書（Skf2020Rp001）PDF出力処理クラス。
+ * Skf2010Sc002 申請書類確認画面の社宅入居希望等調書（Skf2020Rp001）PDF出力処理クラス。
  * 
  * @author NEXCOシステムズ
  */
