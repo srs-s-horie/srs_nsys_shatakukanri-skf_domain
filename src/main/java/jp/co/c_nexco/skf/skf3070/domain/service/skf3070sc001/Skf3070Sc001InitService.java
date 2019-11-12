@@ -50,7 +50,6 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 	 * @throws Exception 例外
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public BaseDto index(Skf3070Sc001InitDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3070_SC001_TITLE);
@@ -58,21 +57,25 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
+		// 対象年の基準年取得
+		String standardYear = getStandardYear();
+		initDto.setStandardYear(standardYear);
+
 		// 初期表示リスト検索条件を取得
 		setInitInfo(initDto);
 
 		// 初期表示リスト設定
 		Skf3070Sc001GetOwnerContractListExpParameter param = new Skf3070Sc001GetOwnerContractListExpParameter();
 		// 初期検索条件をセッションに格納
-		param = setDefaultSearchParam(initDto.getOwnerName(), initDto.getOwnerNameKk(), initDto.getAddress(),
-				initDto.getBusinessKbn(), initDto.getShatakuName(), initDto.getShatakuAddress(),
+		param = skf3070Sc001SheardService.setDefaultSearchParam(initDto.getOwnerName(), initDto.getOwnerNameKk(),
+				initDto.getAddress(), initDto.getBusinessKbn(), initDto.getShatakuName(), initDto.getShatakuAddress(),
 				initDto.getRecodeDadefrom(), initDto.getRecodeDadeto(), initDto.getAcceptFlg());
 		// 検索結果をリストに格納
 		initDto.setListTableData(skf3070Sc001SheardService.getListTableData(param, initDto));
 		initDto.setListTableMaxRowCount(listTableMaxRowCount);
 
 		// ドロップダウンの設定
-		skf3070Sc001SheardService.getDoropDownList(initDto);
+		skf3070Sc001SheardService.getDropDownList(initDto);
 
 		return initDto;
 	}
@@ -103,10 +106,6 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 
 		} else {
 			// セッションから検索条件パラメータが取得できなかった場合、デフォルト検索条件を設定
-			// 対象年の基準年取得
-			String standardYear = getStandardYear();
-			initDto.setStandardYear(standardYear);
-
 			// 検索条件の対象年を元に対象年開始月と終了月情報を作成する。
 			initDto.setRecodeDadefrom(initDto.getStandardYear() + "02");
 			initDto.setRecodeDadeto(DateUtils.addYearsString(initDto.getStandardYear(), 1,
@@ -134,47 +133,7 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 		} else {
 			resultYear = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYY_FLAT);
 		}
-
-		// TODO 後で消す
-		resultYear = "2017";
-
 		return resultYear;
-	}
-
-	/**
-	 * 初期表示時 検索条件設定
-	 * 
-	 * @param ownerName
-	 * @param ownerNameKk
-	 * @param address
-	 * @param businessKbn
-	 * @param shatakuName
-	 * @param shatakuAddress
-	 * @param setRecodeDadefrom
-	 * @param setRecodeDadeto
-	 * @param acceptFlg
-	 * @return
-	 */
-	private Skf3070Sc001GetOwnerContractListExpParameter setDefaultSearchParam(String ownerName, String ownerNameKk,
-			String address, String businessKbn, String shatakuName, String shatakuAddress, String setRecodeDadefrom,
-			String setRecodeDadeto, String acceptFlg) {
-
-		Skf3070Sc001GetOwnerContractListExpParameter parame = new Skf3070Sc001GetOwnerContractListExpParameter();
-
-		parame.setOwnerName(ownerName);
-		parame.setOwnerNameKk(ownerNameKk);
-		parame.setAddress(address);
-		parame.setBusinessKbn(businessKbn);
-		parame.setShatakuName(shatakuName);
-		parame.setShatakuAddress(shatakuAddress);
-		parame.setRecodeDadefrom(setRecodeDadefrom);
-		parame.setRecodeDadeto(setRecodeDadeto);
-		parame.setAcceptFlg(acceptFlg);
-
-		// 初期検索条件をセッションに格納
-		sessionBean.put(SessionCacheKeyConstant.SKF3070SC001_SEARCH_COND_SESSION_KEY, parame);
-
-		return parame;
 	}
 
 }
