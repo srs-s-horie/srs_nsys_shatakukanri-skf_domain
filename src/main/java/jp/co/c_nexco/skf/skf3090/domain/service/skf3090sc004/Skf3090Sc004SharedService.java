@@ -49,7 +49,7 @@ public class Skf3090Sc004SharedService {
 	 * @param affiliation2Cd 室チーム又は課リスト
 	 * @param affiliation2List ※室チーム又は課リスト
 	 */
-	public void getDoropDownList(String originalCompanyCd, List<Map<String, Object>> companyList, String agencyCd,
+	public void getDropDownList(String originalCompanyCd, List<Map<String, Object>> companyList, String agencyCd,
 			List<Map<String, Object>> agencyList, String affiliation1Cd, List<Map<String, Object>> affiliation1List,
 			String affiliation2Cd, List<Map<String, Object>> affiliation2List) {
 

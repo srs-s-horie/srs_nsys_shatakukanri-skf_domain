@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf3070.domain.service.skf3070sc001;
 
 import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExpParameter;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
@@ -34,6 +35,13 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 	@Autowired
 	private Skf3070Sc001SheardService skf3070Sc001SheardService;
 
+	// リストテーブルの１ページ最大表示行数
+	@Value("${skf3070.skf3070_sc001.max_row_count}")
+	private String listTableMaxRowCount;
+	// 最大検索数
+	@Value("${skf3070.skf3070_sc001.search_max_count}")
+	private String listTableSearchMaxCount;
+
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -42,6 +50,7 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 	 * @throws Exception 例外
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public BaseDto index(Skf3070Sc001InitDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3070_SC001_TITLE);
@@ -57,12 +66,13 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 		// 初期検索条件をセッションに格納
 		param = setDefaultSearchParam(initDto.getOwnerName(), initDto.getOwnerNameKk(), initDto.getAddress(),
 				initDto.getBusinessKbn(), initDto.getShatakuName(), initDto.getShatakuAddress(),
-				initDto.getTargetYear(), initDto.getAcceptStatus());
+				initDto.getRecodeDadefrom(), initDto.getRecodeDadeto(), initDto.getAcceptFlg());
 		// 検索結果をリストに格納
 		initDto.setListTableData(skf3070Sc001SheardService.getListTableData(param, initDto));
+		initDto.setListTableMaxRowCount(listTableMaxRowCount);
 
 		// ドロップダウンの設定
-		skf3070Sc001SheardService.getDoropDownList();
+		skf3070Sc001SheardService.getDoropDownList(initDto);
 
 		return initDto;
 	}
@@ -87,24 +97,30 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 			initDto.setBusinessKbn(sessionParam.getBusinessKbn());
 			initDto.setShatakuName(sessionParam.getShatakuName());
 			initDto.setShatakuAddress(sessionParam.getShatakuAddress());
-			initDto.setTargetYear(sessionParam.getTargetYear());
-			initDto.setAcceptStatus(sessionParam.getAcceptStatus());
+			initDto.setRecodeDadefrom(sessionParam.getRecodeDadefrom());
+			initDto.setRecodeDadeto(sessionParam.getRecodeDadeto());
+			initDto.setAcceptFlg(sessionParam.getAcceptFlg());
 
 		} else {
 			// セッションから検索条件パラメータが取得できなかった場合、デフォルト検索条件を設定
-			// 対象年度の取得
-			String targetYear = getTargetYear();
-			initDto.setTargetYear(targetYear);
+			// 対象年の基準年取得
+			String standardYear = getStandardYear();
+			initDto.setStandardYear(standardYear);
+
+			// 検索条件の対象年を元に対象年開始月と終了月情報を作成する。
+			initDto.setRecodeDadefrom(initDto.getStandardYear() + "02");
+			initDto.setRecodeDadeto(DateUtils.addYearsString(initDto.getStandardYear(), 1,
+					SkfCommonConstant.YMD_STYLE_YYYY_FLAT, SkfCommonConstant.YMD_STYLE_YYYY_FLAT) + "01");
 		}
 	}
 
 	/**
-	 * 対象年の取得
+	 * 基準年の取得
 	 * 
 	 * @return resultYear 対象年
 	 * @throws ParseException
 	 */
-	private String getTargetYear() throws ParseException {
+	private String getStandardYear() throws ParseException {
 
 		// 比較用「月」の取得
 		String compareMonth = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_MM_FLAT);
@@ -119,6 +135,9 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 			resultYear = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYY_FLAT);
 		}
 
+		// TODO 後で消す
+		resultYear = "2017";
+
 		return resultYear;
 	}
 
@@ -131,13 +150,14 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 	 * @param businessKbn
 	 * @param shatakuName
 	 * @param shatakuAddress
-	 * @param targetYear
-	 * @param acceptStatus
+	 * @param setRecodeDadefrom
+	 * @param setRecodeDadeto
+	 * @param acceptFlg
 	 * @return
 	 */
 	private Skf3070Sc001GetOwnerContractListExpParameter setDefaultSearchParam(String ownerName, String ownerNameKk,
-			String address, String businessKbn, String shatakuName, String shatakuAddress, String targetYear,
-			String acceptStatus) {
+			String address, String businessKbn, String shatakuName, String shatakuAddress, String setRecodeDadefrom,
+			String setRecodeDadeto, String acceptFlg) {
 
 		Skf3070Sc001GetOwnerContractListExpParameter parame = new Skf3070Sc001GetOwnerContractListExpParameter();
 
@@ -147,8 +167,9 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 		parame.setBusinessKbn(businessKbn);
 		parame.setShatakuName(shatakuName);
 		parame.setShatakuAddress(shatakuAddress);
-		parame.setTargetYear(targetYear);
-		parame.setAcceptStatus(acceptStatus);
+		parame.setRecodeDadefrom(setRecodeDadefrom);
+		parame.setRecodeDadeto(setRecodeDadeto);
+		parame.setAcceptFlg(acceptFlg);
 
 		// 初期検索条件をセッションに格納
 		sessionBean.put(SessionCacheKeyConstant.SKF3070SC001_SEARCH_COND_SESSION_KEY, parame);

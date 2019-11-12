@@ -23,6 +23,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005RegistDto;
 import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309030CommonSharedService;
 
@@ -47,6 +48,12 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 
 	@Autowired
 	private Skf3090Sc005UpdateShainInfoExpRepository skf3090Sc005UpdateShainInfoExpRepository;
+	
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	/**
 	 * メインメソッド.
@@ -56,6 +63,9 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 	protected BaseDto index(Skf3090Sc005RegistDto registDto) throws Exception {
 
 		registDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("登録", companyCd, registDto.getPageId());
 
 		// エラー系のDto値を初期化
 		registDto.setShainNoError(CodeConstant.DOUBLE_QUOTATION);
@@ -161,118 +171,105 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 		boolean isCheckOk = true;
 
 		String debugMessage = "";
-
-		/** 必須入力チェック */
-		// 社員番号
+		
+		/** 社員番号 */
+		//必須チェック
 		if (registDto.getShainNo() == null || CheckUtils.isEmpty(registDto.getShainNo().trim())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "社員番号");
 			registDto.setShainNoError(CodeConstant.NFW_VALIDATION_ERROR);
 			debugMessage += "　必須入力チェック - " + "社員番号";
+			
+		//桁数チェック
+		}else if (CheckUtils.isMoreThanByteSize(registDto.getShainNo().trim(), 8)) {
+			isCheckOk = false;
+			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "社員番号", "8");
+			registDto.setShainNoError(CodeConstant.NFW_VALIDATION_ERROR);
+			debugMessage += "　桁数チェック - " + "社員番号 - " + registDto.getShainNo();
+			
+		//形式チェック
+		}else if (!(CheckUtils.isAlphabetNumeric(registDto.getShainNo().trim()))) {
+			isCheckOk = false;
+			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1052, "社員番号");
+			registDto.setShainNoError(CodeConstant.NFW_VALIDATION_ERROR);
+			debugMessage += "　形式チェック - " + "社員番号 - " + registDto.getShainNo();
 		}
-		// 氏名
+		
+		/** 氏名 */
+		//必須チェック
 		if (registDto.getName() == null || CheckUtils.isEmpty(registDto.getName().trim())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "氏名");
 			registDto.setNameError(CodeConstant.NFW_VALIDATION_ERROR);
 			debugMessage += "　必須入力チェック - " + "氏名";
+			
+		//桁数チェック
+		}else if (CheckUtils.isMoreThanByteSize(registDto.getName().trim(), 40)) {
+			isCheckOk = false;
+			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "氏名", "20");
+			registDto.setNameError(CodeConstant.NFW_VALIDATION_ERROR);
+			debugMessage += "　桁数チェック - " + "氏名 - " + registDto.getName();
 		}
-		// メールアドレス
+		
+		/** 氏名カナ */
+		//入力されている場合
+		if (!(registDto.getNameKk() == null || CheckUtils.isEmpty(registDto.getNameKk().trim()))) {
+			//桁数チェック
+			if (CheckUtils.isMoreThanByteSize(registDto.getNameKk().trim(), 80)) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "氏名カナ", "40");
+				registDto.setNameKkError(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += "　桁数チェック - " + "氏名カナ - " + registDto.getNameKk();
+			}
+		}
+		
+		/** メールアドレス */
+		//必須チェック
 		if (registDto.getMailAddress() == null || CheckUtils.isEmpty(registDto.getMailAddress().trim())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "メールアドレス");
 			debugMessage += "　必須入力チェック - " + "メールアドレス";
 			registDto.setMailAddressError(CodeConstant.NFW_VALIDATION_ERROR);
+			
+		//桁数チェック
+		}else if (CheckUtils.isMoreThanByteSize(registDto.getMailAddress().trim(), 255)) {
+			isCheckOk = false;
+			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "メールアドレス", "255");
+			registDto.setMailAddressError(CodeConstant.NFW_VALIDATION_ERROR);
+			debugMessage += "　桁数チェック - " + "メールアドレス - " + registDto.getMailAddress();
+			
+		//形式チェック
+		}else if (!(CheckUtils.isEmail(registDto.getMailAddress().trim()))) {
+			isCheckOk = false;
+			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_3032, "メールアドレス");
+			registDto.setMailAddressError(CodeConstant.NFW_VALIDATION_ERROR);
+			debugMessage += "　形式チェック - " + "メールアドレス - " + registDto.getMailAddress();
 		}
-		// 会社
+		
+		
+		/** 会社 */
+		//必須チェック
 		if (registDto.getOriginalCompanyCd() == null || CheckUtils.isEmpty(registDto.getOriginalCompanyCd().trim())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1054, "会社");
 			registDto.setOriginalCompanyCdError(CodeConstant.NFW_VALIDATION_ERROR);
 			debugMessage += "　必須入力チェック - " + "会社";
 		}
-
-		/** 必須チェックOKなら桁数チェック */
-		if (isCheckOk) {
-			// 社員番号
-			if (CheckUtils.isMoreThanByteSize(registDto.getShainNo().trim(), 8)) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "会社", "8");
-				registDto.setShainNoError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += "　桁数チェック - " + "社員番号 - " + registDto.getShainNo();
-			} else {
-				debugMessage += "　社員番号入力桁数 - " + registDto.getShainNo().trim().getBytes("MS932").length;
-			}
-
-			// 氏名
-			if (CheckUtils.isMoreThanByteSize(registDto.getName().trim(), 40)) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "氏名", "20");
-				registDto.setNameError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += "　桁数チェック - " + "氏名 - " + registDto.getName();
-			} else {
-				debugMessage += "　氏名入力バイト数 - " + registDto.getName().trim().getBytes("MS932").length;
-			}
-			// 氏名カナ
-			if (NfwStringUtils.isNotEmpty(registDto.getNameKk())
-					&& CheckUtils.isMoreThanByteSize(registDto.getNameKk().trim(), 80)) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "氏名カナ", "40");
-				registDto.setNameKkError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += "　桁数チェック - " + "氏名カナ - " + registDto.getNameKk();
-			} else {
-				debugMessage += "　氏名カナ入力バイト数 - ";
-				if (registDto.getNameKk() == null) {
-					debugMessage += "入力なし";
-				} else {
-					debugMessage += registDto.getNameKk().trim().getBytes("MS932").length;
-				}
-			}
-			// メールアドレス
-			if (CheckUtils.isMoreThanByteSize(registDto.getMailAddress().trim(), 255)) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "メールアドレス", "255");
-				registDto.setMailAddressError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += "　桁数チェック - " + "メールアドレス - " + registDto.getMailAddress();
-			} else {
-				debugMessage += "　メールアドレス入力バイト数 - " + registDto.getMailAddress().trim().getBytes("MS932").length;
-			}
-			// 退職日
-			if (NfwStringUtils.isNotEmpty(registDto.getRetireDate())
-					&& CheckUtils.isMoreThanByteSize(registDto.getRetireDate().trim(), 10)) {
+		
+		
+		/** 退職日 */
+		//入力されている場合
+		if (!(registDto.getRetireDate() == null || CheckUtils.isEmpty(registDto.getRetireDate().trim()))) {
+			LogUtils.debugByMsg("退職日：" + registDto.getRetireDate());
+			//桁数チェック
+			if (CheckUtils.isMoreThanByteSize(registDto.getRetireDate().trim(), 10)) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "退職日", "10");
 				registDto.setRetireDateError(CodeConstant.NFW_VALIDATION_ERROR);
 				debugMessage += "　桁数チェック - " + "退職日 - " + registDto.getRetireDate();
-			} else {
-				debugMessage += "　退職日入力バイト数 - ";
-				if (registDto.getRetireDate() == null) {
-					debugMessage += "入力なし";
-				} else {
-					debugMessage += registDto.getRetireDate().trim().getBytes("MS932").length;
-				}
-			}
-		}
-
-		/** 必須チェック、桁数チェックOKなら形式チェック */
-		if (isCheckOk) {
-			// 社員番号
-			if (!(CheckUtils.isAlphabetNumeric(registDto.getShainNo().trim()))) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1052, "社員番号");
-				registDto.setShainNoError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += "　形式チェック - " + "社員番号 - " + registDto.getShainNo();
-			}
-
-			// メールアドレス
-			if (!(CheckUtils.isEmail(registDto.getMailAddress().trim()))) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_3032, "メールアドレス");
-				registDto.setMailAddressError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += "　形式チェック - " + "メールアドレス - " + registDto.getMailAddress();
-			}
-			// 退職日
-			if (NfwStringUtils.isNotEmpty(registDto.getRetireDate()) && !(SkfCheckUtils
+				
+			//形式チェック
+			}else if (NfwStringUtils.isNotEmpty(registDto.getRetireDate()) && !(SkfCheckUtils
 					.isSkfDateFormat(registDto.getRetireDate().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "退職日");

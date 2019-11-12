@@ -24,6 +24,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006InitDto;
 
@@ -42,6 +43,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -671,8 +674,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	 * @param tNyukyoChoshoTsuchi
 	 */
 	private void mappingTaiyoShatakuAnnai(Skf2010Sc006InitDto initDto, Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi) {
-		Map<String, BaseCodeEntity> hitsuyoRiyuMap = new HashMap<String, BaseCodeEntity>();
-		hitsuyoRiyuMap = codeCacheUtils.getGenericCode("SKF1006");
+		Map<String, String> hitsuyoRiyuMap = skfGenericCodeUtils
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_NEED_RIYU_KBN);
 
 		// 案内日
 		initDto.setTsuchiDate(
@@ -686,8 +689,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// 社宅を必要とする理由
 		String hitsuyoRiyu = tNyukyoChoshoTsuchi.getHitsuyoRiyu();
-		BaseCodeEntity bce = hitsuyoRiyuMap.get(hitsuyoRiyu);
-		initDto.setHitsuyoRiyu(bce.getCodeName());
+		String hitsuyoRiyuText = hitsuyoRiyuMap.get(hitsuyoRiyu);
+		initDto.setHitsuyoRiyu(hitsuyoRiyuText);
 
 		// 社宅所在地
 		initDto.setNewShozaichi(tNyukyoChoshoTsuchi.getNewShozaichi());

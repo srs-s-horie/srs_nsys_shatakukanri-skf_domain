@@ -24,6 +24,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CodeCacheUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -109,6 +110,11 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		skf3022Sc003SharedService.getShatakuInfo(shatakuKanriNo, shatakuList);
 		// ②社宅部屋情報取得
 		skf3022Sc003SharedService.getShatakuRoomInfo(shatakuKanriNo, roomKanriNo, roomList);
+		// DB取得結果判定
+		if (shatakuList.size() < 1 || roomList.size() < 1) {
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_3059);
+			throwBusinessExceptionIfErrors(initDto.getResultMessages());
+		}
 		// ③社員情報取得
 		skf3022Sc003SharedService.getShatakuShainInfo(CodeConstant.C001, shainNo, shainList);
 

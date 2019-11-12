@@ -92,8 +92,8 @@ public class Skf3010Sc006AddContractListService extends BaseServiceAbstract<Skf3
 		maxContractNo++;
 		// 新規契約番号を契約番号リストに追加し選択状態に設定する
 		Map<String, Object> contractMap = new HashMap<String, Object>();
-		contractMap.put("value", Integer.toString(maxContractNo));
-		contractMap.put("label", Integer.toString(maxContractNo) + "：");
+		contractMap.put("value", Integer.toString(maxContractNo) + "M");
+		contractMap.put("label", Integer.toString(maxContractNo) + " ：");
 		contractMap.put("selected", true);
 		contractNoList.add(contractMap);
 		// 戻り値設定
@@ -107,6 +107,7 @@ public class Skf3010Sc006AddContractListService extends BaseServiceAbstract<Skf3
 		initDto.setContractKyoekihi("");
 		initDto.setContractLandRent("");
 		initDto.setContractBiko("");
+		initDto.setHdnDispContractSelectedIndex(Integer.toString(maxContractNo) + "M");
 		// 追加ボタン非活性
 		initDto.setContractAddDisableFlg(true);
 		// 削除ボタン活性
