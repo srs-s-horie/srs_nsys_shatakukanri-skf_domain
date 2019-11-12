@@ -99,7 +99,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	private static final Long TEMP_FILE_MAX_SIZE = 10485760L;
 	
 	/**
-	 * 保有社宅登録の契約情報「登録」ボタン押下時処理を行う。　
+	 * 保有社宅登録の「登録」ボタン押下時処理を行う。　
 	 * 
 	 * @param initDto	インプットDTO
 	 * @return 処理結果
@@ -191,7 +191,8 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 							mShatakuBihinList, mShatakuManageList, mShatakuContract, registDto.getPageId());
 			// 更新結果判定
 			if (updateCnt < 1) {
-				//件数が0未満（排他エラー）
+				LogUtils.debugByMsg("保有社宅新規登録失敗");
+				// 件数が0未満（排他エラー） ※ロールバックさせるためエラーで表示する。
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -212,7 +213,8 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 					registDto);
 			// 更新結果判定
 			if (updateCnt < 1) {
-				//件数が0未満（排他エラー）
+				LogUtils.debugByMsg("保有社宅更新失敗");
+				// 件数が0未満（排他エラー） ※ロールバックさせるためエラーで表示する。
 				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());

@@ -22,17 +22,6 @@ public class Skf3010Sc002CommonDto extends Skf301010CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 	/** 定数 */
-	// ↓↓↓削除予定です
-	// 契約情報変更モード：追加
-	public static final String CONTRACT_MODE_ADD = "add";
-	// 契約情報変更モード：変更
-	public static final String CONTRACT_MODE_CHANGE = "change";
-	// 契約情報変更モード：削除
-	public static final String CONTRACT_MODE_DEL = "del";
-	// 契約情報変更モード：初期表示
-	public static final String CONTRACT_MODE_INIT = "init";
-	// ↑↑↑削除予定です
-
 	// 契約情報区切り文字：「契約開始日 」
 	public static final String CONTRACT_NO_SEPARATOR = "：契約開始日 ";
 	// 選択タブインデックス(基本情報タブ)

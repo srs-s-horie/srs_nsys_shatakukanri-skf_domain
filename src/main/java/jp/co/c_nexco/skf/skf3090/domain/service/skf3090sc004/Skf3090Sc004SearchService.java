@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc004.Skf3090Sc004SearchDto;
 
 /**
@@ -29,9 +31,18 @@ public class Skf3090Sc004SearchService extends BaseServiceAbstract<Skf3090Sc004S
 
 	@Autowired
 	private Skf3090Sc004SharedService skf3090Sc004SharedService;
+	
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	@Override
 	public BaseDto index(Skf3090Sc004SearchDto searchDto) throws Exception {
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("検索", companyCd, searchDto.getPageId());
 
 		// 戻り値に設定するリストのインスタンスを生成
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();
@@ -40,7 +51,7 @@ public class Skf3090Sc004SearchService extends BaseServiceAbstract<Skf3090Sc004S
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 
 		// ドロップダウンリストの値を設定
-		skf3090Sc004SharedService.getDoropDownList(searchDto.getSelectedCompanyCd(), companyList,
+		skf3090Sc004SharedService.getDropDownList(searchDto.getSelectedCompanyCd(), companyList,
 				searchDto.getAgencyCd(), agencyList, searchDto.getAffiliation1Cd(), affiliation1List,
 				searchDto.getAffiliation2Cd(), affiliation2List);
 

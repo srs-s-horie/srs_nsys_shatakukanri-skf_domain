@@ -298,7 +298,7 @@ public class Skf3010Sc002SharedService {
 	 * @param getKihonInfoListTableData	*社宅基本情報リスト
 	 * @return 取得件数
 	 */
-	private void getKihonInfo(String shatakuKanriNo,
+	private int getKihonInfo(String shatakuKanriNo,
 			List<Skf3010Sc002GetKihonInfoTableDataExp> getKihonInfoListTableData) {
 
 		// リストテーブルに格納するデータを取得する
@@ -317,13 +317,14 @@ public class Skf3010Sc002SharedService {
 			// 取得データレコード数判定
 			if (resultCount <= 0) {
 				// 取得データレコード数が0件場合、何もせず処理終了
-				return;
+				return resultCount;
 			}
 		}
 		getKihonInfoListTableData.clear();
 		getKihonInfoListTableData.addAll(resultListTableData);
 		// 解放
 		resultListTableData = null;
+		return resultCount;
 	}
 
 	/**
@@ -374,7 +375,7 @@ public class Skf3010Sc002SharedService {
 	 * @param shatakuKanriNo					社宅管理番号
 	 * @param getShatakuParkingInfoTableData	*駐車場情報リスト
 	 */
-	private void getShatakuParkingInfo(String shatakuKanriNo,
+	private int getShatakuParkingInfo(String shatakuKanriNo,
 			List<Skf3010Sc002GetShatakuParkingInfoTableDataExp> getShatakuParkingInfoTableData) {
 
 		// リストテーブルに格納するデータを取得する
@@ -393,13 +394,15 @@ public class Skf3010Sc002SharedService {
 			// 取得データレコード数判定
 			if (resultCount <= 0) {
 				// 取得データレコード数が0件場合、何もせず処理終了
-				return;
+				return resultCount;
 			}
 		}
 		getShatakuParkingInfoTableData.clear();
 		getShatakuParkingInfoTableData.addAll(resultListTableData);
 		// 解放
 		resultListTableData = null;
+
+		return resultCount;
 	}
 
 	/**
@@ -1910,7 +1913,7 @@ public class Skf3010Sc002SharedService {
 	 * @param initDto			*DTO
 	 * @throws ParseException 
 	 */
-	private void setShatakuParkingInfo(String shatakuKanriNo, Skf3010Sc002CommonDto initDto) throws ParseException {
+	private Boolean setShatakuParkingInfo(String shatakuKanriNo, Skf3010Sc002CommonDto initDto) throws ParseException {
 
 		// 駐車場構造プルダウンリスト
 		List<Map<String, Object>> parkingStructureList = new ArrayList<Map<String, Object>>();
@@ -2067,6 +2070,8 @@ public class Skf3010Sc002SharedService {
 		// データ比較用
 		initDto.setStartingParkingStructure(null);
 		initDto.setStartingParkingStructure(parkingStructure);
+
+		return true;
 	}
 
 	/**
@@ -2187,7 +2192,7 @@ public class Skf3010Sc002SharedService {
 	 * @param initDto			*DTO
 	 * @throws ParseException 
 	 */
-	private void setKihonInfo(String shatakuKanriNo,
+	private Boolean setKihonInfo(String shatakuKanriNo,
 			String areaKbnCd, Skf3010Sc002CommonDto initDto) throws ParseException {
 
 		// 利用区分リスト
@@ -2257,7 +2262,13 @@ public class Skf3010Sc002SharedService {
 		// 基本情報リストデータ(DBから取得したデータ保存用)
 		List<Skf3010Sc002GetKihonInfoTableDataExp> getKihonInfoListTableData = new ArrayList<Skf3010Sc002GetKihonInfoTableDataExp>();
 		// 基本情報を取得する
-		getKihonInfo(shatakuKanriNo, getKihonInfoListTableData);
+		int kihonInfoCnt = 0;
+		kihonInfoCnt = getKihonInfo(shatakuKanriNo, getKihonInfoListTableData);
+		// 取得結果判定
+		if (kihonInfoCnt < 1) {
+			logger.debug("社宅基本情報なし");
+			return false;
+		}
 		// 基本情報
 		for(Skf3010Sc002GetKihonInfoTableDataExp tmpData : getKihonInfoListTableData){
 			// 「利用区分」設定
@@ -2445,6 +2456,8 @@ public class Skf3010Sc002SharedService {
 		prefList = null;
 		shatakuStructureList = null;
 		elevatorList = null;
+
+		return true;
 	}
 
 	/**
@@ -2572,6 +2585,8 @@ public class Skf3010Sc002SharedService {
 	 */
 	public void setHoyuShatakuInfo(String contractSelectedIndex, Skf3010Sc002CommonDto initDto) throws Exception {
 
+		Boolean resultBool = false;
+
 		// リストデータ取得用
 		// 駐車場区画情報リスト
 		List<Map<String, Object>> parkingBlockListTableData = new ArrayList<Map<String, Object>>();
@@ -2624,9 +2639,8 @@ public class Skf3010Sc002SharedService {
 			param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
 			shatakuInfoList = skf3010Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
 			if (shatakuInfoList.size() < 1) {
-				//件数が0未満（排他エラー）
-				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
-				logger.debug("社宅情報取得エラー");
+				// 件数が0未満（排他エラー）
+				setListMapOnErr(initDto.getShatakuName(), initDto);
 				return;
 			}
 			Skf3010Sc002GetShatkuInfoTableDataExp shatakuInfo = shatakuInfoList.get(0);
@@ -2646,8 +2660,7 @@ public class Skf3010Sc002SharedService {
 			shatakuInfoList = skf3010Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
 			if (shatakuInfoList.size() < 1) {
 				//件数が0未満（排他エラー）
-				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
-				logger.debug("社宅情報取得エラー");
+				setListMapOnErr(initDto.getHdnRowShatakuName(), initDto);
 				return;
 			}
 			Skf3010Sc002GetShatkuInfoTableDataExp shatakuInfo = shatakuInfoList.get(0);
@@ -2667,9 +2680,19 @@ public class Skf3010Sc002SharedService {
 			setSearchInfo(shatakuKanriNo, shatakuName, shatakuKbnCd, 
 					areaKbnCd, emptyRoomCount, emptyParkingCount, initDto);
 			// 基本情報タブの値をセット
-			setKihonInfo(shatakuKanriNo, areaKbnCd, initDto);
+			resultBool = setKihonInfo(shatakuKanriNo, areaKbnCd, initDto);
+			if (!resultBool) {
+				// 排他エラー
+				setListMapOnErr(shatakuName, initDto);
+				return;
+			}
 			// 駐車場情報タブの値をセット
-			setShatakuParkingInfo(shatakuKanriNo, initDto);
+			resultBool = setShatakuParkingInfo(shatakuKanriNo, initDto);
+			if (!resultBool) {
+				// 排他エラー
+				setListMapOnErr(shatakuName, initDto);
+				return;
+			}
 			// 駐車場区画情報の値を取得
 			getShatakuParkingBlockInfo(shatakuKanriNo, initDto.getParkingRent(), parkingBlockListTableData);
 			// 備品情報タブの値をセット
@@ -2780,6 +2803,60 @@ public class Skf3010Sc002SharedService {
 		initDto.setHdnShatakuKbn(shatakuKbnCd);
 		initDto.setHdnEmptyRoomCount(emptyRoomCount);
 		initDto.setHdnEmptyParkingCount(emptyParkingCount);
+	}
+
+	/**
+	 * エラー時ListMap作成処理
+	 * 他ユーザーにより社宅情報がDBから削除されている場合などに
+	 * 画面用のリストオブジェクトを作成(空っぽ表示用)
+	 * 
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param shatakuName	社宅名
+	 * @param initDto		*DTO
+	 */
+	private void setListMapOnErr(String shatakuName, Skf3010Sc002CommonDto initDto) {
+
+		// 画面用ListMap作成
+		List<Map<String, Object>> areaKbnList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> shatakuKbnList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> useKbnList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> manageCompanyList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> manageAgencyList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> manageBusinessAreaList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> prefList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> shatakuStructureList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> elevatorList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> parkingStructureList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> contractNoList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> parkingInfoListTableData = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> hdnStartingParkingInfoListTableData = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> nowParkingInfoListTableData = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> bihinInfoListTableData = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> contractInfoListTableData = new ArrayList<Map<String, Object>>();
+
+		// 画面用に設定
+		initDto.setShatakuName(shatakuName);	// 社宅名だけは設定する
+		initDto.setAreaKbnList(areaKbnList);
+		initDto.setShatakuKbnList(shatakuKbnList);
+		initDto.setUseKbnList(useKbnList);
+		initDto.setManageCompanyList(manageCompanyList);
+		initDto.setManageAgencyList(manageAgencyList);
+		initDto.setManageBusinessAreaList(manageBusinessAreaList);
+		initDto.setPrefList(prefList);
+		initDto.setShatakuStructureList(shatakuStructureList);
+		initDto.setElevatorList(elevatorList);
+		initDto.setParkingStructureList(parkingStructureList);
+		initDto.setContractNoList(contractNoList);
+		initDto.setParkingInfoListTableData(parkingInfoListTableData);
+		initDto.setHdnStartingParkingInfoListTableData(hdnStartingParkingInfoListTableData);
+		initDto.setNowParkingInfoListTableData(nowParkingInfoListTableData);
+		initDto.setBihinInfoListTableData(bihinInfoListTableData);
+		initDto.setContractInfoListTableData(contractInfoListTableData);
+
+		// 警告メッセージ
+		ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.E_SKF_3059);
+		logger.debug("社宅情報取得エラー");
 	}
 
 	/**

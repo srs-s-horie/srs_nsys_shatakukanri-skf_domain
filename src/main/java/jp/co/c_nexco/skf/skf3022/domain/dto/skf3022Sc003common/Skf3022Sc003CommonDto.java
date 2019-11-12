@@ -143,4 +143,6 @@ public class Skf3022Sc003CommonDto extends GridRelationDto {
 	private String sc003YoutoSelectErr;
 	// 延べ面積テキストボックス
 	private String sc003InputNobeMensekiErr;
+	// JSON可変ラベルリスト
+	private String sc003JsonLabelList;
 }
