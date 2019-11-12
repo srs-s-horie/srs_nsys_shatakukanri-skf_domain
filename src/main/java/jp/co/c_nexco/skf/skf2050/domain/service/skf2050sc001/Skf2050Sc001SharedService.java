@@ -466,7 +466,7 @@ public class Skf2050Sc001SharedService {
 				.getSkfLoginUserInfoFromAlterLogin(this.menuScopeSessionBean);
 		String userId = loginUserInfoMap.get("userCd");
 		// 排他チェック用データ取得
-		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC002);
+		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC001);
 		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skf2050Fc001BihinHenkyakuSinseiDataImport
 				.forUpdateMapDownCaster(forUpdateObject);
 		skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMap);
@@ -475,7 +475,7 @@ public class Skf2050Sc001SharedService {
 		List<String> resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, status,
 				userId, pageId);
 		// セッション情報削除
-		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC002);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC001);
 		return resultBatch;
 	}
 }
