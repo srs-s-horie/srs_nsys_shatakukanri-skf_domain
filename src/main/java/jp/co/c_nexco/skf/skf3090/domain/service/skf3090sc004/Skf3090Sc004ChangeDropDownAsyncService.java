@@ -38,7 +38,7 @@ public class Skf3090Sc004ChangeDropDownAsyncService
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 
 		// ドロップダウン作成
-		skf3090Sc004SharedService.getDoropDownList(asyncDto.getSelectedCompanyCd(), companyList, asyncDto.getAgencyCd(),
+		skf3090Sc004SharedService.getDropDownList(asyncDto.getSelectedCompanyCd(), companyList, asyncDto.getAgencyCd(),
 				agencyList, asyncDto.getAffiliation1Cd(), affiliation1List, asyncDto.getAffiliation2Cd(),
 				affiliation2List);
 

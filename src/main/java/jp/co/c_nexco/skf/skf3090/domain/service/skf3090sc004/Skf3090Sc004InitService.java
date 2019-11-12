@@ -13,8 +13,10 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc004.Skf3090Sc004InitDto;
 
 /**
@@ -28,6 +30,12 @@ public class Skf3090Sc004InitService extends BaseServiceAbstract<Skf3090Sc004Ini
 
 	@Autowired
 	private Skf3090Sc004SharedService skf3090Sc004SharedService;
+	
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3090.skf3090_sc004.max_row_count}")
@@ -40,8 +48,8 @@ public class Skf3090Sc004InitService extends BaseServiceAbstract<Skf3090Sc004Ini
 	@Override
 	public BaseDto index(Skf3090Sc004InitDto initDto) throws Exception {
 
-		// 操作ログの出力
-		// LogUtils.info(MessageIdConstant.L_SKF_INIT);
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
@@ -92,7 +100,7 @@ public class Skf3090Sc004InitService extends BaseServiceAbstract<Skf3090Sc004Ini
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 
 		// ドロップダウンリストの値を設定
-		skf3090Sc004SharedService.getDoropDownList(initDto.getOriginalCompanyCd(), companyList, initDto.getAgencyCd(),
+		skf3090Sc004SharedService.getDropDownList(initDto.getOriginalCompanyCd(), companyList, initDto.getAgencyCd(),
 				agencyList, initDto.getAffiliation1Cd(), affiliation1List, initDto.getAffiliation2Cd(),
 				affiliation2List);
 

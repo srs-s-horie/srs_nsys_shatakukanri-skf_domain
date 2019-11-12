@@ -17,6 +17,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005DeleteDto;
 
 /**
@@ -32,6 +33,11 @@ public class Skf3090Sc005DeleteService extends BaseServiceAbstract<Skf3090Sc005D
 	Skf3090Sc005GetLedgerCountExpRepository skf3090Sc005GetLedgerCountExpRepository;
 	@Autowired
 	Skf1010MShainRepository skf1010MShainRepository;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	/**
 	 * メインメソッド.
@@ -40,6 +46,9 @@ public class Skf3090Sc005DeleteService extends BaseServiceAbstract<Skf3090Sc005D
 	protected BaseDto index(Skf3090Sc005DeleteDto deleteDto) throws Exception {
 
 		deleteDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("削除", companyCd, deleteDto.getPageId());
 
 		/** 利用実績チェック */
 		// 社宅管理台帳存在チェック
@@ -53,7 +62,7 @@ public class Skf3090Sc005DeleteService extends BaseServiceAbstract<Skf3090Sc005D
 			deleteShainInfo(CodeConstant.C001, deleteDto.getShainNo());
 
 			/** 画面遷移 */
-			deleteDto.setTransferPageInfo(TransferPageInfo.prevPage(FunctionIdConstant.SKF3090_SC004));
+			deleteDto.setTransferPageInfo(TransferPageInfo.nextPage(FunctionIdConstant.SKF3090_SC004), true);
 
 		}
 
