@@ -24,6 +24,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001CheckAsyncD
 @Service
 public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2040Sc001CheckAsyncDto> {
 
+	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
 	/**
@@ -100,49 +101,58 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 			isError = true;
 		}
 
-		// 「社宅の状態」
-		LogUtils.debugByMsg(msg + "社宅の状態" + checkDto.getShatakuJotai());
-		if (NfwStringUtils.isBlank(checkDto.getShatakuJotai())) {
-			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "shatakuJotai" }, MessageIdConstant.E_SKF_1048,
-					"社宅の状態");
-			isError = true;
+		// 「社宅を退居する」チェックフラグ
+		boolean isShatakuReturnChecked = false;
+		if (TRUE.equals(checkDto.getTaikyoTypeShataku())) {
+			isShatakuReturnChecked = true;
 		}
 
-		// 「退居後の連絡先」
-		LogUtils.debugByMsg(msg + "退居後の連絡先" + checkDto.getTaikyogoRenrakuSaki());
-		if (NfwStringUtils.isBlank(checkDto.getTaikyogoRenrakuSaki())) {
-			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyogoRenrakuSaki" },
-					MessageIdConstant.E_SKF_1048, "退居後の連絡先");
-			isError = true;
+		if (isShatakuReturnChecked) {
+			// 「社宅を退居する」がチェックされている場合に以下のチェックを行う
+			// 「社宅の状態」
+			LogUtils.debugByMsg(msg + "社宅の状態" + checkDto.getShatakuJotai());
+			if (NfwStringUtils.isBlank(checkDto.getShatakuJotai())) {
+				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "shatakuJotai" },
+						MessageIdConstant.E_SKF_1048, "社宅の状態");
+				isError = true;
+			}
+
+			// 「退居後の連絡先」
+			LogUtils.debugByMsg(msg + "退居後の連絡先" + checkDto.getTaikyogoRenrakuSaki());
+			if (NfwStringUtils.isBlank(checkDto.getTaikyogoRenrakuSaki())) {
+				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyogoRenrakuSaki" },
+						MessageIdConstant.E_SKF_1048, "退居後の連絡先");
+				isError = true;
+			}
+
+			if (CodeConstant.BIHIN_HENKYAKU_SURU.equals(checkDto.getHdnBihinHenkyakuUmu())) {
+				// 返却する備品が存在する場合
+
+				// 「返却立会希望日（日）」
+				LogUtils.debugByMsg(msg + "返却立会希望日（日）" + checkDto.getSessionDay());
+				if (NfwStringUtils.isBlank(checkDto.getSessionDay())) {
+					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionDay" },
+							MessageIdConstant.E_SKF_1048, "返却立会希望日（日）");
+					isError = true;
+				}
+
+				// 「返却立会希望日（時）」
+				LogUtils.debugByMsg(msg + "返却立会希望日（時）" + checkDto.getSessionTime());
+				if (NfwStringUtils.isBlank(checkDto.getSessionTime())) {
+					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionTime" },
+							MessageIdConstant.E_SKF_1054, "返却立会希望日（時）");
+					isError = true;
+				}
+
+				// 「連絡先」
+				LogUtils.debugByMsg(msg + "連絡先" + checkDto.getRenrakuSaki());
+				if (NfwStringUtils.isBlank(checkDto.getRenrakuSaki())) {
+					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "renrakuSaki" },
+							MessageIdConstant.E_SKF_1048, "連絡先");
+					isError = true;
+				}
+			}
 		}
-
-        if (CodeConstant.BIHIN_HENKYAKU_SURU.equals(checkDto.getHdnBihinHenkyakuUmu())) {
-            // 返却する備品が存在する場合
-
-            // 「返却立会希望日（日）」
-            LogUtils.debugByMsg(msg + "返却立会希望日（日）" + checkDto.getSessionDay());
-            if (NfwStringUtils.isBlank(checkDto.getSessionDay())) {
-                ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionDay" },
-                        MessageIdConstant.E_SKF_1048, "返却立会希望日（日）");
-                isError = true;
-            }
-
-            // 「返却立会希望日（時）」
-            LogUtils.debugByMsg(msg + "返却立会希望日（時）" + checkDto.getSessionTime());
-            if (NfwStringUtils.isBlank(checkDto.getSessionTime())) {
-                ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionTime" },
-                        MessageIdConstant.E_SKF_1054, "返却立会希望日（時）");
-                isError = true;
-            }
-
-            // 「連絡先」
-            LogUtils.debugByMsg(msg + "連絡先" + checkDto.getRenrakuSaki());
-            if (NfwStringUtils.isBlank(checkDto.getRenrakuSaki())) {
-                ServiceHelper.addErrorResultMessage(checkDto, new String[] { "renrakuSaki" },
-                        MessageIdConstant.E_SKF_1048, "連絡先");
-                isError = true;
-            }
-        }
 
 		/** 関連項目 */
 		// 「社宅を退居する」、「駐車場１を返還する」、「駐車場２を返還する」の全て
