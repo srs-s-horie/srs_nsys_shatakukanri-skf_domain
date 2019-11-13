@@ -49,6 +49,7 @@ public class Skf2030Sc002PresentService extends BaseServiceAbstract<Skf2030Sc002
 
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		skf2030Sc002SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();

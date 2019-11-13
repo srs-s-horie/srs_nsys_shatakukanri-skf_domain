@@ -4,6 +4,7 @@
 package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfAp
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -21,6 +23,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc001.Skf2030Sc001SaveDto;
 
 /**
@@ -33,6 +36,10 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 
 	@Autowired
 	private Skf2030Sc001SharedService skf2030Sc001SharedService;
+	@Autowired
+	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -99,10 +106,7 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		// 申請履歴情報を更新する
 		// 更新対象の申請履歴情報を取得
 		SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp tmpData = new SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp();
-		tmpData = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(applStatus, shainNo, applNo, applId);
-		// tmpData =
-		// skf2030Sc001SharedService.getApplHistoryInfoForUpdate(applNo, applId,
-		// applStatus, shainNo);
+		tmpData = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(companyCd, shainNo, applNo, applId);
 		if (tmpData == null) {
 			ServiceHelper.addWarnResultMessage(saveDto, MessageIdConstant.W_SKF_1009);
 			return -1;
@@ -171,7 +175,18 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		}
 
 		saveDto.setApplStatus(CodeConstant.STATUS_ICHIJIHOZON);
+
 		// TODO:社宅管理データ連携処理実行
+		String status = CodeConstant.STATUS_ICHIJIHOZON;
+		String pageId = FunctionIdConstant.SKF2030_SC001;
+		List<String> resultBatch = skf2030Sc001SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo,
+				status, pageId);
+		if (resultBatch != null) {
+			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(saveDto, resultBatch);
+			throwBusinessExceptionIfErrors(saveDto.getResultMessages());
+			skfRollBackExpRepository.rollBack();
+			return -1;
+		}
 
 		return 1;
 	}

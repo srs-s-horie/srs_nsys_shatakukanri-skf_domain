@@ -24,6 +24,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
@@ -39,6 +40,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetNyukyobiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetSKSDairininInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
@@ -50,6 +52,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
@@ -60,6 +63,7 @@ import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030Sc001common.Skf2030Sc001CommonDto;
 
 @Service
@@ -104,6 +108,10 @@ public class Skf2030Sc001SharedService {
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
 	@Autowired
 	private Skf2030TBihinRepository skf2030TBihinRepository;
+	@Autowired
+	private Skf2030Fc001BihinKiboShinseiDataImport skf2030Fc001BihinKiboShinseiDataImport;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
@@ -445,11 +453,6 @@ public class Skf2030Sc001SharedService {
 		}
 
 		// 備品希望申請テーブルを更新
-		/*
-		 * if (!updateBihinKiboShinseiInfo(applInfo, updateTel,
-		 * updateRenrakuSakiTel, updateSessionDay, updateTime,
-		 * updateCompleteDate)) { return false; }
-		 */
 		if (!skfBihinInfoUtils.updateBihinKiboShinseiInfo(applInfo, companyCd, updateTel, updateRenrakuSakiTel,
 				updateSessionDay, updateTime, updateCompleteDate, null, null)) {
 			return false;
@@ -463,6 +466,15 @@ public class Skf2030Sc001SharedService {
 		dto.setApplStatus(updateStatus);
 
 		// TODO 社宅管理データ連携処理実行
+		String shainNo = dto.getShainNo();
+		String applNo = dto.getApplNo();
+		String pageId = FunctionIdConstant.SKF2030_SC001;
+		List<String> resultBatch = doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, updateStatus, pageId);
+		if (resultBatch != null) {
+			skf2030Fc001BihinKiboShinseiDataImport.addResultMessageForDataLinkage(dto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+			return false;
+		}
 
 		return true;
 	}
@@ -948,4 +960,34 @@ public class Skf2030Sc001SharedService {
 		}
 		return 0;
 	}
+
+	/**
+	 * 社宅連携処理を実施する
+	 * 
+	 * @param shainNo
+	 * @param applNo
+	 * @param status
+	 * @param userId
+	 * @return
+	 */
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String shainNo, String applNo,
+			String status, String pageId) {
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(this.menuScopeSessionBean);
+		String userId = loginUserInfoMap.get("userCd");
+		// 排他チェック用データ取得
+		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC001);
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skf2030Fc001BihinKiboShinseiDataImport
+				.forUpdateMapDownCaster(forUpdateObject);
+		skf2030Fc001BihinKiboShinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMap);
+
+		// 連携処理開始
+		List<String> resultBatch = skf2030Fc001BihinKiboShinseiDataImport.doProc(companyCd, shainNo, applNo, status,
+				userId, pageId);
+		// セッション情報削除
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC001);
+		return resultBatch;
+	}
+
 }
