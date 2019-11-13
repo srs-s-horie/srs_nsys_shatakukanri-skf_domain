@@ -19,7 +19,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc005.Skf3022Sc005
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
@@ -73,7 +72,7 @@ public class Skf3022Sc005SharedService {
 	 * @param moveInOut
 	 * @param moveInOutList  「備品搬入搬出督促」ドロップダウンリスト
 	 */
-	public void getDoropDownList(String nyutaikyoKbn, List<Map<String, Object>> nyutaikyoKbnList,
+	public void getDropDownList(String nyutaikyoKbn, List<Map<String, Object>> nyutaikyoKbnList,
 								 String stJyokyo, List<Map<String, Object>> stJyokyoList,
 								 String stKakunin , List<Map<String, Object>> stKakuninList,
 								 String bhJyokyo , List<Map<String, Object>> bhJyokyoList,
@@ -185,6 +184,7 @@ public class Skf3022Sc005SharedService {
 			String hdnTaiyoKbn = tmpData.getBihinTaiyoKbn();
 			//入退居区分
 			String nyutaikyoKbn = tmpData.getNyutaikyoKbn();
+			tmpMap.put("hdnNyutaikyoKbnCd", nyutaikyoKbn);
 			tmpMap.put("colNyutaikyoKbn", genericCodeNyutaikyoKbn.get(nyutaikyoKbn));
 			//社員番号
 			tmpMap.put("colShainNo", tmpData.getShainNo());
@@ -223,6 +223,7 @@ public class Skf3022Sc005SharedService {
 			tmpMap.put("colYouto", genericCodeAuseKbn.get(tmpData.getAuse()));
 			//社宅提示　状況
 			String stJyokyo = tmpData.getShatakuTeijiStatus();
+			tmpMap.put("hdnStJyokyoCd", stJyokyo);
 			tmpMap.put("colStJyokyo", genericCodeStJyokyo.get(stJyokyo));
 			//社宅提示　確認督促
 			String stKakunin = tmpData.getShatakuTeijiUrgeDate();
@@ -236,21 +237,23 @@ public class Skf3022Sc005SharedService {
 			
 			//備品提示状況の設定
 			String bhJyokyo = tmpData.getBihinTeijiStatus();
+			tmpMap.put("hdnBhJyokyoCd", bhJyokyo);
+			String colBhJyokyo = CodeConstant.HYPHEN;
 			if (!SkfCheckUtils.isNullOrEmpty(bhJyokyo)) {
-				bhJyokyo = genericCodeMapBhJyokyo.get(bhJyokyo);
+				colBhJyokyo = genericCodeMapBhJyokyo.get(bhJyokyo);
 			}else if(SkfCheckUtils.isNullOrEmpty(shinseiKbn)){
 				//申請なしの場合
-				bhJyokyo = CodeConstant.HYPHEN;
+				colBhJyokyo = CodeConstant.HYPHEN;
 			}else if(CodeConstant.SHINSEI_KBN_PARKING.equals(shinseiKbn)){
-				bhJyokyo = CodeConstant.HYPHEN;
+				colBhJyokyo = CodeConstant.HYPHEN;
 			}else if(CodeConstant.BIHIN_TAIYO_KBN_FUYO.equals(hdnTaiyoKbn)){
 				//退居或は同意済の場合
 				if(CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn) || 
 						CodeConstant.PRESENTATION_SITUATION_DOI_SUMI.equals(stJyokyo)){
-					bhJyokyo = CodeConstant.HYPHEN;
+					colBhJyokyo = CodeConstant.HYPHEN;
 				}
 			}
-			tmpMap.put("colBhJyokyo", bhJyokyo);
+			tmpMap.put("colBhJyokyo", colBhJyokyo);
 			
 			//備品提示　確認督促
 			String bhKakunin = tmpData.getBihinTeijiUrgeDate();
@@ -269,7 +272,7 @@ public class Skf3022Sc005SharedService {
 			//搬入搬出督促
 			String mobeInOut = tmpData.getBihinInoutUrgeDate();
 			if (!SkfCheckUtils.isNullOrEmpty(mobeInOut)) {
-				mobeInOut = skfDateFormatUtils.dateFormatFromString(bhKakunin, "yyyy/MM/dd");
+				mobeInOut = skfDateFormatUtils.dateFormatFromString(mobeInOut, "yyyy/MM/dd");
 			}else if(SkfCheckUtils.isNullOrEmpty(shinseiKbn)){
 				//申請なしの場合
 				mobeInOut = CodeConstant.HYPHEN;
@@ -312,7 +315,7 @@ public class Skf3022Sc005SharedService {
 					int sameCount = skf3022Sc005GetSameAppNoCountExpRepository.getSameAppNoCount(parameter);
 					
 					if(sameCount > 0){
-						tmpMap.put("sameAppNoCount", MessageIdConstant.I_SKF_3074);//I_SKF_3074 infomation.skf.i_skf_3074
+						tmpMap.put("sameAppNoCount", "一緒に申請されている入居申請がまだ同意済となっていないため、退居申請は提示データを作成できません。");//I_SKF_3074 infomation.skf.i_skf_3074
 					}
 				}
 			}
@@ -328,7 +331,7 @@ public class Skf3022Sc005SharedService {
 				tmpMap.put("colDelete", "");
 			}
 			
-			//TODO チェックボックス制御
+			//チェックボックス制御
 			//'入退居区分が1(入居)の場合、
 			if(CodeConstant.NYUTAIKYO_KBN_NYUKYO.equals(nyutaikyoKbn)){
 				//'正社員番号

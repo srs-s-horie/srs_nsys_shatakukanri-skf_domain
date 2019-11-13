@@ -36,6 +36,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc005.Skf3022Sc005DeleteDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
@@ -67,6 +68,8 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 	private Skf3021TNyutaikyoYoteiDataRepository skf3021TNyutaikyoYoteiDataRepository;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3022.skf3022_sc005.max_row_count}")
@@ -106,7 +109,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 		String moveInOut = deleteDto.getMoveInOut();
 		List<Map<String, Object>> moveInOutList = new ArrayList<Map<String, Object>>();
 //      'コントロールの設定
-		skf3022Sc005SharedService.getDoropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
+		skf3022Sc005SharedService.getDropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
 				bhJyokyo, bhJyokyoList, bhKakunin, bhKakuninList, moveInOut, moveInOutList);
 		
 		
@@ -118,10 +121,10 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
         String updateDateShataku = CodeConstant.DOUBLE_QUOTATION;
         String updateDateParkOne = CodeConstant.DOUBLE_QUOTATION;
         String updateDateParkTwo = CodeConstant.DOUBLE_QUOTATION;
-        Long shatakuNo = CodeConstant.LONG_ZERO;
-        Long roomNo = CodeConstant.LONG_ZERO;
-        Long parkOne = CodeConstant.LONG_ZERO;
-        Long parkTwo = CodeConstant.LONG_ZERO;
+        String shatakuNo = CodeConstant.DOUBLE_QUOTATION;
+        String roomNo = CodeConstant.DOUBLE_QUOTATION;
+        String parkOne = CodeConstant.DOUBLE_QUOTATION;
+        String parkTwo = CodeConstant.DOUBLE_QUOTATION;
 		
         delTeijiNo = Long.parseLong(deleteDto.getDelTeijiNo());
         delShainNo = deleteDto.getDelShainNo();
@@ -131,17 +134,20 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
         updateDateShataku = deleteDto.getDelUpdateDateShataku();
         updateDateParkOne = deleteDto.getDelUpdateDateParkOne();
         updateDateParkTwo = deleteDto.getDelUpdateDateParkTwo();
-        shatakuNo = Long.parseLong(deleteDto.getDelShatakuNo());
-        roomNo = Long.parseLong(deleteDto.getDelRoomNo());
-        parkOne = Long.parseLong(deleteDto.getDelParkOne());
-        parkTwo = Long.parseLong(deleteDto.getDelParkTwo());
+        shatakuNo = deleteDto.getDelShatakuNo();
+        roomNo = deleteDto.getDelRoomNo();
+        parkOne = deleteDto.getDelParkOne();
+        parkTwo = deleteDto.getDelParkTwo();
 		
 		int retCount = DeleteTeijiDataCount(delTeijiNo, delShainNo, delNyutaikyoKbn, updateDate,
 				updateDateNtk, updateDateShataku, updateDateParkOne, updateDateParkTwo,
-				shatakuNo, roomNo, parkOne, parkTwo);
-		if(retCount <= 0){
+				shatakuNo, roomNo, parkOne, parkTwo , deleteDto.getPageId());
+		if(retCount == 0){
 			//排他エラー
 			ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.W_SKF_1009);
+		}else if(retCount < 0){
+			//その他エラー
+			ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.E_SKF_1076);
 		}
 		else{
 			//成功メッセージ
@@ -170,7 +176,6 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 		// リストテーブルの情報を取得
 		skf3022Sc005SharedService.getListTableData(param, listTableData);
 		//削除時は取得件数見ない
-		deleteDto.setListTableMaxRowCount(listTableMaxRowCount);
 
 		//督促ボタンは使用不可に設定
 		deleteDto.setBtnShatakuTeijiDisabled("true");
@@ -206,30 +211,40 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 	 */
 	private int DeleteTeijiDataCount(Long teijiNo, String shainNo, String nyutaikyoKbn, String updateDateForRock,
 			String updateDateNtk, String updateDateShataku, String updateDateParkOne, String updateDateParkTwo,
-			Long shatakuNo, Long roomNo, Long parkOne, Long parkTwo) throws Exception{
+			String shatakuNo, String roomNo, String parkOne, String parkTwo, String pageId) throws Exception{
         //'更新件数
         int retCount = 0;
         int ret = 0;
-        String roomCount = CodeConstant.DOUBLE_QUOTATION;
-        String parkOneCount = CodeConstant.DOUBLE_QUOTATION;
-        String parkTwoCount = CodeConstant.DOUBLE_QUOTATION;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
+        //String roomCount = CodeConstant.DOUBLE_QUOTATION;
+        //String parkOneCount = CodeConstant.DOUBLE_QUOTATION;
+        //String parkTwoCount = CodeConstant.DOUBLE_QUOTATION;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        
+        Long shatakuNol = CodeConstant.LONG_ZERO;
+        Long roomNol = CodeConstant.LONG_ZERO;
+        Long parkOnel = CodeConstant.LONG_ZERO;
+        Long parkTwol = CodeConstant.LONG_ZERO;
+        
+		// ユーザーID取得
+		String userName = skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName");
         
 //        '社宅部屋マスタテーブル更新
         if(!SkfCheckUtils.isNullOrEmpty(updateDateShataku)){
-			
+        	shatakuNol = Long.parseLong(shatakuNo);
+        	roomNol = Long.parseLong(roomNo);
+
         	String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
         	List<Skf3022Sc005GetRoomLendJokyoExp> lendJokyoList = new ArrayList<Skf3022Sc005GetRoomLendJokyoExp>();
         	Skf3022Sc005GetRoomLendJokyoExpParameter lendParam = new Skf3022Sc005GetRoomLendJokyoExpParameter();
-        	lendParam.setShatakuNo(shatakuNo);
-        	lendParam.setRoomNo(roomNo);
+        	lendParam.setShatakuNo(shatakuNol);
+        	lendParam.setRoomNo(roomNol);
         	//貸与状況取得
         	lendJokyoList = skf3022Sc005GetRoomLendJokyoExpRepository.getRoomLendJokyo(lendParam);
         	lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
         	//社宅部屋情報更新
         	Skf3010MShatakuRoom roomRecord = new Skf3010MShatakuRoom();
-        	roomRecord.setShatakuKanriNo(shatakuNo);
-        	roomRecord.setShatakuRoomKanriNo(roomNo);
+        	roomRecord.setShatakuKanriNo(shatakuNol);
+        	roomRecord.setShatakuRoomKanriNo(roomNol);
         	roomRecord.setLendJokyo(lendJokyo);
     		try{
     			//更新日
@@ -238,35 +253,36 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
     			roomRecord.setLastUpdateDate(shatakuUpdateDate);
     		}	
     		catch(ParseException ex){
-    			return 0;
+    			return -1;
     		}
         	
         	ret = skf3010MShatakuRoomRepository.updateByPrimaryKeySelective(roomRecord);
 //          '更新できなかった場合
         	if(ret <= 0){
 //              'トランザクションをロールバックする
-        		return 0;
+        		return -1;
         	}else{
         		retCount = ret;
         	}
         }
         
 
-//        '社宅駐車場区画マスタテーブル更新
+//        '社宅駐車場区画1マスタテーブル更新
         if(!SkfCheckUtils.isNullOrEmpty(updateDateParkOne)){
+            parkOnel = Long.parseLong(parkOne);
 
         	String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
         	List<Skf3022Sc005GetParkLendJokyoExp> lendJokyoList = new ArrayList<Skf3022Sc005GetParkLendJokyoExp>();
         	Skf3022Sc005GetParkLendJokyoExpParameter parkParam = new Skf3022Sc005GetParkLendJokyoExpParameter();
-        	parkParam.setShatakuNo(shatakuNo);
-        	parkParam.setParkingNo(parkOne);
+        	parkParam.setShatakuNo(shatakuNol);
+        	parkParam.setParkingNo(parkOnel);
         	//貸与状況取得
         	lendJokyoList = skf3022Sc005GetParkLendJokyoExpRepository.getParkLendJokyo(parkParam);
         	lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
         	
         	Skf3010MShatakuParkingBlock parkRecord = new Skf3010MShatakuParkingBlock();
-        	parkRecord.setShatakuKanriNo(shatakuNo);
-        	parkRecord.setParkingKanriNo(parkOne);
+        	parkRecord.setShatakuKanriNo(shatakuNol);
+        	parkRecord.setParkingKanriNo(parkOnel);
         	parkRecord.setParkingLendJokyo(lendJokyo);
     		try{
     			//更新日
@@ -275,7 +291,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
     			parkRecord.setLastUpdateDate(parkOneUpdateDate);
     		}	
     		catch(ParseException ex){
-    			return 0;
+    			return -1;
     		}
         	//社宅駐車場区画更新
         	ret = skf3010MShatakuParkingBlockRepository.updateByPrimaryKeySelective(parkRecord);
@@ -283,27 +299,28 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 //          '更新できなかった場合
         	if(ret <= 0){
 //              'トランザクションをロールバックする
-        		return 0;
+        		return -1;
         	}else{
         		retCount = ret;
         	}
         }
         
-//        '社宅駐車場区画マスタテーブル更新
+//        '社宅駐車場区画2マスタテーブル更新
         if(!SkfCheckUtils.isNullOrEmpty(updateDateParkTwo)){
-
+            parkTwol = Long.parseLong(parkTwo);
+            
         	String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
         	List<Skf3022Sc005GetParkLendJokyoExp> lendJokyoList = new ArrayList<Skf3022Sc005GetParkLendJokyoExp>();
         	Skf3022Sc005GetParkLendJokyoExpParameter parkParam = new Skf3022Sc005GetParkLendJokyoExpParameter();
-        	parkParam.setShatakuNo(shatakuNo);
-        	parkParam.setParkingNo(parkTwo);
+        	parkParam.setShatakuNo(shatakuNol);
+        	parkParam.setParkingNo(parkTwol);
         	//貸与状況取得
         	lendJokyoList = skf3022Sc005GetParkLendJokyoExpRepository.getParkLendJokyo(parkParam);
         	lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
         	
         	Skf3010MShatakuParkingBlock parkRecord = new Skf3010MShatakuParkingBlock();
-        	parkRecord.setShatakuKanriNo(shatakuNo);
-        	parkRecord.setParkingKanriNo(parkTwo);
+        	parkRecord.setShatakuKanriNo(shatakuNol);
+        	parkRecord.setParkingKanriNo(parkTwol);
         	parkRecord.setParkingLendJokyo(lendJokyo);
     		try{
     			//更新日
@@ -312,7 +329,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
     			parkRecord.setLastUpdateDate(parkTwoUpdateDate);
     		}	
     		catch(ParseException ex){
-    			return 0;
+    			return -1;
     		}
         	//社宅駐車場区画更新
         	ret = skf3010MShatakuParkingBlockRepository.updateByPrimaryKeySelective(parkRecord);
@@ -320,7 +337,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 //          '更新できなかった場合
         	if(ret <= 0){
 //              'トランザクションをロールバックする
-        		return 0;
+        		return -1;
         	}else{
         		retCount = ret;
         	}
@@ -342,7 +359,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 			LogUtils.debugByMsg("updateDateForRock：" + teijiUpdateDate);
 		}	
 		catch(ParseException ex){
-			return 0;
+			return -1;
 		}
 //      '楽観的排他を行う(提示データテーブル)
 		LogUtils.debugByMsg("teijiDataupdateDate：" + teijiData.getUpdateDate());
@@ -353,7 +370,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 //      '更新できなかった場合
     	if(ret <= 0){
 //          'トランザクションをロールバックする
-    		return 0;
+    		return -1;
     	}else{
     		retCount = ret;
     	}
@@ -381,12 +398,16 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 			LogUtils.debugByMsg("updateDateNtk：" + nykUpdateDate);
 		}	
 		catch(ParseException ex){
-			return 0;
+			return -1;
 		}
 		LogUtils.debugByMsg("NyutaikyoDataUpdateDate：" + tmpRecord.getUpdateDate());
 		super.checkLockException(nykUpdateDate, tmpRecord.getUpdateDate());
 		
     	yoteiRecord.setLastUpdateDate(nykUpdateDate);
+		// ユーザーID設定
+    	yoteiRecord.setUpdateUserId(userName);
+		// プログラムID設定
+    	yoteiRecord.setUpdateProgramId(pageId);
     	
     	//入退居予定データ更新
     	ret = skf3022Sc005UpdateNyutaiyoYoteiExpRepository.updateNyutaiyoYotei(yoteiRecord);
@@ -394,15 +415,10 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 //      '更新できなかった場合
     	if(ret <= 0){
 //          'トランザクションをロールバックする
-    		return 0;
+    		return -1;
     	}else{
     		retCount = ret;
     	}
-
-//        '更新できた場合
-        if( 0 < retCount){
-        	return retCount;
-        }
 
 		return retCount;
 	}
