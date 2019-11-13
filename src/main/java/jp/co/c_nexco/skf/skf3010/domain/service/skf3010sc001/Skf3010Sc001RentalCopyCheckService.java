@@ -4,7 +4,6 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc001;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -36,9 +35,6 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
-
-	@Value("${skf.common.validate_error}")
-	private String validationErrorCode;
 
 	@Override
 	public BaseDto index(Skf3010Sc001RentalCopyCheckDto rentalCopyDto) throws Exception {
