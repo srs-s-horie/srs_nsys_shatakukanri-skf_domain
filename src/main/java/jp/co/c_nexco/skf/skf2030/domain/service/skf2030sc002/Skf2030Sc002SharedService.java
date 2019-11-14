@@ -776,7 +776,6 @@ public class Skf2030Sc002SharedService {
 			return false;
 		}
 		for (SkfBihinInfoUtilsGetBihinMasterInfoExp bihinData : bihinMasterList) {
-			// for (int bihinCd = 11; bihinCd <= 19; bihinCd++) {
 			String bihinCd = bihinData.getBihinCd();
 			Skf2030TBihin updData = new Skf2030TBihin();
 			updData.setCompanyCd(companyCd);
