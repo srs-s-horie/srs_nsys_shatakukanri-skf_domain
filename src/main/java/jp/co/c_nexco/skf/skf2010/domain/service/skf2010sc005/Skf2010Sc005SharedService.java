@@ -36,6 +36,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005Upda
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
@@ -65,6 +66,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateCommentInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MOperationGuideRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
@@ -74,15 +76,25 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsu
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuShinseiRepository;
+import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc005common.Skf2010Sc005CommonDto;
 
 /**
  * Skf2010Sc005 承認一覧内部処理クラス
@@ -132,6 +144,10 @@ public class Skf2010Sc005SharedService {
 	private Skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository;
 	@Autowired
 	private Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
@@ -148,7 +164,23 @@ public class Skf2010Sc005SharedService {
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
+	@Autowired
+	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
+	@Autowired
+	private Skf2030Fc001BihinKiboShinseiDataImport skf2030Fc001BihinKiboShinseiDataImport;
+	@Autowired
+	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
+
 	private String companyCd = CodeConstant.C001;
+	private MenuScopeSessionBean menuScopeSessionBean;
+
+	public void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
+		this.menuScopeSessionBean = bean;
+	}
 
 	/**
 	 * ドロップダウンリスト作成
@@ -159,23 +191,23 @@ public class Skf2010Sc005SharedService {
 	 * @param affiliation1Cd
 	 * @param affiliation2Cd
 	 */
-	public void setDropDown(Map<String, Object> dropDownMap, String companyCd, String agencyCd, String affiliation1Cd,
+	public void setDropDown(Skf2010Sc005CommonDto dto, String companyCd, String agencyCd, String affiliation1Cd,
 			String affiliation2Cd) {
 		List<Map<String, Object>> ddlAgencyList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> ddlAffiliation1List = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> ddlAffiliation2List = new ArrayList<Map<String, Object>>();
 
+		// 機関ドロップダウンを作成
 		ddlAgencyList = skfDropDownUtils.getDdlAgencyByCd(companyCd, agencyCd, true);
-		// 部等ドロップダウンをセット
+		// 部等ドロップダウンを作成
 		ddlAffiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
-
-		// 室、チーム又は課ドロップダウンをセット
+		// 室、チーム又は課ドロップダウを作成
 		ddlAffiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd,
 				affiliation2Cd, true);
 
-		dropDownMap.put("Agency", ddlAgencyList);
-		dropDownMap.put("Affiliation1", ddlAffiliation1List);
-		dropDownMap.put("Affiliation2", ddlAffiliation2List);
+		dto.setDdlAgencyList(ddlAgencyList);
+		dto.setDdlAffiliation1List(ddlAffiliation1List);
+		dto.setDdlAffiliation2List(ddlAffiliation2List);
 	}
 
 	/**
@@ -201,7 +233,7 @@ public class Skf2010Sc005SharedService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean updateApplStatus(String companyCd, String applNo, Map<String, String> errMap) throws Exception {
+	public boolean updateApplStatus(String companyCd, String applNo, Skf2010Sc005CommonDto dto) throws Exception {
 		if ((companyCd == null || CheckUtils.isEmpty(companyCd) || (applNo == null || CheckUtils.isEmpty(applNo)))) {
 			return false;
 		}
@@ -260,9 +292,6 @@ public class Skf2010Sc005SharedService {
 			nextWorkflow = CodeConstant.LEVEL_5;
 			agreeDate = updateDate;
 			break;
-		default:
-			errMap.put("error", "");
-			return false;
 		}
 
 		if (!CheckUtils.isEmpty(nextWorkflow)) {
@@ -330,23 +359,15 @@ public class Skf2010Sc005SharedService {
 		Skf2010Sc005GetCommentInfoForUpdateExp tmpTApplCommentData = new Skf2010Sc005GetCommentInfoForUpdateExp();
 		// 次階層のステータスが”31”【承認中】の場合、承認中コメントを削除
 		if (nextStatus.equals(CodeConstant.STATUS_SHONIN1)) {
-			Skf2010Sc005GetCommentInfoForUpdateExpParameter tApplCommentParam = new Skf2010Sc005GetCommentInfoForUpdateExpParameter();
-			tApplCommentParam.setCompanyCd(companyCd);
-			tApplCommentParam.setApplNo(applNo);
-			tApplCommentParam.setApplStatus(nextStatus);
-			tmpTApplCommentData = skf2010Sc005GetCommentInfoForUpdateExpRepository
-					.getCommentInfoForUpdate(tApplCommentParam);
-			if (tmpTApplCommentData != null) {
 
-				Skf2010TApplCommentKey key = new Skf2010TApplCommentKey();
-				key.setCompanyCd(companyCd);
-				key.setApplNo(applNo);
-				key.setApplStatus(nextStatus);
+			Skf2010TApplCommentKey key = new Skf2010TApplCommentKey();
+			key.setCompanyCd(companyCd);
+			key.setApplNo(applNo);
+			key.setApplStatus(nextStatus);
 
-				int delComRes = skf2010TApplCommentRepository.deleteByPrimaryKey(key);
-				if (delComRes <= 0) {
-					return false;
-				}
+			int delComRes = skf2010TApplCommentRepository.deleteByPrimaryKey(key);
+			if (delComRes <= 0) {
+				return false;
 			}
 		}
 		// 次階層のステータスが”40”【承認済】の場合、承認中コメントを承認済みコメントに更新
@@ -379,6 +400,17 @@ public class Skf2010Sc005SharedService {
 			sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId);
 		}
 
+		// 社宅データ連携
+		String shainNo = tApplHistoryData.getShainNo();
+		String applId = tApplHistoryData.getApplId();
+		String pageId = FunctionIdConstant.SKF2050_SC001;
+		List<String> resultBatch = doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, nextStatus, applId, pageId);
+		if (resultBatch != null) {
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(dto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+			return false;
+		}
+
 		return true;
 	}
 
@@ -400,6 +432,8 @@ public class Skf2010Sc005SharedService {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
+		Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>> forUpdateListMap = new HashMap<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>>();
+
 		for (int i = 0; i < tApplHistoryData.size(); i++) {
 			String applDate = "";
 			String agreDate = "";
@@ -410,12 +444,14 @@ public class Skf2010Sc005SharedService {
 			Skf2010Sc005GetShoninIchiranShoninExp tmpData = tApplHistoryData.get(i);
 			// 承認チェックフラグ判定
 			chkSelectAgreeTarget = checkAgree(tmpData);
+			String applNo = tmpData.getApplNo();
 
-			String chkAgreeCode = "";
+			String baseChkBoxTag = "<input type=\"checkbox\" name=\"applNo\" id=\"applNo_$applNo$\" value=\"$applNo$\" $disabled$ />";
+			String chkBoxTag = baseChkBoxTag.replace("$applNo$", applNo);
 			if (chkSelectAgreeTarget) {
-				chkAgreeCode = "〇";
+				chkBoxTag = chkBoxTag.replace("$disabled$", CodeConstant.NONE);
 			} else {
-				chkAgreeCode = "-";
+				chkBoxTag = chkBoxTag.replace("$disabled$", "disabled=\"true\"");
 			}
 
 			// 日付型を文字列型に変更する
@@ -436,9 +472,9 @@ public class Skf2010Sc005SharedService {
 			}
 
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
+			tmpMap.put("chkBox", chkBoxTag); // チェックボックス
 			tmpMap.put("applId", tmpData.getApplId()); // 申請書ID
 			tmpMap.put("applStatusCd", tmpData.getApplStatus()); // 申請状況コード
-			tmpMap.put("chkAgree", chkAgreeCode);
 			tmpMap.put("applStatus", applStatus); // 申請状況
 			tmpMap.put("applNo", tmpData.getApplNo()); // 申請書番号
 			tmpMap.put("applDate", applDate); // 申請日
@@ -451,7 +487,13 @@ public class Skf2010Sc005SharedService {
 			tmpMap.put("detail", ""); // 確認ボタン（アイコン）
 
 			returnList.add(tmpMap);
+
+			// 社宅連携用データセット作成
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skfBatchUtils
+					.getUpdateDateForUpdateSQL(tmpData.getShainNo());
+			forUpdateListMap.put(tmpData.getShainNo(), forUpdateMap);
 		}
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC005, forUpdateListMap);
 		return returnList;
 	}
 
@@ -1085,31 +1127,45 @@ public class Skf2010Sc005SharedService {
 			return false;
 		}
 
-		// 社宅入居、退居申請の時
+		// 社宅入居の時
 		if (FunctionIdConstant.R0100.equals(tmpData.getApplId())) {
 			if (CodeConstant.STATUS_DOI_ZUMI.equals(applStatus) || CodeConstant.STATUS_SHONIN1.equals(applStatus)) {
-				// 提示データの共益費が協議中だったら一括承認ボタンを非活性にする
+				// 提示データの共益費が協議中だったら一括承認チェックボックスを非活性にする
 				if (selectKyoekihiKyogi(tmpData.getShainNo(), CodeConstant.NYUTAIKYO_KBN_NYUKYO, tmpData.getApplNo())) {
 					return false;
 				}
 			}
+			// ステータスが「同意済」「承認中」以外の場合は一括承認チェックボックスを非活性にする
+			switch (applStatus) {
+			case CodeConstant.STATUS_DOI_ZUMI:
+			case CodeConstant.STATUS_SHONIN1:
+				break;
+			default:
+				return false;
+			}
 		} else if (FunctionIdConstant.R0104.equals(tmpData.getApplId()) || "R0105".equals(tmpData.getApplId())) {
 			// 「申請書類ID」が「備品希望申請」「備品返却確認」のいずれかであり、
 			// 「ステータス」が搬入済/搬出済/承認中でいずれでもない場合
-			if (!(CodeConstant.STATUS_HANNYU_ZUMI.equals(applStatus)
-					&& CodeConstant.STATUS_HANSYUTSU_ZUMI.equals(applStatus)
-					&& CodeConstant.STATUS_SHONIN1.equals(applStatus))) {
+			switch (applStatus) {
+			case CodeConstant.STATUS_HANNYU_ZUMI:
+			case CodeConstant.STATUS_HANSYUTSU_ZUMI:
+			case CodeConstant.STATUS_SHONIN1:
+				break;
+			default:
 				return false;
 			}
 		} else if (FunctionIdConstant.R0103.equals(tmpData.getApplId())) {
 			// 「申請書類ID」が「社宅（自動車保管場所）退居届」であり、「ステータス」が承認中でない場合
-			if (!CodeConstant.STATUS_SHONIN1.equals(applStatus)) {
+			if (!CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)) {
 				return false;
 			}
 		} else {
 			// 「申請書類ID」が前述のいずれでもなく、「ステータス」が審査中/承認中のいずれでもない場合
-			if (!(CodeConstant.STATUS_SHINSEICHU.equals(applStatus) && CodeConstant.STATUS_SHINSACHU.equals(applStatus)
-					&& CodeConstant.STATUS_SHONIN1.equals(applStatus))) {
+			switch (applStatus) {
+			case CodeConstant.STATUS_SHINSACHU:
+			case CodeConstant.STATUS_SHONIN1:
+				break;
+			default:
 				return false;
 			}
 		}
@@ -1554,4 +1610,67 @@ public class Skf2010Sc005SharedService {
 		return false;
 	}
 
+	/**
+	 * 社宅連携処理を実施する
+	 * 
+	 * @param shainNo
+	 * @param applNo
+	 * @param status
+	 * @param userId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String shainNo, String applNo,
+			String status, String applId, String pageId) {
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String userId = loginUserInfoMap.get("userCd");
+		// 排他チェック用データ取得
+		Map<String, Object> forUpdateObject = (Map<String, Object>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC005);
+
+		List<String> resultBatch = new ArrayList<String>();
+
+		switch (applId) {
+		case FunctionIdConstant.R0100:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0100 = skf2020Fc001NyukyoKiboSinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject.get(shainNo));
+			skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0100);
+
+			// 連携処理開始
+			resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, CodeConstant.NONE,
+					status, userId, pageId);
+			break;
+		case FunctionIdConstant.R0103:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0103 = skf2040Fc001TaikyoTodokeDataImport
+					.forUpdateMapDownCaster(forUpdateObject.get(shainNo));
+			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0103);
+
+			// 連携処理開始
+			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, status, userId, pageId);
+			break;
+		case FunctionIdConstant.R0104:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0104 = skf2030Fc001BihinKiboShinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2030Fc001BihinKiboShinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0104);
+
+			// 連携処理開始
+			resultBatch = skf2030Fc001BihinKiboShinseiDataImport.doProc(companyCd, shainNo, applNo, status, userId,
+					pageId);
+			break;
+		case FunctionIdConstant.R0105:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0105 = skf2050Fc001BihinHenkyakuSinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0105);
+
+			// 連携処理開始
+			resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, status, userId,
+					pageId);
+			break;
+		default:
+			break;
+		}
+
+		return resultBatch;
+	}
 }

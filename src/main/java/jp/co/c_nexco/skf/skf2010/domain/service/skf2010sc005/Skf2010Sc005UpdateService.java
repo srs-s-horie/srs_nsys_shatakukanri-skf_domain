@@ -15,8 +15,11 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005UpdateDto;
 
 /**
@@ -31,6 +34,8 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -39,6 +44,8 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 
 	@Override
 	public BaseDto index(Skf2010Sc005UpdateDto updDto) throws Exception {
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("一括承認処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 
 		// 申請情報履歴更新処理
 		updateApplStatus(updDto);
@@ -62,6 +69,9 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 
 	@SuppressWarnings("unchecked")
 	private void updateApplStatus(Skf2010Sc005UpdateDto updDto) throws Exception {
+		// 社宅連携用セッション情報セット
+		skf2010Sc005SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
+
 		String submitApplNo = updDto.getSubmitApplNo();
 
 		if (submitApplNo == null || CheckUtils.isEmpty(submitApplNo)) {
@@ -72,17 +82,15 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 		String[] applNos = submitApplNo.split(",");
 		updateApplNoList = Arrays.asList(applNos);
 
-		Map<String, String> errMap = new HashMap<String, String>();
-
 		for (String applNo : updateApplNoList) {
-			boolean res = skf2010Sc005SharedService.updateApplStatus(companyCd, applNo, errMap);
+			boolean res = skf2010Sc005SharedService.updateApplStatus(companyCd, applNo, updDto);
 			if (!res) {
-				if (errMap.get("error") != null && !CheckUtils.isEmpty(errMap.get("error"))) {
-					ServiceHelper.addErrorResultMessage(updDto, null, MessageIdConstant.E_SKF_1075);
-				}
+				throwBusinessExceptionIfErrors(updDto.getResultMessages());
 			}
-			throwBusinessExceptionIfErrors(updDto.getResultMessages());
 		}
+		// セッション情報削除
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC002);
+
 		return;
 	}
 
@@ -95,7 +103,7 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 
 		// 申請状況チェック
 		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1048, "申請状況");
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請状況");
 			throwBusinessExceptionIfErrors(dto.getResultMessages());
 		} else {
 			// 検索条件セット

@@ -280,7 +280,9 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			switch (initDto.getApplStatus()) {
 			case CodeConstant.STATUS_SHINSEICHU:
 			case CodeConstant.STATUS_SHINSACHU:
-				operationGuide = operationGuideMap.get("01");
+				if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)) {
+					operationGuide = operationGuideMap.get("01");
+				}
 				break;
 			case CodeConstant.STATUS_KAKUNIN_IRAI:
 				operationGuide = operationGuideMap.get("02");

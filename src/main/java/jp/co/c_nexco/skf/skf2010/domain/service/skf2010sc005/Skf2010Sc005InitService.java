@@ -12,11 +12,14 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005InitDto;
@@ -32,6 +35,8 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	@Autowired
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
 	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -40,21 +45,14 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 
 	@Override
 	public BaseDto index(Skf2010Sc005InitDto initDto) throws Exception {
-
-		// タイトル設定
-		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC005_TITLE);
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, FunctionIdConstant.SKF2010_SC005);
 
 		// 初期化処理
 		init(initDto);
 
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, initDto.getPageId());
-
 		// ドロップダウン作成
 		setDropDown(initDto);
-
-		// 申請書類種別ドロップダウンをセット
-		// ※申請書類種別は社宅では「福利厚生」のみなので、ドロップダウンの必要が無い
 
 		// チェックボックスの初期値セット
 		List<String> defaultApplStatusList = getDefaultApplStatusValue();
@@ -62,8 +60,6 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 
 		// 所属機関の初期値セット
 		initDto.setShozokuKikan(CodeConstant.SHOZOKU_SHINSEI);
-
-		// 社宅連携フラグ(0：社宅未連携、1：社宅連携)によるチェックボックスの切替
 
 		// 検索処理（リストテーブル作成）
 		initDto.setLtResultList(searchApplList(initDto, defaultApplStatusList));
@@ -76,18 +72,12 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	 * 
 	 * @param dto
 	 */
-	@SuppressWarnings("unchecked")
 	private void setDropDown(Skf2010Sc005InitDto dto) {
 		// ドロップダウン作成
-		Map<String, Object> dropDownMap = new HashMap<String, Object>();
-		skf2010Sc005SharedService.setDropDown(dropDownMap, companyCd, dto.getAgency(), dto.getAffiliation1(),
-				dto.getAffiliation2());
-		// 機関ドロップダウンをセット
-		dto.setDdlAgencyList((List<Map<String, Object>>) dropDownMap.get("Agency"));
-		// 部等ドロップダウンをセット
-		dto.setDdlAffiliation1List((List<Map<String, Object>>) dropDownMap.get("Affiliation1"));
-		// 室、チーム又は課ドロップダウンをセット
-		dto.setDdlAffiliation2List((List<Map<String, Object>>) dropDownMap.get("Affiliation2"));
+		String agencyCd = dto.getAgency();
+		String affiliation1Cd = dto.getAffiliation1();
+		String affiliation2Cd = dto.getAffiliation2();
+		skf2010Sc005SharedService.setDropDown(dto, companyCd, agencyCd, affiliation1Cd, affiliation2Cd);
 
 		return;
 	}
@@ -98,21 +88,19 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	 * @param dto
 	 */
 	private void init(Skf2010Sc005InitDto dto) {
-		// エラー色を削除
-		dto.setApplDateFromErr("");
-		dto.setApplDateToErr("");
-		dto.setAgreDateFromErr("");
-		dto.setAgreDateToErr("");
-		dto.setApplStatusErr("");
-
+		// ログインユーザーの権限チェック
 		dto.setMaskPattern("USER");
-		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
-		for (String roleId : roleIds) {
-			if (roleId != null && (roleId.equals(CodeConstant.NAKASA_SHATAKU_KANRI)
-					|| roleId.equals(CodeConstant.NAKASA_SHATAKU_TANTO) || roleId.equals(CodeConstant.SYSTEM_KANRI))) {
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		if (loginUserInfoMap != null && NfwStringUtils.isNotEmpty(loginUserInfoMap.get("roleId"))) {
+			switch (loginUserInfoMap.get("roleId")) {
+			case SkfCommonConstant.ADMIN_ROLE1:
+			case SkfCommonConstant.ADMIN_ROLE2:
+			case SkfCommonConstant.ADMIN_ROLE3:
 				dto.setMaskPattern("ADMIN");
 			}
 		}
+		// タイトル設定
+		dto.setPageTitleKey(MessageIdConstant.SKF2010_SC005_TITLE);
 
 		// 操作ガイド取得
 		dto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(dto.getPageId()));
@@ -131,6 +119,9 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	 */
 	private List<Map<String, Object>> searchApplList(Skf2010Sc005InitDto dto, List<String> applStatus) {
 		List<Map<String, Object>> rtnList = new ArrayList<Map<String, Object>>();
+
+		// 社宅連携用セッション情報をセット
+		skf2010Sc005SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 承認一覧を条件から取得
 		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
@@ -200,13 +191,6 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 			List<String> applStatusList = new ArrayList<String>();
 			List<String> tmpApplStatus = Arrays.asList(dto.getApplStatus());
 			applStatusList.addAll(tmpApplStatus);
-			// 申請状況に「30：承認中」がセットされていた場合、承認1～4まで全て設定する
-			if (applStatusList.contains(CodeConstant.STATUS_SHONIN)) {
-				applStatusList.add(CodeConstant.STATUS_SHONIN1);
-				applStatusList.add(CodeConstant.STATUS_SHONIN2);
-				applStatusList.add(CodeConstant.STATUS_SHONIN3);
-				applStatusList.add(CodeConstant.STATUS_SHONIN4);
-			}
 			param.setApplStatus(applStatusList);
 		}
 		// 承認者名
