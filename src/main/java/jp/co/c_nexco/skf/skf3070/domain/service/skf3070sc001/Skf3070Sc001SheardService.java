@@ -73,17 +73,22 @@ public class Skf3070Sc001SheardService {
 				tmpMap = new HashMap<String, Object>();
 				if ((NfwStringUtils.isEmpty(checkOwnerNo)) || (!checkOwnerNo.equals(list.getOwnerNo()))) {
 					// 判定用賃貸人（代理人）番号が空の場合または判定用賃貸人（代理人）番号と賃貸人（代理人）番号が同じではない場合
-					checkOwnerNo = list.getOwnerNo(); // 賃貸人（代理人）番号
+					checkOwnerNo = list.getOwnerNo(); // 判定用賃貸人（代理人）番号
 
 					// 表示内容をmapに格納
+					// 賃貸人（代理人）番号
 					tmpMap.put("ownerNo", HtmlUtils.htmlEscape(list.getOwnerNo()));
+					// 賃貸人（代理人）氏名
 					tmpMap.put("ownerName", HtmlUtils.htmlEscape(list.getOwnerName()));
+					// 賃貸人（代理人）氏名（フリガナ）
 					tmpMap.put("ownerNameKk", HtmlUtils.htmlEscape(list.getOwnerNameKk()));
+					// 賃貸人（代理人）住所
 					tmpMap.put("address", HtmlUtils.htmlEscape(list.getAddress()));
 					if (NfwStringUtils.isNotEmpty(list.getBusinessKbn())) {
 						// 個人法人区分汎用コードからセット
 						String businessKbnName = skfGenericCodeUtils.getGenericCodeNameReverse(
 								FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN, list.getBusinessKbn());
+						// 個人法人区分
 						tmpMap.put("businessKbn", HtmlUtils.htmlEscape(businessKbnName));
 					}
 					if (NfwStringUtils.isNotEmpty(list.getAcceptFlg())) {
@@ -91,15 +96,20 @@ public class Skf3070Sc001SheardService {
 						String acceptFlgName = skfGenericCodeUtils.getGenericCodeNameReverse(
 								FunctionIdConstant.GENERIC_CODE_AGENT_INDIVIDUAL_NUMBER_DEMAND_SITUATION,
 								list.getAcceptFlg());
+						// 個人番号受領フラグ
 						tmpMap.put("acceptFlg", HtmlUtils.htmlEscape(acceptFlgName));
 					}
 					if (NfwStringUtils.isNotEmpty(list.getDataCount())) {
 						// 所有物件件数
 						tmpMap.put("propertiesOwnedCnt", HtmlUtils.htmlEscape(list.getDataCount()));
 					} else {
+						// 所有物件件数 なければ0
 						tmpMap.put("propertiesOwnedCnt", HtmlUtils.htmlEscape(CodeConstant.STRING_ZERO));
 					}
-
+					// 督促状況
+					tmpMap.put("acceptStatus", HtmlUtils.htmlEscape(list.getAcceptStatus()));
+					// 備考
+					tmpMap.put("remarks", HtmlUtils.htmlEscape(list.getRemarks()));
 					tmpMap.put("edit", "");
 					tmpMap.put("properties", "");
 					tableDataList.add(tmpMap);
@@ -111,7 +121,6 @@ public class Skf3070Sc001SheardService {
 		}
 		// 排他チェック用に最終更新日を格納
 		dto.setLastUpdateDateMap(lastUpdateDateMap);
-
 		return tableDataList;
 	}
 
@@ -199,6 +208,7 @@ public class Skf3070Sc001SheardService {
 	 * @return
 	 * @throws ParseException
 	 */
+	@SuppressWarnings("unused")
 	private Map<String, Object> getDropDownLists(Skf3070Sc001CommonDto dto) throws ParseException {
 
 		// 戻り値用Mapのインスタンス生成

@@ -77,7 +77,7 @@ public class Skf3070Sc001SearchService extends BaseServiceAbstract<Skf3070Sc001S
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1007);
 		} else if (listTableData.size() > Integer.parseInt(listTableSearchMaxCount)) {
 			// 検索結果表示最大数を超過
-			searchDto.setListTableData(null); // 表示されているリスト内容をクリア
+			listTableData = new ArrayList<Map<String, Object>>();
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1002, listTableSearchMaxCount,
 					"抽出条件を変更してください。");
 		}
