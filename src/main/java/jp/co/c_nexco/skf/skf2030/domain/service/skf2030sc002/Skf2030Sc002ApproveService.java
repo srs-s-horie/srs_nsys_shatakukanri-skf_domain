@@ -57,6 +57,7 @@ public class Skf2030Sc002ApproveService extends BaseServiceAbstract<Skf2030Sc002
 		applInfo.put("applId", applyDto.getApplId());
 
 		String execName = "apply";
+		skf2030Sc002SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		// 入力チェック
 		if (!skf2030Sc002SharedService.validateReason(applyDto, false)) {

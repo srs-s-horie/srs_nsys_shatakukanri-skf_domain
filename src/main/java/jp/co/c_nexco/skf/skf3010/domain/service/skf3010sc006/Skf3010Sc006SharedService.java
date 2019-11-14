@@ -3128,7 +3128,7 @@ public class Skf3010Sc006SharedService {
 			shatakuInfoList = skf3010Sc002GetShatakuInfoExpRepository.getShatakuInfo(param);
 			if (shatakuInfoList.size() < 1) {
 				//件数が0未満（排他エラー）
-				ServiceHelper.addWarnResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
 				logger.debug("社宅情報取得エラー");
 				return;
 			}

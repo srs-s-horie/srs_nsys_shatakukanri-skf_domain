@@ -37,8 +37,6 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Value("${skf3010.hosoku_max_file_size}")
 	private String maxFileSize;
-	@Value("${skf.common.validate_error}")
-	private String validationErrorCode;
 
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);

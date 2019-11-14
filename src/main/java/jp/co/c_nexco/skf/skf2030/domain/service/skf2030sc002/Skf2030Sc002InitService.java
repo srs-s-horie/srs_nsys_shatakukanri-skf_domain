@@ -4,17 +4,21 @@
 package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc002;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002InitDto;
 
 /**
@@ -34,6 +38,8 @@ public class Skf2030Sc002InitService extends BaseServiceAbstract<Skf2030Sc002Ini
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -57,6 +63,11 @@ public class Skf2030Sc002InitService extends BaseServiceAbstract<Skf2030Sc002Ini
 		applInfo.put("status", initDto.getSendApplStatus());
 		applInfo.put("applNo", initDto.getApplNo());
 		applInfo.put("applId", initDto.getApplId());
+
+		// 社宅連携バッチ更新排他処理用
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skfBatchUtils
+				.getUpdateDateForUpdateSQL(initDto.getShainNo());
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC002, forUpdateMap);
 
 		// 初期表示
 		boolean result = skf2030Sc002SharedService.setDisplayData(initDto, loginUserInfo, applInfo);

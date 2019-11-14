@@ -71,7 +71,7 @@ public class Skf3022Sc005SearchService extends BaseServiceAbstract<Skf3022Sc005S
 		String moveInOut = searchDto.getMoveInOut();
 		List<Map<String, Object>> moveInOutList = new ArrayList<Map<String, Object>>();
 //      'コントロールの設定
-		skf3022Sc005SharedService.getDoropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
+		skf3022Sc005SharedService.getDropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
 				bhJyokyo, bhJyokyoList, bhKakunin, bhKakuninList, moveInOut, moveInOutList);
 		
 		// リストデータ取得用
@@ -95,7 +95,7 @@ public class Skf3022Sc005SearchService extends BaseServiceAbstract<Skf3022Sc005S
 		// エラーメッセージ設定
 		if (listCount == 0) {
 			// 取得レコード0件のワーニング
-			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1007);
+			ServiceHelper.addErrorResultMessage(searchDto, null, MessageIdConstant.W_SKF_1007);
 		}
 
 		//検索条件退避用
@@ -114,8 +114,6 @@ public class Skf3022Sc005SearchService extends BaseServiceAbstract<Skf3022Sc005S
 		searchDto.setBtnBihinTeijiDisabled("true");
 		searchDto.setBtnBihinInOutDisabled("true");
 		
-		searchDto.setListTableMaxRowCount(listTableMaxRowCount);
-
 		searchDto.setNyutaikyoKbnList(nyutaikyoKbnList);
 		searchDto.setStJyokyoList(stJyokyoList);
 		searchDto.setStKakuninList(stKakuninList);

@@ -206,7 +206,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			// 更新結果判定
 			if (updateCnt < 1) {
 				//件数が0未満（排他エラー）
-				ServiceHelper.addWarnResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
@@ -228,7 +228,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			// 更新結果判定
 			if (updateCnt < 1) {
 				//件数が0未満（排他エラー）
-				ServiceHelper.addWarnResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
