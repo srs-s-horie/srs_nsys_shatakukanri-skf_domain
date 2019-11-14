@@ -82,6 +82,8 @@ public class Skf3070Sc001SheardService {
 					tmpMap.put("ownerName", HtmlUtils.htmlEscape(list.getOwnerName()));
 					// 賃貸人（代理人）氏名（フリガナ）
 					tmpMap.put("ownerNameKk", HtmlUtils.htmlEscape(list.getOwnerNameKk()));
+					// 賃貸人（代理人）郵便番号
+					tmpMap.put("zipCd", HtmlUtils.htmlEscape(list.getZipCd()));
 					// 賃貸人（代理人）住所
 					tmpMap.put("address", HtmlUtils.htmlEscape(list.getAddress()));
 					if (NfwStringUtils.isNotEmpty(list.getBusinessKbn())) {
