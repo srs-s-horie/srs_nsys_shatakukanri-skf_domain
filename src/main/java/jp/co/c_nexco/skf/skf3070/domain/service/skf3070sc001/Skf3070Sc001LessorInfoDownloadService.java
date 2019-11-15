@@ -67,7 +67,7 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 		
 		// 検索結果一覧情報が存在しない場合
 		if(listTableData == null || listTableData.size() == 0){
-			//TODO エラーメッセージ出力(いる？)
+			//エラーメッセージ出力
 			ServiceHelper.addErrorResultMessage(lessorDlDto, null, MessageIdConstant.E_SKF_1029);
 			throwBusinessExceptionIfErrors(lessorDlDto.getResultMessages());
 		}
