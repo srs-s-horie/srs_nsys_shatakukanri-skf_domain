@@ -26,6 +26,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006InitDto;
 
 /**
@@ -45,10 +46,14 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
-	private static final String PLAN_TO_BUY_CAR = "購入を予定している";
+	private final String PLAN_TO_BUY_CAR = "購入を予定している";
+	private final String KYOGICHU_TEXT = "協議中";
+	private final String GOJITSU_TEXT = "（後日お知らせ）";
 
 	/**
 	 * サービス処理を行う。
@@ -718,13 +723,26 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		initDto.setNewRental(newRental);
 		// 共益費
 		String newKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
-		if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
-			newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
+		// 個人負担共益費協議中フラグチェック
+		boolean kyogiFlg = skfTeijiDataInfoUtils.selectKyoekihiKyogi(initDto.getShainNo(), CodeConstant.SYS_NYUKYO_KBN,
+				initDto.getApplNo());
+		if (kyogiFlg) {
+			// trueの時は「協議中」を表示
+			newKyoekihi = KYOGICHU_TEXT;
+		} else {
+			// falseの時は共益費を表示
+			if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
+				newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
+			} else {
+				// 共益費が未登録の場合、「（後日お知らせ）」を表示する
+				newKyoekihi = GOJITSU_TEXT;
+			}
 		}
-		// 部屋番号が登録されている場合のみ
+		// 共益費は部屋番号が登録されている場合のみ表示
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
 			initDto.setNewKyoekihi(newKyoekihi);
 		}
+
 		// 入居日
 		initDto.setNyukyoKanoDate(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(), "yyyy年MM月dd日"));
