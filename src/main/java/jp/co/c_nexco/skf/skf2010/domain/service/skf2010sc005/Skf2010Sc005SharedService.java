@@ -90,6 +90,7 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
@@ -167,6 +168,8 @@ public class Skf2010Sc005SharedService {
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 
 	@Autowired
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
@@ -1129,7 +1132,8 @@ public class Skf2010Sc005SharedService {
 		if (FunctionIdConstant.R0100.equals(tmpData.getApplId())) {
 			if (CodeConstant.STATUS_DOI_ZUMI.equals(applStatus) || CodeConstant.STATUS_SHONIN1.equals(applStatus)) {
 				// 提示データの共益費が協議中だったら一括承認チェックボックスを非活性にする
-				if (selectKyoekihiKyogi(tmpData.getShainNo(), CodeConstant.NYUTAIKYO_KBN_NYUKYO, tmpData.getApplNo())) {
+				if (skfTeijiDataInfoUtils.selectKyoekihiKyogi(tmpData.getShainNo(), CodeConstant.SYS_NYUKYO_KBN,
+						tmpData.getApplNo())) {
 					return false;
 				}
 			}
@@ -1169,32 +1173,6 @@ public class Skf2010Sc005SharedService {
 		}
 
 		return true;
-	}
-
-	/**
-	 * 提示データの共益費が協議中かチェックする
-	 * 
-	 * @param shainNo
-	 * @param nyutaikyoKbn
-	 * @param applNo
-	 * @return
-	 */
-	private boolean selectKyoekihiKyogi(String shainNo, String nyutaikyoKbn, String applNo) {
-		boolean result = true;
-		List<Skf2010Sc005GetTeijiDataInfoExp> teijiDataList = new ArrayList<Skf2010Sc005GetTeijiDataInfoExp>();
-		Skf2010Sc005GetTeijiDataInfoExpParameter param = new Skf2010Sc005GetTeijiDataInfoExpParameter();
-		param.setShainNo(shainNo);
-		param.setNyutaikyoKbn(nyutaikyoKbn);
-		param.setApplNo(applNo);
-		teijiDataList = skf2010Sc005GetTeijiDataInfoExpRepository.getTeijiDataInfo(param);
-		if (teijiDataList.size() > 0) {
-			Skf2010Sc005GetTeijiDataInfoExp teijiData = teijiDataList.get(0);
-			if (teijiData.getKyoekihiPersonKyogichuFlg() != null
-					&& CheckUtils.isEqual(teijiData.getKyoekihiPersonKyogichuFlg(), CodeConstant.KYOEKIHI_KYOGICHU)) {
-				result = false;
-			}
-		}
-		return result;
 	}
 
 	/**
