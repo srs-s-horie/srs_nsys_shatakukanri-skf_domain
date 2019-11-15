@@ -127,8 +127,7 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
 		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
 		param = setParam(dto);
-		param.setShozokuKikan(CodeConstant.SHOZOKU_SHINSEI);
-		tApplHistoryData = skf2010Sc005SharedService.SearchApplList(param);
+		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
 		// グリッド表示（リストテーブル）作成
 		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
 
@@ -163,7 +162,7 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 
 		}
 		// 所属機関
-		param.setShozokuKikan(dto.getShozokuKikan());
+		param.setShozokuKikan(CodeConstant.SHOZOKU_SHINSEI);
 		// 申請日時（FROM）
 		if (dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())) {
 			param.setApplDateFrom(dto.getApplDateFrom().replace("/", ""));
@@ -208,7 +207,7 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	private List<String> getDefaultApplStatusValue() {
 		List<String> rtnApplStatus = new ArrayList<String>();
 		rtnApplStatus.add(CodeConstant.STATUS_SHINSACHU); // 10：審査中
-		rtnApplStatus.add(CodeConstant.STATUS_SHONIN); // 30：承認中
+		rtnApplStatus.add(CodeConstant.STATUS_SHONIN1); // 31：承認中
 		rtnApplStatus.add(CodeConstant.STATUS_SHINSEICHU); // 01：申請中
 		rtnApplStatus.add(CodeConstant.STATUS_DOI_SHINAI); // 21：同意しない
 		rtnApplStatus.add(CodeConstant.STATUS_DOI_ZUMI); // 22：同意済み

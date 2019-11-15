@@ -149,7 +149,7 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 			// 検索条件セット
 			param = setParam(dto);
 			// 検索処理
-			tApplHistoryData = skf2010Sc005SharedService.SearchApplList(param);
+			tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
 
 		}
 

@@ -202,7 +202,7 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		// 検索条件セット
 		param = setParam(dto);
 		// 検索処理
-		tApplHistoryData = skf2010Sc005SharedService.SearchApplList(param);
+		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
 		if (tApplHistoryData == null || tApplHistoryData.size() == 0) {
 			// 検索結果0件
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1007);
