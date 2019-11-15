@@ -85,6 +85,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -160,6 +162,8 @@ public class Skf2010Sc005SharedService {
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
@@ -216,7 +220,7 @@ public class Skf2010Sc005SharedService {
 	 * @param param
 	 * @return
 	 */
-	public List<Skf2010Sc005GetShoninIchiranShoninExp> SearchApplList(
+	public List<Skf2010Sc005GetShoninIchiranShoninExp> searchApplList(
 			Skf2010Sc005GetShoninIchiranShoninExpParameter param) {
 		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistory = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
 		tApplHistory = skf2010Sc005GetShoninIchiranShoninExpRepository.getShoninIchiranShonin(param);
@@ -428,20 +432,17 @@ public class Skf2010Sc005SharedService {
 
 		// 汎用コード取得
 		Map<String, String> genericCodeMap = new HashMap<String, String>();
-		genericCodeMap = skfGenericCodeUtils.getGenericCode("SKF1001");
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		genericCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 
 		Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>> forUpdateListMap = new HashMap<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>>();
 
-		for (int i = 0; i < tApplHistoryData.size(); i++) {
-			String applDate = "";
-			String agreDate = "";
-			String applStatus = "";
+		for (Skf2010Sc005GetShoninIchiranShoninExp tmpData : tApplHistoryData) {
+			String applDate = CodeConstant.NONE;
+			String agreDate = CodeConstant.NONE;
+			String applStatus = CodeConstant.NONE;
 			// 承認チェックフラグ
 			boolean chkSelectAgreeTarget = true;
 
-			Skf2010Sc005GetShoninIchiranShoninExp tmpData = tApplHistoryData.get(i);
 			// 承認チェックフラグ判定
 			chkSelectAgreeTarget = checkAgree(tmpData);
 			String applNo = tmpData.getApplNo();
@@ -456,14 +457,16 @@ public class Skf2010Sc005SharedService {
 
 			// 日付型を文字列型に変更する
 			if (tmpData.getApplDate() != null) {
-				applDate = sdf.format(tmpData.getApplDate()).toString();
+				applDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getApplDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 			if (tmpData.getAgreDate() != null) {
-				agreDate = sdf.format(tmpData.getAgreDate()).toString();
+				agreDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getAgreDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 			// 一時保存は申請日を表示しない
 			if (CodeConstant.STATUS_ICHIJIHOZON.equals(tmpData.getApplStatus())) {
-				applDate = "";
+				applDate = CodeConstant.NONE;
 			}
 
 			// 申請状況をコードから汎用コードに変更
@@ -1110,14 +1113,9 @@ public class Skf2010Sc005SharedService {
 		String applStatus = tmpData.getApplStatus();
 
 		// ログインユーザが承認権限を持たない申請書類である場合
-		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
-		if (roleIds == null) {
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		if (!isAgreeAuthority(companyCd, tmpData.getApplId(), loginUserInfoMap.get("roleId"), applStatus)) {
 			return false;
-		}
-		for (String roleId : roleIds) {
-			if (!isAgreeAuthority(companyCd, tmpData.getApplId(), roleId, applStatus)) {
-				return false;
-			}
 		}
 
 		String agreName1 = tmpData.getAgreName1();
@@ -1192,7 +1190,7 @@ public class Skf2010Sc005SharedService {
 		if (teijiDataList.size() > 0) {
 			Skf2010Sc005GetTeijiDataInfoExp teijiData = teijiDataList.get(0);
 			if (teijiData.getKyoekihiPersonKyogichuFlg() != null
-					&& "1".equals(teijiData.getKyoekihiPersonKyogichuFlg())) {
+					&& CheckUtils.isEqual(teijiData.getKyoekihiPersonKyogichuFlg(), CodeConstant.KYOEKIHI_KYOGICHU)) {
 				result = false;
 			}
 		}
@@ -1218,8 +1216,8 @@ public class Skf2010Sc005SharedService {
 				|| CodeConstant.STATUS_TORIKOMI_KANRYO.equals(applStatus)
 				|| CodeConstant.STATUS_DOI_ZUMI.equals(applStatus) || CodeConstant.STATUS_DOI_SHINAI.equals(applStatus)
 				|| CodeConstant.STATUS_HANSYUTSU_ZUMI.equals(applStatus)
-				|| CodeConstant.STATUS_HANNYU_ZUMI.equals(applStatus) || CodeConstant.STATUS_SHONIN1.equals(applStatus)
-				|| CodeConstant.STATUS_SHONIN2.equals(applStatus)) {
+				|| CodeConstant.STATUS_HANNYU_ZUMI.equals(applStatus)
+				|| CodeConstant.STATUS_SHONIN1.equals(applStatus)) {
 
 			String wfLevel = "";
 			switch (applStatus) {
@@ -1235,9 +1233,6 @@ public class Skf2010Sc005SharedService {
 				break;
 			case CodeConstant.STATUS_SHONIN1:
 				wfLevel = CodeConstant.LEVEL_2;
-				break;
-			case CodeConstant.STATUS_SHONIN2:
-				wfLevel = CodeConstant.LEVEL_3;
 				break;
 			}
 
