@@ -1,5 +1,6 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.common;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,8 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 	private String pdfFileName;
 	@Value("${skf.pdf.skf2020rp002.pdf_temp_folder_path}")
 	private String pdfTempFolderPath;
+	
+	private static final int AGECNY_BREAK_LENGTH = 32;
 
 	@Override
 	protected String getPdfFileName() {
@@ -31,6 +34,7 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 	protected List<PDF_INFO> getPdfInfoList(DTO dto) {
 		List<PDF_INFO> pdfInfoList = new ArrayList<PDF_INFO>();
 		pdfInfoList.add(PDF_INFO.TAIYO_SHATAKU_ANNAI);
+		pdfInfoList.add(PDF_INFO.SEIYAKUSHO);
 		return pdfInfoList;
 	}
 
@@ -54,7 +58,9 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 			// PDFの種類を判別して、対応するデータ設定メソッドを呼び出す
 			switch (pdfInfoList.get(i)) {
 			case TAIYO_SHATAKU_ANNAI:
+			case SEIYAKUSHO:
 				this.setTaiyoAnnaiChosho(pdfData, dto);
+				this.setSeiyakusho(pdfData, dto);
 				break;
 			default:
 				break;
@@ -113,6 +119,41 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 		pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
 		pdfData.setData("parkingKanoDate2", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
 
+	}
+	
+	private void setSeiyakusho(CSVDoc pdfData, DTO dto) {
+		pdfData.setData("tsuchiDate", NfwStringUtils.defaultString(dto.getTsuchiDate()));
+		// 現所属　「機関」
+		if (NfwStringUtils.defaultString(dto.getNowAgency())
+				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AGECNY_BREAK_LENGTH) {
+			pdfData.setData("nowAgencyS", NfwStringUtils.defaultString(dto.getNowAgency()));
+		} else {
+			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			pdfData.setTextBoxStart("nowAgency_long");
+			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAgency()));
+			pdfData.setTextBoxEnd();
+		}
+		// 現所属　「部等」
+		if (NfwStringUtils.defaultString(dto.getNowAffiliation1())
+				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AGECNY_BREAK_LENGTH) {
+			pdfData.setData("nowAffiliation1S", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
+		} else {
+			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			pdfData.setTextBoxStart("nowAffiliation1_long");
+			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation1()));
+			pdfData.setTextBoxEnd();
+		}
+		// 現所属　「室、チーム又は課」
+		if (NfwStringUtils.defaultString(dto.getNowAffiliation2())
+				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AGECNY_BREAK_LENGTH) {
+			pdfData.setData("nowAffiliation2S", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
+		} else {
+			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			pdfData.setTextBoxStart("nowAffiliation2_long");
+			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation2()));
+			pdfData.setTextBoxEnd();
+		}
+		pdfData.setData("name", NfwStringUtils.defaultString(dto.getName()));
 	}
 
 }
