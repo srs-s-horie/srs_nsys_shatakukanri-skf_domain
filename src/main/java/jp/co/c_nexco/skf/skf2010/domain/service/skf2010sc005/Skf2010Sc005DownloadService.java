@@ -20,7 +20,9 @@ import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.BeanOutputCsv;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.OutputFileCsvProperties;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005DownloadDto;
 
 /**
@@ -33,6 +35,8 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 
 	@Autowired
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	private Map<String, BaseCodeEntity> baseProperty;
 
@@ -53,6 +57,7 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public BaseDto index(Skf2010Sc005DownloadDto dlDto) throws Exception {
 		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("CSV出力処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 		// 汎用コード取得
 		baseProperty = codeCacheUtils.getGenericCode("SKF1001");
 
@@ -138,13 +143,13 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 
 		// 申請状況チェック
 		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1048, "申請状況");
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請状況");
 			throwBusinessExceptionIfErrors(dto.getResultMessages());
 		} else {
 			// 検索条件セット
 			param = setParam(dto);
 			// 検索処理
-			tApplHistoryData = skf2010Sc005SharedService.SearchApplList(param);
+			tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
 
 		}
 

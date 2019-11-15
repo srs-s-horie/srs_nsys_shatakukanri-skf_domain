@@ -39,6 +39,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004InsertBihinHenkyakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004InsertTaikyoReportInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004UpdateApplHistoryAgreeStatusExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetTeijiDataInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
@@ -64,6 +66,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetShatakuKiboForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetShatakuTaikyoInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004InsertBihinHenkyakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004InsertTaikyoReportInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004UpdateApplHistoryAgreeStatusExpRepository;
@@ -127,6 +130,8 @@ public class Skf2010Sc004SharedService {
 	private Skf2010Sc004GetBihinShinseiInfoExpRepository skf2010Sc004GetBihinShinseiInfoExpRepository;
 	@Autowired
 	private Skf2010Sc004GetApplNoExpRepository skf2010Sc004GetApplNoExpRepository;
+	@Autowired
+	private Skf2010Sc004GetTeijiDataInfoExpRepository skf2010Sc004GetTeijiDataInfoExpRepository;
 
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
@@ -818,4 +823,5 @@ public class Skf2010Sc004SharedService {
 		}
 		return newApplNo;
 	}
+
 }
