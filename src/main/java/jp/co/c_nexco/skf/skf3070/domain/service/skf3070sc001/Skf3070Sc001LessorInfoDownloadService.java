@@ -85,7 +85,7 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 	
 	
 	/**
-	 * 社宅契約情報出力用Excelワークシート作成
+	 * 賃貸人（代理人）情報出力用Excelワークシート作成
 	 * 
 	 * 検索結果一覧情報より賃貸人（代理人）情報出力用Excelワークシートを作成する。
 	 * 
@@ -177,7 +177,7 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 	
 	
 	/**
-	 * 契約情報帳票出力
+	 * 賃貸人（代理人）情報帳票出力
 	 * 
 	 * 賃貸人（代理人）情報のExcelワークシートからExcelブックを作成し、を帳票に出力する
 	 * 
