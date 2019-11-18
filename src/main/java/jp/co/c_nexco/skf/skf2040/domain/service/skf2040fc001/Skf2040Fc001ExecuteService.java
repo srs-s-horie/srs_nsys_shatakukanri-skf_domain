@@ -4,8 +4,6 @@
  */
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040fc001;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,55 +59,106 @@ public class Skf2040Fc001ExecuteService extends BaseServiceAbstract<Skf2040Fc001
 			applStatus = null;
 		}
 
-		try {
+		long startTime = System.currentTimeMillis();
 
-			/** 退居のデータ連携機能を例とする */
-			// menuScopeSessionBeanからオブジェクトを取得する
-			Object forUpdateObject = menuScopeSessionBean.get(DATA_LINKAGE_KEY_SKF2040FC001);
+		/** 退居のデータ連携機能を例とする */
+		// menuScopeSessionBeanからオブジェクトを取得する
+		Object forUpdateObject = menuScopeSessionBean.get(DATA_LINKAGE_KEY_SKF2040FC001);
 
-			// 取得したオブジェクトを専用メソッドを使ってダウンキャストする
-			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skf2040Fc001
-					.forUpdateMapDownCaster(forUpdateObject);
+		// 取得したオブジェクトを専用メソッドを使ってダウンキャストする
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skf2040Fc001
+				.forUpdateMapDownCaster(forUpdateObject);
 
-			// ダウンキャストしたMapをデータ連携クラスに格納する
-			skf2040Fc001.setUpdateDateForUpdateSQL(forUpdateMap);
+		// ダウンキャストしたMapをデータ連携クラスに格納する
+		skf2040Fc001.setUpdateDateForUpdateSQL(forUpdateMap);
 
-			// データ連携機能をキックする
-			List<String> resultList = skf2040Fc001.doProc(companyCd, shainNo, applNo, applStatus, dto.getUserID(),
-					dto.getPageID());
+		// データ連携機能をキックする
+		List<String> resultList = skf2040Fc001.doProc(companyCd, shainNo, applNo, applStatus, dto.getUserID(),
+				dto.getPageID());
 
-			// セッションに保持しているデータ連携用のMapを削除する
-			menuScopeSessionBean.remove(DATA_LINKAGE_KEY_SKF2040FC001);
+		// セッションに保持しているデータ連携用のMapを削除する
+		menuScopeSessionBean.remove(DATA_LINKAGE_KEY_SKF2040FC001);
 
-			if (resultList != null) {
-				// エラーメッセージ出力
-				skf2040Fc001.addResultMessageForDataLinkage(dto, resultList);
-			}
+		if (resultList != null) {
+			// エラーメッセージ出力
+			skf2040Fc001.addResultMessageForDataLinkage(dto, resultList);
 
-			if (resultList != null) {
-
-				String errorMessage = "";
-				for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
-					if (listIndex == 0) {
-						dto.setErrorCodeID(resultList.get(0));
-					} else {
-						if (errorMessage.equals("") == false) {
-							errorMessage += "/";
-						}
-						errorMessage += resultList.get(listIndex);
-					}
-				}
-				dto.setErrorStrings(errorMessage);
-			}
-		} catch (Exception e) {
-			dto.setErrorCodeID("何かの理由で異常終了");
-			// stackTrace出力
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			LogUtils.debugByMsg(sw.toString());
 		}
 
+		if (resultList != null) {
+
+			String errorMessage = "";
+			for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
+				if (listIndex == 0) {
+					dto.setErrorCodeID(resultList.get(0));
+				} else {
+					if (errorMessage.equals("") == false) {
+						errorMessage += "/";
+					}
+					errorMessage += resultList.get(listIndex);
+				}
+			}
+			dto.setErrorStrings(errorMessage);
+			// throw new RuntimeException();
+		}
+
+		// try {
+		//
+		// /** 退居のデータ連携機能を例とする */
+		// // menuScopeSessionBeanからオブジェクトを取得する
+		// Object forUpdateObject =
+		// menuScopeSessionBean.get(DATA_LINKAGE_KEY_SKF2040FC001);
+		//
+		// // 取得したオブジェクトを専用メソッドを使ってダウンキャストする
+		// Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>
+		// forUpdateMap = skf2040Fc001
+		// .forUpdateMapDownCaster(forUpdateObject);
+		//
+		// // ダウンキャストしたMapをデータ連携クラスに格納する
+		// skf2040Fc001.setUpdateDateForUpdateSQL(forUpdateMap);
+		//
+		// // データ連携機能をキックする
+		// List<String> resultList = skf2040Fc001.doProc(companyCd, shainNo,
+		// applNo, applStatus, dto.getUserID(),
+		// dto.getPageID());
+		//
+		// // セッションに保持しているデータ連携用のMapを削除する
+		// menuScopeSessionBean.remove(DATA_LINKAGE_KEY_SKF2040FC001);
+		//
+		// if (resultList != null) {
+		// // エラーメッセージ出力
+		// skf2040Fc001.addResultMessageForDataLinkage(dto, resultList);
+		//
+		// }
+		//
+		// if (resultList != null) {
+		//
+		// String errorMessage = "";
+		// for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
+		// if (listIndex == 0) {
+		// dto.setErrorCodeID(resultList.get(0));
+		// } else {
+		// if (errorMessage.equals("") == false) {
+		// errorMessage += "/";
+		// }
+		// errorMessage += resultList.get(listIndex);
+		// }
+		// }
+		// dto.setErrorStrings(errorMessage);
+		// // throw new RuntimeException();
+		// }
+		// } catch (Exception e) {
+		// dto.setErrorCodeID("何かの理由で異常終了");
+		// // stackTrace出力
+		// StringWriter sw = new StringWriter();
+		// PrintWriter pw = new PrintWriter(sw);
+		// e.printStackTrace(pw);
+		// LogUtils.debugByMsg(sw.toString());
+		// }
+
+		long endTime = System.currentTimeMillis();
+
+		LogUtils.debugByMsg("Skf2040Fc001-UTTest：処理にかかった時間：" + (endTime - startTime) + "ミリ秒");
 		LogUtils.debugByMsg("Skf2040Fc001-UTTest：テスト実行クラス処理終了");
 		return dto;
 	}
