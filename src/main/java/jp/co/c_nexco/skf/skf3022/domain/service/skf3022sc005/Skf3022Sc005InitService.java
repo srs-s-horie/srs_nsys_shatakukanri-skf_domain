@@ -58,8 +58,7 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 
-		//TODO どこの値見ればいい？あり固定でいい？
-//        '給与厚生申請システムとの連携フラグ（0：連携あり、1：連携なし）
+//        '給与厚生申請システムとの連携フラグ（0：連携あり、1：連携なし）⇒現行ソースで未使用
 //        Me.hdnJssLinkFlg.Value = Com_SettingManager.GetSettingInfo(Constant.SettingsId.JSS_LINK_FLG)
 		
 		//入退居区分リスト
@@ -82,7 +81,7 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 		List<Map<String, Object>> moveInOutList = new ArrayList<Map<String, Object>>();
 		
 //        'コントロールの設定
-		skf3022Sc005SharedService.getDoropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
+		skf3022Sc005SharedService.getDropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
 				bhJyokyo, bhJyokyoList, bhKakunin, bhKakuninList, moveInOut, moveInOutList);
 
 		Skf3022Sc005GetTeijiDataInfoExpParameter param = new Skf3022Sc005GetTeijiDataInfoExpParameter();

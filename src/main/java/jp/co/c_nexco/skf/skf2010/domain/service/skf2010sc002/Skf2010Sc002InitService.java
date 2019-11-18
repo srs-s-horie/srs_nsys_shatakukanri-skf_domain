@@ -16,7 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUti
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
@@ -58,6 +58,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 	private String sTrue = "true";
 	private String sFalse = "false";
+	private static final String PLAN_TO_BUY_CAR = "購入を予定している";
+	private static final String YOTEI_DATE = "(予定)";
 
 	/**
 	 * サービス処理を行う。
@@ -68,8 +70,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 */
 	@Override
 	public Skf2010Sc002InitDto index(Skf2010Sc002InitDto initDto) throws Exception {
-
-		long dispStart = System.currentTimeMillis();
 
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC002_TITLE);
@@ -128,23 +128,12 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setCommentViewFlag(commetFlg);
 		}
 
-		long startTime = System.currentTimeMillis();
-		LogUtils.debugByMsg("排他用更新日取得テスト： 開始時間　：" + startTime + "ミリ秒");
-		// 排他用更新日取得
-		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> updateMap = skfBatchUtils
+		// データ連携用の排他制御用更新日を取得
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils
 				.getUpdateDateForUpdateSQL(initDto.getShainNo());
-		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002, updateMap);
-		long endTime = System.currentTimeMillis();
-		LogUtils.debugByMsg("排他用更新日取得テスト： 終了時間　：" + endTime + "ミリ秒");
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002, dateLinkageMap);
 
-		long totalTime = endTime - startTime;
-		LogUtils.debugByMsg("排他用更新日取得テスト： 合計時間　：" + totalTime + "ミリ秒");
-
-		long dispEnd = System.currentTimeMillis();
-		long dispTotalTime = dispEnd - dispStart;
-		LogUtils.debugByMsg("init処理： 合計時間　：" + dispTotalTime + "ミリ秒");
 		return initDto;
-
 	}
 
 	/**
@@ -567,9 +556,13 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setCarNoInputFlg(tNyukyoChoshoTsuchi.getCarNoInputFlg());
 		}
 		// 自動車の車名
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarName())) {
-			initDto.setCarName(tNyukyoChoshoTsuchi.getCarName());
+		String carName = tNyukyoChoshoTsuchi.getCarName();
+		if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getCarNoInputFlg(), CodeConstant.CAR_YOTEI)) {
+			if (NfwStringUtils.isEmpty(carName)) {
+				carName = PLAN_TO_BUY_CAR;
+			}
 		}
+		initDto.setCarName(carName);
 		// 自動車の登録番号
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo())) {
 			initDto.setCarNo(tNyukyoChoshoTsuchi.getCarNo());
@@ -593,9 +586,14 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setCarNoInputFlg2(tNyukyoChoshoTsuchi.getCarNoInputFlg2());
 		}
 		// 自動車の車名2
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarName2())) {
-			initDto.setCarName2(tNyukyoChoshoTsuchi.getCarName2());
+		String carName2 = tNyukyoChoshoTsuchi.getCarName2();
+		if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getCarNoInputFlg2(), CodeConstant.CAR_YOTEI)
+				&& NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
+			if (NfwStringUtils.isEmpty(carName2)) {
+				carName2 = PLAN_TO_BUY_CAR;
+			}
 		}
+		initDto.setCarName2(carName2);
 		// 自動車の登録番号2
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())) {
 			initDto.setCarNo2(tNyukyoChoshoTsuchi.getCarNo2());
@@ -703,9 +701,20 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 保有社宅退居予定日
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTaikyoYoteiDate())) {
-			initDto.setTaikyoYoteiDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getTaikyoYoteiDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+			if (CodeConstant.STATUS_DOI_ZUMI.equals(initDto.getApplStatus())
+					|| CodeConstant.STATUS_SHONIN1.equals(initDto.getApplStatus())
+					|| CodeConstant.STATUS_SHONIN_ZUMI.equals(initDto.getApplStatus())) {
+
+				initDto.setTaikyoYoteiDate(skfDateFormatUtils.dateFormatFromString(
+						tNyukyoChoshoTsuchi.getTaikyoYoteiDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+
+			} else {
+				initDto.setTaikyoYoteiDate(
+						skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getTaikyoYoteiDate(),
+								SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR) + YOTEI_DATE);
+			}
 		}
+
 		// 特殊事情
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTokushuJijo())) {
 			initDto.setTokushuJijo(tNyukyoChoshoTsuchi.getTokushuJijo());
@@ -851,9 +860,6 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	 */
 	private void mappingTaikyoReport(Skf2010Sc002InitDto initDto, Skf2040TTaikyoReport taikyoRepDt) {
 
-		String sfontColor = "<font color='red'>";
-		String eFontColoor = "</font>";
-
 		// 申請書類タイトル表記設定
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuTaikyoKbn())) {
 			initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn()); // 社宅退居
@@ -900,7 +906,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 社宅
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoArea())) {
-			initDto.setShatakuName(taikyoRepDt.getTaikyoArea());
+			initDto.setTaikyoArea(taikyoRepDt.getTaikyoArea());
 		}
 		// 駐車場1
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress1())) {

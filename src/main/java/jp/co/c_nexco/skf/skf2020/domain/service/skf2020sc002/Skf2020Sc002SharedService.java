@@ -169,6 +169,9 @@ public class Skf2020Sc002SharedService {
 			// 登録済みデータの情報設定
 			setSinseiInfo(dto, true);
 
+			// 社宅情報の設定
+			setShatakuInfo(dto, UPDATE_FLG);
+
 		} else {
 			// 無い場合
 			if (dto.getShainList() != null && dto.getShainList().size() > 0) {
@@ -178,9 +181,9 @@ public class Skf2020Sc002SharedService {
 				// データが取得できなかった場合は更新ボタンを使用不可にする
 				setInitializeError(dto);
 			}
+			// 社宅情報の設定
+			setShatakuInfo(dto, NO_UPDATE_FLG);
 		}
-		// 社宅情報の設定
-		setShatakuInfo(dto, NO_UPDATE_FLG);
 	}
 
 	/**
@@ -269,20 +272,22 @@ public class Skf2020Sc002SharedService {
 				LogUtils.debugByMsg("等級：" + nyukyoChoshoList.getTokyu());
 				dto.setTokyuName(nyukyoChoshoList.getTokyu());
 			}
+
 			// 性別
-			if (NfwStringUtils.isNotEmpty(String.valueOf(nyukyoChoshoList.getGender()))) {
+			if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getGender())) {
 				LogUtils.debugByMsg("性別：" + nyukyoChoshoList.getGender());
-				dto.setGender(String.valueOf(nyukyoChoshoList.getGender()));
-			}
-			switch (dto.getGender()) {
-			case CodeConstant.MALE:
-				dto.setGenderName(CodeConstant.OUTPUT_MALE);
-				break;
-			case CodeConstant.FEMALE:
-				dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
-				break;
-			default:
-				break;
+
+				dto.setGender(nyukyoChoshoList.getGender());
+				switch (dto.getGender()) {
+				case CodeConstant.MALE:
+					dto.setGenderName(CodeConstant.OUTPUT_MALE);
+					break;
+				case CodeConstant.FEMALE:
+					dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
+					break;
+				default:
+					break;
+				}
 			}
 
 			// 氏名
@@ -351,6 +356,26 @@ public class Skf2020Sc002SharedService {
 						afflication1List.add(soshikiMap);
 					}
 					dto.setDdlAffiliation1List(afflication1List);
+
+				} else if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())) {
+					// 新所属 部等は、空。新所属 機関が空ではない
+					// 部等ドロップダウンリストの設定
+					List<Map<String, Object>> afflication1List = new ArrayList<Map<String, Object>>();
+					afflication1List = skfDropDownUtils.getDdlAffiliation1ByCd(CodeConstant.C001,
+							agensyList.getAgencyCd(), CodeConstant.NONE, true);
+					// その他を追加
+					if (afflication1List.size() > 0) {
+						Map<String, Object> soshikiMap = new HashMap<String, Object>();
+						soshikiMap.put("value", "99");
+						soshikiMap.put("label", "その他");
+
+						if ("1".equals(nyukyoChoshoList.getNewAffiliation1Other())) {
+							soshikiMap.put("selected", true);
+						}
+
+						afflication1List.add(soshikiMap);
+					}
+					dto.setDdlAffiliation1List(afflication1List);
 				}
 
 				// 新所属 部等その他に値がある場合は、新所属 部等その他テキストボックスに、部等名を設定
@@ -379,7 +404,29 @@ public class Skf2020Sc002SharedService {
 						afflication2List.add(teamMap);
 					}
 					dto.setDdlAffiliation2List(afflication2List);
+
+				} else if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())
+						&& NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation1())) {
+					// 新所属 室、チーム又は課は、空。新所属 機関と部が空ではない
+
+					// 室、チーム又は課ドロップダウンをセット
+					List<Map<String, Object>> afflication2List = new ArrayList<Map<String, Object>>();
+					afflication2List = skfDropDownUtils.getDdlAffiliation2ByCd(CodeConstant.C001,
+							agensyList.getAgencyCd(), agensyList.getAffiliation1Cd(), CodeConstant.NONE, true);
+					// その他を追加
+					if (afflication2List.size() > 0) {
+						Map<String, Object> teamMap = new HashMap<String, Object>();
+						teamMap.put("value", "99");
+						teamMap.put("label", "その他");
+
+						if ("1".equals(nyukyoChoshoList.getNewAffiliation2Other())) {
+							teamMap.put("selected", true);
+						}
+						afflication2List.add(teamMap);
+					}
+					dto.setDdlAffiliation2List(afflication2List);
 				}
+
 				// 新所属 室、チーム又は課その他に値がある場合は、新所属 室、チーム又は課その他テキストボックスに、室、チーム又は課名を設定
 				if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation2Other())) {
 					dto.setNewAffiliation2Other(nyukyoChoshoList.getNewAffiliation2());
@@ -574,7 +621,7 @@ public class Skf2020Sc002SharedService {
 			// 社宅の状態
 			if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getShatakuJotai())) {
 				LogUtils.debugByMsg("社宅の状態" + nyukyoChoshoList.getShatakuJotai());
-				dto.setShatakuJyotai(nyukyoChoshoList.getShatakuJotai());
+				dto.setShatakuJotai(nyukyoChoshoList.getShatakuJotai());
 			}
 
 			// 退居理由
@@ -627,6 +674,7 @@ public class Skf2020Sc002SharedService {
 				if (nowShatakuNameList.getShatakuKanriId() > 0) {
 					dto.setDdlNowShatakuNameList(skfDropDownUtils.getDdlNowShatakuNameByCd(dto.getShainNo(),
 							dto.getYearMonthDay(), nowShatakuNameList.getShatakuKanriId(), false));
+					dto.setNowShatakuName(String.valueOf(nowShatakuNameList.getShatakuKanriId()));
 				}
 			}
 
@@ -1374,7 +1422,7 @@ public class Skf2020Sc002SharedService {
 	 * @param dto
 	 */
 	@SuppressWarnings("unchecked")
-	private void setControlDdl(Skf2020Sc002CommonDto dto) {
+	protected void setControlDdl(Skf2020Sc002CommonDto dto) {
 
 		List<Map<String, Object>> agencyList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> affiliation1List = new ArrayList<Map<String, Object>>();
@@ -1533,6 +1581,7 @@ public class Skf2020Sc002SharedService {
 
 			// 新所属-機関
 			dto.setDdlAgencyList(null);
+			dto.setAgencyCd(null);
 			LogUtils.debugByMsg(Msg + "新所属-機関" + dto.getDdlAgencyList());
 
 			// 新所属-機関 その他
@@ -1541,6 +1590,7 @@ public class Skf2020Sc002SharedService {
 
 			// 新所属-部等
 			dto.setDdlAffiliation1List(null);
+			dto.setAffiliation1Cd(null);
 			LogUtils.debugByMsg(Msg + "新所属-部等" + dto.getDdlAffiliation1List());
 
 			// 新所属-部等 その他
@@ -1549,6 +1599,7 @@ public class Skf2020Sc002SharedService {
 
 			// 新所属-室、チーム又は課
 			dto.setDdlAffiliation2List(null);
+			dto.setAffiliation2Cd(null);
 			LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課" + dto.getDdlAffiliation2List());
 
 			// 新所属-室、チーム又は課 その他
@@ -1634,7 +1685,7 @@ public class Skf2020Sc002SharedService {
 			dto.setTaikyoYoteiDate(null);
 
 			// 社宅の状態
-			dto.setShatakuJyotai(null);
+			dto.setShatakuJotai(null);
 
 			// 退居理由
 			dto.setTaikyoRiyu(null);
@@ -1662,6 +1713,8 @@ public class Skf2020Sc002SharedService {
 	protected void cutByte(Skf2020Sc002CommonDto dto) throws UnsupportedEncodingException {
 
 		String Msg = "バイト数カット処理：　";
+		// 勤務先のTEL
+		dto.setTel(NfwStringUtils.rightTrimbyByte(dto.getTel(), 14));
 		// 新所属 部等 その他
 		dto.setNewAffiliation1Other(NfwStringUtils.rightTrimbyByte(dto.getNewAffiliation1Other(), 128));
 		LogUtils.debugByMsg(Msg + "新所属 部等" + dto.getNewAffiliation1Other());
@@ -1723,8 +1776,8 @@ public class Skf2020Sc002SharedService {
 		dto.setTaikyoYoteiDate(NfwStringUtils.rightTrimbyByte(dto.getTaikyoYoteiDate(), 10));
 		LogUtils.debugByMsg(Msg + "退居予定日" + dto.getTaikyoYoteiDate());
 		// 社宅の状態
-		dto.setShatakuJyotai(NfwStringUtils.rightTrimbyByte(dto.getShatakuJyotai(), 256));
-		LogUtils.debugByMsg(Msg + "社宅の状態" + dto.getShatakuJyotai());
+		dto.setShatakuJotai(NfwStringUtils.rightTrimbyByte(dto.getShatakuJotai(), 256));
+		LogUtils.debugByMsg(Msg + "社宅の状態" + dto.getShatakuJotai());
 		// 退居理由
 		dto.setTaikyoRiyu(NfwStringUtils.rightTrimbyByte(dto.getTaikyoRiyu(), 256));
 		LogUtils.debugByMsg(Msg + "退居理由" + dto.getTaikyoRiyu());
@@ -1734,6 +1787,8 @@ public class Skf2020Sc002SharedService {
 		// 返却立会希望日
 		dto.setSessionDay(NfwStringUtils.rightTrimbyByte(dto.getSessionDay(), 10));
 		LogUtils.debugByMsg(Msg + "返却立会希望日" + dto.getSessionDay());
+		// 連絡先
+		dto.setRenrakuSaki((NfwStringUtils.rightTrimbyByte(dto.getRenrakuSaki(), 14)));
 	}
 
 	/**
@@ -2119,6 +2174,7 @@ public class Skf2020Sc002SharedService {
 			// 申請書番号の設定
 			setValue.setApplNo(applInfo.get("applNo"));
 			LogUtils.debugByMsg(msg + applInfo.get("applNo"));
+
 		} else {
 			// 申請書番号の設定
 			setValue.setApplNo(dto.getApplNo());
@@ -2554,7 +2610,7 @@ public class Skf2020Sc002SharedService {
 						dto.getTaikyoYoteiDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			}
 			// 社宅の状態
-			setValue.setShatakuJotai(dto.getShatakuJyotai());
+			setValue.setShatakuJotai(dto.getShatakuJotai());
 			// 退居理由
 			if (NfwStringUtils.isNotEmpty(dto.getTaikyoRiyuKbn())
 					&& !(CodeConstant.OTHER_RIYU_VALUE.equals(dto.getTaikyoRiyuKbn()))) {
@@ -3021,7 +3077,7 @@ public class Skf2020Sc002SharedService {
 		dto.setTaikyoYoteiDate(dto.getTaikyoYoteiDate());
 
 		// 社宅の状態
-		dto.setShatakuJyotai(dto.getShatakuJyotai());
+		dto.setShatakuJotai(dto.getShatakuJotai());
 
 		// 退居理由
 		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils

@@ -34,6 +34,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReportKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetAgreeAuthorityGroupIdExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetAttachedFileInfoExpRepository;
@@ -47,6 +49,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepo
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
@@ -74,6 +77,8 @@ public class Skf2010Sc006SharedService {
 	private Skf2010Sc006GetAgreeAuthorityGroupIdExpRepository skf2010Sc006GetAgreeAuthorityGroupIdExpRepository;
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
+	@Autowired
+	private Skf2040TTaikyoReportRepository skf2040TTaikyoReportRepository;
 	@Autowired
 	private Skf2010Sc006GetTeijiDataInfoExpRepository skf2010Sc006GetTeijiDataInfoExpRepository;
 	@Autowired
@@ -125,6 +130,22 @@ public class Skf2010Sc006SharedService {
 		key.setApplNo(applNo);
 		nyukyoChoshoTsuchiInfo = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
 		return nyukyoChoshoTsuchiInfo;
+	}
+
+	/**
+	 * 退居届の情報を取得します
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @return
+	 */
+	public Skf2040TTaikyoReport getTaikyoReportInfo(String companyCd, String applNo) {
+		Skf2040TTaikyoReport taikyoReportInfo = new Skf2040TTaikyoReport();
+		Skf2040TTaikyoReportKey param = new Skf2040TTaikyoReportKey();
+		param.setCompanyCd(companyCd);
+		param.setApplNo(applNo);
+		taikyoReportInfo = skf2040TTaikyoReportRepository.selectByPrimaryKey(param);
+		return taikyoReportInfo;
 	}
 
 	/**
@@ -207,7 +228,6 @@ public class Skf2010Sc006SharedService {
 		String shoninName2 = "";
 		String nextStatus = "";
 		String mailKbn = "";
-		String nextWorkflow = "";
 		String sendGroupId = "";
 		Map<String, String> applInfo = new HashMap<String, String>();
 		Date agreeDate = null;
@@ -240,41 +260,17 @@ public class Skf2010Sc006SharedService {
 			nextStatus = CodeConstant.STATUS_SHONIN1;
 			shoninName1 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_IRAI_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_1;
 			break;
 		case CodeConstant.STATUS_SHONIN1:
 			// 承認１
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
 			shoninName2 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
 			agreeDate = updateDate;
 			break;
 		default:
 			errMap.put("error", "");
 			return false;
-		}
-
-		if (!CheckUtils.isEmpty(nextWorkflow)) {
-			// 次のワークフロー設定がある場合、次権限グループを取得
-			Skf2010Sc006GetAgreeAuthorityGroupIdExpParameter mApplParam = new Skf2010Sc006GetAgreeAuthorityGroupIdExpParameter();
-			Skf2010Sc006GetAgreeAuthorityGroupIdExp mApplResult = new Skf2010Sc006GetAgreeAuthorityGroupIdExp();
-			mApplParam.setCompanyCd(companyCd);
-			mApplParam.setApplId(applNo);
-			mApplParam.setWfLevel(nextWorkflow);
-			mApplResult = skf2010Sc006GetAgreeAuthorityGroupIdExpRepository.getAgreeAuthorityGroupId(mApplParam);
-			if (mApplResult != null) {
-				sendGroupId = mApplResult.getRoleId();
-			}
-		}
-
-		if (!CheckUtils.isEmpty(sendGroupId)) {
-			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
-			shoninName1 = loginUserInfoMap.get("userName");
-			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
-			applInfo.get("applShainNo");
-			agreeDate = updateDate;
 		}
 
 		// 申請状況
@@ -366,6 +362,9 @@ public class Skf2010Sc006SharedService {
 		if ((companyCd == null || CheckUtils.isEmpty(companyCd) || (applNo == null || CheckUtils.isEmpty(applNo)))) {
 			return false;
 		}
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+
 		// 更新対象の申請情報を取得
 		Skf2010Sc006GetApplHistoryInfoByParameterExp applInfo = new Skf2010Sc006GetApplHistoryInfoByParameterExp();
 		applInfo = getApplHistoryInfo(applNo);
@@ -390,6 +389,7 @@ public class Skf2010Sc006SharedService {
 				errMap.put("error", MessageIdConstant.SKF2010_SC006_E_SAITEIJI_1);
 				return false;
 			}
+			break;
 		case FunctionIdConstant.R0103:
 			// 社宅入居希望等調書の場合
 			applStatus = getBihinApplStatus(applNo, applInfo.getApplId());
@@ -405,9 +405,8 @@ public class Skf2010Sc006SharedService {
 				errMap.put("error", MessageIdConstant.SKF2010_SC006_E_SAITEIJI_2);
 				return false;
 			}
+			break;
 		}
-
-		new Date();
 
 		// 「申請書類履歴テーブル」よりステータスを更新
 		// 次のステータスを設定する
@@ -428,6 +427,21 @@ public class Skf2010Sc006SharedService {
 			return false;
 		}
 
+		// コメント登録者名を設定
+		List<String> tmpNameList = new ArrayList<String>();
+		if (loginUserInfoMap.get("affiliation2Name") != null) {
+			tmpNameList.add(loginUserInfoMap.get("affiliation2Name"));
+		}
+		tmpNameList.add(loginUserInfoMap.get("userName"));
+		String commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
+		// コメントを更新する
+		if (comment != null && !CheckUtils.isEmpty(comment)) {
+			boolean commentRes = skfCommentUtils.insertComment(companyCd, applNo, CodeConstant.STATUS_SHINSACHU,
+					commentName, comment, errMap);
+			if (!commentRes) {
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -565,7 +579,7 @@ public class Skf2010Sc006SharedService {
 				updateData.setCompanyCd(companyCd);
 				updateData.setApplNo(applNo);
 				if (tTaijiData.getRentalAdjust() != CodeConstant.LONG_ZERO) {
-					updateData.setNewKyoekihi(String.valueOf(tTaijiData.getRentalAdjust()));
+					updateData.setRentalAdjust(String.valueOf(tTaijiData.getRentalAdjust()));
 				}
 				updateData.setKyoekihiPersonKyogichuFlg(tTaijiData.getKyoekihiPersonKyogichuFlg());
 				if (tTaijiData.getKyoekihiPersonAdjust() != CodeConstant.LONG_ZERO) {

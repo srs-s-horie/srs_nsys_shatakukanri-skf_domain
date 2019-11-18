@@ -10,42 +10,22 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetHoyuShatakuInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockContractInfoTableDataExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockHistroyCountExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetRentalPatternTableDataExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomBihinExlusiveCntrlExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuRoomExlusiveCntrlExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuTableDataExpParameter;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetBihinInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetKariageShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetShatakuInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuBihin;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuContract;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuManege;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlockKey;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingContractKey;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingWithBLOBs;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihin;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihinKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomKey;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuWithBLOBs;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TRentalPatternKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockContractDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetRentalPtternIdExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomBihinExlusiveCntrTableDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuRentalHistroyCountExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002GetTeijiDataCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002UpdateMshatakuParkingTableDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002UpdateMshatakuTableDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006DeleteInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006GetBihinInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006GetSyatakuRentalHistoryNumExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006GetTejiDataNumExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuBihinRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuContractRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuManegeRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingBlockRepository;
@@ -64,9 +44,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002DeleteDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006DeleteDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 import jp.co.intra_mart.common.platform.log.Logger;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
@@ -83,35 +61,13 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
-	private Skf3010Sc002UpdateMshatakuParkingTableDataExpRepository skf3010Sc002UpdateMshatakuParkingTableDataExpRepository;
-	@Autowired
-	private Skf3010Sc002UpdateMshatakuTableDataExpRepository skf3010Sc002UpdateMshatakuTableDataExpRepository;
-	@Autowired
 	private Skf3010MShatakuParkingBlockRepository skf3010MShatakuParkingBlockRepository;
-	@Autowired
-	private Skf3010MShatakuRoomBihinRepository skf3010MShatakuRoomBihinRepository;
-	@Autowired
-	private Skf3010MShatakuManegeRepository skf3010MShatakuManegeRepository;
-	@Autowired
-	private Skf3010MShatakuContractRepository skf3010MShatakuContractRepository;
-	@Autowired
-	private Skf3010MShatakuParkingContractRepository skf3010MShatakuParkingContractRepository;
-	@Autowired
-	private Skf3010Sc002GetParkingBlockContractDataExpRepository skf3010Sc002GetParkingBlockContractDataExpRepository;
 	@Autowired
 	private Skf3010Sc006GetSyatakuRentalHistoryNumExpRepository skf3010Sc006GetSyatakuRentalHistoryNumExpRepository;
 	@Autowired
 	private Skf3010Sc006GetTejiDataNumExpRepository skf3010Sc006GetTejiDataNumExpRepository;
 	@Autowired
 	private Skf3010MShatakuRoomRepository skf3010MShatakuRoomRepository;
-	@Autowired
-	private Skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository;
-	@Autowired
-	private Skf3010Sc002GetRoomBihinExlusiveCntrTableDataExpRepository skf3010Sc002GetRoomBihinExlusiveCntrTableDataExpRepository;
-	@Autowired
-	private Skf3010Sc002GetRentalPtternIdExpRepository skf3010Sc002GetRentalPtternIdExpRepository;
-	@Autowired
-	private Skf3030TRentalPatternRepository skf3030TRentalPatternRepository;
 	@Autowired
 	private Skf3010MShatakuRepository skf3010MShatakuRepository;
 	@Autowired
@@ -137,11 +93,11 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		// デバッグログ
 		logger.debug("借上社宅情報削除");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("借上社宅情報削除", CodeConstant.C001, delDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, delDto.getPageId());
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト
-		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
+//		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
 		// 備品情報リスト
 		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
 		// ドロップダウン選択値リスト
@@ -176,7 +132,7 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		skf3010Sc006SharedService.setBeforeInfo(delDto);
 
 		// 保有社宅削除
-		int delCount = deleteHoyuShatakuInfo(shatakuKanriNo, delDto);
+		int delCount = deleteKariageShatakuInfo(shatakuKanriNo, delDto);
 		if(delCount <= 0){
 			// 元の画面状態に戻す
 			skf3010Sc006SharedService.setBeforeInfo(delDto);
@@ -221,7 +177,7 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 	 * @param delDto					DTO
 	 * @return	更新数
 	 */
-	private int deleteHoyuShatakuInfo(Long shatakuKanriNo,
+	private int deleteKariageShatakuInfo(Long shatakuKanriNo,
 			Skf3010Sc006DeleteDto delDto) {
 
 		// 更新カウント
@@ -295,20 +251,24 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		cntSum += delCnt;
 
 		/** 社宅契約情報削除 */
-		delCnt = skf3010Sc006DeleteInfoExpRepository.deleteContract(shatakuInfoParam);
-		LogUtils.debugByMsg("社宅契約削除件数：" + Integer.toString(delCnt));
-		if(delCnt <= 0){
-			return delCnt;
+		if(delDto.getContractInfoListTableData().size() > 0){
+			delCnt = skf3010Sc006DeleteInfoExpRepository.deleteContract(shatakuInfoParam);
+			LogUtils.debugByMsg("社宅契約削除件数：" + Integer.toString(delCnt));
+			if(delCnt <= 0){
+				return delCnt;
+			}
+			cntSum += delCnt;
 		}
-		cntSum += delCnt;
 
 		/** 駐車場契約情報削除 */
-		delCnt = skf3010Sc006DeleteInfoExpRepository.deleteParkingContract(shatakuInfoParam);
-		LogUtils.debugByMsg("駐車場契約削除件数：" + Integer.toString(delCnt));
-		if(delCnt <= 0){
-			return delCnt;
+		if(delDto.getParkingContractInfoListTableData().size() > 0){
+			delCnt = skf3010Sc006DeleteInfoExpRepository.deleteParkingContract(shatakuInfoParam);
+			LogUtils.debugByMsg("駐車場契約削除件数：" + Integer.toString(delCnt));
+			if(delCnt <= 0){
+				return delCnt;
+			}
+			cntSum += delCnt;
 		}
-		cntSum += delCnt;
 		
 		LogUtils.debugByMsg("削除累計：" + Integer.toString(cntSum));
 		return cntSum;
@@ -330,7 +290,6 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		param.setShatakuKanriNo(shatakuKanriNo);
 		param.setShatakuRoomKanriNo(shatakuRoomKanriNo);
 		cnt = skf3010Sc006GetSyatakuRentalHistoryNumExpRepository.getSyatakuRentalHistoryNum(param);
-		param = null;
 		// 入居実績件数判定
 		if (cnt > 0) {
 			LogUtils.debugByMsg("入居実績ありエラー：" + shatakuKanriNo.toString());
@@ -338,11 +297,13 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		}
 		// 提示件数取得
 		cnt = skf3010Sc006GetTejiDataNumExpRepository.getTejiDataNum(param);
+		param = null;
 		// 提示件数判定
 		if (cnt > 0) {
 			LogUtils.debugByMsg("提示データエラー：" + shatakuKanriNo.toString());
 			return false;
 		}
+		
 		return true;
 	}
 }

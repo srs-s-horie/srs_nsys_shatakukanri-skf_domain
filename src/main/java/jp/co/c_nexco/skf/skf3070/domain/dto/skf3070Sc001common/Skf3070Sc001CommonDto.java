@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf3070.domain.dto.skf3070Sc001common;
 
+import java.util.List;
+import java.util.Map;
 import jp.co.c_nexco.skf.skf3070.domain.dto.common.Skf307010CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -17,5 +19,22 @@ import lombok.EqualsAndHashCode;
 public class Skf3070Sc001CommonDto extends Skf307010CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
+
+	// 検索結果表示用
+	private List<Map<String, Object>> listTableData;
+	private String listTableMaxRowCount;
+	// 基準年（対象年プルダウン 作成基準値）
+	private String standardYear;
+
+	// 所持物件数
+	private String propertiesOwnedCnt;
+
+	/* ドロップダウン */
+	// 対象年ドロップダウン
+	private List<Map<String, Object>> ddlTargetYearList;
+	// 個人法人区分ドロップダウン
+	private List<Map<String, Object>> ddlBusinessKbnList;
+	// 個人番号ドロップダウン
+	private List<Map<String, Object>> ddlAcceptFlgList;
 
 }

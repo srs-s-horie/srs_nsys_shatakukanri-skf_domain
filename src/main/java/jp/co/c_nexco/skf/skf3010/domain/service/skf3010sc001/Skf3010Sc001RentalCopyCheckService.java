@@ -4,7 +4,6 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc001;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -37,9 +36,6 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
-	@Value("${skf.common.validate_error}")
-	private String validationErrorCode;
-
 	@Override
 	public BaseDto index(Skf3010Sc001RentalCopyCheckDto rentalCopyDto) throws Exception {
 		// 操作ログを出力する
@@ -55,13 +51,13 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 		// 社宅管理番号の有無チェック
 		if (hdnRowShatakuKanriNo == null || hdnRowShatakuKanriNo.length() < 1) {
 			logger.warn("社宅が選択されていません。");
-			ServiceHelper.addErrorResultMessage(rentalCopyDto, null, MessageIdConstant.W_SKF_3003);
+			ServiceHelper.addWarnResultMessage(rentalCopyDto, MessageIdConstant.W_SKF_3003);
 			return rentalCopyDto;
 		}
 		// 社宅区分判定
 		if (!SHATAKU_KBN_KARIAGE.equals(hdnRowShatakuKbn)) {
 			logger.warn("借上以外が選択されています。");
-			ServiceHelper.addErrorResultMessage(rentalCopyDto, null, MessageIdConstant.W_SKF_3002);
+			ServiceHelper.addWarnResultMessage(rentalCopyDto, MessageIdConstant.W_SKF_3002);
 			return rentalCopyDto;
 		}
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -21,9 +22,14 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002PresentDto;
+import jp.co.intra_mart.foundation.context.Contexts;
+import jp.co.intra_mart.foundation.user_context.model.UserContext;
+import jp.co.intra_mart.foundation.user_context.model.UserProfile;
 
 /**
  * Skf2010Sc002PresentService 申請書類確認の提示ボタン処理クラス。
@@ -41,6 +47,8 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;
 	@Autowired
 	private Skf2010Sc002GetTeijiShatakuInfoExpRepository skf2010Sc002GetTeijiShatakuInfoExpRepository;
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 
 	// 承認者更新フラグ
 	private String agreNameUpdate = "1";
@@ -132,6 +140,30 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 					preDto.getShainNo(), CodeConstant.NONE, urlBase);
 
 			// TODO 社宅管理データ連携処理実行
+			// ユーザIDの取得
+			UserContext userContext = Contexts.get(UserContext.class);
+			UserProfile profile = userContext.getUserProfile();
+			String userId = profile.getUserCd();
+			// menuScopeSessionBeanからオブジェクトを取得
+			Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
+			if (FunctionIdConstant.R0100.equals(preDto.getApplId())) {
+				// 社宅入居希望等調書データ連携
+				// 連携用意
+				Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkNyukyoMap = skf2020Fc001NyukyoKiboSinseiDataImport
+						.forUpdateMapDownCaster(forUpdateObject);
+				skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkNyukyoMap);
+				// 連携実行
+				List<String> resultList = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(CodeConstant.C001,
+						preDto.getShainNo(), preDto.getApplNo(), CodeConstant.NONE, status, userId, preDto.getPageId());
+				// セッション情報の削除
+				menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
+
+				// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
+				if (resultList != null) {
+					skf2020Fc001NyukyoKiboSinseiDataImport.addResultMessageForDataLinkage(preDto, resultList);
+				}
+
+			}
 
 			// 画面遷移（承認一覧へ）
 			TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005, "init");

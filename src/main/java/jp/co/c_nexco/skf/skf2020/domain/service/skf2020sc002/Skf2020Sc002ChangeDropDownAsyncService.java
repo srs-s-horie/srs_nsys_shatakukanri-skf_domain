@@ -161,7 +161,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 
 			// 面積
 			if (NfwStringUtils.isNotEmpty(shatakuList.get(0).getLendMenseki())) {
-				dto.setNowShatakuMenseki(shatakuList.get(0).getLendMenseki());
+				dto.setNowShatakuMenseki(shatakuList.get(0).getLendMenseki() + SkfCommonConstant.SQUARE_MASTER);
 				LogUtils.debugByMsg("現居社宅-面積" + dto.getNowShatakuMenseki());
 			}
 

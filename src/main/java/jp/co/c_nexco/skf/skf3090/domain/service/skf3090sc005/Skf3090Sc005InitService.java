@@ -16,9 +16,11 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005InitDto;
 import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309030CommonSharedService;
 
@@ -51,6 +53,12 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 会社コード
+	private String companyCd = CodeConstant.C001;
 
 	/**
 	 * 画面初期表示のメイン処理
@@ -58,6 +66,21 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseDto index(Skf3090Sc005InitDto initDto) throws Exception {
+		
+		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
+		initDto.setPageId(FunctionIdConstant.SKF3090_SC005);
+		
+		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
+			/** 新規ボタンから遷移 */
+			// 操作ログを出力
+			skfOperationLogUtils.setAccessLog("新規", companyCd, initDto.getPrePageId());
+		}else{
+			/** リストテーブルから遷移 */
+			// 操作ログを出力
+			skfOperationLogUtils.setAccessLog("詳細", companyCd, initDto.getPrePageId());
+		}
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 
 		// エラー系のDto値を初期化
 		initDto.setShainNoError(CodeConstant.DOUBLE_QUOTATION);
@@ -163,8 +186,6 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		initDto.setAffiliation1List(affiliation1List);
 		initDto.setAffiliation2List(affiliation2List);
 		initDto.setBusinessAreaList(businessAreaList);
-
-		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
 
 		return initDto;
 	}

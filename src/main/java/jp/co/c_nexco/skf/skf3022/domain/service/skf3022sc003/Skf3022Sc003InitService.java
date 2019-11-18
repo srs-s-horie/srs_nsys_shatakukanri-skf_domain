@@ -24,6 +24,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CodeCacheUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -109,6 +110,11 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		skf3022Sc003SharedService.getShatakuInfo(shatakuKanriNo, shatakuList);
 		// ②社宅部屋情報取得
 		skf3022Sc003SharedService.getShatakuRoomInfo(shatakuKanriNo, roomKanriNo, roomList);
+		// DB取得結果判定
+		if (shatakuList.size() < 1 || roomList.size() < 1) {
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_3059);
+			throwBusinessExceptionIfErrors(initDto.getResultMessages());
+		}
 		// ③社員情報取得
 		skf3022Sc003SharedService.getShatakuShainInfo(CodeConstant.C001, shainNo, shainList);
 
@@ -174,7 +180,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			} else {
 				// 設定されていない場合、基本情報と同じ値を設定
 				// 規格2
-				kikaakuSelectedValue = initDto.getSc003KikakuSelecte();
+				kikaakuSelectedValue = initDto.getSc003KikakuSelect();
 				// ①用途2
 				youtoSelectedValue = initDto.getSc003YoutoSelect();
 				// ②延べ面積2
@@ -187,7 +193,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		}
 		/** ドロップダウン選択値設定 */
 		// 規格
-		initDto.setSc003KikakuSelecte(kikaakuSelectedValue);
+		initDto.setSc003KikakuSelect(kikaakuSelectedValue);
 		// 用途
 		initDto.setSc003YoutoSelect(youtoSelectedValue);
 
@@ -196,7 +202,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		kikakuSelecteList.clear();
 		kikakuSelecteList.addAll(ddlUtils.getGenericForDoropDownList(
 				FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN, kikaakuSelectedValue, true));
-		initDto.setSc003KikakuSelecteList(kikakuSelecteList);
+		initDto.setSc003KikakuSelectList(kikakuSelecteList);
 		// ②用途ドロップダウン
 		youtoSelecteList.clear();
 		youtoSelecteList.addAll(ddlUtils.getGenericForDoropDownList(
@@ -211,12 +217,9 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		// Map変換
 		dtoMap = createSaikeisanParam(initDto);
 		// 使用料再計算処理
-//		skf3022Sc003SharedService.saiKeisan(initDto);
 		if (skf3022Sc003SharedService.saiKeisan(dtoMap)) {
 			setMapToDto(dtoMap, initDto);
 		}
-//		// 社宅使用料月額の説明文設定
-//		initDto.setSc003ShatakuShiyoryo3("⑫×⑬　円未満切り捨て");
 	}
 
 	/**
@@ -343,7 +346,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		initDto.setSc003Kikaku(codeCacheUtils.getGenericCodeName(
 				FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN, roomInfo.getOriginalKikaku()));
 		// 規格ドロップダウン選択値
-		initDto.setSc003KikakuSelecte(roomInfo.getOriginalKikaku());
+		initDto.setSc003KikakuSelect(roomInfo.getOriginalKikaku());
 		// ①用途
 		initDto.setSc003Youto(codeCacheUtils.getGenericCodeName(
 				FunctionIdConstant.GENERIC_CODE_AUSE_KBN, roomInfo.getOriginalAuse()));

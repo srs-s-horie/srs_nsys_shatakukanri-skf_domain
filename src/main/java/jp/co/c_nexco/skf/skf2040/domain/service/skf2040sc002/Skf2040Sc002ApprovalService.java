@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -23,6 +24,7 @@ import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002ApprovalDto;
 
 /**
@@ -43,6 +45,8 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 	private SkfAttachedFileUtils skfAttachedFileUtiles;
 	@Autowired
 	private Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
+	@Autowired
+	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
 
 	private String sFalse = "false";
 	Map<String, String> errorMsg = new HashMap<String, String>();
@@ -148,7 +152,23 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		skf2040Sc002SharedService.sendMail(appDto.getApplNo(), appDto.getApplId(), appDto.getShainNo(), comment,
 				appDto.getMailKbn(), false);
 
-		// TODO 社宅管理データ連携処理実行
+		// 退居届データ連携
+		// menuScopeSessionBeanからオブジェクトを取得
+		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
+		// 連携用意
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkTaikyoMap = skf2040Fc001TaikyoTodokeDataImport
+				.forUpdateMapDownCaster(forUpdateObject);
+		skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(dateLinkTaikyoMap);
+		// 連携実行
+		List<String> resultList = skf2040Fc001TaikyoTodokeDataImport.doProc(CodeConstant.C001, appDto.getShainNo(),
+				appDto.getApplNo(), nextStatus, userInfo.get("userCd"), appDto.getPageId());
+		// セッション情報の削除
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
+
+		// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
+		if (resultList != null) {
+			skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(appDto, resultList);
+		}
 
 		// 終了メッセージ出力
 		// 承認一覧に画面遷移

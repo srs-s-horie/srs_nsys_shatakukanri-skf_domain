@@ -4,26 +4,18 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AttachedDownloadDto;
-import jp.co.intra_mart.common.platform.log.Logger;
+
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
 
@@ -36,22 +28,15 @@ import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FI
 @Service
 public class Skf3010Sc006AttachedDownloadService extends BaseServiceAbstract<Skf3010Sc006AttachedDownloadDto> {
 
-	@Autowired
-	private MenuScopeSessionBean menuScopeSessionBean;
-	@Autowired
-	private SkfAttachedFileUtils skfAttachedFileUtils;
+
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	
-	private String sessionKey = "Skf3010Sc006AttachedFileSessionKey";
 
 	// 社宅補足リンクプレフィックス
 	private static final String SHATAKU_HOSOKU_LINK = "shataku";
 	// 駐車場補足プレフィックス
 	private static final String PARKING_HOSOKU_LINK = "parking";
 	
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 	/**
 	 * サービス処理を行う。　
 	 * 

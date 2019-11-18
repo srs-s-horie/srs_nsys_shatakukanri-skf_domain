@@ -33,5 +33,4 @@ public class Skf3022Sc003CommonAsyncDto extends AsyncBaseDto {
 	private String sc003HdnRateShienTanka;
 	private String sc003HdnRateShienKeinen;
 	private String sc003HdnRateShienKeinenZankaRitsu;
-
 }

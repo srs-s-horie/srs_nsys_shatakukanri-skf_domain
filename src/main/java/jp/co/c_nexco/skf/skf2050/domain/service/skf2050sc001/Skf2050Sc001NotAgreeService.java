@@ -65,6 +65,7 @@ public class Skf2050Sc001NotAgreeService extends BaseServiceAbstract<Skf2050Sc00
 		}
 
 		String newApplStatus = CodeConstant.STATUS_DOI_SHINAI;
+		skf2050Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		if (!skf2050Sc001SharedService.saveBihinHenkyakuInfo(newApplStatus, notAgreeDto, menuScopeSessionBean)) {
 			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
 			return notAgreeDto;
@@ -81,7 +82,7 @@ public class Skf2050Sc001NotAgreeService extends BaseServiceAbstract<Skf2050Sc00
 		applInfo.put(CodeConstant.KEY_APPL_STATUS, newApplStatus);
 		applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, applShainNo);
 
-		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC005 + "/init";
+		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, notAgreeDto.getCommentNote(), null,
 				null, null, baseUrl);
 

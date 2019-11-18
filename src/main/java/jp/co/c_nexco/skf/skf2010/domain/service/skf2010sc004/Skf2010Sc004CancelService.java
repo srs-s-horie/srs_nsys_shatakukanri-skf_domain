@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc004;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004CancelDto;
 
@@ -78,8 +81,15 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 		// 完了メッセージ表示
 		ServiceHelper.addResultMessage(cancelDto, MessageIdConstant.I_SKF_2047);
 
+		Map<String, Object> attribute = new HashMap<String, Object>();
+		attribute.put(SkfCommonConstant.KEY_APPL_ID, applId);
+		attribute.put(SkfCommonConstant.KEY_APPL_NO, applNo);
+		attribute.put(SkfCommonConstant.KEY_SHAIN_NO, cancelDto.getShainNo());
+		attribute.put(SkfCommonConstant.KEY_STATUS, CodeConstant.STATUS_ICHIJIHOZON);
+
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(nextPageId, "init");
 		nextPage.addResultMessage(MessageIdConstant.I_SKF_2047);
+		nextPage.setTransferAttributes(attribute);
 		cancelDto.setTransferPageInfo(nextPage);
 
 		return cancelDto;

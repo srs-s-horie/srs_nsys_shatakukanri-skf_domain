@@ -606,11 +606,20 @@ public class Skf2020Sc003SharedService {
 		// 現保有の社宅 社宅管理番号
 		dto.setNowShatakuKanriNo(String.valueOf(shatakuNyukyoKiboInfo.getNowShatakuKanriNo()));
 		// 現保有の社宅 部屋管理番号
-		dto.setNowShatakuRoomKanriNo(String.valueOf(shatakuNyukyoKiboInfo.getNowShatakuKanriNo()));
+		dto.setNowShatakuRoomKanriNo(String.valueOf(shatakuNyukyoKiboInfo.getNowRoomKanriNo()));
 		// 退居予定日
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getTaikyoYoteiDate())) {
-			dto.setTaikyoYoteiDate(skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getTaikyoYoteiDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			String taikyoYoteiDate = skfDateFormatUtils.dateFormatFromString(shatakuNyukyoKiboInfo.getTaikyoYoteiDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			switch (dto.getApplStatus()) {
+			case CodeConstant.STATUS_DOI_ZUMI:
+			case CodeConstant.STATUS_SHONIN1:
+			case CodeConstant.STATUS_SHONIN_ZUMI:
+				break;
+			default:
+				taikyoYoteiDate += "（予定）";
+			}
+			dto.setTaikyoYoteiDate(taikyoYoteiDate);
 		}
 		// 社宅の状態
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getShatakuJotai())) {
