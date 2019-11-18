@@ -18,9 +18,12 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005SearchDto;
 
 /**
@@ -35,6 +38,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -45,9 +50,10 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 
 	@Override
 	public BaseDto index(Skf2010Sc005SearchDto searchDto) throws Exception {
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("検索処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 		// タイトル設定
 		searchDto.setPageTitleKey(MessageIdConstant.SKF2010_SC005_TITLE);
-		// 操作ログ出力
 
 		// ドロップダウンセット
 		setDropDown(searchDto);
@@ -73,7 +79,7 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 	private void setDropDown(Skf2010Sc005SearchDto dto) {
 		// ドロップダウン作成
 		Map<String, Object> dropDownMap = new HashMap<String, Object>();
-		skf2010Sc005SharedService.setDropDown(dropDownMap, companyCd, dto.getAgency(), dto.getAffiliation1(),
+		skf2010Sc005SharedService.setDropDown(dto, companyCd, dto.getAgency(), dto.getAffiliation1(),
 				dto.getAffiliation2());
 		// 機関ドロップダウンをセット
 		dto.setDdlAgencyList((List<Map<String, Object>>) dropDownMap.get("Agency"));
@@ -137,7 +143,7 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		}
 		// 申請状況
 		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1048, "申請状況");
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請状況");
 			dto.setApplStatusErr(validationErrorCode);
 			result = false;
 		}
@@ -196,7 +202,7 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		// 検索条件セット
 		param = setParam(dto);
 		// 検索処理
-		tApplHistoryData = skf2010Sc005SharedService.SearchApplList(param);
+		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
 		if (tApplHistoryData == null || tApplHistoryData.size() == 0) {
 			// 検索結果0件
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1007);
@@ -242,19 +248,23 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		param.setShozokuKikan(dto.getShozokuKikan());
 		// 申請日時（FROM）
 		if (dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())) {
-			param.setApplDateFrom(dto.getApplDateFrom().replace("/", ""));
+			param.setApplDateFrom(skfDateFormatUtils.dateFormatFromString(dto.getApplDateFrom(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 		}
 		// 申請日時（TO）
 		if (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())) {
-			param.setApplDateTo(dto.getApplDateTo().replace("/", ""));
+			param.setApplDateTo(skfDateFormatUtils.dateFormatFromString(dto.getApplDateTo(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 		}
 		// 承認日／修正依頼日（From）
 		if (dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom())) {
-			param.setAgreDateFrom(dto.getAgreDateFrom().replace("/", ""));
+			param.setAgreDateFrom(skfDateFormatUtils.dateFormatFromString(dto.getAgreDateFrom(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 		}
 		// 承認日／修正依頼日（To）
 		if (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo())) {
-			param.setAgreDateTo(dto.getAgreDateTo().replace("/", ""));
+			param.setAgreDateTo(skfDateFormatUtils.dateFormatFromString(dto.getAgreDateTo(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 		}
 		// 申請者名
 		if (dto.getName() != null && !CheckUtils.isEmpty(dto.getName())) {
@@ -271,13 +281,6 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 			List<String> applStatusList = new ArrayList<String>();
 			List<String> tmpApplStatus = Arrays.asList(dto.getApplStatus());
 			applStatusList.addAll(tmpApplStatus);
-			// 申請状況に「30：承認中」がセットされていた場合、承認1～4まで全て設定する
-			if (applStatusList.contains(CodeConstant.STATUS_SHONIN)) {
-				applStatusList.add(CodeConstant.STATUS_SHONIN1);
-				applStatusList.add(CodeConstant.STATUS_SHONIN2);
-				applStatusList.add(CodeConstant.STATUS_SHONIN3);
-				applStatusList.add(CodeConstant.STATUS_SHONIN4);
-			}
 			param.setApplStatus(applStatusList);
 		}
 		// 承認者名

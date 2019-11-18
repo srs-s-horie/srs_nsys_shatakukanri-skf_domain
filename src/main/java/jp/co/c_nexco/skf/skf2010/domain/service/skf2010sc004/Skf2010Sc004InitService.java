@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetCommentListExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
@@ -26,10 +25,10 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004InitDto;
 
 /**
@@ -47,13 +46,16 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 	@Autowired
-	private SkfGenericCodeUtils skfGenericCodeUtils;
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
 
 	private String companyCd = CodeConstant.C001;
+
+	private final String KYOGICHU_TEXT = "協議中";
+	private final String GOJITSU_TEXT = "（後日お知らせ）";
 
 	/**
 	 * サービス処理を行う。
@@ -244,7 +246,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 			// ログインユーザー情報取得
 			Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-			String shainNo = loginUserInfo.get("shainNo");
+			loginUserInfo.get("shainNo");
 			// 退居（自動車の保管場所返還）届情報取得
 			Skf2040TTaikyoReport tTaikyoReport = new Skf2040TTaikyoReport();
 			tTaikyoReport = skf2010Sc004SharedService.getTaikkyoReportInfo(applNo);
@@ -280,7 +282,9 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			switch (initDto.getApplStatus()) {
 			case CodeConstant.STATUS_SHINSEICHU:
 			case CodeConstant.STATUS_SHINSACHU:
-				operationGuide = operationGuideMap.get("01");
+				if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)) {
+					operationGuide = operationGuideMap.get("01");
+				}
 				break;
 			case CodeConstant.STATUS_KAKUNIN_IRAI:
 				operationGuide = operationGuideMap.get("02");
@@ -688,10 +692,25 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		initDto.setNewRental(newRental);
 		// 共益費
 		String newKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
-		if (newKyoekihi != null && NfwStringUtils.isNotEmpty(newKyoekihi)) {
-			newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
+		// 個人負担共益費協議中フラグチェック
+		boolean kyogiFlg = skfTeijiDataInfoUtils.selectKyoekihiKyogi(initDto.getShainNo(), CodeConstant.SYS_NYUKYO_KBN,
+				initDto.getApplNo());
+		if (kyogiFlg) {
+			// trueの時は「協議中」を表示
+			newKyoekihi = KYOGICHU_TEXT;
+		} else {
+			// falseの時は共益費を表示
+			if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
+				newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
+			} else {
+				// 共益費が未登録の場合、「（後日お知らせ）」を表示する
+				newKyoekihi = GOJITSU_TEXT;
+			}
 		}
-		initDto.setNewKyoekihi(newKyoekihi);
+		// 共益費は部屋番号が登録されている場合のみ表示
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
+			initDto.setNewKyoekihi(newKyoekihi);
+		}
 
 		// 自動車１台目
 		// 自動車の保管場所

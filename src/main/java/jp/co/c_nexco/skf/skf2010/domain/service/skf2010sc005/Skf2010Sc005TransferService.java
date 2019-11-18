@@ -1,10 +1,12 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -17,6 +19,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005TransferDto;
 
 /**
@@ -29,6 +32,10 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 
 	@Autowired
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
@@ -118,7 +125,14 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 		}
 
 		if (!CheckUtils.isEqual(applStatus, applInfoMap.get("status"))) {
-			// TODO 社宅管理データ連携処理実行
+			// 社宅管理データ連携処理実行
+			List<String> resultBatch = skf2010Sc005SharedService.doShatakuRenkei(menuScopeSessionBean, applShainNo,
+					applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC005);
+			if (resultBatch != null) {
+				skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(transDto, resultBatch);
+				skfRollBackExpRepository.rollBack();
+				return transDto;
+			}
 		}
 
 		// 遷移先画面ID

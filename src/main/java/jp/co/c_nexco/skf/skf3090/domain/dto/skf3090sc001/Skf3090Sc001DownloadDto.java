@@ -1,28 +1,24 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc001common;
+package jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc001;
 
 import java.util.*;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jp.co.c_nexco.skf.skf3090.domain.dto.common.Skf309010CommonDto;
+import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
+import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060Sc001common.Skf3060Sc001CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf3090_Sc001画面のDownloadDto。
  * 
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3090Sc001CommonDto extends Skf309010CommonDto {
+public class Skf3090Sc001DownloadDto extends FileDownloadDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
-
-
+	
 	/**
 	 * listTable用
 	 */
@@ -33,6 +29,5 @@ public class Skf3090Sc001CommonDto extends Skf309010CommonDto {
 	private String hdnEffectiveDate;	
 	// 状態区分
 	private String hdnJyotaiKbn;
-
-	private String fileBoxErr;
+	
 }
