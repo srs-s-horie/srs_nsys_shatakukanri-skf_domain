@@ -818,4 +818,5 @@ public class Skf2010Sc004SharedService {
 		}
 		return newApplNo;
 	}
+
 }
