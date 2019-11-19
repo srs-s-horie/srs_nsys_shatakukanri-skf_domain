@@ -85,6 +85,10 @@ public class Skf2040Sc001SharedService {
 	@Autowired
 	private SkfShatakuInfoUtilsGetShatakuInfoExpRepository skfShatakuInfoUtilsGetShatakuInfoExpRepository;
 
+	private static final String SHATAKU_CHECKED = "shataku_checked";
+	private static final String PARK1_CHECKED = "park1_checked";
+	private static final String PARK2_CHECKED = "park2_checked";
+
 	/**
 	 * 退居（返還）理由ドロップダウンリスト取得
 	 * 
@@ -149,17 +153,43 @@ public class Skf2040Sc001SharedService {
 		dto.setAffiliation2Name(taikyoInfo.getAffiliation2());
 		dto.setShatakuNo(taikyoInfo.getShatakuNo());
 		dto.setShatakuName(taikyoInfo.getTaikyoArea());
-		dto.setHdnNowShatakuRoomKanriNo(taikyoInfo.getRoomKanriNo());
+		dto.setHdnNowShatakuRoomKanriNo(String.valueOf(taikyoInfo.getRoomKanriNo()));
 		dto.setNowAddress(taikyoInfo.getAddress());
 		dto.setName(taikyoInfo.getName());
+
+		// 性別
 		dto.setGender(taikyoInfo.getGender());
+		switch (taikyoInfo.getGender()) {
+		case CodeConstant.MALE:
+			dto.setGenderName(CodeConstant.OUTPUT_MALE);
+			break;
+		case CodeConstant.FEMALE:
+			dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
+			break;
+		default:
+			break;
+		}
+
 		dto.setParking1stPlace(taikyoInfo.getParkingAddress1());
 		dto.setParking2ndPlace(taikyoInfo.getParkingAddress2());
 		dto.setTaikyoHenkanDate(taikyoInfo.getTaikyoDate());
 
 		// 退居種別
-		String[] taikyoTypeArray = new String[] { taikyoInfo.getTaikyoShataku(), taikyoInfo.getTaikyoParking1(),
-				taikyoInfo.getTaikyoParking2() };
+		String taikyoShatakuCheckedStr = CommonConstant.C_EMPTY;
+		String taikyoParking1CheckedStr = CommonConstant.C_EMPTY;
+		String taikyoParking2CheckedStr = CommonConstant.C_EMPTY;
+
+		if ("1".equals(taikyoInfo.getTaikyoShataku())) {
+			taikyoShatakuCheckedStr = SHATAKU_CHECKED;
+		}
+		if ("1".equals(taikyoInfo.getTaikyoParking1())) {
+			taikyoParking1CheckedStr = PARK1_CHECKED;
+		}
+		if ("1".equals(taikyoInfo.getTaikyoParking2())) {
+			taikyoParking2CheckedStr = PARK2_CHECKED;
+		}
+		String[] taikyoTypeArray = new String[] { taikyoShatakuCheckedStr, taikyoParking1CheckedStr,
+				taikyoParking2CheckedStr };
 		dto.setTaikyoType(taikyoTypeArray);
 
 		dto.setTaikyoRiyuKbn(taikyoInfo.getTaikyoRiyuKbn());
@@ -262,8 +292,8 @@ public class Skf2040Sc001SharedService {
 
 		// 室番号
 		if (NfwStringUtils.isNotEmpty(shatakuInfo.getRoomNo())) {
-			dto.setNowShatakuNo(shatakuInfo.getRoomNo());
-			LogUtils.debugByMsg("室番号" + dto.getNowShatakuNo());
+			dto.setHdnNowShatakuRoomNo(shatakuInfo.getRoomNo());
+			LogUtils.debugByMsg("室番号" + shatakuInfo.getRoomNo());
 		}
 		// 規格(間取り)
 		// 規格があった場合は、貸与規格。それ以外は本来規格
@@ -328,12 +358,12 @@ public class Skf2040Sc001SharedService {
 
 		// 現在の社宅管理番号
 		if (shatakuInfo.getShatakuKanriNo() != null) {
-			dto.setHdnNowShatakuKanriNo(shatakuInfo.getShatakuKanriNo());
+			dto.setHdnNowShatakuKanriNo(String.valueOf(shatakuInfo.getShatakuKanriNo()));
 		}
 
 		// 現在の部屋管理番号
 		if (shatakuInfo.getShatakuRoomKanriNo() != null) {
-			dto.setHdnNowShatakuRoomKanriNo(shatakuInfo.getShatakuRoomKanriNo());
+			dto.setHdnNowShatakuRoomKanriNo(String.valueOf(shatakuInfo.getShatakuRoomKanriNo()));
 		}
 	}
 
@@ -371,10 +401,11 @@ public class Skf2040Sc001SharedService {
 		Skf2040Sc001GetShatakuKanriIdExpParameter param = new Skf2040Sc001GetShatakuKanriIdExpParameter();
 		param.setShainNo(dto.getShainNo());
 		param.setShatakuKanriNo(dto.getShatakuNo());
-		param.setShatakuRoomKanriNo(dto.getHdnNowShatakuRoomKanriNo());
+		param.setShatakuRoomKanriNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuRoomKanriNo())));
 		String shatakuKanriId = skf2040Sc001GetShatakuKanriIdExpRepository.getShatakuKanriId(param);
 		if (!NfwStringUtils.isEmpty(shatakuKanriId)) {
 			dto.setShatakuKanriId(Long.parseLong(shatakuKanriId));
+			dto.setNowShatakuName(shatakuKanriId);
 		}
 	}
 
@@ -478,6 +509,9 @@ public class Skf2040Sc001SharedService {
 		Skf2040TTaikyoReport insertParam = this.makeTaikyoReportParam(dto);
 		// 登録
 		this.insertTaikyoTodoke(insertParam);
+		// 排他チェック用更新日付を更新
+		dto.addLastUpdateDate(dto.UPDATE_TABLE_PREFIX_TAIKYO_REPORT + insertParam.getApplNo(),
+				insertParam.getUpdateDate());
 
 		return true;
 	}
@@ -496,6 +530,10 @@ public class Skf2040Sc001SharedService {
 		// 退居届申請テーブル更新値の設定
 		Skf2040TTaikyoReport updateParam = this.makeTaikyoReportParam(dto);
 		this.updateTaikyoData(updateParam);
+		// 排他チェック用更新日付を更新
+		dto.addLastUpdateDate(dto.UPDATE_TABLE_PREFIX_TAIKYO_REPORT + updateParam.getApplNo(),
+				updateParam.getUpdateDate());
+
 		return true;
 	}
 
@@ -553,13 +591,13 @@ public class Skf2040Sc001SharedService {
 		String[] taikyoTypeArray = dto.getTaikyoType();
 		if (taikyoTypeArray != null && taikyoTypeArray.length > 0) {
 			for (String taikyoType : taikyoTypeArray) {
-				if (taikyoType.equals("shataku_checked")) {
+				if (taikyoType.equals(SHATAKU_CHECKED)) {
 					isShatakuTaikyoChecked = true;
 				}
-				if (taikyoType.equals("park1_checked")) {
+				if (taikyoType.equals(PARK1_CHECKED)) {
 					isParking1stHenkanChecked = true;
 				}
-				if (taikyoType.equals("park2_checked")) {
+				if (taikyoType.equals(PARK2_CHECKED)) {
 					isParking2ndHenkanChecked = true;
 				}
 			}
@@ -610,7 +648,7 @@ public class Skf2040Sc001SharedService {
 
 		// 退居場所
 		// 社宅名＋部屋番号
-		param.setTaikyoArea(dto.getHdnSelectedNowShatakuName() + dto.getHdnNowShatakuRoomKanriNo());
+		param.setTaikyoArea(dto.getHdnSelectedNowShatakuName() + dto.getHdnNowShatakuRoomNo());
 
 		// 退居する社宅区分
 		// 社宅退居と駐車場１、２返還の組み合わせによって決まる。
@@ -629,9 +667,9 @@ public class Skf2040Sc001SharedService {
 		param.setTaikyoParking2(BooleanUtils.toString(isParking2ndHenkanChecked, "1", "0"));
 
 		// 社宅管理番号
-		param.setShatakuNo(dto.getHdnNowShatakuKanriNo());
+		param.setShatakuNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuKanriNo())));
 		// 部屋管理番号
-		param.setRoomKanriNo(dto.getHdnNowShatakuRoomKanriNo());
+		param.setRoomKanriNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuRoomKanriNo())));
 		// 社宅状態
 		param.setShatakuJotai(dto.getShatakuJotai());
 		// 返却立合希望日
@@ -881,9 +919,9 @@ public class Skf2040Sc001SharedService {
 		// 退居届書類管理番号
 		setValue.setTaikyoApplNo(bihinHenkaykuShinseiApplNo);
 		// 社宅管理番号
-		setValue.setShatakuNo(dto.getHdnNowShatakuKanriNo());
+		setValue.setShatakuNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuKanriNo())));
 		// 部屋管理番号
-		setValue.setRoomKanriNo(dto.getHdnNowShatakuRoomKanriNo());
+		setValue.setRoomKanriNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuRoomKanriNo())));
 		// 社宅名
 		setValue.setNowShatakuName(dto.getHdnSelectedNowShatakuName());
 		// 号室
