@@ -346,6 +346,8 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		SEIYAKUSHO("skf/template/skf2020/skf2020rp002/R0101_Seiyakusho.iod"),
 		/** 入居等決定通知書 */
 		NYUKYO_KETTEI_TSUCHI("skf/template/skf2020/skf2020rp003/R0102_NyukyoKetteiTsuchi.iod"),
+		/** 入居等決定通知書（社宅管理番号あり） */
+		NYUKYO_KETTEI_TSUCHI_SHATAKU_KANRI_NO_ARI("skf/template/skf2020/skf2020rp003/R0102_NyukyoKetteiTsuchiShatakuKanriNoAri.iod"),
 		/** 退居（自動車の保管場所返還）届 */
 		TAIKYO_HENKAN_TODOKE("skf/template/skf2040/skf2040rp001/R0103_TaikyoHenkanTodoke.iod"),;
 
