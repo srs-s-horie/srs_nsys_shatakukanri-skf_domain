@@ -1394,10 +1394,13 @@ public class Skf2020Sc002SharedService {
 		}
 
 		// 備品制御
-		if (NfwStringUtils.isNotEmpty(dto.getReturnEquipment())) {
+		if (NfwStringUtils.isNotEmpty(dto.getReturnEquipment())
+				&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(dto.getHdnBihinHenkyakuUmu())) {
+			// 返却備品が空ではなく、備品返却有の場合
 
-			if (CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(dto.getTaiyoHituyo())) {
-				// 駐車場のみの場合は、返却備品があっても返却立会希望日、連絡先を非活性にする
+			if (CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(dto.getTaiyoHituyo())
+					|| !CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
+				// 駐車場のみの場合や継続利用は、返却備品があっても返却立会希望日、連絡先を非活性にする
 				dto.setSessionTimeDisabled(sTrue);
 				dto.setSessionDayDisabled(sTrue);
 				dto.setRenrakuSakiDisabled(sTrue);
