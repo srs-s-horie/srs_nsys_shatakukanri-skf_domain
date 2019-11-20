@@ -3,35 +3,82 @@
  */
 package jp.co.c_nexco.skf.skf3070.domain.service.skf3070sc002;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3070TOwnerInfo;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3070TOwnerInfoRepository;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc002.Skf3070Sc002InitDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。　 
+ * Skf3070_Sc002 賃貸人（代理人）情報登録画面のInitサービス処理クラス。
+ * 
+ * @author NEXCOシステムズ
  * 
  */
 @Service
 public class Skf3070Sc002InitService extends BaseServiceAbstract<Skf3070Sc002InitDto> {
-	
+
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private Skf3070TOwnerInfoRepository skf3070TOwnerInfoRepository;
+	@Autowired
+	private Skf3070Sc002SharedService skf3070Sc002SheardService;
 
 	/**
-	 * サービス処理を行う。　
+	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
-	public Skf3070Sc002InitDto index(Skf3070Sc002InitDto initDto) throws Exception {
-		
+	public BaseDto index(Skf3070Sc002InitDto initDto) throws Exception {
+
 		initDto.setPageTitleKey(MessageIdConstant.SKF3070_SC002_TITLE);
- 		
+
+		if (NfwStringUtils.isNotEmpty(initDto.getOwnerNo())) {
+			// 賃貸人（代理人）番号がある場合
+			// 操作ログを出力
+			skfOperationLogUtils.setAccessLog("編集", CodeConstant.C001, initDto.getPrePageId());
+
+			// 賃貸人（代理人）情報を取得
+			long ownerNoL = Long.parseLong(initDto.getOwnerNo());
+			Skf3070TOwnerInfo ownerInfo = new Skf3070TOwnerInfo();
+			ownerInfo = skf3070TOwnerInfoRepository.selectByPrimaryKey(ownerNoL);
+
+			if (ownerInfo != null) {
+				// 賃貸人（代理人）情報が取得できた場合、画面項目を設定
+				initDto.setOwnerName(ownerInfo.getOwnerName());
+				initDto.setOwnerNameKk(ownerInfo.getOwnerNameKk());
+				initDto.setZipCode(ownerInfo.getZipCd());
+				initDto.setAddress(ownerInfo.getAddress());
+				initDto.setBusinessKbn(ownerInfo.getBusinessKbn());
+				initDto.setAcceptFlg(ownerInfo.getAcceptFlg());
+				initDto.setAcceptStatus(ownerInfo.getAcceptStatus());
+				initDto.setRemarks(ownerInfo.getRemarks());
+
+				// 最終更新日を設定
+				initDto.addLastUpdateDate(Skf3070Sc002SharedService.KEY_LAST_UPDATE_DATE, ownerInfo.getUpdateDate());
+
+			}
+
+		} else {
+			// 操作ログを出力
+			skfOperationLogUtils.setAccessLog("新規", CodeConstant.C001, initDto.getPrePageId());
+		}
+
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		// ドロップダウンリスト用リストのインスタンス生成
+		skf3070Sc002SheardService.getDropDownList(initDto);
+
 		return initDto;
 	}
-	
+
 }
