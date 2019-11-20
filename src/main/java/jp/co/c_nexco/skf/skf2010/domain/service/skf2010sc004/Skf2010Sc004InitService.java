@@ -230,6 +230,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
 			tNyukyoChoshoTsuchi = skf2010Sc004SharedService.getNyukyoChoshoTsuchiInfo(applNo);
 			if (tNyukyoChoshoTsuchi != null) {
+
+				// 退居予定日入力欄活性非活性制御
+				if (!(NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTaikyoYotei())
+						&& CheckUtils.isEqual(tNyukyoChoshoTsuchi.getTaikyoYotei(), CodeConstant.LEAVE))) {
+					// 退居予定がNULLかもしくは「１：退居」以外の場合は退居予定日と駐車場返還予定日を非活性にする
+					initDto.setMaskPattern("NOT_TAIKYO");
+				}
+
 				// 更新用
 				String applDate = skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getApplDate(),
 						"yyyy/MM/dd HH:mm:ss");
@@ -240,6 +248,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
 				// 備品希望
 				initDto.setBihinKibo(tNyukyoChoshoTsuchi.getBihinKibo());
+
 			}
 		} else if (applId.equals(FunctionIdConstant.R0103)) {
 			// 退居（自動車の保管場所返還）届
