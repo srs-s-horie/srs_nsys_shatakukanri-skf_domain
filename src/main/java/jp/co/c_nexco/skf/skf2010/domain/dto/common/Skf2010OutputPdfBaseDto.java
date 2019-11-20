@@ -286,4 +286,8 @@ public class Skf2010OutputPdfBaseDto extends FileDownloadDto {
 	private String attachedNo;
 
 	private String backUrl;
+	
+	/** 入居決定通知書 */
+	// 入居可能日付
+	private String NyukyoKanoDate;
 }
