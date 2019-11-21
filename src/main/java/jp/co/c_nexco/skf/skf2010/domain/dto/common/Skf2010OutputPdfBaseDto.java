@@ -265,6 +265,8 @@ public class Skf2010OutputPdfBaseDto extends FileDownloadDto {
 	private String address;
 	// 社宅名
 	private String shatakuName;
+	// 社宅
+	private String taikyoArea;
 	// 駐車場１
 	private String parkingAddress1;
 	// 駐車場2
