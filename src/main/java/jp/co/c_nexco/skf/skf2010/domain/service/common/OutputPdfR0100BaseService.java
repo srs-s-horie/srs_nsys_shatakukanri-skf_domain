@@ -154,7 +154,7 @@ public abstract class OutputPdfR0100BaseService<DTO extends Skf2010OutputPdfBase
 		// チェックボックス_社宅の貸与を必要とするか
 		super.setCheckMark(pdfData, "taiyoHitsuyoTrue", dto.getTaiyoHitsuyoTrue());
 		super.setCheckMark(pdfData, "taiyoHitsuyoFalse", dto.getTaiyoHitsuyoFalse());
-		super.setCheckMark(pdfData, "taikyoHitsuyoParking", dto.getTaiyoHitsuyoParking());
+		super.setCheckMark(pdfData, "taiyoHitsuyoParking", dto.getTaiyoHitsuyoParking());
 
 		// チェックボックス_社宅を必要とする理由
 		super.setCheckMark(pdfData, "hitsuyoRiyuIdou", dto.getHitsuyoRiyuIdou());
