@@ -102,8 +102,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 
 	// 入居等決定通知書PDFのマッピング
 	private void setNyukyoKetteiTsuchi(CSVDoc pdfData, DTO dto, int i) {
-		pdfData.setData("applNo", "");
-		// pdfData.setData("applNo", NfwStringUtils.defaultString(dto.getApplNo()));
+		pdfData.setData("applNo", NfwStringUtils.defaultString(dto.getApplNo()));
 		pdfData.setData("nowAgency", NfwStringUtils.defaultString(dto.getNowAgency()));
 		pdfData.setData("nowAffiliation1", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 		pdfData.setData("nowAffiliation2", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
