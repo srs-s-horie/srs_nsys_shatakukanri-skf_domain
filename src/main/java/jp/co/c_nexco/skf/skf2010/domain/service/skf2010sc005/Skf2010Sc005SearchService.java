@@ -56,7 +56,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		searchDto.setPageTitleKey(MessageIdConstant.SKF2010_SC005_TITLE);
 
 		// ドロップダウンセット
-		setDropDown(searchDto);
+		skf2010Sc005SharedService.setDropDown(searchDto, companyCd, searchDto.getAgency(), searchDto.getAffiliation1(),
+				searchDto.getAffiliation2());
 
 		// 入力チェック
 		boolean resultValidate = checkValidate(searchDto);
@@ -78,15 +79,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 	@SuppressWarnings("unchecked")
 	private void setDropDown(Skf2010Sc005SearchDto dto) {
 		// ドロップダウン作成
-		Map<String, Object> dropDownMap = new HashMap<String, Object>();
 		skf2010Sc005SharedService.setDropDown(dto, companyCd, dto.getAgency(), dto.getAffiliation1(),
 				dto.getAffiliation2());
-		// 機関ドロップダウンをセット
-		dto.setDdlAgencyList((List<Map<String, Object>>) dropDownMap.get("Agency"));
-		// 部等ドロップダウンをセット
-		dto.setDdlAffiliation1List((List<Map<String, Object>>) dropDownMap.get("Affiliation1"));
-		// 室、チーム又は課ドロップダウンをセット
-		dto.setDdlAffiliation2List((List<Map<String, Object>>) dropDownMap.get("Affiliation2"));
 
 		return;
 	}
