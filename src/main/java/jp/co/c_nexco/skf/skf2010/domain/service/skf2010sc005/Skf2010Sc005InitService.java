@@ -126,77 +126,12 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		// 承認一覧を条件から取得
 		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
 		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
-		param = setParam(dto);
+		param = skf2010Sc005SharedService.setParam(dto);
 		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
 		// グリッド表示（リストテーブル）作成
 		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
 
 		return rtnList;
-	}
-
-	/**
-	 * 検索条件をセットします。
-	 * 
-	 * @param dto
-	 * @return
-	 */
-	private Skf2010Sc005GetShoninIchiranShoninExpParameter setParam(Skf2010Sc005InitDto dto) {
-		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
-		// 会社コード
-		param.setCompanyCd(companyCd);
-
-		// 機関
-		if (dto.getAgency() != null && !CheckUtils.isEmpty(dto.getAgency())) {
-			param.setAgencyName(skf2010Sc005SharedService.getAgencyName(companyCd, dto.getAgency()));
-		}
-		// 部等
-		if (dto.getAffiliation1() != null && !CheckUtils.isEmpty(dto.getAffiliation1())) {
-			param.setAffiliation1Name(
-					skf2010Sc005SharedService.getAffiliation1Name(companyCd, dto.getAgency(), dto.getAffiliation1()));
-
-		}
-		// 室、チーム
-		if (dto.getAffiliation2() != null && !CheckUtils.isEmpty(dto.getAffiliation2())) {
-			param.setAffiliation2Name(skf2010Sc005SharedService.getAffiliation2Name(companyCd, dto.getAgency(),
-					dto.getAffiliation1(), dto.getAffiliation2()));
-
-		}
-		// 所属機関
-		param.setShozokuKikan(CodeConstant.SHOZOKU_SHINSEI);
-		// 申請日時（FROM）
-		if (dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())) {
-			param.setApplDateFrom(dto.getApplDateFrom().replace("/", ""));
-		}
-		// 申請日時（TO）
-		if (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())) {
-			param.setApplDateTo(dto.getApplDateTo().replace("/", ""));
-		}
-		// 承認日／修正依頼日（From）
-		if (dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom())) {
-			param.setAgreDateFrom(dto.getAgreDateFrom().replace("/", ""));
-		}
-		// 承認日／修正依頼日（To）
-		if (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo())) {
-			param.setAgreDateTo(dto.getAgreDateTo().replace("/", ""));
-		}
-		// 申請者名
-		if (dto.getName() != null && !CheckUtils.isEmpty(dto.getName())) {
-			param.setName(dto.getName());
-		}
-		// 申請書類種別
-		param.setApplCtgryId(dto.getApplCtgry());
-		// 申請状況
-		if (dto.getApplStatus() != null && dto.getApplStatus().length > 0) {
-			List<String> applStatusList = new ArrayList<String>();
-			List<String> tmpApplStatus = Arrays.asList(dto.getApplStatus());
-			applStatusList.addAll(tmpApplStatus);
-			param.setApplStatus(applStatusList);
-		}
-		// 承認者名
-		if (dto.getAgreementName() != null && !CheckUtils.isEmpty(dto.getAgreementName())) {
-			param.setAgreeName(dto.getAgreementName());
-		}
-		return param;
 	}
 
 	/**

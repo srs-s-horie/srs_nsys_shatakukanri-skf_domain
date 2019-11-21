@@ -53,20 +53,15 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 
 		String applNo = transDto.getApplNo();
 		String applId = transDto.getApplId();
+		// 申請状況
 		String applStatus = transDto.getSendApplStatus();
+		// 更新前申請状況
+		String defaultApplStatus = applStatus;
 
 		String applShainNo = transDto.getApplShainNo();
 
 		String shonin1 = transDto.getShonin1();
 		String shonin2 = transDto.getShonin2();
-
-		Map<String, String> applInfoMap = new HashMap<String, String>();
-		// 申請書類管理番号
-		applInfoMap.put("applNo", applNo);
-		// 申請書類ID
-		applInfoMap.put("applId", applId);
-		// 申請状況
-		applInfoMap.put("status", applStatus);
 
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
@@ -76,8 +71,7 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 		Map<String, Object> attribute = new HashMap<String, Object>();
 
 		// ステータスが「承認中」である場合のみ、二重承認チェックを行う
-		if (CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)
-				|| CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN2)) {
+		if (CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)) {
 			// 「承認者名1」「承認者名2」いずれかが、セッションのログインユーザ名と同じ場合（システム管理者は除く）
 			if ((CheckUtils.isEqual(loginUserInfo.get("userName"), shonin1)
 					|| CheckUtils.isEqual(loginUserInfo.get("userName"), shonin2))
@@ -124,7 +118,8 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 			applStatus = statusMap.get("applStatus");
 		}
 
-		if (!CheckUtils.isEqual(applStatus, applInfoMap.get("status"))) {
+		if (!CheckUtils.isEqual(applStatus, defaultApplStatus)) {
+			// 更新前と更新後の申請状況が違っていた場合
 			// 社宅管理データ連携処理実行
 			List<String> resultBatch = skf2010Sc005SharedService.doShatakuRenkei(menuScopeSessionBean, applShainNo,
 					applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC005);
@@ -147,12 +142,11 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 					// 社宅入居希望等調書（アウトソース用）
 					nextPageId = FunctionIdConstant.SKF2020_SC003;
 
-					if (skf2010Sc005SharedService.getShatakuTaiyoFuyo(applNo)) {
+					if (skf2010Sc005SharedService.isShatakuTaiyoFuyo(applNo)) {
 						nextPageId = CodeConstant.NONE;
 					}
 				} else if (CheckUtils.isEqual(applStatus, CodeConstant.STATUS_DOI_ZUMI)
-						|| CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)
-						|| CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN2)) {
+						|| CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)) {
 					// 社宅入居希望等調書の「同意済」から「承認中」の場合には、承認画面へ遷移前に使用料月額、共益費を更新
 					skf2010Sc005SharedService.updateShatakuRental(applShainNo, CodeConstant.NYUTAIKYO_KBN_NYUKYO,
 							applNo);

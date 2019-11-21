@@ -7,13 +7,13 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc002common.Skf3090Sc002Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3090_Sc002画面のInitDto。
+ * Skf3090_Sc002画面のRegistDto。
  * 
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3090Sc002InitDto extends Skf3090Sc002CommonDto {
+public class Skf3090Sc002RegisteDto extends Skf3090Sc002CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
-
+	
 }

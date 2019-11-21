@@ -700,7 +700,7 @@ public class Skf3060Sc001SharedService {
         int diff = 0;
         if (true == isCheckOk) {
         	// isCheckOkがTrue（エラーがない）の時のみ実施
-            SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+            SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
             fromDate = sdf.parse(commonDto.getBaseTermFrom());
             toDate = sdf.parse(commonDto.getBaseTermTo());
             diff = fromDate.compareTo(toDate);

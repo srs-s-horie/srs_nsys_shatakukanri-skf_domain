@@ -67,16 +67,18 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 		return updDto;
 	}
 
+	/**
+	 * 申請情報を一括承認 します
+	 * 
+	 * @param updDto
+	 * @throws Exception
+	 */
 	@SuppressWarnings("unchecked")
 	private void updateApplStatus(Skf2010Sc005UpdateDto updDto) throws Exception {
 		// 社宅連携用セッション情報セット
 		skf2010Sc005SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 
 		String submitApplNo = updDto.getSubmitApplNo();
-
-		if (submitApplNo == null || CheckUtils.isEmpty(submitApplNo)) {
-			return;
-		}
 
 		List<String> updateApplNoList = new ArrayList<String>();
 		String[] applNos = submitApplNo.split(",");

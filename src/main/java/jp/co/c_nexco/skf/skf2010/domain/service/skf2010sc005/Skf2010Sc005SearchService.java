@@ -100,51 +100,11 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 	 */
 	private boolean checkValidate(Skf2010Sc005SearchDto dto) throws Exception {
 		boolean result = true;
-		dto.setApplDateFromErr("");
-		dto.setApplDateToErr("");
-		dto.setAgreDateFromErr("");
-		dto.setAgreDateToErr("");
-		dto.setApplStatusErr("");
-		// 申請日FROM
-		if ((dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())
-				&& (!CheckUtils.isFormatDate(dto.getApplDateFrom(), "yyyy/MM/dd") && !SkfCheckUtils
-						.isSkfDateFormat(dto.getApplDateFrom(), CheckUtils.DateFormatType.YYYYMMDD)))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請日FROM");
-			dto.setApplDateFromErr(validationErrorCode);
-			dto.setApplDateFrom("");
-			result = false;
-		}
-		// 申請日TO
-		if ((dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())
-				&& (!CheckUtils.isDateFormat(dto.getApplDateTo(), "yyyy/MM/dd")
-						&& !SkfCheckUtils.isSkfDateFormat(dto.getApplDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "申請日To");
-			dto.setApplDateToErr(validationErrorCode);
-			// dto.setApplDateTo("");
-			result = false;
-		}
-		// 承認日FROM
-		if ((dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom())
-				&& (!CheckUtils.isDateFormat(dto.getAgreDateFrom(), "yyyy/MM/dd") && !SkfCheckUtils
-						.isSkfDateFormat(dto.getAgreDateFrom(), CheckUtils.DateFormatType.YYYYMMDD)))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "承認日／修正依頼日From");
-			dto.setAgreDateFromErr(validationErrorCode);
-			dto.setAgreDateFrom("");
-			result = false;
-		}
-		// 承認日TO
-		if ((dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo())
-				&& (!CheckUtils.isDateFormat(dto.getAgreDateTo(), "yyyy/MM/dd")
-						&& !SkfCheckUtils.isSkfDateFormat(dto.getAgreDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "承認日／修正依頼日From");
-			dto.setAgreDateToErr(validationErrorCode);
-			dto.setAgreDateTo("");
-			result = false;
-		}
+
 		// 申請状況
 		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請状況");
-			dto.setApplStatusErr(validationErrorCode);
+			ServiceHelper.addErrorResultMessage(dto, new String[] { "applStatusArea" }, MessageIdConstant.E_SKF_1054,
+					"申請状況");
 			result = false;
 		}
 
@@ -160,9 +120,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1133, "申請日");
-				dto.setApplDateFromErr(validationErrorCode);
-				dto.setApplDateToErr(validationErrorCode);
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "applDateFrom", "applDateTo" },
+						MessageIdConstant.E_SKF_1133, "申請日");
 				result = false;
 			}
 
@@ -175,9 +134,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1133, "承認日／修正依頼日");
-				dto.setAgreDateFromErr(validationErrorCode);
-				dto.setAgreDateToErr(validationErrorCode);
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "agreDateFrom", "agreDateTo" },
+						MessageIdConstant.E_SKF_1133, "承認日／修正依頼日");
 				result = false;
 			}
 
@@ -200,7 +158,7 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
 
 		// 検索条件セット
-		param = setParam(dto);
+		param = skf2010Sc005SharedService.setParam(dto);
 		// 検索処理
 		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
 		if (tApplHistoryData == null || tApplHistoryData.size() == 0) {
@@ -217,76 +175,4 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		return rtnList;
 	}
 
-	/**
-	 * 検索条件をセットします。
-	 * 
-	 * @param dto
-	 * @return
-	 */
-	private Skf2010Sc005GetShoninIchiranShoninExpParameter setParam(Skf2010Sc005SearchDto dto) {
-		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
-		// 会社コード
-		param.setCompanyCd(companyCd);
-
-		// 機関
-		if (dto.getAgency() != null && !CheckUtils.isEmpty(dto.getAgency())) {
-			param.setAgencyName(skf2010Sc005SharedService.getAgencyName(companyCd, dto.getAgency()));
-		}
-		// 部等
-		if (dto.getAffiliation1() != null && !CheckUtils.isEmpty(dto.getAffiliation1())) {
-			param.setAffiliation1Name(
-					skf2010Sc005SharedService.getAffiliation1Name(companyCd, dto.getAgency(), dto.getAffiliation1()));
-
-		}
-		// 室、チーム
-		if (dto.getAffiliation2() != null && !CheckUtils.isEmpty(dto.getAffiliation2())) {
-			param.setAffiliation2Name(skf2010Sc005SharedService.getAffiliation2Name(companyCd, dto.getAgency(),
-					dto.getAffiliation1(), dto.getAffiliation2()));
-
-		}
-		// 所属機関
-		param.setShozokuKikan(dto.getShozokuKikan());
-		// 申請日時（FROM）
-		if (dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())) {
-			param.setApplDateFrom(skfDateFormatUtils.dateFormatFromString(dto.getApplDateFrom(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
-		}
-		// 申請日時（TO）
-		if (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())) {
-			param.setApplDateTo(skfDateFormatUtils.dateFormatFromString(dto.getApplDateTo(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
-		}
-		// 承認日／修正依頼日（From）
-		if (dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom())) {
-			param.setAgreDateFrom(skfDateFormatUtils.dateFormatFromString(dto.getAgreDateFrom(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
-		}
-		// 承認日／修正依頼日（To）
-		if (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo())) {
-			param.setAgreDateTo(skfDateFormatUtils.dateFormatFromString(dto.getAgreDateTo(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
-		}
-		// 申請者名
-		if (dto.getName() != null && !CheckUtils.isEmpty(dto.getName())) {
-			param.setName(dto.getName());
-		}
-		// 申請書類種別
-		param.setApplCtgryId(dto.getApplCtgry());
-		// 申請書類名
-		if (NfwStringUtils.isNotEmpty(dto.getApplName())) {
-			param.setApplName(dto.getApplName());
-		}
-		// 申請状況
-		if (dto.getApplStatus() != null && dto.getApplStatus().length > 0) {
-			List<String> applStatusList = new ArrayList<String>();
-			List<String> tmpApplStatus = Arrays.asList(dto.getApplStatus());
-			applStatusList.addAll(tmpApplStatus);
-			param.setApplStatus(applStatusList);
-		}
-		// 承認者名
-		if (dto.getAgreementName() != null && !CheckUtils.isEmpty(dto.getAgreementName())) {
-			param.setAgreeName(dto.getAgreementName());
-		}
-		return param;
-	}
 }

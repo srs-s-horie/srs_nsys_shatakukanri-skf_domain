@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -130,8 +131,8 @@ public class Skf2040Sc001SaveService extends BaseServiceAbstract<Skf2040Sc001Sav
 		saveDto.setDdlTaikyoRiyuKbnList(skf2040Sc001SharedService.getTaikyoHenkanRiyuList(saveDto.getTaikyoRiyuKbn()));
 
 		// 現居住社宅名ドロップダウンリストをDtoに設定
-		List<Map<String, Object>> nowShatakuNameList = skf2040Sc001SharedService
-				.getNowShatakuNameList(saveDto.getShainNo(), saveDto.getShatakuNo());
+		List<Map<String, Object>> nowShatakuNameList = skf2040Sc001SharedService.getNowShatakuNameList(
+				saveDto.getShainNo(), Long.parseLong(NfwStringUtils.defaultString(saveDto.getNowShatakuName())));
 		if (null != nowShatakuNameList && nowShatakuNameList.size() > 0) {
 			saveDto.setDdlNowShatakuNameList(nowShatakuNameList);
 			// リスト一件目の物件の社宅管理IDを取得してDTOに設定しておく
