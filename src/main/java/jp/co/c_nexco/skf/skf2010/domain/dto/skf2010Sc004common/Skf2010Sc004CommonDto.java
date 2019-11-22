@@ -49,6 +49,9 @@ public class Skf2010Sc004CommonDto extends Skf2010CommonDto {
 	// 入力フォーム表示フラグ
 	private String inputAreaVisible;
 
+	// 退居フラグ
+	private boolean notTaikyo = false;
+
 	// 操作ガイド
 	private String operationGuide;
 }
