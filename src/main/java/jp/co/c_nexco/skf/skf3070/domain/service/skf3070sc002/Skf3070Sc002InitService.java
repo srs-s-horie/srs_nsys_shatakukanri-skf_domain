@@ -75,7 +75,7 @@ public class Skf3070Sc002InitService extends BaseServiceAbstract<Skf3070Sc002Ini
 		}
 
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
-		// ドロップダウンリスト用リストのインスタンス生成
+		// ドロップダウンリスト用リストの生成
 		skf3070Sc002SheardService.getDropDownList(initDto);
 
 		return initDto;
