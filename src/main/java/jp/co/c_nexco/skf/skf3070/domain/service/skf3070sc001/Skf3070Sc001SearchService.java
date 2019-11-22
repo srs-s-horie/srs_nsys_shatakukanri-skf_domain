@@ -32,7 +32,7 @@ public class Skf3070Sc001SearchService extends BaseServiceAbstract<Skf3070Sc001S
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
-	private Skf3070Sc001SheardService skf3070Sc001SheardService;
+	private Skf3070Sc001SharedService skf3070Sc001SheardService;
 
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3070.skf3070_sc001.max_row_count}")

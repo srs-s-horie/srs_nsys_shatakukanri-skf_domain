@@ -32,9 +32,5 @@ public class Skf3070Sc001CommonDto extends Skf307010CommonDto {
 	/* ドロップダウン */
 	// 対象年ドロップダウン
 	private List<Map<String, Object>> ddlTargetYearList;
-	// 個人法人区分ドロップダウン
-	private List<Map<String, Object>> ddlBusinessKbnList;
-	// 個人番号ドロップダウン
-	private List<Map<String, Object>> ddlAcceptFlgList;
 
 }
