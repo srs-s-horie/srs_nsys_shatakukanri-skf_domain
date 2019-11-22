@@ -11,6 +11,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc002.Skf3070Sc002InitDto;
@@ -42,6 +43,7 @@ public class Skf3070Sc002InitService extends BaseServiceAbstract<Skf3070Sc002Ini
 	public BaseDto index(Skf3070Sc002InitDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3070_SC002_TITLE);
+		initDto.setPageId(FunctionIdConstant.SKF3070_SC002);
 
 		if (NfwStringUtils.isNotEmpty(initDto.getOwnerNo())) {
 			// 賃貸人（代理人）番号がある場合
