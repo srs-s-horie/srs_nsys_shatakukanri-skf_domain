@@ -1,9 +1,8 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,9 @@ import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.OutputFileCsvProp
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005DownloadDto;
 
@@ -37,8 +39,12 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
 
-	private Map<String, BaseCodeEntity> baseProperty;
+	private Map<String, String> applStatusMap;
 
 	private String templateFilePropertyKeyR0100 = "skf2010.skf2010_sc005.r0100_csv";
 	private String templateFilePropertyKeyR0103 = "skf2010.skf2010_sc005.r0103_csv";
@@ -59,7 +65,7 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		// 操作ログ出力
 		skfOperationLogUtils.setAccessLog("CSV出力処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 		// 汎用コード取得
-		baseProperty = codeCacheUtils.getGenericCode("SKF1001");
+		applStatusMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 
 		// 出力情報取得
 		List<Skf2010Sc005GetShoninIchiranShoninExp> resultList = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
@@ -81,17 +87,11 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		// 備品返却確認
 		List<String[]> r0105List = new ArrayList<String[]>();
 
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-
 		String[] rowData = {};
-
-		Map<String, String[]> columnMap = new HashMap<String, String[]>();
 
 		// CSV
 		for (Skf2010Sc005GetShoninIchiranShoninExp applData : resultList) {
-			columnMap = new HashMap<String, String[]>();
-
-			rowData = setApplDataForCsv(applData, applData.getApplId(), columnMap);
+			rowData = setApplDataForCsv(applData, applData.getApplId());
 			switch (applData.getApplId()) {
 			case "R0100":
 				r0100List.add(rowData);
@@ -135,15 +135,15 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	 * 
 	 * @param dto
 	 * @return
+	 * @throws Exception
 	 */
-	private List<Skf2010Sc005GetShoninIchiranShoninExp> searchApplList(Skf2010Sc005DownloadDto dto) {
+	private List<Skf2010Sc005GetShoninIchiranShoninExp> searchApplList(Skf2010Sc005DownloadDto dto) throws Exception {
 		// 承認一覧を条件から取得
 		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
 		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
 
 		// 申請状況チェック
-		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請状況");
+		if (!checkValidate(dto)) {
 			throwBusinessExceptionIfErrors(dto.getResultMessages());
 		} else {
 			// 検索条件セット
@@ -154,6 +154,59 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		}
 
 		return tApplHistoryData;
+	}
+
+	/**
+	 * 入力チェックを行います
+	 * 
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean checkValidate(Skf2010Sc005DownloadDto dto) throws Exception {
+		boolean result = true;
+
+		// 申請状況
+		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
+			ServiceHelper.addErrorResultMessage(dto, new String[] { "applStatusArea" }, MessageIdConstant.E_SKF_1054,
+					"申請状況");
+			result = false;
+		}
+
+		// ここから関連項目チェック
+		// 申請日のFrom < To整合性
+		Date fromDate = null;
+		Date toDate = null;
+		int diff = 0;
+		if ((dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom()))
+				&& (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo()))) {
+			fromDate = skfDateFormatUtils.formatStringToDate(dto.getApplDateFrom());
+			toDate = skfDateFormatUtils.formatStringToDate(dto.getApplDateTo());
+
+			diff = fromDate.compareTo(toDate);
+			if (diff > 0) {
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "applDateFrom", "applDateTo" },
+						MessageIdConstant.E_SKF_1133, "申請日");
+				result = false;
+			}
+
+		}
+		// 承認日のFrom < To整合性
+		if ((dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom()))
+				&& (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo()))) {
+			fromDate = skfDateFormatUtils.formatStringToDate(dto.getAgreDateFrom());
+			toDate = skfDateFormatUtils.formatStringToDate(dto.getAgreDateTo());
+
+			diff = fromDate.compareTo(toDate);
+			if (diff > 0) {
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "agreDateFrom", "agreDateTo" },
+						MessageIdConstant.E_SKF_1133, "承認日／修正依頼日");
+				result = false;
+			}
+
+		}
+
+		return result;
 	}
 
 	/**
@@ -187,19 +240,19 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		param.setShozokuKikan(dto.getShozokuKikan());
 		// 申請日時（FROM）
 		if (dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())) {
-			param.setApplDateFrom(dto.getApplDateFrom().replace("/", ""));
+			param.setApplDateFrom(dto.getApplDateFrom().replace("/", CodeConstant.NONE));
 		}
 		// 申請日時（TO）
 		if (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())) {
-			param.setApplDateTo(dto.getApplDateTo().replace("/", ""));
+			param.setApplDateTo(dto.getApplDateTo().replace("/", CodeConstant.NONE));
 		}
 		// 承認日／修正依頼日（From）
 		if (dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom())) {
-			param.setAgreDateFrom(dto.getAgreDateFrom().replace("/", ""));
+			param.setAgreDateFrom(dto.getAgreDateFrom().replace("/", CodeConstant.NONE));
 		}
 		// 承認日／修正依頼日（To）
 		if (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo())) {
-			param.setAgreDateTo(dto.getAgreDateTo().replace("/", ""));
+			param.setAgreDateTo(dto.getAgreDateTo().replace("/", CodeConstant.NONE));
 		}
 		// 申請者名
 		if (dto.getName() != null && !CheckUtils.isEmpty(dto.getName())) {
@@ -212,12 +265,9 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 			List<String> applStatusList = new ArrayList<String>();
 			List<String> tmpApplStatus = Arrays.asList(dto.getApplStatus());
 			applStatusList.addAll(tmpApplStatus);
-			// 申請状況に「30：承認中」がセットされていた場合、承認1～4まで全て設定する
+			// 申請状況に「30：承認中」がセットされていた場合、承認1を設定する
 			if (applStatusList.contains(CodeConstant.STATUS_SHONIN)) {
 				applStatusList.add(CodeConstant.STATUS_SHONIN1);
-				applStatusList.add(CodeConstant.STATUS_SHONIN2);
-				applStatusList.add(CodeConstant.STATUS_SHONIN3);
-				applStatusList.add(CodeConstant.STATUS_SHONIN4);
 			}
 			param.setApplStatus(applStatusList);
 		}
@@ -229,33 +279,32 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	}
 
 	/**
-	 * CSV用各種申請書データを取得
+	 * CSV用各種申請書データをセットします
 	 * 
 	 * @param applData
 	 * @param applId
+	 * @param columnMap
 	 * @return
 	 */
-	private String[] setApplDataForCsv(Skf2010Sc005GetShoninIchiranShoninExp applData, String applId,
-			Map<String, String[]> columnMap) {
+	private String[] setApplDataForCsv(Skf2010Sc005GetShoninIchiranShoninExp applData, String applId) {
 		List<String> tmpList = new ArrayList<String>();
 
 		// 日付型を文字列型に変更する
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		String applDate = "";
+		String applDate = CodeConstant.NONE;
 		if (applData.getApplDate() != null) {
-			applDate = sdf.format(applData.getApplDate()).toString();
+			applDate = skfDateFormatUtils.dateFormatFromDate(applData.getApplDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 		}
-		String agreDate = "";
+		String agreDate = CodeConstant.NONE;
 		if (applData.getAgreDate() != null) {
-			agreDate = sdf.format(applData.getAgreDate()).toString();
+			agreDate = skfDateFormatUtils.dateFormatFromDate(applData.getAgreDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 		}
 
 		// 申請状況をコードから汎用コードに変更
-		String applStatus = "";
+		String applStatus = CodeConstant.NONE;
 		if (applData.getApplStatus() != null) {
-			BaseCodeEntity baseCodeEntity = new BaseCodeEntity();
-			baseCodeEntity = baseProperty.get(applData.getApplStatus());
-			applStatus = baseCodeEntity.getCodeName();
+			applStatus = applStatusMap.get(applData.getApplStatus());
 		}
 
 		List<String> titleList = new ArrayList<String>();
