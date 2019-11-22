@@ -235,7 +235,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				if (!(NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTaikyoYotei())
 						&& CheckUtils.isEqual(tNyukyoChoshoTsuchi.getTaikyoYotei(), CodeConstant.LEAVE))) {
 					// 退居予定がNULLかもしくは「１：退居」以外の場合は退居予定日と駐車場返還予定日を非活性にする
-					initDto.setMaskPattern("NOT_TAIKYO");
+					initDto.setNotTaikyo(true);
 				}
 
 				// 更新用
