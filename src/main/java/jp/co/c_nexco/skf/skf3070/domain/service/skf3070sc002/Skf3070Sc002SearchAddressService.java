@@ -42,7 +42,7 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 	public BaseDto index(Skf3070Sc002SearchAddressDto dto) throws Exception {
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("住所を検索", CodeConstant.C001, dto.getPageId());
+		skfOperationLogUtils.setAccessLog("住所検索", CodeConstant.C001, dto.getPageId());
 
 		// 未入力チェック
 		if (NfwStringUtils.isEmpty(dto.getZipCode()) && NfwStringUtils.isEmpty(dto.getAddress())) {
