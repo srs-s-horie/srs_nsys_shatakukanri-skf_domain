@@ -28,11 +28,9 @@ public class Skf2010Sc001InitService extends BaseServiceAbstract<Skf2010Sc001Ini
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc001InitDto index(Skf2010Sc001InitDto initDto) throws Exception {
@@ -43,7 +41,7 @@ public class Skf2010Sc001InitService extends BaseServiceAbstract<Skf2010Sc001Ini
 
 		// 初期表示では検索結果は0件表示
 		List<Skf2010Sc001GetShainMasterInfoByParameterExp> shainInfoList = new ArrayList<Skf2010Sc001GetShainMasterInfoByParameterExp>();
-		initDto.setListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
+		initDto.setPopListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
 
 		return initDto;
 	}
@@ -54,14 +52,10 @@ public class Skf2010Sc001InitService extends BaseServiceAbstract<Skf2010Sc001Ini
 	 * @param initDto
 	 */
 	private void init(Skf2010Sc001InitDto initDto) {
-		initDto.setShainNo("");
-		initDto.setName("");
-		initDto.setNameKk("");
-		initDto.setAgency("");
-		initDto.setErrShainNo("");
-		initDto.setErrAgency("");
-		initDto.setErrName("");
-		initDto.setErrNameKk("");
+		initDto.setPopShainNo(CodeConstant.NONE);
+		initDto.setPopName(CodeConstant.NONE);
+		initDto.setPopNameKk(CodeConstant.NONE);
+		initDto.setPopAgency(CodeConstant.NONE);
 	}
 
 }

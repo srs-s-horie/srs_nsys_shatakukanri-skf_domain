@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc001.Skf2010Sc001GetShainMasterInfoByParameterExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
+import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc001.Skf2010Sc001SearchDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc001.Skf2010Sc001SearchAsyncDto;
 
 @Service
-public class Skf2010Sc001SearchService extends BaseServiceAbstract<Skf2010Sc001SearchDto> {
+public class Skf2010Sc001SearchAsyncService extends AsyncBaseServiceAbstract<Skf2010Sc001SearchAsyncDto> {
 
 	@Autowired
 	private Skf2010Sc001SharedService skf2010Sc001SharedService;
@@ -28,9 +28,7 @@ public class Skf2010Sc001SearchService extends BaseServiceAbstract<Skf2010Sc001S
 	private String errorClass;
 
 	@Override
-	public BaseDto index(Skf2010Sc001SearchDto searchDto) throws Exception {
-
-		searchDto.setPageTitleKey(MessageIdConstant.SKF2010_SC001_TITLE);
+	public AsyncBaseDto index(Skf2010Sc001SearchAsyncDto searchDto) throws Exception {
 
 		boolean nyukyoFlag = false;
 		String nyukyoFlagStr = searchDto.getNyukyoFlag();
@@ -45,13 +43,13 @@ public class Skf2010Sc001SearchService extends BaseServiceAbstract<Skf2010Sc001S
 		// 入力チェック
 		if (!checkValidate(searchDto)) {
 			// リストテーブルは表示する
-			searchDto.setListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
+			searchDto.setPopListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
 			return searchDto;
 		}
 
 		// 社員情報一覧検索
-		shainInfoList = skf2010Sc001SharedService.getShainMasterInfo(companyCd, searchDto.getShainNo(),
-				searchDto.getName(), searchDto.getNameKk(), searchDto.getAgency(), nyukyoFlag);
+		shainInfoList = skf2010Sc001SharedService.getShainMasterInfo(companyCd, searchDto.getPopShainNo(),
+				searchDto.getPopName(), searchDto.getPopNameKk(), searchDto.getPopAgency(), nyukyoFlag);
 		if (shainInfoList.size() == 0) {
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1007);
 			shainInfoList.clear();
@@ -60,12 +58,12 @@ public class Skf2010Sc001SearchService extends BaseServiceAbstract<Skf2010Sc001S
 			shainInfoList.clear();
 		}
 
-		searchDto.setListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
+		searchDto.setPopListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
 
 		return searchDto;
 	}
 
-	private void init(Skf2010Sc001SearchDto dto) {
+	private void init(Skf2010Sc001SearchAsyncDto dto) {
 		dto.setErrShainNo("");
 		dto.setErrAgency("");
 		dto.setErrName("");
@@ -78,10 +76,10 @@ public class Skf2010Sc001SearchService extends BaseServiceAbstract<Skf2010Sc001S
 	 * @param dto
 	 * @return
 	 */
-	private boolean checkValidate(Skf2010Sc001SearchDto dto) {
+	private boolean checkValidate(Skf2010Sc001SearchAsyncDto dto) {
 		boolean result = true;
 		// 社員番号チェック
-		String shainNo = dto.getShainNo();
+		String shainNo = dto.getPopShainNo();
 		if (shainNo != null && !CheckUtils.isEmpty(shainNo)) {
 			// 半全角スペースが入っていた場合、もしくは半角英数以外だった場合エラー
 			if (shainNo.indexOf(CodeConstant.SPACE_CHAR) > 0 || shainNo.indexOf(CodeConstant.ZEN_SPACE) > 0 || false) {
@@ -93,7 +91,7 @@ public class Skf2010Sc001SearchService extends BaseServiceAbstract<Skf2010Sc001S
 		}
 
 		// 氏名（カナ）チェック
-		String nameKk = dto.getNameKk();
+		String nameKk = dto.getPopNameKk();
 		if (nameKk != null && !CheckUtils.isEmpty(nameKk)) {
 			// 全角カナ以外の場合エラー
 			if (!CheckUtils.isFullWidthKatakana(nameKk)) {
