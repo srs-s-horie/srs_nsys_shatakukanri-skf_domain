@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Rp002.Skf3070Rp002GetOwnerInfoListExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Rp002.Skf3070Rp002GetOwnerInfoListExpParameter;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Rp002.Skf3070Rp002GetOwnerInfoListExpRepository;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -24,8 +27,10 @@ import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc001.Skf3070Sc001LessorInfoDownloadDto;
 
@@ -40,6 +45,10 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private Skf3070Rp002GetOwnerInfoListExpRepository skf3070Rp002GetOwnerInfoListExpRepository;
 	@Value("${skf3070.skf3070_sc001.lessorInfoExcelOutPutStartLine}")
 	private Integer excelOutPutStartLine;
 	@Value("${skf3070.skf3070_sc001.lessorInfoExcelPreFileName}")
@@ -61,12 +70,15 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("賃貸人（代理人）情報出力", companyCd, lessorDlDto.getPageId());
 		
-		// 検索結果一覧情報を取得
-		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
-		listTableData = lessorDlDto.getListTableData();
+		// 賃貸人（代理人）情報リストを取得
+		List<Skf3070Rp002GetOwnerInfoListExp>  ownerInfoList = new ArrayList<Skf3070Rp002GetOwnerInfoListExp>();
+		Skf3070Rp002GetOwnerInfoListExpParameter param = new Skf3070Rp002GetOwnerInfoListExpParameter();
+		param.setRecodeDadeto(lessorDlDto.getRecodeDadeto());
+		param.setRecodeDadefrom(lessorDlDto.getRecodeDadefrom());
+		ownerInfoList = skf3070Rp002GetOwnerInfoListExpRepository.getOwnerInfoList(param);
 		
-		// 検索結果一覧情報が存在しない場合
-		if(listTableData == null || listTableData.size() == 0){
+		// 賃貸人（代理人）情報が存在しない場合
+		if(ownerInfoList == null || ownerInfoList.size() == 0){
 			//エラーメッセージ出力
 			ServiceHelper.addErrorResultMessage(lessorDlDto, null, MessageIdConstant.E_SKF_1029);
 			throwBusinessExceptionIfErrors(lessorDlDto.getResultMessages());
@@ -74,7 +86,7 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 		
 		// 賃貸人（代理人）情報出力用Excelワークシート作成
 		SheetDataBean sheetDataBean = new SheetDataBean();
-		sheetDataBean = this.createWorkSheetLessorInfo(listTableData);
+		sheetDataBean = this.createWorkSheetLessorInfo(ownerInfoList);
 		// 帳票作成
 		this.fileOutPutExcelContractInfo(sheetDataBean, lessorDlDto);
 
@@ -87,13 +99,13 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 	/**
 	 * 賃貸人（代理人）情報出力用Excelワークシート作成
 	 * 
-	 * 検索結果一覧情報より賃貸人（代理人）情報出力用Excelワークシートを作成する。
+	 * 賃貸人（代理人）情報より賃貸人（代理人）情報出力用Excelワークシートを作成する。
 	 * 
-	 * @param listTableData			検索結果一覧情報リスト
+	 * @param ownerInfoList			賃貸人（代理人）情報リスト
 	 * @return 賃貸人（代理人）情報出力用Excelワークシート
 	 * @throws Exception
 	 */
-	public SheetDataBean createWorkSheetLessorInfo(List<Map<String, Object>> listTableData) throws Exception {
+	public SheetDataBean createWorkSheetLessorInfo(List<Skf3070Rp002GetOwnerInfoListExp> ownerInfoList) throws Exception {
 		
 		//Excelシート行数
 		int rowNo= 1 ;
@@ -104,52 +116,52 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 		// Excel行データ
 		List<RowDataBean> rowDataBeanList = new ArrayList<>();
 
-		for(Map<String, Object> lessorInfo : listTableData){
+		for(Skf3070Rp002GetOwnerInfoListExp ownerInfo : ownerInfoList){
 			
 			// 氏名又は名称
 			String ownerName = CodeConstant.NONE;
-			if(lessorInfo.get("ownerName") != null){
-				ownerName = HtmlUtils.htmlUnescape(lessorInfo.get("ownerName").toString());
+			if(ownerInfo.getOwnerName() != null){
+				ownerName = HtmlUtils.htmlUnescape(ownerInfo.getOwnerName());
 			}		
 			// 氏名又は名称（フリガナ）
 			String ownerNameKk = CodeConstant.NONE;
-			if(lessorInfo.get("ownerNameKk") != null){
-				ownerNameKk = HtmlUtils.htmlUnescape(lessorInfo.get("ownerNameKk").toString());
+			if(ownerInfo.getOwnerNameKk() != null){
+				ownerNameKk = HtmlUtils.htmlUnescape(ownerInfo.getOwnerNameKk());
 			}
 			// 郵便番号
 			String zipCd = CodeConstant.NONE;
-			if(lessorInfo.get("zipCd") != null){
-				zipCd = HtmlUtils.htmlUnescape(lessorInfo.get("zipCd").toString());
+			if(ownerInfo.getZipCd() != null){
+				zipCd = HtmlUtils.htmlUnescape(ownerInfo.getZipCd());
 			}
 			// 住所
 			String address = CodeConstant.NONE;
-			if(lessorInfo.get("address") != null){
-				address = HtmlUtils.htmlUnescape(lessorInfo.get("address").toString());
+			if(ownerInfo.getAddress() != null){
+				address = HtmlUtils.htmlUnescape(ownerInfo.getAddress());
 			}
 			// 個人法人区分
 			String businessKbn = CodeConstant.NONE;
-			if(lessorInfo.get("businessKbn") != null){
-				businessKbn = HtmlUtils.htmlUnescape(lessorInfo.get("businessKbn").toString());
+			if(ownerInfo.getBusinessKbn() != null){
+				businessKbn = HtmlUtils.htmlUnescape(skfGenericCodeUtils.getGenericCodeNameReverse(
+						FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN, ownerInfo.getBusinessKbn()));
 			}
 			// 個人番号
 			String acceptFlg = CodeConstant.NONE;
-			if(lessorInfo.get("acceptFlg") != null){
-				acceptFlg = HtmlUtils.htmlUnescape(lessorInfo.get("acceptFlg").toString());
+			if(ownerInfo.getAcceptFlg() != null){
+				acceptFlg = HtmlUtils.htmlUnescape(skfGenericCodeUtils.getGenericCodeNameReverse(
+						FunctionIdConstant.GENERIC_CODE_AGENT_INDIVIDUAL_NUMBER_DEMAND_SITUATION,
+						ownerInfo.getAcceptFlg()));
 			}
 			// 督促状況
 			String acceptStatus = CodeConstant.NONE;
-			if(lessorInfo.get("acceptStatus") != null){
-				acceptStatus = HtmlUtils.htmlUnescape(lessorInfo.get("acceptStatus").toString());
+			if(ownerInfo.getAcceptStatus() != null){
+				acceptStatus = HtmlUtils.htmlUnescape(ownerInfo.getAcceptStatus());
 			}
 			// 所有物件数
-			String propertiesOwnedCnt = CodeConstant.NONE;
-			if(lessorInfo.get("propertiesOwnedCnt") != null){
-				propertiesOwnedCnt = HtmlUtils.htmlUnescape(lessorInfo.get("propertiesOwnedCnt").toString());
-			}
+			String count = String.valueOf(ownerInfo.getCount());
 			// 備考
 			String remarks = CodeConstant.NONE;
-			if(lessorInfo.get("remarks") != null){
-				remarks = HtmlUtils.htmlUnescape(lessorInfo.get("remarks").toString());
+			if(ownerInfo.getRemarks() != null){
+				remarks = HtmlUtils.htmlUnescape(ownerInfo.getRemarks());
 			}
 			// 行データ
 			RowDataBean rdb = new RowDataBean();
@@ -161,7 +173,7 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 			rdb.addCellDataBean("E" + rowNo, businessKbn);
 			rdb.addCellDataBean("F" + rowNo, acceptFlg);
 			rdb.addCellDataBean("G" + rowNo, acceptStatus);
-			rdb.addCellDataBean("H" + rowNo, propertiesOwnedCnt,Cell.CELL_TYPE_NUMERIC);
+			rdb.addCellDataBean("H" + rowNo, count,Cell.CELL_TYPE_NUMERIC);
 			rdb.addCellDataBean("I" + rowNo, remarks);
 			
 			rowDataBeanList.add(rdb);
@@ -197,7 +209,7 @@ public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<S
 		wbdb.setSheetDataBeanList(sheetDataBeanList);
 		
 		// Excelファイルへ出力
-		SkfFileOutputUtils.fileOutputExcel(wbdb, cellparams, "skf3070.skf3070_sc001.lessorInfoExcelTemplateFile", "SKF3070RP001",
+		SkfFileOutputUtils.fileOutputExcel(wbdb, cellparams, "skf3070.skf3070_sc001.lessorInfoExcelTemplateFile", "SKF3070RP002",
 				excelOutPutStartLine, null, resultMap);
 		byte[] writeFileData = (byte[]) resultMap.get("fileData");
 		lessorDlDto.setFileData(writeFileData);
