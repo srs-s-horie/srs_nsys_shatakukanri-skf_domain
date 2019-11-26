@@ -24,5 +24,7 @@ public class Skf2010Sc001InitDto extends Skf2010Sc001CommonDto {
 	private String popNameKk;
 	// 現所属
 	private String popAgency;
+	// 社宅管理番号
+	private int popShatakuKanriNo;
 
 }

@@ -27,15 +27,10 @@ public class Skf2010Sc001CommonAsyncDto extends AsyncBaseDto {
 	private String popNameKk;
 	// 現所属
 	private String popAgency;
+	// 社宅管理番号
+	private int popShatakuKanriNo;
 
 	// リストテーブル
 	private List<Map<String, Object>> popListTableList;
-	// 入居関連付けフラグ
-	private String nyukyoFlag;
 
-	// エラー関連
-	private String errShainNo;
-	private String errName;
-	private String errNameKk;
-	private String errAgency;
 }
