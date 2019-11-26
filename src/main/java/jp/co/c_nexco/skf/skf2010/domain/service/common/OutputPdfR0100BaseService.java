@@ -132,7 +132,7 @@ public abstract class OutputPdfR0100BaseService<DTO extends Skf2010OutputPdfBase
 
 		// 新所属1「部・事務所」
 		if (NfwStringUtils.defaultString(dto.getNewAffiliation1())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AFFILIATION_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION_BREAK_LENGTH) {
 			pdfData.setData("newAffiliation1", NfwStringUtils.defaultString(dto.getNewAffiliation1()));
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -142,7 +142,7 @@ public abstract class OutputPdfR0100BaseService<DTO extends Skf2010OutputPdfBase
 		}
 		// 新所属2「課・チーム」
 		if (NfwStringUtils.defaultString(dto.getNewAffiliation2())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AFFILIATION_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION_BREAK_LENGTH) {
 			pdfData.setData("newAffiliation2", NfwStringUtils.defaultString(dto.getNewAffiliation2()));
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する

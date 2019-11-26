@@ -34,7 +34,10 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	 * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード （「✓」のような特殊記号を表示するにはUTF-16に設定する必要がある
 	 */
 	public static final String PDF_PROCESS_ENCODE = "UTF-16";
-	// public static final String PDF_PROCESS_ENCODE = "MS932";
+	/**
+	 * 文字列のバイト長判定に用いるエンコード（UTF-16だと半角英数なども2バイト扱いになってしまうため、バイト長判定にはMS932を用いる）
+	 */
+	public static final String STR_BYTE_LENGTH_ENCODE = "MS932";
 	/** チェック済のチェックボックスに表示するマーク */
 	public static final String CHECK_MARK = "✓";
 	/** 一時ファイル接頭詞 */
@@ -349,7 +352,7 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		NYUKYO_KETTEI_TSUCHI_SHATAKU_KANRI_NO_ARI("skf/template/skf2020/skf2020rp003/R0102_NyukyoKetteiTsuchiShatakuKanriNoAri.iod"),
 		/** 退居（自動車の保管場所返還）届 */
 		TAIKYO_HENKAN_TODOKE("skf/template/skf2040/skf2040rp001/R0103_TaikyoHenkanTodoke.iod"),
-		/** 退居（自動車の保管場所返還）届 （社宅のみ）*/
+		/** 退居（自動車の保管場所返還）届 （社宅のみ） */
 		TAIKYO_HENKAN_TODOKE_SHATAKU_ONLY("skf/template/skf2040/skf2040rp001/R0103_TaikyoHenkanTodokeShatakuOnly.iod"),
 		/** 退居（自動車の保管場所返還）届（駐車場のみ） */
 		TAIKYO_HENKAN_TODOKE_PARKING_ONLY("skf/template/skf2040/skf2040rp001/R0103_TaikyoHenkanTodokeParkingOnly.iod");
