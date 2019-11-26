@@ -72,8 +72,14 @@ public class Skf2010Sc001SharedService {
 
 			// 提示データテーブルを紐づけて取得
 			gaitoResultList = skf2010Sc001GetGaitouShatakuShainInfoExpRepository.getGaitouShatakuShainInfo(gaitoParam);
-			if (resultList != null) {
-				CopyUtils.copyProperties(resultList, gaitoResultList);
+			if (gaitoResultList != null) {
+				// CopyUtils.copyProperties(resultList, gaitoResultList);
+				for (Skf2010Sc001GetGaitouShatakuShainInfoExp data : gaitoResultList) {
+					Skf2010Sc001GetAllShainInfoExp tmpData = new Skf2010Sc001GetAllShainInfoExp();
+					CopyUtils.copyProperties(tmpData, data);
+					resultList.add(tmpData);
+				}
+
 			}
 		} else {
 			// 社員情報のみで取得

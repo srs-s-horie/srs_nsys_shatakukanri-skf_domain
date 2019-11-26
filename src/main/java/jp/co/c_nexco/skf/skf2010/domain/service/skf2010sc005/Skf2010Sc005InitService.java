@@ -35,8 +35,6 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	@Autowired
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;
 	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
