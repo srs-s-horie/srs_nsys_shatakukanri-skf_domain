@@ -3,7 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc001;
 
-import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070Sc001common.Skf3070Sc001CommonDto;
+import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3070Sc001StatutoryRecordDownloadDto extends Skf3070Sc001CommonDto {
+public class Skf3070Sc001StatutoryRecordDownloadDto extends FileDownloadDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 

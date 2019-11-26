@@ -132,7 +132,7 @@ public class Skf3070Sc001SharedService {
 	 * @param param
 	 * @return
 	 */
-	private List<Skf3070Sc001GetOwnerContractListExp> getOwnerContractInfo(
+	public List<Skf3070Sc001GetOwnerContractListExp> getOwnerContractInfo(
 			Skf3070Sc001GetOwnerContractListExpParameter param) {
 
 		List<Skf3070Sc001GetOwnerContractListExp> ownerExpList = new ArrayList<Skf3070Sc001GetOwnerContractListExp>();
