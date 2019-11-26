@@ -144,10 +144,7 @@ public class Skf3070Sc001StatutoryRecordDownloadService
 		
 		
 		for(Skf3070Sc001GetOwnerContractListExp ownerExp : ownerExpList){
-			// 駐車場管理番号
-			// TODO 後でもらえる。。。。
-			long parkingKanriNo = 1;
-			
+			// 駐車場管理番号			
 			
 			
 			//法定調書データ取得
@@ -161,8 +158,11 @@ public class Skf3070Sc001StatutoryRecordDownloadService
 			param2.setOwnerNo(Long.parseLong(ownerExp.getOwnerNo()));
 			// 契約区分
 			param2.setContractKbn(ownerExp.getContractKbn());
-			if(parkingKanriNo != 0){
-				param2.setParkingKanriNo(parkingKanriNo);
+			// 駐車場管理番号
+			if(ownerExp.getParkingKanriNo() != null){
+				param2.setParkingKanriNo(Long.parseLong(ownerExp.getParkingKanriNo()));
+			}else{
+				param2.setParkingKanriNo(0);
 			}
 			statutoryRecordDataList = skf3070Rp001GetStatutoryRecordDataListExpRepository.getStatutoryRecordInfo(param2);
 			//法定調書データが取得出来なかった場合
