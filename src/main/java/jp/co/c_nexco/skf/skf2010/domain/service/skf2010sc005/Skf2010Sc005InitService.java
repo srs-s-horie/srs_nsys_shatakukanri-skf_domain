@@ -88,17 +88,6 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 	 * @param dto
 	 */
 	private void init(Skf2010Sc005InitDto dto) {
-		// ログインユーザーの権限チェック
-		dto.setMaskPattern("USER");
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		if (loginUserInfoMap != null && NfwStringUtils.isNotEmpty(loginUserInfoMap.get("roleId"))) {
-			switch (loginUserInfoMap.get("roleId")) {
-			case SkfCommonConstant.ADMIN_ROLE1:
-			case SkfCommonConstant.ADMIN_ROLE2:
-			case SkfCommonConstant.ADMIN_ROLE3:
-				dto.setMaskPattern("ADMIN");
-			}
-		}
 		// タイトル設定
 		dto.setPageTitleKey(MessageIdConstant.SKF2010_SC005_TITLE);
 

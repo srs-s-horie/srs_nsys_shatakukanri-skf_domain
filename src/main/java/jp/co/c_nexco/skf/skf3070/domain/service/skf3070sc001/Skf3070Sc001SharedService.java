@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070Sc001common.Skf3070Sc001Commo
  * 
  */
 @Service
-public class Skf3070Sc001SheardService {
+public class Skf3070Sc001SharedService {
 
 	@Autowired
 	private MenuScopeSessionBean sessionBean;
@@ -132,7 +132,7 @@ public class Skf3070Sc001SheardService {
 	 * @param param
 	 * @return
 	 */
-	private List<Skf3070Sc001GetOwnerContractListExp> getOwnerContractInfo(
+	public List<Skf3070Sc001GetOwnerContractListExp> getOwnerContractInfo(
 			Skf3070Sc001GetOwnerContractListExpParameter param) {
 
 		List<Skf3070Sc001GetOwnerContractListExp> ownerExpList = new ArrayList<Skf3070Sc001GetOwnerContractListExp>();
@@ -210,7 +210,6 @@ public class Skf3070Sc001SheardService {
 	 * @return
 	 * @throws ParseException
 	 */
-	@SuppressWarnings("unused")
 	private Map<String, Object> getDropDownLists(Skf3070Sc001CommonDto dto) throws ParseException {
 
 		// 戻り値用Mapのインスタンス生成
