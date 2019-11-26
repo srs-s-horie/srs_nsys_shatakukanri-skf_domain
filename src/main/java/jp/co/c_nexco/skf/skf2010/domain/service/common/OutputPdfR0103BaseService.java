@@ -26,7 +26,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 	private static final int AGENCY_BREAK_LENGTH = 13;
 	private static final int AFFILIATION1_BREAK_LENGTH = 13;
 	private static final int AFFILIAITON2_BREAK_LENGTH = 13;
-	private static final int ADDRESS_BREAL_LENGTH = 13;
+	private static final int ADDRESS_BREAK_LENGTH = 13;
 	private static final int TAIKYO_AREA_BREAK_LRNGTH = 64;
 	private static final int PARKING_AREA_BREAK_LENGTH = 64;
 	private static final int TAIKYOGO_RIYU_BREAK_LENGTH = 64;
@@ -90,7 +90,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 現所属　機関
 		if (NfwStringUtils.defaultString(dto.getNowAgency())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AGENCY_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGENCY_BREAK_LENGTH) {
 			pdfData.setData("nowAgency", NfwStringUtils.defaultString(dto.getNowAgency()));
 		} else {
 			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -101,7 +101,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 現所属　部等
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation1())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AFFILIATION1_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION1_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation1", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 		} else {
 			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -112,7 +112,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 現所属　室、チーム又は課
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation2())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= AFFILIAITON2_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIAITON2_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation2", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 		} else {
 			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -123,7 +123,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 現住所
 		if (NfwStringUtils.defaultString(dto.getAddress())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= ADDRESS_BREAL_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= ADDRESS_BREAK_LENGTH) {
 			pdfData.setData("address", NfwStringUtils.defaultString(dto.getAddress()));
 		} else {
 			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -135,7 +135,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 社宅
 		if (NfwStringUtils.defaultString(dto.getTaikyoArea())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= TAIKYO_AREA_BREAK_LRNGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYO_AREA_BREAK_LRNGTH) {
 			pdfData.setData("taikyoArea", NfwStringUtils.defaultString(dto.getTaikyoArea()));
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -146,7 +146,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 駐車場1
 		if (NfwStringUtils.defaultString(dto.getParkingAddress1())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= PARKING_AREA_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= PARKING_AREA_BREAK_LENGTH) {
 			pdfData.setData("parkingAddress1", NfwStringUtils.defaultString(dto.getParkingAddress1()));
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -157,7 +157,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 駐車場2
 		if (NfwStringUtils.defaultString(dto.getParkingAddress2())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= PARKING_AREA_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= PARKING_AREA_BREAK_LENGTH) {
 			pdfData.setData("parkingAddress2", NfwStringUtils.defaultString(dto.getParkingAddress2()));
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -170,7 +170,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 退居（返還）理由
 		if (NfwStringUtils.defaultString(dto.getTaikyoRiyu())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= TAIKYOGO_RIYU_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYOGO_RIYU_BREAK_LENGTH) {
 			pdfData.setData("taikyoRiyu", NfwStringUtils.defaultString(dto.getTaikyoRiyu()));
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
@@ -181,7 +181,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		
 		// 退居後連絡先
 		if (NfwStringUtils.defaultString(dto.getTaikyogoRenrakusaki())
-				.getBytes(Charset.forName(PDF_PROCESS_ENCODE)).length <= TAIKYOGO_RENRAKUSAKI_BREAK_LENGTH) {
+				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYOGO_RENRAKUSAKI_BREAK_LENGTH) {
 			pdfData.setData("taikyogoRenrakusaki", NfwStringUtils.defaultString(dto.getTaikyogoRenrakusaki()));
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
