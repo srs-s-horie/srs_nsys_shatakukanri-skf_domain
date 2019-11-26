@@ -9,12 +9,10 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002InitDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002InitService 保有社宅登録のInitサービス処理クラス。
@@ -28,8 +26,6 @@ public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002Ini
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/**
 	 * サービス処理を行う。　
@@ -41,7 +37,7 @@ public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002Ini
 	@Override
 	public Skf3010Sc002InitDto index(Skf3010Sc002InitDto initDto) throws Exception {
 		// デバッグログ
-		logger.info("初期表示");
+		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 

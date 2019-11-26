@@ -18,10 +18,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc001.Skf3022Sc001SearchAsyncDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 
 /**
@@ -37,8 +35,6 @@ public class Skf3022Sc001SearchAsyncService
 	private Skf3022Sc001SharedService skf3022Sc001SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	@Value("${skf3022.skf3022_sc001.max_search_count}")
 	private String maxCount;
@@ -49,7 +45,7 @@ public class Skf3022Sc001SearchAsyncService
 	public AsyncBaseDto index(Skf3022Sc001SearchAsyncDto asyncDto) throws Exception {
 
 		// デバッグログ
-		logger.info("検索");
+		LogUtils.debugByMsg("検索");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, FunctionIdConstant.SKF3022_SC001);
 

@@ -13,10 +13,8 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeParkingStructureDrpDwnAsyncDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002ChangeParkingStructureDrpDwnAsyncService 保有社宅登録のドロップダウンリスト変更時非同期処理クラス
@@ -33,8 +31,6 @@ public class Skf3010Sc002ChangeParkingStructureDrpDwnAsyncService
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/**
 	 * 駐車場情報タブの「構造」ドロップダウンリスト変更時イベント
@@ -44,7 +40,7 @@ public class Skf3010Sc002ChangeParkingStructureDrpDwnAsyncService
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("駐車場構造変更", CodeConstant.C001, asyncDto.getLocalPrePageId());
 		// デバッグログ
-		logger.debug("駐車場構造変更");
+		LogUtils.debugByMsg("駐車場構造変更");
 		/** DTO設定用 */
 		// 駐車場基本使用料
 		StringBuilder parkingRentalValue = new StringBuilder(CodeConstant.STRING_ZERO);

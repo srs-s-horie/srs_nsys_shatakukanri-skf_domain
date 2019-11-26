@@ -18,10 +18,8 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AttachedFileAddDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002AttachedFileAddService 補足ファイル追加処理クラス
@@ -37,9 +35,6 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Value("${skf3010.hosoku_max_file_size}")
 	private String maxFileSize;
-
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	// 社宅補足リンクプレフィックス
 	private static final String SHATAKU_HOSOKU_LINK = "attached_shataku";
@@ -63,7 +58,7 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, addDto.getPageId());
 		// デバッグログ
-		logger.info("補足資料追加");
+		LogUtils.debugByMsg("補足資料追加");
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト

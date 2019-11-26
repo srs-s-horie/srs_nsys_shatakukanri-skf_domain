@@ -12,11 +12,9 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003ChangeInputNobeMensekiAsyncDto;
 import jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003.Skf3022Sc003SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3022Sc003ChangeInputNobeMensekiService 使用料入力支援画面の延べ面積値変更時サービス処理クラス。
@@ -29,8 +27,6 @@ public class Skf3022Sc003ChangeInputNobeMensekiAsyncService
 
 	@Autowired
 	private Skf3022Sc003SharedService skf3022Sc003SharedService;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -48,7 +44,7 @@ public class Skf3022Sc003ChangeInputNobeMensekiAsyncService
 	public Skf3022Sc003ChangeInputNobeMensekiAsyncDto index(Skf3022Sc003ChangeInputNobeMensekiAsyncDto asyncDto) throws Exception {
 
 		// デバッグログ
-		logger.info("延べ面積変更");
+		LogUtils.debugByMsg("延べ面積変更");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("延べ面積変更", CodeConstant.C001, FunctionIdConstant.SKF3022_SC003);
 		Map<String, String> paramMap = null;

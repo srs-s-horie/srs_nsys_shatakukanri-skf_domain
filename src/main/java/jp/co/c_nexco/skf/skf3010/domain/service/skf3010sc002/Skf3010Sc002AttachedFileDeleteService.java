@@ -13,11 +13,9 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AttachedFileDeleteDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002AttachedFileDeleteService 補足ファイル削除処理クラス
@@ -31,9 +29,6 @@ public class Skf3010Sc002AttachedFileDeleteService extends BaseServiceAbstract<S
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	// 社宅補足
 	private static final String SHATAKU_HOSOKU = "shataku";
@@ -53,7 +48,7 @@ public class Skf3010Sc002AttachedFileDeleteService extends BaseServiceAbstract<S
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("補足資料削除", CodeConstant.C001, deleteDto.getPageId());
 		// デバッグログ
-		logger.info("補足資料削除");
+		LogUtils.debugByMsg("補足資料削除");
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト

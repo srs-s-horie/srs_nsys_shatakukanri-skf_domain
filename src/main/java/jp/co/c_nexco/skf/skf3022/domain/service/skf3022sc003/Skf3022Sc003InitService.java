@@ -30,11 +30,9 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003InitDto;
 import jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003.Skf3022Sc003SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3022Sc003InitService 使用料入力支援画面のInitサービス処理クラス。
@@ -52,8 +50,6 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 	private CodeCacheUtils codeCacheUtils;
 	@Autowired
 	private SkfDropDownUtils ddlUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -75,7 +71,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC003_TITLE);
 
 		// デバッグログ
-		logger.info("初期表示");
+		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
@@ -83,7 +79,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		if (CheckUtils.isEmpty(initDto.getHdnShatakuKanriNo()) || CheckUtils.isEmpty(initDto.getHdnRoomKanriNo())
 				|| CheckUtils.isEmpty(initDto.getHdnShainNo()) || CheckUtils.isEmpty(initDto.getHdnYakuinKbn())) {
 			// デバッグログ
-			logger.debug("パラメータなし");
+			LogUtils.debugByMsg("パラメータなし");
 			return initDto;
 		}
 
@@ -479,10 +475,10 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 					skf3022Sc003SharedService.getKingakuEdit(keinenChoseiNashiShiyoryo.setScale(0, BigDecimal.ROUND_DOWN).stripTrailingZeros().toPlainString()));
 		} catch (ArithmeticException e) {
 			// デバッグログ
-			logger.debug("数値変換失敗");
+			LogUtils.debugByMsg("数値変換失敗");
 		} catch (NumberFormatException e) {
 			// デバッグログ
-			logger.debug("数値変換失敗");
+			LogUtils.debugByMsg("数値変換失敗");
 		}
 	}
 

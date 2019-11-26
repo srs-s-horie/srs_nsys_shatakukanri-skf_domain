@@ -13,10 +13,8 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeAreaDrpDwnAsyncDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002ChangeAreaDrpDwnAsyncService 保有社宅登録のドロップダウンリスト変更時非同期処理クラス
@@ -33,8 +31,6 @@ public class Skf3010Sc002ChangeAreaDrpDwnAsyncService
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/**
 	 * 「地域区分」のドロップダウンリスト変更時イベント
@@ -45,7 +41,7 @@ public class Skf3010Sc002ChangeAreaDrpDwnAsyncService
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("地域区分変更", CodeConstant.C001, asyncDto.getLocalPrePageId());
 		// デバッグログ
-		logger.debug("地域区分変更");
+		LogUtils.debugByMsg("地域区分変更");
 		/** DTO設定用 */
 		// 次回算定年月日
 		StringBuilder nextCalcDate = new StringBuilder();

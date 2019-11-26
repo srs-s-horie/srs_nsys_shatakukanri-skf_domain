@@ -13,10 +13,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001RentalCopyCheckDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc001RentalCopyCheckService 社宅一覧の借上(複写)ボタン処理クラス。
@@ -33,16 +31,13 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 	// 社宅区分
 	private static final String SHATAKU_KBN_KARIAGE = "2";
 
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
-
 	@Override
 	public BaseDto index(Skf3010Sc001RentalCopyCheckDto rentalCopyDto) throws Exception {
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("借上(複写)", CodeConstant.C001, rentalCopyDto.getPageId());
 		
 		// デバッグログ
-		logger.info("借上(複写)ボタン押下");
+		LogUtils.debugByMsg("借上(複写)ボタン押下");
 		// 社宅区分(選択行)
 		String hdnRowShatakuKbn = rentalCopyDto.getHdnRowShatakuKbn();
 		// 社宅管理番号(選択行)
@@ -50,13 +45,13 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 
 		// 社宅管理番号の有無チェック
 		if (hdnRowShatakuKanriNo == null || hdnRowShatakuKanriNo.length() < 1) {
-			logger.warn("社宅が選択されていません。");
+			LogUtils.debugByMsg("社宅が選択されていません。");
 			ServiceHelper.addWarnResultMessage(rentalCopyDto, MessageIdConstant.W_SKF_3003);
 			return rentalCopyDto;
 		}
 		// 社宅区分判定
 		if (!SHATAKU_KBN_KARIAGE.equals(hdnRowShatakuKbn)) {
-			logger.warn("借上以外が選択されています。");
+			LogUtils.debugByMsg("借上以外が選択されています。");
 			ServiceHelper.addWarnResultMessage(rentalCopyDto, MessageIdConstant.W_SKF_3002);
 			return rentalCopyDto;
 		}

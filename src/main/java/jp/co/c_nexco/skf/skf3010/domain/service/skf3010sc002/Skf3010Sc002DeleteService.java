@@ -50,11 +50,9 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002DeleteDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -101,10 +99,7 @@ public class Skf3010Sc002DeleteService extends BaseServiceAbstract<Skf3010Sc002D
 	private Skf3010Sc002GetRentalPtternIdExpRepository skf3010Sc002GetRentalPtternIdExpRepository;
 	@Autowired
 	private Skf3030TRentalPatternRepository skf3030TRentalPatternRepository;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
-	
 	/**
 	 * 保有社宅登録の契約情報「削除」ボタン押下時処理を行う。　
 	 * 
@@ -116,7 +111,7 @@ public class Skf3010Sc002DeleteService extends BaseServiceAbstract<Skf3010Sc002D
 	@Transactional
 	public Skf3010Sc002DeleteDto index(Skf3010Sc002DeleteDto delDto) throws Exception {
 		// デバッグログ
-		logger.info("保有社宅情報削除");
+		LogUtils.debugByMsg("保有社宅情報削除");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("保有社宅情報削除", CodeConstant.C001, delDto.getPageId());
 

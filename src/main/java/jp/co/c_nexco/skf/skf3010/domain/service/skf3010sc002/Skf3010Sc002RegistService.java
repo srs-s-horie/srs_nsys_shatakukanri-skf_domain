@@ -40,13 +40,11 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002RegistDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -81,8 +79,6 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	private Skf3010Sc002GetParkingBlockContractDataExpRepository skf3010Sc002GetParkingBlockContractDataExpRepository;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/** 定数 */
 	// 駐車場契約形態：社宅と一括
@@ -109,7 +105,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	@Transactional
 	public Skf3010Sc002RegistDto index(Skf3010Sc002RegistDto registDto) throws Exception {
 		// デバッグログ
-		logger.info("保有社宅情報登録");
+		LogUtils.debugByMsg("保有社宅情報登録");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("保有社宅情報登録", CodeConstant.C001, registDto.getPageId());
 

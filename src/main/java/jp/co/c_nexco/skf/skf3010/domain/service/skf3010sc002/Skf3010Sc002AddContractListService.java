@@ -14,11 +14,9 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AddContractListDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002AddContractListService 保有社宅登録の契約情報追加ボタン押下サービス処理クラス。
@@ -32,8 +30,6 @@ public class Skf3010Sc002AddContractListService extends BaseServiceAbstract<Skf3
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/**
 	 * 保有社宅登録の契約情報追加ボタン押下時処理を行う。　
@@ -45,7 +41,7 @@ public class Skf3010Sc002AddContractListService extends BaseServiceAbstract<Skf3
 	@Override
 	public Skf3010Sc002AddContractListDto index(Skf3010Sc002AddContractListDto initDto) throws Exception {
 		// デバッグログ
-		logger.info("契約情報追加");
+		LogUtils.debugByMsg("契約情報追加");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("契約情報追加", CodeConstant.C001, initDto.getPageId());
 

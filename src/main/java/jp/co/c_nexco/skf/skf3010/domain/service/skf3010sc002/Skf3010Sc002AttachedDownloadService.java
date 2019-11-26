@@ -12,10 +12,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AttachedDownloadDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
 
@@ -35,9 +33,6 @@ public class Skf3010Sc002AttachedDownloadService extends BaseServiceAbstract<Skf
 	private static final String SHATAKU_HOSOKU_LINK = "shataku";
 	// 駐車場補足プレフィックス
 	private static final String PARKING_HOSOKU_LINK = "parking";
-
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -51,7 +46,7 @@ public class Skf3010Sc002AttachedDownloadService extends BaseServiceAbstract<Skf
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("補足資料ダウンロード", CodeConstant.C001, adlDto.getPageId());
 		// デバッグログ
-		logger.info("保有社宅添付資料ダウンロード");
+		LogUtils.debugByMsg("保有社宅添付資料ダウンロード");
 
 		String hosoku = adlDto.getHdnHosoku();
 		String attachedNo = adlDto.getHdnAttachedNo();
