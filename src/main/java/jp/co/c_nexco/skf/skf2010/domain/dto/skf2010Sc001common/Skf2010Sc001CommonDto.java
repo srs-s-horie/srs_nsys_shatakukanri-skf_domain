@@ -20,12 +20,4 @@ public class Skf2010Sc001CommonDto extends GridRelationDto {
 
 	// リストテーブル
 	private List<Map<String, Object>> popListTableList;
-	// 入居関連付けフラグ
-	private String nyukyoFlag;
-
-	// エラー関連
-	private String errShainNo;
-	private String errName;
-	private String errNameKk;
-	private String errAgency;
 }
