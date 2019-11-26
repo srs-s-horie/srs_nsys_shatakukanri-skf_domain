@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
-import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070Sc002common.Skf3070Sc002CommonDto;
 
 /**
@@ -31,8 +30,6 @@ public class Skf3070Sc002SharedService {
 	// 最終更新日付のキャッシュキー
 	protected static final String KEY_LAST_UPDATE_DATE = "skf3070_t_owner_info";
 
-	@Autowired
-	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;
 
