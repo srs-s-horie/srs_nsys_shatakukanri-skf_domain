@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3070TOwnerInfo;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Sc001.Skf3070Sc001UpdateOwnerInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Sc002.Skf3070Sc002UpdateOwnerInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3070TOwnerInfoRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -37,7 +37,7 @@ public class Skf3070Sc002RegistService extends BaseServiceAbstract<Skf3070Sc002R
 	@Autowired
 	private Skf3070TOwnerInfoRepository skf3070TOwnerInfoRepository;
 	@Autowired
-	private Skf3070Sc001UpdateOwnerInfoExpRepository skf3070Sc001UpdateOwnerInfoExpRepository;
+	private Skf3070Sc002UpdateOwnerInfoExpRepository skf3070Sc002UpdateOwnerInfoExpRepository;
 
 	@Override
 	protected BaseDto index(Skf3070Sc002RegistDto registDto) throws Exception {
@@ -275,7 +275,7 @@ public class Skf3070Sc002RegistService extends BaseServiceAbstract<Skf3070Sc002R
 		super.checkLockException(ownerInfo.getLastUpdateDate(), updateCheck.getUpdateDate());
 
 		// 更新処理
-		return skf3070Sc001UpdateOwnerInfoExpRepository.updateOwnerInfo(ownerInfo);
+		return skf3070Sc002UpdateOwnerInfoExpRepository.updateOwnerInfo(ownerInfo);
 	}
 
 }
