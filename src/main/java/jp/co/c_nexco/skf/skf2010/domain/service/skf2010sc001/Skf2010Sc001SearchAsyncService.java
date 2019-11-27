@@ -55,7 +55,7 @@ public class Skf2010Sc001SearchAsyncService extends AsyncBaseServiceAbstract<Skf
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1007);
 			shainInfoList.clear();
 		} else if (shainInfoList.size() > Integer.parseInt(maxCount)) {
-			ServiceHelper.addErrorResultMessage(searchDto, null, MessageIdConstant.E_SKF_1046, "最大値");
+			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.E_SKF_1046, maxCount);
 			shainInfoList.clear();
 		}
 
