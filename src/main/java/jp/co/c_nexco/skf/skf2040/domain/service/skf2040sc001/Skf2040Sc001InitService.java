@@ -82,8 +82,6 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 		LogUtils.debugByMsg("操作ガイド" + initDto.getPageId());
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
 
-		// 画面ID保持
-		initDto.setPrePageId(FunctionIdConstant.SKF2060_SC004);
 		return initDto;
 	}
 

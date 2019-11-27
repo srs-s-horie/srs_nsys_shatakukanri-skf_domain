@@ -16,10 +16,8 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc001.Skf3022Sc001InitDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3022Sc001InitService 社宅部屋入力支援画面のInitサービス処理クラス。
@@ -33,8 +31,6 @@ public class Skf3022Sc001InitService extends BaseServiceAbstract<Skf3022Sc001Ini
 	private Skf3022Sc001SharedService skf3022Sc001SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	@Value("${skf3022.skf3022_sc001.max_search_count}")
 	private String maxCount;
@@ -53,7 +49,7 @@ public class Skf3022Sc001InitService extends BaseServiceAbstract<Skf3022Sc001Ini
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC001_TITLE);
 
 		// デバッグログ
-		logger.info("初期表示");
+		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 

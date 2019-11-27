@@ -70,9 +70,6 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	// 駐車場所在地区分:社宅と同一所在地
 	private static final String PARKING_ADDRESS_KBN_EQUALS = "0";
 
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
-
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
 
@@ -89,7 +86,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("契約情報出力", CodeConstant.C001, downloadDto.getPageId());
 		// デバッグログ
-		logger.debug("契約情報出力ボタン押下");
+		LogUtils.debugByMsg("契約情報出力ボタン押下");
 
 		// 契約情報取得リスト
 		Map<String, Object> getContractList = new HashMap<String, Object>();
@@ -111,7 +108,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			paramShatakuKanriNoList = createGetContractList(contractList, getContractList);
 			// 契約情報リスト件数判定
 			if (getContractList.size() < 1) {
-				logger.warn("社宅区分「借上/一棟」の検索結果が存在しません。");
+				LogUtils.debugByMsg("社宅区分「借上/一棟」の検索結果が存在しません。");
 				// {0}は存在しません。
 				ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_1067,
 						"検索結果に出力対象データ(「借上」、または「一棟」)");
@@ -122,7 +119,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 					getShatakuContractList);
 			// 取得結果件数判定
 			if ((shatakuContractCount) < 1) {
-				logger.warn("社宅情報が変更されていますので検索をしなおしてください。");
+				LogUtils.debugByMsg("社宅情報が変更されていますので検索をしなおしてください。");
 				ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_3059);
 				break;
 			}
@@ -256,11 +253,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 
 			// 社宅管理番号取得
 			if (getRowData.getShatakuKanriNo() == null) {
-				logger.error("契約情報取得リストに社宅管理番号なし");
+				LogUtils.debugByMsg("契約情報取得リストに社宅管理番号なし");
 				throw new Exception("契約情報取得リストに社宅管理番号なし");
 			}
 			if (!getContractList.containsKey(getRowData.getShatakuKanriNo().toString())) {
-				logger.error("社宅契約情報リストに社宅管理番号なし");
+				LogUtils.debugByMsg("社宅契約情報リストに社宅管理番号なし");
 				throw new Exception("社宅契約情報リストに社宅管理番号なし");
 			}
 			// 契約情報取得リストより該当社宅管理番号データ取得
@@ -287,7 +284,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// 賃貸人番号取得結果判定
 			// 未設定時は以降のデータは空文字とする
 			if (getRowData.getOwnerNo() != null) {
-				logger.debug("賃貸人番号あり");
+				LogUtils.debugByMsg("賃貸人番号あり");
 				// 契約番号(DB取得データ)
 				if (getRowData.getContractNo() != null) {
 					contractNo = getRowData.getContractNo().toString();
@@ -455,11 +452,11 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 
 			// 社宅管理番号取得
 			if (getRowData.getShatakuKanriNo() == null) {
-				logger.error("契約情報取得リストに社宅管理番号なし");
+				LogUtils.debugByMsg("契約情報取得リストに社宅管理番号なし");
 				throw new Exception("契約情報取得リストに社宅管理番号なし");
 			}
 			if (!getContractList.containsKey(getRowData.getShatakuKanriNo().toString())) {
-				logger.error("社宅契約情報リストに社宅管理番号なし");
+				LogUtils.debugByMsg("社宅契約情報リストに社宅管理番号なし");
 				throw new Exception("社宅契約情報リストに社宅管理番号なし");
 			}
 			// 契約情報取得リストより該当社宅管理番号データ取得

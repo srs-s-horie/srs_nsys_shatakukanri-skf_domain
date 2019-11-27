@@ -26,9 +26,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003CheckInputErrDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3022Sc003CheckInputErrService 使用料入力支援画面の入力チェックエラー時処理クラス。
@@ -41,8 +39,6 @@ public class Skf3022Sc003CheckInputErrService
 
 	@Autowired
 	private SkfDropDownUtils ddlUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/**
 	 * サービス処理を行う。
@@ -78,21 +74,21 @@ public class Skf3022Sc003CheckInputErrService
 		// エラーメッセージ設定
 		// 規格
 		if (!CheckUtils.isEmpty(initDto.getSc003KikakuSelectErr())) {
-			logger.debug("規格未設定");
+			LogUtils.debugByMsg("規格未設定");
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1054, "規格");
 		}
 		// 用途
 		if (!CheckUtils.isEmpty(initDto.getSc003YoutoSelectErr())) {
-			logger.debug("用途未設定");
+			LogUtils.debugByMsg("用途未設定");
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1054, "①用途");
 		}
 		// 延べ面積
 		if (CodeConstant.STRING_ZERO.equals(initDto.getSc003InputNobeMensekiErr())) {
-			logger.debug("②延べ面積が未入力");
+			LogUtils.debugByMsg("②延べ面積が未入力");
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1048, "②延べ面積");
 			initDto.setSc003InputNobeMensekiErr(CodeConstant.NFW_VALIDATION_ERROR);
 		} else if ("1".equals(initDto.getSc003InputNobeMensekiErr())) {
-			logger.debug("②延べ面積形式不正");
+			LogUtils.debugByMsg("②延べ面積形式不正");
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1042, "②延べ面積");
 			initDto.setSc003InputNobeMensekiErr(CodeConstant.NFW_VALIDATION_ERROR);
 		}
@@ -122,7 +118,7 @@ public class Skf3022Sc003CheckInputErrService
 		List<Map<String, Object>> listData = new ArrayList<Map<String, Object>>();
 		// JSON文字列判定
 		if (jsonStr == null || jsonStr.length() <= 0) {
-			logger.debug("文字列未設定");
+			LogUtils.debugByMsg("文字列未設定");
 			// 文字列未設定のため処理しない
 			return listData;
 		}
@@ -139,13 +135,13 @@ public class Skf3022Sc003CheckInputErrService
 				mapper = null;
 			}
 		} catch (JSONException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		} catch (JsonParseException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		} catch (JsonMappingException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		}
 		return listData;
 	}

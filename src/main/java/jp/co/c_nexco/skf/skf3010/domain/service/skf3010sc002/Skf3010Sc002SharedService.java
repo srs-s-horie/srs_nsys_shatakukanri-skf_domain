@@ -72,10 +72,8 @@ import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc002SharedService 保有社宅登録内共通クラス
@@ -126,8 +124,6 @@ public class Skf3010Sc002SharedService {
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	// 日付上限
 	private static final int DATE_MAX = 99940331;
@@ -1247,13 +1243,13 @@ public class Skf3010Sc002SharedService {
 			editBuildDate = editBuildDate.replace("/", "");
 			// 日付形式チェック
 			if (!SkfCheckUtils.isSkfDateFormat(editBuildDate.trim(), CheckUtils.DateFormatType.YYYYMMDD)) {
-				logger.debug("日付形式不正");
+				LogUtils.debugByMsg("日付形式不正");
 				return false;
 			}
 			try {
 				// 日付上限チェック
 				if (Integer.parseInt(editBuildDate.trim()) > DATE_MAX) {
-					logger.debug("日付上限超過");
+					LogUtils.debugByMsg("日付上限超過");
 					return false;
 				}
 			} catch (NumberFormatException e) {}
@@ -2266,7 +2262,7 @@ public class Skf3010Sc002SharedService {
 		kihonInfoCnt = getKihonInfo(shatakuKanriNo, getKihonInfoListTableData);
 		// 取得結果判定
 		if (kihonInfoCnt < 1) {
-			logger.debug("社宅基本情報なし");
+			LogUtils.debugByMsg("社宅基本情報なし");
 			return false;
 		}
 		// 基本情報
@@ -2856,7 +2852,7 @@ public class Skf3010Sc002SharedService {
 
 		// 警告メッセージ
 		ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.E_SKF_3059);
-		logger.debug("社宅情報取得エラー");
+		LogUtils.debugByMsg("社宅情報取得エラー");
 	}
 
 	/**
@@ -2871,7 +2867,7 @@ public class Skf3010Sc002SharedService {
 		List<Map<String, Object>> listData = new ArrayList<Map<String, Object>>();
 		// JSON文字列判定
 		if (jsonStr == null || jsonStr.length() <= 0) {
-			logger.debug("文字列未設定");
+			LogUtils.debugByMsg("文字列未設定");
 			// 文字列未設定のため処理しない
 			return listData;
 		}
@@ -2888,13 +2884,13 @@ public class Skf3010Sc002SharedService {
 				mapper = null;
 			}
 		} catch (JSONException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		} catch (JsonParseException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		} catch (JsonMappingException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
+			LogUtils.debugByMsg(e.getMessage());
 		}
 		return listData;
 	}

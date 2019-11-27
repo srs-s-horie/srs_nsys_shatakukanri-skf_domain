@@ -42,8 +42,6 @@ public class Skf2040Sc001ClearService extends BaseServiceAbstract<Skf2040Sc001Cl
 
 		this.execClear(clearDto);
 
-		// 画面ID保持
-		clearDto.setPrePageId(FunctionIdConstant.SKF2060_SC004);
 		return clearDto;
 	}
 

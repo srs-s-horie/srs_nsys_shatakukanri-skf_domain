@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc001.Skf2010Sc001GetShainMasterInfoByParameterExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc001.Skf2010Sc001GetAllShainInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc001.Skf2010Sc001InitDto;
 
 /**
@@ -22,28 +24,31 @@ public class Skf2010Sc001InitService extends BaseServiceAbstract<Skf2010Sc001Ini
 
 	@Autowired
 	private Skf2010Sc001SharedService skf2010Sc001SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	private String companyCd = CodeConstant.C001;
 
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public Skf2010Sc001InitDto index(Skf2010Sc001InitDto initDto) throws Exception {
+		// 操作ログ登録
+		skfOperationLogUtils.setAccessLog("検索処理開始", companyCd, FunctionIdConstant.SKF2010_SC001);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC001_TITLE);
 
+		// 初期化処理
 		init(initDto);
 
 		// 初期表示では検索結果は0件表示
-		List<Skf2010Sc001GetShainMasterInfoByParameterExp> shainInfoList = new ArrayList<Skf2010Sc001GetShainMasterInfoByParameterExp>();
-		initDto.setListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
+		List<Skf2010Sc001GetAllShainInfoExp> shainInfoList = new ArrayList<Skf2010Sc001GetAllShainInfoExp>();
+		initDto.setPopListTableList(skf2010Sc001SharedService.createListTable(shainInfoList));
 
 		return initDto;
 	}
@@ -54,14 +59,10 @@ public class Skf2010Sc001InitService extends BaseServiceAbstract<Skf2010Sc001Ini
 	 * @param initDto
 	 */
 	private void init(Skf2010Sc001InitDto initDto) {
-		initDto.setShainNo("");
-		initDto.setName("");
-		initDto.setNameKk("");
-		initDto.setAgency("");
-		initDto.setErrShainNo("");
-		initDto.setErrAgency("");
-		initDto.setErrName("");
-		initDto.setErrNameKk("");
+		initDto.setPopShainNo(CodeConstant.NONE);
+		initDto.setPopName(CodeConstant.NONE);
+		initDto.setPopNameKk(CodeConstant.NONE);
+		initDto.setPopAgency(CodeConstant.NONE);
 	}
 
 }

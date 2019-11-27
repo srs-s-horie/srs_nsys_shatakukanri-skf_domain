@@ -19,13 +19,5 @@ public class Skf2010Sc001CommonDto extends GridRelationDto {
 	private static final long serialVersionUID = -1902278406295003652L;
 
 	// リストテーブル
-	private List<Map<String, Object>> listTableList;
-	// 入居関連付けフラグ
-	private String nyukyoFlag;
-
-	// エラー関連
-	private String errShainNo;
-	private String errName;
-	private String errNameKk;
-	private String errAgency;
+	private List<Map<String, Object>> popListTableList;
 }

@@ -17,12 +17,14 @@ public class Skf2010Sc001InitDto extends Skf2010Sc001CommonDto {
 	private static final long serialVersionUID = -1902278406295003652L;
 
 	// 社員番号
-	private String shainNo;
+	private String popShainNo;
 	// 氏名
-	private String name;
+	private String popName;
 	// 氏名（カナ）
-	private String nameKk;
+	private String popNameKk;
 	// 現所属
-	private String agency;
+	private String popAgency;
+	// 社宅管理番号
+	private int popShatakuKanriNo;
 
 }

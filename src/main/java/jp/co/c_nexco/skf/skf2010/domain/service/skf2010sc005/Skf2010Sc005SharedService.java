@@ -2,11 +2,11 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetAffiliation1ListExp;
@@ -33,7 +33,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateApplHistoryAgreeStatusExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateCommentInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
@@ -78,10 +77,8 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRep
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuShinseiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
@@ -218,6 +215,78 @@ public class Skf2010Sc005SharedService {
 	}
 
 	/**
+	 * 検索条件をセットします。
+	 * 
+	 * @param dto
+	 * @return
+	 */
+	public Skf2010Sc005GetShoninIchiranShoninExpParameter setParam(Skf2010Sc005CommonDto dto) {
+		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
+		// 会社コード
+		param.setCompanyCd(companyCd);
+
+		// 機関
+		if (dto.getAgency() != null && !CheckUtils.isEmpty(dto.getAgency())) {
+			param.setAgencyName(getAgencyName(companyCd, dto.getAgency()));
+		}
+		// 部等
+		if (dto.getAffiliation1() != null && !CheckUtils.isEmpty(dto.getAffiliation1())) {
+			param.setAffiliation1Name(getAffiliation1Name(companyCd, dto.getAgency(), dto.getAffiliation1()));
+
+		}
+		// 室、チーム
+		if (dto.getAffiliation2() != null && !CheckUtils.isEmpty(dto.getAffiliation2())) {
+			param.setAffiliation2Name(
+					getAffiliation2Name(companyCd, dto.getAgency(), dto.getAffiliation1(), dto.getAffiliation2()));
+
+		}
+		// 所属機関
+		param.setShozokuKikan(dto.getShozokuKikan());
+		// 申請日時（FROM）
+		if (dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())) {
+			param.setApplDateFrom(skfDateFormatUtils.dateFormatFromString(dto.getApplDateFrom(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+		}
+		// 申請日時（TO）
+		if (dto.getApplDateTo() != null && !CheckUtils.isEmpty(dto.getApplDateTo())) {
+			param.setApplDateTo(skfDateFormatUtils.dateFormatFromString(dto.getApplDateTo(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+		}
+		// 承認日／修正依頼日（From）
+		if (dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom())) {
+			param.setAgreDateFrom(skfDateFormatUtils.dateFormatFromString(dto.getAgreDateFrom(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+		}
+		// 承認日／修正依頼日（To）
+		if (dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo())) {
+			param.setAgreDateTo(skfDateFormatUtils.dateFormatFromString(dto.getAgreDateTo(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+		}
+		// 申請者名
+		if (dto.getName() != null && !CheckUtils.isEmpty(dto.getName())) {
+			param.setName(dto.getName());
+		}
+		// 申請書類種別
+		param.setApplCtgryId(dto.getApplCtgry());
+		// 申請書類名
+		if (NfwStringUtils.isNotEmpty(dto.getApplName())) {
+			param.setApplName(dto.getApplName());
+		}
+		// 申請状況
+		if (dto.getApplStatus() != null && dto.getApplStatus().length > 0) {
+			List<String> applStatusList = new ArrayList<String>();
+			List<String> tmpApplStatus = Arrays.asList(dto.getApplStatus());
+			applStatusList.addAll(tmpApplStatus);
+			param.setApplStatus(applStatusList);
+		}
+		// 承認者名
+		if (dto.getAgreementName() != null && !CheckUtils.isEmpty(dto.getAgreementName())) {
+			param.setAgreeName(dto.getAgreementName());
+		}
+		return param;
+	}
+
+	/**
 	 * 申請情報履歴テーブルからデータを取得します
 	 * 
 	 * @param param
@@ -236,7 +305,7 @@ public class Skf2010Sc005SharedService {
 	 * 
 	 * @param companyCd
 	 * @param applNo
-	 * @param errMap
+	 * @param dto
 	 * @return
 	 * @throws Exception
 	 */
@@ -244,6 +313,9 @@ public class Skf2010Sc005SharedService {
 		if ((companyCd == null || CheckUtils.isEmpty(companyCd) || (applNo == null || CheckUtils.isEmpty(applNo)))) {
 			return false;
 		}
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+
 		Skf2010Sc005GetApplHistoryInfoByParameterExpParameter param = new Skf2010Sc005GetApplHistoryInfoByParameterExpParameter();
 		param.setCompanyCd(companyCd);
 		param.setApplNo(applNo);
@@ -254,13 +326,12 @@ public class Skf2010Sc005SharedService {
 		// 次のステータスを設定する
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 
-		String shoninName1 = "";
-		String shoninName2 = "";
-		String nextStatus = "";
-		String mailKbn = "";
-		String nextWorkflow = "";
-		String sendUserId = "";
-		String sendGroupId = "";
+		String shoninName1 = CodeConstant.NONE;
+		String shoninName2 = CodeConstant.NONE;
+		String nextStatus = CodeConstant.NONE;
+		String mailKbn = CodeConstant.NONE;
+		String nextWorkflow = CodeConstant.NONE;
+		String sendGroupId = CodeConstant.NONE;
 		Map<String, String> applInfo = new HashMap<String, String>();
 		Date agreeDate = null;
 
@@ -287,21 +358,20 @@ public class Skf2010Sc005SharedService {
 		case CodeConstant.STATUS_HANSYUTSU_ZUMI:
 			// 申請中、審査中、同意済、搬入済、搬出済
 			nextStatus = CodeConstant.STATUS_SHONIN1;
-			shoninName1 = LoginUserInfoUtils.getUserName();
+			shoninName1 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_IRAI_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_1;
+			nextWorkflow = CodeConstant.LEVEL_2;
 			break;
 		case CodeConstant.STATUS_SHONIN1:
 			// 承認１
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
-			shoninName2 = LoginUserInfoUtils.getUserName();
+			shoninName2 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
 			agreeDate = updateDate;
 			break;
 		}
 
-		if (!CheckUtils.isEmpty(nextWorkflow)) {
+		if (NfwStringUtils.isNotEmpty(nextWorkflow)) {
 			// 次のワークフロー設定がある場合、次権限グループを取得
 			Skf2010Sc005GetAgreeAuthorityGroupIdExpParameter mApplParam = new Skf2010Sc005GetAgreeAuthorityGroupIdExpParameter();
 			Skf2010Sc005GetAgreeAuthorityGroupIdExp mApplResult = new Skf2010Sc005GetAgreeAuthorityGroupIdExp();
@@ -314,12 +384,11 @@ public class Skf2010Sc005SharedService {
 			}
 		}
 
-		if (!CheckUtils.isEmpty(sendGroupId)) {
+		if (NfwStringUtils.isEmpty(sendGroupId)) {
+			// 次階層が無い場合、承認済みの設定をする
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
-			shoninName1 = LoginUserInfoUtils.getUserName();
+			shoninName2 = loginUserInfoMap.get("userName");
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
-			nextWorkflow = CodeConstant.LEVEL_5;
-			sendUserId = applInfo.get("applShainNo");
 			agreeDate = updateDate;
 		}
 
@@ -349,21 +418,16 @@ public class Skf2010Sc005SharedService {
 
 		// 申請書類IDが"R0100"【入退居希望申請】かつ次のステータスが承認中または承認済の場合、共益費、使用料を更新する
 		if (tApplHistoryData.getApplId().equals(FunctionIdConstant.R0100)
-				&& (CodeConstant.STATUS_SHONIN1.equals(nextStatus) || CodeConstant.STATUS_SHONIN2.equals(nextStatus)
-						|| CodeConstant.STATUS_SHONIN3.equals(nextStatus)
-						|| CodeConstant.STATUS_SHONIN4.equals(nextStatus)
+				&& (CodeConstant.STATUS_SHONIN1.equals(nextStatus)
 						|| CodeConstant.STATUS_SHONIN_ZUMI.equals(nextStatus))) {
-			String updateUser = LoginUserInfoUtils.getUserName();
-
 			boolean res = updateShatakuRental(tApplHistoryData.getShainNo(), CodeConstant.NYUTAIKYO_KBN_NYUKYO,
-					tApplHistoryData.getApplNo(), updateDate, updateUser);
+					tApplHistoryData.getApplNo());
 			if (!res) {
 				return false;
 			}
 
 		}
 
-		Skf2010Sc005GetCommentInfoForUpdateExp tmpTApplCommentData = new Skf2010Sc005GetCommentInfoForUpdateExp();
 		// 次階層のステータスが”31”【承認中】の場合、承認中コメントを削除
 		if (nextStatus.equals(CodeConstant.STATUS_SHONIN1)) {
 
@@ -378,6 +442,7 @@ public class Skf2010Sc005SharedService {
 			}
 		}
 		// 次階層のステータスが”40”【承認済】の場合、承認中コメントを承認済みコメントに更新
+		Skf2010Sc005GetCommentInfoForUpdateExp tmpTApplCommentData = new Skf2010Sc005GetCommentInfoForUpdateExp();
 		if (nextStatus.equals(CodeConstant.STATUS_SHONIN_ZUMI)) {
 			Skf2010Sc005GetCommentInfoForUpdateExpParameter tApplCommentParam = new Skf2010Sc005GetCommentInfoForUpdateExpParameter();
 			tApplCommentParam.setCompanyCd(companyCd);
@@ -398,11 +463,11 @@ public class Skf2010Sc005SharedService {
 			}
 		}
 		// 承認完了通知の場合のみ
-		if (mailKbn.equals(CodeConstant.SHONIN_KANRYO_TSUCHI)) {
+		if (CheckUtils.isEqual(mailKbn, CodeConstant.SHONIN_KANRYO_TSUCHI)) {
 			// メール送付
-			String comment = "";
-			String annai = "";
-			String furikomiStartDate = "";
+			String comment = CodeConstant.NONE;
+			String annai = CodeConstant.NONE;
+			String furikomiStartDate = CodeConstant.NONE;
 			String sendUser = applInfo.get("applShainNo");
 			sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId);
 		}
@@ -490,7 +555,7 @@ public class Skf2010Sc005SharedService {
 			tmpMap.put("agreDate", agreDate); // 承認/修正依頼日
 			tmpMap.put("agreName1", tmpData.getAgreName1()); // 承認者名１/修正依頼社名
 			tmpMap.put("agreName2", tmpData.getAgreName2()); // 承認者名２/修正依頼社名
-			tmpMap.put("detail", ""); // 確認ボタン（アイコン）
+			tmpMap.put("detail", CodeConstant.NONE); // 確認ボタン（アイコン）
 
 			returnList.add(tmpMap);
 
@@ -511,7 +576,7 @@ public class Skf2010Sc005SharedService {
 	 * @return
 	 */
 	public String getAgencyName(String companyCd, String agencyCd) {
-		String agencyName = "";
+		String agencyName = CodeConstant.NONE;
 		Skf2010Sc005GetAgencyNameExp agencyData = new Skf2010Sc005GetAgencyNameExp();
 		Skf2010Sc005GetAgencyNameExpParameter param = new Skf2010Sc005GetAgencyNameExpParameter();
 		param.setCompanyCd(companyCd);
@@ -535,7 +600,7 @@ public class Skf2010Sc005SharedService {
 	 */
 	public String getAffiliation1Name(String companyCd, String agencyCd, String affiliation1Cd) {
 		List<Skf2010Sc005GetAffiliation1ListExp> affiliation1MapList = new ArrayList<Skf2010Sc005GetAffiliation1ListExp>();
-		String affiliation1Name = "";
+		String affiliation1Name = CodeConstant.NONE;
 
 		if (affiliation1Cd == null || CheckUtils.isEmpty(affiliation1Cd)) {
 			return affiliation1Name;
@@ -565,7 +630,7 @@ public class Skf2010Sc005SharedService {
 	 */
 	public String getAffiliation2Name(String companyCd, String agencyCd, String affiliation1Cd, String affiliation2Cd) {
 		List<Skf2010Sc005GetAffiliation2ListExp> affiliation2MapList = new ArrayList<Skf2010Sc005GetAffiliation2ListExp>();
-		String affiliation2Name = "";
+		String affiliation2Name = CodeConstant.NONE;
 
 		if (affiliation1Cd == null || CheckUtils.isEmpty(affiliation1Cd)) {
 			return affiliation2Name;
@@ -590,8 +655,8 @@ public class Skf2010Sc005SharedService {
 	 * 
 	 * @param companyCd
 	 * @param applNo
+	 * @param titleList
 	 * @param strList
-	 * @return
 	 */
 	public void setTNyukyoChoshoTsuchi(String companyCd, String applNo, List<String> titleList, List<String> strList) {
 		Skf2020TNyukyoChoshoTsuchiKey skf2020TNyukyoChoshoTsuchiKey = new Skf2020TNyukyoChoshoTsuchiKey();
@@ -600,8 +665,6 @@ public class Skf2010Sc005SharedService {
 		Skf2020TNyukyoChoshoTsuchi result = skf2020TNyukyoChoshoTsuchiRepository
 				.selectByPrimaryKey(skf2020TNyukyoChoshoTsuchiKey);
 		if (result != null) {
-			titleList.add("company_cd");
-			strList.add(result.getCompanyCd());
 			titleList.add("agency");
 			strList.add(result.getAgency());
 			titleList.add("affiliation1");
@@ -750,19 +813,19 @@ public class Skf2010Sc005SharedService {
 			titleList.add("parking_s_date_flg");
 			strList.add(result.getParkingSDateFlg());
 			titleList.add("gender");
-			String strGender = "";
+			String strGender = CodeConstant.NONE;
 			if (result.getGender() != null) {
 				strGender = result.getGender().toString();
 			}
 			strList.add(strGender);
 			titleList.add("shataku_no");
-			String strShatakuNo = "";
+			String strShatakuNo = CodeConstant.NONE;
 			if (result.getShatakuNo() != null) {
 				strShatakuNo = result.getShatakuNo().toString();
 			}
 			strList.add(strShatakuNo);
 			titleList.add("room_kanri_no");
-			String strRoomKanriNo = "";
+			String strRoomKanriNo = CodeConstant.NONE;
 			if (result.getRoomKanriNo() != null) {
 				strRoomKanriNo = result.getRoomKanriNo().toString();
 			}
@@ -810,13 +873,13 @@ public class Skf2010Sc005SharedService {
 			titleList.add("now_car_ichi_no2");
 			strList.add(result.getNowCarIchiNo2());
 			titleList.add("now_shataku_kanri_no");
-			String strNowShatakuKanriNo = "";
+			String strNowShatakuKanriNo = CodeConstant.NONE;
 			if (result.getNowShatakuKanriNo() != null) {
 				strNowShatakuKanriNo = result.getNowShatakuKanriNo().toString();
 			}
 			strList.add(strNowShatakuKanriNo);
 			titleList.add("now_room_kanri_no");
-			String strNowRoomKanriNo = "";
+			String strNowRoomKanriNo = CodeConstant.NONE;
 			if (result.getNowRoomKanriNo() != null) {
 				strNowRoomKanriNo = result.getNowRoomKanriNo().toString();
 			}
@@ -872,13 +935,13 @@ public class Skf2010Sc005SharedService {
 			titleList.add("parking_e_date_flg");
 			strList.add(result.getParkingEDateFlg());
 			titleList.add("shataku_no");
-			String strShatakuNo = "";
+			String strShatakuNo = CodeConstant.NONE;
 			if (result.getShatakuNo() != null) {
 				strShatakuNo = result.getShatakuNo().toString();
 			}
 			strList.add(strShatakuNo);
 			titleList.add("room_kanri_no");
-			String strRoomKanriNo = "";
+			String strRoomKanriNo = CodeConstant.NONE;
 			if (result.getRoomKanriNo() != null) {
 				strRoomKanriNo = result.getRoomKanriNo().toString();
 			}
@@ -941,7 +1004,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("shataku_no");
 			strList.add(result.getShainNo());
 			titleList.add("room_kanri_no");
-			String strRoomKanriNo = "";
+			String strRoomKanriNo = CodeConstant.NONE;
 			if (result.getRoomKanriNo() != null) {
 				strRoomKanriNo = result.getRoomKanriNo().toString();
 			}
@@ -1003,13 +1066,13 @@ public class Skf2010Sc005SharedService {
 			titleList.add("gender");
 			strList.add(result.getGender());
 			titleList.add("shataku_no");
-			String strShatakuNo = "";
+			String strShatakuNo = CodeConstant.NONE;
 			if (result.getShatakuNo() != null) {
 				strShatakuNo = result.getShatakuNo().toString();
 			}
 			strList.add(strShatakuNo);
 			titleList.add("room_kanri_no");
-			String strRoomKanriNo = "";
+			String strRoomKanriNo = CodeConstant.NONE;
 			if (result.getRoomKanriNo() != null) {
 				strRoomKanriNo = result.getRoomKanriNo().toString();
 			}
@@ -1122,7 +1185,7 @@ public class Skf2010Sc005SharedService {
 		}
 
 		String agreName1 = tmpData.getAgreName1();
-		String shoninName1 = LoginUserInfoUtils.getUserName();
+		String shoninName1 = loginUserInfoMap.get("userName");
 		// 「承認者名1」いずれかが、セッションのログインユーザ名と同じ場合
 		if (agreName1 != null && agreName1.equals(shoninName1)) {
 			return false;
@@ -1197,7 +1260,7 @@ public class Skf2010Sc005SharedService {
 				|| CodeConstant.STATUS_HANNYU_ZUMI.equals(applStatus)
 				|| CodeConstant.STATUS_SHONIN1.equals(applStatus)) {
 
-			String wfLevel = "";
+			String wfLevel = CodeConstant.NONE;
 			switch (applStatus) {
 			case CodeConstant.STATUS_SHINSEICHU:
 			case CodeConstant.STATUS_SHOZOKUCHO_KAKUNINZUMI:
@@ -1235,49 +1298,6 @@ public class Skf2010Sc005SharedService {
 	}
 
 	/**
-	 * 社宅入居調書通知テーブル情報を更新します
-	 * 
-	 * @param shainNo
-	 * @param nyutaikyoKbn
-	 * @param applNo
-	 * @param updateDate
-	 * @param updateUser
-	 * @return
-	 */
-	private boolean updateShatakuRental(String shainNo, String nyutaikyoKbn, String applNo, Date updateDate,
-			String updateUser) {
-		List<Skf2010Sc005GetTeijiDataInfoExp> tTaijiDataList = new ArrayList<Skf2010Sc005GetTeijiDataInfoExp>();
-		Skf2010Sc005GetTeijiDataInfoExpParameter param = new Skf2010Sc005GetTeijiDataInfoExpParameter();
-		param.setShainNo(shainNo);
-		param.setNyutaikyoKbn(nyutaikyoKbn);
-		param.setApplNo(applNo);
-		tTaijiDataList = skf2010Sc005GetTeijiDataInfoExpRepository.getTeijiDataInfo(param);
-		if (tTaijiDataList != null && tTaijiDataList.size() > 0) {
-			Skf2010Sc005GetTeijiDataInfoExp tTaijiData = tTaijiDataList.get(0);
-			if (tTaijiData.getRentalAdjust() != null) {
-				Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExp updateData = new Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExp();
-				updateData.setCompanyCd(companyCd);
-				updateData.setApplNo(applNo);
-				if (tTaijiData.getRentalAdjust() != null) {
-					updateData.setNewKyoekihi(tTaijiData.getRentalAdjust().toString());
-				}
-				updateData.setKyoekihiPersonKyogichuFlg(tTaijiData.getKyoekihiPersonKyogichuFlg());
-				if (tTaijiData.getKyoekihiPersonAdjust() != null) {
-					updateData.setNewKyoekihi(tTaijiData.getKyoekihiPersonAdjust().toString());
-				}
-				updateData.setParkingRental(tTaijiData.getParkingRental1());
-				updateData.setParkingRental2(tTaijiData.getParkingRental2());
-				int res = skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository
-						.updateNyukyoChoshoTsuchiRental(updateData);
-				if (res <= 0) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * 申請通知メール送信のメイン処理を行います
 	 * 
 	 * @param sendMailKbn
@@ -1305,9 +1325,9 @@ public class Skf2010Sc005SharedService {
 		String applName = skf2010MApplication.getApplName();
 
 		// 申請社員名、申請日を取得
-		String applShainName = "";
-		String applDate = "";
-		String applAgencyCd = "";
+		String applShainName = CodeConstant.NONE;
+		String applDate = CodeConstant.NONE;
+		String applAgencyCd = CodeConstant.NONE;
 
 		// 申請通知メール情報の取得
 		Skf2010Sc005GetSendApplMailInfoExp skfMShainData = new Skf2010Sc005GetSendApplMailInfoExp();
@@ -1362,7 +1382,7 @@ public class Skf2010Sc005SharedService {
 	 * @return
 	 */
 	private String getApplOutMailInfo(String agencyCd, String applId) {
-		String mailAddress = "";
+		String mailAddress = CodeConstant.NONE;
 
 		// 設定ファイル情報の取得
 
@@ -1383,7 +1403,7 @@ public class Skf2010Sc005SharedService {
 	 * @return
 	 */
 	private String getSendMailAddressByShainNo(String companyCd, String shainNo) {
-		String mailAddress = "";
+		String mailAddress = CodeConstant.NONE;
 		Skf1010MShainKey key = new Skf1010MShainKey();
 		key.setCompanyCd(companyCd);
 		key.setShainNo(shainNo);
@@ -1467,12 +1487,12 @@ public class Skf2010Sc005SharedService {
 			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
 		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0104)
 				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSEICHU)) {
-			// 申請書類IDが”R0103”【社宅希望申請】かつ、
+			// 申請書類IDが”R0104”【備品希望確認】かつ、
 			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
 		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0105)
 				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_DOI_SHINAI)) {
-			// 申請書類IDが”R0103”【社宅希望申請】かつ、
-			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
+			// 申請書類IDが”R0105”【備品返却確認】かつ、
+			// 現在のステータスが”21”【同意しない】の場合、処理を継続する。
 		} else {
 			statusUpdateFlg = false;
 		}
@@ -1565,7 +1585,7 @@ public class Skf2010Sc005SharedService {
 	 * @param applNo
 	 * @return true:必要としない、false:必要とする
 	 */
-	public boolean getShatakuTaiyoFuyo(String applNo) {
+	public boolean isShatakuTaiyoFuyo(String applNo) {
 		Skf2020Sc003GetShatakuNyukyoKiboInfoExp shatakuNyukyoKiboInfo = new Skf2020Sc003GetShatakuNyukyoKiboInfoExp();
 		Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter param = new Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter();
 		param.setCompanyCd(companyCd);
@@ -1586,10 +1606,12 @@ public class Skf2010Sc005SharedService {
 	/**
 	 * 社宅連携処理を実施する
 	 * 
+	 * @param menuScopeSessionBean
 	 * @param shainNo
 	 * @param applNo
 	 * @param status
-	 * @param userId
+	 * @param applId
+	 * @param pageId
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")

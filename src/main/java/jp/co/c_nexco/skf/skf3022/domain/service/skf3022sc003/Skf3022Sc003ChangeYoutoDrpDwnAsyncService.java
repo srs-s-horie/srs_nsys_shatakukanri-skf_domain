@@ -12,11 +12,9 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003ChangeYoutoDrpDwnAsyncDto;
 import jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003.Skf3022Sc003SharedService;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3022Sc003ChangeYoutoDrpDwnAsyncService 使用料入力支援画面の用途ドロップダウン変更時サービス処理クラス。
@@ -29,9 +27,6 @@ public class Skf3022Sc003ChangeYoutoDrpDwnAsyncService
 
 	@Autowired
 	private Skf3022Sc003SharedService skf3022Sc003SharedService;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
-
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
@@ -48,7 +43,7 @@ public class Skf3022Sc003ChangeYoutoDrpDwnAsyncService
 	public Skf3022Sc003ChangeYoutoDrpDwnAsyncDto index(Skf3022Sc003ChangeYoutoDrpDwnAsyncDto asyncDto) throws Exception {
 
 		// デバッグログ
-		logger.info("用途変更");
+		LogUtils.debugByMsg("用途変更");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("用途変更", CodeConstant.C001, FunctionIdConstant.SKF3022_SC003);
 		Map<String, String> paramMap = null;

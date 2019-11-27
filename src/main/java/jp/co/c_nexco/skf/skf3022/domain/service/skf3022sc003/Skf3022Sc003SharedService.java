@@ -33,9 +33,6 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
-//import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc003common.Skf3022Sc003CommonDto;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3022Sc003SharedService 使用料入力支援共通処理クラス
@@ -56,8 +53,6 @@ public class Skf3022Sc003SharedService {
 	private Skf3022Sc003GetNyukyoInfoExpRepository skf3022Sc003GetNyukyoInfoExpRepository;
 	@Autowired
 	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
-	/** ロガー。 */
-	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 	@Value("${skf.common.settings.shiyouryou_keisan_kbn}")
 	private String shiyouryouKbn;
 
@@ -177,7 +172,7 @@ public class Skf3022Sc003SharedService {
 		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp calcResult = null;
 		// 用途判定
 		if (CheckUtils.isEmpty(paramMap.get("youtoSelect"))) {
-			logger.debug("「用途」が選択されていないため、再計算を行わない");
+			LogUtils.debugByMsg("「用途」が選択されていないため、再計算を行わない");
 			return false;
 		}
 		// 基準使用料算定上延べ面積設定
@@ -251,12 +246,12 @@ public class Skf3022Sc003SharedService {
 				kaidanMenseki = new BigDecimal(getMensekiText(paramMap.get("kaidan")));
 			} catch (NumberFormatException e) {
 				// デバッグログ
-				logger.debug("数値変換失敗");
+				LogUtils.debugByMsg("数値変換失敗");
 				return false;
 			}
 		} else {
 			// デバッグログ
-			logger.debug("面積が未入力のため、再計算は行わない");
+			LogUtils.debugByMsg("面積が未入力のため、再計算は行わない");
 			return false;
 		}
 		// ⑥基準使用料算定上延べ面積2設定
@@ -298,12 +293,12 @@ public class Skf3022Sc003SharedService {
 				monookiMenseki = new BigDecimal(getMensekiText(paramMap.get("monooki")));
 			} catch (NumberFormatException e) {
 				// デバッグログ
-				logger.debug("数値変換失敗");
+				LogUtils.debugByMsg("数値変換失敗");
 				return false;
 			}
 		} else {
 			// デバッグログ
-			logger.debug("面積が未入力のため、再計算は行わない");
+			LogUtils.debugByMsg("面積が未入力のため、再計算は行わない");
 			return false;
 		}
 
@@ -442,10 +437,10 @@ public class Skf3022Sc003SharedService {
 					getKingakuEdit(keinenChoseiNashiShiyoryo.setScale(0, BigDecimal.ROUND_DOWN).stripTrailingZeros().toPlainString()));
 		} catch (ArithmeticException e) {
 			// デバッグログ
-			logger.debug("数値変換失敗");
+			LogUtils.debugByMsg("数値変換失敗");
 		} catch (NumberFormatException e) {
 			// デバッグログ
-			logger.debug("数値変換失敗");
+			LogUtils.debugByMsg("数値変換失敗");
 		}
 	}
 

@@ -4,11 +4,13 @@
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc001;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -58,6 +60,8 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
 		if (!this.execSave(confirmDto)) {
 			return confirmDto;
 		}
+		// プルダウンリストの再設定（選択初期値反映）
+		this.setDropdownList(confirmDto);
 
 		// 申請書類確認画面に渡すフォームデータを設定
 		confirmDto.setPrePageId(confirmDto.getPageId());
@@ -125,5 +129,35 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
 			skf2040Sc001SharedService.registrationBihinShinsei(confirmDto);
 		}
 		return isExecSave;
+	}
+
+	/**
+	 * 退居届画面のドロップダウンリスト情報を設定する。
+	 * 
+	 * @param confirmDto
+	 */
+	private void setDropdownList(Skf2040Sc001ConfirmDto confirmDto) {
+		// 退居(返還)理由ドロップダウンリストをDtoに設定
+		confirmDto.setDdlTaikyoRiyuKbnList(
+				skf2040Sc001SharedService.getTaikyoHenkanRiyuList(confirmDto.getTaikyoRiyuKbn()));
+
+		// 現居住社宅名ドロップダウンリストをDtoに設定
+		List<Map<String, Object>> nowShatakuNameList = skf2040Sc001SharedService.getNowShatakuNameList(
+				confirmDto.getShainNo(), Long.parseLong(NfwStringUtils.defaultString(confirmDto.getNowShatakuName())));
+		if (null != nowShatakuNameList && nowShatakuNameList.size() > 0) {
+			confirmDto.setDdlNowShatakuNameList(nowShatakuNameList);
+			// リスト一件目の物件の社宅管理IDを取得してDTOに設定しておく
+			long firstShatakuKanriId = (long) nowShatakuNameList.get(0).get("value");
+			confirmDto.setShatakuKanriId(firstShatakuKanriId);
+		} else {
+			// データが取得できなかった場合、エラーメッセージを表示して初期表示処理を終了
+			skf2040Sc001SharedService.setDisableBtn(confirmDto);
+			// エラーメッセージ表示
+			ServiceHelper.addErrorResultMessage(confirmDto, null, MessageIdConstant.E_SKF_2015);
+		}
+
+		// 返却立合希望日（時）ドロップダウンリストをDtoに設定
+		confirmDto.setDdlReturnWitnessRequestDateList(
+				skf2040Sc001SharedService.getSessionTimeList(confirmDto.getSessionTime()));
 	}
 }
