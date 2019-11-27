@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc999;
+package jp.co.c_nexco.skf.skf2010.domain.service.skf2010fc001;
 
 import java.util.List;
 import java.util.Map;
@@ -11,18 +11,18 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGe
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
-import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc999.Skf3090Sc999InitDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010fc001.Skf2010Fc001InitDto;
 
 /**
- * Skf3090Sc005InitService 従業員マスタ登録初期表示処理クラス.
+ * Skf2010Fc001InitService
  * 
  * @author NEXCOシステムズ
  *
  */
 @Service
-public class Skf3090Sc999InitService extends BaseServiceAbstract<Skf3090Sc999InitDto> {
+public class Skf2010Fc001InitService extends BaseServiceAbstract<Skf2010Fc001InitDto> {
 
-	static final String DATA_LINKAGE_KEY_SKF2020FC001 = "mapKeyOfSkf2020Fc001Test";
+	public static final String DATA_LINKAGE_KEY_SKF2010FC001 = "mapKeyOfSkf2010Fc001Test";
 	@Autowired
 	private SkfBatchUtils skfBatchUtils;
 
@@ -30,13 +30,12 @@ public class Skf3090Sc999InitService extends BaseServiceAbstract<Skf3090Sc999Ini
 	 * 画面初期表示のメイン処理
 	 */
 	@Override
-	public BaseDto index(Skf3090Sc999InitDto initDto) throws Exception {
+	protected BaseDto index(Skf2010Fc001InitDto initDto) throws Exception {
 
 		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skfBatchUtils
 				.getUpdateDateForUpdateSQL(null);
 
-		menuScopeSessionBean.put(DATA_LINKAGE_KEY_SKF2020FC001, forUpdateMap);
-
+		menuScopeSessionBean.put(DATA_LINKAGE_KEY_SKF2010FC001, forUpdateMap);
 		return initDto;
 	}
 
