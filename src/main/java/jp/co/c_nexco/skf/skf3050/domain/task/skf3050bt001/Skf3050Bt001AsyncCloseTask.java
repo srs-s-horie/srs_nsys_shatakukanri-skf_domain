@@ -70,6 +70,9 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 		}
 
 		String result = skf3050Bt001SharedTask.updateTsukibetsuTsukiji(paramMap, endList);
+		if (SkfCommonConstant.ABNORMAL.equals(result)) {
+			LogUtils.error(MessageIdConstant.E_SKF_1079);
+		}
 
 		Integer dbPrcRtn = skf3050Bt001SharedTask.endProc(result, paramMap.get(Skf3050Bt001SharedTask.COMPANY_CD),
 				Skf3050Bt001SharedTask.BATCH_ID_B5001, SkfCommonConstant.PROCESSING);

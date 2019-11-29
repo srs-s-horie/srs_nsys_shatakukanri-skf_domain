@@ -26,13 +26,13 @@ public class Skf3050Bt004AsyncConfirmPositiveCooperationTask extends AsyncTaskAb
 
 	private Skf3050Bt004SharedTask skf3050Bt004SharedTask;
 
-	private static final String BEAN_GET_KEY = "skf3050Bt003SharedTask";
+	private static final String BEAN_GET_KEY = "skf3050Bt004SharedTask";
 
 	@Override
 	public void init() {
 
 		this.systemId = CommonConstant.C_SYSTEM_ID.toUpperCase();
-		this.programId = "skf3050Bt004";
+		this.programId = "skf3050bt004";
 
 		skf3050Bt004SharedTask = (Skf3050Bt004SharedTask) SpringContext.getBean(BEAN_GET_KEY);
 	}
