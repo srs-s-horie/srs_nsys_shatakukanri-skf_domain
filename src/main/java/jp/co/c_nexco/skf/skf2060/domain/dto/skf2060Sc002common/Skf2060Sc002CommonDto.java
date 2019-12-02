@@ -30,6 +30,8 @@ public class Skf2060Sc002CommonDto extends Skf206010CommonDto {
     //隠し要素
     //申請書類管理番号
     private String applNo;
+    // 申請書類ID
+    private String applId;
     //提示回数
     private String teijiKaisu;
     

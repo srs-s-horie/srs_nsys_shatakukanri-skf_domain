@@ -87,6 +87,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -172,6 +173,8 @@ public class Skf2010Sc005SharedService {
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils;
 
 	@Autowired
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
@@ -311,6 +314,7 @@ public class Skf2010Sc005SharedService {
 	 * @param companyCd
 	 * @param applNo
 	 * @param dto
+	 * @param commentDate 
 	 * @return
 	 * @throws Exception
 	 */
@@ -381,7 +385,7 @@ public class Skf2010Sc005SharedService {
 			Skf2010Sc005GetAgreeAuthorityGroupIdExpParameter mApplParam = new Skf2010Sc005GetAgreeAuthorityGroupIdExpParameter();
 			Skf2010Sc005GetAgreeAuthorityGroupIdExp mApplResult = new Skf2010Sc005GetAgreeAuthorityGroupIdExp();
 			mApplParam.setCompanyCd(companyCd);
-			mApplParam.setApplId(applNo);
+			mApplParam.setApplId(tApplHistoryData.getApplId());
 			mApplParam.setWfLevel(nextWorkflow);
 			mApplResult = skf2010Sc005GetAgreeAuthorityGroupIdExpRepository.getAgreeAuthorityGroupId(mApplParam);
 			if (mApplResult != null) {
@@ -435,14 +439,15 @@ public class Skf2010Sc005SharedService {
 
 		// 次階層のステータスが”31”【承認中】の場合、承認中コメントを削除
 		if (nextStatus.equals(CodeConstant.STATUS_SHONIN1)) {
-
+			
 			Skf2010TApplCommentKey key = new Skf2010TApplCommentKey();
 			key.setCompanyCd(companyCd);
 			key.setApplNo(applNo);
 			key.setApplStatus(nextStatus);
-
-			int delComRes = skf2010TApplCommentRepository.deleteByPrimaryKey(key);
-			if (delComRes <= 0) {
+			Map<String, String> errorMsg = new HashMap<String, String>();
+			
+			boolean delComRes = skfCommentUtils.deleteComment(companyCd, applNo, nextStatus, errorMsg);
+			if (!delComRes) {
 				return false;
 			}
 		}
@@ -461,6 +466,7 @@ public class Skf2010Sc005SharedService {
 				updData.setApplNo(applNo);
 				updData.setUpdateApplStatus(nextStatus);
 				updData.setApplStatus(nowApplStatus);
+				updData.setCommentDate(tmpTApplCommentData.getCommentDate());
 				int updComRes = skf2010Sc005UpdateCommentInfoExpRepository.updateCommentInfo(updData);
 				if (updComRes <= 0) {
 					return false;
@@ -1213,7 +1219,7 @@ public class Skf2010Sc005SharedService {
 			default:
 				return false;
 			}
-		} else if (FunctionIdConstant.R0104.equals(tmpData.getApplId()) || "R0105".equals(tmpData.getApplId())) {
+		} else if (FunctionIdConstant.R0104.equals(tmpData.getApplId()) || FunctionIdConstant.R0105.equals(tmpData.getApplId())) {
 			// 「申請書類ID」が「備品希望申請」「備品返却確認」のいずれかであり、
 			// 「ステータス」が搬入済/搬出済/承認中でいずれでもない場合
 			switch (applStatus) {

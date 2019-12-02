@@ -160,7 +160,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1007);
 		} else if (tApplHistoryData.size() > Integer.parseInt(searchMaxCount)) {
 			// 検索結果表示最大数以上
-			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1002, "最大件数");
+			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1002, "1000", "条件を変更してください。");
+			return rtnList;
 		}
 
 		// グリッド表示（リストテーブル）作成
