@@ -279,9 +279,17 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 
 				// 備品情報の表示
 				if (!getBihinInfoMain(initDto)) {
+					// 返却情報欄の表示
+					initDto.setHenkyakuInfoViewFlg(sFalse);
+					// 【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_C
+					// 【PDFダウンロードボタン：表示】
+					skf2040Sc002ShareService.setButtonVisible("PTN_C", sTrue, initDto);
+					// 提示ボタン
+					initDto.setBtnPresentDisabeld(sTrue);
 					// 備品情報の表示エラーは警告表示で継続
 					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.I_SKF_1006,
 							"返却備品情報が取得できませんでした。必要に応じて社宅管理台帳から返却備品", "メンテナンス");
+					return returnValue;
 				}
 
 			} else {
@@ -311,6 +319,9 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuJotai())) {
 						initDto.setShatakuJotai(taikyoRepDt.getShatakuJotai());
 					}
+				} else {
+					// 返却情報欄の表示
+					initDto.setHenkyakuInfoViewFlg(sFalse);
 				}
 			}
 
