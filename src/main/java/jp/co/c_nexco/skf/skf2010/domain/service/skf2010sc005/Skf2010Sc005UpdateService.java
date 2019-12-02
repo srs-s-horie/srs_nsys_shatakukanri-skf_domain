@@ -117,7 +117,8 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1007);
 			} else if (tApplHistoryData.size() > Integer.parseInt(searchMaxCount)) {
 				// 検索結果表示最大数以上
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1002, "最大件数");
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1002, "1000", "条件を変更してください。");
+				return rtnList;
 			}
 		}
 
