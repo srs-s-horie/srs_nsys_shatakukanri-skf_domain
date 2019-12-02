@@ -16,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetK
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExp;
@@ -29,6 +30,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiDetail;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiFile;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenExpRepository;
@@ -37,6 +39,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRe
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiDetailRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
@@ -61,6 +64,8 @@ public class Skf2060Sc001SharedService {
 	private Skf2060TKariageBukkenRepository skf2060TKariageBukkenRepository;
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
+	@Autowired
+	private Skf2060Sc001UpdateApplHistoryExpRepository skf2060Sc001UpdateApplHistoryExpRepository;
 	@Autowired
 	private Skf2060TKariageTeijiRepository skf2060TKariageTeijiRepository;
 	@Autowired
@@ -118,7 +123,6 @@ public class Skf2060Sc001SharedService {
 		// リストテーブルに格納するデータを取得する
 		List<Skf2060Sc001GetKariageBukkenExp> resultListTableData = new ArrayList<Skf2060Sc001GetKariageBukkenExp>();
 		Skf2060Sc001GetKariageBukkenExpParameter param = new Skf2060Sc001GetKariageBukkenExpParameter();
-		//TODO セッション名(´・ω・｀)
 		param.setCompanyCd(companyCd);
 		param.setShainNo(shainNo);
 		param.setApplNo(applNo);
@@ -169,6 +173,7 @@ public class Skf2060Sc001SharedService {
 				deleteBukken = CodeConstant.DOUBLE_QUOTATION;
 			}
 			String candidateDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getCandidateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			String lastUpdateDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getUpdateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			tmpMap.put("teiji", "<input type='checkbox' name='teijiVal' id='teijiVal" + i + "' value='" + i + "'>");
 			tmpMap.put("insertDate", HtmlUtils.htmlEscape(insertDate));
 			tmpMap.put("candidateDate", HtmlUtils.htmlEscape(candidateDate));
@@ -180,7 +185,8 @@ public class Skf2060Sc001SharedService {
 			tmpMap.put("companyCd", HtmlUtils.htmlEscape(tmpData.getCompanyCd()));
 			tmpMap.put("candidateNo", tmpData.getCandidateNo());
 			tmpMap.put("money", tmpData.getMoney());
-			tmpMap.put("lastUpdateDate", HtmlUtils.htmlEscape(tmpData.getUpdateDate().toString()));
+			tmpMap.put("lastUpdateDate", HtmlUtils.htmlEscape(lastUpdateDate));
+			tmpMap.put("teijiFlg", tmpData.getTeijiFlg());
 
 			setViewList.add(tmpMap);
 		}
@@ -293,7 +299,7 @@ public class Skf2060Sc001SharedService {
 		if(resultListTableData.size() != 0){
 			//最新の申請書類管理番号を取得
 			String nowApplNo = resultListTableData.get(0).getApplNo();
-			System.out.println("最新の申請書類管理番号(´・ω・｀)："+nowApplNo);
+			LogUtils.debugByMsg("最新の申請書類管理番号："+nowApplNo);
 		
 			//申請書類管理番号の後ろ２桁の番号を取得
 			String back2Words = nowApplNo.substring(nowApplNo.length()-2);
@@ -305,7 +311,7 @@ public class Skf2060Sc001SharedService {
 			int maxPage = 99;
 			//申請書類管理番号のページが超えた場合
 			if(back2Number > maxPage){
-				//TODO エラー処理(とりあえず空にする）
+				//エラー処理(とりあえず空にする）
 				applNo = new String();
 				
 			//申請書類管理番号のページが超えなかった場合
@@ -317,6 +323,7 @@ public class Skf2060Sc001SharedService {
 		}else{
 			applNo = applId+"-"+shainNo+"-"+applDate+"-01";
 		}
+		LogUtils.debugByMsg("作成した申請書類管理番号："+applNo);
 		return applNo;
 	}
 	
@@ -533,21 +540,23 @@ public class Skf2060Sc001SharedService {
 	 * 
 	 * @return 更新できた場合true　更新できなかった場合false
 	 */
-	public boolean updateApplHistory(String companyCd, String shainNo, Date applDate, String applNo, String applId){
+	public boolean updateApplHistory(String companyCd, String shainNo, Date applDate, String applNo, String applId, String updateUserId, String updateProgramId){
 		
 		boolean updateCheck = true;
 		int updateCount =0;
 		String applStatus = CodeConstant.STATUS_KAKUNIN_IRAI;
 		
-		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
+		Skf2060Sc001UpdateApplHistoryExp updateData = new Skf2060Sc001UpdateApplHistoryExp();
 		updateData.setCompanyCd(companyCd);
 		updateData.setShainNo(shainNo);
 		updateData.setApplDate(applDate);
 		updateData.setApplNo(applNo);
 		updateData.setApplId(applId);
 		updateData.setApplStatus(applStatus);
+		updateData.setUpdateUserId(updateUserId);
+		updateData.setUpdateProgramId(updateProgramId);
 		
-		updateCount = skf2010TApplHistoryRepository.updateByPrimaryKeySelective(updateData);
+		updateCount = skf2060Sc001UpdateApplHistoryExpRepository.updateApplHistory(updateData);
 		
 		if (updateCount <= 0) {
 			updateCheck = false;
