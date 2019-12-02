@@ -65,7 +65,7 @@ public class Skf2060Sc001SupportService extends BaseServiceAbstract<Skf2060Sc001
 			//取得した値をDtoに設定
 			supportDto.setPresentedStatus(candidateStatusGenCodeMap.get(resultData.getApplStatus()));
 			supportDto.setPresentedDate(presentedDate);	
-			// TODO 隠し要素に設定？
+			// 隠し要素に設定
 			supportDto.setApplNo(resultData.getApplNo());
 			// 隠し要素に更新日時を設定
 			Date updateDate = new Date();

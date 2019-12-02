@@ -99,6 +99,10 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		//ログインセッションユーザ情報のユーザ名
 		String userName = userInfoMap.get("userName");
+		//ユーザCD
+		String updateUserId = userInfoMap.get("userCd");
+		//ページID
+		String updateProgramId = candidateDto.getPageId();
 		//選択物件番号
 		long checkCandidateNo = 0;
 		//一覧フラグ
@@ -241,9 +245,11 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 				key.setCompanyCd(companyCd);
 				key.setCandidateNo((long)checkDataParamList.get(j).get("candidateNo"));
 				data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+				String lastUpdateDateString = skfDateFormatUtils.dateFormatFromDate(data.getUpdateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+				Date lastUpdateDate = skfDateFormatUtils.formatStringToDate(lastUpdateDateString);
 				// 楽観的排他チェック
 	            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate + checkDataParamList.get(j).get("candidateNo").toString())
-	            		, data.getUpdateDate());
+	            		, lastUpdateDate);
 				boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd, (long)checkDataParamList.get(j).get("candidateNo"));
 				//登録に失敗した場合
 				if(!(updateKariageKohoCheck))	{
@@ -258,12 +264,12 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		}else{
 			//楽観的排他チェック用データ取得
 			Skf2060Sc001GetApplHistoryInfoForUpdateExp existCheckData = skf2060Sc001SharedService.getApplHistoryInfoForUpdate(companyCd, applNo);
-			//楽観的排他チェック
-            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.applHistoryLastUpdateDate) ,existCheckData.getUpdateDate());
 			//該当する「申請書類履歴テーブル」のデータが取得できた場合
 			if(existCheckData != null){
+				//楽観的排他チェック
+				super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.applHistoryLastUpdateDate) ,existCheckData.getUpdateDate());
 				//申請書類履歴テーブルよりステータスを更新
-				boolean updateApplHistoryCheck = skf2060Sc001SharedService.updateApplHistory(companyCd, shainNo, existCheckData.getApplDate(), applNo, existCheckData.getApplId());
+				boolean updateApplHistoryCheck = skf2060Sc001SharedService.updateApplHistory(companyCd, shainNo, existCheckData.getApplDate(), applNo, existCheckData.getApplId(), updateUserId, updateProgramId);
 				//更新に失敗した場合
 				if(!(updateApplHistoryCheck)){
 					//エラーメッセージの設定
@@ -334,9 +340,11 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 					key.setCompanyCd(companyCd);
 					key.setCandidateNo((long)checkDataParamList.get(j).get("candidateNo"));
 					data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+					String lastUpdateDateString = skfDateFormatUtils.dateFormatFromDate(data.getUpdateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+					Date lastUpdateDate = skfDateFormatUtils.formatStringToDate(lastUpdateDateString);
 					// 楽観的排他チェック
 		            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate + checkDataParamList.get(j).get("candidateNo").toString())
-		            		, data.getUpdateDate());
+		            		, lastUpdateDate);
 					boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd, (long)checkDataParamList.get(j).get("candidateNo"));
 					//登録に失敗した場合
 					if(!(updateKariageKohoCheck))	{
