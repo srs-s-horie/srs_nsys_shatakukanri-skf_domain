@@ -63,6 +63,8 @@ public class Skf3022Sc006ParkingSupportCallBackAsyncService
 		/** パラメータ取得 */
 		// 使用料計算用Map
 		Map<String, String> paramMap = asyncDto.getMapParam();
+		// 戻り値初期化
+		skf3022Sc006SharedService.initializeSiyoryoKeiSanParamAsync(asyncDto);
 		// 使用料計算処理
 		Map<String, String> resultMap = new HashMap<String, String>();	// 使用料計算戻り値
 		StringBuffer errMsg = new StringBuffer();						// エラーメッセージ

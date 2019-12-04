@@ -71,10 +71,10 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	// 社宅部屋変更フラグ：あり
 	public static final String SHATAKU_HEYA_FLG_YES = "1";
 	/** 備品指示書 */
-	// 移動指示書背景色：rgb(255, 206, 207)
+	// 移動指示書背景色：ピンクrgb(255, 206, 207)
 	public static final String COLOR_SHIJISHO_MOVE = "background-color:#FFCECF;";
-	// 基本指示書背景色：rgb(255, 206, 207)
-	public static final String COLOR_SHIJISHO_BASE = "background-color:white;";
+	// 基本指示書背景色
+	public static final String COLOR_SHIJISHO_BASE = "background-color:transparent;";
 	// 指示書スタイル
 //	public static final String SHIJISHO_STYLE_BASE = "text-align:center; border-top: 1px solid; height: 100%; border-right: 1px solid; width: 50px; border-bottom: 1px solid; padding-top: 3px; border-left: 1px solid; display: inline-block";
 	public static final String SHIJISHO_STYLE_BASE = "text-align:center; width: 50px;";
@@ -126,6 +126,22 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	private String searchInfoBhKakunin;
 	// 備品搬入搬出督促
 	private String searchInfoMoveInout;
+
+	/** 次月予約登録パラメータ */
+	// 提示番号
+	private String hdnJigetuYoyakuTeijiNo;
+	// 基準年月
+	private String hdnJigetuYoyakuYearMonth;
+	// 社宅管理台帳ID
+	private String hdnJigetuYoyakuShatakuKanriId;
+	// 社宅使用料月額
+	private String hdnJigetuYoyakuRental;
+	// 個人負担共益費月額
+	private String hdnJigetuYoyakuKyoekihiPerson;
+	// 区画1_駐車場使用料月額
+	private String hdnJigetuYoyakuParkingRentalOne;
+	// 区画2_駐車場使用料月額
+	private String hdnJigetuYoyakuParkingRentalTwo;
 
 	/** 使用料計算入力支援戻り値 */
 	// 規格
@@ -296,6 +312,8 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	private String jsonLabelList;
 	// JSON備品情報 リスト
 	private String jsonBihin;
+	// 協議中フラグ状態
+	private String sc006KyoekihiKyogichuCheckState;
 
 	/** ラベル値 */
 	// 社員番号
@@ -490,7 +508,7 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	// 社宅使用料入力支援
 	private Boolean shiyoryoShienDisableFlg;
 
-	/** タブ */
+	/** タブ切替 */
 	// 備品情報タブ
 	private Boolean tbpBihinInfo;
 	// 役員情報/相互利用情報タブ

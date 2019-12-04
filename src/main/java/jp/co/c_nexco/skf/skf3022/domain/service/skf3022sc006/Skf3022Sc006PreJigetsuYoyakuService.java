@@ -10,27 +10,30 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetTeijiDataExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006InitDto;
+import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006PreJigetsuYoyakuDto;
 
 /**
- * Skf3022Sc006InitService 提示データ登録画面のInitサービス処理クラス。　 
+ * Skf3022Sc006PreJigetsuYoyakuService 提示データ登録画面:次月予約前処理処理クラス。　 
  * 
  * @author NEXCOシステムズ
  * 
  */
 @Service
-public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006InitDto> {
+public class Skf3022Sc006PreJigetsuYoyakuService extends BaseServiceAbstract<Skf3022Sc006PreJigetsuYoyakuDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
+	@Autowired
+	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
 
 	/**
 	 * サービス処理を行う。　
@@ -42,26 +45,14 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 	 *             例外
 	 */
 	@Override
-	public Skf3022Sc006InitDto index(Skf3022Sc006InitDto initDto) throws Exception {
+	public Skf3022Sc006PreJigetsuYoyakuDto index(Skf3022Sc006PreJigetsuYoyakuDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC006_TITLE);
 
 		// デバッグログ
-		LogUtils.debugByMsg("初期表示");
+		LogUtils.debugByMsg("次月予約前処理");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
-
-		// 取得提示データ
-		Skf3022Sc006GetTeijiDataExp getTeijiData = new Skf3022Sc006GetTeijiDataExp();
-
-		// パラメータ取得
-		String hdnTeijiNo = initDto.getHdnTeijiNo();					// 提示番号
-		String hdnNyukyoDate = initDto.getHdnNyukyoDate();				// 入居予定日
-		String hdnTaikyoDate = initDto.getHdnTaikyoDate();				// 退居予定日
-		String hdnShoruikanriNo = initDto.getHdnShoruikanriNo();		// 申請書類管理番号
-		String hdnNyutaikyoKbn = initDto.getHdnNyutaikyoKbn();			// 入退居区分
-		String hdnApplKbn = initDto.getHdnApplKbn();					// 申請区分
-		String hdnShainNoChangeFlg = initDto.getHdnShainNoChangeFlg();	// 社員番号変更フラグ
+		skfOperationLogUtils.setAccessLog("次月予約前処理", CodeConstant.C001, initDto.getPageId());
 
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006KyojyusyaKbnSelectList = new ArrayList<Map<String, Object>>();
@@ -78,16 +69,17 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 		List<Map<String, Object>> sc006HaizokuKaisyaSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006TaiyoKaisyaSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006KariukeKaisyaSelectList = new ArrayList<Map<String, Object>>();
+		// 可変ラベルリスト
+		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
+		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
+		// エラーコントロールクリア
+		skf3022Sc006SharedService.clearVaridateErr(initDto);
 		// 非活性制御クリア
 		skf3022Sc006SharedService.clearDisable(initDto);
-		// 提示データ取得
-		getTeijiData = skf3022Sc006SharedService.getTeijiData(hdnTeijiNo);
-		// 非表示項目設定
-		skf3022Sc006SharedService.setHiddenValues(hdnTeijiNo, hdnNyukyoDate, hdnTaikyoDate,
-				hdnShoruikanriNo, hdnNyutaikyoKbn, hdnApplKbn, hdnShainNoChangeFlg, getTeijiData, initDto);
-		// 画面項目表示を設定
-		skf3022Sc006SharedService.setControlValues(getTeijiData, initDto);
+		// 現在のラベル値をDTOに設定
+		skf3022Sc006SharedService.setErrVariableLabel(labelList, initDto);
+
 		// ドロップダウンリスト作成
 		skf3022Sc006SharedService.setDdlControlValues(
 				initDto.getSc006KyojyusyaKbnSelect(), sc006KyojyusyaKbnSelectList,
@@ -121,55 +113,43 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
-		/** 原籍会社保留(仕様確認中) */
-//	        '原籍会社を初期設定
-//	        If String.IsNullOrEmpty(Me.ddlOldKaisya.SelectedValue) Then
-//	            '①IdM_プレユーザマスタ（従業員区分）を取得
-//	            Dim dtbIdmPreUserMasterInfo As New IDM_PRE_USER_MASTERDataTable()
-//	            dtbIdmPreUserMasterInfo = S2007_TeijiDataRegistBusinessLogic.GetIdmPreUserMasterInfo(dt(0).SHAIN_NO)
-//
-//	            '②従業員区分が「1:役員、2:職員、3:常勤嘱託員、4:非常勤嘱託員、5:再任用職員、6:再任用短時間勤務職員、7:有機事務員」の場合
-//	            If dtbIdmPreUserMasterInfo.Rows.Count > 0 Then
-//	                If Not dtbIdmPreUserMasterInfo(0).IsPUM_HR_EMPLOYEE_CLASS_0Null AndAlso _
-//	                    (dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.YAKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.SHOKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.JOKIN_SHOKUTAKU) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.HI_JOKIN_SHOKUTAKU) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.SAININ_SHOKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.SAININ_TANJIKAN_SHOKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.YUKI_JIMUIN)) Then
-//
-//	                    '原籍会社に「NEXCO中日本（C001）」を設定
-//	                    Me.ddlOldKaisya.SelectedValue = COMPANY_CD
-//	                End If
-//	            End If
-//	        End If
-//
-//	        '
-		// 備品一覧再取得フラグ
-		initDto.setBihinItiranFlg(true);
-//
-//	        '
-		/** 運用ガイド保留(仕様確認中) */
-		// 運用ガイドのパスを設定
-//	        Dim unyonGuide As String = String.Empty
-		// 運用ガイド取得
-//		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
-
-//	        Try
-//	            unyonGuide = ConfigurationManager.AppSettings(APP_SETTINGS_OPE_GUIDE)
-//
-//	        Catch ex As ConfigurationErrorsException
-//	            If Me.log.IsWarnEnabled Then
-//	                Me.log.Warn(ERR_WEB_CONFIG_OPE_GUIDE_PATH + ex.Message)
-//	                Me.log.Warn(ex)
-//	            End If
-//	        Finally
-//	            Me.btnUnyonGuide.Attributes.Add(JS_ON_CLICK, String.Format(OPEN_WINDOW_ON_CLICK, unyonGuide))
-//	        End Try
-//
-
+		// 使用料変更チェック判定
+		if (skf3022Sc006SharedService.haveShiyoryoChanged(initDto)) {
+			LogUtils.debugByMsg("使用料変更有り");
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_3033);
+		}
+		// 備品は再取得しない
+		initDto.setBihinItiranFlg(false);
+		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
+
+		/** 次月予約パラメータ設定 */
+		// 提示番号
+		initDto.setHdnJigetuYoyakuTeijiNo(initDto.getHdnTeijiNo());
+		// システム日付
+		initDto.setHdnJigetuYoyakuYearMonth(skfBaseBusinessLogicUtils.getSystemProcessNenGetsu());
+//		// 基準年月
+//		String nyukyoYoteiDay = "";
+//		String taikyoYoteiDay = "";
+//		if (!CheckUtils.isEmpty(initDto.getSc006NyukyoYoteiDay())
+//				&& !initDto.getSc006NyukyoYoteiDayDisableFlg()) {
+//			nyukyoYoteiDay = skf3022Sc006SharedService.getDateText(initDto.getSc006NyukyoYoteiDay());
+//		}
+//		if (!CheckUtils.isEmpty(initDto.getSc006TaikyoYoteiDay())
+//				&& !initDto.getSc006TaikyoYoteiDayDisableFlg()) {
+//			taikyoYoteiDay = skf3022Sc006SharedService.getDateText(initDto.getSc006TaikyoYoteiDay());
+//		}
+		// 社宅管理台帳ID
+		initDto.setHdnJigetuYoyakuShatakuKanriId(CodeConstant.DOUBLE_QUOTATION);
+		// 社宅使用料月額
+		initDto.setHdnJigetuYoyakuRental(skf3022Sc006SharedService.getKingakuText(initDto.getSc006SiyoryoMonthPay()));
+		// 個人負担共益費月額
+		initDto.setHdnJigetuYoyakuKyoekihiPerson(skf3022Sc006SharedService.getKingakuText(initDto.getSc006KyoekihiMonthPay()));
+		// 区画１_駐車場使用料月額
+		initDto.setHdnJigetuYoyakuParkingRentalOne(skf3022Sc006SharedService.getKingakuText(initDto.getSc006TyusyaMonthPayOne()));
+		// 区画２_駐車場使用料月額
+		initDto.setHdnJigetuYoyakuParkingRentalTwo(skf3022Sc006SharedService.getKingakuText(initDto.getSc006TyusyaMonthPayTwo()));
+
 		return initDto;
 	}
 }

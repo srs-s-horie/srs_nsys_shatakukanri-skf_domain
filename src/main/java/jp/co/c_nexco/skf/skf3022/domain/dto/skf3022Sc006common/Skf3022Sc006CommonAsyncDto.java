@@ -43,4 +43,12 @@ public class Skf3022Sc006CommonAsyncDto extends AsyncBaseDto {
 	/** 駐車場変更戻り値 */
 	// 駐車場区画更新日時
 	private String hdnParkingBlockUpdateDate;
+
+	/** 使用料計算入力パラメータ */
+	private String sc006KukakuNoOne;
+	private String hdnChushajoNoOne;
+	private String hdnChushajoNoOneOld;
+	private String sc006KukakuNoTwo;
+	private String hdnChushajoNoTwo;
+	private String hdnChushajoNoTwoOld;
 }

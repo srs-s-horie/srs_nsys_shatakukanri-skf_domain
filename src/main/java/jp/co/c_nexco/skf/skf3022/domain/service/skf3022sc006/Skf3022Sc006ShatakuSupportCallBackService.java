@@ -80,6 +80,8 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 
 		// エラーコントロールクリア
 		skf3022Sc006SharedService.clearVaridateErr(initDto);
+		// 非活性制御クリア
+		skf3022Sc006SharedService.clearDisable(initDto);
 		// 現在のラベル値をDTOに設定
 		skf3022Sc006SharedService.setErrVariableLabel(labelList, initDto);
 
@@ -115,7 +117,6 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 		initDto.setSc006HaizokuKaisyaSelectList(sc006HaizokuKaisyaSelectList);
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
-
 
 		// 社宅管理番号／部屋管理番号が変更判定
 		if (CheckUtils.isEmpty(initDto.getHdnShatakuKanriNoOld()) || CheckUtils.isEmpty(initDto.getHdnRoomKanriNoOld())
@@ -155,7 +156,7 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 //		    Me.hdnSiyouryoId.Value = String.Empty
 //		    Me.lblSiyoryoPatName.BackColor = Color.Empty
 			initDto.setSc006SiyoryoPatName(CodeConstant.DOUBLE_QUOTATION);
-			initDto.setHdnShiyoryoKeisanPatternId(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setHdnSiyouryoId(CodeConstant.DOUBLE_QUOTATION);
 			// 社宅使用料月額(ヘッダ項目)
 //		    Me.lblSiyoryoMonthPay.Text = String.Empty
 			initDto.setSc006SiyoryoMonthPay(CodeConstant.DOUBLE_QUOTATION);
