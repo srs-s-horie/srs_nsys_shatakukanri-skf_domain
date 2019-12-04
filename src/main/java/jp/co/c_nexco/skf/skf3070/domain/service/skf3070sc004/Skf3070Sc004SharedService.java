@@ -13,6 +13,10 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 
+/**
+ * Skf3070Sc004SharedService 賃貸人(代理人)名称入力支援内共通クラス
+ *
+ */
 @Service
 public class Skf3070Sc004SharedService {
 
@@ -83,6 +87,7 @@ public class Skf3070Sc004SharedService {
 			tmpMap.put("ownerNameKk", tmpData.getOwnerNameKk()); // 氏名又は名称（フリガナ）
 			tmpMap.put("address", tmpData.getAddress()); // 住所
 			tmpMap.put("businessKbn", candidateStatusGenCodeMap.get(tmpData.getBusinessKbn())); // 個人法人区分
+			tmpMap.put("ownerNo", tmpData.getOwnerNo()); // 賃貸人(代理人)番号(hidden項目)
 
 			returnList.add(tmpMap);
 		}
