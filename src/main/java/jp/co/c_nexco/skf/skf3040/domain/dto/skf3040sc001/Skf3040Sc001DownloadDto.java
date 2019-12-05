@@ -1,20 +1,21 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skf3040.domain.dto.skf3040Sc001common;
+package jp.co.c_nexco.skf.skf3040.domain.dto.skf3040sc001;
 
 import java.util.*;
 
-import jp.co.c_nexco.skf.skf3040.domain.dto.common.Skf304010CommonDto;
+import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
+import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060Sc001common.Skf3060Sc001CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * レンタル備品指示書出力画面のInitDto。
+ * Skf3040_Sc001画面のDownloadDto。
  * 
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3040Sc001CommonDto extends Skf304010CommonDto {
+public class Skf3040Sc001DownloadDto extends FileDownloadDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 	
@@ -28,5 +29,5 @@ public class Skf3040Sc001CommonDto extends Skf304010CommonDto {
 	
 	// 再発行
 	private String reIssuance;
-	
+
 }
