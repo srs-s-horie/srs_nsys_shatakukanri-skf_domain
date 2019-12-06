@@ -26,6 +26,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetO
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Rp001.Skf3070Rp001GetStatutoryRecordDataListExpRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -142,6 +143,12 @@ public class Skf3070Sc001StatutoryRecordDownloadService
 		
 		List<Skf3070Rp001GetStatutoryRecordDataListExp> statutoryRecordList = new ArrayList<Skf3070Rp001GetStatutoryRecordDataListExp>();
 		
+        // 都道府県汎用コード取得
+        Map<String, String> prefCdGenCodeMap = new HashMap<String, String>();
+        prefCdGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+        // 構造区分汎用コード取得
+        Map<String, String> structureKbnGenCodeMap = new HashMap<String, String>();
+        structureKbnGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STRUCTURE_KBN);
 		
 		for(Skf3070Sc001GetOwnerContractListExp ownerExp : ownerExpList){
 			// 駐車場管理番号			
@@ -209,13 +216,17 @@ public class Skf3070Sc001StatutoryRecordDownloadService
 					// 区分
 					rdb.addCellDataBean("F" + rowNo, kubun[i]);
 
-					// 物件の所在地(「所在地」＋「社宅名」＋「部屋番号」で表記)(一棟借上の場合、部屋番号は出力しない)
+					// 物件の所在地(「都道府県名」+「所在地」＋「社宅名」＋「部屋番号」で表記)(一棟借上の場合、部屋番号は出力しない)
 					String bukkenShozaichi = CodeConstant.NONE;
+					String prefectures = CodeConstant.NONE;
+					if(statutoryRecordData.getPrefCd() != null){
+						prefectures = prefCdGenCodeMap.get(statutoryRecordData.getPrefCd());
+					}
 					if(statutoryRecordData.getShatakuKbn().equals(CodeConstant.ITTOU)){
-						bukkenShozaichi = statutoryRecordData.getShozaichi()+statutoryRecordData.getShatakuName();
+						bukkenShozaichi = prefectures+statutoryRecordData.getShozaichi()+statutoryRecordData.getShatakuName();
 						rdb.addCellDataBean("G" + rowNo, bukkenShozaichi);
 					}else{
-						bukkenShozaichi = statutoryRecordData.getShozaichi()+statutoryRecordData.getShatakuName()+statutoryRecordData.getRoomNo();
+						bukkenShozaichi = prefectures+statutoryRecordData.getShozaichi()+statutoryRecordData.getShatakuName()+statutoryRecordData.getRoomNo();
 						rdb.addCellDataBean("G" + rowNo, bukkenShozaichi);
 					}
 					// 細目
@@ -226,7 +237,14 @@ public class Skf3070Sc001StatutoryRecordDownloadService
 						structureSupplement = "駐車場";
 						break;
 					default:
-						structureSupplement = statutoryRecordData.getStructureSupplement();
+						// 構造（補足）が無い場合は補足区分から取得
+						if(statutoryRecordData.getStructureSupplement() == null  || CheckUtils.isEmpty(statutoryRecordData.getStructureSupplement().trim())){
+							if(statutoryRecordData.getStructureKbn() != null){
+								structureSupplement = structureKbnGenCodeMap.get(statutoryRecordData.getStructureKbn());
+							}
+						}else{
+							structureSupplement = statutoryRecordData.getStructureSupplement();
+						}
 						break;
 					}
 					rdb.addCellDataBean("H" + rowNo, structureSupplement);
