@@ -111,6 +111,12 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 		}else{
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("新規作成", companyCd, initDto.getPageId());
+			
+			// 項目初期化
+			initDto.setPresentedName(CodeConstant.NONE);
+			initDto.setAddress(CodeConstant.NONE);
+			initDto.setPostalCd(CodeConstant.NONE);
+			initDto.setShatakuName(CodeConstant.NONE);
 		}
 		
 		//隠し要素として現在日時を設定
