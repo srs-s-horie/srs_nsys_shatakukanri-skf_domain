@@ -74,6 +74,16 @@ public class Skf3070Sc002InitService extends BaseServiceAbstract<Skf3070Sc002Ini
 		} else {
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("新規", CodeConstant.C001, initDto.getPrePageId());
+			// 項目初期化
+			initDto.setOwnerName(CodeConstant.NONE);
+			initDto.setOwnerNameKk(CodeConstant.NONE);
+			initDto.setZipCode(CodeConstant.NONE);
+			initDto.setAddress(CodeConstant.NONE);
+			initDto.setBusinessKbn(CodeConstant.NONE);
+			initDto.setAcceptFlg(CodeConstant.NONE);
+			initDto.setAcceptStatus(CodeConstant.NONE);
+			initDto.setRemarks(CodeConstant.NONE);
+			
 		}
 
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
