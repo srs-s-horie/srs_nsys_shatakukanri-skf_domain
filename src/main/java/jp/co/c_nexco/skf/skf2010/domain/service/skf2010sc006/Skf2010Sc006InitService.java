@@ -107,9 +107,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// ユーザーの権限チェック
 		switch (roleId) {
-		case CodeConstant.SKF_021:
-		case CodeConstant.SKF_030:
-		case CodeConstant.SKF_090:
+		case CodeConstant.SKF_220:
+		case CodeConstant.SKF_230:
+		case CodeConstant.SKF_900:
 			break;
 		default:
 			// 承認権限がないユーザーは「再提示」「資料添付」「承認」ボタンを非表示にする。
