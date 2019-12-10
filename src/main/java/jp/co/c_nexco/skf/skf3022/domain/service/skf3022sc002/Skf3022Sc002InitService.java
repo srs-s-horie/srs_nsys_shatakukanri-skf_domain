@@ -47,13 +47,6 @@ public class Skf3022Sc002InitService extends BaseServiceAbstract<Skf3022Sc002Ini
 
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
-				
-//		//TODO デバッグコード消す
-//		initDto.setHdnShatakuName("しみず寮");
-//		initDto.setHdnShatakuKanriNo("2015120071");
-//		initDto.setHdnRiyouStartDay("");
-		
-		//デバッグコードここまで
 		
 		init(initDto);
 

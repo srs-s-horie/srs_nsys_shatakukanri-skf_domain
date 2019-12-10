@@ -79,6 +79,8 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 		List<Map<String, Object>> sc006TaiyoKaisyaSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006KariukeKaisyaSelectList = new ArrayList<Map<String, Object>>();
 
+		// 非活性制御クリア
+		skf3022Sc006SharedService.clearDisable(initDto);
 		// 提示データ取得
 		getTeijiData = skf3022Sc006SharedService.getTeijiData(hdnTeijiNo);
 		// 非表示項目設定

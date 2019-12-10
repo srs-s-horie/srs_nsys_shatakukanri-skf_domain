@@ -19,6 +19,10 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc004.Skf3070Sc004SearchAsyncDto;
 
+/**
+ * 賃貸人(代理人)名称入力支援画面のInitサービス処理クラス。
+ * 
+ */
 @Service
 public class Skf3070Sc004SearchAsyncService extends AsyncBaseServiceAbstract<Skf3070Sc004SearchAsyncDto> {
 
@@ -29,16 +33,15 @@ public class Skf3070Sc004SearchAsyncService extends AsyncBaseServiceAbstract<Skf
 
 	private String companyCd = CodeConstant.C001;
 
-	//TODO 変える
-	@Value("${skf2010.skf2010_sc001.search_max_count}")
+	// 最大表示件数
+	@Value("${skf3070.skf3070_sc004.search_max_count}")
 	private String maxCount;
-	@Value("${skf.common.validate_error}")
-	private String errorClass;
+	
 
 	@Override
 	public AsyncBaseDto index(Skf3070Sc004SearchAsyncDto searchDto) throws Exception {
 		// 操作ログ登録
-		skfOperationLogUtils.setAccessLog("検索処理開始", companyCd, FunctionIdConstant.SKF3070_SC004);
+		skfOperationLogUtils.setAccessLog("検索", companyCd, FunctionIdConstant.SKF3070_SC004);
 
 		List<Skf3070Sc004GetOwnerInfoExp> ownerInfoList = new ArrayList<Skf3070Sc004GetOwnerInfoExp>();
 

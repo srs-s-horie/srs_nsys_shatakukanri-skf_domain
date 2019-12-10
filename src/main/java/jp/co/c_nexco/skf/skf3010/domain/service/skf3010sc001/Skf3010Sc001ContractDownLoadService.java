@@ -34,7 +34,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc001.Skf3010Sc001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc001.Skf3010Sc001GetShatakuContractInfoDataExpRepository;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc001.Skf3010Sc001GetContractInfoDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc001.Skf3010Sc001GetParkingContractInfoDataExp;
-import jp.co.intra_mart.common.platform.log.Logger;
 
 /**
  * Skf3010Sc001ContractDownLoadService 社宅一覧の契約情報出力ボタン処理クラス。

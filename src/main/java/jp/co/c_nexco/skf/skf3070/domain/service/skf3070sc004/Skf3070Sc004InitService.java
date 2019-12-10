@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc004.Skf3070Sc004GetOwnerInfoExp;
@@ -29,6 +30,9 @@ public class Skf3070Sc004InitService extends BaseServiceAbstract<Skf3070Sc004Ini
 	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
 	private Skf3070Sc004SharedService skf3070Sc004SharedService;
+	// リストテーブルの１ページ最大表示行数
+	@Value("${skf3070.skf3070_sc004.max_row_count}")
+	private String listTableMaxRowCount;
 	
 	private String companyCd = CodeConstant.C001;
 	
@@ -68,6 +72,8 @@ public class Skf3070Sc004InitService extends BaseServiceAbstract<Skf3070Sc004Ini
 		businessKbnList.addAll(skfDropDownUtils
 				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_KOJIN_HOJIN_KUBUN, null, true));
 		initDto.setPopBusinessKbnList(businessKbnList);	
+		
+		initDto.setListTableMaxRowCount(listTableMaxRowCount);
 	}
 }
 	

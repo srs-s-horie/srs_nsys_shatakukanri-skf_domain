@@ -73,6 +73,8 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 
 		// エラーコントロールクリア
 		skf3022Sc006SharedService.clearVaridateErr(initDto);
+		// 非活性制御クリア
+		skf3022Sc006SharedService.clearDisable(initDto);
 		// 現在のラベル値をDTOに設定
 		skf3022Sc006SharedService.setErrVariableLabel(labelList, initDto);
 

@@ -52,6 +52,11 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 			return dto;
 		}
 
+		// 排他制御用の値を再設定
+		skf2020Sc002SharedService.setApplHistoryUpdateDate(dto);
+		skf2020Sc002SharedService.setBihinHenkyakuUpdateDate(dto);
+		skf2020Sc002SharedService.setNyukyoChoshoUpdateDate(dto);
+
 		// フォームデータを設定
 		dto.setPrePageId(dto.getPageId());
 		BaseForm form = new BaseForm();
