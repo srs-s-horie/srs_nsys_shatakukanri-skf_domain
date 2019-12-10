@@ -75,12 +75,12 @@ public class Skf2010Sc003SharedService {
 			param.setAgreDateFrom(agreDateFrom);
 		}
 		if (!CheckUtils.isEmpty(agreDateTo)) {
-			param.setAgreDateFrom(agreDateTo);
+			param.setAgreDateTo(agreDateTo);
 		}
 		if (!CheckUtils.isEmpty(applName)) {
 			param.setApplName(applName);
 		}
-		if (applStatus != null) {
+		if (applStatus != null && applStatus.size() != 0) {
 			if (applStatus.indexOf(CodeConstant.STATUS_SHINSACHU) >= 0) {
 				List<String> applStatusList = new ArrayList<String>();
 				applStatusList.addAll(applStatus);
@@ -125,7 +125,8 @@ public class Skf2010Sc003SharedService {
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 			if (applHistoryData.getAgreDate() != null) {
-				agreDate = skfDateFormatUtils.dateFormatFromString(applHistoryData.getAgreDate(), datePattern);
+				agreDate = skfDateFormatUtils.dateFormatFromDate(applHistoryData.getAgreDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 
 			// 申請状況をコードから汎用コードに変更
