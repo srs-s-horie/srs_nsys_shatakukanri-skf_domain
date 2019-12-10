@@ -16,10 +16,12 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetA
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003SearchDto;
 
 /**
@@ -37,11 +39,16 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-
-	@Value("${skf2010.skf2010_sc005.search_max_count}")
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	@Value("${skf2010.skf2010_sc003.max_search_count}")
 	private String searchMaxCount;
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
+	
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
 
 	private String pattern = "yyyyMMdd";
 
@@ -55,6 +62,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 	@SuppressWarnings("unchecked")
 	@Override
 	public Skf2010Sc003SearchDto index(Skf2010Sc003SearchDto searchDto) throws Exception {
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("申請状況を確認", companyCd, searchDto.getPageId());
 
 		searchDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
@@ -67,7 +76,9 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(searchDto);
 		if (resultList == null || resultList.size() <= 0) {
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1007);
-			return searchDto;
+		} else if (resultList.size() > Integer.parseInt(searchMaxCount)) {
+			// 検索結果表示最大数以上
+			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1002, "100", "抽出条件を変更してください。");
 		}
 		searchDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList));
 		return searchDto;
@@ -86,11 +97,18 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		dto.setApplDateToErr("");
 		dto.setAgreDateFromErr("");
 		dto.setAgreDateToErr("");
+		
+		// 申請状況
+		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
+			ServiceHelper.addErrorResultMessage(dto, new String[] {"applStatusArea"}, MessageIdConstant.E_SKF_1054,
+					"申請状況");
+			result = false;
+		}
 		// 申請日FROM
 		if ((dto.getApplDateFrom() != null && !CheckUtils.isEmpty(dto.getApplDateFrom())
 				&& (!CheckUtils.isFormatDate(dto.getApplDateFrom(), "yyyy/MM/dd") && !SkfCheckUtils
 						.isSkfDateFormat(dto.getApplDateFrom(), CheckUtils.DateFormatType.YYYYMMDD)))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1054, "申請日FROM");
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "申請日FROM");
 			dto.setApplDateFromErr(validationErrorCode);
 			dto.setApplDateFrom("");
 			result = false;
@@ -106,7 +124,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		}
 		// 承認日FROM
 		if ((dto.getAgreDateFrom() != null && !CheckUtils.isEmpty(dto.getAgreDateFrom())
-				&& (!CheckUtils.isDateFormat(dto.getAgreDateFrom(), "yyyy/MM/dd") || !SkfCheckUtils
+				&& (!CheckUtils.isDateFormat(dto.getAgreDateFrom(), "yyyy/MM/dd") && !SkfCheckUtils
 						.isSkfDateFormat(dto.getAgreDateFrom(), CheckUtils.DateFormatType.YYYYMMDD)))) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "承認日／修正依頼日From");
 			dto.setAgreDateFromErr(validationErrorCode);
@@ -116,7 +134,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		// 承認日TO
 		if ((dto.getAgreDateTo() != null && !CheckUtils.isEmpty(dto.getAgreDateTo())
 				&& (!CheckUtils.isDateFormat(dto.getAgreDateTo(), "yyyy/MM/dd")
-						|| !SkfCheckUtils.isSkfDateFormat(dto.getAgreDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
+						&& !SkfCheckUtils.isSkfDateFormat(dto.getAgreDateTo(), CheckUtils.DateFormatType.YYYYMMDD)))) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1055, "承認日／修正依頼日From");
 			dto.setAgreDateToErr(validationErrorCode);
 			dto.setAgreDateTo("");

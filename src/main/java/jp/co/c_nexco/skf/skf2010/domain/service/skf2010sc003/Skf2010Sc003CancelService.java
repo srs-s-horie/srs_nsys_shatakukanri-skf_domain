@@ -14,9 +14,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetA
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003CancelDto;
 
 /**
@@ -33,11 +35,16 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
-	@Value("${skf2010.skf2010_sc005.search_max_count}")
+	@Value("${skf2010.skf2010_sc003.max_search_count}")
 	private String searchMaxCount;
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
+	
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
 
 	private String pattern = "yyyyMMdd";
 
@@ -50,6 +57,8 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 	 */
 	@Override
 	public BaseDto index(Skf2010Sc003CancelDto cancelDto) throws Exception {
+		// 操作ログを出力する
+	    skfOperationLogUtils.setAccessLog("取下げ", companyCd, cancelDto.getPageId());
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
@@ -69,7 +78,9 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(cancelDto);
 		if (resultList == null || resultList.size() <= 0) {
 			ServiceHelper.addWarnResultMessage(cancelDto, MessageIdConstant.W_SKF_1007);
-			return cancelDto;
+		} else if (resultList.size() > Integer.parseInt(searchMaxCount)) {
+			// 検索結果表示最大数以上
+			ServiceHelper.addWarnResultMessage(cancelDto, MessageIdConstant.W_SKF_1002, "100", "抽出条件を変更してください。");
 		}
 		cancelDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList));
 

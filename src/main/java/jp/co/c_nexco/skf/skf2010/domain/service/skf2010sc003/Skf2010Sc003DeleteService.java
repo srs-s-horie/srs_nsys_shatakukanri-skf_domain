@@ -15,10 +15,12 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003DeleteDto;
 
 /**
@@ -35,11 +37,16 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	@Value("${skf2010.skf2010_sc005.search_max_count}")
 	private String searchMaxCount;
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
+	
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
 
 	private String pattern = "yyyyMMdd";
 
@@ -52,6 +59,8 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 	 */
 	@Override
 	public BaseDto index(Skf2010Sc003DeleteDto delDto) throws Exception {
+		// 操作ログを出力する
+	    skfOperationLogUtils.setAccessLog("削除", companyCd, delDto.getPageId());
 
 		delDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
