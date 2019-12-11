@@ -30,6 +30,10 @@ public class Skf2010Sc003CommonDto extends Skf201020CommonDto {
 	private String applName;
 	// 申請状況
 	private String[] applStatus;
+	
+	private String applNo;
+	private String applId;
+	private String sendApplStatus;
 
 	// 検索結果一覧 */
 	private List<Map<String, Object>> ltResultList;

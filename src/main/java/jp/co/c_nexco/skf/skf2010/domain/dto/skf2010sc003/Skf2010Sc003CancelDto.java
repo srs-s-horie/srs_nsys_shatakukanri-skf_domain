@@ -16,8 +16,6 @@ public class Skf2010Sc003CancelDto extends Skf2010Sc003CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
-	private String applNo;
-	private String applId;
-	private String sendApplStatus;
+
 
 }

@@ -1,10 +1,13 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -13,6 +16,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006RepresentDto;
 
 /**
@@ -25,6 +29,10 @@ public class Skf2010Sc006RepresentService extends BaseServiceAbstract<Skf2010Sc0
 
 	@Autowired
 	private Skf2010Sc006SharedService skf2010Sc006SharedService;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	private String companyCd = CodeConstant.C001;
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
@@ -62,8 +70,17 @@ public class Skf2010Sc006RepresentService extends BaseServiceAbstract<Skf2010Sc0
 			throwBusinessExceptionIfErrors(reDto.getResultMessages());
 			return reDto;
 		}
-		// TODO 社宅管理データ連携処理実行（オンラインバッチ）
-
+		// 社宅管理データ連携処理実行（オンラインバッチ）
+		String applId = reDto.getApplId();
+		String shainNo = reDto.getShainNo();
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = skf2010Sc006SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC006);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC006);
+		if(resultBatch != null){
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(reDto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
+		
 		// 画面遷移
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2020_SC003);

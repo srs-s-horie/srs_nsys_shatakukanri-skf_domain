@@ -108,7 +108,7 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 
 		// TODO 支社担当者、事務所担当者にメールを送付→承認権限がないため不要と思われる
 
-		// TODO 社宅管理データ連携処理実行
+		// 社宅管理データ連携処理実行
 		// ユーザIDの取得
 		UserContext userContext = Contexts.get(UserContext.class);
 		UserProfile profile = userContext.getUserProfile();

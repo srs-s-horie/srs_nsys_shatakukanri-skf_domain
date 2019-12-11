@@ -3,11 +3,15 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc004;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -15,8 +19,10 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004CancelDto;
 
 /**
@@ -31,6 +37,10 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 	private Skf2010Sc004SharedService skf2010Sc004SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -53,8 +63,12 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
-		String applNo = cancelDto.getApplNo();
+		// 申請書類ID
 		String applId = cancelDto.getApplId();
+		// 申請書番号
+		String applNo = cancelDto.getApplNo();
+		// 申請状況
+		String applStatus = cancelDto.getApplStatus();
 
 		// 「申請書類履歴テーブル」よりステータスを更新
 		boolean result = skf2010Sc004SharedService.updateApplHistoryCancel(applNo, applId);
@@ -63,7 +77,14 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 		}
 
-		// TODO 社宅管理データ連携処理実行
+		// 社宅管理データ連携処理実行
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
+		if(resultBatch != null){
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
 
 		// 遷移先画面指定
 		String nextPageId = "";
