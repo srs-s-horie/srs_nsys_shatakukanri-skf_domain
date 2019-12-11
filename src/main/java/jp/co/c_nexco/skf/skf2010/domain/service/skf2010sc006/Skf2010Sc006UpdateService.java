@@ -1,10 +1,13 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -14,6 +17,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006UpdateDto;
 
 /**
@@ -26,6 +30,10 @@ public class Skf2010Sc006UpdateService extends BaseServiceAbstract<Skf2010Sc006U
 
 	@Autowired
 	private Skf2010Sc006SharedService skf2010Sc006SharedService;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
@@ -63,8 +71,18 @@ public class Skf2010Sc006UpdateService extends BaseServiceAbstract<Skf2010Sc006U
 			return updDto;
 		}
 
-		// TODO 社宅管理データ連携処理実行（オンラインバッチ）
-
+		// 社宅管理データ連携処理実行（オンラインバッチ）
+		String applId = updDto.getApplId();
+		String applStatus = updDto.getApplStatus();
+		String shainNo = updDto.getShainNo();
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = skf2010Sc006SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC006);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC006);
+		if(resultBatch != null){
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
+		
 		// 次のステータスを設定する
 
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005, "init");

@@ -11,14 +11,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003CancelDto;
 
 /**
@@ -37,6 +40,10 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Value("${skf2010.skf2010_sc003.max_search_count}")
 	private String searchMaxCount;
@@ -62,8 +69,12 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
+		// 申請書類番号
 		String applNo = cancelDto.getApplNo();
+		// 申請書ID
 		String applId = cancelDto.getApplId();
+		// 申請状況
+		String applStatus = cancelDto.getSendApplStatus();
 
 		// 「申請書類履歴テーブル」よりステータスを更新
 		boolean result = skf2010Sc003SharedService.updateApplHistoryCancel(applNo, applId);
@@ -72,8 +83,14 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 		}
 
-		// TODO 社宅管理データ連携処理実行
-
+		// 社宅管理データ連携処理実行（データ連携用Mapは消さない）
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC003);
+		if(resultBatch != null){
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
+		
 		// 表示データ取得
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(cancelDto);
 		if (resultList == null || resultList.size() <= 0) {
