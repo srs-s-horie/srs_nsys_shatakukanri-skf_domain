@@ -24,7 +24,6 @@ public class SkfBatchUtils1ReacquireService extends BaseServiceAbstract<SkfBatch
 
 	@Autowired
 	private SkfBatchUtils skfBatchUtils;
-	private final String FOR_LOCK_CHECK_TEST = "forUpdateTest";
 
 	/**
 	 * 画面初期表示のメイン処理
