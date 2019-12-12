@@ -33,4 +33,13 @@ public class SkfBatchUtils1ExecuteDto extends BaseDto {
 	private String sRoomShatakuKanriNo;
 	private String sRoomRoomKanriNo;
 
+	/** 社宅管理台帳備品基本 */
+	private String sBihinShatakuKanriId;
+
+	/** 提示備品データ */
+	private String tBihinDataTeijiNo;
+	private String tBihinDataBihinCd;
+
+	private String checkFlg;
+
 }
