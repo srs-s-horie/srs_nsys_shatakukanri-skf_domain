@@ -63,13 +63,10 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateCommentInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MOperationGuideRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
@@ -122,8 +119,6 @@ public class Skf2010Sc005SharedService {
 	@Autowired
 	private Skf2010Sc005GetAffiliation2ListExpRepository skf2010Sc005GetAffiliation2ListExpRepository;
 	@Autowired
-	private Skf1010MOperationGuideRepository skf1010MOperationGuideRepository;
-	@Autowired
 	private Skf2010Sc005GetTeijiDataInfoExpRepository skf2010Sc005GetTeijiDataInfoExpRepository;
 	@Autowired
 	private Skf2010Sc005GetAgreeAuthorityCountExpRepository skf2010Sc005GetAgreeAuthorityCountExpRepository;
@@ -135,10 +130,6 @@ public class Skf2010Sc005SharedService {
 	private Skf2010Sc005GetCommentInfoForUpdateExpRepository skf2010Sc005GetCommentInfoForUpdateExpRepository;
 	@Autowired
 	private Skf2010Sc005UpdateCommentInfoExpRepository skf2010Sc005UpdateCommentInfoExpRepository;
-	@Autowired
-	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
-	@Autowired
-	private Skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository skf2010Sc005UpdateNyukyoChoshoTsuchiRentalExpRepository;
 	@Autowired
 	private Skf2010Sc005GetApplHistoryStatusInfoForUpdateExpRepository skf2010Sc005GetApplHistoryStatusInfoForUpdateExpRepository;
 	@Autowired
@@ -309,7 +300,7 @@ public class Skf2010Sc005SharedService {
 	 * @param companyCd
 	 * @param applNo
 	 * @param dto
-	 * @param commentDate 
+	 * @param commentDate
 	 * @return
 	 * @throws Exception
 	 */
@@ -434,13 +425,13 @@ public class Skf2010Sc005SharedService {
 
 		// 次階層のステータスが”31”【承認中】の場合、承認中コメントを削除
 		if (nextStatus.equals(CodeConstant.STATUS_SHONIN1)) {
-			
+
 			Skf2010TApplCommentKey key = new Skf2010TApplCommentKey();
 			key.setCompanyCd(companyCd);
 			key.setApplNo(applNo);
 			key.setApplStatus(nextStatus);
 			Map<String, String> errorMsg = new HashMap<String, String>();
-			
+
 			boolean delComRes = skfCommentUtils.deleteComment(companyCd, applNo, nextStatus, errorMsg);
 			if (!delComRes) {
 				return false;
@@ -1214,7 +1205,8 @@ public class Skf2010Sc005SharedService {
 			default:
 				return false;
 			}
-		} else if (FunctionIdConstant.R0104.equals(tmpData.getApplId()) || FunctionIdConstant.R0105.equals(tmpData.getApplId())) {
+		} else if (FunctionIdConstant.R0104.equals(tmpData.getApplId())
+				|| FunctionIdConstant.R0105.equals(tmpData.getApplId())) {
 			// 「申請書類ID」が「備品希望申請」「備品返却確認」のいずれかであり、
 			// 「ステータス」が搬入済/搬出済/承認中でいずれでもない場合
 			switch (applStatus) {
