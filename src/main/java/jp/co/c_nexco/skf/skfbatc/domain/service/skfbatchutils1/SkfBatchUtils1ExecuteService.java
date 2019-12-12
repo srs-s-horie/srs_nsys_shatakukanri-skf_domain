@@ -100,6 +100,34 @@ public class SkfBatchUtils1ExecuteService extends BaseServiceAbstract<SkfBatchUt
 			localEndTime = System.currentTimeMillis();
 			LogUtils.debugByMsg("排他制御-UTTest：社宅部屋情報マスタチェック：" + (localEndTime - localStartTime) + "ミリ秒");
 		}
+		/*
+		 * 社宅管理台帳備品基本
+		 */
+		if (NfwStringUtils.isNotEmpty(dto.getSBihinShatakuKanriId())) {
+			localStartTime = System.currentTimeMillis();
+			skfBatchUtils.updatePossibleChecker(forUpdateMap, SkfBatchUtils.skf3030_t_shataku_bihin,
+					dto.getSBihinShatakuKanriId());
+			localEndTime = System.currentTimeMillis();
+			LogUtils.debugByMsg("排他制御-UTTest：社宅管理台帳備品基本チェック：" + (localEndTime - localStartTime) + "ミリ秒");
+		}
+
+		/*
+		 * 提示備品
+		 */
+		if (NfwStringUtils.isNotEmpty(dto.getTBihinDataTeijiNo())) {
+			localStartTime = System.currentTimeMillis();
+			if ("1".equals(dto.getCheckFlg())) {
+				skfBatchUtils.updatePossibleChecker(forUpdateMap, SkfBatchUtils.skf3022_t_teiji_bihin_data,
+						dto.getTBihinDataTeijiNo());
+				localEndTime = System.currentTimeMillis();
+				LogUtils.debugByMsg("排他制御-UTTest：社宅管理台帳備品基本チェック：" + (localEndTime - localStartTime) + "ミリ秒");
+			} else {
+				skfBatchUtils.updatePossibleChecker(forUpdateMap, SkfBatchUtils.skf3022_t_teiji_bihin_data,
+						dto.getTBihinDataTeijiNo(), dto.getTBihinDataBihinCd());
+				localEndTime = System.currentTimeMillis();
+				LogUtils.debugByMsg("排他制御-UTTest：社宅管理台帳備品基本チェック：" + (localEndTime - localStartTime) + "ミリ秒");
+			}
+		}
 
 		/** 排他制御チェック処理呼び出し ======↑ */
 
