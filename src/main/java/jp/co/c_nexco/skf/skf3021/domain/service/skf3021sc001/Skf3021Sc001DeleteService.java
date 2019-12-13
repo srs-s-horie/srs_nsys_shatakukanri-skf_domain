@@ -17,7 +17,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetC
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetNyukyoChoshoTsuchiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetTaikyoReportInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoom;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiData;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiDataKey;
@@ -26,7 +25,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc001.Skf3021Sc001
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiDataRepository;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -35,7 +33,6 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001DeleteDto;
-import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001SearchDto;
 
 /**
  * 入退居予定一覧画面のDeleteサービス処理クラス。　 
@@ -163,6 +160,16 @@ public class Skf3021Sc001DeleteService extends BaseServiceAbstract<Skf3021Sc001D
 	}
 	
 
+	/**
+	 * 入退居予定情報削除
+	 * @param shainNo 社員番号
+	 * @param nyuTaikyoKubun 入退居区分
+	 * @param applNo 申請書類管理番号
+	 * @param companyCd 会社コード
+	 * @param nyutaikyoYoteiUpdateDate 入退居予定更新日
+	 * @param tenninshaChoshoUpdateDate 転任者調書更新日
+	 * @return
+	 */
 	private int deleteNyutaikyoYoteiInfo(String shainNo,
 			String nyuTaikyoKubun, String applNo, String companyCd, 
 			Date nyutaikyoYoteiUpdateDate, Date tenninshaChoshoUpdateDate){
@@ -250,6 +257,14 @@ public class Skf3021Sc001DeleteService extends BaseServiceAbstract<Skf3021Sc001D
 		return delCount + updCount + updCountSR;
 	}
 	
+	/**
+	 * 転任者調書情報更新
+	 * @param shainNo 社員番号
+	 * @param nyuTaikyoKbn 入退居区分
+	 * @param tenninshaChoshoUpdateDate 更新日
+	 * @param targetDtTC
+	 * @return 更新件数
+	 */
 	private int updateTenninshaChoshoInfo(String shainNo, String nyuTaikyoKbn, 
 			Date tenninshaChoshoUpdateDate,Skf3020TTenninshaChoshoData targetDtTC){
 		int updateCount = 0;
