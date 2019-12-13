@@ -13,7 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
+import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -21,7 +22,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddAsyncDto;
 
 /**
  * Skf2010Sc009 添付資料入力支援ファイル追加処理クラス
@@ -29,7 +30,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddDto> {
+public class Skf2010Sc009AddAsyncService extends AsyncBaseServiceAbstract<Skf2010Sc009AddAsyncDto> {
 
 	@Autowired
 	private Skf2010Sc009SharedService skf2010Sc009SharedService;
@@ -58,9 +59,7 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Skf2010Sc009AddDto index(Skf2010Sc009AddDto addDto) throws Exception {
-
-		addDto.setPageTitleKey(MessageIdConstant.SKF2010_SC009_TITLE);
+	public AsyncBaseDto index(Skf2010Sc009AddAsyncDto addDto) throws Exception {
 		
 		// 操作ログ出力
 		skfOperationLogUtils.setAccessLog("申請書類に添付", CodeConstant.C001, FunctionIdConstant.SKF2010_SC009);
@@ -68,9 +67,10 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 		String applId = addDto.getApplId();
 		String applNo = addDto.getApplNo();
 		String candidateNo = addDto.getCandidateNo();
-		MultipartFile fileData = addDto.getAttachedFile();
 		String applName = getBaseScreenName(applId);
 		addDto.setApplName(applName);
+
+		MultipartFile fileData = addDto.getAttachedFile();
 
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
 			sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
@@ -156,7 +156,7 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 		return false;
 	}
 
-	private boolean validateFileName(String fileName, String applId, Skf2010Sc009AddDto dto) {
+	private boolean validateFileName(String fileName, String applId, Skf2010Sc009AddAsyncDto dto) {
 		if (fileName == null || CheckUtils.isEmpty(fileName)) {
 			// ファイルなし
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1040);
