@@ -59,7 +59,7 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 	@Override
 	public BaseDto index(Skf2020Sc003InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC003_TITLE);
 

@@ -5,10 +5,12 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc009;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -18,6 +20,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddDto;
 
 /**
@@ -34,6 +37,8 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 	private MenuScopeSessionBean menuScopeSessionBean;
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtiles;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
@@ -56,6 +61,9 @@ public class Skf2010Sc009AddService extends BaseServiceAbstract<Skf2010Sc009AddD
 	public Skf2010Sc009AddDto index(Skf2010Sc009AddDto addDto) throws Exception {
 
 		addDto.setPageTitleKey(MessageIdConstant.SKF2010_SC009_TITLE);
+		
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("申請書類に添付", CodeConstant.C001, FunctionIdConstant.SKF2010_SC009);
 
 		String applId = addDto.getApplId();
 		String applNo = addDto.getApplNo();

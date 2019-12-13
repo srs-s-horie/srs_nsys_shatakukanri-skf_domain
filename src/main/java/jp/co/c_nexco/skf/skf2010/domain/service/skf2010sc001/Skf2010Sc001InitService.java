@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc001;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc001.Skf2010Sc001GetAllShainInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -39,7 +41,7 @@ public class Skf2010Sc001InitService extends BaseServiceAbstract<Skf2010Sc001Ini
 	@Override
 	public Skf2010Sc001InitDto index(Skf2010Sc001InitDto initDto) throws Exception {
 		// 操作ログ登録
-		skfOperationLogUtils.setAccessLog("検索処理開始", companyCd, FunctionIdConstant.SKF2010_SC001);
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2010_SC001);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC001_TITLE);
 

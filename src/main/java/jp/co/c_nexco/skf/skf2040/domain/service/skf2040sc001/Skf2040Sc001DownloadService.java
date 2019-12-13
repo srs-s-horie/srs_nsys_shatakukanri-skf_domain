@@ -37,7 +37,7 @@ public class Skf2040Sc001DownloadService extends BaseServiceAbstract<Skf2040Sc00
     protected BaseDto index(Skf2040Sc001DownloadDto dto) throws Exception {
 
         // 操作ログを出力する
-        skfOperationLogUtils.setAccessLog("申請要件を確認する", CodeConstant.C001, dto.getPageId());
+        skfOperationLogUtils.setAccessLog("申請要件を確認", CodeConstant.C001, dto.getPageId());
 
         // ダウンロードファイル名
         String downloadFileName = "skf.skf_appl_requirement.FileId";

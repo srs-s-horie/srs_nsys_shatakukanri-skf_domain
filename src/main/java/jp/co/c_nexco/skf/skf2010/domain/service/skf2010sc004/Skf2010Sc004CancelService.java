@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 	@Override
 	public BaseDto index(Skf2010Sc004CancelDto cancelDto) throws Exception {
 		// 操作ログの出力
-		skfOperationLogUtils.setAccessLog("「取下げ」", companyCd, FunctionIdConstant.SKF2010_SC004);
+		skfOperationLogUtils.setAccessLog("取下げ", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 

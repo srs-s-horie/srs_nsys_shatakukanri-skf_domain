@@ -6,8 +6,10 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc002;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
@@ -21,7 +23,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
@@ -61,7 +62,7 @@ public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002Ag
 	@Override
 	public Skf2050Sc002AgreeDto index(Skf2050Sc002AgreeDto agreeDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("承認処理開始", companyCd, FunctionIdConstant.SKF2050_SC002);
+		skfOperationLogUtils.setAccessLog("承認", companyCd, FunctionIdConstant.SKF2050_SC002);
 
 		// 入力チェック
 		boolean validateRes = validateReason(agreeDto);

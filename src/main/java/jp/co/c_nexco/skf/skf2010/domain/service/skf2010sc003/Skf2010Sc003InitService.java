@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -61,7 +63,7 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 	@Override
 	public Skf2010Sc003InitDto index(Skf2010Sc003InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 

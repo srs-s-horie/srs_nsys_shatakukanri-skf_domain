@@ -1,18 +1,24 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
+
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006DownloadDto;
+
 
 /**
  * Skf2010Sc006 申請書類承認／修正依頼／通知 承認処理クラス
@@ -22,6 +28,8 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006DownloadDto
 @Service
 public class Skf2010Sc006DownloadService extends BaseServiceAbstract<Skf2010Sc006DownloadDto> {
 
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
@@ -53,6 +61,9 @@ public class Skf2010Sc006DownloadService extends BaseServiceAbstract<Skf2010Sc00
 			}
 		}
 
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
+		
 		dlDto.setFileData(fileData);
 		dlDto.setUploadFileName(fileName);
 		dlDto.setViewPath(NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH);

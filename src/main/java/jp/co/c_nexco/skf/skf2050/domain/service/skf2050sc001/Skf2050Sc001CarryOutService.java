@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
@@ -14,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutDto;
 
 /**
@@ -26,6 +28,8 @@ public class Skf2050Sc001CarryOutService extends BaseServiceAbstract<Skf2050Sc00
 
 	@Autowired
 	private Skf2050Sc001SharedService skf2050Sc001SharedService;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -36,6 +40,9 @@ public class Skf2050Sc001CarryOutService extends BaseServiceAbstract<Skf2050Sc00
 	 */
 	@Override
 	public BaseDto index(Skf2050Sc001CarryOutDto coDto) throws Exception {
+		
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("搬出完了日相関チェックOK", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
 
 		skf2050Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		if (!skf2050Sc001SharedService.saveBihinHenkyakuInfo(CodeConstant.STATUS_HANSYUTSU_ZUMI, coDto,

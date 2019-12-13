@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
@@ -46,7 +47,7 @@ public class Skf2010Sc003TransferService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public BaseDto index(Skf2010Sc003TransferDto transDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("表示処理開始", companyCd, transDto.getPageId());
+		skfOperationLogUtils.setAccessLog("表示", companyCd, transDto.getPageId());
 		
 		String applId = transDto.getApplId();
 		String applNo = transDto.getApplNo();

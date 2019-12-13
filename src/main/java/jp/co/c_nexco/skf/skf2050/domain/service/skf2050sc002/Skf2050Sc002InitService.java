@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc002;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -48,7 +50,7 @@ public class Skf2050Sc002InitService extends BaseServiceAbstract<Skf2050Sc002Ini
 	@Override
 	public Skf2050Sc002InitDto index(Skf2050Sc002InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, FunctionIdConstant.SKF2050_SC002);
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2050_SC002);
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2050_SC002_TITLE);
 
