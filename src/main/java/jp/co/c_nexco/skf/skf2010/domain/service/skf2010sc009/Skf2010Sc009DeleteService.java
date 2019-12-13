@@ -7,15 +7,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DeleteDto;
 
 /**
@@ -26,6 +30,8 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DeleteDto;
 @Service
 public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009DeleteDto> {
 
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf2010Sc009SharedService skf2010Sc009SharedService;
 	@Autowired
@@ -51,6 +57,9 @@ public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009D
 	public Skf2010Sc009DeleteDto index(Skf2010Sc009DeleteDto delDto) throws Exception {
 
 		delDto.setPageTitleKey(MessageIdConstant.SKF2010_SC009_TITLE);
+		
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, FunctionIdConstant.SKF2010_SC009);
 
 		String applId = delDto.getApplId();
 		String candidateNo = delDto.getCandidateNo();

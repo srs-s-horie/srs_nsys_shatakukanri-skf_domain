@@ -6,13 +6,17 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc009;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009InitDto;
 
 /**
@@ -23,6 +27,8 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009InitDto;
 @Service
 public class Skf2010Sc009InitService extends BaseServiceAbstract<Skf2010Sc009InitDto> {
 
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf2010Sc009SharedService skf2010Sc009SharedService;
 
@@ -39,6 +45,9 @@ public class Skf2010Sc009InitService extends BaseServiceAbstract<Skf2010Sc009Ini
 	public Skf2010Sc009InitDto index(Skf2010Sc009InitDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC009_TITLE);
+		
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC009);
 
 		String applId = initDto.getApplId();
 		String candidateNo = initDto.getCandidateNo();

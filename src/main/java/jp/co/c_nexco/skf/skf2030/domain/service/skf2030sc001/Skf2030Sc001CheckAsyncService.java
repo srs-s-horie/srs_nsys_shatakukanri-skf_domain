@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
@@ -52,7 +54,7 @@ public class Skf2030Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 	@Override
 	public AsyncBaseDto index(Skf2030Sc001CheckAsyncDto chkDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("搬入完了日チェック処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("搬入完了", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();

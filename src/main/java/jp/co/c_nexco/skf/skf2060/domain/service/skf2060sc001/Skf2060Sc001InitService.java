@@ -72,7 +72,7 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 		//申請書類情報が取得できた場合
 		if(!(initDto.getShainNo() == null || CheckUtils.isEmpty(initDto.getShainNo().trim())) && !(initDto.getApplNo() == null || CheckUtils.isEmpty(initDto.getApplNo().trim()))){
 			// 操作ログを出力
-			skfOperationLogUtils.setAccessLog("再提示", companyCd, initDto.getPageId());
+			skfOperationLogUtils.setAccessLog("再提示", companyCd, FunctionIdConstant.SKF2060_SC004);
 			
 			//申請書類管理番号からコメントを取得
 			List<SkfCommentUtilsGetCommentInfoExp> commentList =  skfCommentUtils.getCommentInfo(companyCd, initDto.getApplNo(), null);
@@ -110,7 +110,7 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			initDto.setSupportDisabled("true");
 		}else{
 			// 操作ログを出力
-			skfOperationLogUtils.setAccessLog("新規作成", companyCd, initDto.getPageId());
+			skfOperationLogUtils.setAccessLog("新規作成", companyCd, FunctionIdConstant.SKF2060_SC004);
 			
 			// 項目初期化
 			initDto.setPresentedName(CodeConstant.NONE);
@@ -118,6 +118,8 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			initDto.setPostalCd(CodeConstant.NONE);
 			initDto.setShatakuName(CodeConstant.NONE);
 		}
+		
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2060_SC001);
 		
 		//隠し要素として現在日時を設定
 		Date updateDate = new Date();

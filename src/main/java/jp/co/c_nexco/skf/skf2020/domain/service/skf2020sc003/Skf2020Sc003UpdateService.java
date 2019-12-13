@@ -6,8 +6,10 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
@@ -49,6 +52,8 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+    @Autowired
+    private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
 	@Autowired
@@ -74,11 +79,17 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 	 */
 	@Override
 	public BaseDto index(Skf2020Sc003UpdateDto updDto) throws Exception {
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("修正依頼処理開始", CodeConstant.C001, updDto.getPageId());
 		
 		updDto.setPageTitleKey(MessageIdConstant.SKF2020_SC003_TITLE);
 
+        // 提示状況汎用コード取得
+        Map<String, String> hitsuyouShatakuGenCodeMap = new HashMap<String, String>();
+        hitsuyouShatakuGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_STATUS_KBN);
+        String defaultHitsuyouShataku = CodeConstant.NONE;
+        if(updDto.getDefaultHitsuyoShataku() != null){
+        	defaultHitsuyouShataku = hitsuyouShatakuGenCodeMap.get(updDto.getDefaultHitsuyoShataku());
+        }
+		
 		// 必要とする社宅理由更新メソッド
 		boolean updResult = updateHitsuyoShataku(updDto);
 		if (!updResult) {
@@ -98,6 +109,17 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
 		}
+		
+		// 操作ログを出力する
+		String afterHitsuyouShataku = CodeConstant.NONE;
+        if(updDto.getHitsuyoShataku() != null){
+        	afterHitsuyouShataku = hitsuyouShatakuGenCodeMap.get(updDto.getHitsuyoShataku());
+        }
+		StringJoiner halfSpace = new StringJoiner(" ");
+		halfSpace.add("確定");
+		halfSpace.add(shainNo);
+		halfSpace.add(defaultHitsuyouShataku+"から"+afterHitsuyouShataku+"に変更");
+		skfOperationLogUtils.setAccessLog(halfSpace.toString(), CodeConstant.C001, updDto.getPageId());
 
 		// 初期表示
 		skf2020sc003SharedService.setMenuScopeSessionBean(menuScopeSessionBean);

@@ -9,9 +9,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
@@ -67,7 +69,7 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public Skf2010Sc004NotAgreeDto index(Skf2010Sc004NotAgreeDto notAgreeDto) throws Exception {
 		// 操作ログの出力
-		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, FunctionIdConstant.SKF2010_SC004);
+		skfOperationLogUtils.setAccessLog("同意しない", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		// タイトル設定
 		notAgreeDto.setPageTitleKey(MessageIdConstant.SKF2010_SC004_TITLE);

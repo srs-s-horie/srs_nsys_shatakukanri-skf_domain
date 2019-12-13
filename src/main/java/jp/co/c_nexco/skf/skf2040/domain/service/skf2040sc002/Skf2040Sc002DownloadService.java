@@ -4,10 +4,13 @@
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
+
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -32,9 +35,6 @@ public class Skf2040Sc002DownloadService extends BaseServiceAbstract<Skf2040Sc00
 	@Override
 	protected BaseDto index(Skf2040Sc002DownloadDto dlDto) throws Exception {
 
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("添付ファイルダウンロード", CodeConstant.C001, dlDto.getPageId());
-
 		// 添付資料番号
 		String attachedNo = dlDto.getAttachedNo();
 
@@ -55,6 +55,9 @@ public class Skf2040Sc002DownloadService extends BaseServiceAbstract<Skf2040Sc00
 		Map<String, Object> attachedFileMap = attachedFileList.get(target);
 		fileName = attachedFileMap.get("attachedName").toString();
 		fileData = (byte[]) attachedFileMap.get("fileStream");
+		
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, dlDto.getPageId());
 
 		dlDto.setFileData(fileData);
 		dlDto.setUploadFileName(fileName);

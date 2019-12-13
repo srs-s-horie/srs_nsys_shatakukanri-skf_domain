@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpRepository;
@@ -63,7 +65,7 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	public BaseDto index(Skf2010Sc007TransferDto transferDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請書を作成する", companyCd, transferDto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請書類を作成", companyCd, transferDto.getPageId());
 
 		// 画面遷移前のチェック処理
 		setRedirectAppl(transferDto);

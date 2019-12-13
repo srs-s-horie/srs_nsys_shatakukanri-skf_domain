@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshiki;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc007.Skf3090Sc007InitDto;
@@ -56,9 +59,6 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 	@SuppressWarnings("unchecked")
 	@Override
 	public Skf3090Sc007InitDto index(Skf3090Sc007InitDto initDto) throws Exception {
-
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC007_TITLE);
 
@@ -105,6 +105,10 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 
 		if (Skf309040CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
+			
+			// 操作ログを出力する
+			skfOperationLogUtils.setAccessLog("新規登録", CodeConstant.C001, FunctionIdConstant.SKF3090_SC006);
+			
 			// ドロップダウンリストを取得
 			Map<String, Object> returnMap = skf3090Sc007SharedService.getDropDownLists(initDto.getRegistCompanyCd(),
 					initDto.getRegistAgencyCd(), initDto.getRegistBusinessAreaCd());
@@ -147,6 +151,10 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 
 		} else {
 			/** リストテーブルから遷移 */
+			
+			// 操作ログを出力する
+			skfOperationLogUtils.setAccessLog("編集", CodeConstant.C001, FunctionIdConstant.SKF3090_SC006);
+			
 			// コントロールの値を取得
 			Map<String, Object> returnMap = this.getControlValues(initDto.getHdnCompanyCd(), initDto.getHdnAgencyCd(),
 					initDto.getHdnAffiliation1Cd(), initDto.getHdnAffiliation2Cd());
@@ -206,6 +214,9 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 			}
 
 		}
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3090_SC007);
+		
 		// Dtoに戻り値をセット
 		initDto.setCompanyCdDisabled(comapnyCdDisabled);
 		initDto.setAgencyCdDisabled(agencyCdDisabled);

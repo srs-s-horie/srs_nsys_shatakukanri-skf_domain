@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -48,7 +50,7 @@ public class Skf2050Sc001InitService extends BaseServiceAbstract<Skf2050Sc001Ini
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2050_SC001_TITLE);
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
 
 		// 社宅連携バッチ更新排他処理用
 		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skfBatchUtils
