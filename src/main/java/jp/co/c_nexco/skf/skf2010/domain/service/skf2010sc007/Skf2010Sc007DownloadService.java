@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc007;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -39,7 +40,7 @@ public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	protected BaseDto index(Skf2010Sc007DownloadDto dto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請要件を確認する", companyCd, dto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請要件を確認", companyCd, dto.getPageId());
 
 		// ダウンロードファイル名
 		String downloadFileName = "skf.skf_appl_requirement.FileId";

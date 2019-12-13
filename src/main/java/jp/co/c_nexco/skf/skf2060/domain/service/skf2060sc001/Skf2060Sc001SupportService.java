@@ -20,6 +20,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001SupportDto;
 
 /**
@@ -35,6 +36,8 @@ public class Skf2060Sc001SupportService extends BaseServiceAbstract<Skf2060Sc001
 	private SkfDateFormatUtils skfDateFormatUtils;
     @Autowired
     private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	
 	private String companyCd = CodeConstant.C001;
 	
@@ -50,6 +53,9 @@ public class Skf2060Sc001SupportService extends BaseServiceAbstract<Skf2060Sc001
 	public Skf2060Sc001SupportDto index(Skf2060Sc001SupportDto supportDto) throws Exception {
 		
 		supportDto.setPageTitleKey(MessageIdConstant.SKF2060_SC001_TITLE);
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog("支援", CodeConstant.C001, FunctionIdConstant.SKF2060_SC001);
 		
 		// リストデータ取得用
 		Skf2060Sc001GetApplHistoryExp resultData = new Skf2060Sc001GetApplHistoryExp();

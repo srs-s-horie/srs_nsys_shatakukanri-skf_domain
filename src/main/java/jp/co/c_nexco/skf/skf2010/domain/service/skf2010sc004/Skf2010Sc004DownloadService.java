@@ -1,10 +1,13 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc004;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
+
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -34,8 +37,7 @@ public class Skf2010Sc004DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	@SuppressWarnings("unchecked")
 	@Override
 	public Skf2010Sc004DownloadDto index(Skf2010Sc004DownloadDto dlDto) throws Exception {
-		// 操作ログの出力
-		skfOperationLogUtils.setAccessLog("添付資料ダウンロード", companyCd, FunctionIdConstant.SKF2010_SC004);
+
 
 		// 添付資料番号
 		String attachedNo = dlDto.getAttachedNo();
@@ -62,6 +64,9 @@ public class Skf2010Sc004DownloadService extends BaseServiceAbstract<Skf2010Sc00
 				break;
 			}
 		}
+		
+		// 操作ログの出力
+		skfOperationLogUtils.setAccessLog(fileName, companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		dlDto.setFileData(fileData);
 		dlDto.setUploadFileName(fileName);

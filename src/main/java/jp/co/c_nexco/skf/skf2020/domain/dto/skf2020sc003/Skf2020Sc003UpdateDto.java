@@ -16,4 +16,6 @@ public class Skf2020Sc003UpdateDto extends Skf2020Sc003CommonDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
+	// 編集前「必要とする社宅」
+	private String defaultHitsuyoShataku;
 }

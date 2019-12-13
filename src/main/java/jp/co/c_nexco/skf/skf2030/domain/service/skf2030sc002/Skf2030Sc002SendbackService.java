@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc002;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -43,7 +45,7 @@ public class Skf2030Sc002SendbackService extends BaseServiceAbstract<Skf2030Sc00
 	@Override
 	public BaseDto index(Skf2030Sc002SendbackDto sbDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("差戻し処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC002);
+		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, FunctionIdConstant.SKF2030_SC002);
 		// タイトル設定
 		sbDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 

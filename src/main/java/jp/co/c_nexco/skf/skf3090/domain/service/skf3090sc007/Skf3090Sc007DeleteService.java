@@ -2,6 +2,7 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc007;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshikiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MSoshikiRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -32,7 +33,7 @@ public class Skf3090Sc007DeleteService extends BaseServiceAbstract<Skf3090Sc007D
 	public Skf3090Sc007DeleteDto index(Skf3090Sc007DeleteDto deleteDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("", CodeConstant.C001, deleteDto.getPrePageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPrePageId());
 
 		// 組織データ削除
 		boolean deleteCheck = deleteSoshikiInfo(deleteDto.getRegistCompanyCd(), deleteDto.getRegistAgencyCd(),

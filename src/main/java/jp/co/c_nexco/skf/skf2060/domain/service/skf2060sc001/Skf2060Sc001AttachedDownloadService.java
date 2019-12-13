@@ -4,6 +4,8 @@
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
 
+import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +15,13 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001AttachedDownloadDto;
-import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
 
 /**
  * TestPrjTop画面のAttachedDownloadサービス処理クラス。　 
@@ -28,6 +32,8 @@ public class Skf2060Sc001AttachedDownloadService extends BaseServiceAbstract<Skf
 
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	
 
@@ -40,8 +46,6 @@ public class Skf2060Sc001AttachedDownloadService extends BaseServiceAbstract<Skf
 	 */
 	@Override
 	public Skf2060Sc001AttachedDownloadDto index(Skf2060Sc001AttachedDownloadDto adlDto) throws Exception {
-		
-		//TODO 操作ログ
 		
 		long candidateNo = adlDto.getHdnCandidateNo();
 		String attachedNo = adlDto.getHdnAttachedNo();
@@ -58,10 +62,14 @@ public class Skf2060Sc001AttachedDownloadService extends BaseServiceAbstract<Skf
 		}
 		
 		Map<String, Object> attachedFile = attachedFileList.get(0);
+		String fileName = attachedFile.get("attachedName").toString();
+		
+		// 操作ログを出力
+		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF2060_SC001);
 		
 		//ファイルデータ、ファイル名、パスの設定
 		adlDto.setFileData((byte[])attachedFile.get("fileStream"));
-		adlDto.setUploadFileName(attachedFile.get("attachedName").toString());
+		adlDto.setUploadFileName(fileName);
 		adlDto.setViewPath(NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH);
 			
 		return adlDto;

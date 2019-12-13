@@ -6,9 +6,11 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc006;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -44,7 +46,7 @@ public class Skf3090Sc006SearchService extends BaseServiceAbstract<Skf3090Sc006S
 	public BaseDto index(Skf3090Sc006SearchDto searchDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("検索処理開始", CodeConstant.C001, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("組織を検索", CodeConstant.C001, searchDto.getPageId());
 
 		// 「会社」ドロップダウンリストの設定
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();
