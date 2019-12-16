@@ -476,13 +476,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		if(!SkfCheckUtils.isNullOrEmpty(dto.getOwnerNo())){
 			Long ownerNo =  Long.parseLong(dto.getOwnerNo());
 			setValue.setOwnerNo(ownerNo);
-		}//TODO デバッグ用コード消す
-		else{
-			if(dto.getParkingContractType().equals("2")){
-				Long num = (long) 1111;
-				setValue.setOwnerNo(num);
-			}
-		}//デバッグ用コードここまで
+		}
 		
 		//経理連携用資産番号
 		if(dto.getAssetRegisterNo() != null){

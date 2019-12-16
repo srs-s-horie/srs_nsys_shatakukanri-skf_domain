@@ -59,15 +59,15 @@ public class Skf3010Sc006ParkingAddressSearchAsyncService
 		//入力チェック
 		//必須チェック
 		if (SkfCheckUtils.isNullOrEmpty(searchDto.getParkingZipCd())) {
-			ServiceHelper.addErrorResultMessage(searchDto, null, MessageIdConstant.E_SKF_1048, "郵便番号");
-			searchDto.setParkingZipCdError(CodeConstant.NFW_VALIDATION_ERROR);
+			ServiceHelper.addErrorResultMessage(searchDto, new String[] { "parkingZipCd" }, MessageIdConstant.E_SKF_1048, "郵便番号");
+			throwBusinessExceptionIfErrors(searchDto.getResultMessages());
 			return searchDto;
 		}
 		//形式チェック
 		String parkingZipCode = searchDto.getParkingZipCd();
 		if(!CheckUtils.isNumeric(parkingZipCode) || parkingZipCode.length() != 7){
-			ServiceHelper.addErrorResultMessage(searchDto, null, MessageIdConstant.E_SKF_1042, "郵便番号");
-			searchDto.setParkingZipCdError(CodeConstant.NFW_VALIDATION_ERROR);
+			ServiceHelper.addErrorResultMessage(searchDto, new String[] { "parkingZipCd" }, MessageIdConstant.E_SKF_1042, "郵便番号");
+			throwBusinessExceptionIfErrors(searchDto.getResultMessages());
 			return searchDto;
 		}
 		

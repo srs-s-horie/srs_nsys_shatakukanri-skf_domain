@@ -61,20 +61,16 @@ public class Skf3022Sc002SearchAsyncService
 		}
 		boolean nidaishiyo = false;
 		
-		//TODO デバッグコード消す
-//		asyncDto.setShatakuNo("2015120071");
-//		asyncDto.setKaisiDate("20181010");
-		//デバッグコードここまで
-		
 		// 駐車場情報一覧検索
 		int count = skf3022Sc002SharedService.getChushajoInfo(asyncDto.getShatakuNo(), asyncDto.getShiyosha(),
 				asyncDto.getParkingBiko(), chushajo, nidaishiyo, asyncDto.getKaisiDate(), 
 				skfBaseBusinessLogicUtils.getSystemProcessNenGetsu(), parkingInfoList);
 		if (count == 0) {
-			ServiceHelper.addResultMessage(asyncDto, MessageIdConstant.W_SKF_1007);
+			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.W_SKF_1007);
 		} else if (count == -1) {
-			ServiceHelper.addResultMessage(asyncDto, MessageIdConstant.E_SKF_1046, maxCount);
+			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.E_SKF_1046, maxCount);
 		}
+		throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
 		
 		asyncDto.setListTableList(parkingInfoList);
 		asyncDto.setDataCount(count);

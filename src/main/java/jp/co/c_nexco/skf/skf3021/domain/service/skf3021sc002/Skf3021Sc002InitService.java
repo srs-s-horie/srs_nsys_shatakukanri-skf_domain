@@ -3,25 +3,20 @@
  */
 package jp.co.c_nexco.skf.skf3021.domain.service.skf3021sc002;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.ibm.icu.text.DateFormat;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc002.Skf3021Sc002GetGenShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc002.Skf3021Sc002GetGenShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc002.Skf3021Sc002GetTaikyoInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc002.Skf3021Sc002GetTaikyoInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc002.Skf3021Sc002GetTaikyoInfoRoomExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc002.Skf3022Sc002GetChushajoInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyu;
@@ -29,6 +24,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyuKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetGenShatakuInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetNyukyoChoshoInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetTaikyoInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MTokyuRepository;
@@ -42,7 +38,6 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001InitDto;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc002.Skf3021Sc002InitDto;
 
 /**
@@ -70,6 +65,8 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	private Skf3021Sc002GetGenShatakuInfoExpRepository skf3021Sc002GetGenShatakuInfoExpRepository;
 	@Autowired
 	private Skf3021Sc002GetTaikyoInfoExpRepository skf3021Sc002GetTaikyoInfoExpRepository;
+	@Autowired
+	private Skf3021Sc002GetNyukyoChoshoInfoExpRepository skf3021Sc002GetNyukyoChoshoInfoExpRepository;
 	
 	//社員番号変更フラグ
 	private static final String SHAIN_NO_CHANGE_FLG = "1";
@@ -145,21 +142,14 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		String applNo = initDto.getHdnRowApplNo();
 		//社員番号の取得
 		String shainNo = initDto.getHdnRowShainNo();
-		//入退居区分の取得
-		String nyutaikyokbn = initDto.getHdnRowNyutaikyoKbn();
+//		//入退居区分の取得→未使用
+//		String nyutaikyokbn = initDto.getHdnRowNyutaikyoKbn();
 		
 		//申請者情報
-		if(SkfCheckUtils.isNullOrEmpty(shainNo)){
-			//社員番号無し
-			
-		}
 		setShinseishaInfo(shainNo,initDto);
-		if(SkfCheckUtils.isNullOrEmpty(shainNo)){
-			//申請書類管理番号無し
-			
-		}
+		
+		//入退居申請情報を設定する
 		setNyuTaikyoShinseishaInfo(applNo,initDto);
-
 		
 		return initDto;
 	}
@@ -392,14 +382,17 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	 */
 	private void setShinseishaInfo(String shainNo, Skf3021Sc002InitDto dto) {
 				
-		Skf1010MShainKey shainKey = new Skf1010MShainKey();
-		shainKey.setCompanyCd(CodeConstant.C001);
-		shainKey.setShainNo(shainNo);
-		Skf1010MShain dt_Getshain = skf1010MShainRepository.selectByPrimaryKey(shainKey);
-		
 		String shainName = CodeConstant.DOUBLE_QUOTATION;
 		String tokyu = CodeConstant.DOUBLE_QUOTATION;
 		String nenrei = CodeConstant.DOUBLE_QUOTATION;
+		
+		Skf1010MShain dt_Getshain = null;
+		if(!SkfCheckUtils.isNullOrEmpty(shainNo)){
+			Skf1010MShainKey shainKey = new Skf1010MShainKey();
+			shainKey.setCompanyCd(CodeConstant.C001);
+			shainKey.setShainNo(shainNo);
+			dt_Getshain = skf1010MShainRepository.selectByPrimaryKey(shainKey);
+		}
 		
 		if(dt_Getshain != null){
 			//社員番号
@@ -466,14 +459,25 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		
 	}
 	
+	/**
+	 * 現居社宅情報以外の入退居申請情報を設定する
+	 * @param applNo 申請書類管理番号
+	 * @param dto
+	 */
 	private void setNyuTaikyoShinseishaInfo(String applNo, Skf3021Sc002InitDto dto){
 		
-		Skf2020TNyukyoChoshoTsuchiKey nctKey = new Skf2020TNyukyoChoshoTsuchiKey();
-		nctKey.setCompanyCd(CodeConstant.C001);
-		nctKey.setApplNo(applNo);
-		Skf2020TNyukyoChoshoTsuchi dt_TSUCHI = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(nctKey);
+		Skf2020TNyukyoChoshoTsuchi dt_TSUCHI = null;
+		List<Skf2020TNyukyoChoshoTsuchi> dt_TSUCHIList = new ArrayList<Skf2020TNyukyoChoshoTsuchi>();
+		if(!SkfCheckUtils.isNullOrEmpty(applNo)){
+			Skf2020TNyukyoChoshoTsuchiKey nctKey = new Skf2020TNyukyoChoshoTsuchiKey();
+			nctKey.setCompanyCd(CodeConstant.C001);
+			nctKey.setApplNo(applNo);
+			dt_TSUCHI = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(nctKey);
+			dt_TSUCHIList = skf3021Sc002GetNyukyoChoshoInfoExpRepository.getNyukyoChoshoInfo(applNo);
+		}
 		
-		if(dt_TSUCHI != null){
+		if(dt_TSUCHIList.size() > 0 ){
+			dt_TSUCHI = dt_TSUCHIList.get(0);
 			//社宅の必要・不要
 			String hitsuyofuyo = CodeConstant.DOUBLE_QUOTATION;
 			if(dt_TSUCHI.getTaiyoHitsuyo() != null){
@@ -761,6 +765,10 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	 */
 	private void setGenShatakuInfoWithTaikyoInfo(String applNo, Skf3021Sc002InitDto dto){
 		
+		if(SkfCheckUtils.isNullOrEmpty(applNo)){
+			return;
+		}
+		
 		//退居届情報を取得する
 		Skf3021Sc002GetTaikyoInfoExpParameter taikyoParam = new Skf3021Sc002GetTaikyoInfoExpParameter();
 		taikyoParam.setApplNo(applNo);
@@ -822,6 +830,13 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		}
 	}
 	
+	/**
+	 * 退居届から、退居（返還）する社宅又は駐車場を設定する。
+	 * @param taikyoShataku 社宅を退居する
+	 * @param taikyoParking1 駐車場1を退居する
+	 * @param taikyoParking2 駐車場2を退居する
+	 * @return
+	 */
 	private String setTaikyoShatakuOrChushajoWithTaikyoInfo(String taikyoShataku, String taikyoParking1, String taikyoParking2){
 		String str = CodeConstant.DOUBLE_QUOTATION;
 		

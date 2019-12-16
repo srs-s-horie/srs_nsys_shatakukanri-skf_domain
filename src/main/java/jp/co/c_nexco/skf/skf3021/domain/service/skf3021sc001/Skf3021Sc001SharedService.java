@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3021.domain.service.skf3021sc001;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -180,8 +179,6 @@ public class Skf3021Sc001SharedService {
 
 		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
 		
-		//日付形式
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 		//入退居区分
 		Map<String, String> genericCodeNyutaikyoKbn = new HashMap<String, String>();
 		genericCodeNyutaikyoKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_NYUTAIKYO_KBN);
@@ -313,30 +310,6 @@ public class Skf3021Sc001SharedService {
 						}else{
 							chkSlSentaku = false;
 						}
-//						switch(shinseiKbn){
-//							case CodeConstant.SHINSEI_KBN_SHIATAKU:
-//							case CodeConstant.SHINSEI_KBN_PARKING:
-//								//申請区分　→　1：社宅、2：駐車場
-//								if(TEIJI_CREATE_KBN_MI_SAKUSEI.equals(teijiDataKbn)){
-//									//提示データ作成区分 → 0：未作成
-//									chkSlSentaku = true;
-//								}else if(TEIJI_CREATE_KBN_SAKUSEI_SUMI.equals(teijiDataKbn)){
-//									//提示データ作成区分 → 1：作成済
-//									chkSlSentaku = false;
-//								}else{
-//									chkSlSentaku = false;
-//								}
-//								break;
-//							case CodeConstant.SHINSEI_KBN_JITAKU:
-//							case CodeConstant.SHINSEI_KBN_JIKO_KARIAGE:
-//							case CodeConstant.SHINSEI_KBN_OTHER:
-//								//申請区分　→　3：自宅、4：自借、9：その他
-//								chkSlSentaku = false;
-//								break;
-//							default:
-//								chkSlSentaku = false;
-//								break;
-//						}
 					}else if(CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)){
 						//入退居区分　→　2：退居
 						if(CodeConstant.SHINSEI_KBN_SHIATAKU.equals(shinseiKbn) ||

@@ -194,10 +194,10 @@ public class Skf3021Sc001SendMailService extends BaseServiceAbstract<Skf3021Sc00
 				ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3081, map.get("shainNo").toString());
 				
 				//成功もwarnログで出してる・・・
-//				LogUtils.warn(Skf3021Sc001SendMailService.class, message);
+				LogUtils.warn(Skf3021Sc001SendMailService.class, message);
 				
 				//入退居予定データ更新
-				int updateRes = updateNyutaikyoYoteiInfoOfUrgeDate(shainNo , nyutaikyoKbn, sysDateTime,map.get("updateDateNtkyo").toString());
+				int updateRes = updateNyutaikyoYoteiInfoOfUrgeDate(shainNo , nyutaikyoKbn, sysDateTime, map.get("updateDateNtkyo").toString());
 				if(updateRes <= 0){
 					//MessageIdConstant.E_SKF_1075"更新時にエラーが発生しました。ヘルプデスクへ連絡してください。";
 					ServiceHelper.addErrorResultMessage(sendDto, null,  MessageIdConstant.E_SKF_1075);
@@ -311,7 +311,7 @@ public class Skf3021Sc001SendMailService extends BaseServiceAbstract<Skf3021Sc00
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 		
 		//引数がない場合
-		if(SkfCheckUtils.isNullOrEmpty(shainNo) || !SkfCheckUtils.isNullOrEmpty(nyutaikyoKbn)){
+		if(SkfCheckUtils.isNullOrEmpty(shainNo) || SkfCheckUtils.isNullOrEmpty(nyutaikyoKbn)){
 			return 0;
 		}
 		Skf3021TNyutaikyoYoteiData updateData = new Skf3021TNyutaikyoYoteiData();

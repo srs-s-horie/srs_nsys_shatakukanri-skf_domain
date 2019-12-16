@@ -85,7 +85,7 @@ public class Skf3021Sc001SearchService extends BaseServiceAbstract<Skf3021Sc001S
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 
-		//入退居予定を取得（全件）
+		//入退居予定を取得
 		skf3021Sc001SharedService.setGrvNyuTaikyoYoteiIchiran(BTNFLG_KENSAKU, searchDto, listTableData);
 
 		
