@@ -148,8 +148,6 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		String level3 = CodeConstant.DOUBLE_QUOTATION;
 		// 操作に困ったときは（マニュアル 管理）
 		String level4_1 = CodeConstant.DOUBLE_QUOTATION;
-		// 操作に困ったときは（マニュアル 社宅管理）
-		String level4_2 = CodeConstant.DOUBLE_QUOTATION;
 		// 未承認処理（全体）
 		String level5 = CodeConstant.DOUBLE_QUOTATION;
 
@@ -177,12 +175,10 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 			level2 = "true";
 			level3 = "true";
 			level4_1 = "true";
-			level4_2 = "true";
 			level5 = "true";
 			initDto.setLevel2(level2);
 			initDto.setLevel3(level3);
 			initDto.setLevel4_1(level4_1);
-			initDto.setLevel4_2(level4_2);
 			initDto.setLevel5(level5);
 
 		}
@@ -201,7 +197,6 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 			level2_6 = "true";
 			level3 = "true";
 			level4_1 = "true";
-			level4_2 = "true";
 			level5 = "true";
 			initDto.setLevel1(level1);
 			initDto.setLevel2_2(level2_2);
@@ -211,7 +206,6 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 			initDto.setLevel2_6(level2_6);
 			initDto.setLevel3(level3);
 			initDto.setLevel4_1(level4_1);
-			initDto.setLevel4_2(level4_2);
 			initDto.setLevel5(level5);
 
 		}

@@ -40,9 +40,7 @@ public class Skf1010Sc001DownloadService extends BaseServiceAbstract<Skf1010Sc00
 	@Override
 	protected BaseDto index(Skf1010Sc001DownloadDto dto) throws Exception {
 
-		if(dto.getManual().equals("shataku")) {
-			skfOperationLogUtils.setAccessLog("マニュアル（社宅管理）", companyCd, FunctionIdConstant.SKF1010_SC001);
-		} else if(dto.getManual().equals("general")) {
+		if(dto.getManual().equals("general")) {
 			skfOperationLogUtils.setAccessLog("マニュアル（一般）", companyCd, FunctionIdConstant.SKF1010_SC001);
 		} else if(dto.getManual().equals("manager")) {
 			skfOperationLogUtils.setAccessLog("マニュアル（管理）", companyCd, FunctionIdConstant.SKF1010_SC001);

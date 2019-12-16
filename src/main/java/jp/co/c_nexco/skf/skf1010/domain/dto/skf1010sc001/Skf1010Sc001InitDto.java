@@ -55,8 +55,6 @@ public class Skf1010Sc001InitDto extends Skf1010Sc001CommonDto {
 	private String level4;
 	// 画面表示（マニュアル 管理）
 	private String level4_1;
-	// 画面表示（マニュアル 社宅管理）
-	private String level4_2;
 	// 画面表示（未処理情報）
 	private String level5;
 	// システムに関するお知らせ
