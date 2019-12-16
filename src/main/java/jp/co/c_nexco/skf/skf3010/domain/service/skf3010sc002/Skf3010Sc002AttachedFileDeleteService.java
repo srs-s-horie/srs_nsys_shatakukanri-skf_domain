@@ -15,7 +15,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AttachedFileDeleteDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 
 /**
  * Skf3010Sc002AttachedFileDeleteService 補足ファイル削除処理クラス
@@ -46,7 +45,7 @@ public class Skf3010Sc002AttachedFileDeleteService extends BaseServiceAbstract<S
 	public Skf3010Sc002AttachedFileDeleteDto index(Skf3010Sc002AttachedFileDeleteDto deleteDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料削除", CodeConstant.C001, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());
 		// デバッグログ
 		LogUtils.debugByMsg("補足資料削除");
 

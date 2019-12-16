@@ -46,7 +46,7 @@ public class Skf3010Sc006DelContractListService extends BaseServiceAbstract<Skf3
 		// デバッグログ
 		logger.info("契約情報削除");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報削除", CodeConstant.C001, delDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, delDto.getPageId());
 
 		/** DTO設定値 */
 		// 賃貸人（代理人）名

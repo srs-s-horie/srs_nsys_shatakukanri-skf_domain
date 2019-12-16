@@ -20,7 +20,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc006common.Skf3010Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006ChangeParkingContractListDto;
 import jp.co.intra_mart.common.platform.log.Logger;
@@ -64,7 +63,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 		// デバッグログ
 		logger.debug("駐車場契約情報:" + initDto.getParkingSelectMode());
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("駐車場契約情報", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("追加", CodeConstant.C001, initDto.getPageId());
 
 		/** DTO設定値 */
 		//契約形態リスト

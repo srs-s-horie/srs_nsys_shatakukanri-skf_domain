@@ -6,10 +6,12 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -56,7 +58,7 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 	public Skf3010Sc002AttachedFileAddDto index(Skf3010Sc002AttachedFileAddDto addDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, addDto.getPageId());
+		skfOperationLogUtils.setAccessLog("参照", CodeConstant.C001, addDto.getPageId());
 		// デバッグログ
 		LogUtils.debugByMsg("補足資料追加");
 

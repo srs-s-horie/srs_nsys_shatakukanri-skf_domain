@@ -10,13 +10,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetHoyuShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockContractInfoTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockHistroyCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetRentalPatternTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetRoomBihinExlusiveCntrlExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuRoomExlusiveCntrlExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuContract;
@@ -52,7 +52,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002DeleteDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -113,7 +112,7 @@ public class Skf3010Sc002DeleteService extends BaseServiceAbstract<Skf3010Sc002D
 		// デバッグログ
 		LogUtils.debugByMsg("保有社宅情報削除");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("保有社宅情報削除", CodeConstant.C001, delDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, delDto.getPageId());
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト

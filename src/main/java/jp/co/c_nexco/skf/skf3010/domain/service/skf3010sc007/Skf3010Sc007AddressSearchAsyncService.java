@@ -18,8 +18,10 @@ import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007AddressSearchAsyncDto;
 
 
@@ -35,6 +37,8 @@ public class Skf3010Sc007AddressSearchAsyncService
 		extends AsyncBaseServiceAbstract<Skf3010Sc007AddressSearchAsyncDto> {
 
 	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
 	private Skf3010Sc007GetZipToAddressExpRepository skf3010Sc007GetZipToAddressExpRepository;
 	
 	
@@ -48,6 +52,7 @@ public class Skf3010Sc007AddressSearchAsyncService
 		
 		// Debugログで出力
 		LogUtils.debugByMsg("駐車場契約情報-郵便番号：" + searchDto.getParkingZipCd());
+		skfOperationLogUtils.setAccessLog("住所検索", CodeConstant.C001, FunctionIdConstant.SKF3010_SC007);
 		//
 		searchDto.setParkingZipCdError(CodeConstant.DOUBLE_QUOTATION);
 		

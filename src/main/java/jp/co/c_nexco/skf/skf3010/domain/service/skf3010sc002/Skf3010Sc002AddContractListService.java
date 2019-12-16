@@ -16,7 +16,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AddContractListDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 
 /**
  * Skf3010Sc002AddContractListService 保有社宅登録の契約情報追加ボタン押下サービス処理クラス。
@@ -43,7 +42,7 @@ public class Skf3010Sc002AddContractListService extends BaseServiceAbstract<Skf3
 		// デバッグログ
 		LogUtils.debugByMsg("契約情報追加");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報追加", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("追加", CodeConstant.C001, initDto.getPageId());
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト

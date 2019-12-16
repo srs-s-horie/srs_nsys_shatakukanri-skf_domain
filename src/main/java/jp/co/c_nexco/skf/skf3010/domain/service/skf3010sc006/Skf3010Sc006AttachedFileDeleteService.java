@@ -5,6 +5,8 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -39,9 +41,10 @@ public class Skf3010Sc006AttachedFileDeleteService extends BaseServiceAbstract<S
 	@Override
 	public Skf3010Sc006AttachedFileDeleteDto index(Skf3010Sc006AttachedFileDeleteDto deleteDto) throws Exception {
 
-		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料削除", CodeConstant.C001, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());
+		// デバッグログ
+		LogUtils.debugByMsg("補足資料削除");
 				
 		//ファイル名
 		String fileName = CodeConstant.DOUBLE_QUOTATION;

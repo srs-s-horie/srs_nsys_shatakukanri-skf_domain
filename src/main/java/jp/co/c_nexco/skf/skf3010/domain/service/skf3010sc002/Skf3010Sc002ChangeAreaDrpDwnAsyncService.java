@@ -40,7 +40,7 @@ public class Skf3010Sc002ChangeAreaDrpDwnAsyncService
 	public AsyncBaseDto index(Skf3010Sc002ChangeAreaDrpDwnAsyncDto asyncDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("地域区分変更", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
+		skfOperationLogUtils.setAccessLog("地域区分", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 		// デバッグログ
 		LogUtils.debugByMsg("地域区分変更");
 		/** DTO設定用 */

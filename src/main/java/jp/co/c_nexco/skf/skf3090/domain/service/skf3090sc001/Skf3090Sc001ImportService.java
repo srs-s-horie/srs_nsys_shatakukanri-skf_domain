@@ -1,5 +1,6 @@
 package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc001;
 
+import java.io.UnsupportedEncodingException;
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
@@ -13,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.UnsupportedEncodingException;
 
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MPayInKind;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MPayInKindKey;
@@ -124,7 +123,7 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 		importDto.setPageTitleKey(MessageIdConstant.SKF3090_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("現物支給価額リスト取込", CodeConstant.C001, importDto.getPageId());
+		skfOperationLogUtils.setAccessLog("EXCEL取込", CodeConstant.C001, importDto.getPageId());
 
 		// 必須チェック
 		boolean isNormalData = checkValidateInput(importDto);

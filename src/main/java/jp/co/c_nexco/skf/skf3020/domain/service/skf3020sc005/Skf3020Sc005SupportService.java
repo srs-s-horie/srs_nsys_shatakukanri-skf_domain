@@ -28,7 +28,7 @@ public class Skf3020Sc005SupportService extends BaseServiceAbstract<Skf3020Sc005
 	@Override
 	public Skf3020Sc005SupportDto index(Skf3020Sc005SupportDto supportDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("社員入力支援画面からのコールバック処理開始", CodeConstant.C001, supportDto.getPageId());
+		skfOperationLogUtils.setAccessLog("社員入力支援", CodeConstant.C001, supportDto.getPageId());
 
 		// 入力支援画面で選択された社員番号
 		String shainNo = supportDto.getHdnSelShainNo();

@@ -11,10 +11,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -24,6 +24,7 @@ import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
@@ -101,7 +102,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 
 	@Override
 	public BaseDto index(Skf3020Sc002ImportDto tenninshaChoshoDto) throws Exception {
-		skfOperationLogUtils.setAccessLog("転任者調書の取込開始", companyCd, tenninshaChoshoDto.getPageId());
+		skfOperationLogUtils.setAccessLog("取込", companyCd, tenninshaChoshoDto.getPageId());
 
 		// 必須チェック
 		boolean isNormalData = checkValidateInput(tenninshaChoshoDto);

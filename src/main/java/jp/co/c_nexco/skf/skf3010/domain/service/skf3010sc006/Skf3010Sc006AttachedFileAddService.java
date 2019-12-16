@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -65,9 +67,10 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 	@Override
 	public Skf3010Sc006AttachedFileAddDto index(Skf3010Sc006AttachedFileAddDto addDto) throws Exception {
 
-		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, addDto.getPageId());
+		skfOperationLogUtils.setAccessLog("参照", CodeConstant.C001, addDto.getPageId());
+		// デバッグログ
+		LogUtils.debugByMsg("補足資料追加");
 				
 		//ファイル名
 		String fileName = CodeConstant.DOUBLE_QUOTATION;

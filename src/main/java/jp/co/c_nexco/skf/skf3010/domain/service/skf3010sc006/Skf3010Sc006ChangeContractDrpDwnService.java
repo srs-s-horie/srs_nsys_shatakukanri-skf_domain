@@ -18,7 +18,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006ChangeContractDrpDwnDto;
 import jp.co.intra_mart.common.platform.log.Logger;
 
@@ -51,7 +50,7 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends BaseServiceAbstract
 		// デバッグログ
 		logger.info("契約情報プルダウン変更");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報プルダウン変更", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約番号", CodeConstant.C001, initDto.getPageId());
 
 		// 選択契約番号
 		String selectedContraceNo = initDto.getHdnChangeContractSelectedIndex();
