@@ -59,7 +59,7 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 	@Override
 	protected AsyncBaseDto index(Skf3050Sc002CloseTaskExecutionAsyncDto closeTaskDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("締め処理開始", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("締め処理", CodeConstant.C001, "Skf3050Sc002");
 
 		String jikkouShijiYoteiNengetsu = closeTaskDto.getHdnJikkouShijiYoteiNengetsu();
 		String bihinTaiyoWarnContinueFlg = closeTaskDto.getHdnBihinTaiyoWarnContinueFlg();

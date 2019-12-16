@@ -4,6 +4,7 @@
 package jp.co.c_nexco.skf.skf3050.domain.service.skf3050sc002;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 	@Override
 	protected BaseDto index(Skf3050Sc002CreatePositiveCooperationDataDto createPositiveCoopDto) throws Exception {
 		
-		skfOperationLogUtils.setAccessLog("POSITIVE連携データ作成処理開始", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("POSITIVE連携データ作成処理", CodeConstant.C001, "Skf3050Sc002");
 		
 		createPositiveCoopDto.setResultMessages(null);
 		

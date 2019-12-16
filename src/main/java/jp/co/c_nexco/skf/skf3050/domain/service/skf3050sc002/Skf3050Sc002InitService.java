@@ -56,7 +56,7 @@ public class Skf3050Sc002InitService extends BaseServiceAbstract<Skf3050Sc002Ini
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3050_SC002_TITLE);
 
-		skfOperationLogUtils.setAccessLog("月次運用管理初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
 		initDto = init(initDto);
 
