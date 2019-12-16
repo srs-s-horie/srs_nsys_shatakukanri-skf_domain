@@ -45,7 +45,7 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionAsyncService ext
 	@Override
 	protected AsyncBaseDto index(Skf3050Sc002ConfirmPositiveCooperationTaskExecutionAsyncDto confirmPositiveCoopDto) throws Exception {
 		
-		skfOperationLogUtils.setAccessLog("POSITIVE連携データ確定処理開始", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("POSITIVE連携データ確定処理", CodeConstant.C001, "Skf3050Sc002");
 		
 		confirmPositiveCoopDto.setResultMessages(null);
 		

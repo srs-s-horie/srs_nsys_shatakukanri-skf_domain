@@ -13,9 +13,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockContractInfoTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockHistroyCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuContract;
@@ -44,7 +44,6 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002RegistDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -107,7 +106,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// デバッグログ
 		LogUtils.debugByMsg("保有社宅情報登録");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("保有社宅情報登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("保有社宅登録", CodeConstant.C001, registDto.getPageId());
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト

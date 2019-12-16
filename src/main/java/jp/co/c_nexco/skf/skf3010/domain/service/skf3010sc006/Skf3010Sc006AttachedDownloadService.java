@@ -4,6 +4,8 @@
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
 
+import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +14,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AttachedDownloadDto;
-
-
-import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
 
 /**
 * Skf3010Sc006AttachedDownloadService　借上社宅登録ファイルダウンロード処理
@@ -46,9 +44,6 @@ public class Skf3010Sc006AttachedDownloadService extends BaseServiceAbstract<Skf
 	 */
 	@Override
 	public BaseDto index(Skf3010Sc006AttachedDownloadDto adlDto) throws Exception {
-		
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料ダウンロード", CodeConstant.C001, adlDto.getPageId());
 		
 		String hosoku = adlDto.getHdnHosoku();
 		String attachedNo = adlDto.getHdnAttachedNo();
@@ -86,6 +81,10 @@ public class Skf3010Sc006AttachedDownloadService extends BaseServiceAbstract<Skf
 				break;
 			}
 		}
+		
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, adlDto.getPageId());
+		
 //		// 添付ファイル情報を取得
 //		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
 //
