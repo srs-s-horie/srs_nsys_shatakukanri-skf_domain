@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001.Skf1010Sc001DownloadDto;
@@ -39,9 +40,14 @@ public class Skf1010Sc001DownloadService extends BaseServiceAbstract<Skf1010Sc00
 	@Override
 	protected BaseDto index(Skf1010Sc001DownloadDto dto) throws Exception {
 
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("あいあいあいい", companyCd, dto.getPageId());
-
+		if(dto.getManual().equals("shataku")) {
+			skfOperationLogUtils.setAccessLog("マニュアル（社宅管理）", companyCd, FunctionIdConstant.SKF1010_SC001);
+		} else if(dto.getManual().equals("general")) {
+			skfOperationLogUtils.setAccessLog("マニュアル（一般）", companyCd, FunctionIdConstant.SKF1010_SC001);
+		} else if(dto.getManual().equals("manager")) {
+			skfOperationLogUtils.setAccessLog("マニュアル（管理）", companyCd, FunctionIdConstant.SKF1010_SC001);
+		}
+	
 		// ダウンロードファイル名
 		String downloadFileName = "skf.pdf.skf1010Sc001.pdf_template_manual_" + dto.getManual();
 
