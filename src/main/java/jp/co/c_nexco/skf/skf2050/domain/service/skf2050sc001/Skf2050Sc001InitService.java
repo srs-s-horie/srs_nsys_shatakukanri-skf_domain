@@ -74,7 +74,9 @@ public class Skf2050Sc001InitService extends BaseServiceAbstract<Skf2050Sc001Ini
 	 */
 	private void setErr(Skf2050Sc001InitDto initDto) {
 		// 「同意する」「同意しない」「搬出完了」ボタンを非活性化
-		initDto.setMaskPattern("ERR");
+	    initDto.setBtnAgreeDisabled("true");
+	    initDto.setBtnNotAgreeDisabled("true");
+	    initDto.setBtnCarryingOutDisabled("true");
 		return;
 
 	}

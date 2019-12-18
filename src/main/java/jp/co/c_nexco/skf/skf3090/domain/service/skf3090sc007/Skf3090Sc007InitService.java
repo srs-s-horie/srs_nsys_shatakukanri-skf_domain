@@ -161,7 +161,11 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 
 			if (returnMap == null) {
 				// Mapがnullの場合、0件エラー表示
-				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1077);
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
+				// 登録ボタン表示可否判定
+				registButtonRemove = "true";
+				// 削除ボタン表示可否判定
+				deleteButtonDisabled = "true";
 			} else {
 				/** 画面表示するドロップダウンを取得 */
 				// 会社ドロップダウン
@@ -198,7 +202,7 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 				if (NfwStringUtils.isNotEmpty((String) returnMap.get(KEY_REGIST_FLAG))
 						&& REGIST_FLAG_SHATAKU.equals(returnMap.get(KEY_REGIST_FLAG))) {
 					// 社宅管理で登録されたデータの場合削除ボタンを活性
-					deleteButtonDisabled = "flase";
+					deleteButtonDisabled = "false";
 				} else {
 					// 社宅管理で登録されたデータではない場合削除ボタンを非活性
 					deleteButtonDisabled = "true";

@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp;
@@ -162,7 +164,10 @@ public class Skf2030Sc001SharedService {
 			applHistoryInfoList = skfApplHistoryInfoUtils.getApplHistoryInfo(companyCd, applNo);
 
 			if (applHistoryInfoList == null || applHistoryInfoList.size() <= 0) {
-				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, NO_DATA_MESSAGE);
+				initDto.setBtnImportFinidhedDisabled("true");
+				initDto.setBtnSaveDisabled("true");
+				initDto.setBtnApplicationDisabled("true");
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135, NO_DATA_MESSAGE);
 				return false;
 			}
 			SkfApplHistoryInfoUtilsGetApplHistoryInfoExp applHistoryInfo = applHistoryInfoList.get(0);
