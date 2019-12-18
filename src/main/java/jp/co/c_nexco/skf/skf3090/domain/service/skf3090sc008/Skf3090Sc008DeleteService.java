@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TInformationKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010TInformationRepository;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -58,8 +57,7 @@ public class Skf3090Sc008DeleteService extends BaseServiceAbstract<Skf3090Sc008D
 		boolean deleteCheck = this.deleteInformationData(companyCd, openDate);
 		//削除失敗
 		if(!(deleteCheck)){
-	 		ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.E_SKF_1076);
-	 		throwBusinessExceptionIfErrors(deleteDto.getResultMessages());
+			// 特に何もしない(他のユーザによって削除は行われていると思われるため)
 		}
 		
 		//お知らせリストテーブルの設定

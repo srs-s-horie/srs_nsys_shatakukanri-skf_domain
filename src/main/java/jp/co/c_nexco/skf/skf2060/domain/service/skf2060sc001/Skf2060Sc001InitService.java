@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -114,9 +115,12 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			
 			// 項目初期化
 			initDto.setPresentedName(CodeConstant.NONE);
+			initDto.setPresentedStatus(CodeConstant.NONE);
+			initDto.setPresentedDate(CodeConstant.NONE);
 			initDto.setAddress(CodeConstant.NONE);
 			initDto.setPostalCd(CodeConstant.NONE);
 			initDto.setShatakuName(CodeConstant.NONE);
+			initDto.setComment(CodeConstant.NONE);
 		}
 		
 		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2060_SC001);
@@ -135,7 +139,8 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 
 		//借上候補物件テーブル用更新日
 		for(Map<String, Object> dataParam:dataParamList){
-			Date lastUpdateDate = skfDateFormatUtils.formatStringToDate(dataParam.get("lastUpdateDate").toString());
+			SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			Date lastUpdateDate = sdf.parse(dataParam.get("lastUpdateDate").toString());
 			lastUpdateDateMap.put(initDto.KariageBukkenLastUpdateDate + dataParam.get("candidateNo").toString(), lastUpdateDate);
 		}
 		

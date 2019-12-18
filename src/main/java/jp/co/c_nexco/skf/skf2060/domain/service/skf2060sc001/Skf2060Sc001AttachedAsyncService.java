@@ -75,7 +75,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 		deleteCount = skf2060Sc001DeleteAttachedFileExpRepository.deleteAttachedFile(deleteData);
 		//削除できなかった場合
 		if (deleteCount < 0) {
-			// TODO エラー
+			// エラー
 			ServiceHelper.addErrorResultMessage(attachedDto, null, MessageIdConstant.E_SKF_2003);
 			throwBusinessExceptionIfErrors(attachedDto.getResultMessages());
 		}
@@ -96,7 +96,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 			int res = skf2060TKariageBukkenFileRepository.insertSelective(insertData);
 
 			if (res <= 0) {
-				// TODO エラー
+				// エラー
 				ServiceHelper.addErrorResultMessage(attachedDto, null, MessageIdConstant.E_SKF_2003);
 				throwBusinessExceptionIfErrors(attachedDto.getResultMessages());
 			}
