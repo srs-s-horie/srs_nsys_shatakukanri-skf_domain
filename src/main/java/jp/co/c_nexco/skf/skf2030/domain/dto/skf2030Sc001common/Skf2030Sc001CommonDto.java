@@ -91,4 +91,15 @@ public class Skf2030Sc001CommonDto extends Skf203010CommonDto {
 	// ボタン表示フラグ
 	// 申請条件を確認ボタン
 	private boolean btnRequirementVisibled;
+	
+	/** ボタン表示非表示 */
+	// 搬入完了ボタン
+	private String btnImportFinidhedDisabled;
+	
+	// 一時保存ボタン
+	private String btnSaveDisabled;
+	
+	// 申請ボタン
+	private String btnApplicationDisabled;
+	
 }

@@ -239,6 +239,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	private void setDisplayData(Skf2010Sc004InitDto initDto) {
 		String applNo = initDto.getApplNo();
 		String applId = initDto.getApplId();
+		
+		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
+		
+		if (applHistoryInfo == null) {
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
+		}
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
 
