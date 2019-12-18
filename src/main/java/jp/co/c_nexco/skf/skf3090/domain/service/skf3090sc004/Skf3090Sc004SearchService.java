@@ -6,9 +6,11 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc004;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -42,7 +44,7 @@ public class Skf3090Sc004SearchService extends BaseServiceAbstract<Skf3090Sc004S
 	public BaseDto index(Skf3090Sc004SearchDto searchDto) throws Exception {
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("検索", companyCd, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("ユーザを検索", companyCd, searchDto.getPageId());
 
 		// 戻り値に設定するリストのインスタンスを生成
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();

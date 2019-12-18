@@ -6,9 +6,10 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
+
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -52,7 +53,7 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 	@Override
 	public BaseDto index(Skf2020Sc003RemandDto rmdDto) throws Exception {
 		// 操作ログ出力メソッドを呼び出す
-		skfOperationLogUtils.setAccessLog("差戻処理開始", CodeConstant.C001, rmdDto.getPageId());
+		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, rmdDto.getPageId());
 
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		Map<String, String> errorMsg = new HashMap<String, String>();

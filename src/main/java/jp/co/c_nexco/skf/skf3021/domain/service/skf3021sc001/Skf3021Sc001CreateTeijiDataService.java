@@ -12,14 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetBihinHenkyakuCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetChoshoInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetNyukyoChoshoTsuchiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetShatakuBihinRirekiInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetShatakuLedgerInfoByshainNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetShatakuLedgerInfoByshainNoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetShatakuLedgerInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetShatakuLedgerInfoExpParameter;
@@ -62,7 +60,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuBihinRep
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuMutualRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuMutualRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuRentalRirekiRepository;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -201,7 +198,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 		List<Map<String,Object>> teijiList = createTeijiList(teijiDto.getTeijiListData());
 		//提示データ作成
 		int result = 0;
-		result = insertTeijiDataInfo(teijiList);
+		result = insertTeijiDataInfo(teijiList, teijiDto);
 		if(result == -1){
 			ServiceHelper.addErrorResultMessage(teijiDto, null,  MessageIdConstant.W_SKF_1009);
 			throwBusinessExceptionIfErrors(teijiDto.getResultMessages());
@@ -269,7 +266,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 	 * @param teijiList 入退居予定一覧
 	 * @return
 	 */
-	private int insertTeijiDataInfo(List<Map<String,Object>> teijiList){
+	private int insertTeijiDataInfo(List<Map<String,Object>> teijiList, Skf3021Sc001CreateTeijiDataDto teijiDto){
 		
 		//日付形式
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
@@ -487,7 +484,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 			}else{
 				//月別備品使用料明細情報を取得
 				Skf3021Sc001GetShatakuRoomBihinInfoExpParameter bihinRirekiParam = new Skf3021Sc001GetShatakuRoomBihinInfoExpParameter();
-				bihinRirekiParam.setShatakuKanriId(Long.parseLong(shatakuKanriId));
+				bihinRirekiParam.setShatakuKanriId(dtSL2Row.getShatakuKanriId());
 				bihinRirekiParam.setYearMonth(yearMonth);
 				List<Skf3021Sc001GetShatakuBihinRirekiInfoExp> dtSBR = new ArrayList<Skf3021Sc001GetShatakuBihinRirekiInfoExp>();
 				dtSBR = skf3021Sc001GetShatakuBihinRirekiInfoExpRepository.getShatakuBihinRirekiInfo(bihinRirekiParam);
@@ -503,8 +500,8 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 			}
 			
 			//変更、退居（申請なし）の場合
-			if(CodeConstant.NYUTAIKYO_KBN_HENKO.equals(nyutaikyoKbn) || 
-					(CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn) && SkfCheckUtils.isNullOrEmpty(applNo))){
+			if((CodeConstant.NYUTAIKYO_KBN_HENKO.equals(nyutaikyoKbn) || 
+					CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)) && SkfCheckUtils.isNullOrEmpty(applNo)){
 				if(dtSL2Row != null){
 					//入居予定日
 					nyukyoDate = dtSL2Row.getNyukyoDate();
@@ -517,11 +514,13 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 
 			}else{
 				//提示データ登録処理
-				Skf3022TTeijiData teijiData =getColumnInfoListOfTeijiData(teijiList,dtSL1,dtNCT,dtTR,shainNo,returnCount
+				Skf3022TTeijiData teijiData = getColumnInfoListOfTeijiData(teijiDto.getListTableData(),dtSL1,dtNCT,dtTR,shainNo,returnCount
 						,nyutaikyoKbn,name,applKbn,applNo,taikyoYoteiDate,companyCd,yearMonth
 						,parking1StartDate,parking2StartDate,teijiNo,nyutaikyoKbnOfSameShainNo,rentalPatternId);
 				insCount = insCount + insertTeijiDataInfo(teijiData);
-				rentalPatternId = teijiData.getRentalPatternId().toString();
+				if(teijiData.getRentalPatternId() != null){
+					rentalPatternId = teijiData.getRentalPatternId().toString();
+				}
 			}
 			
 			//GetNyutaikyoYoteiInfoForUpdate
@@ -630,7 +629,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 			if(CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn) &&
 					(BIHIN_CD_91.equals(bihinCd) || BIHIN_CD_92.equals(bihinCd) || BIHIN_CD_93.equals(bihinCd))){
 				//旧備品データを取得
-				//GetKyuTaiyoBihinInfo⇒対象テーブルが存在しないので、とりあえずデータなし処理のみ実装
+				//GetKyuTaiyoBihinInfo⇒対象テーブルが存在しないので、データなし処理のみ実装
 				//備品貸与状態区分
 				columnInfoList.setBihinLentStatusKbn(bihinLentStatusKbn);
 //                '返却チェックは"1"の場合
@@ -973,7 +972,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 		
 		for(Map<String,Object> row1 : grvNyuTaikyoYoteiIchiran){
 			//社員番号
-			String shainNo1 = row1.get("colShainName").toString();
+			String shainNo1 = row1.get("colShainNo").toString();
 			//入退居区分
 			String nyutaikyoKbn1 = row1.get("hdnNyutaikyoKbnCd").toString();
 			if(shainNo.compareTo(shainNo1) == 0){
@@ -1036,21 +1035,29 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 				if(HENKOU.equals(nyutaikyoKbnOfSameShainNo)){
 					//変更
 					if(dtNCT.size() > 0){
-						syatakuNo = dtNCT.get(0).getShatakuNo().toString();
-						heyaNo = dtNCT.get(0).getRoomKanriNo().toString();
-						mutualUseEndDay = dtNCT.get(0).getTaikyoYoteiDate().toString();
-						if(TAIKYO.equals(nyutaikyoKbnOfSameShainNo)){
-							//入退居の退居(このルートは通らないよ？？)
-							carryoutRequestDay = dtNCT.get(0).getSessionDay();
-							carryoutRequestKbn = dtNCT.get(0).getSessionTime();
+						if(dtNCT.get(0).getShatakuNo() != null){
+							syatakuNo = dtNCT.get(0).getShatakuNo().toString();
 						}
+						if(dtNCT.get(0).getRoomKanriNo() != null){
+							heyaNo = dtNCT.get(0).getRoomKanriNo().toString();
+						}
+						mutualUseEndDay = dtNCT.get(0).getTaikyoYoteiDate();
+//						if(TAIKYO.equals(nyutaikyoKbnOfSameShainNo)){
+//							//入退居の退居(2019/12:このルートは通らないためコメントアウト)
+//							carryoutRequestDay = dtNCT.get(0).getSessionDay();
+//							carryoutRequestKbn = dtNCT.get(0).getSessionTime();
+//						}
 					}
 					
 				}else if(TAIKYO.equals(nyutaikyoKbnOfSameShainNo) || TAIKYOONLY.equals(nyutaikyoKbnOfSameShainNo)){
 					//入退居の退居、退居のみ
 					if(dtTR.size() > 0){
-						syatakuNo = dtTR.get(0).getShatakuNo().toString();
-						heyaNo = dtTR.get(0).getRoomKanriNo().toString();
+						if(dtTR.get(0).getShatakuNo() != null){
+							syatakuNo = dtTR.get(0).getShatakuNo().toString();
+						}
+						if(dtTR.get(0).getRoomKanriNo() != null){
+							heyaNo = dtTR.get(0).getRoomKanriNo().toString();
+						}
 						carryoutRequestDay = dtTR.get(0).getSessionDay();
 						carryoutRequestKbn = dtTR.get(0).getSessionTime();
 						mutualUseEndDay = dtTR.get(0).getTaikyoDate();
@@ -1335,9 +1342,11 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 				//入居
 				if(CodeConstant.NYUTAIKYO_KBN_NYUKYO.equals(nyutaikyoKbn)){
 					if(dtNCT.size() > 0){
-						syatakuNo = dtNCT.get(0).getShatakuNo().toString();
+						if(dtNCT.get(0).getShatakuNo()!=null){
+							syatakuNo = dtNCT.get(0).getShatakuNo().toString();
+						}
 						//社宅管理番号
-						columnInfoList.setShatakuKanriNo(Long.parseLong(syatakuNo));
+						columnInfoList.setShatakuKanriNo(dtNCT.get(0).getShatakuNo());
 						//部屋管理番号
 						columnInfoList.setShatakuRoomKanriNo(dtNCT.get(0).getRoomKanriNo());
 					}
@@ -1491,9 +1500,11 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 				//退居
 				else{
 					if(dtTR.size() > 0){
-						syatakuNo = dtTR.get(0).getShatakuNo().toString();
+						if(dtTR.get(0).getShatakuNo() != null){
+							syatakuNo = dtTR.get(0).getShatakuNo().toString();
+						}
 						//社宅管理番号
-						columnInfoList.setShatakuKanriNo(Long.parseLong(syatakuNo));
+						columnInfoList.setShatakuKanriNo(dtTR.get(0).getShatakuNo());
 						//部屋管理番号
 						columnInfoList.setShatakuRoomKanriNo(dtTR.get(0).getRoomKanriNo());
 						
@@ -1723,16 +1734,16 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 			}
 			if(returnCount > 0){
 				//社宅管理台帳備品基本テーブル.貸与日の値あり："1"(必要)
-				columnInfoList.setBihinTaiyoKbn(CodeConstant.BIHIN_TAIYO_KBN_FUYO);
+				columnInfoList.setBihinTaiyoKbn(CodeConstant.BIHIN_TAIYO_KBN_HITSUYO);
 				//備品提示ステータス　←　1：作成中
-				columnInfoList.setBihinTeijiStatus(CodeConstant.DOUBLE_QUOTATION);
+				columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_SAKUSEI_CHU);
 				//作成完了区分（社宅の未作成状態）
 				columnInfoList.setCreateCompleteKbn(CodeConstant.SHATAKU_SAKUSEI_SUMI);
 			}else{
 				//社宅管理台帳備品基本テーブル.貸与日の値なし："0"(不要)
-				columnInfoList.setBihinTaiyoKbn(CodeConstant.BIHIN_TAIYO_KBN_HITSUYO);
+				columnInfoList.setBihinTaiyoKbn(CodeConstant.BIHIN_TAIYO_KBN_FUYO);
 				//備品提示ステータス　←　空白
-				columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_SAKUSEI_CHU);
+				columnInfoList.setBihinTeijiStatus(CodeConstant.DOUBLE_QUOTATION);
 				//作成完了区分（備品の作成完了状態）
 				columnInfoList.setCreateCompleteKbn(CodeConstant.BIHIN_SAKUSEI_SUMI);
 			}

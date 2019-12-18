@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -20,7 +22,6 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001AgreeDto;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001NotAgreeDto;
 
 /**
@@ -55,7 +56,7 @@ public class Skf2050Sc001NotAgreeService extends BaseServiceAbstract<Skf2050Sc00
 		// タイトル設定
 		notAgreeDto.setPageTitleKey(MessageIdConstant.SKF2050_SC001_TITLE);
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("同意しない処理開始", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
+		skfOperationLogUtils.setAccessLog("同意しない", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
 
 		// 入力チェック
 		boolean validateResult = checkValidate(notAgreeDto);

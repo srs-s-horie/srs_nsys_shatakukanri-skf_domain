@@ -45,7 +45,7 @@ public class Skf3090Sc008EditService extends BaseServiceAbstract<Skf3090Sc008Edi
 	public Skf3090Sc008EditDto index(Skf3090Sc008EditDto editDto) throws Exception {
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("編集", companyCd, editDto.getPageId());
+		skfOperationLogUtils.setAccessLog("お知らせ編集", companyCd, editDto.getPageId());
 		
 		//「編集」ボタンを押した行の公開開始日を取得
 		String openDate = editDto.getHdnOpenDate(); 

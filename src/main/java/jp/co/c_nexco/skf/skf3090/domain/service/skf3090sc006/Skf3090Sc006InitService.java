@@ -6,9 +6,11 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc006;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -48,7 +50,7 @@ public class Skf3090Sc006InitService extends BaseServiceAbstract<Skf3090Sc006Ini
 	public BaseDto index(Skf3090Sc006InitDto initDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC006_TITLE);
 

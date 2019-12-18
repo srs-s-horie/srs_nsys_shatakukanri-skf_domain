@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -45,7 +47,7 @@ public class Skf2030Sc001ClearService extends BaseServiceAbstract<Skf2030Sc001Cl
 	@Override
 	public Skf2030Sc001ClearDto index(Skf2030Sc001ClearDto clearDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("入力内容をクリア処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("入力内容をクリア", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
 
 		// タイトル設定
 		clearDto.setPageTitleKey(MessageIdConstant.SKF2030_SC001_TITLE);

@@ -6,9 +6,10 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
+
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -52,7 +53,7 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 	@Override
 	public BaseDto index(Skf2020Sc003RevisionDto rvsDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("修正依頼処理開始", CodeConstant.C001, rvsDto.getPageId());
+		skfOperationLogUtils.setAccessLog("修正依頼", CodeConstant.C001, rvsDto.getPageId());
 
 		boolean validate = skf2020sc003SharedService.checkValidation(rvsDto);
 		if (!validate) {

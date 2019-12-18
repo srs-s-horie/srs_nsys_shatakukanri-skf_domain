@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetInformationNewInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetInformationNewInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuExp;
@@ -46,6 +48,7 @@ import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001.Skf1010Sc001InitDto;
 
 /**
@@ -110,6 +113,9 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 
 	/**
 	 * サービス処理を行う。
@@ -120,6 +126,9 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 	 */
 	@Override
 	public Skf1010Sc001InitDto index(Skf1010Sc001InitDto initDto) throws Exception {
+		
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", COMPANYCD, FunctionIdConstant.SKF1010_SC001);
 
 		// 申請全体
 		String level1 = CodeConstant.DOUBLE_QUOTATION;
@@ -137,7 +146,7 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		String level2_6 = CodeConstant.DOUBLE_QUOTATION;
 		// 管理者全体
 		String level3 = CodeConstant.DOUBLE_QUOTATION;
-		// 操作に困ったときは（マニュアル 管理者）
+		// 操作に困ったときは（マニュアル 管理）
 		String level4_1 = CodeConstant.DOUBLE_QUOTATION;
 		// 未承認処理（全体）
 		String level5 = CodeConstant.DOUBLE_QUOTATION;

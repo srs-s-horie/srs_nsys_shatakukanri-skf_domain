@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001;
 
 import java.util.List;
 import java.util.Map;
+
 import jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001common.Skf1010Sc001CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -52,7 +53,7 @@ public class Skf1010Sc001InitDto extends Skf1010Sc001CommonDto {
 	private String level3;
 	// 画面表示（操作に困ったときは）
 	private String level4;
-	// 画面表示（操作に困ったときは 管理者）
+	// 画面表示（マニュアル 管理）
 	private String level4_1;
 	// 画面表示（未処理情報）
 	private String level5;

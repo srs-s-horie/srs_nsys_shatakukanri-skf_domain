@@ -870,10 +870,6 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			}
 			if(PARKING_CONTRACT_TYPE2.equals(registDto.getParkingContractType())){
 				//契約形態が「社宅と別契約」の場合
-				//TODO Debug
-				registDto.setParkingOwnerName("テスト賃貸人");
-				registDto.setParkingOwnerNo("1");
-				//TODO
 				//賃貸人（代理人）
 				if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingOwnerName())) {
 					isCheckOk = false;

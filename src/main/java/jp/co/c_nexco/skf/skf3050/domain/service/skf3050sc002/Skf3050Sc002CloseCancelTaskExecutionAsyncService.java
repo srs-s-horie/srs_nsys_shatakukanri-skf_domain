@@ -51,7 +51,7 @@ public class Skf3050Sc002CloseCancelTaskExecutionAsyncService
 	@Override
 	protected AsyncBaseDto index(Skf3050Sc002CloseCancelTaskExecutionAsyncDto closeCancelDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("締め解除処理開始", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("締め解除処理", CodeConstant.C001, "Skf3050Sc002");
 
 		closeCancelDto.setResultMessages(null);
 

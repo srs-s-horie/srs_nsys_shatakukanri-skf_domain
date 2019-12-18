@@ -3,9 +3,11 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -49,7 +51,7 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public BaseDto index(Skf2010Sc005TransferDto transDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("確認処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("確認", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 
 		String applNo = transDto.getApplNo();
 		String applId = transDto.getApplId();

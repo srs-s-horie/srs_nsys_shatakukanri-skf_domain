@@ -6,9 +6,10 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExp;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinShinseiInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
@@ -63,7 +64,7 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 	@Override
 	public Skf2030Sc001SaveDto index(Skf2030Sc001SaveDto saveDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("一時保存処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
 
 		// タイトル設定
 		saveDto.setPageTitleKey(MessageIdConstant.SKF2030_SC001_TITLE);
@@ -100,8 +101,6 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		String applId = applInfo.get("applId");
 		String applStatus = applInfo.get("status");
 		String shainNo = applInfo.get("shainNo");
-
-		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// 申請履歴情報を更新する
 		// 更新対象の申請履歴情報を取得

@@ -5,12 +5,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
-import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -63,7 +64,7 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public BaseDto index(Skf2010Sc005DownloadDto dlDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("CSV出力処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
+		skfOperationLogUtils.setAccessLog("承認一覧をCSV出力する", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 		// 汎用コード取得
 		applStatusMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 

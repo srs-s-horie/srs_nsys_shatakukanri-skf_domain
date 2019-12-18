@@ -47,7 +47,7 @@ public class Skf3050Sc002ProvCalcService extends BaseServiceAbstract<Skf3050Sc00
 	@Override
 	protected BaseDto index(Skf3050Sc002ProvCalcDto provCalcDto) throws Exception {
 		
-		skfOperationLogUtils.setAccessLog("仮計算処理開始", CodeConstant.C001, provCalcDto.getPageId());
+		skfOperationLogUtils.setAccessLog("仮計算処理", CodeConstant.C001, provCalcDto.getPageId());
 		
 		String jikkouShijiYoteiNengetsu = provCalcDto.getHdnJikkouShijiYoteiNengetsu();
 		provCalcDto.setResultMessages(null);

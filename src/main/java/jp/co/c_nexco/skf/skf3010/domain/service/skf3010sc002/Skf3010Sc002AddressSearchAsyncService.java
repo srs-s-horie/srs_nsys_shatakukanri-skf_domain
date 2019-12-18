@@ -57,7 +57,7 @@ public class Skf3010Sc002AddressSearchAsyncService extends AsyncBaseServiceAbstr
 
 		// Debugログで出力
 		LogUtils.debugByMsg("基本情報-郵便番号検索：" + asyncDto.getZipCd());
-		skfOperationLogUtils.setAccessLog("基本情報-郵便番号検索", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
+		skfOperationLogUtils.setAccessLog("基本情報-住所検索", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 		//
 		asyncDto.setZipCdErr(CodeConstant.DOUBLE_QUOTATION);
 		// 都道府県リスト
