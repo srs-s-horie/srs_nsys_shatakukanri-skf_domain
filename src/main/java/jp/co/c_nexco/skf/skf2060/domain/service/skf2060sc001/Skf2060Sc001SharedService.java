@@ -8,32 +8,33 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukken;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeiji;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiDetail;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiFile;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageTeijiForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001UpdateApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiDetailRepository;
@@ -173,7 +174,7 @@ public class Skf2060Sc001SharedService {
 				deleteBukken = CodeConstant.DOUBLE_QUOTATION;
 			}
 			String candidateDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getCandidateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			String lastUpdateDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getUpdateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			String lastUpdateDate = skfDateFormatUtils.dateFormatFromDate(tmpData.getUpdateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
 			tmpMap.put("teiji", "<input type='checkbox' name='teijiVal' id='teijiVal" + i + "' value='" + i + "'>");
 			tmpMap.put("insertDate", HtmlUtils.htmlEscape(insertDate));
 			tmpMap.put("candidateDate", HtmlUtils.htmlEscape(candidateDate));
@@ -307,8 +308,8 @@ public class Skf2060Sc001SharedService {
 			int back2Number = Integer.parseInt(back2Words);
 			//申請書類管理番号の後ろ２桁に1足す
 			back2Number += 1;
-			//TODO 最大ページって９９なの？？？？
-			int maxPage = 99;
+			//最大ページは100
+			int maxPage = 100;
 			//申請書類管理番号のページが超えた場合
 			if(back2Number > maxPage){
 				//エラー処理(とりあえず空にする）

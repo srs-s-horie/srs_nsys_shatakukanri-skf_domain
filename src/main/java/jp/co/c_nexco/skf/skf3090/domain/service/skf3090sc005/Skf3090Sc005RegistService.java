@@ -7,8 +7,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc005.Skf3090Sc005UpdateShainInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
@@ -328,8 +330,6 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 		setValue.setName(dto.getName().trim());
 		// 氏名カナ
 		setValue.setNameKk(dto.getNameKk().trim());
-		// TODO 性別
-
 		// メールアドレス
 		setValue.setMailAddress(dto.getMailAddress().trim());
 		// 原籍会社コード
@@ -356,9 +356,8 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 		if (NfwStringUtils.isNotEmpty(dto.getBusinessAreaCd())) {
 			setValue.setBusinessAreaCd(dto.getBusinessAreaCd());
 		}
-		// TODO 生年
-		// TODO 生月
-		// TODO 生日
+		// 性別・生年月日は除外
+		
 		// 退職日入力分岐
 		if (dto.getRetireDate() == null || NfwStringUtils.isEmpty(dto.getRetireDate().trim())) {
 			// 退職日の入力が無い場合
@@ -374,7 +373,7 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 		// 登録フラグ（1固定）
 		setValue.setRegistFlg("1");
 
-		// TODO ロールID（とりあえず一般固定）
+		// ロールID（とりあえず一般固定）
 		setValue.setRoleId(CodeConstant.SHINSEISHA);
 
 		/** 登録 */
@@ -388,7 +387,7 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 			// 更新の場合はUPDATE
 			// 最終更新時間
 			setValue.setLastUpdateDate(dto.getLastUpdateDate(Skf3090Sc005SharedService.KEY_LAST_UPDATE_DATE));
-			registCount = updateShainInfo(setValue);
+			registCount = updateShainInfo(setValue, dto);
 			LogUtils.debugByMsg("社員マスタ更新件数：" + registCount + "件");
 		}
 
@@ -400,11 +399,15 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 	 * @param setValue 更新値を含むSkf1010MShainインスタンス
 	 * @return 更新件数
 	 */
-	private int updateShainInfo(Skf1010MShain setValue) {
+	private int updateShainInfo(Skf1010MShain setValue, Skf3090Sc005RegistDto dto) {
 
 		Skf1010MShain resultValue = new Skf1010MShain();
 		// 排他チェック
 		resultValue = skf3090Sc005SharedService.getShainByPrimaryKey(CodeConstant.C001, setValue.getShainNo());
+		if(resultValue == null){
+	 		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
+	 		throwBusinessExceptionIfErrors(dto.getResultMessages());	
+		}
 		super.checkLockException(setValue.getLastUpdateDate(), resultValue.getUpdateDate());
 		// 更新
 		return skf3090Sc005UpdateShainInfoExpRepository.updateShainInfo(setValue);
