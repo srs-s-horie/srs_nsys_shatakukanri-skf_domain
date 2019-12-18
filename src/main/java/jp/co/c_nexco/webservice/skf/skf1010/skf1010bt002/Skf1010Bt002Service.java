@@ -23,13 +23,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPer
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShainMstExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShainMstRetiredExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShainMstRetiredExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsUpdateBatchControlExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShatakuShainRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TBatchControl;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010WShain;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoWkExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExpRepository;
@@ -43,7 +41,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.Sk
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShatakuShainMasterInfoWkExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertWkShainExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsUpdateBatchControlExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShatakuShainRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010TBatchControlRepository;
@@ -58,15 +55,11 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfStringUtils;
 import jp.co.c_nexco.skf.skf1010.domain.dto.common.SkfPersonnalBatchCommonDto;
-import jp.co.intra_mart.common.platform.util.DateUtil;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.BasicAuthentication;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.GET;
-import jp.co.intra_mart.foundation.web_api_maker.annotation.PUT;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.Path;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.Response;
-import jp.co.intra_mart.framework.system.exception.SystemException;
 
 /**
  * SKF1010_BT002_社員マスタデータ取込のWebService用サービス。
@@ -79,6 +72,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 
 	private String companyCd = CodeConstant.C001;
 	private String batchResult;
+	private List<String> logList = new ArrayList<String>();
 
 	// 変換用ひらがな
 	private final String TL_HIRAGANA = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉっゃゅょーヰゐゑヵヶ";
@@ -97,13 +91,15 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	private final String BATCH_NAME_KYUYOKOUSEI = "社員データ取込";
 	private final String BATCH_NAME_SHATAKU = "従業員データ取込";
 
-	// 処理区分
-	private final String OPERATION_KBN_RIREKI = "0"; // 社宅社員異動履歴
 	private final String OPERATION_KBN_SHAIN = "1"; // 社宅社員マスタ
 
 	// 登録区分
 	private final String INSERT_KBN = "1";
 	private final String UPDATE_KBN = "2";
+
+	// ログ区分
+	private final String INFO = "info";
+	private final String ERROR = "error";
 
 	/**
 	 * コンストラクタ。
@@ -124,7 +120,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	public SkfPersonnalBatchCommonDto get() {
 
 		// 開始ログ出力
-		LogUtils.info(MessageIdConstant.I_SKF_1022, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, "従業員データ取込");
+		setLog(INFO, MessageIdConstant.I_SKF_1022, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, "従業員データ取込");
 
 		// 返却用Dto
 		SkfPersonnalBatchCommonDto dto = new SkfPersonnalBatchCommonDto();
@@ -134,52 +130,45 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		// 1：処理完了
 		// 2：異常終了
 		batchResult = SkfCommonConstant.PROCESSING;
-		// ログ管理ファイル名作成
-		String logFileName = getBatchLogFileName();
-
-		List<String> logList = new ArrayList<String>();
 
 		try {
 			// 二重起動チェック
 			boolean doubleExecRes = doubleExecuteCheck();
 			if (!doubleExecRes) {
 				// 二重起動されていない場合、バッチ制御テーブルにデータを投入する
-				boolean doubleExecInsRes = insertBatchControlFunc(logFileName);
+				boolean doubleExecInsRes = insertBatchControlFunc();
 				if (!doubleExecInsRes) {
 					// エラーログ出力
 					batchResult = SkfCommonConstant.ABNORMAL;
 					// 処理結果：バッチ制御テーブルへのデータ投入エラー
-					LogUtils.error(MessageIdConstant.E_SKF_1073);
-					logList.add(getMsg(MessageIdConstant.E_SKF_1073));
-					LogUtils.error(MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+					setLog(ERROR, MessageIdConstant.E_SKF_1073);
+					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
 							batchResult);
-					logList.add(getMsg(MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
-							batchResult));
 					dto.setStatus(batchResult);
-					dto.setMessage(String.join(CodeConstant.ESC_LF, logList.toArray(new String[logList.size()])));
+					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
 					return dto;
 				}
-				boolean kyuyoKouseiRes = updateKyuyoKousei(logList);
+				boolean kyuyoKouseiRes = updateKyuyoKousei();
 				if (!kyuyoKouseiRes) {
 					// エラーログ出力
 					batchResult = SkfCommonConstant.ABNORMAL;
-					LogUtils.error(MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
 							batchResult);
 				} else {
-					boolean shatakuRes = updateShataku(logList);
+					boolean shatakuRes = updateShataku();
 					if (!shatakuRes) {
 						// エラーログ出力
 						batchResult = SkfCommonConstant.ABNORMAL;
-						LogUtils.error(MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+						setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
 								batchResult);
 					}
 				}
 			} else {
-				// エラーログ出力
+				// 処理結果を異常終了に設定
 				batchResult = SkfCommonConstant.ABNORMAL;
-				// 処理結果:重複起動エラー
-				LogUtils.error(MessageIdConstant.E_SKF_1080, companyCd, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002);
-				LogUtils.error(MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
+				// エラーログ出力 処理結果:重複起動エラー
+				setLog(ERROR, MessageIdConstant.E_SKF_1080, companyCd, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002);
+				setLog(ERROR, MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
 			}
 
 		} catch (Exception ex) {
@@ -192,9 +181,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				return dto;
 			}
 			// 処理結果
-			LogUtils.error(MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
-			logList.add(
-					getMsg(MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult));
+			setLog(ERROR, MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
 			logList.add(ex.getMessage());
 
 		}
@@ -204,22 +191,25 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		}
 
 		// 処理結果返却
-		if (!endPrc(String.valueOf(batchResult), FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
-				SkfCommonConstant.PROCESSING)) {
-			dto.setStatus(batchResult);
-			dto.setMessage(String.join(CodeConstant.ESC_LF, logList.toArray(new String[logList.size()])));
-			return dto;
-		}
+		endPrc(String.valueOf(batchResult), FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, SkfCommonConstant.PROCESSING);
 
 		// 終了ログ出力
-		LogUtils.info(MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
+		setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
 		dto.setStatus(batchResult);
-		dto.setMessage(String.join(CodeConstant.ESC_LF, logList.toArray(new String[logList.size()])));
+		dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
 		// 処理結果返却
 		// return skfPersonnalBatchCommonDto;
 		return dto;
 	}
 
+	/**
+	 * バッチの終了処理を行います
+	 * 
+	 * @param endFlg
+	 * @param programId
+	 * @param searchEndFlg
+	 * @return
+	 */
 	private boolean endPrc(String endFlg, String programId, String searchEndFlg) {
 		Date endDate = new Date();
 		SkfPerssonalBatchUtilsUpdateBatchControlExp updData = new SkfPerssonalBatchUtilsUpdateBatchControlExp();
@@ -241,12 +231,10 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	/**
 	 * 給与厚生側の社員データ取込処理
 	 * 
-	 * @param logList
-	 * 
 	 * @return
 	 */
-	private boolean updateKyuyoKousei(List<String> logList) throws Exception {
-		LogUtils.info(MessageIdConstant.I_SKF_1022, BATCH_NAME_KYUYOKOUSEI);
+	private boolean updateKyuyoKousei() throws Exception {
+		setLog(INFO, MessageIdConstant.I_SKF_1022, BATCH_NAME_KYUYOKOUSEI);
 
 		int shainDelCnt = 0;
 		int shainInsCnt = 0;
@@ -267,11 +255,9 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 
 		// ログ出力
 		// 社員マスタ削除件数
-		LogUtils.info(MessageIdConstant.I_SKF_3093, shainDelCnt);
-		logList.add(getMsg(MessageIdConstant.I_SKF_3093, shainDelCnt));
+		setLog(INFO, MessageIdConstant.I_SKF_3093, shainDelCnt);
 		// 社員マスタ登録件数
-		LogUtils.info(MessageIdConstant.I_SKF_3094, shainInsCnt);
-		logList.add(getMsg(MessageIdConstant.I_SKF_3094, shainInsCnt));
+		setLog(INFO, MessageIdConstant.I_SKF_3094, shainInsCnt);
 
 		return true;
 	}
@@ -324,8 +310,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	 * @return
 	 */
 	private int insertShainMstRetied() {
-		// 月末日取得
-		String importMonths = "2";
 
 		SkfPerssonalBatchUtilsInsertShainMstRetiredExpRepository repository = (SkfPerssonalBatchUtilsInsertShainMstRetiredExpRepository) SpringContext
 				.getBean("skfPerssonalBatchUtilsInsertShainMstRetiredExpRepository");
@@ -336,7 +320,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		param.setCorrectionStatus(CORRECTION_STATUS);
 		param.setUserType(USER_TYPE);
 		param.setUseNotes(USE_NOTES);
-		param.setImportMonths(importMonths);
 		int res = repository.insertShainMstRetired(param);
 		return res;
 	}
@@ -345,22 +328,20 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	/**
 	 * 社宅側の従業員データ取込処理
 	 * 
-	 * @param logList
-	 * 
 	 * @return
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	private boolean updateShataku(List<String> logList) throws Exception {
+	private boolean updateShataku() throws Exception {
 		// 開始ログ出力
-		LogUtils.info(MessageIdConstant.I_SKF_1022, BATCH_NAME_SHATAKU);
+		setLog(INFO, MessageIdConstant.I_SKF_1022, BATCH_NAME_SHATAKU);
 
 		String firstDate = CodeConstant.NONE;
 		String lastDate = DateUtils.getLastDate(new Date());
-		String nowDate = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-		Pattern pattern = Pattern.compile("^([0-2][0-9]{3}/[0-1][0-9])");
+		String nowDate = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+		Pattern pattern = Pattern.compile("^([0-2][0-9]{3}[0-1][0-9])");
 		Matcher matcher = pattern.matcher(nowDate);
 		if (matcher.find()) {
-			firstDate = matcher.group() + "/01";
+			firstDate = matcher.group().replace("/", "") + "01";
 		}
 		// 月末月初の場合
 		String beginingEndKbn = CodeConstant.NONE;
@@ -375,22 +356,25 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				batchResult = SkfCommonConstant.ABNORMAL;
 				// 管理ログ出力
 				// S00001：予期せぬエラーが発生しました。ヘルプデスクへ連絡してください。
-				LogUtils.error(MessageIdConstant.E_SKF_1079);
-				logList.add(getMsg(MessageIdConstant.E_SKF_1079));
+				setLog(ERROR, MessageIdConstant.E_SKF_1079);
 				return false;
 			}
 		}
-		updateShatakuShain();
+		if (!updateShatakuShain()) {
+			batchResult = SkfCommonConstant.ABNORMAL;
+
+			setLog(ERROR, MessageIdConstant.E_SKF_1079);
+			return false;
+		}
 		return true;
 	}
 
 	/**
 	 * バッチ制御テーブルにデータを投入する
 	 * 
-	 * @param logFileName
 	 * @return
 	 */
-	private boolean insertBatchControlFunc(String logFileName) {
+	private boolean insertBatchControlFunc() {
 		Skf1010TBatchControl insertData = new Skf1010TBatchControl();
 		Date execDate = new Date();
 		insertData.setCompanyCd(companyCd); // 会社コード
@@ -398,7 +382,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		insertData.setProgramId(FunctionIdConstant.BATCH_CLASS_SKF1010_BT002); // プログラムID
 		insertData.setUserId(SkfCommonConstant.FIXED_NAME_BATCH); // ユーザーID
 		insertData.setEndFlg(SkfCommonConstant.PROCESSING); // 終了フラグ（0：処理中）
-		insertData.setLogFileName(logFileName);
 		Skf1010TBatchControlRepository repository = (Skf1010TBatchControlRepository) SpringContext
 				.getBean("skf1010TBatchControlRepository");
 		int res = repository.insertSelective(insertData);
@@ -445,7 +428,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				.getBean("skfPerssonalBatchUtilsGetIdmPreUserMasterInfoExpRepository");
 		// 人事連携用従業員データの取得
 		preUserMasterList = getBaseShainInfoRepository.getIdmPreUserMasterInfo();
-		if (preUserMasterList == null || preUserMasterList.size() <= 0) {
+		if (preUserMasterList != null && preUserMasterList.size() > 0) {
 			for (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExp preUserMasterInfo : preUserMasterList) {
 				// 年月を取得
 				Date inputDate = preUserMasterInfo.getInputDate();
@@ -459,27 +442,33 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 					if (!delRes) {
 						return false;
 					}
-
-					// 社宅社員異動履歴テーブルへデータを登録する
-					Skf1010MShatakuShainRireki insertRireki = new Skf1010MShatakuShainRireki();
-					setInsertShatakuShainRireki(insertRireki, preUserMasterInfo, beginningEndKbn);
-					boolean rirekiInsRes = insertShatakuShainRirekiInfo(insertRireki);
-					if (!rirekiInsRes) {
-						return false;
-					}
+				}
+				// 社宅社員異動履歴テーブルへデータを登録する
+				Skf1010MShatakuShainRireki insertRireki = new Skf1010MShatakuShainRireki();
+				setInsertShatakuShainRireki(insertRireki, preUserMasterInfo, beginningEndKbn);
+				boolean rirekiInsRes = insertShatakuShainRirekiInfo(insertRireki);
+				if (!rirekiInsRes) {
+					return false;
 				}
 
 			}
+
 		}
 		return true;
 	}
 
+	/**
+	 * 社宅社員マスタの更新
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	private boolean updateShatakuShain() throws Exception {
-		// １．ワーク社宅社員マスタ(WK_M_SHATAKU_SHAIN)のデータを全件削除する。
+		// １．ワーク社宅社員マスタ(skf1010_w_shain)のデータを全件削除する。
 		if (0 > deleteShatakuShainMasterInfoWk()) {
 			return false;
 		}
-		// ２．ワーク社宅社員マスタ(WK_M_SHATAKU_SHAIN)に社宅社員マスタ(skf1010_m_shain)へコピーする。
+		// ２．ワーク社宅社員マスタ(skf1010_w_shain)に社宅社員マスタ(skf1010_m_shain)をコピーする。
 		if (0 > insertShatakuShainMasterInfoWk()) {
 			return false;
 		}
@@ -491,29 +480,23 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 
 		// ４．社宅社員マスタ(SKF1010_M_SHAIN)から、３で取得した社員を物理削除する。
 		if (baseShainInfoList != null && baseShainInfoList.size() > 0) {
+			Skf1010MShainRepository shainRepository = (Skf1010MShainRepository) SpringContext
+					.getBean("skf1010MShainRepository");
 			// ５．（３）で取得した社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)に登録する。
 			for (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp idmShain : baseShainInfoList) {
 				// 社員番号で社員情報を削除する
 				if (0 > deleteShatakuShainMasterInfo(idmShain.getShainNo(), false)) {
 					return false;
 				}
-			}
-
-		}
-		// ５．（３）で取得した社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)に登録する。
-		if (baseShainInfoList != null && baseShainInfoList.size() > 0) {
-			Skf1010MShainRepository shainRepository = (Skf1010MShainRepository) SpringContext
-					.getBean("skf1010MShainRepository");
-			for (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp idmShain : baseShainInfoList) {
 				// 登録データをマッピングする
 				Skf1010MShain insertShain = new Skf1010MShain();
-				getColumnInfoList(OPERATION_KBN_SHAIN, INSERT_KBN, insertShain, null, idmShain);
+				getColumnInfoList(OPERATION_KBN_SHAIN, INSERT_KBN, insertShain, idmShain);
 				if (0 > shainRepository.insertSelective(insertShain)) {
 					return false;
 				}
 			}
 		}
-		// ６．２でバックアップした社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)を更新する。
+		// ５．２でバックアップした社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)を更新する。
 		List<SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExp> wShainList = new ArrayList<SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExp>();
 		SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExpRepository wkShainRepository = (SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExpRepository) SpringContext
 				.getBean("skfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExpRepository");
@@ -521,7 +504,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		if (wShainList != null && wShainList.size() > 0) {
 			for (SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExp wShainInfo : wShainList) {
 				Skf1010MShain shainInfo = new Skf1010MShain();
-				getColumnInfoList(OPERATION_KBN_SHAIN, UPDATE_KBN, shainInfo, null, wShainInfo);
+				getColumnInfoList(OPERATION_KBN_SHAIN, UPDATE_KBN, shainInfo, wShainInfo);
 				if (!updateShatakuShainMasterInfo(shainInfo)) {
 					return false;
 				}
@@ -530,8 +513,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return true;
 	}
 
-	private void getColumnInfoList(String flg, String updateKbn, Skf1010MShain shainInfo,
-			Skf1010MShatakuShainRireki rirekiInfo, Object dataEntity) {
+	private void getColumnInfoList(String flg, String updateKbn, Skf1010MShain shainInfo, Object dataEntity) {
 		if (CheckUtils.isEqual(flg, OPERATION_KBN_SHAIN)) {
 			if (shainInfo == null) {
 				return;
@@ -568,6 +550,10 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				if (NfwStringUtils.isNotEmpty(btDD)) {
 					shainInfo.setBirthdayDay(Short.parseShort(btDD));
 				}
+				// メールアドレス
+				shainInfo.setMailAddress(idmShain.getMailAddress());
+				// 性別
+				shainInfo.setGender(idmShain.getGender());
 				// ロールID
 				shainInfo.setRoleId("SKF_001");
 				// 登録フラグ
@@ -603,44 +589,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 			return false;
 		}
 		return true;
-	}
-
-	private void mappingShainData(Skf1010MShain insertShain,
-			SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp idmShain) {
-		// 会社コード
-		insertShain.setCompanyCd(idmShain.getCompanyCd());
-		// 社員番号
-		insertShain.setShainNo(idmShain.getShainNo());
-		// 氏名カナ
-		insertShain.setNameKk(idmShain.getNameKk());
-		// 氏名
-		insertShain.setName(idmShain.getName());
-		// 機関コード
-		insertShain.setAgencyCd(idmShain.getAgencyCd());
-		// 部等コード
-		insertShain.setAffiliation1Cd(idmShain.getAffiliation1Cd());
-		// 室、チーム又は課コード
-		insertShain.setAffiliation2Cd(idmShain.getAffiliation2Cd());
-		// 誕生日：年
-		String btYYYY = idmShain.getBtYYYY();
-		if (NfwStringUtils.isNotEmpty(btYYYY)) {
-			insertShain.setBirthdayYear(Short.parseShort(btYYYY));
-		}
-		// 誕生日：月
-		String btMM = idmShain.getBtMM();
-		if (NfwStringUtils.isNotEmpty(btMM)) {
-			insertShain.setBirthdayMonth(Short.parseShort(btMM));
-		}
-		// 誕生日：日
-		String btDD = idmShain.getBtDD();
-		if (NfwStringUtils.isNotEmpty(btDD)) {
-			insertShain.setBirthdayDay(Short.parseShort(btDD));
-		}
-		// ロールID
-		insertShain.setRoleId("SKF_001");
-		// 登録フラグ
-		insertShain.setRegistFlg(SkfCommonConstant.REGIST_SHINJO);
-
 	}
 
 	private List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> getIdmPreUserMasterInfo() {
@@ -698,21 +646,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * ログファイル名作成
-	 * 
-	 * @return
-	 */
-	private String getBatchLogFileName() {
-		StringBuilder fileName = new StringBuilder();
-		fileName.append(FunctionIdConstant.BATCH_CLASS_SKF1010_BT002);
-		fileName.append(CodeConstant.UNDER_SCORE);
-		fileName.append(String.valueOf(DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH)));
-
-		String logFileName = fileName.toString();
-		return logFileName;
 	}
 
 	/**
@@ -785,24 +718,49 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	}
 
 	/**
-	 * 社宅社員マスタデータ削除
+	 * 社宅社員マスタデータを物理削除します
 	 * 
+	 * @param shainNo
+	 * @param isSetRegistFlg
 	 * @return
+	 * @throws Exception
 	 */
 	private int deleteShatakuShainMasterInfo(String shainNo, boolean isSetRegistFlg) throws Exception {
 		SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository repository = (SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository) SpringContext
 				.getBean("skfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository");
 		SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp param = new SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp();
+		// 会社コード
+		param.setCompanyCd(companyCd);
+		// 申請画面登録フラグ
 		if (isSetRegistFlg) {
 			param.setRegistFlg(SkfCommonConstant.REGIST_SHINSEI);
 		}
+		// 社員番号
 		if (NfwStringUtils.isNotEmpty(shainNo)) {
-			param.setCompanyCd(companyCd);
 			param.setShainNo(shainNo);
 		}
 		int res = repository.deleteShatakuShainMasterInfo(param);
 
 		return res;
+	}
+
+	/**
+	 * ログ情報をセットします
+	 * 
+	 * @param logId
+	 * @param messageId
+	 * @param params
+	 */
+	private void setLog(String logId, String messageId, Object... params) {
+		switch (logId) {
+		case INFO:
+			LogUtils.info(messageId, params);
+			break;
+		case ERROR:
+			LogUtils.error(messageId, params);
+		}
+
+		logList.add(getMsg(messageId, params));
 	}
 
 	/**

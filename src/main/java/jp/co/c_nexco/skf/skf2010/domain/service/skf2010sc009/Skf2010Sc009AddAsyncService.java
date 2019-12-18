@@ -156,7 +156,7 @@ public class Skf2010Sc009AddAsyncService extends AsyncBaseServiceAbstract<Skf201
 		}
 
 		// 拡張子チェック
-		String extension = skfAttachedFileUtiles.getExtension(fileName);
+		String extension = SkfAttachedFileUtils.getExtension(fileName);
 		if (CheckUtils.isEmpty(extension)) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1026);
 			return false;
