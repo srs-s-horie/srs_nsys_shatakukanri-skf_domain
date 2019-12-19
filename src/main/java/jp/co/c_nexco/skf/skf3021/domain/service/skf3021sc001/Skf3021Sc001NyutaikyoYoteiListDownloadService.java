@@ -158,7 +158,8 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 					LogUtils.error(Skf3021Sc001NyutaikyoYoteiListDownloadService.class, "入居希望等調書・入居決定通知情報の取得に失敗しました。 " + applNo);
 					continue;
 				}
-				
+			}else{
+				dt2Row  = new Skf2020TNyukyoChoshoTsuchi();
 			}
 
 			//現社宅情報取得
@@ -190,7 +191,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 						dt4Row = dt4.get(0);
 					}
 				}
-			}else if(shainNo.startsWith(STRING_K)){
+			}else if(!shainNo.startsWith(STRING_K)){
 				//申請ない、且つ、正社員番号の場合
 				Map<String,Object> noList = getShainRoomInfo(shainNo);
 				shatakuNo = noList.get("shatakuNo").toString();
@@ -263,7 +264,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 						dt4Row = dt4.get(0);
 					}
 				}
-			}else if(shainNo.startsWith(STRING_K)){
+			}else if(!shainNo.startsWith(STRING_K)){
 				//申請ない、且つ、正社員番号の場合
 				Map<String,Object> noList = getShainRoomInfo(shainNo);
 				shatakuNo = noList.get("shatakuNo").toString();
@@ -317,7 +318,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 		List<Skf3021Rp001GetShatakuLedgerInfoByshainNoExp> skDt = new ArrayList<Skf3021Rp001GetShatakuLedgerInfoByshainNoExp>();
 		//GetShatakuLedgerInfoByshainNo
 		skParam.setShainNo(shainNo);
-		skDt = skf3021Rp001GetShatakuLedgerInfoByshainNoExpRepository.getCurrentShatakuInfo(skParam);
+		skDt = skf3021Rp001GetShatakuLedgerInfoByshainNoExpRepository.getShatakuLedgerInfoByshainNo(skParam);
 		
 		int honninCount = 0;
 		if(skDt.size() > 1){
@@ -394,7 +395,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 		if(nyukyoRow != null){
 			//・入居の場合:入居希望等調書・入居決定通知の'現所属 機関/現所属 部等/現所属 室、チーム又は課を繋げて表示する。
 			nowAffiliation = nyukyoRow.getAgency() +" "+ nyukyoRow.getAffiliation1() +" "+ nyukyoRow.getNewAffiliation2();
-		}else{
+		}else if(taikyoRow != null){
 			//・退居の場合:退居（自動車の保管場所返還）の'所属 機関/所属 部等/所属室、チーム又は課を繋げて表示する。
 			nowAffiliation = taikyoRow.getAgency() +" "+ taikyoRow.getAffiliation1() +" "+ taikyoRow.getAffiliation2();
 		}
@@ -529,7 +530,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 			//使用開始予定日1
 			String parking1StartDate = CodeConstant.DOUBLE_QUOTATION;
 			if(!SkfCheckUtils.isNullOrEmpty(getRowData.getParking1StartDate())){
-				nyukyoYoteiDate = skfDateFormatUtils.dateFormatFromString(getRowData.getParking1StartDate(),
+				parking1StartDate = skfDateFormatUtils.dateFormatFromString(getRowData.getParking1StartDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 			rdb.addCellDataBean("Q" + rowNo, parking1StartDate,
@@ -539,7 +540,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 			//使用開始予定日2
 			String parking2StartDate = CodeConstant.DOUBLE_QUOTATION;
 			if(!SkfCheckUtils.isNullOrEmpty(getRowData.getParking2StartDate())){
-				nyukyoYoteiDate = skfDateFormatUtils.dateFormatFromString(getRowData.getParking2StartDate(),
+				parking2StartDate = skfDateFormatUtils.dateFormatFromString(getRowData.getParking2StartDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 			rdb.addCellDataBean("S" + rowNo, parking2StartDate,

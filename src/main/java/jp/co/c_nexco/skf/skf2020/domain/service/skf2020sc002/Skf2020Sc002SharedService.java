@@ -9,9 +9,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetAgensyCdExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetAgensyCdExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetAgensyNameExp;
@@ -740,7 +742,7 @@ public class Skf2020Sc002SharedService {
 		dto.setBtnSaveDisabeld(sTrue);
 		// 申請内容を確認
 		dto.setBtnCheckDisabled(sTrue);
-		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 	}
 
 	/**

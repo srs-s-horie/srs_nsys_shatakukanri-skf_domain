@@ -2,8 +2,10 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc007;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetAffiliation1InfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetAffiliation1InfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc007.Skf3090Sc007GetAffiliation1InfoExpRepository;
@@ -77,9 +79,9 @@ public class Skf3090Sc007Affiliation1SearchAsyncService
 			}
 
 			// 部等コード
-			if (CheckUtils.isMoreThanByteSize(affiliation1SearchAsyncDto.getRegistAffiliation1Cd().trim(), 2)) {
+			if (CheckUtils.isMoreThanByteSize(affiliation1SearchAsyncDto.getRegistAffiliation1Cd().trim(), 3)) {
 				ServiceHelper.addErrorResultMessage(affiliation1SearchAsyncDto, new String[] { "registAffiliation1Cd" },
-						MessageIdConstant.E_SKF_1071, "部等コード", "2");
+						MessageIdConstant.E_SKF_1071, "部等コード", "3");
 				isCheck = false;
 			}
 		}

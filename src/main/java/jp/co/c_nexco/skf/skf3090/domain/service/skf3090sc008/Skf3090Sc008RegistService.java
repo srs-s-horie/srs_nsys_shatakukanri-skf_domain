@@ -69,8 +69,8 @@ public class Skf3090Sc008RegistService extends BaseServiceAbstract<Skf3090Sc008R
 			LogUtils.debugByMsg("お知らせ内容（エスケープ)："+escapeNote);
 			LogUtils.debugByMsg("お知らせ内容文字数（エスケープ)："+escapeNote.length());
 			//「お知らせ内容」桁数チェック
-			if(NfwStringUtils.isNotEmpty(escapeNote) && CheckUtils.isMoreThanByteSize(escapeNote.trim(), 2000)){
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "お知らせ","1000");
+			if(NfwStringUtils.isNotEmpty(escapeNote) && CheckUtils.isMoreThanByteSize(note, 4000)){
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1071, "お知らせ","2000");
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
 		}
@@ -81,6 +81,10 @@ public class Skf3090Sc008RegistService extends BaseServiceAbstract<Skf3090Sc008R
 			
 			//楽観的排他チェック
 			Skf1010TInformation informationData = skf3090Sc008SharedService.getInformation(companyCd, openDate);
+			if(informationData == null){
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1134, "");
+				throwBusinessExceptionIfErrors(registDto.getResultMessages());
+			}
 			super.checkLockException(registDto.getLastUpdateDate(registDto.informationLastUpdateDate + openDate), informationData.getUpdateDate());
 			
 			//お知らせテーブル更新

@@ -58,8 +58,7 @@ public class Skf3090Sc008EditService extends BaseServiceAbstract<Skf3090Sc008Edi
 			//テキストエディターに取得した内容を設定
 			editDto.setNote(informationData.getNote());
 		}else{
-	 		ServiceHelper.addErrorResultMessage(editDto, null, MessageIdConstant.E_SKF_1078);
-	 		throwBusinessExceptionIfErrors(editDto.getResultMessages());
+	 		ServiceHelper.addErrorResultMessage(editDto, null, MessageIdConstant.E_SKF_1134, "");
 		}
 		
 		//お知らせリストテーブルの設定

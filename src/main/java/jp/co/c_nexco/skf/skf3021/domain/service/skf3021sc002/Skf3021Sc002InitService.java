@@ -23,12 +23,15 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyu;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyuKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiData;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiDataKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetGenShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetNyukyoChoshoInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetTaikyoInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MTokyuRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiDataRepository;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -62,6 +65,8 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
 	@Autowired
+	private Skf3021TNyutaikyoYoteiDataRepository skf3021TNyutaikyoYoteiDataRepository;
+	@Autowired
 	private Skf3021Sc002GetGenShatakuInfoExpRepository skf3021Sc002GetGenShatakuInfoExpRepository;
 	@Autowired
 	private Skf3021Sc002GetTaikyoInfoExpRepository skf3021Sc002GetTaikyoInfoExpRepository;
@@ -74,6 +79,8 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	private static final String DATA_SHAIN_NO_CHANGE_FLG = "*";
 	//年齢
 	private static final String DATA_NENREI = "歳";
+	//面積の単位
+	private static final String MENSEKI_TANI = "㎡";
 	//社宅の必要・不要の値：0
 	private static final String SHATAKU_HITSUYO0 = "0";
 	//社宅の必要・不要の値：0⇒必要としない
@@ -141,15 +148,18 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		//申請書類管理番号の取得
 		String applNo = initDto.getHdnRowApplNo();
 		//社員番号の取得
-		String shainNo = initDto.getHdnRowShainNo();
-//		//入退居区分の取得→未使用
-//		String nyutaikyokbn = initDto.getHdnRowNyutaikyoKbn();
+		String shainNo = initDto.getHdnRowShainNo().replace("*", "");
+		//入退居区分の取得
+		String nyutaikyokbn = initDto.getHdnRowNyutaikyoKbn();
 		
 		//申請者情報
 		setShinseishaInfo(shainNo,initDto);
 		
 		//入退居申請情報を設定する
 		setNyuTaikyoShinseishaInfo(applNo,initDto);
+		
+		//特殊事情の設定
+		setTokushujijoFromNyutaikyoYotei(shainNo,nyutaikyokbn,initDto);
 		
 		return initDto;
 	}
@@ -166,8 +176,9 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
 
 		if(dt_TSUCHI == null){
-			for(int i=0; i < 6; i++){
+			for(int i=1; i < 7; i++){
 				Map<String, Object> tmpMap = new HashMap<String, Object>();
+				tmpMap.put("colDokyoNo", i); 
 				tmpMap.put("colDokyoName", ""); 
 				tmpMap.put("colZokugara", ""); 
 				tmpMap.put("colNenrei", "");
@@ -190,6 +201,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			dokyoAge1 = dt_TSUCHI.getDokyoAge1() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap1 = new HashMap<String, Object>();
+		tmpMap1.put("colDokyoNo", "1"); 
 		tmpMap1.put("colDokyoName", dokyoName1); 
 		tmpMap1.put("colZokugara", dokyoRelation1);
 		tmpMap1.put("colNenrei", dokyoAge1);
@@ -210,6 +222,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			dokyoAge2 = dt_TSUCHI.getDokyoAge2() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap2 = new HashMap<String, Object>();
+		tmpMap2.put("colDokyoNo", "2"); 
 		tmpMap2.put("colDokyoName", dokyoName2); 
 		tmpMap2.put("colZokugara", dokyoRelation2);
 		tmpMap2.put("colNenrei", dokyoAge2);
@@ -230,6 +243,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			dokyoAge3 = dt_TSUCHI.getDokyoAge3() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap3 = new HashMap<String, Object>();
+		tmpMap3.put("colDokyoNo", "3"); 
 		tmpMap3.put("colDokyoName", dokyoName3); 
 		tmpMap3.put("colZokugara", dokyoRelation3);
 		tmpMap3.put("colNenrei", dokyoAge3);
@@ -250,6 +264,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			dokyoAge4 = dt_TSUCHI.getDokyoAge4() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap4 = new HashMap<String, Object>();
+		tmpMap4.put("colDokyoNo", "4"); 
 		tmpMap4.put("colDokyoName", dokyoName4); 
 		tmpMap4.put("colZokugara", dokyoRelation4);
 		tmpMap4.put("colNenrei", dokyoAge4);
@@ -270,6 +285,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			dokyoAge5 = dt_TSUCHI.getDokyoAge5() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap5 = new HashMap<String, Object>();
+		tmpMap5.put("colDokyoNo", "5"); 
 		tmpMap5.put("colDokyoName", dokyoName5); 
 		tmpMap5.put("colZokugara", dokyoRelation5);
 		tmpMap5.put("colNenrei", dokyoAge5);
@@ -290,6 +306,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			dokyoAge6 = dt_TSUCHI.getDokyoAge6() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap6 = new HashMap<String, Object>();
+		tmpMap6.put("colDokyoNo", "6"); 
 		tmpMap6.put("colDokyoName", dokyoName6); 
 		tmpMap6.put("colZokugara", dokyoRelation6);
 		tmpMap6.put("colNenrei", dokyoAge6);
@@ -309,8 +326,9 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
 
 		if(dt_TSUCHI == null){
-			for(int i=0; i < 2; i++){
+			for(int i=1; i < 3; i++){
 				Map<String, Object> tmpMap = new HashMap<String, Object>();
+				tmpMap.put("colCarNo", i); 
 				tmpMap.put("colCarName", ""); 
 				tmpMap.put("colTorokuNo", ""); 
 				tmpMap.put("colCarUser", "");
@@ -339,6 +357,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			useDate = skfDateFormatUtils.dateFormatFromString(dt_TSUCHI.getParkingUseDate() , "yyyy/MM/dd");
 		}
 		Map<String, Object> tmpMap1 = new HashMap<String, Object>();
+		tmpMap1.put("colCarNo", "1"); 
 		tmpMap1.put("colCarName", carName); 
 		tmpMap1.put("colTorokuNo", carNo); 
 		tmpMap1.put("colCarUser", carUser);
@@ -364,6 +383,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			useDate2 = skfDateFormatUtils.dateFormatFromString(dt_TSUCHI.getParkingUseDate2() , "yyyy/MM/dd");
 		}
 		Map<String, Object> tmpMap2 = new HashMap<String, Object>();
+		tmpMap2.put("colCarNo", "2"); 
 		tmpMap2.put("colCarName", carName2); 
 		tmpMap2.put("colTorokuNo", carNo2); 
 		tmpMap2.put("colCarUser", carUser2);
@@ -549,12 +569,12 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			}
 			dto.setJidoshaHokan(jidoshaHokan);
 			
-			//特殊事情
-			String tokushujijo = CodeConstant.DOUBLE_QUOTATION;
-			if(dt_TSUCHI.getTokushuJijo() != null){
-				tokushujijo = dt_TSUCHI.getTokushuJijo();
-			}
-			dto.setTokushujijo(tokushujijo);
+//			//特殊事情
+//			String tokushujijo = CodeConstant.DOUBLE_QUOTATION;
+//			if(dt_TSUCHI.getTokushuJijo() != null){
+//				tokushujijo = dt_TSUCHI.getTokushuJijo();
+//			}
+//			dto.setTokushujijo(tokushujijo);
 			
 			//同居家族一覧表
 			dto.setDokyoKazokuIchiranList(createDokyoKazokuListTable(dt_TSUCHI));
@@ -652,7 +672,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		
 		//面積
 		if(!SkfCheckUtils.isNullOrEmpty(menseki)){
-			dto.setMenseki(menseki);
+			dto.setMenseki(menseki + MENSEKI_TANI);
 		}else{
 			dto.setMenseki(CodeConstant.DOUBLE_QUOTATION);
 		}
@@ -864,5 +884,22 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		}
 		
 		return str;
+	}
+
+	/**
+	 * 入退居予定データから特殊事情を設定する
+	 * @param shainNo 社員番号
+	 * @param nyutaikyoKbn 入退居区分
+	 * @param dto
+	 */
+	private void setTokushujijoFromNyutaikyoYotei(String shainNo, String nyutaikyoKbn, Skf3021Sc002InitDto dto){
+		
+		Skf3021TNyutaikyoYoteiDataKey key = new Skf3021TNyutaikyoYoteiDataKey();
+		key.setShainNo(shainNo);
+		key.setNyutaikyoKbn(nyutaikyoKbn);
+		Skf3021TNyutaikyoYoteiData record = skf3021TNyutaikyoYoteiDataRepository.selectByPrimaryKey(key);
+		if(record != null){
+			dto.setTokushujijo(record.getTokushuJijo());
+		}
 	}
 }

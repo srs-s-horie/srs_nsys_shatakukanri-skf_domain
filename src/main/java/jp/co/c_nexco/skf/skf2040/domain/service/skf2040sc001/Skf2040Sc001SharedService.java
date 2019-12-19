@@ -7,9 +7,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinHenkyakuApplNoInfoExp;
@@ -392,7 +394,7 @@ public class Skf2040Sc001SharedService {
 			// 退居届情報の取得に失敗した場合はエラーメッセージを表示してボタンを使用不可にする
 			this.setDisableBtn(dto);
 			LogUtils.debugByMsg("該当する退居届情報が存在しません。");
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return;
 		}
 		this.convTaikyoEntityToDto(dto, taikyoInfo);

@@ -8,8 +8,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -17,8 +19,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005InitDto;
@@ -98,9 +100,9 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		List<Map<String, Object>> businessAreaList = new ArrayList<Map<String, Object>>();
 
 		// 社員番号テキストボックス操作可否設定
-		String shainNoDisabled = CodeConstant.DOUBLE_QUOTATION;
+		String shainNoDisabled = "false";
 		// 削除ボタン表示設定
-		String deleteRemoveFlag = "false";
+		String deleteRemoveFlag = "true";
 
 		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
@@ -141,7 +143,7 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 
 			if (returnMap == null) {
 				// Mapがnullの場合、0件エラー表示
-				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1077);
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
 			} else {
 				// 画面表示するドロップダウンリストを取得
 				companyList

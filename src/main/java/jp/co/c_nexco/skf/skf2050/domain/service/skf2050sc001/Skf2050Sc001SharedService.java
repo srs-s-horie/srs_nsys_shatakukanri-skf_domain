@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2050Sc001.Skf2050Sc001GetTaikyobiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2050Sc001.Skf2050Sc001GetTaikyobiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
@@ -100,8 +102,15 @@ public class Skf2050Sc001SharedService {
 		List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> applHistoryList = skfApplHistoryInfoUtils
 				.getApplHistoryInfo(companyCd, applNo);
 		if (applHistoryList == null || applHistoryList.size() <= 0) {
+			if (dto.getApplStatus().equals(CodeConstant.NYUTAIKYO_APPL_STATUS_KAKUNIN_IRAI)) {
+				dto.setAllNotVisible(true);
+				dto.setCommentBtnVisible(false);
+				dto.setCarryOutVisible(false);
+			} else if (dto.getApplStatus().equals(CodeConstant.NYUTAIKYO_APPL_STATUS_HANSHUTSU_MACHI)) {
+				dto.setCommentBtnVisible(false);
+			}
 			// データ件数0件の場合はメッセージ
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1078, NO_DATA_MESSAGE);
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 		SkfApplHistoryInfoUtilsGetApplHistoryInfoExp applHistory = applHistoryList.get(0);
@@ -113,7 +122,14 @@ public class Skf2050Sc001SharedService {
 		Skf2050TBihinHenkyakuShinsei bihinHenkyaku = new Skf2050TBihinHenkyakuShinsei();
 		bihinHenkyaku = skfBihinInfoUtils.getBihinHenkyakuShinseiInfo(companyCd, applNo);
 		if (bihinHenkyaku == null) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1078, NO_DATA_MESSAGE);
+			if (dto.getApplStatus().equals(CodeConstant.NYUTAIKYO_APPL_STATUS_KAKUNIN_IRAI)) {
+				dto.setAllNotVisible(true);
+				dto.setCommentBtnVisible(false);
+				dto.setCarryOutVisible(false);
+			} else if (dto.getApplStatus().equals(CodeConstant.NYUTAIKYO_APPL_STATUS_HANSHUTSU_MACHI)) {
+				dto.setCommentBtnVisible(false);
+			}
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return false;
 		} else {
 			setDispItem(applStatus, bihinHenkyaku, dto);
