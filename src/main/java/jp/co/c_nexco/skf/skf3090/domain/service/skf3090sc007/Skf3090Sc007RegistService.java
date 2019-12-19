@@ -4,8 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MAgency;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshiki;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MAgencyRepository;
@@ -177,9 +179,9 @@ public class Skf3090Sc007RegistService extends BaseServiceAbstract<Skf3090Sc007R
 
 			// 部等コード
 			if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
-					&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation1Cd().trim(), 2)) {
+					&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation1Cd().trim(), 3)) {
 				ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
-						MessageIdConstant.E_SKF_1071, "部等コード", "2");
+						MessageIdConstant.E_SKF_1071, "部等コード", "3");
 				isCheck = false;
 			}
 
