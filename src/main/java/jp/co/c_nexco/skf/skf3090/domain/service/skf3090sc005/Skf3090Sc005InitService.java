@@ -237,8 +237,6 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		returnMap.put(KEY_RETIRE_DATE, retireDate);
 		// 原籍会社コード
 		returnMap.put(KEY_ORIGINAL_COMPANY_CD, resultValue.getOriginalCompanyCd());
-		// ロールID
-		returnMap.put(KEY_ROLE_ID, resultValue.getRoleId());
 		// 登録フラグ
 		returnMap.put(KEY_REGIST_FLG, resultValue.getRegistFlg());
 		// タイムスタンプ

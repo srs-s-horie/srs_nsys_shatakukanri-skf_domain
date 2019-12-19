@@ -11,14 +11,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryInfoForUpdateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukken;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukkenKey;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryInfoForUpdateExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryInfoForUpdateExpParameter;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -119,8 +119,9 @@ public class Skf2060Sc003CompleteService extends BaseServiceAbstract<Skf2060Sc00
 				// 楽観的排他チェック
 				long longCandidateNo = Long.parseLong(kariageTeijiData.get("candidateNo"));
 				Skf2060TKariageBukken kbData = this.getKariageBukkenForUpdate(companyCd, longCandidateNo);
-				super.checkLockException(completeDto.getLastUpdateDate(completeDto.KariageBukkenLastUpdateDate + longCandidateNo), kbData.getUpdateDate());
-				
+				if(kbData != null){
+					super.checkLockException(completeDto.getLastUpdateDate(completeDto.KariageBukkenLastUpdateDate + longCandidateNo), kbData.getUpdateDate());
+				}
 				//借上候補物件テーブルの更新を行う
 				Map<String, String> kariageBukkenMap = new HashMap<String, String>();
 				kariageBukkenMap.put("companyCd", companyCd);
