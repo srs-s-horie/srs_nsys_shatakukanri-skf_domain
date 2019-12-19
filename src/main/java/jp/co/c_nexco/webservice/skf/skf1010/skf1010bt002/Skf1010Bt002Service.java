@@ -8,10 +8,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.terasoluna.gfw.common.message.ResultMessage;
 import org.terasoluna.gfw.common.message.ResultMessageUtils;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp;
@@ -555,7 +557,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				// 性別
 				shainInfo.setGender(idmShain.getGender());
 				// ロールID
-				shainInfo.setRoleId("SKF_001");
+				// shainInfo.setRoleId("SKF_001");
 				// 登録フラグ
 				shainInfo.setRegistFlg(SkfCommonConstant.REGIST_SHINJO);
 			} else if (CheckUtils.isEqual(updateKbn, UPDATE_KBN)) {
@@ -565,7 +567,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setShainNo(wShainInfo.getShainNo());
 				// 更新データ
 				shainInfo.setUserId(wShainInfo.getUserId());
-				shainInfo.setRoleId(wShainInfo.getRoleId());
+				// shainInfo.setRoleId(wShainInfo.getRoleId());
 				shainInfo.setRetireFlg(wShainInfo.getRetireFlg());
 				shainInfo.setRetireDate(wShainInfo.getRetireDate());
 				shainInfo.setShainNoChangeFlg(wShainInfo.getShainNoChangeFlg());
