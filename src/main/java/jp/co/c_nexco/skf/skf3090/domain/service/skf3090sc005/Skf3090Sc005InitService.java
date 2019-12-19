@@ -43,7 +43,6 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 	private static final String KEY_MAIL_ADDRESS = "MAIL_ADDRESS";
 	private static final String KEY_RETIRE_DATE = "RETIRE_DATE";
 	private static final String KEY_ORIGINAL_COMPANY_CD = "ORIGINAL_COMPANY_CD";
-	private static final String KEY_ROLE_ID = "ROLE_ID";
 	private static final String KEY_REGIST_FLG = "REGIST_FLG";
 	private static final String KEY_UPDATE_DATE = "UPDATE_DATE";
 
@@ -174,7 +173,6 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 				initDto.setNameKk((String) returnMap.get(KEY_NAME_KK));
 				initDto.setMailAddress((String) returnMap.get(KEY_MAIL_ADDRESS));
 				initDto.setRetireDate((String) returnMap.get(KEY_RETIRE_DATE));
-				initDto.setRoleId((String) returnMap.get(KEY_ROLE_ID));
 				initDto.setRegistFlg((String) returnMap.get(KEY_REGIST_FLG));
 				initDto.addLastUpdateDate(Skf3090Sc005SharedService.KEY_LAST_UPDATE_DATE,
 						(Date) returnMap.get(KEY_UPDATE_DATE));
