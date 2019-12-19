@@ -270,7 +270,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	private boolean insertWkShain() {
 		// ワーク社員マスタを初期化
 		int delRes = deleteShatakuShainMasterInfoWk();
-		if (delRes <= 0) {
+		if (delRes < 0) {
 			return false;
 		}
 		// ワーク社宅社員マスタに現社員マスタのデータを複写する
@@ -529,6 +529,8 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setNameKk(idmShain.getNameKk());
 				// 氏名
 				shainInfo.setName(idmShain.getName());
+				// 等級コード
+				shainInfo.setTokyuCd(idmShain.getTokyu());
 				// 機関コード
 				shainInfo.setAgencyCd(idmShain.getAgencyCd());
 				// 部等コード
@@ -554,8 +556,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setMailAddress(idmShain.getMailAddress());
 				// 性別
 				shainInfo.setGender(idmShain.getGender());
-				// ロールID
-				shainInfo.setRoleId("SKF_001");
 				// 登録フラグ
 				shainInfo.setRegistFlg(SkfCommonConstant.REGIST_SHINJO);
 			} else if (CheckUtils.isEqual(updateKbn, UPDATE_KBN)) {
@@ -565,7 +565,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setShainNo(wShainInfo.getShainNo());
 				// 更新データ
 				shainInfo.setUserId(wShainInfo.getUserId());
-				shainInfo.setRoleId(wShainInfo.getRoleId());
 				shainInfo.setRetireFlg(wShainInfo.getRetireFlg());
 				shainInfo.setRetireDate(wShainInfo.getRetireDate());
 				shainInfo.setShainNoChangeFlg(wShainInfo.getShainNoChangeFlg());
