@@ -218,8 +218,8 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		if (CodeConstant.CAR_PARK_HITUYO.equals(checkDto.getParkingUmu())) {
 			// 駐車場のみの場合に申請不可チェック
 			if (CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(checkDto.getTaiyoHituyo())) {
-				switch (skf2020Sc002SharedService.checkParking(checkDto.getParking1stPlace(),
-						checkDto.getParking2stPlace())) {
+				switch (skf2020Sc002SharedService.checkParking(checkDto.getHdnParking1stPlace(),
+						checkDto.getHdnParking2stPlace())) {
 				case 1:
 				case 2:
 					// すでに駐車場を1台借りている状態で、2台の入力を行っている場合
