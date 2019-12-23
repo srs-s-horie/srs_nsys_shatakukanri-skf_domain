@@ -564,10 +564,15 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setCompanyCd(wShainInfo.getCompanyCd());
 				shainInfo.setShainNo(wShainInfo.getShainNo());
 				// 更新データ
+				// ユーザーID
 				shainInfo.setUserId(wShainInfo.getUserId());
+				// 退職フラグ
 				shainInfo.setRetireFlg(wShainInfo.getRetireFlg());
+				// 退職日
 				shainInfo.setRetireDate(wShainInfo.getRetireDate());
+				// 社員番号変更フラグ
 				shainInfo.setShainNoChangeFlg(wShainInfo.getShainNoChangeFlg());
+				// 社員番号変更日
 				shainInfo.setShainNoChangeDate(wShainInfo.getShainNoChangeDate());
 
 			}
