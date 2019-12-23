@@ -513,6 +513,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return true;
 	}
 
+	/**
+	 * 登録と更新の値のマッピングを行います
+	 * 
+	 * @param flg
+	 * @param updateKbn
+	 * @param shainInfo
+	 * @param dataEntity
+	 */
 	private void getColumnInfoList(String flg, String updateKbn, Skf1010MShain shainInfo, Object dataEntity) {
 		if (CheckUtils.isEqual(flg, OPERATION_KBN_SHAIN)) {
 			if (shainInfo == null) {
@@ -595,6 +603,11 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return true;
 	}
 
+	/**
+	 * プレユーザーマスタのデータを取得します
+	 * 
+	 * @return
+	 */
 	private List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> getIdmPreUserMasterInfo() {
 		List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> result = new ArrayList<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp>();
 		SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository repository = (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository) SpringContext
@@ -621,6 +634,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return res;
 	}
 
+	/**
+	 * 指定した条件に合った社宅社員異動履歴データの件数を取得します
+	 * 
+	 * @param shainNo
+	 * @param yearMonth
+	 * @param beginingEndKbn
+	 * @return
+	 */
 	private int getShatakuShainRirekiCount(String shainNo, String yearMonth, String beginingEndKbn) {
 		SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExp result = new SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExp();
 		SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExpParameter rirekiParam = new SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExpParameter();
@@ -637,6 +658,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return 0;
 	}
 
+	/**
+	 * 指定した条件に合った社宅社員異動履歴のデータを物理削除します
+	 * 
+	 * @param shainNo
+	 * @param yearMonth
+	 * @param beginingEndKbn
+	 * @return
+	 */
 	private boolean deleteShatakuShainRirekiInfo(String shainNo, String yearMonth, String beginingEndKbn) {
 		SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp param = new SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp();
 		param.setCompanyCd(companyCd);
