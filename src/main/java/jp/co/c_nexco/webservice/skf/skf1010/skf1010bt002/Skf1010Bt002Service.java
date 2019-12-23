@@ -8,10 +8,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.terasoluna.gfw.common.message.ResultMessage;
 import org.terasoluna.gfw.common.message.ResultMessageUtils;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp;
@@ -270,7 +272,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	private boolean insertWkShain() {
 		// ワーク社員マスタを初期化
 		int delRes = deleteShatakuShainMasterInfoWk();
-		if (delRes < 0) {
+		if (delRes <= 0) {
 			return false;
 		}
 		// ワーク社宅社員マスタに現社員マスタのデータを複写する
@@ -529,8 +531,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setNameKk(idmShain.getNameKk());
 				// 氏名
 				shainInfo.setName(idmShain.getName());
-				// 等級コード
-				shainInfo.setTokyuCd(idmShain.getTokyu());
 				// 機関コード
 				shainInfo.setAgencyCd(idmShain.getAgencyCd());
 				// 部等コード
@@ -556,6 +556,8 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setMailAddress(idmShain.getMailAddress());
 				// 性別
 				shainInfo.setGender(idmShain.getGender());
+				// ロールID
+				// shainInfo.setRoleId("SKF_001");
 				// 登録フラグ
 				shainInfo.setRegistFlg(SkfCommonConstant.REGIST_SHINJO);
 			} else if (CheckUtils.isEqual(updateKbn, UPDATE_KBN)) {
@@ -564,15 +566,11 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setCompanyCd(wShainInfo.getCompanyCd());
 				shainInfo.setShainNo(wShainInfo.getShainNo());
 				// 更新データ
-				// ユーザーID
 				shainInfo.setUserId(wShainInfo.getUserId());
-				// 退職フラグ
+				// shainInfo.setRoleId(wShainInfo.getRoleId());
 				shainInfo.setRetireFlg(wShainInfo.getRetireFlg());
-				// 退職日
 				shainInfo.setRetireDate(wShainInfo.getRetireDate());
-				// 社員番号変更フラグ
 				shainInfo.setShainNoChangeFlg(wShainInfo.getShainNoChangeFlg());
-				// 社員番号変更日
 				shainInfo.setShainNoChangeDate(wShainInfo.getShainNoChangeDate());
 
 			}

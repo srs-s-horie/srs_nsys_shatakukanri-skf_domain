@@ -51,6 +51,10 @@ public class Skf1010Sc001InitDto extends Skf1010Sc001CommonDto {
 	private String level2_6;
 	// 画面表示(管理者）
 	private String level3;
+	// 画面表示（管理者：代行ログイン）
+	private String level3_1;
+	// 画面表示（管理者：組織マスタメンテナンス）
+	private String level3_2;
 	// 画面表示（操作に困ったときは）
 	private String level4;
 	// 画面表示（マニュアル 管理）

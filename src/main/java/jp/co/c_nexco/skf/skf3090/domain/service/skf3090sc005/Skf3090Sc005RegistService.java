@@ -373,9 +373,6 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 		// 登録フラグ（1固定）
 		setValue.setRegistFlg("1");
 
-		// ロールID（とりあえず一般固定）
-		setValue.setRoleId(CodeConstant.SHINSEISHA);
-
 		/** 登録 */
 		LogUtils.debugByMsg("DBCommonItems：" + this.dbCommonItems.toString());
 		int registCount = 0;
