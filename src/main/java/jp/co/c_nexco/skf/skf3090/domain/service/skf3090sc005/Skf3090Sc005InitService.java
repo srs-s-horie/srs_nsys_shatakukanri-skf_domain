@@ -8,10 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -55,10 +53,10 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
-	
+
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	
+
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
 
@@ -68,15 +66,15 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseDto index(Skf3090Sc005InitDto initDto) throws Exception {
-		
+
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
 		initDto.setPageId(FunctionIdConstant.SKF3090_SC005);
-		
+
 		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("新規", companyCd, initDto.getPrePageId());
-		}else{
+		} else {
 			/** リストテーブルから遷移 */
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("詳細", companyCd, initDto.getPrePageId());
@@ -232,13 +230,12 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		// 退職日
 		String retireDate = resultValue.getRetireDate();
 		if (NfwStringUtils.isNotEmpty(retireDate)) {
-			retireDate = skfDateFormatUtils.dateFormatFromString(retireDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			retireDate = skfDateFormatUtils.dateFormatFromString(retireDate,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 		}
 		returnMap.put(KEY_RETIRE_DATE, retireDate);
 		// 原籍会社コード
 		returnMap.put(KEY_ORIGINAL_COMPANY_CD, resultValue.getOriginalCompanyCd());
-		// ロールID
-		returnMap.put(KEY_ROLE_ID, resultValue.getRoleId());
 		// 登録フラグ
 		returnMap.put(KEY_REGIST_FLG, resultValue.getRegistFlg());
 		// タイムスタンプ
