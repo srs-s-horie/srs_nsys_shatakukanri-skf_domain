@@ -8,10 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -43,6 +41,7 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 	private static final String KEY_MAIL_ADDRESS = "MAIL_ADDRESS";
 	private static final String KEY_RETIRE_DATE = "RETIRE_DATE";
 	private static final String KEY_ORIGINAL_COMPANY_CD = "ORIGINAL_COMPANY_CD";
+	private static final String KEY_ROLE_ID = "ROLE_ID";
 	private static final String KEY_REGIST_FLG = "REGIST_FLG";
 	private static final String KEY_UPDATE_DATE = "UPDATE_DATE";
 
@@ -54,10 +53,10 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
-	
+
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	
+
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
 
@@ -67,15 +66,15 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseDto index(Skf3090Sc005InitDto initDto) throws Exception {
-		
+
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
 		initDto.setPageId(FunctionIdConstant.SKF3090_SC005);
-		
+
 		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("新規", companyCd, initDto.getPrePageId());
-		}else{
+		} else {
 			/** リストテーブルから遷移 */
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("詳細", companyCd, initDto.getPrePageId());
@@ -173,6 +172,7 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 				initDto.setNameKk((String) returnMap.get(KEY_NAME_KK));
 				initDto.setMailAddress((String) returnMap.get(KEY_MAIL_ADDRESS));
 				initDto.setRetireDate((String) returnMap.get(KEY_RETIRE_DATE));
+				initDto.setRoleId((String) returnMap.get(KEY_ROLE_ID));
 				initDto.setRegistFlg((String) returnMap.get(KEY_REGIST_FLG));
 				initDto.addLastUpdateDate(Skf3090Sc005SharedService.KEY_LAST_UPDATE_DATE,
 						(Date) returnMap.get(KEY_UPDATE_DATE));
@@ -230,7 +230,8 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		// 退職日
 		String retireDate = resultValue.getRetireDate();
 		if (NfwStringUtils.isNotEmpty(retireDate)) {
-			retireDate = skfDateFormatUtils.dateFormatFromString(retireDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			retireDate = skfDateFormatUtils.dateFormatFromString(retireDate,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 		}
 		returnMap.put(KEY_RETIRE_DATE, retireDate);
 		// 原籍会社コード

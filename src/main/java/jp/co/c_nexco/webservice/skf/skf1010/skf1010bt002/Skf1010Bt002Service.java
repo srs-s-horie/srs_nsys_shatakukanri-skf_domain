@@ -8,12 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.terasoluna.gfw.common.message.ResultMessage;
 import org.terasoluna.gfw.common.message.ResultMessageUtils;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp;
@@ -272,7 +270,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	private boolean insertWkShain() {
 		// ワーク社員マスタを初期化
 		int delRes = deleteShatakuShainMasterInfoWk();
-		if (delRes <= 0) {
+		if (delRes < 0) {
 			return false;
 		}
 		// ワーク社宅社員マスタに現社員マスタのデータを複写する
@@ -515,6 +513,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return true;
 	}
 
+	/**
+	 * 登録と更新の値のマッピングを行います
+	 * 
+	 * @param flg
+	 * @param updateKbn
+	 * @param shainInfo
+	 * @param dataEntity
+	 */
 	private void getColumnInfoList(String flg, String updateKbn, Skf1010MShain shainInfo, Object dataEntity) {
 		if (CheckUtils.isEqual(flg, OPERATION_KBN_SHAIN)) {
 			if (shainInfo == null) {
@@ -531,6 +537,8 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setNameKk(idmShain.getNameKk());
 				// 氏名
 				shainInfo.setName(idmShain.getName());
+				// 等級コード
+				shainInfo.setTokyuCd(idmShain.getTokyu());
 				// 機関コード
 				shainInfo.setAgencyCd(idmShain.getAgencyCd());
 				// 部等コード
@@ -556,8 +564,6 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setMailAddress(idmShain.getMailAddress());
 				// 性別
 				shainInfo.setGender(idmShain.getGender());
-				// ロールID
-				// shainInfo.setRoleId("SKF_001");
 				// 登録フラグ
 				shainInfo.setRegistFlg(SkfCommonConstant.REGIST_SHINJO);
 			} else if (CheckUtils.isEqual(updateKbn, UPDATE_KBN)) {
@@ -566,11 +572,15 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setCompanyCd(wShainInfo.getCompanyCd());
 				shainInfo.setShainNo(wShainInfo.getShainNo());
 				// 更新データ
+				// ユーザーID
 				shainInfo.setUserId(wShainInfo.getUserId());
-				// shainInfo.setRoleId(wShainInfo.getRoleId());
+				// 退職フラグ
 				shainInfo.setRetireFlg(wShainInfo.getRetireFlg());
+				// 退職日
 				shainInfo.setRetireDate(wShainInfo.getRetireDate());
+				// 社員番号変更フラグ
 				shainInfo.setShainNoChangeFlg(wShainInfo.getShainNoChangeFlg());
+				// 社員番号変更日
 				shainInfo.setShainNoChangeDate(wShainInfo.getShainNoChangeDate());
 
 			}
@@ -593,6 +603,11 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return true;
 	}
 
+	/**
+	 * プレユーザーマスタのデータを取得します
+	 * 
+	 * @return
+	 */
 	private List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> getIdmPreUserMasterInfo() {
 		List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> result = new ArrayList<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp>();
 		SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository repository = (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository) SpringContext
@@ -619,6 +634,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return res;
 	}
 
+	/**
+	 * 指定した条件に合った社宅社員異動履歴データの件数を取得します
+	 * 
+	 * @param shainNo
+	 * @param yearMonth
+	 * @param beginingEndKbn
+	 * @return
+	 */
 	private int getShatakuShainRirekiCount(String shainNo, String yearMonth, String beginingEndKbn) {
 		SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExp result = new SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExp();
 		SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExpParameter rirekiParam = new SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExpParameter();
@@ -635,6 +658,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		return 0;
 	}
 
+	/**
+	 * 指定した条件に合った社宅社員異動履歴のデータを物理削除します
+	 * 
+	 * @param shainNo
+	 * @param yearMonth
+	 * @param beginingEndKbn
+	 * @return
+	 */
 	private boolean deleteShatakuShainRirekiInfo(String shainNo, String yearMonth, String beginingEndKbn) {
 		SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp param = new SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp();
 		param.setCompanyCd(companyCd);

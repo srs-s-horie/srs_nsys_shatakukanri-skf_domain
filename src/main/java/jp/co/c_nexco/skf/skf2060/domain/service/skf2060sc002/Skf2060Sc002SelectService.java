@@ -58,7 +58,7 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 	@Autowired
 	private Skf2060Sc002GetApplHistoryInfoForUpdateExpRepository skf2060Sc002GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
-	private Skf2060Sc002SharedService skf2060Sc002SharedService;
+	private Skf2060Sc002SharedService ｓkf2060Sc002SharedService;
 	
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
@@ -144,7 +144,7 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 		}
 		
 		//借上候補物件提示情報の取得
-		List<Skf2060Sc002GetKariageTeijiInfoExp> kariageTeijiList = skf2060Sc002SharedService.getKariageTeijiInfo(companyCd, applNo);
+		List<Skf2060Sc002GetKariageTeijiInfoExp> kariageTeijiList = ｓkf2060Sc002SharedService.getKariageTeijiInfo(companyCd, applNo);
 		if(kariageTeijiList.size() <= 0){
 			ServiceHelper.addErrorResultMessage(selectDto, null, MessageIdConstant.E_SKF_1078);
 			throwBusinessExceptionIfErrors(selectDto.getResultMessages());
@@ -162,7 +162,7 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 			if(kariageTeijiData.getCandidateNo() != 0){
 				
 				// 楽観的排他チェック
-				Skf2060TKariageTeijiDetail ktdData = skf2060Sc002SharedService.getKariageTeijiDetailForUpdate(companyCd, applNo, Short.parseShort(teijiKaisu), kariageTeijiData.getCandidateNo());
+				Skf2060TKariageTeijiDetail ktdData = ｓkf2060Sc002SharedService.getKariageTeijiDetailForUpdate(companyCd, applNo, Short.parseShort(teijiKaisu), kariageTeijiData.getCandidateNo());
 				super.checkLockException(selectDto.getLastUpdateDate(selectDto.KariageTeijiDetailLastUpdateDate + ktdData.getCandidateNo()), ktdData.getUpdateDate());
 				
 				Map<String, String> kariageTeijiDetailMap = new HashMap<String, String>();
@@ -185,7 +185,7 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 			if(applCheckFlg.equals(SELECT)){
 				
 				// 楽観的排他チェック
-				Skf2060TKariageTeiji ktData = skf2060Sc002SharedService.getKariageTeijiForUpdate(companyCd, applNo, Short.parseShort(teijiKaisu));
+				Skf2060TKariageTeiji ktData = ｓkf2060Sc002SharedService.getKariageTeijiForUpdate(companyCd, applNo, Short.parseShort(teijiKaisu));
 				super.checkLockException(selectDto.getLastUpdateDate(selectDto.KariageTeijiLastUpdateDate), ktData.getUpdateDate());
 				
 				//借上候補物件提示テーブルの更新
@@ -214,10 +214,9 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 				if(kariageTeijiData.getCandidateNo() != 0){
 					
 					// 楽観的排他チェック
-					Skf2060TKariageBukken kbData = skf2060Sc002SharedService.getKariageBukkenForUpdate(companyCd, (kariageTeijiData.getCandidateNo()));
-					if(kbData != null){
-						super.checkLockException(selectDto.getLastUpdateDate(selectDto.KariageBukkenLastUpdateDate + kbData.getCandidateNo()), kbData.getUpdateDate());
-					}
+					Skf2060TKariageBukken kbData = ｓkf2060Sc002SharedService.getKariageBukkenForUpdate(companyCd, (kariageTeijiData.getCandidateNo()));
+					super.checkLockException(selectDto.getLastUpdateDate(selectDto.KariageBukkenLastUpdateDate + kbData.getCandidateNo()), kbData.getUpdateDate());
+					
 					Map<String, String> kariageBukkenMap = new HashMap<String, String>();
 					kariageBukkenMap.put("companyCd", companyCd);
 					kariageBukkenMap.put("candidateNo", String.valueOf(kariageTeijiData.getCandidateNo()));
