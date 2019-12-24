@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -112,13 +110,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		List<Skf2010Sc004GetCommentListExp> commentList = new ArrayList<Skf2010Sc004GetCommentListExp>();
 		String applStatus = "";
 		// 権限チェック
-		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
-		if (roleIds == null) {
-			return;
-		}
+		Map<String, String> loginUserInfo = new HashMap<String, String>();
+		loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String roleId = loginUserInfo.get("roleId");
+		
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-		for (String roleId : roleIds) {
 			switch (roleId) {
 			case CodeConstant.NAKASA_SHATAKU_TANTO:
 			case CodeConstant.NAKASA_SHATAKU_KANRI:
@@ -128,7 +125,6 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			default:
 				isAdmin = false;
 				break;
-			}
 		}
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {
