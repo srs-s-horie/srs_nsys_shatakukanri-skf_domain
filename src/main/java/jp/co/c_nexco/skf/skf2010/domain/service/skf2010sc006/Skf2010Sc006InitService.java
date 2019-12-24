@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -148,13 +149,12 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
 		String applStatus = "";
 		// 権限チェック
-		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
-		if (roleIds == null) {
-			return;
-		}
+		Map<String, String> loginUserInfo = new HashMap<String, String>();
+		loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String roleId = loginUserInfo.get("roleId");
+		
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-		for (String roleId : roleIds) {
 			switch (roleId) {
 			case CodeConstant.NAKASA_SHATAKU_TANTO:
 			case CodeConstant.NAKASA_SHATAKU_KANRI:
@@ -164,7 +164,6 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			default:
 				isAdmin = false;
 				break;
-			}
 		}
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {
