@@ -278,8 +278,8 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 				CodeConstant.NYUTAIKYO_APPL_STATUS_DOI_ZUMI, CodeConstant.NYUTAIKYO_APPL_STATUS_DOI_SHINAI };
 
 		// 件数部分の遷移先を配列に格納
-		String[] linkNyutaikyo = new String[] { "/imart/skf/Skf2010Sc005/init", "/imart/skf/skf3022Sc005/init",
-				"/imart/skf/skf3022Sc005/init", "/imart/skf/Skf2010Sc005/init", "/imart/skf/skf3022Sc005/init" };
+		String[] linkNyutaikyo = new String[] { "/imart/skf/Skf2010Sc005/init", "/imart/skf/Skf3022Sc005/init",
+				"/imart/skf/Skf3022Sc005/init", "/imart/skf/Skf2010Sc005/init", "/imart/skf/Skf3022Sc005/init" };
 
 		// メッセージ部分のラベルを配列に格納
 		String[] labelNyutaikyo = new String[] { MessageIdConstant.SKF1010_SC001_SYATAKU_KIBO_APPLICATION,
