@@ -6,6 +6,8 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -56,7 +59,7 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 	public Skf3010Sc002AttachedFileAddDto index(Skf3010Sc002AttachedFileAddDto addDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, addDto.getPageId());
+		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 		// デバッグログ
 		LogUtils.debugByMsg("補足資料追加");
 
@@ -123,7 +126,7 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 			}
 		}
 
-		if (fileData == null) {
+		if (Objects.equals(fileData ,null)) {
 			ServiceHelper.addErrorResultMessage(addDto, null, MessageIdConstant.E_SKF_2003);
 			throwBusinessExceptionIfErrors(addDto.getResultMessages());
 		}
@@ -225,7 +228,7 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 		String fileName2 = CodeConstant.DOUBLE_QUOTATION;
 		String fileName3 = CodeConstant.DOUBLE_QUOTATION;
 		
-		if (fileName == null || CheckUtils.isEmpty(fileName)) {
+		if (Objects.equals(fileName, null) || CheckUtils.isEmpty(fileName)) {
 			// ファイルなし
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1040);
 			return false;
@@ -241,17 +244,17 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 			//社宅
 			switch (fileNo){
 			case "1":
-				if(fileName2.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName2, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "2":
-				if(fileName1.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "3":
-				if(fileName1.equals(fileName) || fileName2.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName2, fileName)){
 					sameName = true;
 				}
 				break;
@@ -264,17 +267,17 @@ public class Skf3010Sc002AttachedFileAddService extends BaseServiceAbstract<Skf3
 			//社宅
 			switch (fileNo){
 			case "1":
-				if(fileName2.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName2, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "2":
-				if(fileName1.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "3":
-				if(fileName1.equals(fileName) || fileName2.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName2, fileName)){
 					sameName = true;
 				}
 				break;

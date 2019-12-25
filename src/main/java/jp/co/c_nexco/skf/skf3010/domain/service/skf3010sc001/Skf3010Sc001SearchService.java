@@ -6,6 +6,8 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc001;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001SearchDto;
@@ -40,7 +43,7 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 	@Override
 	public BaseDto index(Skf3010Sc001SearchDto searchDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, FunctionIdConstant.SKF3010_SC001);
 
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
@@ -65,7 +68,7 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 				searchDto.getEmptyParkingCd(), searchDto.getShatakuName(), searchDto.getShatakuAddress(), listTableData);
 
 		// エラーメッセージ設定
-		if (listCount == 0) {
+		if (listCount < 1) {
 			// 取得レコード0件のワーニング
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
 		} else if (listCount > maxGetRecordCount.intValue()) {
@@ -106,7 +109,7 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 		// // 管理会社の選択値を設定
 		// searchDto.setSelectedCompanyCd(searchDto.getHdnSelectedCompanyCd());
 		// 管理会社選択値判定
-		if (searchDto.getSelectedCompanyCd() != null && searchDto.getSelectedCompanyCd().equals("ZZZZ")) {
+		if (searchDto.getSelectedCompanyCd() != null && Objects.equals(searchDto.getSelectedCompanyCd(), "ZZZZ")) {
 			// 外部機関の場合
 			// 管理機関コードを空文字に設定
 			searchDto.setAgencyCd(null);

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +85,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 	@Override
 	public BaseDto index(Skf3010Sc001ContractDownLoadDto downloadDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報出力", CodeConstant.C001, downloadDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約情報出力", CodeConstant.C001, FunctionIdConstant.SKF3010_SC001);
 		// デバッグログ
 		LogUtils.debugByMsg("契約情報出力ボタン押下");
 
@@ -251,7 +253,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			Map<String, Object> listRowData = null; // 契約情報取得リスト1行
 
 			// 社宅管理番号取得
-			if (getRowData.getShatakuKanriNo() == null) {
+			if (Objects.equals(getRowData.getShatakuKanriNo(), null)) {
 				LogUtils.debugByMsg("契約情報取得リストに社宅管理番号なし");
 				throw new Exception("契約情報取得リストに社宅管理番号なし");
 			}
@@ -274,7 +276,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// 部屋番号(社宅区分が「借上」の場合のみ対象とする)
 			// 社宅区分判定
 			if (listRowData.containsKey("hdnShatakuKbn") && listRowData.get("hdnShatakuKbn") != null
-					&& listRowData.get("hdnShatakuKbn").equals(SHATAKU_KBN_KARIAGE)) {
+					&& Objects.equals(listRowData.get("hdnShatakuKbn"), SHATAKU_KBN_KARIAGE)) {
 				// 部屋番号設定判定
 				if (listRowData.containsKey("hdnRoomNo") && listRowData.get("hdnRoomNo") != null) {
 					roomNo = listRowData.get("hdnRoomNo").toString();
@@ -450,7 +452,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			Map<String, Object> listRowData = null; // 契約情報取得リスト1行
 
 			// 社宅管理番号取得
-			if (getRowData.getShatakuKanriNo() == null) {
+			if (Objects.equals(getRowData.getShatakuKanriNo(), null)) {
 				LogUtils.debugByMsg("契約情報取得リストに社宅管理番号なし");
 				throw new Exception("契約情報取得リストに社宅管理番号なし");
 			}
@@ -473,7 +475,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// 部屋番号(社宅区分が「借上」の場合のみ対象とする)
 			// 社宅区分判定
 			if (listRowData.containsKey("hdnShatakuKbn") && listRowData.get("hdnShatakuKbn") != null
-					&& listRowData.get("hdnShatakuKbn").equals(SHATAKU_KBN_KARIAGE)) {
+					&& Objects.equals(listRowData.get("hdnShatakuKbn"), SHATAKU_KBN_KARIAGE)) {
 				// 部屋番号設定判定
 				if (listRowData.containsKey("hdnRoomNo") && listRowData.get("hdnRoomNo") != null) {
 					roomNo = listRowData.get("hdnRoomNo").toString();
@@ -659,7 +661,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// 取得レコード数を設定
 			resultCount = getShatakuContractList.size();
 			// 取得データレコード数判定
-			if (resultCount == 0) {
+			if (resultCount < 1) {
 				// 取得データレコード数が0件の場合、何もせず処理終了
 				break;
 			}
@@ -697,7 +699,7 @@ public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf
 			// 取得レコード数を設定
 			resultCount = getParkingContractList.size();
 			// 取得データレコード数判定
-			if (resultCount == 0) {
+			if (resultCount < 1) {
 				// 取得データレコード数が0件の場合、何もせず処理終了
 				break;
 			}

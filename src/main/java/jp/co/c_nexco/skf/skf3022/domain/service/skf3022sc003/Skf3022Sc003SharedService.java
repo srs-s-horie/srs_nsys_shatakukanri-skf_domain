@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -406,7 +407,7 @@ public class Skf3022Sc003SharedService {
 
 		String changeString = null;
 		DecimalFormat df1 = new DecimalFormat("#,##0.00");
-		if (bigDecimal == null) {
+		if (Objects.equals(bigDecimal, null)) {
 			return "0.00";
 		}
 		// 変換
@@ -474,7 +475,7 @@ public class Skf3022Sc003SharedService {
 
 		String changeString = null;
 		DecimalFormat df1 = new DecimalFormat("#,##0.00");
-		if (menseki == null) {
+		if (Objects.equals(menseki, null)) {
 			return ("0.00" + " " + SkfCommonConstant.SQUARE_MASTER);
 		}
 		// 変換

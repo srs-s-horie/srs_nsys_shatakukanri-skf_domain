@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002InitDto;
@@ -38,8 +39,9 @@ public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002Ini
 	public Skf3010Sc002InitDto index(Skf3010Sc002InitDto initDto) throws Exception {
 		// デバッグログ
 		LogUtils.debugByMsg("初期表示");
+		initDto.setPageId(FunctionIdConstant.SKF3010_SC002);
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 
 		// DTO初期化
 		// 選択タブインデックス

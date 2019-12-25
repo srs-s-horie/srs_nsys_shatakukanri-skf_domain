@@ -73,7 +73,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		// デバッグログ
 		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3022_SC003);
 
 		// パラメータ判定
 		if (CheckUtils.isEmpty(initDto.getHdnShatakuKanriNo()) || CheckUtils.isEmpty(initDto.getHdnRoomKanriNo())

@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc001;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -34,7 +36,7 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 	@Override
 	public BaseDto index(Skf3010Sc001RentalCopyCheckDto rentalCopyDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("借上(複写)", CodeConstant.C001, rentalCopyDto.getPageId());
+		skfOperationLogUtils.setAccessLog("借上(複写)", CodeConstant.C001, FunctionIdConstant.SKF3010_SC001);
 		
 		// デバッグログ
 		LogUtils.debugByMsg("借上(複写)ボタン押下");
@@ -44,7 +46,7 @@ public class Skf3010Sc001RentalCopyCheckService extends BaseServiceAbstract<Skf3
 		String hdnRowShatakuKanriNo = rentalCopyDto.getHdnRowShatakuKanriNo();
 
 		// 社宅管理番号の有無チェック
-		if (hdnRowShatakuKanriNo == null || hdnRowShatakuKanriNo.length() < 1) {
+		if (Objects.equals(hdnRowShatakuKanriNo, null) || hdnRowShatakuKanriNo.length() < 1) {
 			LogUtils.debugByMsg("社宅が選択されていません。");
 			ServiceHelper.addWarnResultMessage(rentalCopyDto, MessageIdConstant.W_SKF_3003);
 			return rentalCopyDto;

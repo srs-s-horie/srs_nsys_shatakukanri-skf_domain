@@ -15,6 +15,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc001.Skf3022Sc001GetS
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc001.Skf3022Sc001InitDto;
@@ -51,7 +52,7 @@ public class Skf3022Sc001InitService extends BaseServiceAbstract<Skf3022Sc001Ini
 		// デバッグログ
 		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3022_SC001);
 
 		// 戻り値に設定するドロップダウンリストのインスタンスを生成
 		List<Map<String, Object>> sc001EmptyRoomSelectList = new ArrayList<Map<String, Object>>();

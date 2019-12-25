@@ -113,7 +113,7 @@ public class Skf3010Sc002DeleteService extends BaseServiceAbstract<Skf3010Sc002D
 		// デバッグログ
 		LogUtils.debugByMsg("保有社宅情報削除");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("保有社宅情報削除", CodeConstant.C001, delDto.getPageId());
+		skfOperationLogUtils.setAccessLog("保有社宅情報削除", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト

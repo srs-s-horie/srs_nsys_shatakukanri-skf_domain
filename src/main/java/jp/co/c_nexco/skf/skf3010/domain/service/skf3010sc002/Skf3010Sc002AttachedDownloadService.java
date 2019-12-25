@@ -13,6 +13,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AttachedDownloadDto;
@@ -84,7 +85,7 @@ public class Skf3010Sc002AttachedDownloadService extends BaseServiceAbstract<Skf
 		}
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, adlDto.getPageId());
+		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 		
 		if(fileName != null && fileData != null && fileData.length > 0){
 			//ファイルデータ、ファイル名、パスの設定

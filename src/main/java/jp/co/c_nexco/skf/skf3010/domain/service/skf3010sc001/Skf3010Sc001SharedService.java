@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -164,7 +166,7 @@ public class Skf3010Sc001SharedService {
 			resultCount = resultListTableData.size();
 
 			// 取得データレコード数判定
-			if (resultCount == 0) {
+			if (resultCount < 1) {
 				// 取得データレコード数が0件の多い場合、何もせず処理終了
 				break;
 			}
@@ -174,7 +176,7 @@ public class Skf3010Sc001SharedService {
 			tmpListData.addAll(getListTableDataViewColumn(resultListTableData, shatakuAddress));
 			// 取得レコード数を設定
 			resultCount = tmpListData.size();
-			if (resultCount == 0 || resultCount > maxGetRecordCount) {
+			if (resultCount < 1 || resultCount > maxGetRecordCount) {
 				// 取得データレコード数が0件または3000件より多い場合、何もせず処理終了
 				break;
 			}
@@ -256,7 +258,7 @@ public class Skf3010Sc001SharedService {
 			tmpMap.put("shatakuName", tmpData.getShatakuName());
 			// 社宅所在地
 			// 都道府県コード判定
-			if (tmpData.getPrefCd() != null && !tmpData.getPrefCd().equals(CD_PREF_OTHER)) {
+			if (tmpData.getPrefCd() != null && !Objects.equals(tmpData.getPrefCd(), CD_PREF_OTHER)) {
 				// 存在し、且つ、その他以外の場合は都道府県名を付与
 				shatakuAddress = genericCodeMapPref.get(tmpData.getPrefCd());
 			}
@@ -293,7 +295,7 @@ public class Skf3010Sc001SharedService {
 			tmpMap.put("aging", Long.toString(keinen) + AGING_YEAR);
 
 			// 空き部屋数
-			if (tmpData.getEmptyRoomCount() != null && !tmpData.getEmptyRoomCount().equals("0")
+			if (tmpData.getEmptyRoomCount() != null && !Objects.equals(tmpData.getEmptyRoomCount(), "0")
 					&& tmpData.getEmptyRoomCount().length() > 0) {
 				emptyRoomCount = tmpData.getEmptyRoomCount();
 			} else {
@@ -301,7 +303,7 @@ public class Skf3010Sc001SharedService {
 			}
 			tmpMap.put("emptyRoomCount", emptyRoomCount + ROOM);
 			// 空き駐車場数
-			if (tmpData.getEmptyParkingCount() != null && !tmpData.getEmptyParkingCount().equals("0")
+			if (tmpData.getEmptyParkingCount() != null && !Objects.equals(tmpData.getEmptyParkingCount(), "0")
 					&& tmpData.getEmptyParkingCount().length() > 0) {
 				emptyParkingCount = tmpData.getEmptyParkingCount();
 			} else {

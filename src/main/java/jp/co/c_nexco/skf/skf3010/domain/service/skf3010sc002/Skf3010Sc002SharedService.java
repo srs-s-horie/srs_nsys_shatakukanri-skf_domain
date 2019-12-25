@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -649,7 +650,7 @@ public class Skf3010Sc002SharedService {
 		// 取得レコード数を設定
 		resultCount = getDbParkingBlockList.size();
 		// 取得データレコード数判定
-		if (resultCount == 0 ) {
+		if (resultCount < 1) {
 			// 取得データレコード数が0件の場合、何もせず処理終了
 			return;
 		}
@@ -811,7 +812,7 @@ public class Skf3010Sc002SharedService {
 		for(Map<String, Object> obj : slectValueList){
 			String value = obj.get("value").toString();
 			String label = obj.get("label").toString();
-			if (value.compareTo(selectedValue) == 0) {
+			if (Objects.equals(value, selectedValue)) {
 				// ステータスとリスト値が一致する場合、選択中にする
 				returnListCode += "<option value='" + value + "' selected>" + label + "</option>";
 			} else {
@@ -864,7 +865,7 @@ public class Skf3010Sc002SharedService {
 		resultCount = bihinInfoList.size();
 
 		// 取得データレコード数判定
-		if (resultCount == 0 ) {
+		if (resultCount < 1) {
 			// 取得データレコード数が0件の場合、何もせず処理終了
 			return resultCount;
 		}
@@ -909,7 +910,7 @@ public class Skf3010Sc002SharedService {
 		resultCount = bihinInfoList.size();
 
 		// 取得データレコード数判定
-		if (resultCount == 0 ) {
+		if (resultCount < 1) {
 			// 取得データレコード数が0件の場合、何もせず処理終了
 			return resultCount;
 		}
@@ -954,7 +955,7 @@ public class Skf3010Sc002SharedService {
 			Skf3010Sc002GetBihinInfoTableDataExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 
-			if(!tmpData.getDispFlg().equals("0")){
+			if(!Objects.equals(tmpData.getDispFlg(), "0")){
 				// 備品コード
 				if (tmpData.getBihinCd() != null) {
 					bihinCode = HtmlUtils.htmlEscape(tmpData.getBihinCd());
@@ -1014,7 +1015,7 @@ public class Skf3010Sc002SharedService {
 			Skf3010Sc002GetBihinInfoTableDataExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 			// 表示/非表示判定
-			if(tmpData.getDispFlg().equals("0")){
+			if(Objects.equals(tmpData.getDispFlg(), "0")){
 				//DispFlgが0（非表示）
 				// 備品コード
 				if (tmpData.getBihinCd() != null) {
@@ -1067,7 +1068,7 @@ public class Skf3010Sc002SharedService {
 		resultCnt = shatakuRoomList.size();
 
 		// 取得データレコード数判定
-		if (resultCnt == 0 ) {
+		if (resultCnt < 1) {
 			// 取得データレコード数が0件の場合、何もせず処理終了
 			return resultCnt;
 		}
@@ -1127,7 +1128,7 @@ public class Skf3010Sc002SharedService {
 		resultCnt = shatakuRoomList.size();
 
 		// 取得データレコード数判定
-		if (resultCnt == 0 ) {
+		if (resultCnt < 1) {
 			// 取得データレコード数が0件の場合、何もせず処理終了
 			return resultCnt;
 		}
@@ -1591,7 +1592,7 @@ public class Skf3010Sc002SharedService {
 		// 選択契約情報取得
 		if (contractNoList.size() > 0) {
 			for (Map<String, Object> contractDataMap : listTableData) {
-				if (contractDataMap.get("contractNo").equals(selectIndex)) {
+				if (Objects.equals(contractDataMap.get("contractNo"), selectIndex)) {
 					contractMap = contractDataMap;
 					break;
 				}
@@ -2542,7 +2543,7 @@ public class Skf3010Sc002SharedService {
 		// 社宅部屋総数を取得する
 		Integer roomCnt = getRoomCount(shatakuKanriNo);
 		// 空き社宅数判定
-		if (emptyRoomCount == null || emptyRoomCount.length() == 0) {
+		if (Objects.equals(emptyRoomCount, null) || emptyRoomCount.length() < 1) {
 			// （登録時対応）空き社宅数が存在しない場合は、0を設定する。
 			emptyRoomCount = CodeConstant.STRING_ZERO;
 		}
@@ -2554,7 +2555,7 @@ public class Skf3010Sc002SharedService {
 		// 駐車場総数を取得する
 		Integer parkingCnt = getParkingCount(shatakuKanriNo);
 		// （登録時対応）空き駐車場数判定
-		if (emptyParkingCount == null || emptyParkingCount.length() == 0) {
+		if (Objects.equals(emptyParkingCount, null) || emptyParkingCount.length() < 1) {
 			// （登録時対応）空き社宅数が存在しない場合は、0を設定する。
 			emptyParkingCount = CodeConstant.STRING_ZERO;
 		}
@@ -2866,7 +2867,7 @@ public class Skf3010Sc002SharedService {
 		// 返却用リスト
 		List<Map<String, Object>> listData = new ArrayList<Map<String, Object>>();
 		// JSON文字列判定
-		if (jsonStr == null || jsonStr.length() <= 0) {
+		if (Objects.equals(jsonStr, null) || jsonStr.length() <= 0) {
 			LogUtils.debugByMsg("文字列未設定");
 			// 文字列未設定のため処理しない
 			return listData;
@@ -3034,7 +3035,7 @@ public class Skf3010Sc002SharedService {
 	 * @param initDto	*DTO
 	 */
 	public void deleteShatakuKbnDrpDwKariage(Skf3010Sc002CommonDto initDto) {
-		if (initDto.getShatakuKbnList() == null) {
+		if (Objects.equals(initDto.getShatakuKbnList(), null)) {
 			return;
 		}
 		int ittoNo = -1;
@@ -3175,7 +3176,7 @@ public class Skf3010Sc002SharedService {
 			// 契約番号ループ
 			for (Map<String, Object> contractMap : contractNoList) {
 				// 選択値判定
-				if (contractNo.equals(contractMap.get("value"))) {
+				if (Objects.equals(contractNo, contractMap.get("value"))) {
 					// ドロップダウン選択値設定
 					contractMap.put("selected", "true");
 				} else {
@@ -3808,7 +3809,7 @@ public class Skf3010Sc002SharedService {
 
 		/** 社宅契約情報マスタの更新データを作成 */
 		// 経理連携用管理番号設定判定
-		if (comDto.getAssetRegisterNo() == null || comDto.getAssetRegisterNo().length() <= 0) {
+		if (Objects.equals(comDto.getAssetRegisterNo(), null) || comDto.getAssetRegisterNo().length() <= 0) {
 			// 経理連携用管理番号無し＝契約情報なしのため処理なし
 			return;
 		}
