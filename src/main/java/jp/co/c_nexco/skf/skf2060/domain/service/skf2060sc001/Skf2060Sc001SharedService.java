@@ -94,7 +94,7 @@ public class Skf2060Sc001SharedService {
 	 * @param applNo
 	 * @return 申請書類履歴エンティティ
 	 */
-	public Skf2060Sc001GetApplHistoryExp getApplHistoryInfo(String companyCd, String shainNo, String applNo){
+	public Skf2060Sc001GetApplHistoryExp getApplHistoryInfo(String companyCd, String shainNo, String applNo, String applId){
 	
 		List<Skf2060Sc001GetApplHistoryExp> resultListTableData = new ArrayList<Skf2060Sc001GetApplHistoryExp>();
 		Skf2060Sc001GetApplHistoryExp resultData = new Skf2060Sc001GetApplHistoryExp();
@@ -102,6 +102,7 @@ public class Skf2060Sc001SharedService {
 		param.setCompanyCd(companyCd);
 		param.setShainNo(shainNo);
 		param.setApplNo(applNo);
+		param.setApplId(applId);
 
 		resultListTableData = skf2060Sc001GetApplHistoryExpRepository.getApplHistory(param);
 		
@@ -292,7 +293,7 @@ public class Skf2060Sc001SharedService {
 		List<Skf2060Sc001GetApplHistoryExp> resultListTableData = new ArrayList<Skf2060Sc001GetApplHistoryExp>();
 		Skf2060Sc001GetApplHistoryExpParameter param = new Skf2060Sc001GetApplHistoryExpParameter();
 		param.setCompanyCd(companyCd);
-		param.setApplNo(applId+"-"+applDate+"-"+shainNo);
+		param.setApplNo(applId+"-"+shainNo+"-"+applDate);
 		
 		resultListTableData = skf2060Sc001GetApplHistoryExpRepository.getApplHistory(param);
 		
@@ -317,7 +318,11 @@ public class Skf2060Sc001SharedService {
 				
 			//申請書類管理番号のページが超えなかった場合
 			}else{
-				applNo = otherWords+back2Number;
+				String result2Number = String.valueOf(back2Number);
+				if(back2Number < 10){
+					result2Number = "0" + result2Number;
+				}
+				applNo = otherWords + result2Number;
 			}
 		
 		//申請書類管理番号が存在しなかった時

@@ -85,7 +85,7 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			}
 			//セッションの申請書類情報をもとに申請履歴テーブルより申請情報を取得
 			Skf2060Sc001GetApplHistoryExp applHistoryData = new Skf2060Sc001GetApplHistoryExp();
-			applHistoryData = skf2060Sc001SharedService.getApplHistoryInfo(companyCd, initDto.getShainNo(), initDto.getApplNo());
+			applHistoryData = skf2060Sc001SharedService.getApplHistoryInfo(companyCd, initDto.getShainNo(), initDto.getApplNo(), FunctionIdConstant.R0106);
 			//申請履歴テーブルより申請情報を取得出来た場合
 			if(applHistoryData != null){
 				//申請書類履歴テーブル用更新日
