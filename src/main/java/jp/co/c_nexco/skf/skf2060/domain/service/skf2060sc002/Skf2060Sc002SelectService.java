@@ -256,7 +256,7 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 		//「選択しない」ラベルが表示されている行が選択されている場合
 		}else if(selectDto.getRadioCandidateNo().equals("0")){
 			//理由ドロップダウンにて「その他」が選択されている場合
-			if(selectDto.getRiyuDropdown().equals(CodeConstant.FUYO_RIYU_OTHERS)){
+			if(selectDto.getRiyuDropdown().equals(CodeConstant.RELATION_OTHERS)){
 				//備考入力欄入力チェック
 				if(selectDto.getBiko() == null || CheckUtils.isEmpty(selectDto.getBiko().trim())){
 					ServiceHelper.addErrorResultMessage(selectDto, new String[] { "biko" }, MessageIdConstant.E_SKF_1048, "理由入力欄");

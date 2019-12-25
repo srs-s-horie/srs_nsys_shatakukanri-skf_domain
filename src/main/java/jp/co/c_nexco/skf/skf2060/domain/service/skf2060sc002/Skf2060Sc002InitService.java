@@ -26,12 +26,14 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiDetail;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetKariageTeijiFileDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetShainSoshikiInfoExpRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
+import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -58,6 +60,8 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
     private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
+	@Autowired
+	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
 	private Skf2060Sc002SharedService skf2060Sc002SharedService;
 	
@@ -116,13 +120,15 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 		}
 
 		String gender = CodeConstant.NONE;
-		switch(shainSohikiData.getGender()){
-		case "1":
-			gender = "男";
-			break;
-		case "2":
-			gender = "女";
-			break;
+		if(shainSohikiData.getGender() != null){
+			switch(shainSohikiData.getGender()){
+			case "1":
+				gender = "男";
+				break;
+			case "2":
+				gender = "女";
+				break;
+			}
 		}
 		
 		//「借上物件提示対象者」に表示させる項目の設定
@@ -144,9 +150,10 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}
 
+		short teijiKaisu = 0;
 		for(Skf2060Sc002GetKariageTeijiInfoExp kariageTeijiData:kariageTeijiDataList){
 			long candidateNo = kariageTeijiData.getCandidateNo();
-			short teijiKaisu = (short)kariageTeijiData.getTeijiKaisu();
+			teijiKaisu = (short)kariageTeijiData.getTeijiKaisu();
 			if(candidateNo != 0){
 				//借上候補物件テーブル用更新日
 				Skf2060TKariageBukken kbData = skf2060Sc002SharedService.getKariageBukkenForUpdate(companyCd, candidateNo);
@@ -163,9 +170,22 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 		Skf2060TKariageTeiji ktData = skf2060Sc002SharedService.getKariageTeijiForUpdate(companyCd, applNo, (short)kariageTeijiDataList.get(0).getTeijiKaisu());
 		lastUpdateDateMap.put(initDto.KariageTeijiLastUpdateDate, ktData.getUpdateDate());
 
-
 		//現行ではラベルに提示回数を保存していたので隠し要素で設定
 		initDto.setTeijiKaisu(String.valueOf(kariageTeijiDataList.get(0).getTeijiKaisu()));
+		
+		String selectedRiyu = null;
+		String selectedBiko = null;
+		// 提示状況が「確認依頼」以外の場合(借上候補物件を選択した後の場合)
+		if(!(applStatus.equals(CodeConstant.STATUS_KAKUNIN_IRAI))){
+			for(Skf2060Sc002GetKariageTeijiInfoExp kariageTeijiData:kariageTeijiDataList){
+				// ラジオボタンにチェックを入れる
+				if(kariageTeijiData.getApplCheckFlg() != null && CheckUtils.isEqual(kariageTeijiData.getApplCheckFlg(), "1")){
+					initDto.setSelectedRadioCandidateNo(String.valueOf(kariageTeijiData.getCandidateNo()));
+				}
+			}
+			selectedRiyu = ktData.getRiyu();
+			selectedBiko = ktData.getBiko();
+		}
 		
 		List<Map<String, String>> kariageTeijiList = new ArrayList<Map<String, String>>();
 		for(Skf2060Sc002GetKariageTeijiInfoExp kariageTeijiData : kariageTeijiDataList){
@@ -179,17 +199,10 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 		
 		//ドロップダウン作成
 		List<Map<String, Object>> riyuList = new ArrayList<Map<String, Object>>();
-		Map<String, Object> kariageRiyu = new HashMap<String, Object>();
-		kariageRiyu.put("value", CodeConstant.JIKO_KARIAGE);
-		kariageRiyu.put("label", "自己借上のため");
-		Map<String, Object> otherRiyu = new HashMap<String, Object>();
-		otherRiyu.put("value", CodeConstant.FUYO_RIYU_OTHERS);
-		otherRiyu.put("label", "その他");
-		riyuList.add(kariageRiyu);
-		riyuList.add(otherRiyu);
-		
+		riyuList.addAll(skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_NO_AGREE_REASON, selectedRiyu, false));
 		initDto.setRiyuList(riyuList);
-		
+		initDto.setBiko(selectedBiko);
+
 		//提示ステータスが41のとき（完了）
 		if(applStatus.equals(CodeConstant.STATUS_KANRYOU)){
 			//「コメントを表示」ボタンを非表示

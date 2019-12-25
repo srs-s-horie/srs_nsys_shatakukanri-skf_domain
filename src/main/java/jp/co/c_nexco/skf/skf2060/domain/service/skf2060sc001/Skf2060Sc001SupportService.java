@@ -60,7 +60,7 @@ public class Skf2060Sc001SupportService extends BaseServiceAbstract<Skf2060Sc001
 		// リストデータ取得用
 		Skf2060Sc001GetApplHistoryExp resultData = new Skf2060Sc001GetApplHistoryExp();
 		//会社コードと社員番号からデータ取得
-		resultData = skf2060Sc001SharedService.getApplHistoryInfo(companyCd, supportDto.getShainNo(), null);
+		resultData = skf2060Sc001SharedService.getApplHistoryInfo(companyCd, supportDto.getShainNo(), null, FunctionIdConstant.R0106);
 		//取得できた場合
 		if(resultData != null){
 			// 提示状況汎用コード取得

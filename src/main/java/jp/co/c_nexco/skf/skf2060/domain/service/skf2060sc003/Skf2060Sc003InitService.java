@@ -12,20 +12,20 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetShainSoshikiInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetShainSoshikiInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiFileDataExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiFileDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetCheckCandidateNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetCheckCandidateNoExpParameter;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiFileDataExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetShainSoshikiInfoExpRepository;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiFileDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiFileDataExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetShainSoshikiInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc003.Skf2060Sc003GetShainSoshikiInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetCheckCandidateNoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetKariageTeijiFileDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003GetShainSoshikiInfoExpRepository;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -118,13 +118,15 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 		}
 
 		String gender = CodeConstant.NONE;
-		switch(shainSohikiData.getGender()){
-		case "1":
-			gender = "男";
-			break;
-		case "2":
-			gender = "女";
-			break;
+		if(shainSohikiData.getGender() != null){
+			switch(shainSohikiData.getGender()){
+			case "1":
+				gender = "男";
+				break;
+			case "2":
+				gender = "女";
+				break;
+			}
 		}
 		
 		//「借上物件提示対象者」に表示させる項目の設定
@@ -187,8 +189,20 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			if(checkCandidateNo != null){
 				initDto.setCheckCandidateNo(String.valueOf(checkCandidateNo));
 			}
+		
+		//申請状況が"完了"の場合
+		}else if(applStatus.equals(CodeConstant.STATUS_KANRYOU)){
 			
-		//申請状況が"選択しない"もしくは"選択済み"以外の場合
+			//「完了」ボタン、「再掲示」ボタンを非表示
+			initDto.setButtonViewFlag(false);
+			
+			//選択された項目のラジオボタンをチェック済みにするための選択物件番号を取得する
+			Long checkCandidateNo = this.getCheckCandidateNo(companyCd, applNo, teijiKaisu);
+			if(checkCandidateNo != null){
+				initDto.setCheckCandidateNo(String.valueOf(checkCandidateNo));
+			}
+			
+		//それ以外の場合
 		}else{
 			//「完了」ボタン、「再掲示」ボタンを非表示
 			initDto.setButtonViewFlag(false);
@@ -302,10 +316,20 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			}
 			linkTag = String.join("<br />", linkTagList);
 		}
+		String biko = CodeConstant.NONE;
+		if(kariageTeijiData.getRiyu() != null){
+			// 必要としない理由が「自己借上のため」の場合
+			if(!(kariageTeijiData.getRiyu().equals(CodeConstant.RELATION_OTHERS))){
+				biko = "自己借上のため";
+			// 必要としない理由が「その他」の場合
+			}else{
+				biko = kariageTeijiData.getBiko();
+			}
+		}
 		
 		kariageTeijiMap.put("shatakuName", kariageTeijiData.getShatakuName());
 		kariageTeijiMap.put("shatakuNameAddress", kariageTeijiData.getAddress());
-		kariageTeijiMap.put("biko", kariageTeijiData.getBiko());
+		kariageTeijiMap.put("biko", biko);
 		kariageTeijiMap.put("attachedFile", linkTag);
 		kariageTeijiMap.put("candidateNo", String.valueOf(kariageTeijiData.getCandidateNo()));
 		
