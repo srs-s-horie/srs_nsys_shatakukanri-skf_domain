@@ -59,7 +59,7 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
-	private Skf2060Sc002SharedService ｓkf2060Sc002SharedService;
+	private Skf2060Sc002SharedService skf2060Sc002SharedService;
 	
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
@@ -136,7 +136,7 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 		initDto.setGender(gender);
 		
 		//借上候補物件提示情報の取得
-		List<Skf2060Sc002GetKariageTeijiInfoExp> kariageTeijiDataList = ｓkf2060Sc002SharedService.getKariageTeijiInfo(companyCd, applNo);
+		List<Skf2060Sc002GetKariageTeijiInfoExp> kariageTeijiDataList = skf2060Sc002SharedService.getKariageTeijiInfo(companyCd, applNo);
 		//借上候補物件提示情報が存在しない場合
 		if(kariageTeijiDataList.size() <= 0){
 			//エラーメッセージ
@@ -149,16 +149,18 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 			short teijiKaisu = (short)kariageTeijiData.getTeijiKaisu();
 			if(candidateNo != 0){
 				//借上候補物件テーブル用更新日
-				Skf2060TKariageBukken kbData = ｓkf2060Sc002SharedService.getKariageBukkenForUpdate(companyCd, candidateNo);
-				lastUpdateDateMap.put(initDto.KariageBukkenLastUpdateDate + String.valueOf(candidateNo), kbData.getUpdateDate());
-				//借上候補物件提示明細テーブル用更新日
-				Skf2060TKariageTeijiDetail ktdData = ｓkf2060Sc002SharedService.getKariageTeijiDetailForUpdate(companyCd, applNo, teijiKaisu, candidateNo);
-				lastUpdateDateMap.put(initDto.KariageTeijiDetailLastUpdateDate + String.valueOf(candidateNo), ktdData.getUpdateDate());
+				Skf2060TKariageBukken kbData = skf2060Sc002SharedService.getKariageBukkenForUpdate(companyCd, candidateNo);
+				if(kbData != null){
+					lastUpdateDateMap.put(initDto.KariageBukkenLastUpdateDate + String.valueOf(candidateNo), kbData.getUpdateDate());
+					//借上候補物件提示明細テーブル用更新日
+					Skf2060TKariageTeijiDetail ktdData = skf2060Sc002SharedService.getKariageTeijiDetailForUpdate(companyCd, applNo, teijiKaisu, candidateNo);
+					lastUpdateDateMap.put(initDto.KariageTeijiDetailLastUpdateDate + String.valueOf(candidateNo), ktdData.getUpdateDate());
+				}
 			}
 		}
 
 		//借上候補物件提示テーブル用更新日
-		Skf2060TKariageTeiji ktData = ｓkf2060Sc002SharedService.getKariageTeijiForUpdate(companyCd, applNo, (short)kariageTeijiDataList.get(0).getTeijiKaisu());
+		Skf2060TKariageTeiji ktData = skf2060Sc002SharedService.getKariageTeijiForUpdate(companyCd, applNo, (short)kariageTeijiDataList.get(0).getTeijiKaisu());
 		lastUpdateDateMap.put(initDto.KariageTeijiLastUpdateDate, ktData.getUpdateDate());
 
 
