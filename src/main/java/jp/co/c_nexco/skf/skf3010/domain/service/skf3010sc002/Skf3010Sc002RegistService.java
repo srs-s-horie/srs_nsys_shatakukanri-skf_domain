@@ -360,7 +360,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			// 社宅管理番号設定
 			mShatakuParkingBlock.setShatakuKanriNo(shatakuKanriNo);
 			// 駐車場管理番号設定判定
-			if (mShatakuParkingBlock.getParkingKanriNo() != 0L) {
+			if (!Objects.equals(mShatakuParkingBlock.getParkingKanriNo(), 0L)) {
 				// 既存データ更新
 				updateCnt = skf3010MShatakuParkingBlockRepository.updateByPrimaryKeySelective(mShatakuParkingBlock);
 				// 更新カウント判定
