@@ -56,7 +56,7 @@ import jp.co.c_nexco.skf.skf3040.domain.dto.skf3040sc001.Skf3040Sc001DownloadDto
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
- * 事業領域名マスタ登録画面のDownloadサービス処理クラス。　 
+ * レンタル備品指示書出力画面のDownloadサービス処理クラス。　 
  * 
  */
 @Service
@@ -276,7 +276,7 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 				isCheckOk = false;
                 ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_1057, "開始日", "終了日");
                 downloadDto.setDesiredTermFromErr(validationErrorCode);
-                downloadDto.setDesiredTermToErr(validationErrorCode);
+                //downloadDto.setDesiredTermToErr(validationErrorCode);
             }
         }
 

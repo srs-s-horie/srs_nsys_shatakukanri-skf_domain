@@ -3,19 +3,33 @@
  */
 package jp.co.c_nexco.skf.skf3040.domain.service.skf3040sc002;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3040.domain.dto.skf3040sc002.Skf3040Sc002InitDto;
 
 /**
- * TestPrjTop画面のInitサービス処理クラス。　 
+ * 備品搬入・搬出確認リスト出力画面のInitサービス処理クラス。　 
  * 
  */
 @Service
 public class Skf3040Sc002InitService extends BaseServiceAbstract<Skf3040Sc002InitDto> {
 	
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	@Autowired
+	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
 
 	/**
 	 * サービス処理を行う。　
@@ -31,6 +45,38 @@ public class Skf3040Sc002InitService extends BaseServiceAbstract<Skf3040Sc002Ini
 		
 		initDto.setPageTitleKey(MessageIdConstant.SKF3040_SC002_TITLE);
  		
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		
+		// システム処理年月取得
+		String sysProcessDate = skfBaseBusinessLogicUtils.getSystemProcessNenGetsu();
+		
+		// エラーの設定を念のため初期化
+		initDto.setCarryingInOutTermFromErr(null);
+		initDto.setCarryingInOutTermToErr(null);
+		
+		// 希望日の設定
+		if(true == NfwStringUtils.isNotEmpty(sysProcessDate)){
+			// 希望日From
+			String startDate = sysProcessDate + "01";
+			initDto.setCarryingInOutTermFrom(startDate);
+			// 希望日To
+			SimpleDateFormat dateFormatFrom = new SimpleDateFormat("yyyyMMdd");
+			Date dateFrom = null;
+			dateFrom = dateFormatFrom.parse(startDate);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dateFrom);
+			// 1カ月加算
+			calendar.add(Calendar.MONTH, 1);
+			// 1日減算
+			calendar.add(Calendar.DAY_OF_MONTH, -1);
+			String endDate = dateFormatFrom.format(calendar.getTime()).toString();
+			initDto.setCarryingInOutTermTo(endDate);
+		}
+		
+		// 出力状況の設定（出力済みを含まない）
+		initDto.setOutSituation(CodeConstant.NO);
+		
 		return initDto;
 	}
 	
