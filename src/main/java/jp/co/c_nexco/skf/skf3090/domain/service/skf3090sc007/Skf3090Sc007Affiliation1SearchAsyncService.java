@@ -105,6 +105,8 @@ public class Skf3090Sc007Affiliation1SearchAsyncService
 
 		// 必須入力チェック、桁数チェック、形式チェックが全て通ったら部等名称の情報を取得する
 		if (isCheck) {
+			param.setCompanyCd(affiliation1SearchAsyncDto.getRegistCompanyCd());
+			param.setAgencyCd(affiliation1SearchAsyncDto.getRegistAgencyCd());
 			param.setAffiliation1Cd(affiliation1SearchAsyncDto.getRegistAffiliation1Cd());
 			resultList = skf3090Sc007GetAffiliation1InfoExpRepository.getAffiliation1Info(param);
 		} else {

@@ -2,8 +2,10 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc007;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExpRepository;
@@ -79,6 +81,7 @@ public class Skf3090Sc007AgencySearchAsyncService extends AsyncBaseServiceAbstra
 
 		// 入力チェック、桁数チェック、形式チェックが全て通ったら機関名称を取得する
 		if (isCheck) {
+			param.setCompanyCd(agencySearchAsyncDto.getRegistCompanyCd());
 			param.setAgencyCd(agencySearchAsyncDto.getRegistAgencyCd());
 			resultList = skf3090Sc007GetAgencyInfoExpRepository.getAgencyInfo(param);
 		} else {
