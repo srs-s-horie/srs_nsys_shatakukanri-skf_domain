@@ -195,7 +195,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 		Map<String, String> userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userId = userInfo.get("userName");
-		userId = null;
+		
 		if (NfwStringUtils.isEmpty(yearMonth) || NfwStringUtils.isEmpty(userId)) {
 			LogUtils.debugByMsg("パラメータ不正。対象年月：" + yearMonth + "、 ユーザーID：" + userId);
 			ServiceHelper.addErrorResultMessage(inDto, null, MessageIdConstant.E_SKF_1070);
