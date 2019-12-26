@@ -177,7 +177,7 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			initDto.setCommentViewFlag(false);
 		}
 		
-		
+		String checkCandidateNoStr = null;
 		//ステータスによる表示制御、使用可否設定
 		//申請状況が"選択しない"もしくは"選択済み"の場合
 		if(applStatus.equals(CodeConstant.STATUS_SENTAKU_SHINAI) || applStatus.equals(CodeConstant.STATUS_SENTAKU_ZUMI)){
@@ -187,7 +187,7 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			//選択された項目のラジオボタンをチェック済みにするための選択物件番号を取得する
 			Long checkCandidateNo = this.getCheckCandidateNo(companyCd, applNo, teijiKaisu);
 			if(checkCandidateNo != null){
-				initDto.setCheckCandidateNo(String.valueOf(checkCandidateNo));
+				checkCandidateNoStr = String.valueOf(checkCandidateNo);
 			}
 		
 		//申請状況が"完了"の場合
@@ -199,7 +199,7 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			//選択された項目のラジオボタンをチェック済みにするための選択物件番号を取得する
 			Long checkCandidateNo = this.getCheckCandidateNo(companyCd, applNo, teijiKaisu);
 			if(checkCandidateNo != null){
-				initDto.setCheckCandidateNo(String.valueOf(checkCandidateNo));
+				checkCandidateNoStr = String.valueOf(checkCandidateNo);
 			}
 			
 		//それ以外の場合
@@ -208,6 +208,7 @@ public class Skf2060Sc003InitService extends BaseServiceAbstract<Skf2060Sc003Ini
 			initDto.setButtonViewFlag(false);
 		}
 		
+		initDto.setCheckCandidateNo(checkCandidateNoStr);
 		initDto.setLastUpdateDateMap(lastUpdateDateMap);
 		  
 		return initDto;

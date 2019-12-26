@@ -173,6 +173,7 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 		//現行ではラベルに提示回数を保存していたので隠し要素で設定
 		initDto.setTeijiKaisu(String.valueOf(kariageTeijiDataList.get(0).getTeijiKaisu()));
 		
+		String selectedRadioCandidateNo= null;
 		String selectedRiyu = null;
 		String selectedBiko = null;
 		// 提示状況が「確認依頼」以外の場合(借上候補物件を選択した後の場合)
@@ -180,7 +181,7 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 			for(Skf2060Sc002GetKariageTeijiInfoExp kariageTeijiData:kariageTeijiDataList){
 				// ラジオボタンにチェックを入れる
 				if(kariageTeijiData.getApplCheckFlg() != null && CheckUtils.isEqual(kariageTeijiData.getApplCheckFlg(), "1")){
-					initDto.setSelectedRadioCandidateNo(String.valueOf(kariageTeijiData.getCandidateNo()));
+					selectedRadioCandidateNo = String.valueOf(kariageTeijiData.getCandidateNo());
 				}
 			}
 			selectedRiyu = ktData.getRiyu();
@@ -201,7 +202,9 @@ public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002Ini
 		List<Map<String, Object>> riyuList = new ArrayList<Map<String, Object>>();
 		riyuList.addAll(skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_NO_AGREE_REASON, selectedRiyu, false));
 		initDto.setRiyuList(riyuList);
+		
 		initDto.setBiko(selectedBiko);
+		initDto.setSelectedRadioCandidateNo(selectedRadioCandidateNo);
 
 		//提示ステータスが41のとき（完了）
 		if(applStatus.equals(CodeConstant.STATUS_KANRYOU)){
