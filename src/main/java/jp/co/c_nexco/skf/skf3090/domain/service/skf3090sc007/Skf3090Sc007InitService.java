@@ -116,6 +116,8 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 			/** 画面表示するドロップダウンを取得する */
 			// 会社ドロップダウン
 			companyList.addAll((List<Map<String, Object>>) returnMap.get(Skf3090Sc007SharedService.KEY_COMPANY_LIST));
+			// 事業領域ドロップダウン
+			businessAreaList.addAll((List<Map<String, Object>>) returnMap.get(Skf3090Sc007SharedService.KEY_BUSINESS_AREA_LIST));
 
 			// 会社ドロップダウンリスト操作可能
 			comapnyCdDisabled = "false";
