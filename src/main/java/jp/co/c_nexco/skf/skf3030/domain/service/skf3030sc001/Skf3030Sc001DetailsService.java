@@ -37,7 +37,7 @@ public class Skf3030Sc001DetailsService extends BaseServiceAbstract<Skf3030Sc001
 	@Override
 	protected BaseDto index(Skf3030Sc001DetailsDto inDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("社宅管理台帳「詳細」処理", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
+		skfOperationLogUtils.setAccessLog("社宅管理台帳「詳細」処理開始", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
 
 		createSessionData(inDto);
 

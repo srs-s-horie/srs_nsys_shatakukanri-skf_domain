@@ -184,7 +184,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 	@Override
 	protected BaseDto index(Skf3030Sc001DownloadRp002Dto inDto) {
 
-		skfOperationLogUtils.setAccessLog("社宅管理台帳「社宅管理台帳データ」出力", CodeConstant.C001, inDto.getPageId());
+		skfOperationLogUtils.setAccessLog("社宅管理台帳「社宅管理台帳データ」出力処理開始", CodeConstant.C001, inDto.getPageId());
 
 		inDto = (Skf3030Sc001DownloadRp002Dto) skf3030Sc001SharedService.setDropDownSelect(inDto);
 

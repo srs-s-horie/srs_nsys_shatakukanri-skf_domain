@@ -32,7 +32,7 @@ public class Skf3030Sc001ChangeMonthDropDownAsyncService
 	@Override
 	protected AsyncBaseDto index(Skf3030Sc001ChangeMonthDropDownAsyncDto inDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("社宅管理台帳「月」ドロップダウン変更処理", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
+		skfOperationLogUtils.setAccessLog("社宅管理台帳「月」ドロップダウン変更処理開始", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
 
 		Map<String, String> getsujiShoriJoukyouShoukaiMap = skf3030Sc001SharedService
 				.getGetsujiShoriJoukyouShoukai(inDto.getHdnAsyncYearSelect() + inDto.getHdnAsyncMonthSelect());
