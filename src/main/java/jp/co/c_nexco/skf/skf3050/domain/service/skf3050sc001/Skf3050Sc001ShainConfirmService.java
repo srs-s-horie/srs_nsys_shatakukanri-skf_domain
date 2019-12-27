@@ -10,10 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoIkatuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainNameExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainNameExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
@@ -36,8 +34,6 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private Skf3050Sc001SharedService skf3050Sc001SharedService;
 	@Autowired
 	private Skf3050Sc001GetShatakuShainNameExpRepository skf3050Sc001GetShatakuShainNameExpRepository;
 	
@@ -75,9 +71,9 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 		
 		for(Map<String,Object> row : grvShainBangoList){
 			//社員番号
-			String shainNo = row.get("shainNo").toString();
+			//String shainNo = row.get("shainNo").toString();
 			//社員氏名
-			String shainName = row.get("shainName").toString();
+			//String shainName = row.get("shainName").toString();
 			//社員番号（txt）
 			String txtShainNo = row.get("txtShainNo").toString();
 			//社員氏名（従業員）
@@ -85,7 +81,7 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 			//所属（従業員）
 			String shozokuJugyoin = row.get("shozokuJugyoin").toString();
 			//更新日(従業員)
-			String updateDateNew = row.get("updateDateNew").toString();
+			//String updateDateNew = row.get("updateDateNew").toString();
 			//対象のテキストボックス名
 			String boxName = row.get("boxName").toString();
 			
@@ -96,7 +92,6 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 					row.put("shozokuJugyoin", CodeConstant.DOUBLE_QUOTATION);
 				}
 				//背景色をクリア
-				//TODO
 				continue;
 			}else{
 				blankFlg = false;
@@ -113,7 +108,6 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 			}
 			
 			//社員番号の整合チェック
-			int index1 = 0;
 			for(Map<String,Object> row1 : grvShainBangoList){
 				//社員番号（txt）
 				String txtShainNo1 = row1.get("txtShainNo").toString();
@@ -165,7 +159,6 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 		if(shainNameCheckFlg){
 			ServiceHelper.addWarnResultMessage(confirmDto, MessageIdConstant.W_SKF_3001, "");
 		}
-		//throwBusinessExceptionIfErrors(confirmDto.getResultMessages());
 		
 		if(shainInfoConfirmFlg == CONFIRMFLG_JISSHI && blankFlg == false){
 			//登録ボタンを活性に設定
@@ -182,8 +175,9 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 	}
 	
 	/**
+	 * 社員情報リスト文字列読込
 	 * @param shainListData
-	 * @return
+	 * @return 社員情報リスト
 	 */
 	private List<Map<String,Object>> createShainInfoList(String shainListData){
 		//返却リスト初期化

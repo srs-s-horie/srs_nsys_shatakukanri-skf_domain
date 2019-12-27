@@ -35,7 +35,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001DeleteDto;
 
 /**
- * 入退居予定一覧画面のDeleteサービス処理クラス。　 
+ * Skf3021Sc001DeleteService 入退居予定一覧画面のDeleteサービス処理クラス。
+ * 
+ * @author NEXCOシステムズ
  * 
  */
 @Service
@@ -59,7 +61,7 @@ public class Skf3021Sc001DeleteService extends BaseServiceAbstract<Skf3021Sc001D
 	//ボタン押下区分：初期化
 	private static final int BTNFLG_INIT = 0;
 	//ボタン押下区分：検索ボタン押下
-	private static final int BTNFLG_KENSAKU = 1;
+	//private static final int BTNFLG_KENSAKU = 1;
 
 	/**
 	 * サービス処理を行う。　

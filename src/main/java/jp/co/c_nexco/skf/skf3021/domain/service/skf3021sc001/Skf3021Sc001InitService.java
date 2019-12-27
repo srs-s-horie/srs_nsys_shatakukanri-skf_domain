@@ -18,7 +18,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001InitDto;
 
 /**
- * 入退居予定一覧画面のInitサービス処理クラス。　 
+ * Skf3021Sc001InitService 入退居予定一覧画面のInitサービス処理クラス。
+ * 
+ * @author NEXCOシステムズ
  * 
  */
 @Service

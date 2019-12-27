@@ -21,8 +21,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060sc001.Skf3060Sc001InitDto;
 
 /**
- * 年齢加算対象者一覧画面のInitサービス処理クラス。　 
+ * Skf3060Sc001InitService 年齢加算対象者一覧画面のInitサービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3060Sc001InitService extends BaseServiceAbstract<Skf3060Sc001InitDto> {

@@ -9,7 +9,7 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.common.Skf302110CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * 入退居予定一覧画面の共通Dto。
+ * Skf3021Sc001CommonDto 入退居予定一覧画面の共通Dto。
  * 
  * @author NEXCOシステムズ
  */

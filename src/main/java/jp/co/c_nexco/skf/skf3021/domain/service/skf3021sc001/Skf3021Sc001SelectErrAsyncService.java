@@ -22,7 +22,7 @@ public class Skf3021Sc001SelectErrAsyncService
 		extends AsyncBaseServiceAbstract<Skf3021Sc001SelectErrAsyncDto> {
 
 	/**
-	 * 駐車場情報の取得サービス
+	 * 未選択エラーメッセージ表示
 	 */
 	@Override
 	public AsyncBaseDto index(Skf3021Sc001SelectErrAsyncDto asyncDto) throws Exception {

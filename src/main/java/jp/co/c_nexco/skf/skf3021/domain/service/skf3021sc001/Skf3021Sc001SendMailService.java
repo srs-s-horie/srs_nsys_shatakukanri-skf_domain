@@ -68,6 +68,7 @@ public class Skf3021Sc001SendMailService extends BaseServiceAbstract<Skf3021Sc00
 	public static final String TAIKYO = "退居";
 	//ボタン押下区分：初期化
 	private static final int BTNFLG_INIT = 0;
+	
 	/**
 	 * サービス処理を行う。
 	 * 

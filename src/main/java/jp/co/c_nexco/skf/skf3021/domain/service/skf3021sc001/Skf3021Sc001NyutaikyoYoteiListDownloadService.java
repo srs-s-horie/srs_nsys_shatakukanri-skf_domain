@@ -52,7 +52,9 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001NyutaikyoYo
 
 
 /**
- * 入退居予定一覧画面の入退居予定リスト出力サービス処理クラス。　 
+ * Skf3021Sc001NyutaikyoYoteiListDownloadService 入退居予定一覧画面の入退居予定リスト出力サービス処理クラス。
+ * 
+ * @author NEXCOシステムズ
  * 
  */
 @Service
@@ -83,7 +85,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAb
 	//居住者区分 -本人同居
 	private static final String HONNIN_DOKYO = "1";
 	//居住者区分 -留守家族
-	private static final String RUSU_KAZOKU = "2";
+	//private static final String RUSU_KAZOKU = "2";
 	//入居
 	private static final String NYUTAIKYO_NYUKYO = "入居";
 	//退居

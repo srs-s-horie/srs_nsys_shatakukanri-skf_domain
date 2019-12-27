@@ -44,8 +44,10 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001AkiShatakuL
 
 
 /**
- * 入退居予定一覧画面の空き社宅リスト出力サービス処理クラス。　 
+ * Skf3021Sc001AkiShatakuListDownloadService 入退居予定一覧画面の空き社宅リスト出力サービス処理クラス。
  * 
+ *  @author NEXCOシステムズ
+ *  
  */
 @Service
 public class Skf3021Sc001AkiShatakuListDownloadService extends BaseServiceAbstract<Skf3021Sc001AkiShatakuListDownloadDto> {

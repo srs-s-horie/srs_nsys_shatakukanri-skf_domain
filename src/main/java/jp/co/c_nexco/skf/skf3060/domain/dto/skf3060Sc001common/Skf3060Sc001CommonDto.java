@@ -9,8 +9,9 @@ import jp.co.c_nexco.skf.skf3060.domain.dto.common.Skf306010CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf3060Sc001CommonDto 事業領域名マスタ登録画面CommonDto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

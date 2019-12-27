@@ -44,7 +44,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc002.Skf3021Sc002InitDto;
 
 /**
- * 入退居申請照会のInitサービス処理クラス。　 
+ * Skf3021Sc002InitService 入退居申請照会のInitサービス処理クラス。
+ * 
+ * @author NEXCOシステムズ
  * 
  */
 @Service

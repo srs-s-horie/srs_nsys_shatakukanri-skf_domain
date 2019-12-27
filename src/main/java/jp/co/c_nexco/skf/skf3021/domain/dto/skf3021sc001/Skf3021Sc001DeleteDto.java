@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 /**
  * Skf3021Sc001DeleteDto 入退居予定一覧画面のDeleteDto。
  * 
+ * @author NEXCOシステムズ
+ * 
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

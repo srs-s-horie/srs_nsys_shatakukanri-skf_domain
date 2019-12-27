@@ -20,7 +20,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001SearchDto;
 
 /**
- * 入退居予定一覧画面のSearchサービス処理クラス。　 
+ * Skf3021Sc001SearchService 入退居予定一覧画面のSearchサービス処理クラス。
+ * 
+ * @author NEXCOシステムズ
  * 
  */
 @Service

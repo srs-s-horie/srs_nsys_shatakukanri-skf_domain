@@ -9,7 +9,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.GridRelationDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * 入退居申請照会画面の共通Dto。
+ * Skf3021Sc002CommonDto 入退居申請照会画面の共通Dto。
  * 
  * @author NEXCOシステムズ
  */
