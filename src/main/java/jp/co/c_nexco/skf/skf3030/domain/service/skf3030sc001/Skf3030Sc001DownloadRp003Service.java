@@ -1415,7 +1415,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		thisMonthSheetDataBean.setRowDataBeanList(thisMonthDataBeanList);
 		sheetDataBeanList.add(thisMonthSheetDataBean);
 
-		String excelFileName = fileName + CodeConstant.UNDER_SCORE + DateTime.now().toString("YYYYMMddHHmmss")
+		String excelFileName = fileName + DateTime.now().toString("YYYYMMddHHmmss")
 				+ CodeConstant.DOT + CodeConstant.EXTENSION_XLSX;
 		WorkBookDataBean wbdb = new WorkBookDataBean(excelFileName);
 		wbdb.setSheetDataBeanList(sheetDataBeanList);
