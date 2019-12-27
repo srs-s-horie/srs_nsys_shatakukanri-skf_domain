@@ -280,7 +280,7 @@ public class Skf3020Sc005SharedService {
 			Skf3020TTenninshaChoshoData insertData = createInsertTenninshaInfoData(inDto, shainNo, chkShainNoHenkoKbn);
 			result = skf3020TTenninshaChoshoDataRepository.insert(insertData);
 
-			if (result >= 0) {
+			if (result <= 0) {
 				outMsgId = MessageIdConstant.W_SKF_1010;
 				return outMsgId;
 			}
