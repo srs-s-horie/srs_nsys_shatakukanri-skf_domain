@@ -204,6 +204,7 @@ public class Skf3022Sc005SharedService {
 			}
 			//申請区分
 			String shinseiKbn = tmpData.getApplKbn();
+			tmpMap.put("hdnSinseiKbnCd", shinseiKbn);
 			tmpMap.put("colSinseiKbn", genericCodeApplKbn.get(shinseiKbn));
 			//入居予定日
 			tmpMap.put("colNyukyoDate", skfDateFormatUtils.dateFormatFromString(tmpData.getNyukyoYoteiDate(), "yyyy/MM/dd"));

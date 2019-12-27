@@ -609,7 +609,12 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			param.setShatakuKanriNo(Long.parseLong(dto.getHdnShatakuKanriNo()));
 			maxShatakuRoomKanriNo = skf3010Sc005GetMaxShatakuRoomNoExpRepository.getMaxShatakuRoomNo(param);
 			//社宅部屋管理番号を設定
-			maxShatakuRoomKanriNo += 1;
+			if(maxShatakuRoomKanriNo != null){
+				maxShatakuRoomKanriNo += 1;
+			}else{
+				maxShatakuRoomKanriNo = 1L;
+			}
+			
 			setValue.setShatakuRoomKanriNo(maxShatakuRoomKanriNo);
 			LogUtils.debugByMsg("新社宅部屋管理番号：" + setValue.getShatakuRoomKanriNo());
 			//デフォルト値
