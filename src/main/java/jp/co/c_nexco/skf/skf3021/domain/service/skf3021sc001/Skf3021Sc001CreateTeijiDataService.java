@@ -1099,7 +1099,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 					dtSRR = skf3030TShatakuRentalRirekiRepository.selectByPrimaryKey(rirekiKey);
 					if(dtSRR != null){
 						//使用料パターンＩＤ
-						rentalPatternId = dtSRR.getRentalPatternId().toString();
+						//rentalPatternId = dtSRR.getRentalPatternId().toString();
 						columnInfoList.setRentalPatternId(dtSRR.getRentalPatternId());
 						//役員算定
 						columnInfoList.setYakuinSannteiKbn(dtSRR.getYakuinSannteiKbn());
@@ -1351,21 +1351,22 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 						columnInfoList.setShatakuRoomKanriNo(dtNCT.get(0).getRoomKanriNo());
 					}
 					
-					//月別駐車場履歴情報を取得（貸与番号 = "1"）
-					Skf3030TParkingRirekiKey parkRirekiKey = new Skf3030TParkingRirekiKey();
-					parkRirekiKey.setShatakuKanriId(dtSL.get(0).getShatakuKanriId());
-					parkRirekiKey.setYearMonth(yearMonth);
-					parkRirekiKey.setParkingLendNo(1L);
 					Skf3030TParkingRireki dtPR1 = null;
-					dtPR1 = skf3030TParkingRirekiRepository.selectByPrimaryKey(parkRirekiKey);
-					//月別駐車場履歴情報を取得（貸与番号 = "2"）
-					Skf3030TParkingRirekiKey parkRireki2Key = new Skf3030TParkingRirekiKey();
-					parkRireki2Key.setShatakuKanriId(dtSL.get(0).getShatakuKanriId());
-					parkRireki2Key.setYearMonth(yearMonth);
-					parkRireki2Key.setParkingLendNo(2L);
 					Skf3030TParkingRireki dtPR2 = null;
-					dtPR2 = skf3030TParkingRirekiRepository.selectByPrimaryKey(parkRireki2Key);
-					
+					if(dtSL != null){
+						//月別駐車場履歴情報を取得（貸与番号 = "1"）
+						Skf3030TParkingRirekiKey parkRirekiKey = new Skf3030TParkingRirekiKey();
+						parkRirekiKey.setShatakuKanriId(dtSL.get(0).getShatakuKanriId());
+						parkRirekiKey.setYearMonth(yearMonth);
+						parkRirekiKey.setParkingLendNo(1L);
+						dtPR1 = skf3030TParkingRirekiRepository.selectByPrimaryKey(parkRirekiKey);
+						//月別駐車場履歴情報を取得（貸与番号 = "2"）
+						Skf3030TParkingRirekiKey parkRireki2Key = new Skf3030TParkingRirekiKey();
+						parkRireki2Key.setShatakuKanriId(dtSL.get(0).getShatakuKanriId());
+						parkRireki2Key.setYearMonth(yearMonth);
+						parkRireki2Key.setParkingLendNo(2L);
+						dtPR2 = skf3030TParkingRirekiRepository.selectByPrimaryKey(parkRireki2Key);
+					}
 					//①月別駐車場履歴情報（貸与番号 = "1"）がある、かつ、②月別駐車場履歴情報（貸与番号 = "2"）がないの場合
 					if(dtPR1 != null && dtPR2 == null){
 						//駐車場管理番号１
