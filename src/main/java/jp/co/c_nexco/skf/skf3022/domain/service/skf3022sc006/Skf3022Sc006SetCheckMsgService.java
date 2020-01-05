@@ -12,29 +12,20 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
-import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
-import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006PreJigetsuYoyakuDto;
+import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006SetCheckMsgDto;
 
 /**
- * Skf3022Sc006PreJigetsuYoyakuService 提示データ登録画面:次月予約前処理処理クラス。　 
+ * Skf3022Sc006SetCheckMsgService 提示データ登録画面：確認メッセージ設定処理クラス。　 
  * 
  * @author NEXCOシステムズ
  * 
  */
 @Service
-public class Skf3022Sc006PreJigetsuYoyakuService extends BaseServiceAbstract<Skf3022Sc006PreJigetsuYoyakuDto> {
+public class Skf3022Sc006SetCheckMsgService extends BaseServiceAbstract<Skf3022Sc006SetCheckMsgDto> {
 
-	@Autowired
-	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
+@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
-	@Autowired
-	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
 
 	/**
 	 * サービス処理を行う。　
@@ -46,15 +37,12 @@ public class Skf3022Sc006PreJigetsuYoyakuService extends BaseServiceAbstract<Skf
 	 *             例外
 	 */
 	@Override
-	public Skf3022Sc006PreJigetsuYoyakuDto index(Skf3022Sc006PreJigetsuYoyakuDto initDto) throws Exception {
+	public Skf3022Sc006SetCheckMsgDto index(Skf3022Sc006SetCheckMsgDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC006_TITLE);
 
 		// デバッグログ
-		LogUtils.debugByMsg("次月予約");
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("次月予約", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
-
+		LogUtils.debugByMsg("確認メッセージ設定");
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006KyojyusyaKbnSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006YakuinSanteiSelectList = new ArrayList<Map<String, Object>>();
@@ -114,45 +102,10 @@ public class Skf3022Sc006PreJigetsuYoyakuService extends BaseServiceAbstract<Skf
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
-		// 使用料変更チェック判定
-		if (skf3022Sc006SharedService.haveShiyoryoChanged(initDto)) {
-			LogUtils.debugByMsg("使用料変更有り");
-			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_3033);
-		}
 		// 備品は再取得しない
 		initDto.setBihinItiranFlg(false);
 		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
-		// 処理状態クリア
-		initDto.setSc006Status("");
-
-		/** 次月予約パラメータ設定 */
-		// 提示番号
-		initDto.setHdnJigetuYoyakuTeijiNo(initDto.getHdnTeijiNo());
-		// システム日付
-		initDto.setHdnJigetuYoyakuYearMonth(skfBaseBusinessLogicUtils.getSystemProcessNenGetsu());
-//		// 基準年月
-//		String nyukyoYoteiDay = "";
-//		String taikyoYoteiDay = "";
-//		if (!CheckUtils.isEmpty(initDto.getSc006NyukyoYoteiDay())
-//				&& !initDto.getSc006NyukyoYoteiDayDisableFlg()) {
-//			nyukyoYoteiDay = skf3022Sc006SharedService.getDateText(initDto.getSc006NyukyoYoteiDay());
-//		}
-//		if (!CheckUtils.isEmpty(initDto.getSc006TaikyoYoteiDay())
-//				&& !initDto.getSc006TaikyoYoteiDayDisableFlg()) {
-//			taikyoYoteiDay = skf3022Sc006SharedService.getDateText(initDto.getSc006TaikyoYoteiDay());
-//		}
-		// 社宅管理台帳ID
-		initDto.setHdnJigetuYoyakuShatakuKanriId(CodeConstant.DOUBLE_QUOTATION);
-		// 社宅使用料月額
-		initDto.setHdnJigetuYoyakuRental(skf3022Sc006SharedService.getKingakuText(initDto.getSc006SiyoryoMonthPay()));
-		// 個人負担共益費月額
-		initDto.setHdnJigetuYoyakuKyoekihiPerson(skf3022Sc006SharedService.getKingakuText(initDto.getSc006KyoekihiMonthPay()));
-		// 区画１_駐車場使用料月額
-		initDto.setHdnJigetuYoyakuParkingRentalOne(skf3022Sc006SharedService.getKingakuText(initDto.getSc006TyusyaMonthPayOne()));
-		// 区画２_駐車場使用料月額
-		initDto.setHdnJigetuYoyakuParkingRentalTwo(skf3022Sc006SharedService.getKingakuText(initDto.getSc006TyusyaMonthPayTwo()));
-
 		return initDto;
 	}
 }

@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006OperationGuideDownloadDto;
 
@@ -37,13 +39,16 @@ public class Skf3022Sc006OperationGuideDownloadService extends BaseServiceAbstra
 	@Override
 	protected BaseDto index(Skf3022Sc006OperationGuideDownloadDto dto) throws Exception {
 
-		// デバッグログ
-		LogUtils.debugByMsg("運用ガイドダウンロード");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("運用ガイドダウンロード", CodeConstant.C001, dto.getPageId());
+		skfOperationLogUtils.setAccessLog("運用ガイド", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
+		// デバッグログ
+		LogUtils.debugByMsg("運用ガイド");
 		// ファイル出力処理
-		SkfFileOutputUtils.fileOutputPdf("skf3022.skf3022_sc006.operationGuideFile", "SKF3022MN006", dto);
-
+//		SkfFileOutputUtils.fileOutputPdf("skf3022.skf3022_sc006.operationGuideFile", "SKF3022MN006", dto);
+//		FileOutput.fileDownloadPublic("skf/template/skf3022/skf3022mn006/", "運用ガイド.zip", dto);
+		FileOutput.fileDownloadPublic("skf/template/skf3022/skf3022mn006/",
+				PropertyUtils.getValue("skf3022.skf3022_sc006.operationGuideFile"), dto);
+//		LogUtils.debugByMsg("運用ガイドダウンロード終了");
 		return dto;
 	}
 }

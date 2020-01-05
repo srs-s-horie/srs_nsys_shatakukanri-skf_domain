@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
@@ -54,9 +56,9 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC006_TITLE);
 
 		// デバッグログ
-		LogUtils.debugByMsg("社宅部屋入力支援コールバック処理");
+		LogUtils.debugByMsg("社宅部屋入力支援");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("社宅部屋入力支援コールバック処理", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("社宅部屋入力支援", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 		// ドロップダウンリスト
@@ -81,7 +83,7 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 		// エラーコントロールクリア
 		skf3022Sc006SharedService.clearVaridateErr(initDto);
 		// 非活性制御クリア
-		skf3022Sc006SharedService.clearDisable(initDto);
+		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 		// 現在のラベル値をDTOに設定
 		skf3022Sc006SharedService.setErrVariableLabel(labelList, initDto);
 
@@ -118,10 +120,12 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
+		// 備品再取得しない
+		initDto.setBihinItiranFlg(false);
 		// 社宅管理番号／部屋管理番号が変更判定
 		if (CheckUtils.isEmpty(initDto.getHdnShatakuKanriNoOld()) || CheckUtils.isEmpty(initDto.getHdnRoomKanriNoOld())
-				|| !initDto.getHdnShatakuKanriNoOld().equals(initDto.getHdnShatakuKanriNo())
-				|| !initDto.getHdnRoomKanriNoOld().equals(initDto.getHdnRoomKanriNo())) {
+				|| !Objects.equals(initDto.getHdnShatakuKanriNoOld(), initDto.getHdnShatakuKanriNo())
+				|| !Objects.equals(initDto.getHdnRoomKanriNoOld(), initDto.getHdnRoomKanriNo())) {
 			// 社宅部屋情報マスタを取得
 			Long shatakuKanriNo = CheckUtils.isEmpty(initDto.getHdnShatakuKanriNo()) ? null : Long.parseLong(initDto.getHdnShatakuKanriNo());
 			Long shatakuRoomKanriNo = CheckUtils.isEmpty(initDto.getHdnRoomKanriNo()) ? null : Long.parseLong(initDto.getHdnRoomKanriNo());
@@ -199,10 +203,10 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 			initDto.setHdnChushajoNoOne(CodeConstant.DOUBLE_QUOTATION);
 			// 区画１　区画番号
 //		    Me.lblKukakuNoOne.Text = String.Empty
-			initDto.setHdnKukakuNoOne(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setSc006KukakuNoOne(CodeConstant.DOUBLE_QUOTATION);
 			// 区画１　利用終了日
 //		    Me.txtRiyouEndDayOne.Text = String.Empty
-			initDto.setHdnRiyouEndDayOne(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setSc006RiyouEndDayOne(CodeConstant.DOUBLE_QUOTATION);
 			// 区画１　駐車場使用料月額
 //		    Me.lblTyusyaMonthPayOne.Text = DATA_0
 			initDto.setSc006TyusyaMonthPayOne(CodeConstant.STRING_ZERO);
@@ -214,10 +218,10 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 			initDto.setHdnChushajoNoTwo(CodeConstant.DOUBLE_QUOTATION);
 			// 区画２　区画番号
 //		    Me.lblKukakuNoTwo.Text = String.Empty
-			initDto.setHdnKukakuNoTwo(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setSc006KukakuNoTwo(CodeConstant.DOUBLE_QUOTATION);
 			// 区画２　利用終了日
 //		    Me.txtRiyouEndDayTwo.Text = String.Empty
-			initDto.setHdnRiyouEndDayTwo(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setSc006RiyouEndDayTwo(CodeConstant.DOUBLE_QUOTATION);
 			// 区画２　駐車場使用料月額
 //		    Me.lblTyusyaMonthPayTwo.Text = DATA_0
 			initDto.setSc006TyusyaMonthPayTwo(CodeConstant.STRING_ZERO);
@@ -246,6 +250,8 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 
 		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		// 処理状態クリア
+		initDto.setSc006Status("");
 		return initDto;
 	}
 }

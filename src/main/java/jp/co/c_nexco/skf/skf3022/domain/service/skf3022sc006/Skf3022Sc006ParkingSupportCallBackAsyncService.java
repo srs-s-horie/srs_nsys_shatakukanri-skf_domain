@@ -55,9 +55,9 @@ public class Skf3022Sc006ParkingSupportCallBackAsyncService
 	public Skf3022Sc006ParkingSupportCallBackAsyncDto index(Skf3022Sc006ParkingSupportCallBackAsyncDto asyncDto) throws Exception {
 
 		// デバッグログ
-		LogUtils.debugByMsg("駐車場入力支援コールバック");
+		LogUtils.debugByMsg("駐車場入力支援");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("駐車場入力支援コールバック", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
+		skfOperationLogUtils.setAccessLog("駐車場入力支援", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 		// 日付フォーマット
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 		/** パラメータ取得 */
