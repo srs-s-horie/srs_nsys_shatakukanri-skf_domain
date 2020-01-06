@@ -10,13 +10,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 import org.terasoluna.gfw.common.message.ResultMessage;
 import org.terasoluna.gfw.common.message.ResultMessageUtils;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetNijuuKidouCheckCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetNijuuKidouCheckCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsUpdateBatchControlExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteShinjoDataFromSoshikiMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteShinseiDataFromSoshikiMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteTokyuMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteWkSoshikiExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetClearAddressSoshikMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetClearAddressSoshikMasterExpParameter;
@@ -32,16 +32,16 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshi
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiMasterChangedCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertShinseiSoshikiMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertSoshikiMasterBackUpExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertTokyuMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertWkSoshikiMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsUpdateSoshikiMasterBackUpExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TBatchControl;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoWkExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetNijuuKidouCheckCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsUpdateBatchControlExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteShinjoDataFromSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteShinseiDataFromSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteTokyuMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteWkSoshikiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetClearAddressSoshikMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetDeleteSoshikMasterExpRepository;
@@ -51,6 +51,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfS
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiMasterChangedCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertShinseiSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertSoshikiMasterBackUpExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertWkSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsUpdateSoshikiMasterBackUpExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010TBatchControlRepository;
@@ -92,9 +93,6 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 	private int insertCount = 0;
 	// 組織マスタの住所情報変更件数
 	private int updateCount = 0;
-	// 組織マスタの登録失敗件数
-	private int insertErrCount = 0;
-
 	// 身上データシステム：機関コード（役員）
 	private String SHINJO_AGENCY_CD_YAKUIN = "00";
 
@@ -114,30 +112,12 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 	private final String I_SKF_1037_INFO_PARAM_2 = "（社員コード：**）";
 
 	// テーブル名
-	private final String TABLE_NAME = "組織マスタ";
-
-	// 変換用ひらがな
-	private final String TL_HIRAGANA = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉっゃゅょーヰゐゑヵヶ";
-	// 変換用カタカナ
-	private final String TL_KATAKANA = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォッャュョーイイエヵヶ";
-	// 補正ステータス
-	private final String CORRECTION_STATUS = "2000";
-
-	// ユーザ種別
-	private final String USER_TYPE = "10";
-
-	// ユーザ種別
-	private final String USE_NOTES = "0";
+	private final String TABLE_NAME_SOSHIKI = "組織マスタ";
+	private final String TABLE_NAME_TOKYU = "等級マスタ";
 
 	// バッチ処理名
 	private final String BATCH_NAME_MAIN = "組織データ取込";
-	private final String BATCH_NAME_KYUYOKOUSEI = "給与厚生組織データ取込";
-	private final String BATCH_NAME_SHATAKU = "社宅組織データ取込";
-
-	private final int RESULT_ERROR = -1;
-	// 登録区分
-	private final String INSERT_KBN = "1";
-	private final String UPDATE_KBN = "2";
+	private final String BATCH_NAME_TOKYU = "等級データ取込";
 
 	// ログ区分
 	private final String INFO = "info";
@@ -190,20 +170,21 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
 					return dto;
 				}
-				boolean kyuyoKouseiRes = updateKyuyoKousei();
-				if (!kyuyoKouseiRes) {
+				boolean soshikiRes = updateSoshikiMaster();
+				if (!soshikiRes) {
 					// エラーログ出力
 					batchResult = SkfCommonConstant.ABNORMAL;
 					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT001,
 							batchResult);
-				} else {
-					boolean shatakuRes = updateShataku();
-					if (!shatakuRes) {
-						// エラーログ出力
-						batchResult = SkfCommonConstant.ABNORMAL;
-						setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT001,
-								batchResult);
-					}
+				}
+
+				// 等級データ取込処理
+				boolean tokyuRes = updateTokyu();
+				if (!tokyuRes) {
+					// エラーログ出力
+					batchResult = SkfCommonConstant.ABNORMAL;
+					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT001,
+							batchResult);
 				}
 			} else {
 				// 処理結果を異常終了に設定
@@ -292,15 +273,14 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 		return false;
 	}
 
-	// 給与厚生側の処理
 	/**
-	 * 給与厚生側の組織データ取込処理
+	 * 組織データ取込処理
 	 * 
 	 * @return
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	private boolean updateKyuyoKousei() throws Exception {
-		setLog(INFO, MessageIdConstant.I_SKF_1022, BATCH_NAME_KYUYOKOUSEI);
+	private boolean updateSoshikiMaster() throws Exception {
+		setLog(INFO, MessageIdConstant.I_SKF_1022, BATCH_NAME_MAIN);
 
 		// 更新要/不要チェック
 		boolean soshikiMasterChanged = false;
@@ -312,14 +292,16 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 				updateSoshikiMasterBackUp();
 
 				// 既存の組織マスタを退避
+				// ワーク組織テーブルのデータを初期化
 				deleteWkSoshiki();
-				int workResult = insertWkSoshikiMaster();
-				// 組織マスタから身上データシステムから登録したデータを削除
-				int deleteResult = deleteShinjoDataFromSoshikiMaster();
-				// 給与厚生申請システムで登録した組織が身上データシステムで登録された場合、給与厚生側は削除
-				deleteResult += deleteShinseiDataFromSoshikiMaster();
-				// 組織マスタ登録処理（住所、電話番号は退避テーブルを外部結合で取得）
-				int insertResult = insertShinseiSoshikiMaster();
+				// 既存の組織テーブルデータをワーク組織テーブルに移行
+				insertWkSoshikiMaster();
+				// 組織マスタから身上データシステムからの登録データのみ削除
+				deleteShinjoDataFromSoshikiMaster();
+				// 給与厚生側登録の組織データの内、身上システム登録の組織データとの重複を削除
+				deleteShinseiDataFromSoshikiMaster();
+				// 組織マスタを登録
+				insertShinseiSoshikiMaster();
 
 				// 変更ログ用の組織情報
 				List<String> deleteSoshikiList = new ArrayList<String>();
@@ -400,8 +382,8 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 						updateSoshikiList.add(temp.toString());
 					}
 				}
-				// ワーク組織マスタ削除
-				deleteResult += deleteWkSoshiki();
+				// ワーク組織テーブルを削除する
+				deleteWkSoshiki();
 
 				// 組織マスタバックアップテーブルへ登録
 				insertSoshikiMasterBackUp();
@@ -442,13 +424,45 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 		// (メッセージID：I00001、{0}：全件数カウンタ)を取得
 		setLog("INFO", MessageIdConstant.I_SKF_1015, recordCount);
 		// (メッセージID：I00011、{0}：テーブル名、{1}：削除件数)を取得
-		setLog("INFO", MessageIdConstant.I_SKF_1024, TABLE_NAME, deleteCount);
+		setLog("INFO", MessageIdConstant.I_SKF_1024, TABLE_NAME_SOSHIKI, deleteCount);
 		// (メッセージID：I00003、{0}：テーブル名、{1}：登録件数)を取得
-		setLog("INFO", MessageIdConstant.I_SKF_1017, TABLE_NAME, insertCount);
+		setLog("INFO", MessageIdConstant.I_SKF_1017, TABLE_NAME_SOSHIKI, insertCount);
 		// (メッセージID：I00052、{0}：テーブル名、{1}：更新件数)を取得
-		setLog("INFO", MessageIdConstant.I_SKF_3104, TABLE_NAME, updateCount);
-		// (メッセージID：I00004、{0}：テーブル名、{1}：登録失敗件数)を取得
-		setLog("INFO", MessageIdConstant.I_SKF_1018, TABLE_NAME, insertErrCount);
+		setLog("INFO", MessageIdConstant.I_SKF_3104, TABLE_NAME_SOSHIKI, updateCount);
+
+		return true;
+	}
+
+	/**
+	 * 等級マスタの差し替えを行います
+	 * 
+	 * @return
+	 */
+	@Transactional
+	private boolean updateTokyu() throws Exception {
+		setLog(INFO, MessageIdConstant.I_SKF_1022, BATCH_NAME_TOKYU);
+
+		// 等級マスタを初期化
+		SkfSoshikiBatchUtilsDeleteTokyuMasterExp delRecord = new SkfSoshikiBatchUtilsDeleteTokyuMasterExp();
+		delRecord.setCompanyCd(companyCd);
+		SkfSoshikiBatchUtilsDeleteTokyuMasterExpRepository delRepository = (SkfSoshikiBatchUtilsDeleteTokyuMasterExpRepository) SpringContext
+				.getBean("skfSoshikiBatchUtilsDeleteTokyuMasterExpRepository");
+		int delRes = delRepository.deleteTokyuMaster(delRecord);
+		if (delRes < 0) {
+			return false;
+		}
+
+		// 等級マスタを登録します
+		SkfSoshikiBatchUtilsInsertTokyuMasterExp insRecord = new SkfSoshikiBatchUtilsInsertTokyuMasterExp();
+		insRecord.setCompanyCd(companyCd);
+		SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository insRepository = (SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository) SpringContext
+				.getBean("skfSoshikiBatchUtilsInsertTokyuMasterExpRepository");
+		int insRes = insRepository.insertTokyuMaster(insRecord);
+		if (insRes < 0) {
+			return false;
+		}
+		// (メッセージID：I00003、{0}：テーブル名、{1}：登録件数)を取得
+		setLog("INFO", MessageIdConstant.I_SKF_1017, TABLE_NAME_TOKYU, insRes);
 
 		return true;
 	}
@@ -605,18 +619,13 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 	 * 既存の組織マスタバックアップの保存世代を更新
 	 */
 	private void updateSoshikiMasterBackUp() {
-		// 削除件数
-		int deleteCount = RESULT_ERROR;
-		// 更新件数
-		int updateCount = 0;
-
 		// 指定された保存世代以上のデータを削除
 		SkfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExp delRecord = new SkfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExp();
 		delRecord.setCompanyCd(companyCd);
 		delRecord.setGenerationNo(SAVE_GENERATION);
 		SkfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExpRepository delRepository = (SkfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExpRepository) SpringContext
 				.getBean("skfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExpRepository");
-		deleteCount = delRepository.deleteSoshikiMasterBackUp(delRecord);
+		delRepository.deleteSoshikiMasterBackUp(delRecord);
 
 		// 組織バックアップデータ取得
 		List<SkfSoshikiBatchUtilsGetSoshikiMasterBackUpExp> soshikiBkList = new ArrayList<SkfSoshikiBatchUtilsGetSoshikiMasterBackUpExp>();
@@ -643,29 +652,13 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 				updRecord.setGenerationNo(String.valueOf(generationNo));
 				SkfSoshikiBatchUtilsUpdateSoshikiMasterBackUpExpRepository updRepository = (SkfSoshikiBatchUtilsUpdateSoshikiMasterBackUpExpRepository) SpringContext
 						.getBean("skfSoshikiBatchUtilsUpdateSoshikiMasterBackUpExpRepository");
-				updateCount += updRepository.updateSoshikiMasterBackUp(updRecord);
+				updRepository.updateSoshikiMasterBackUp(updRecord);
 			}
 		}
 
 		return;
 	}
 
-	// 社宅側の処理
-	/**
-	 * 社宅側の組織データ取込処理
-	 * 
-	 * @return
-	 */
-	@Transactional(rollbackFor = Exception.class)
-	private boolean updateShataku() throws Exception {
-		// 開始ログ出力
-		setLog(INFO, MessageIdConstant.I_SKF_1022, BATCH_NAME_SHATAKU);
-
-		return true;
-	}
-
-	///////////////////////// 共通処理
-	///////////////////////// //////////////////////////////////////////////
 	/**
 	 * 組織マスタ更新要/不要チェックメソッド
 	 * 
@@ -714,46 +707,6 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * ワーク社宅社員マスタデータ削除
-	 * 
-	 * @return
-	 */
-	private int deleteShatakuShainMasterInfoWk() {
-		SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoWkExpRepository repository = (SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoWkExpRepository) SpringContext
-				.getBean("skfPerssonalBatchUtilsDeleteShatakuShainMasterInfoWkExpRepository");
-		int res = repository.deleteShatakuShainMasterInfoWk();
-
-		return res;
-	}
-
-	/**
-	 * 社宅社員マスタデータを物理削除します
-	 * 
-	 * @param shainNo
-	 * @param isSetRegistFlg
-	 * @return
-	 * @throws Exception
-	 */
-	private int deleteShatakuShainMasterInfo(String shainNo, boolean isSetRegistFlg) throws Exception {
-		SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository repository = (SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository) SpringContext
-				.getBean("skfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository");
-		SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp param = new SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp();
-		// 会社コード
-		param.setCompanyCd(companyCd);
-		// 申請画面登録フラグ
-		if (isSetRegistFlg) {
-			param.setRegistFlg(SkfCommonConstant.REGIST_SHINSEI);
-		}
-		// 社員番号
-		if (NfwStringUtils.isNotEmpty(shainNo)) {
-			param.setShainNo(shainNo);
-		}
-		int res = repository.deleteShatakuShainMasterInfo(param);
-
-		return res;
 	}
 
 	/**
