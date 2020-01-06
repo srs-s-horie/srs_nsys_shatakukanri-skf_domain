@@ -1227,7 +1227,8 @@ public class Skf3022Sc006SharedService {
 		// 備品貸与区分ドロップダウン
 		List<Map<String, Object>> lendStatusList =
 				ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_BIHINLENTSTATUS_KBN, "",false);
-
+		// 備品提示ステータス
+		String bihinTeijiStatus = comDto.getHdnBihinTeijiStatus() != null ? comDto.getHdnBihinTeijiStatus() : "";
 		// 社宅提示状況区分が"同意済み"、備品貸与区分が"必要"の場合
 		if (CodeConstant.PRESENTATION_SITUATION_DOI_SUMI.equals(comDto.getHdnShatakuTeijiStatus())
 				&& CodeConstant.BIHIN_TAIYO_KBN_HITSUYO.equals(comDto.getHdnBihinTaiyoKbn())) {
@@ -1235,7 +1236,7 @@ public class Skf3022Sc006SharedService {
 			if (comDto.getSc006KyoekihiKyogichuCheck()) {
 				// 初期のタブを"社宅情報タブ"に設定
 				setDisplayTabIndex(Skf3022Sc006CommonDto.SELECT_TAB_INDEX_SHATAKU, comDto);
-			} else if(CodeConstant.BIHIN_STATUS_MI_SAKUSEI.equals(comDto.getHdnBihinTeijiStatus())) {
+			} else if(CodeConstant.BIHIN_STATUS_MI_SAKUSEI.equals(bihinTeijiStatus)) {
 				// 備品提示状況区分が未申請の場合
 				// 初期のタブを"社宅情報タブ"に設定
 				setDisplayTabIndex(Skf3022Sc006CommonDto.SELECT_TAB_INDEX_SHATAKU, comDto);
@@ -1409,8 +1410,7 @@ public class Skf3022Sc006SharedService {
 						// 同意済
 						case CodeConstant.PRESENTATION_SITUATION_DOI_SUMI:
 							// 備品提示ステータス判定
-							if (comDto.getHdnBihinTeijiStatus() != null) {
-								switch (comDto.getHdnBihinTeijiStatus()) {
+							switch (bihinTeijiStatus) {
 								// 貸与不要／未申請
 								case CodeConstant.DOUBLE_QUOTATION:
 								case CodeConstant.BIHIN_STATUS_MI_SAKUSEI:
@@ -1477,15 +1477,12 @@ public class Skf3022Sc006SharedService {
 								default :
 									LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場のみ以外、社宅提示：同意済、備品提示：(貸与不要/未申請/作成中/作成済/搬入待/搬入済)以外");
 									break;
-								};
-							} else {
-								LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場のみ以外、社宅提示：同意済、備品提示：null");
-							}
+							};
+							break;
 						// 承認
 						case CodeConstant.PRESENTATION_SITUATION_SHONIN:
 							// 備品提示ステータス判定
-							if (comDto.getHdnBihinTeijiStatus() != null) {
-								switch (comDto.getHdnBihinTeijiStatus()) {
+							switch (bihinTeijiStatus) {
 								// 貸与不要/未申請
 								case CodeConstant.DOUBLE_QUOTATION:
 								case CodeConstant.BIHIN_STATUS_MI_SAKUSEI:
@@ -1546,10 +1543,8 @@ public class Skf3022Sc006SharedService {
 								default :
 									LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場のみ以外、社宅提示：承認、備品提示：(貸与不要/未申請/作成中/作成済/搬入待/搬入済)以外");
 									break;
-								};
-							} else {
-								LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場のみ以外、社宅提示：承認、備品提示：null");
-							}
+							};
+							break;
 						default :
 							LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場のみ以外、社宅提示：(作成中作成済/提示中/同意済/承認)以外");
 							break;
@@ -1586,8 +1581,7 @@ public class Skf3022Sc006SharedService {
 					case CodeConstant.PRESENTATION_SITUATION_SAKUSEI_SUMI:
 					case CodeConstant.PRESENTATION_SITUATION_DOI_SUMI:
 						// 備品提示ステータス判定
-						if (comDto.getHdnBihinTeijiStatus() != null) {
-							switch (comDto.getHdnBihinTeijiStatus()) {
+						switch (bihinTeijiStatus) {
 							// 空文字/未申請
 							case CodeConstant.DOUBLE_QUOTATION:
 							case CodeConstant.BIHIN_STATUS_MI_SAKUSEI:
@@ -1667,10 +1661,7 @@ public class Skf3022Sc006SharedService {
 							default :
 								LogUtils.debugByMsg("申請あり、入退居区分：退居、社宅提示：承認/同意済/作成済、備品提示：(空文字/未申請/作成中/作成済/提示中/搬出待ち/搬出済/同意済)以外");
 								break;
-							};
-						} else {
-							LogUtils.debugByMsg("申請あり、入退居区分：退居、社宅提示：承認/同意済/作成済、備品提示：null");
-						}
+						};
 					};
 				} else {
 					LogUtils.debugByMsg("申請あり、入退居区分：退居、社宅提示：null/空文字");
@@ -1909,7 +1900,7 @@ public class Skf3022Sc006SharedService {
 				comDto.setSc006RiyouEndDayTwoDisableFlg(false);
 			}
 			// 備品提示ステータス判定
-			if (CodeConstant.BIHIN_STATUS_DOI_SUMI.equals(comDto.getHdnBihinTeijiStatus())) {
+			if (CodeConstant.BIHIN_STATUS_DOI_SUMI.equals(bihinTeijiStatus)) {
 				// 同意済
 				// 返却日
 				comDto.setSc006HenkyakuDayDisableFlg(true);
@@ -1941,8 +1932,8 @@ public class Skf3022Sc006SharedService {
 				comDto.setSc006DairiBikoDisableFlg(false);
 				comDto.setSc006BihinBikoDisableFlg(false);
 				// 備品提示ステータス判定
-				if (CheckUtils.isEmpty(comDto.getHdnBihinTeijiStatus())
-						|| CodeConstant.BIHIN_STATUS_MI_SAKUSEI.equals(comDto.getHdnBihinTeijiStatus())) {
+				if (CheckUtils.isEmpty(bihinTeijiStatus)
+						|| CodeConstant.BIHIN_STATUS_MI_SAKUSEI.equals(bihinTeijiStatus)) {
 					// 未設定、または、未作成
 					// 返却日
 					comDto.setSc006HenkyakuDayDisableFlg(false);
@@ -2255,9 +2246,6 @@ public class Skf3022Sc006SharedService {
 			}
 		}
 //		comDto.setHdnYoyakuFlg(yoyaku);
-/* AS kami 2019.12.05 imart移植 デバッグ用 */
-		yoyaku = true;
-/* AE kami 2019.12.05 imart移植 デバッグ用 */
 		/** 確認ダイアログメッセージ設定 */
 		if (!yoyaku || !haveShiyoryoChanged(comDto)) {
 			LogUtils.debugByMsg("次月予約データが存在しない、または、使用料変更なし");
@@ -3167,7 +3155,6 @@ public class Skf3022Sc006SharedService {
 
 			// 使用料パターン情報取得
 			rentalPatternInfoList = skf3022Sc006GetRentalPatternInfoExpRepository.getRentalPatternInfo(param);
-			/* US imart移植 kami 駐車場のみの場合、現状取得出来ていない。取得できないのが正解なのか、取得可能であるべきなのか調査が必要 */
 			// comDto.setHdnRentalPatternUpdateDate(dateFormat.format(rentalPatternInfoList.get(0).getUpdateDate()));
 			if (rentalPatternInfoList.size() > 0) {
 				comDto.setHdnRentalPatternUpdateDate(dateFormat.format(rentalPatternInfoList.get(0).getUpdateDate()));
@@ -3175,7 +3162,6 @@ public class Skf3022Sc006SharedService {
 				// 使用料パターンが存在しない為、更新日時を空文字に設定
 				comDto.setHdnRentalPatternUpdateDate("");
 			}
-			/* UE imart移植 kami 駐車場のみの場合、現状取得出来ていない。取得できないのが正解なのか、取得可能であるべきなのか調査が必要 */
 		}
 	}
 
@@ -3200,7 +3186,7 @@ public class Skf3022Sc006SharedService {
 			rentalPatternInfoList = skf3022Sc006GetRentalPatternInfoExpRepository.getRentalPatternInfo(param);
 			param = null;
 			// 取得結果判定
-			if (rentalPatternInfoList.size() < 1) {
+			if (rentalPatternInfoList.size() < 1 || rentalPatternInfoList.get(0).getRental() == null) {
 				// デバッグログ
 				LogUtils.debugByMsg("使用料パターン情報取得結果：0件");
 				// 使用料パターンが存在しても、使用料情報が存在しない場合（使用料支援未操作の場合）作成しない。
@@ -4842,10 +4828,6 @@ public class Skf3022Sc006SharedService {
 
 	/**
 	 * 登録項目リストへのデータを設定するメソッド
-	 * kami 正直必要な処理なのか？？？？
-	 * だってさ、セッションの使用料計算のアウトプット設定するのになってるけど
-	 * そんなん使用料計算から戻ってきた時点で削除してるやん。。。
-	 * 絶対空っぽやもん。。。なんでこのメソッドあるん？？？
 	 * 
 	 * @param torokuFlg	登録フラグ（true：登録、false：更新）
 	 * @param comDto	DTO
@@ -4862,7 +4844,13 @@ public class Skf3022Sc006SharedService {
 //		Dim sessionInfo As New ShiyoryokeisanShienOutputEntity()
 //		sessionInfo = DirectCast(Me.Session.Item(Constant.SessionId.SHIYORYO_KEISAN_SHIEN_OUTPUT_INFO),  _
 //													ShiyoryokeisanShienOutputEntity)
-//
+		// 入力支援セッション存在フラグ
+		Boolean sessionInfoFlg = false;
+		if (!CheckUtils.isEmpty(comDto.getHdnRateShienPatternName())) {
+			// 使用料パターン名が存在する場合は
+			sessionInfoFlg = true;
+		}
+
 		// 社宅管理番号
 //		list.Add(Me.hdnShatakuKanriNo.Value)
 		rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO,
@@ -4886,7 +4874,7 @@ public class Skf3022Sc006SharedService {
 				rentalPtMap.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID));
 		// パターン名
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienPatternName())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.PatternName)
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.PATTERN_NAME,
 											comDto.getHdnRateShienPatternName());
@@ -4899,7 +4887,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 規格
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKikaku())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.Kikaku)
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIKAKU,
 													comDto.getHdnRateShienKikaku());
@@ -4916,7 +4904,7 @@ public class Skf3022Sc006SharedService {
 													CodeConstant.DOUBLE_QUOTATION);
 		// 基準使用料算定上延べ面積
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKijunMenseki())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.KijunMenseki.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI,
 								getMensekiText(comDto.getHdnRateShienKijunMenseki()));
@@ -4929,7 +4917,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 社宅使用料算定上延べ面積
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienShatakuMenseki())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.ShatakuMenseki.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI,
 									getMensekiText(comDto.getHdnRateShienShatakuMenseki()));
@@ -4942,7 +4930,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 経年残価率
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKeinenZankaRitsu())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.KeinenZankaRitsu.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU,
 											comDto.getHdnRateShienKeinenZankaRitsu());
@@ -4955,7 +4943,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 用途
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienYoto())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.Yoto)
 			rentalPtMap.put(
 					Skf3022Sc006CommonDto.RENTAL_PATTERN.YOTO, comDto.getHdnRateShienYoto());
@@ -4976,7 +4964,7 @@ public class Skf3022Sc006SharedService {
 				Skf3022Sc006CommonDto.RENTAL_PATTERN.KYOUSYOU, CodeConstant.DOUBLE_QUOTATION);
 		// 経年
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKeinen())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.Keinen.ToString())
 			rentalPtMap.put(
 					Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN, comDto.getHdnRateShienKeinen());
@@ -4989,7 +4977,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 基本使用料
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKihonShiyoryo())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.KihonShiyoryo.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO,
 									getKingakuText(comDto.getHdnRateShienKihonShiyoryo()));
@@ -5002,7 +4990,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 単価
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienTanka())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.Tanka.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.TANKA,
 										getKingakuText(comDto.getHdnRateShienTanka()));
@@ -5015,7 +5003,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 社宅使用料月額
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienShatakuGetsugaku())) {
+		if (sessionInfoFlg) {
 //			list.Add(Me.GetPayText(Me.lblSiyoryoMonthPay.Text))
 			// kami 既存バグ？セッションではなくラベルの値を設定しているが・・・
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU,
@@ -5090,7 +5078,7 @@ public class Skf3022Sc006SharedService {
 													CodeConstant.DOUBLE_QUOTATION);
 		// 延べ面積
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienNobeMenseki())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.NobeMenseki.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.NOBE_MENSEKI,
 									getMensekiText(comDto.getHdnRateShienNobeMenseki()));
@@ -5103,7 +5091,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// サンルーム面積
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienSunroomMenseki())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.SunroomMenseki.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI,
 									getMensekiText(comDto.getHdnRateShienSunroomMenseki()));
@@ -5116,7 +5104,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 階段面積
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKaidanMenseki())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.KaidanMenseki.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI,
 								getMensekiText(comDto.getHdnRateShienKaidanMenseki()));
@@ -5129,7 +5117,7 @@ public class Skf3022Sc006SharedService {
 		}
 		// 物置面積
 //		If Not sessionInfo Is Nothing Then
-		if (!CheckUtils.isEmpty(comDto.getHdnRateShienMonookiMenseki())) {
+		if (sessionInfoFlg) {
 //			list.Add(sessionInfo.MonookiMenseki.ToString())
 			rentalPtMap.put(Skf3022Sc006CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI,
 								getMensekiText(comDto.getHdnRateShienMonookiMenseki()));
@@ -6928,11 +6916,15 @@ public class Skf3022Sc006SharedService {
 //																CDec(rentalPatternTorokuList(29)))
 				Skf3030TRentalPattern patternRecord = new Skf3030TRentalPattern();
 				// 社宅管理番号
-				patternRecord.setShatakuKanriNo(Long.parseLong(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO))) {
+					patternRecord.setShatakuKanriNo(Long.parseLong(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO)));
+				}
 				// 使用料パターンID
-				patternRecord.setRentalPatternId(Long.parseLong(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID))) {
+					patternRecord.setRentalPatternId(Long.parseLong(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID)));
+				}
 				// 使用料パターン名
 				patternRecord.setRentalPatternName(
 						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.PATTERN_NAME));
@@ -6940,41 +6932,63 @@ public class Skf3022Sc006SharedService {
 				patternRecord.setKikaku(
 						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIKAKU));
 				// 基準使用料算定上延べ面積
-				patternRecord.setBaseCalcMenseki(new BigDecimal(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI))) {
+					patternRecord.setBaseCalcMenseki(new BigDecimal(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI)));
+				}
 				// 社宅使用料算定上延べ面積
-				patternRecord.setShatakuCalcMenseki(Short.parseShort(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI))) {
+					patternRecord.setShatakuCalcMenseki(Short.parseShort(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI)));
+				}
 				// 経年残価率
-				patternRecord.setAgingResidualRate(new BigDecimal(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU))) {
+					patternRecord.setAgingResidualRate(new BigDecimal(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU)));
+				}
 				// 用途
 				patternRecord.setAuse(
 						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.YOTO));
 				// 経年
-				patternRecord.setAging(Short.parseShort(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN))) {
+					patternRecord.setAging(Short.parseShort(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN)));
+				}
 				// 基本使用料
-				patternRecord.setBaseRental(Integer.parseInt(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO))) {
+					patternRecord.setBaseRental(Integer.parseInt(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO)));
+				}
 				// 単価
-				patternRecord.setPrice(new BigDecimal(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.TANKA)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.TANKA))) {
+					patternRecord.setPrice(new BigDecimal(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.TANKA)));
+				}
 				// 社宅使用料月額
-				patternRecord.setRental(Integer.parseInt(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU))) {
+					patternRecord.setRental(Integer.parseInt(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU)));
+				}
 				// 延べ面積
-				patternRecord.setMenseki(new BigDecimal(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.NOBE_MENSEKI)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.NOBE_MENSEKI))) {
+					patternRecord.setMenseki(new BigDecimal(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.NOBE_MENSEKI)));
+				}
 				// サンルーム面積
-				patternRecord.setSunRoomMenseki(new BigDecimal(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI))) {
+					patternRecord.setSunRoomMenseki(new BigDecimal(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI)));
+				}
 				// 階段面積
-				patternRecord.setStairsMenseki(new BigDecimal(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI))) {
+					patternRecord.setStairsMenseki(new BigDecimal(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI)));
+				}
 				// 物置面積
-				patternRecord.setBarnMenseki(new BigDecimal(
-						rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI)));
+				if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI))) {
+					patternRecord.setBarnMenseki(new BigDecimal(
+							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI)));
+				}
 				updCountRP = skf3030TRentalPatternRepository.insertSelective(patternRecord);
 				LogUtils.debugByMsg("データの登録（使用料パターン計算済）");
 			}
@@ -7020,11 +7034,15 @@ public class Skf3022Sc006SharedService {
 //																		Nothing)
 					Skf3030TRentalPattern record = new Skf3030TRentalPattern();
 					// 社宅管理番号
-					record.setShatakuKanriNo(Long.parseLong(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO))) {
+						record.setShatakuKanriNo(Long.parseLong(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO)));
+					}
 					// 使用料パターンID
-					record.setRentalPatternId(Long.parseLong(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID))) {
+						record.setRentalPatternId(Long.parseLong(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID)));
+					}
 					// 使用料パターン名
 					record.setRentalPatternName(null);
 					// 規格
@@ -7085,11 +7103,19 @@ public class Skf3022Sc006SharedService {
 //																		CDec(rentalPatternTorokuList(29)))
 					Skf3030TRentalPattern record = new Skf3030TRentalPattern();
 					// 社宅管理番号
-					record.setShatakuKanriNo(Long.parseLong(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO))) {
+						record.setShatakuKanriNo(Long.parseLong(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKUKANRI_NO)));
+					} else {
+						record.setShatakuKanriNo(null);
+					}
 					// 使用料パターンID
-					record.setRentalPatternId(Long.parseLong(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID))) {
+						record.setRentalPatternId(Long.parseLong(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID)));
+					} else {
+						record.setRentalPatternId(null);
+					}
 					// 使用料パターン名
 					record.setRentalPatternName(
 							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.PATTERN_NAME));
@@ -7097,29 +7123,57 @@ public class Skf3022Sc006SharedService {
 					record.setKikaku(
 							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIKAKU));
 					// 基準使用料算定上延べ面積
-					record.setBaseCalcMenseki(new BigDecimal(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI))) {
+						record.setBaseCalcMenseki(new BigDecimal(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI)));
+					} else {
+						record.setBaseCalcMenseki(null);
+					}
 					// 社宅使用料算定上延べ面積
-					record.setShatakuCalcMenseki(Short.parseShort(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI))) {
+						record.setShatakuCalcMenseki(Short.parseShort(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI)));
+					} else {
+						record.setShatakuCalcMenseki(null);
+					}
 					// 経年残価率
-					record.setAgingResidualRate(new BigDecimal(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU))) {
+						record.setAgingResidualRate(new BigDecimal(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU)));
+					} else {
+						record.setAgingResidualRate(null);
+					}
 					// 用途
 					record.setAuse(
 							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.YOTO));
 					// 経年
-					record.setAging(Short.parseShort(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN))) {
+						record.setAging(Short.parseShort(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KEINEN)));
+					} else {
+						record.setAging(null);
+					}
 					// 基本使用料
-					record.setBaseRental(Integer.parseInt(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO))) {
+						record.setBaseRental(Integer.parseInt(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO)));
+					} else {
+						record.setBaseRental(null);
+					}
 					// 単価
-					record.setPrice(new BigDecimal(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.TANKA)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.TANKA))) {
+						record.setPrice(new BigDecimal(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.TANKA)));
+					} else {
+						record.setPrice(null);
+					}
 					// 社宅使用料月額
-					record.setRental(Integer.parseInt(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU))) {
+						record.setRental(Integer.parseInt(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU)));
+					} else {
+						record.setRental(null);
+					}
 					// 更新日時
 					record.setUpdateDate(rentalPatternUpdateDateForRegist);
 					// 更新者ID
@@ -7127,17 +7181,33 @@ public class Skf3022Sc006SharedService {
 					// 更新機能ID
 					record.setUpdateProgramId(updateProgramId);
 					// 延べ面積
-					record.setMenseki(new BigDecimal(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.NOBE_MENSEKI)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.NOBE_MENSEKI))) {
+						record.setMenseki(new BigDecimal(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.NOBE_MENSEKI)));
+					} else {
+						record.setMenseki(null);
+					}
 					// サンルーム面積
-					record.setSunRoomMenseki(new BigDecimal(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI))) {
+						record.setSunRoomMenseki(new BigDecimal(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI)));
+					} else {
+						record.setSunRoomMenseki(null);
+					}
 					// 階段面積
-					record.setStairsMenseki(new BigDecimal(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI))) {
+						record.setStairsMenseki(new BigDecimal(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI)));
+					} else {
+						record.setStairsMenseki(null);
+					}
 					// 物置面積
-					record.setBarnMenseki(new BigDecimal(
-							rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI)));
+					if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI))) {
+						record.setBarnMenseki(new BigDecimal(
+								rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI)));
+					} else {
+						record.setBarnMenseki(null);
+					}
 					// 更新
 					updCountRP = skf3022Sc006UpdateRentalPatternExpRepository.updateRentalPattern(record);
 					LogUtils.debugByMsg("データの更新（使用料パターン計算済）");
