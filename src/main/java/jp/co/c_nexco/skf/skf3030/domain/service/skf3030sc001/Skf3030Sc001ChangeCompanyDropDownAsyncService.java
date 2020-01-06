@@ -36,7 +36,7 @@ public class Skf3030Sc001ChangeCompanyDropDownAsyncService
 	@Override
 	protected AsyncBaseDto index(Skf3030Sc001ChangeCompanyDropDownAsyncDto inDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("社宅管理台帳「管理会社」ドロップダウン変更処理", CodeConstant.C001,
+		skfOperationLogUtils.setAccessLog("社宅管理台帳「管理会社」ドロップダウン変更処理開始", CodeConstant.C001,
 				FunctionIdConstant.SKF3030_SC001);
 
 		String companyCd = inDto.getHdnAsyncCompanyAgencySelect();

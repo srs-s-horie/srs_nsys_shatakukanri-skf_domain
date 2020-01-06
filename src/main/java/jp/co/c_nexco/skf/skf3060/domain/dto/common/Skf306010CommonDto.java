@@ -1,15 +1,12 @@
 package jp.co.c_nexco.skf.skf3060.domain.dto.common;
 
-import java.util.List;
-import java.util.Map;
-
-import jp.co.c_nexco.nfw.webcore.app.DownloadFile;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf306010CommonDto
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

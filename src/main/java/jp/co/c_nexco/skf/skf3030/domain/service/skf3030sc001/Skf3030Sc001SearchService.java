@@ -42,7 +42,7 @@ public class Skf3030Sc001SearchService extends BaseServiceAbstract<Skf3030Sc001S
 	@Override
 	protected BaseDto index(Skf3030Sc001SearchDto inDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("社宅管理台帳「検索」処理", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
+		skfOperationLogUtils.setAccessLog("社宅管理台帳「検索」処理開始", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
 
 		List<Map<String, Object>> initSearchData = new ArrayList<Map<String, Object>>();
 		inDto.setSearchDataList(initSearchData);

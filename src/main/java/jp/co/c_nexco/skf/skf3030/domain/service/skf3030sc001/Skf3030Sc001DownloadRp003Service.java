@@ -191,7 +191,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 	@Override
 	protected BaseDto index(Skf3030Sc001DownloadRp003Dto inDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("社宅管理台帳「前月比較データ」出力", CodeConstant.C001, inDto.getPageId());
+		skfOperationLogUtils.setAccessLog("社宅管理台帳「前月比較データ」出力処理開始", CodeConstant.C001, inDto.getPageId());
 
 		inDto = (Skf3030Sc001DownloadRp003Dto) skf3030Sc001SharedService.setDropDownSelect(inDto);
 
@@ -1415,7 +1415,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		thisMonthSheetDataBean.setRowDataBeanList(thisMonthDataBeanList);
 		sheetDataBeanList.add(thisMonthSheetDataBean);
 
-		String excelFileName = fileName + CodeConstant.UNDER_SCORE + DateTime.now().toString("YYYYMMddHHmmss")
+		String excelFileName = fileName + DateTime.now().toString("YYYYMMddHHmmss")
 				+ CodeConstant.DOT + CodeConstant.EXTENSION_XLSX;
 		WorkBookDataBean wbdb = new WorkBookDataBean(excelFileName);
 		wbdb.setSheetDataBeanList(sheetDataBeanList);

@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 /**
  * Skf3021Sc001SearchDto 入退居予定一覧画面のSearchDto。
  * 
+ * @author NEXCOシステムズ
+ * 
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

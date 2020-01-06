@@ -10,8 +10,9 @@ import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060Sc001common.Skf3060Sc001Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3030_Sc001画面のDownloadDto。
+ * Skf3060Sc001DownloadDto 事業領域名マスタ登録画面のDownloadDto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

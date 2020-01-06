@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3060.domain.service.skf3060sc001;
 
-import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,8 +36,9 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
 import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060sc001.Skf3060Sc001SendMailDto;
 
 /**
- * 事業領域名マスタ登録画面のSendMailサービス処理クラス。　 
+ * Skf3060Sc001SendMailService 事業領域名マスタ登録画面のSendMailサービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc001SendMailDto> {

@@ -7,7 +7,9 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021Sc002common.Skf3021Sc002Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * 入退居申請照会画面のInitDto。
+ * Skf3021Sc002InitDto 入退居申請照会画面のInitDto。
+ * 
+ * @author NEXCOシステムズ
  * 
  */
 @lombok.Data

@@ -84,12 +84,352 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	public static final String STRING_HANSYUTSU = "搬出";
 	// 指示書文字列：下取
 	public static final String STRING_SHITADORI = "下取";
-	/** 備品コード */
+	/** 備品 */
 	// 備品コード：下取り
 	public static final String SHITADORI = "9";
+	// 貸与ステータスエラー
+	public static final String BIHIN_TAIYOSTTS_ERR = "'class='nfw-validation-error;'";
 
+	// 社員番号変更フラグ：なし
+	public static final String SHAINNO_CHANGE_UNAVAILABLE = "0";
+	// 社員番号変更フラグ：あり
+	public static final String SHAINNO_CHANGE_AVAILABLE = "1";
 	// 相互利用
 	public static final String SOGORIRYOU_ARI = "1";
+	// 仮社員番号先頭文字
+	public static final String KARI_K = "K";
+
+	/** メッセージ引数 */
+	// メッセージ引数：社宅　備考
+	public static final String MSG_BICOU = "社宅　備考";
+	// メッセージ引数：備品　備考
+	public static final String MSG_BIHIN_BICOU = "備品情報備考";
+	// メッセージ引数：区画１利用開始日
+	public static final String MSG_RIYOU_START_DAY_ONE = "区画１利用開始日";
+	// メッセージ引数：区画２利用開始日
+	public static final String MSG_RIYOU_START_DAY_TWO = "区画２利用開始日";
+	// メッセージ引数：区画１利用終了日
+	public static final String MSG_RIYOU_END_DAY_ONE = "区画１利用終了日";
+	// メッセージ引数：区画２利用終了日
+	public static final String MSG_RIYOU_END_DAY_TWO = "区画２利用終了日";
+	// メッセージ引数：区画番号１
+	public static final String MSG_KUKAKU_NO_ONE = "区画１区画番号";
+	// メッセージ引数：区画番号２
+	public static final String MSG_KUKAKU_NO_TWO = "区画２区画番号";
+	// メッセージ引数：備品貸与日
+	public static final String MSG_TAIYO_DAY = "備品貸与日";
+	// メッセージ引数：備品返却日
+	public static final String MSG_HENKYAKU_DAY = "備品返却日";
+	// メッセージ引数：搬入希望日
+	public static final String MSG_KIBOU_DAY_IN = "搬入希望日";
+	// メッセージ引数：搬出希望日
+	public static final String MSG_KIBOU_DAY_OUT = "搬出希望日";
+	// メッセージ引数：搬入日
+	public static final String MSG_DAY_IN = "搬入日";
+	// メッセージ引数：搬出日
+	public static final String MSG_DAY_OUT = "搬出日";
+	// メッセージ引数：搬入本人連絡先
+	public static final String MSG_HONNIN_ADDR_IN = "搬入本人連絡先";
+	// メッセージ引数：搬出本人連絡先
+	public static final String MSG_HONNIN_ADDR_OUT = "搬出本人連絡先";
+	// メッセージ引数：貸与規格（ヘッダ項目）
+	public static final String MSG_SIYORYO_PAT_NAME = "貸与規格";
+	// メッセージ引数：備品貸与状態
+	public static final String MSG_BIHIN_TAIYO_STTS = "備品貸与状態";
+
+	/** 処理モード */
+	// 処理モード：一時保存
+	public static final String TMP_SAVE = "0";
+	// 処理モード：作成完了
+	public static final String CREATE = "1";
+	// 処理モード：社宅管理台帳登録
+	public static final String SHATAKU_LOGIN = "2";
+	// 処理モード：継続登録
+	public static final String KEIZOKU_LOGIN = "3";
+
+	/** 提示データパラメータ */
+	public enum TEIJIDATA_PARAM {
+		/**
+		 * 提示番号:0
+		 */
+		TEIJI_NO,
+		/**
+		 * 社員番号:1
+		 */
+		SHAIN_NO,
+		/**
+		 * 入退居区分:2
+		 */
+		NYUTAIKYO_KBN,
+		/**
+		 * 社宅管理番号元:3
+		 */
+		SHATAKU_KANRINO_OLD,
+		/**
+		 * 部屋管理番号元:4
+		 */
+		SHATAKU_ROOMKANRINO_OLD,
+		/**
+		 * 駐車場管理番号1元:5
+		 */
+		CHUSHAJONO_ONE_OLD,
+		/**
+		 * 駐車場管理番号2元:6
+		 */
+		CHUSHAJONO_TWO_OLD,
+		/**
+		 * 社宅管理番号:7
+		 */
+		SHATAKU_KANRINO,
+		/**
+		 * 部屋管理番号:8
+		 */
+		SHATAKU_ROOMKANRINO,
+		/**
+		 * 駐車場管理番号1:9
+		 */
+		CHUSHAJONO_ONE,
+		/**
+		 * 駐車場管理番号2:10
+		 */
+		CHUSHAJONO_TWO,
+		/**
+		 * 入居予定日:11
+		 */
+		NYUKYOYOTEI_DATE,
+		/**
+		 * 退居予定日:12
+		 */
+		TAIKYOYOTEI_DATE,
+		/**
+		 * ボタン区分:13
+		 */
+		BUTTON_FLG,
+		/**
+		 * 提示データ更新日:14
+		 */
+		TEIJIDATA_UPDATEDATE,
+		/**
+		 * 入退居予定更新日:15
+		 */
+		NYUTAIKYOYOTEI_UPDATEDATE,
+		/**
+		 * 社宅部屋情報マスタ元更新日:16
+		 */
+		SHATAKUROOM_OLD_UPDATEDATE,
+		/**
+		 * 社宅部屋情報マスタ更新日:17
+		 */
+		SHATAKUROOM_UPDATEDATE,
+		/**
+		 * 社宅駐車場区画情報マスタ元更新日（区画１）:18
+		 */
+		SHATAKU_PARKINGBLOCK_OLD1_UPDATEDATE,
+		/**
+		 * 社宅駐車場区画情報マスタ元更新日（区画１）:19
+		 */
+		SHATAKU_PARKINGBLOCK_OLD11_UPDATEDATE,
+		/**
+		 * 社宅駐車場区画情報マスタ更新日（区画１）:20
+		 */
+		SHATAKU_PARKINGBLOCK_1_UPDATEDATE,
+		/**
+		 * 社宅駐車場区画情報マスタ元更新日（区画２）:21
+		 */
+		SHATAKU_PARKINGBLOCK_OLD2_UPDATEDATE,
+		/**
+		 * 社宅駐車場区画情報マスタ元更新日（区画２）:22
+		 */
+		SHATAKU_PARKINGBLOCK_OLD21_UPDATEDATE,
+		/**
+		 * 社宅駐車場区画情報マスタ更新日（区画２）:23
+		 */
+		SHATAKU_PARKINGBLOCK_2_UPDATEDATE,
+		/**
+		 * 更新者:24
+		 */
+		UPDATE_USER_ID,
+		/**
+		 * 更新IPアドレス:25
+		 */
+		UPDATE_PROGRAM_ID,
+		/**
+		 * 使用料変更フラグ:26
+		 */
+		SHIYOURYO_FLG
+	}
+
+	/** 使用料パターン登録項目 */
+	public enum RENTAL_PATTERN {
+		/**
+		 * 社宅管理番号:0
+		 */
+		SHATAKUKANRI_NO,
+		/**
+		 * 使用料パターンID:1
+		 */
+		RENTAL_PATTERNID,
+		/**
+		 * パターン名:2
+		 */
+		PATTERN_NAME,
+		/**
+		 * 規格:3
+		 */
+		KIKAKU,
+		/**
+		 * 規格(補足):4
+		 */
+		KIKAKU_HOSOKU,
+		/**
+		 * 基準使用料算定上延べ面積:5
+		 */
+		KIJUN_MENSEKI,
+		/**
+		 * 社宅使用料算定上延べ面積:6
+		 */
+		SHATAKU_MENSEKI,
+		/**
+		 * 経年残価率:7
+		 */
+		KEINEN_ZANKARITSU,
+		/**
+		 * 用途:8
+		 */
+		YOTO,
+		/**
+		 * 寒冷地:9
+		 */
+		KANREICHI,
+		/**
+		 * 狭小:10
+		 */
+		KYOUSYOU,
+		/**
+		 * 経年:11
+		 */
+		KEINEN,
+		/**
+		 * 基本使用料:12
+		 */
+		KIHON_SHIYORYO,
+		/**
+		 * 単価:13
+		 */
+		TANKA,
+		/**
+		 * 社宅使用料月額:14
+		 */
+		SHATAKU_GETSUGAKU,
+		/**
+		 * 備考:15
+		 */
+		BIKO,
+		/**
+		 * 補足資料名:16
+		 */
+		HOSOKU_SHIRYO_NAME,
+		/**
+		 * 補足資料サイズ:17
+		 */
+		HOSOKU_SHIRYO_SIZE,
+		/**
+		 * 補足ファイル:18
+		 */
+		HOSOKU_FILE,
+		/**
+		 * 削除フラグ:19
+		 */
+		DELETE_FLAG,
+		/**
+		 * 登録日時:20
+		 */
+		INSERT_DATE,
+		/**
+		 * 登録者ID:21
+		 */
+		INSERT_USER_ID,
+		/**
+		 * 登録機能ID:22
+		 */
+		INSERT_PROGRAM_ID,
+		/**
+		 * 更新日時:23
+		 */
+		UPDATE_DATE,
+		/**
+		 * 更新者ID:24
+		 */
+		UPDATE_USER_ID,
+		/**
+		 * 更新機能ID:25
+		 */
+		UPDATE_PROGRAM_ID,
+		/**
+		 * 延べ面積:26
+		 */
+		NOBE_MENSEKI,
+		/**
+		 * サンルーム面積:27
+		 */
+		SUNROOM_MENSEKI,
+		/**
+		 * 階段面積:28
+		 */
+		KAIDAN_MENSEKI,
+		/**
+		 * 物置面積:29
+		 */
+		MONOOKI_MENSEKI,
+		/**
+		 * 更新種別:30
+		 */
+		UPDATE_KIND
+	}
+
+	/** 更新カウンタ */
+	public enum UPDATE_COUNTER {
+		/**
+		 * 提示データ更新件数
+		 */
+		UPD_COUNT_TJ,
+		/**
+		 * 入退居予定更新件数
+		 */
+		UPD_COUNT_NY,
+		/**
+		 * 提示備品更新件数
+		 */
+		UPD_COUNT_TBD,
+		/**
+		 * 社宅部屋情報元更新件数
+		 */
+		UPD_COUNT_OLD_SR,
+		/**
+		 * 社宅部屋情報更新件数
+		 */
+		UPD_COUNT_SR,
+		/**
+		 * 社宅駐車場区画情報元更新件数（区画１）
+		 */
+		UPD_COUNT_OLD_SPB_1,
+		/**
+		 * 社宅駐車場区画情報更新件数（区画１）
+		 */
+		UPD_COUNT_SPB_1,
+		/**
+		 * 社宅駐車場区画情報元更新件数（区画２）
+		 */
+		UPD_COUNT_OLD_SPB_2,
+		/**
+		 * 社宅駐車場区画情報更新件数（区画２）
+		 */
+		UPD_COUNT_SPB_2,
+		/**
+		 * 使用料パターン更新件数
+		 */
+		UPD_COUNT_RP
+	}
 
 	/** 提示データ一覧画面連携項目 */
 //	// 提示番号
@@ -223,9 +563,9 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	private String hdnChushajoNoTwoOld;
 	private String hdnChushajoNoTwo;
 	// 継続登録フラグ
-	private String hdnKeizokuBtnFlg;
+	private Boolean hdnKeizokuBtnFlg;
 	// 次月予約存在フラグ
-	private Boolean hdnYoyakuFlg;
+//	private Boolean hdnYoyakuFlg;
 	// 原籍会社コード
 	private String hdnGensekiKaishaCd;
 	// 給与支給会社コード
@@ -285,7 +625,7 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	private String sc006Msg;
 
 	/** 運用ガイド */
-//	private String operationGuide
+	private String operationGuidePath;
 
 	/** タブステータス */
 	// 社宅タブ
@@ -300,7 +640,7 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	private String hdnTabIndex;
 	// 作成完了ボタン押下時メッセージ
 	private String litMessageCreate;
-	// 一次保存ボタン押下時メッセージ
+	// 一時保存ボタン押下時メッセージ
 	private String litMessageTmpSave;
 	// 社宅管理台帳登録
 	private String litMessageShatakuLogin;
@@ -308,6 +648,8 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	private String litMessageKeizokuLogin;
 	// 前に戻るボタン押下時メッセージ
 	private String litMessageBack;
+	// 処理状態
+	private String sc006Status;
 	// JSONラベルリスト
 	private String jsonLabelList;
 	// JSON備品情報 リスト

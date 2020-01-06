@@ -46,7 +46,7 @@ public class Skf3021Sc001SharedService {
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	
 	//ボタン押下区分：初期化
-	private static final int BTNFLG_INIT = 0;
+	//private static final int BTNFLG_INIT = 0;
 	//ボタン押下区分：検索ボタン押下
 	private static final int BTNFLG_KENSAKU = 1;
 	//特殊事情有

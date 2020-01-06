@@ -73,8 +73,10 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001CreateTeiji
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
- * 入退居予定一覧画面の提示データ作成サービス処理クラス。　 
+ * Skf3021Sc001CreateTeijiDataService 入退居予定一覧画面の提示データ作成サービス処理クラス。
  * 
+ *  @author NEXCOシステムズ
+ *  
  */
 @Service
 public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3021Sc001CreateTeijiDataDto> {
@@ -124,11 +126,11 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 	//ボタン押下区分：初期化
 	private static final int BTNFLG_INIT = 0;
 	//ボタン押下区分：検索ボタン押下
-	private static final int BTNFLG_KENSAKU = 1;
+	//private static final int BTNFLG_KENSAKU = 1;
 	//居住者区分 -本人同居
 	private static final String HONNIN_DOKYO = "1";
 	//居住者区分 -留守家族
-	private static final String RUSU_KAZOKU = "2";
+	//private static final String RUSU_KAZOKU = "2";
 	//備品コード
 	private static final String BIHIN_CD_91 = "91";
 	private static final String BIHIN_CD_92 = "92";
@@ -1604,7 +1606,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 					dtSRR = skf3030TShatakuRentalRirekiRepository.selectByPrimaryKey(rirekiKey);
 					if(dtSRR != null){
 						//使用料パターンＩＤ
-						rentalPatternId = dtSRR.getRentalPatternId().toString();
+						//rentalPatternId = dtSRR.getRentalPatternId().toString();
 						columnInfoList.setRentalPatternId(dtSRR.getRentalPatternId());
 						//役員算定
 						columnInfoList.setYakuinSannteiKbn(dtSRR.getYakuinSannteiKbn());
@@ -1773,6 +1775,16 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 	}
 	
 	
+	/**
+	 * 入退居予定データの提示データ作成区分更新
+	 * @param nyukyoDate
+	 * @param ause
+	 * @param teijiNo
+	 * @param updateDate
+	 * @param shainNo
+	 * @param nyutaikyoKbn
+	 * @return
+	 */
 	private int updateNyutaikyoYoteiInfoOfCreateKbn(String nyukyoDate,
 			String ause, Long teijiNo, Date updateDate, String shainNo, String nyutaikyoKbn){
 		

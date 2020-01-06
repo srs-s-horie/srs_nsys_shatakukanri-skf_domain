@@ -12,22 +12,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoIkatuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoJissekiCountExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainNameExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainShozokuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001UpdateShatakuShainNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TShozokuRireki;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoJissekiCountExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainNameExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainShozokuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001UpdateShainNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -38,7 +33,6 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc001.Skf3050Sc001RegistDto;
-import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc001.Skf3050Sc001ShainConfirmDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -66,10 +60,6 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 	@Autowired
 	private Skf1010MShainRepository skf1010MShainRepository;
 	
-	//社員情報確認フラグ:未実施
-	private static final int CONFIRMFLG_MI_JISSHI = 0;
-	//社員情報確認フラグ:実施
-	private static final int CONFIRMFLG_JISSHI = 1;
 	//旧社員フラグ
 	private static final String OLD = "1";
 	//仮社員フラグ
@@ -91,10 +81,6 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 		 		
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
-		
-
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-		
 		
 		Map<String,Object> resultMap = updateShainNo(registDto.getShainListData());
 		int resultNo = Integer.parseInt(resultMap.get("errorNo").toString());
@@ -140,10 +126,6 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 	private Map<String,Object> updateShainNo(String shainListData){
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		
-		//エラー有社員番号
-		String errorShainNo = CodeConstant.DOUBLE_QUOTATION;
-		//エラー番号
-		int errorNo = 0;
 		//提示データ更新件数
 		int updateCountTJ = 0;
 		//転任者調書データ更新件数
@@ -168,15 +150,15 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 			//社員番号
 			String shainNo = row.get("shainNo").toString();
 			//社員氏名
-			String shainName = row.get("shainName").toString();
+			//String shainName = row.get("shainName").toString();
 			//社員番号（txt）
 			String txtShainNo = row.get("txtShainNo").toString();
 			//社員氏名（従業員）
-			String shainNameJugyoin = row.get("shainNameJugyoin").toString();
+			//String shainNameJugyoin = row.get("shainNameJugyoin").toString();
 			//所属（従業員）
-			String shozokuJugyoin = row.get("shozokuJugyoin").toString();
+			//String shozokuJugyoin = row.get("shozokuJugyoin").toString();
 			//社員番号変更フラグ
-			String shainNoChangeFlg = row.get("shainNoChangeFlg").toString();
+			//String shainNoChangeFlg = row.get("shainNoChangeFlg").toString();
 			//社宅管理台帳ID
 			String shatakuKanriId = row.get("shatakuKanriId").toString();
 			//会社コード
@@ -195,7 +177,7 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 			//更新日(従業員)
 			String updateDateNew = row.get("updateDateNew").toString();
 			//対象のテキストボックス名
-			String boxName = row.get("boxName").toString();
+			//String boxName = row.get("boxName").toString();
 			
 			//システム日付の取得
 			SimpleDateFormat dateFormatYYYYMMDD = new SimpleDateFormat("yyyyMMdd");
@@ -307,6 +289,7 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 					updShainRecordBef.setShainNoChangeDate(sysDate);
 					updShainRecordBef.setShainNo(shainBangoStr);
 					updShainRecordBef.setCompanyCd(CodeConstant.C001);
+					updShainRecordBef.setLastUpdateDate(convertDateFromString(updateDateSS));
 					updateCountSS = skf1010MShainRepository.updateByPrimaryKeySelective(updShainRecordBef);
 				}
 			}else{
@@ -378,8 +361,9 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 	}
 	
 	/**
+	 * 社員情報リスト文字列読込
 	 * @param shainListData
-	 * @return
+	 * @return 社員情報リスト
 	 */
 	private List<Map<String,Object>> createShainInfoList(String shainListData){
 		//返却リスト初期化
@@ -399,14 +383,14 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 				forListMap.put("txtShainNo", items[2]);//社員番号(txt)
 				forListMap.put("shainNameJugyoin", items[3]);//社員氏名（従業員）
 				forListMap.put("shozokuJugyoin", items[4]);//所属（従業員）
-				forListMap.put("shainNoChangeFlg", items[5]);//
-				forListMap.put("shatakuKanriId", items[6]);//
-				forListMap.put("companyCd", items[7]);//
+				forListMap.put("shainNoChangeFlg", items[5]);//社員番号変更フラグ
+				forListMap.put("shatakuKanriId", items[6]);//社宅管理台帳ID
+				forListMap.put("companyCd", items[7]);//会社コード
 				forListMap.put("flg", items[8]);//
-				forListMap.put("taikyoDate", items[9]);//
-				forListMap.put("kyojushaKbn", items[10]);//
-				forListMap.put("updateDateSL", items[11]);//
-				forListMap.put("updateDateSS", items[12]);//
+				forListMap.put("taikyoDate", items[9]);//退居日
+				forListMap.put("kyojushaKbn", items[10]);//居住者区分
+				forListMap.put("updateDateSL", items[11]);//更新日(社宅社員)
+				forListMap.put("updateDateSS", items[12]);//更新日(社宅管理台帳基本)
 				forListMap.put("updateDateNew", items[13]);//更新日(従業員)
 				forListMap.put("boxName", items[14]);//textbox名
 				
@@ -418,66 +402,10 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 	}
 	
 	/**
-	 * 社員番号の妥当性を判定するメソッド
-	 * @param txtShainNo 社員番号テキストボックス値
-	 * @return True:正常、False:異常
+	 * Date型を文字列に変換
+	 * @param dateStr
+	 * @return
 	 */
-	private boolean validateShainNo(String txtShainNo){
-		
-		
-		if(txtShainNo.indexOf(CodeConstant.SPACE) > -1){
-			//半角スペースチェック
-			return false;
-		}else if(txtShainNo.indexOf(CodeConstant.ZEN_SPACE) > -1){
-			//全角スペースチェック
-			return false;
-		}else{
-			//社員番号の半角数字判定
-			if(!CheckUtils.isNumeric(txtShainNo)){
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * リストテーブルに出力するリストを取得する。
-	 * 
-	 * @param originList
-	 * @return リストテーブルに出力するリスト
-	 */
-	private List<Map<String, Object>> updateListTableDataViewColumn(List<Map<String,Object>> shainListData,List<Map<String, Object>> originList) {
-
-		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
-
-		for (int i = 0; i < originList.size(); i++) {
-
-			Map<String, Object> tmpData = originList.get(i);
-			
-			//値セット
-			for(Map<String,Object> shainData : shainListData){
-				if(shainData.get("shainNo").equals(tmpData.get("colShainNo"))){
-					//従業員マスタ:社員氏名
-					tmpData.put("colShainNameJugyoin", shainData.get("shainNameJugyoin"));
-					//従業員マスタ:所属
-					tmpData.put("colShozokuJugyoin", shainData.get("shozokuJugyoin"));
-					//社宅社員マスタ更新日
-					tmpData.put("hdnUpdateDateNew", shainData.get("updateDateNew"));
-					//新社員番号
-					tmpData.put("colTxtShainNo", "<input id='" + shainData.get("boxName") 
-							+ "' name='" + shainData.get("boxName")  + "' type='text' value='"+shainData.get("txtShainNo") +"' style='ime-mode: disabled;width: 98%' maxlength='8' tabindex='1' pattern='^[0-9]+$' /> ");
-					
-					break;
-				}
-			}
-			
-			setViewList.add(tmpData);
-		}
-
-		return setViewList;
-	}
-	
 	private Date convertDateFromString(String dateStr){
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 		

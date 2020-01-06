@@ -6,14 +6,22 @@ package jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc006;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetTeijiDataExp;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006InitDto;
@@ -31,6 +39,24 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
+	@Autowired
+	private Skf3022Sc006GetIdmPreUserMasterInfoExpRepository skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
+
+	/** IdM_プレユーザマスタ（従業員区分）定数 */
+	// 役員
+	private static final String IDM_YAKUIN = "1";
+	// 職員
+	private static final String IDM_SHOKUIN = "2";
+	// 常勤嘱託員
+	private static final String IDM_JOKIN_SHOKUTAKU = "3";
+	// 非常勤嘱託員
+	private static final String IDM_HI_JOKIN_SHOKUTAKU = "4";
+	// 再任用職員
+	private static final String IDM_SAININ_SHOKUIN = "5";
+	// 再任用短時間勤務職員
+	private static final String IDM_SAININ_TANJIKAN_SHOKUIN = "6";
+	// 有機事務員
+	private static final String IDM_YUKI_JIMUIN = "7";
 
 	/**
 	 * サービス処理を行う。　
@@ -44,12 +70,13 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 	@Override
 	public Skf3022Sc006InitDto index(Skf3022Sc006InitDto initDto) throws Exception {
 
+		initDto.setPageId(FunctionIdConstant.SKF3022_SC006);
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC006_TITLE);
 
 		// デバッグログ
 		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 
 		// 取得提示データ
 		Skf3022Sc006GetTeijiDataExp getTeijiData = new Skf3022Sc006GetTeijiDataExp();
@@ -79,15 +106,50 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 		List<Map<String, Object>> sc006TaiyoKaisyaSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006KariukeKaisyaSelectList = new ArrayList<Map<String, Object>>();
 
-		// 非活性制御クリア
-		skf3022Sc006SharedService.clearDisable(initDto);
+		// 戻るボタンメッセージ
+		initDto.setLitMessageBack(PropertyUtils.getValue(MessageIdConstant.I_SKF_1009));
+		// 備品一覧初期値(空っぽ)
+		initDto.setBihinInfoListTableData(new ArrayList<Map<String, Object>>());
 		// 提示データ取得
 		getTeijiData = skf3022Sc006SharedService.getTeijiData(hdnTeijiNo);
+		// 取得結果判定
+		if (Objects.equals(getTeijiData, null)) {
+			// 項目非活性
+			skf3022Sc006SharedService.setDisableCtrlAll(true, initDto);
+			// Mapがnullの場合、0件エラー表示
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
+			return initDto;
+		}
+		// 非活性制御クリア
+		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 		// 非表示項目設定
 		skf3022Sc006SharedService.setHiddenValues(hdnTeijiNo, hdnNyukyoDate, hdnTaikyoDate,
 				hdnShoruikanriNo, hdnNyutaikyoKbn, hdnApplKbn, hdnShainNoChangeFlg, getTeijiData, initDto);
 		// 画面項目表示を設定
 		skf3022Sc006SharedService.setControlValues(getTeijiData, initDto);
+
+		/** 原籍会社 */
+		// 原籍会社を初期設定
+		if (CheckUtils.isEmpty(initDto.getSc006OldKaisyaNameSelect())) {
+			// ①IdM_プレユーザマスタ（従業員区分）を取得
+			List<Skf3022Sc006GetIdmPreUserMasterInfoExp> dtbIdmPreUserMasterInfo = new ArrayList<Skf3022Sc006GetIdmPreUserMasterInfoExp>();
+			Skf3022Sc006GetIdmPreUserMasterInfoExpParameter param = new Skf3022Sc006GetIdmPreUserMasterInfoExpParameter();
+			param.setPumHrNameCode(getTeijiData.getShainNo());
+			dtbIdmPreUserMasterInfo = skf3022Sc006GetIdmPreUserMasterInfoExpRepository.getIdmPreUserMasterInfo(param);
+			// ②従業員区分が「1:役員、2:職員、3:常勤嘱託員、4:非常勤嘱託員、5:再任用職員、6:再任用短時間勤務職員、7:有機事務員」の場合
+			if (dtbIdmPreUserMasterInfo.size() > 0) {
+				if (Objects.equals(dtbIdmPreUserMasterInfo.get(0).getPumHrEmployeeClass_0(), IDM_YAKUIN)
+						|| Objects.equals(dtbIdmPreUserMasterInfo.get(0).getPumHrEmployeeClass_0(), IDM_SHOKUIN)
+						|| Objects.equals(dtbIdmPreUserMasterInfo.get(0).getPumHrEmployeeClass_0(), IDM_JOKIN_SHOKUTAKU)
+						|| Objects.equals(dtbIdmPreUserMasterInfo.get(0).getPumHrEmployeeClass_0(), IDM_HI_JOKIN_SHOKUTAKU)
+						|| Objects.equals(dtbIdmPreUserMasterInfo.get(0).getPumHrEmployeeClass_0(), IDM_SAININ_SHOKUIN)
+						|| Objects.equals(dtbIdmPreUserMasterInfo.get(0).getPumHrEmployeeClass_0(), IDM_SAININ_TANJIKAN_SHOKUIN)
+						|| Objects.equals(dtbIdmPreUserMasterInfo.get(0).getPumHrEmployeeClass_0(), IDM_YUKI_JIMUIN)) {
+					// 原籍会社に「NEXCO中日本（C001）」を設定
+					initDto.setSc006OldKaisyaNameSelect(CodeConstant.C001);
+				}
+			}
+		}
 		// ドロップダウンリスト作成
 		skf3022Sc006SharedService.setDdlControlValues(
 				initDto.getSc006KyojyusyaKbnSelect(), sc006KyojyusyaKbnSelectList,
@@ -121,37 +183,16 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
-		/** 原籍会社保留(仕様確認中) */
-//	        '原籍会社を初期設定
-//	        If String.IsNullOrEmpty(Me.ddlOldKaisya.SelectedValue) Then
-//	            '①IdM_プレユーザマスタ（従業員区分）を取得
-//	            Dim dtbIdmPreUserMasterInfo As New IDM_PRE_USER_MASTERDataTable()
-//	            dtbIdmPreUserMasterInfo = S2007_TeijiDataRegistBusinessLogic.GetIdmPreUserMasterInfo(dt(0).SHAIN_NO)
-//
-//	            '②従業員区分が「1:役員、2:職員、3:常勤嘱託員、4:非常勤嘱託員、5:再任用職員、6:再任用短時間勤務職員、7:有機事務員」の場合
-//	            If dtbIdmPreUserMasterInfo.Rows.Count > 0 Then
-//	                If Not dtbIdmPreUserMasterInfo(0).IsPUM_HR_EMPLOYEE_CLASS_0Null AndAlso _
-//	                    (dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.YAKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.SHOKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.JOKIN_SHOKUTAKU) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.HI_JOKIN_SHOKUTAKU) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.SAININ_SHOKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.SAININ_TANJIKAN_SHOKUIN) Or _
-//	                     dtbIdmPreUserMasterInfo(0).PUM_HR_EMPLOYEE_CLASS_0.Equals(JUGYOIN_KBN.YUKI_JIMUIN)) Then
-//
-//	                    '原籍会社に「NEXCO中日本（C001）」を設定
-//	                    Me.ddlOldKaisya.SelectedValue = COMPANY_CD
-//	                End If
-//	            End If
-//	        End If
-//
-//	        '
+		// 選択タブインデックス初期値
+		initDto.setHdnTabIndex("999");
 		// 備品一覧再取得フラグ
 		initDto.setBihinItiranFlg(true);
 //
 //	        '
 		/** 運用ガイド保留(仕様確認中) */
 		// 運用ガイドのパスを設定
+		initDto.setOperationGuidePath("/skf/template/skf3022/skf3022mn006/"
+				+ PropertyUtils.getValue("skf3022.skf3022_sc006.operationGuideFile"));
 //	        Dim unyonGuide As String = String.Empty
 		// 運用ガイド取得
 //		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
@@ -170,6 +211,8 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 //
 
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		// 処理状態クリア
+		initDto.setSc006Status("");
 		return initDto;
 	}
 }

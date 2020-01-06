@@ -781,7 +781,7 @@ public class Skf3050Sc002SharedService {
 		List<SheetDataBean> sheetDataBeanList = new ArrayList<>();
 		sheetDataBeanList.add(sheetDataBean);
 
-		String fileName = sheetName + CodeConstant.UNDER_SCORE + DateTime.now().toString("YYYYMMddHHmmss")
+		String fileName = sheetName + DateTime.now().toString("YYYYMMddHHmmss")
 				+ CodeConstant.DOT + CodeConstant.EXTENSION_XLSX;
 		WorkBookDataBean wbdb = new WorkBookDataBean(fileName);
 		wbdb.setSheetDataBeanList(sheetDataBeanList);

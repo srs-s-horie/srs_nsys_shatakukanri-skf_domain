@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ShiyoryoSupportCallBackDto;
@@ -48,9 +49,9 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC006_TITLE);
 
 		// デバッグログ
-		LogUtils.debugByMsg("使用料入力支援コールバック");
+		LogUtils.debugByMsg("使用料入力支援");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("使用料入力支援コールバック", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("使用料入力支援", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006KyojyusyaKbnSelectList = new ArrayList<Map<String, Object>>();
@@ -74,7 +75,7 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		// エラーコントロールクリア
 		skf3022Sc006SharedService.clearVaridateErr(initDto);
 		// 非活性制御クリア
-		skf3022Sc006SharedService.clearDisable(initDto);
+		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 		// 現在のラベル値をDTOに設定
 		skf3022Sc006SharedService.setErrVariableLabel(labelList, initDto);
 
@@ -114,6 +115,12 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		Map<String, String> paramMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);	// 使用料計算パラメータ
 		Map<String, String> resultMap = new HashMap<String, String>();		// 使用料計算戻り値
 		StringBuffer errMsg = new StringBuffer();							// エラーメッセージ
+
+		// 使用料項目の再設定(社宅使用料調整金額、個人負担共益費調整金額 を「0」に設定し再計算)
+		// 社宅使用料調整金額クリア
+		initDto.setSc006SiyoroTyoseiPay("0");
+		// 個人負担共益費調整金額クリア 
+		initDto.setSc006KyoekihiTyoseiPay("0");
 		if (skf3022Sc006SharedService.siyoryoKeiSan("", "", paramMap, resultMap, errMsg)) {
 			// 使用料計算でエラー
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg.toString());
@@ -125,6 +132,8 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		initDto.setBihinItiranFlg(false);
 		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		// 処理状態クリア
+		initDto.setSc006Status("");
 		return initDto;
 	}
 }

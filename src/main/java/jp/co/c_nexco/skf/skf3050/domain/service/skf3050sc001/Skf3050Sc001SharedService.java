@@ -10,24 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetNyutaikyoYoteiInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Sc001.Skf3021Sc001GetNyutaikyoYoteiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoIkatuInfoExp;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc001.Skf3021Sc001GetNyutaikyoYoteiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoIkatuInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
-import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021Sc001common.Skf3021Sc001CommonDto;
+
 
 /**
  * Skf3050Sc001SharedService 社員番号一括設定共通クラス
@@ -39,15 +28,10 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021Sc001common.Skf3021Sc001Commo
 public class Skf3050Sc001SharedService {
 
 	@Autowired
-	private SkfDateFormatUtils skfDateFormatUtils;
-	@Autowired
-	private SkfGenericCodeUtils skfGenericCodeUtils;
-	@Autowired
 	private Skf3050Sc001GetShainBangoIkatuInfoExpRepository skf3050Sc001GetShainBangoIkatuInfoExpRepository;
 	
 	/**
-	 * 社員番号一括設定一覧情報を取得 <br>
-	 * 「※」項目はアドレスとして戻り値になる。
+	 * 社員番号一括設定一覧情報を取得 
 	 * 
 	 * @param listTableData リストテーブル用データ
 	 * @return 取得データのレコードカウント
@@ -107,17 +91,17 @@ public class Skf3050Sc001SharedService {
 			tmpMap.put("colShainName", tmpData.getName());
 			//会社コード
 			tmpMap.put("hdnCompanyCd", tmpData.getCompanyCd());
-			//
+			//社員番号変更フラグ
 			tmpMap.put("hdnShainNoChangeFlg", tmpData.getShainNoChangeFlg());
-			//
+			//更新日時(社宅社員)
 			tmpMap.put("hdnUpdateDateSS", dateFormat.format(tmpData.getUpdateDateSs()));
-			//
+			//更新日時(社宅管理台帳基本)
 			tmpMap.put("hdnUpdateDateSL", dateFormat.format(tmpData.getUpdateDateSl()));
-			//
+			//社宅管理台帳ID
 			tmpMap.put("hdnShatakuKanriId", tmpData.getShatakuKanriId());
-			//
+			//退居日
 			tmpMap.put("hdnTaikyoDate", tmpData.getTaikyoDate());
-			//
+			//居住者区分
 			tmpMap.put("hdnKyojushaKbn", tmpData.getKyojushaKbn());
 			
 			//新社員番号入力
