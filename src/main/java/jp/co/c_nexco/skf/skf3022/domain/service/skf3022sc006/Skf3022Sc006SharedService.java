@@ -282,7 +282,7 @@ public class Skf3022Sc006SharedService {
 	 * @throws Exception
 	 */
 	public Boolean siyoryoKeiSan(String chushajoKanriNo, String parkBlockKind,
-			Map<String, String> paramMap, Map<String, String> resultMap, StringBuffer errMsg) throws Exception {
+			Map<String, String> paramMap, Map<String, String> resultMap, StringBuffer errMsg) {
 
 		// 戻り値
 		Map<String, String> tmpMap = new HashMap<String, String>();
@@ -371,7 +371,11 @@ public class Skf3022Sc006SharedService {
 		}
 		// 使用料計算結果取得
 		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp outputEntity = new SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp();
-		outputEntity = skfBaseBusinessLogicUtils.getShatakuShiyouryouKeisan(inputEntity);
+		try {
+			outputEntity = skfBaseBusinessLogicUtils.getShatakuShiyouryouKeisan(inputEntity);
+		} catch (ParseException e) {
+			outputEntity.setErrMessage(e.getMessage());
+		}
 		// 正常に計算できていたら、値をセット
 		// 計算結果判定
 		if (CheckUtils.isEmpty(outputEntity.getErrMessage())) {
@@ -964,12 +968,12 @@ public class Skf3022Sc006SharedService {
 			// 申請なしの場合
 			if (CheckUtils.isEmpty(comDto.getHdnShoruikanriNo())) {
 				LogUtils.debugByMsg("変更、申請無し");
-				// I_SKF_3087メッセージ設定
+				// I_SKF_3087メッセージ設定(入居状態を変更する必要があります。退居情報を設定に続いて入居情報を登録してください。)
 				setMsgBox(PropertyUtils.getValue(MessageIdConstant.I_SKF_3087), comDto);
 			// 申請ありの場合
 			} else {
 				LogUtils.debugByMsg("変更、申請あり");
-				// I_SKF_3088メッセージ設定
+				// I_SKF_3088メッセージ設定(社宅が継続利用されています。居住状況を変更してください。)
 				setMsgBox(PropertyUtils.getValue(MessageIdConstant.I_SKF_3088), comDto);
 			}
 		// 退居
@@ -5844,7 +5848,6 @@ public class Skf3022Sc006SharedService {
 	 * @return
 	 */
 //	@Override
-	@Transactional
 	public int tmpSaveAndCreateAndShatakuLogin(
 			Map<Skf3022Sc006CommonDto.TEIJIDATA_PARAM, String> teijiParamMap,
 			Boolean updateMode,
@@ -6211,8 +6214,8 @@ public class Skf3022Sc006SharedService {
 //					If (Constant.BihinLentStatusKbn.NASHI.Equals(lblRoomBihinCd) Or Constant.BihinLentStatusKbn.SHARE.Equals(lblRoomBihinCd)) AndAlso _
 //						Constant.NyutaikyoKbn.TAIKYO.Equals(nyutaikyoKbn) AndAlso _
 //						Constant.BihinLentStatusKbn.RENTAL.Equals(bihinLentStatusKbn) Then
-					if (CodeConstant.BIHIN_STATE_NONE.equals(bihinMap.get("heyaSonaetukeStts").toString())
-							|| CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("heyaSonaetukeStts").toString())
+					if ((CodeConstant.BIHIN_STATE_NONE.equals(bihinMap.get("heyaSonaetukeStts").toString())
+							|| CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("heyaSonaetukeStts").toString()))
 							&& CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)
 							&& CodeConstant.BIHIN_STATE_RENTAL.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())) {
 //						sql.Append(" BIHIN_RETURN_KBN = '3',")
@@ -6222,8 +6225,8 @@ public class Skf3022Sc006SharedService {
 //					If (Constant.BihinLentStatusKbn.NASHI.Equals(lblRoomBihinCd) Or Constant.BihinLentStatusKbn.SHARE.Equals(lblRoomBihinCd)) AndAlso _
 //						Constant.NyutaikyoKbn.TAIKYO.Equals(nyutaikyoKbn) AndAlso _
 //						Constant.BihinLentStatusKbn.KAISHA_HOYU.Equals(bihinLentStatusKbn) Then
-					if (CodeConstant.BIHIN_STATE_NONE.equals(bihinMap.get("heyaSonaetukeStts").toString())
-							|| CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("heyaSonaetukeStts").toString())
+					if ((CodeConstant.BIHIN_STATE_NONE.equals(bihinMap.get("heyaSonaetukeStts").toString())
+							|| CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("heyaSonaetukeStts").toString()))
 							&& CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)
 							&& CodeConstant.BIHIN_STATE_HOYU.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())) {
 //						sql.Append(" BIHIN_RETURN_KBN = '2',")
@@ -6231,6 +6234,7 @@ public class Skf3022Sc006SharedService {
 					}
 					record.setTeijiNo(Long.parseLong(teijiNo));
 					record.setBihinCd(bihinMap.get("bihinCd").toString());
+					record.setBihinLentStatusKbn(bihinMap.get("bihinTaiyoSttsKbn").toString());
 					record.setUpdateProgramId(updateProgramId);
 					record.setUpdateUserId(updateUser);
 					record.setUpdateDate(systemDate);

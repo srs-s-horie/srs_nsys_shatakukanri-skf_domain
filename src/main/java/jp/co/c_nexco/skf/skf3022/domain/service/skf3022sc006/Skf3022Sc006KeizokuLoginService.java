@@ -28,6 +28,7 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006KeizokuLoginDto;
+import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
  * Skf3022Sc006KeizokuLoginService 提示データ登録画面：入居情報の継続登録ボタン押下時処理クラス。　 
@@ -67,8 +68,6 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		LogUtils.debugByMsg("継続登録");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("継続登録", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
-		// 日付フォーマット
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006KyojyusyaKbnSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006YakuinSanteiSelectList = new ArrayList<Map<String, Object>>();
@@ -172,6 +171,23 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 				return initDto;
 			}
 		}
+		// DB更新
+		update(initDto);
+		// 備品再取得しない
+		initDto.setBihinItiranFlg(false);
+		// メッセージ設定
+		// 更新が完了しました。
+		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
+		// 画面ステータス設定
+		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		return initDto;
+	}
+
+	@Transactional
+	private void update(Skf3022Sc006KeizokuLoginDto initDto) {
+
+		// 日付フォーマット
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 		// システム日時の取得
 		Date sysDateTime = skfBaseBusinessLogicUtils.getSystemDateTime();
 		// 社員番号
@@ -502,14 +518,6 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 			}
 			initDto.setHdnShiyoryoKeisanPatternId("");
 		}
-		// 備品再取得しない
-		initDto.setBihinItiranFlg(false);
-		// メッセージ設定
-		// 更新が完了しました。
-		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
-		// 画面ステータス設定
-		skf3022Sc006SharedService.pageLoadComplete(initDto);
-		return initDto;
 	}
 }
 

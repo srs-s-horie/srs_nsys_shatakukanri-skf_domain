@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -112,15 +113,24 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
-		Map<String, String> paramMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);	// 使用料計算パラメータ
-		Map<String, String> resultMap = new HashMap<String, String>();		// 使用料計算戻り値
-		StringBuffer errMsg = new StringBuffer();							// エラーメッセージ
-
 		// 使用料項目の再設定(社宅使用料調整金額、個人負担共益費調整金額 を「0」に設定し再計算)
 		// 社宅使用料調整金額クリア
 		initDto.setSc006SiyoroTyoseiPay("0");
 		// 個人負担共益費調整金額クリア 
 		initDto.setSc006KyoekihiTyoseiPay("0");
+		/* AS imrt移植 個人負担共益費月額（調整後）が画面項目の合計(個人負担共益費月額 + 個人負担共益費調整金額)と異なる問題に対処 */
+		if (CheckUtils.isEmpty(initDto.getSc006KyoekihiMonthPay())) {
+			// 個人負担共益費月額未指定時、個人負担共益費月額（調整後）を0円とする
+			initDto.setSc006KyoekihiPayAfter("0");
+		} else {
+			// 個人負担共益費月額指定時、個人負担共益費月額（調整後）を個人負担共益費月額とする
+			initDto.setSc006KyoekihiPayAfter(initDto.getSc006KyoekihiMonthPay());
+		}
+		/* AE imrt移植 個人負担共益費月額（調整後）が画面項目の合計(個人負担共益費月額 + 個人負担共益費調整金額)と異なる問題に対処 */
+		Map<String, String> paramMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);	// 使用料計算パラメータ
+		Map<String, String> resultMap = new HashMap<String, String>();		// 使用料計算戻り値
+		StringBuffer errMsg = new StringBuffer();							// エラーメッセージ
+		// 使用料計算結果判定
 		if (skf3022Sc006SharedService.siyoryoKeiSan("", "", paramMap, resultMap, errMsg)) {
 			// 使用料計算でエラー
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg.toString());

@@ -34,6 +34,7 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006TmpSaveDto;
+import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
  * Skf3022Sc006TmpSaveService 提示データ登録画面：一時保存ボタン押下時処理クラス。　 
@@ -77,8 +78,6 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 
-		// 日付フォーマット
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006KyojyusyaKbnSelectList = new ArrayList<Map<String, Object>>();
@@ -206,6 +205,22 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 				return initDto;
 			}
 		}
+		// DB更新
+		update(initDto);
+		// メッセージ設定
+		// 更新が完了しました。
+		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
+		// 画面ステータス設定
+		skf3022Sc006SharedService.pageLoadComplete(initDto);
+
+		return initDto;
+	}
+
+	@Transactional
+	private void update(Skf3022Sc006TmpSaveDto initDto) {
+
+		// 日付フォーマット
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 		// システム日時の取得
 		Date sysDateTime = skfBaseBusinessLogicUtils.getSystemDateTime();
 //		// メッセージ
@@ -637,13 +652,6 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 			rentalPatternInfoList = skf3022Sc006GetRentalPatternInfoExpRepository.getRentalPatternInfo(param);
 			initDto.setHdnRentalPatternUpdateDate(dateFormat.format(rentalPatternInfoList.get(0).getUpdateDate()));
 		}
-		// メッセージ設定
-		// 更新が完了しました。
-		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
-		// 画面ステータス設定
-		skf3022Sc006SharedService.pageLoadComplete(initDto);
-
-		return initDto;
 	}
 }
 

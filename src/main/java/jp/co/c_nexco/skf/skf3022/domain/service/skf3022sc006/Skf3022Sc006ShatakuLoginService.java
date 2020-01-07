@@ -32,6 +32,7 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ShatakuLoginDto;
+import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
  * Skf3022Sc006ShatakuLoginService 提示データ登録画面：社宅管理台帳登録ボタン押下時処理クラス。　 
@@ -75,7 +76,6 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("社宅管理台帳登録", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006KyojyusyaKbnSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006YakuinSanteiSelectList = new ArrayList<Map<String, Object>>();
@@ -173,6 +173,19 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 				return initDto;
 			}
 		}
+		// DB更新
+		update(initDto);
+		// 提示データ一覧画面へ遷移
+		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3022_SC005, "init");
+		initDto.setTransferPageInfo(nextPage);
+
+		return initDto;
+	}
+
+	@Transactional
+	private void update(Skf3022Sc006ShatakuLoginDto initDto) {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
 		// システム日時の取得
 		Date sysDateTime = skfBaseBusinessLogicUtils.getSystemDateTime();
 		// 更新モード
@@ -332,11 +345,6 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 			default:
 				break;
 		};
-		// 提示データ一覧画面へ遷移
-		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3022_SC005, "init");
-		initDto.setTransferPageInfo(nextPage);
-
-		return initDto;
 	}
 }
 

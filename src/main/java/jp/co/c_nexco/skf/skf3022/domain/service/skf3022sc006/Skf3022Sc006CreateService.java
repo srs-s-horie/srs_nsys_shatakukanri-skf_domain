@@ -28,6 +28,7 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006CreateDto;
+import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
  * Skf3022Sc006CreateService 提示データ登録画面：作成完了ボタン押下時処理クラス。　 
@@ -189,6 +190,18 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 				return initDto;
 			}
 		}
+		// DB更新
+		update(initDto);
+		// 提示データ一覧画面へ遷移
+		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3022_SC005, "init");
+		initDto.setTransferPageInfo(nextPage);
+
+		return initDto;
+	}
+
+	@Transactional
+	private void update(Skf3022Sc006CreateDto initDto) {
+
 		// 社員番号
 		String shainNo = CheckUtils.isEmpty(initDto.getSc006ShainNo()) ? "" : initDto.getSc006ShainNo().replace(CodeConstant.ASTERISK, "");
 		// システム日時の取得
@@ -350,11 +363,6 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 			default:
 				break;
 		};
-		// 提示データ一覧画面へ遷移
-		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3022_SC005, "init");
-		initDto.setTransferPageInfo(nextPage);
-
-		return initDto;
 	}
 }
 
