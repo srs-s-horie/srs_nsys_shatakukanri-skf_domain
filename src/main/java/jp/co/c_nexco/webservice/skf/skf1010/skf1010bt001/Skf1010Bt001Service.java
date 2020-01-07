@@ -455,6 +455,7 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 		// 等級マスタを登録します
 		SkfSoshikiBatchUtilsInsertTokyuMasterExp insRecord = new SkfSoshikiBatchUtilsInsertTokyuMasterExp();
 		insRecord.setCompanyCd(companyCd);
+		insRecord.setUserName(SkfCommonConstant.FIXED_NAME_BATCH);
 		SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository insRepository = (SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository) SpringContext
 				.getBean("skfSoshikiBatchUtilsInsertTokyuMasterExpRepository");
 		int insRes = insRepository.insertTokyuMaster(insRecord);
