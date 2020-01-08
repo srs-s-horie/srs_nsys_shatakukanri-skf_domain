@@ -129,7 +129,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
-		// 表示タブインデックス初期値設定
+		// 選択タブインデックス初期値
+		String setHdnTabIndexOld = initDto.getHdnTabIndex();
 		initDto.setHdnTabIndex("999");
 		// 処理状態クリア
 		initDto.setSc006Status("");
@@ -180,6 +181,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
 		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		// 表示タブ設定
+		initDto.setHdnTabIndex(setHdnTabIndexOld);
 		return initDto;
 	}
 

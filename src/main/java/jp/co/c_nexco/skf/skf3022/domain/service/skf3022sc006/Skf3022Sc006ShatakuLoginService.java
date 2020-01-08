@@ -95,8 +95,8 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
 		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
-//		// エラーコントロールクリア
-//		skf3022Sc006SharedService.clearVaridateErr(initDto);
+		// エラーコントロールクリア
+		skf3022Sc006SharedService.clearVaridateErr(initDto);
 //		// 非活性制御クリア
 //		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 //		// 現在のラベル値をDTOに設定
@@ -137,8 +137,6 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
-		// 表示タブインデックス初期値設定
-		initDto.setHdnTabIndex("999");
 		// 処理状態クリア
 		initDto.setSc006Status("");
 		Boolean appBihinFlg = false;
@@ -197,8 +195,8 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 			// 入居の提示データを取得
 			List<Skf3022Sc006GetNyukyoTeijiNoDataExp> nyukyoTeijiNoList = new ArrayList<Skf3022Sc006GetNyukyoTeijiNoDataExp>();
 			Skf3022Sc006GetNyukyoTeijiNoExpParameter param = new Skf3022Sc006GetNyukyoTeijiNoExpParameter();
-			Long shatakuKanriNo = CheckUtils.isEmail(initDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(initDto.getHdnShatakuKanriNoOld());
-			Long shatakuRoomKanriNo = CheckUtils.isEmail(initDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(initDto.getHdnRoomKanriNoOld());
+			Long shatakuKanriNo = CheckUtils.isEmpty(initDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(initDto.getHdnShatakuKanriNoOld());
+			Long shatakuRoomKanriNo = CheckUtils.isEmpty(initDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(initDto.getHdnRoomKanriNoOld());
 			if (shatakuKanriNo != null && shatakuRoomKanriNo != null) {
 				param.setShatakuKanriNo(shatakuKanriNo);
 				param.setShatakuRoomKanriNo(shatakuRoomKanriNo);

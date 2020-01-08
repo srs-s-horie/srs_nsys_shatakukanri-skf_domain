@@ -62,8 +62,6 @@ public class Skf3022Sc006SetCheckMsgService extends BaseServiceAbstract<Skf3022S
 		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
 		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
-		// エラーコントロールクリア
-		skf3022Sc006SharedService.clearVaridateErr(initDto);
 		// 非活性制御クリア
 		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 		// 現在のラベル値をDTOに設定

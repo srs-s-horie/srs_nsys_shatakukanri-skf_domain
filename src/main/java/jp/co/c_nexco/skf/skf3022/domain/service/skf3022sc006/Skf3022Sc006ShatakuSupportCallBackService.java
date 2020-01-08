@@ -80,6 +80,8 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends BaseServiceAbstra
 		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
 		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
+		// 選択タブインデックス初期値
+		initDto.setHdnTabIndex("999");
 		// エラーコントロールクリア
 		skf3022Sc006SharedService.clearVaridateErr(initDto);
 		// 非活性制御クリア

@@ -109,7 +109,6 @@ import jp.co.c_nexco.skf.common.util.datalinkage.SkfPageBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonAsyncDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto.UPDATE_COUNTER;
-import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
  * Skf3022Sc006SharedService 提示データ登録共通クラス
@@ -7015,7 +7014,7 @@ public class Skf3022Sc006SharedService {
 //		
 //							Try
 //								If String.IsNullOrEmpty(rentalPatternTorokuList(14)) Then
-				if (CheckUtils.isEmail(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU))) {
+				if (CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU))) {
 					// データの更新（使用料パターン未計算）
 //									updCountRP = ta.UpdateRentalPattern(CDec(rentalPatternTorokuList(0)), _
 //																		CDec(rentalPatternTorokuList(1)), _
@@ -7294,7 +7293,7 @@ public class Skf3022Sc006SharedService {
 	 * @param str	数値文字列
 	 * @return		数値文字列をカンマ区切りにした文字列
 	 */
-	private String getKanmaNumEdit(String str) {
+	public String getKanmaNumEdit(String str) {
 
 		String changeString = str;
 		DecimalFormat df1 = new DecimalFormat("#,##0");

@@ -73,8 +73,6 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
 		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
-		// エラーコントロールクリア
-		skf3022Sc006SharedService.clearVaridateErr(initDto);
 		// 非活性制御クリア
 		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 		// 現在のラベル値をDTOに設定
@@ -113,6 +111,10 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
+		// 選択タブインデックス初期値
+		String setHdnTabIndexOld = initDto.getHdnTabIndex();
+		initDto.setHdnTabIndex("999");
+
 		// 使用料項目の再設定(社宅使用料調整金額、個人負担共益費調整金額 を「0」に設定し再計算)
 		// 社宅使用料調整金額クリア
 		initDto.setSc006SiyoroTyoseiPay("0");
@@ -124,7 +126,7 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 			initDto.setSc006KyoekihiPayAfter("0");
 		} else {
 			// 個人負担共益費月額指定時、個人負担共益費月額（調整後）を個人負担共益費月額とする
-			initDto.setSc006KyoekihiPayAfter(initDto.getSc006KyoekihiMonthPay());
+			initDto.setSc006KyoekihiPayAfter(skf3022Sc006SharedService.getKanmaNumEdit(initDto.getSc006KyoekihiMonthPay()));
 		}
 		/* AE imrt移植 個人負担共益費月額（調整後）が画面項目の合計(個人負担共益費月額 + 個人負担共益費調整金額)と異なる問題に対処 */
 		Map<String, String> paramMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);	// 使用料計算パラメータ
@@ -142,6 +144,8 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends BaseServiceAbstr
 		initDto.setBihinItiranFlg(false);
 		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		// 表示タブ設定
+		initDto.setHdnTabIndex(setHdnTabIndexOld);
 		// 処理状態クリア
 		initDto.setSc006Status("");
 		return initDto;

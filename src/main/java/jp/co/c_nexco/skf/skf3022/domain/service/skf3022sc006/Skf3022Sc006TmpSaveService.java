@@ -98,8 +98,8 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
 		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
-//		// エラーコントロールクリア
-//		skf3022Sc006SharedService.clearVaridateErr(initDto);
+		// エラーコントロールクリア
+		skf3022Sc006SharedService.clearVaridateErr(initDto);
 //		// 非活性制御クリア
 //		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 //		// 現在のラベル値をDTOに設定
@@ -140,7 +140,8 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
-		// 表示タブインデックス初期値設定
+		// 選択タブインデックス初期値
+		String setHdnTabIndexOld = initDto.getHdnTabIndex();
 		initDto.setHdnTabIndex("999");
 		// 処理状態クリア
 		initDto.setSc006Status("");
@@ -212,6 +213,8 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
 		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		// 表示タブ設定
+		initDto.setHdnTabIndex(setHdnTabIndexOld);
 
 		return initDto;
 	}
@@ -251,8 +254,8 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 			// 入居の提示データを取得
 			List<Skf3022Sc006GetNyukyoTeijiNoDataExp> nyukyoTeijiNoList = new ArrayList<Skf3022Sc006GetNyukyoTeijiNoDataExp>();
 			Skf3022Sc006GetNyukyoTeijiNoExpParameter param = new Skf3022Sc006GetNyukyoTeijiNoExpParameter();
-			Long shatakuKanriNo = CheckUtils.isEmail(initDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(initDto.getHdnShatakuKanriNoOld());
-			Long shatakuRoomKanriNo = CheckUtils.isEmail(initDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(initDto.getHdnRoomKanriNoOld());
+			Long shatakuKanriNo = CheckUtils.isEmpty(initDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(initDto.getHdnShatakuKanriNoOld());
+			Long shatakuRoomKanriNo = CheckUtils.isEmpty(initDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(initDto.getHdnRoomKanriNoOld());
 			if (shatakuKanriNo != null && shatakuRoomKanriNo != null) {
 				param.setShatakuKanriNo(shatakuKanriNo);
 				param.setShatakuRoomKanriNo(shatakuRoomKanriNo);
@@ -536,8 +539,8 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 		} else if (updCountMap.get(Skf3022Sc006CommonDto.UPDATE_COUNTER.UPD_COUNT_SR) > 0) {
 //					Me.hdnHeyaKanriNoOld.Value = Me.hdnHeyaKanriNo.Value
 //					Me.hdnShatakuKanriNoOld.Value = Me.hdnShatakuKanriNo.Value
-			initDto.setHdnRoomKanriNoOld("");
-			initDto.setHdnShatakuKanriNoOld("");
+			initDto.setHdnRoomKanriNoOld(initDto.getHdnRoomKanriNo());
+			initDto.setHdnShatakuKanriNoOld(initDto.getHdnShatakuKanriNo());
 			// 社宅部屋情報マスタ元更新日
 //					Me.hdnShatakuRoomOldUpdateDate.Value = DateUtil.ConversionFormatYYYYMMDDHHMMSSF6WithDelimiter(sysDateTime)
 			initDto.setHdnShatakuRoomOldUpdateDate(dateFormat.format(sysDateTime));
@@ -550,7 +553,7 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 //				ElseIf 0 < updCountSPB1 Then
 		} else if (updCountMap.get(Skf3022Sc006CommonDto.UPDATE_COUNTER.UPD_COUNT_SPB_1) > 0) {
 //					Me.hdnChushajoNoOneOld.Value = Me.hdnChushajoNoOne.Value
-			initDto.setHdnChushajoNoOneOld("");
+			initDto.setHdnChushajoNoOneOld(initDto.getHdnChushajoNoOne());
 			// 社宅駐車場区画情報マスタ元（区画１）更新日
 //					Me.hdnShatakuParkingBlockOld1UpdateDate.Value = DateUtil.ConversionFormatYYYYMMDDHHMMSSF6WithDelimiter(sysDateTime)
 			initDto.setHdnShatakuParkingBlockOld1UpdateDate(dateFormat.format(sysDateTime));
@@ -562,7 +565,7 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 			initDto.setHdnChushajoNoTwoOld("");
 		} else if (updCountMap.get(Skf3022Sc006CommonDto.UPDATE_COUNTER.UPD_COUNT_SPB_2) > 0) {
 //					Me.hdnChushajoNoTwoOld.Value = Me.hdnChushajoNoTwo.Value
-			initDto.setHdnChushajoNoTwoOld("");
+			initDto.setHdnChushajoNoTwoOld(initDto.getHdnChushajoNoTwo());
 			// 社宅駐車場区画情報マスタ元（区画２）更新日
 //					Me.hdnShatakuParkingBlockOld2UpdateDate.Value = DateUtil.ConversionFormatYYYYMMDDHHMMSSF6WithDelimiter(sysDateTime)
 			initDto.setHdnShatakuParkingBlockOld2UpdateDate(dateFormat.format(sysDateTime));

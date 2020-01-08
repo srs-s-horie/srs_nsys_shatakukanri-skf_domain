@@ -130,6 +130,9 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
+		// 選択タブインデックス初期値
+		initDto.setHdnTabIndex("999");
+
 		// チェック処理
 		Boolean bihinErrFlg = false;
 		Boolean appBihinFlg = false;
