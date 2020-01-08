@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -68,8 +69,6 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 		String applId = cancelDto.getApplId();
 		// 申請書番号
 		String applNo = cancelDto.getApplNo();
-		// 申請状況
-		String applStatus = cancelDto.getApplStatus();
 
 		// 「申請書類履歴テーブル」よりステータスを更新
 		boolean result = skf2010Sc004SharedService.updateApplHistoryCancel(applNo, applId);
@@ -79,8 +78,16 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 		}
 
 		// 社宅管理データ連携処理実行
+		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
+		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
+		if(tApplHistoryData == null){
+			ServiceHelper.addErrorResultMessage(cancelDto, null, MessageIdConstant.E_SKF_1073);
+			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
+			return cancelDto;
+		}
+		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
 		if(resultBatch != null){
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);

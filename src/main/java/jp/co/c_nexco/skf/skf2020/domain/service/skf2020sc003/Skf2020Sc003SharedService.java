@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinInfoExp;
@@ -89,9 +91,10 @@ public class Skf2020Sc003SharedService {
 	private final String BIHIN_STATE_SONAETSUKE = "備付";
 
 	// 排他処理用
-	private final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
-	private final String BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_kibo_shinsei_UpdateDate";
-	private final String BIHIN_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_UpdateDate";
+	public final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
+	public final String SHATAKU_CHOSHO_TSUCHI_UPDATE_DATE = "Skf2020TShatakuChoshoTsuchiUpdateDate";
+	public final String BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_kibo_shinsei_UpdateDate";
+	public final String BIHIN_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_UpdateDate";
 
 	@Autowired
 	private Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
@@ -199,6 +202,16 @@ public class Skf2020Sc003SharedService {
 	public void setDispInfo(Skf2020Sc003CommonDto dto) {
 		// 申請番号取得
 		String applNo = dto.getApplNo();
+		
+		//排他チェック用
+		Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo = new Skf2020Sc003GetApplHistoryInfoForUpdateExp();
+		Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter param = new Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setApplNo(applNo);
+		applInfo = skf2020Sc003GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
+		if (applInfo != null) {
+			dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, applInfo.getUpdateDate());
+		}
 
 		// 申請情報の設定（社宅入居希望等調書の表示）
 		getSinseiInfo(applNo, dto);
@@ -213,8 +226,8 @@ public class Skf2020Sc003SharedService {
 		}
 
 		// 提示情報の設定
-		String shainNo = dto.getShainNo();
 		dto.setMaskPattern(CodeConstant.NONE);
+		String shainNo = dto.getShainNo();
 		if (!setTeijiDataInfo(shainNo, applNo, dto)) {
 			// 備品申請要否の非活性制御
 			// 備品非表示制御
@@ -222,7 +235,6 @@ public class Skf2020Sc003SharedService {
 			dto.setMaskPattern("TeijiNG");
 		}
 		dto.setBihinVisible(bihinVisible);
-
 		if (!NfwStringUtils.isEmpty(shainNo)) {
 			setBihinInfo(applNo, dto);
 		}
@@ -377,7 +389,7 @@ public class Skf2020Sc003SharedService {
 		}
 
 		// 排他処理用最終更新日時保持
-		dto.addLastUpdateDate("Skf2020TShatakuChoshoTsuchiUpdateDate", shatakuNyukyoKiboInfo.getLastUpdateDate());
+		dto.addLastUpdateDate(SHATAKU_CHOSHO_TSUCHI_UPDATE_DATE, shatakuNyukyoKiboInfo.getLastUpdateDate());
 
 		// 申請内容
 		// 申請状況

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetShatakuKiboForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
@@ -88,8 +89,6 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String applId = agreeDto.getApplId();
 		// 申請書番号
 		String applNo = agreeDto.getApplNo();
-		// 申請状況
-		String applStatus = agreeDto.getApplStatus();
 		// エラーメッセージ保持用
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
@@ -255,8 +254,16 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 		
 		// 社宅管理データ連携処理実行
+		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
+		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
+		if(tApplHistoryData == null){
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1073);
+			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+			return agreeDto;
+		}
+		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
 		if(resultBatch != null){
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(agreeDto, resultBatch);

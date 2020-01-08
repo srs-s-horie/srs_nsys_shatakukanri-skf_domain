@@ -14,9 +14,12 @@ import java.util.StringJoiner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
@@ -64,6 +67,9 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
+	
+	@Autowired
+	private Skf2020Sc003GetApplHistoryInfoForUpdateExpRepository skf2020Sc003GetApplHistoryInfoForUpdateExpRepository;
 
 	// カンマ区切りフォーマット
 	NumberFormat nfNum = NumberFormat.getNumberInstance();
@@ -99,11 +105,20 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 
 		// 社宅管理データ連携処理実行
 		String applNo = updDto.getApplNo();
-		String applStatus = updDto.getApplStatus();
 		String applId = updDto.getApplId();
 		String shainNo = updDto.getShainNo();
+		Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo = new Skf2020Sc003GetApplHistoryInfoForUpdateExp();
+		Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter param = new Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setApplNo(applNo);
+		applInfo = skf2020Sc003GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
+		if(applInfo == null){
+			ServiceHelper.addErrorResultMessage(updDto, null, MessageIdConstant.E_SKF_1075);
+			throwBusinessExceptionIfErrors(updDto.getResultMessages());
+		}
+		String afterApplStatus = applInfo.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, applStatus, applId, FunctionIdConstant.SKF2020_SC003);
+		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2020_SC003);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
 		if(resultBatch != null){
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
@@ -154,7 +169,7 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 		if (updData == null) {
 			return false;
 		}
-		Date lastUpdateDate = updDto.getLastUpdateDate("Skf2020TShatakuChoshoTsuchiUpdateDate");
+		Date lastUpdateDate = updDto.getLastUpdateDate(skf2020sc003SharedService.SHATAKU_CHOSHO_TSUCHI_UPDATE_DATE);
 		// 排他チェック
 		checkLockException(lastUpdateDate, updData.getUpdateDate());
 
