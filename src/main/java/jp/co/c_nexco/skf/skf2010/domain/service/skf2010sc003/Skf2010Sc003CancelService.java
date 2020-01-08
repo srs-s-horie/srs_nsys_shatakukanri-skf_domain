@@ -6,9 +6,11 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
@@ -73,8 +75,6 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 		String applNo = cancelDto.getApplNo();
 		// 申請書ID
 		String applId = cancelDto.getApplId();
-		// 申請状況
-		String applStatus = cancelDto.getSendApplStatus();
 
 		// 「申請書類履歴テーブル」よりステータスを更新
 		boolean result = skf2010Sc003SharedService.updateApplHistoryCancel(applNo, applId);
@@ -84,8 +84,9 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 		}
 
 		// 社宅管理データ連携処理実行（データ連携用Mapは消さない）
+		String afterApplStatus = skf2010Sc003SharedService.getApplStatus(applNo);
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC003);
+		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC003);
 		if(resultBatch != null){
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
 			skfRollBackExpRepository.rollBack();

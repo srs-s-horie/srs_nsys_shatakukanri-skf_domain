@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -78,10 +79,18 @@ public class Skf2010Sc006RepresentService extends BaseServiceAbstract<Skf2010Sc0
 			return reDto;
 		}
 		// 社宅管理データ連携処理実行（オンラインバッチ）
-		String applId = reDto.getApplId();
-		String shainNo = reDto.getShainNo();
+		Skf2010Sc006GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc006GetApplHistoryInfoByParameterExp();
+		tApplHistoryData = skf2010Sc006SharedService.getApplHistoryInfo(applNo);
+		if(tApplHistoryData == null){
+			ServiceHelper.addErrorResultMessage(reDto, null, MessageIdConstant.E_SKF_1073);
+			throwBusinessExceptionIfErrors(reDto.getResultMessages());
+			return reDto;
+		}
+		String afterApplStatus = tApplHistoryData.getApplStatus();
+		String applId = tApplHistoryData.getApplId();
+		String shainNo = tApplHistoryData.getShainNo();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc006SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC006);
+		resultBatch = skf2010Sc006SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC006);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC006);
 		if(resultBatch != null){
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(reDto, resultBatch);

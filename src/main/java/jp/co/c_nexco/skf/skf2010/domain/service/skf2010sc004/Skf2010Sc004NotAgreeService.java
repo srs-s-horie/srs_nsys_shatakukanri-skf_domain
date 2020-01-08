@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
@@ -80,8 +81,6 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		String applId = notAgreeDto.getApplId();
 		// 申請書番号
 		String applNo = notAgreeDto.getApplNo();
-		// 申請状況
-		String applStatus = notAgreeDto.getApplStatus();
 
 		// 承認者へのコメント欄の入力チェック
 		boolean validateResult = true;
@@ -119,8 +118,16 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 				shainNo, CodeConstant.NONE, urlBase);
 
 		// 社宅管理データ連携処理実行
+		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
+		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
+		if(tApplHistoryData == null){
+			ServiceHelper.addErrorResultMessage(notAgreeDto, null, MessageIdConstant.E_SKF_1073);
+			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
+			return notAgreeDto;
+		}
+		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
 		if(resultBatch != null){
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(notAgreeDto, resultBatch);
