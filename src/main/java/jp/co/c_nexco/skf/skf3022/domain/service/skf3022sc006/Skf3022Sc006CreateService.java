@@ -88,8 +88,8 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
 		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
-//		// エラーコントロールクリア
-//		skf3022Sc006SharedService.clearVaridateErr(initDto);
+		// エラーコントロールクリア
+		skf3022Sc006SharedService.clearVaridateErr(initDto);
 //		// 非活性制御クリア
 //		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);
 //		// 現在のラベル値をDTOに設定
@@ -196,8 +196,8 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 		// DB更新
 		update(initDto);
 		// 提示データ一覧画面へ遷移
-		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3022_SC005, "init");
-		initDto.setTransferPageInfo(nextPage);
+		TransferPageInfo prevPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3022_SC005, "init");
+		initDto.setTransferPageInfo(prevPage);
 
 		return initDto;
 	}
