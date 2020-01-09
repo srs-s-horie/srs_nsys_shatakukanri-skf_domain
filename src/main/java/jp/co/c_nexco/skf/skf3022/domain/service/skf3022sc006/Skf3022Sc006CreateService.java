@@ -63,7 +63,6 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 	public Skf3022Sc006CreateDto index(Skf3022Sc006CreateDto initDto) throws Exception {
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC006_TITLE);
-
 		// デバッグログ
 		LogUtils.debugByMsg("作成完了");
 		// 操作ログを出力する
