@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetAttachedFileInfoExp;
@@ -381,34 +383,38 @@ public class Skf2010Sc006SharedService {
 		case FunctionIdConstant.R0100:
 			// 社宅入居希望等調書の場合
 			applStatus = getBihinApplStatus(applNo, applInfo.getApplId());
-			switch (applStatus) {
-			case CodeConstant.STATUS_MISAKUSEI:
-			case CodeConstant.STATUS_ICHIJIHOZON:
-			case CodeConstant.STATUS_SASHIMODOSHI:
-			case CodeConstant.STATUS_HININ:
+			if(applStatus != null){
+				switch (applStatus) {
+				case CodeConstant.STATUS_MISAKUSEI:
+				case CodeConstant.STATUS_ICHIJIHOZON:
+				case CodeConstant.STATUS_SASHIMODOSHI:
+				case CodeConstant.STATUS_HININ:
+					break;
+				default:
+					// 備品希望申請が申請されていた場合、メッセージを表示して処理を中断
+					errMap.put("error", MessageIdConstant.SKF2010_SC006_E_SAITEIJI_1);
+					return false;
+				}
 				break;
-			default:
-				// 備品希望申請が申請されていた場合、メッセージを表示して処理を中断
-				errMap.put("error", MessageIdConstant.SKF2010_SC006_E_SAITEIJI_1);
-				return false;
 			}
-			break;
 		case FunctionIdConstant.R0103:
 			// 社宅入居希望等調書の場合
 			applStatus = getBihinApplStatus(applNo, applInfo.getApplId());
-			switch (applStatus) {
-			case CodeConstant.STATUS_MISAKUSEI:
-			case CodeConstant.STATUS_ICHIJIHOZON:
-			case CodeConstant.STATUS_SHINSACHU:
-			case CodeConstant.STATUS_KAKUNIN_IRAI:
-			case CodeConstant.STATUS_DOI_SHINAI:
+			if(applStatus != null){
+				switch (applStatus) {
+				case CodeConstant.STATUS_MISAKUSEI:
+				case CodeConstant.STATUS_ICHIJIHOZON:
+				case CodeConstant.STATUS_SHINSACHU:
+				case CodeConstant.STATUS_KAKUNIN_IRAI:
+				case CodeConstant.STATUS_DOI_SHINAI:
+					break;
+				default:
+					// 備品希望申請が申請されていた場合、メッセージを表示して処理を中断
+					errMap.put("error", MessageIdConstant.SKF2010_SC006_E_SAITEIJI_2);
+					return false;
+				}
 				break;
-			default:
-				// 備品希望申請が申請されていた場合、メッセージを表示して処理を中断
-				errMap.put("error", MessageIdConstant.SKF2010_SC006_E_SAITEIJI_2);
-				return false;
 			}
-			break;
 		}
 
 		// 「申請書類履歴テーブル」よりステータスを更新
