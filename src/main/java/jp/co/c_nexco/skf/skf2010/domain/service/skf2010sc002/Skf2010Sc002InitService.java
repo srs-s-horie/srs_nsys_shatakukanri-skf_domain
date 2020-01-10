@@ -782,7 +782,11 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuKikaku())) {
 			String shatakuKikaku = tNyukyoChoshoTsuchi.getNewShatakuKikaku();
 			BaseCodeEntity bceKikaku = shatakuKikakuMap.get(shatakuKikaku);
-			initDto.setNewShatakuKikaku(bceKikaku.getCodeName());
+			if (bceKikaku == null) {
+				initDto.setNewShatakuKikaku(shatakuKikaku);
+			} else {
+				initDto.setNewShatakuKikaku(bceKikaku.getCodeName());
+			}
 		}
 
 		// 面積

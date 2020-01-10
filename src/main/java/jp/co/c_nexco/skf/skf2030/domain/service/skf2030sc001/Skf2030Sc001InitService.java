@@ -6,11 +6,10 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -71,6 +70,12 @@ public class Skf2030Sc001InitService extends BaseServiceAbstract<Skf2030Sc001Ini
 
 		// 画面制御処理（活性／非活性）
 		skf2030Sc001SharedService.setEnabled(initDto, applInfo);
+
+		// バナー戻るボタン遷移先調整
+		String pageId = initDto.getPageId();
+		if (!CheckUtils.isEqual(pageId, FunctionIdConstant.SKF2030_SC001)) {
+			initDto.setPageId(null);
+		}
 
 		return initDto;
 	}
