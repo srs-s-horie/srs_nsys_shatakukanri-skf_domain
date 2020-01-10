@@ -6,11 +6,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinInfoExp;
@@ -67,6 +65,7 @@ import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc003common.Skf2020Sc003CommonDto;
 
 /**
@@ -145,6 +144,8 @@ public class Skf2020Sc003SharedService {
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
+	@Autowired
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 
 	public void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
 		menuScopeSessionBean = bean;
@@ -202,8 +203,8 @@ public class Skf2020Sc003SharedService {
 	public void setDispInfo(Skf2020Sc003CommonDto dto) {
 		// 申請番号取得
 		String applNo = dto.getApplNo();
-		
-		//排他チェック用
+
+		// 排他チェック用
 		Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo = new Skf2020Sc003GetApplHistoryInfoForUpdateExp();
 		Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter param = new Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter();
 		param.setCompanyCd(companyCd);
@@ -673,9 +674,12 @@ public class Skf2020Sc003SharedService {
 			dto.setGender(genderText);
 		}
 		// 備品希望申請を希望する/しない ラジオボタン
-		if (NfwStringUtils.isEmpty(dto.getBihinKibo())
+		if (!NfwStringUtils.isEmpty(dto.getBihinKibo())
 				&& !NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getBihinKibo())) {
 			dto.setBihinKibo(shatakuNyukyoKiboInfo.getBihinKibo());
+		} else {
+			// 値が設定されていなければ「不要」
+			dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
 		}
 
 		return;
@@ -754,6 +758,7 @@ public class Skf2020Sc003SharedService {
 		// 社宅情報 使用料(月)
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getRentalAdjust())) {
 			Long rentalAdjust = Long.parseLong(teijiDataInfo.getRentalAdjust());
+			dto.setNewBaseRental(String.valueOf(rentalAdjust));
 			dto.setNewRental(nfNum.format(rentalAdjust) + SkfCommonConstant.FORMAT_EN);
 		}
 		// 個人負担金共益費協議中フラグ
@@ -1169,15 +1174,48 @@ public class Skf2020Sc003SharedService {
 
 			if (NfwStringUtils.isNotEmpty(bihinKiboKbn)) {
 				// 備品希望申請可否を入居希望調書テーブルに書き込む
-				Skf2020TNyukyoChoshoTsuchi nyukyoChoshoTsuchiInfo = new Skf2020TNyukyoChoshoTsuchi();
-				nyukyoChoshoTsuchiInfo.setCompanyCd(companyCd);
-				nyukyoChoshoTsuchiInfo.setApplNo(applNo);
-				nyukyoChoshoTsuchiInfo.setBihinKibo(bihinKiboKbn);
-				returnValue = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKeySelective(nyukyoChoshoTsuchiInfo);
-
+				returnValue = this.updateBihinKiboKbnInfo(applNo, bihinKiboKbn, dto);
 			}
 
 		}
+		return returnValue;
+	}
+
+	/**
+	 * 備品希望申請可否を入居希望調書テーブルに書き込む<br />
+	 * 提示データの更新も同時に行う
+	 * 
+	 * @param applNo
+	 * @param bihinKiboKbn
+	 * @param dto
+	 * @return
+	 */
+	private int updateBihinKiboKbnInfo(String applNo, String bihinKiboKbn, Skf2020Sc003CommonDto dto) {
+		Skf2020TNyukyoChoshoTsuchi nyukyoChoshoTsuchiInfo = new Skf2020TNyukyoChoshoTsuchi();
+		// プライマリキー
+		// 会社コード
+		nyukyoChoshoTsuchiInfo.setCompanyCd(companyCd);
+		// 申請書類管理番号
+		nyukyoChoshoTsuchiInfo.setApplNo(applNo);
+
+		// 更新対象
+		// 備品希望区分
+		nyukyoChoshoTsuchiInfo.setBihinKibo(bihinKiboKbn);
+		// 新入居社宅所在地
+		nyukyoChoshoTsuchiInfo.setNewShozaichi(dto.getNewShozaichi());
+		// 新入居社宅名
+		nyukyoChoshoTsuchiInfo.setNewShatakuName(dto.getNewShatakuName());
+		// 新入居室番号
+		nyukyoChoshoTsuchiInfo.setNewShatakuNo(dto.getNewShatakuNo());
+		// 新入居規格（貸与規格）
+		nyukyoChoshoTsuchiInfo.setNewShatakuKikaku(dto.getNewShatakuKikaku());
+		// 新入居面積（貸与面積）
+		nyukyoChoshoTsuchiInfo.setNewShatakuMenseki(dto.getNewShatakuMenseki());
+		// 新入居使用料
+		nyukyoChoshoTsuchiInfo.setNewRental(dto.getNewBaseRental());
+
+		int returnValue = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKeySelective(nyukyoChoshoTsuchiInfo);
+
 		return returnValue;
 	}
 

@@ -9,11 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetShatakuKiboForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
@@ -252,24 +250,25 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 			}
 
 		}
-		
+
 		// 社宅管理データ連携処理実行
 		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
-		if(tApplHistoryData == null){
+		if (tApplHistoryData == null) {
 			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
 			return agreeDto;
 		}
 		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId,
+				FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
-		if(resultBatch != null){
+		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(agreeDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
 		}
-		
+
 		// Hidden領域の備品希望要否
 		String applNoBihinShinsei = CodeConstant.NONE;
 		String bihinKibo = agreeDto.getBihinKibo();
@@ -284,27 +283,12 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 				return agreeDto;
 			}
 
-			// 同意確認通知のメールを送信する
-			Map<String, String> applInfoBihin = new HashMap<String, String>();
-			applInfoBihin.put("applNo", applNoBihinShinsei);
-			applInfoBihin.put("applId", FunctionIdConstant.R0104);
-			applInfoBihin.put("applShainNo", shainNo);
-
-			// 案内文取得
-			String annai = PropertyUtils.getValue("skf2010.skf2010_sc004.mail_bihin_kibo");
-
-			String urlBase = "/skf/Skf2010Sc005/init";
-
-			// メール送信
-			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, agreeDto.getCommentNote(), annai,
-					shainNo, CodeConstant.NONE, urlBase);
-
 			// 備品申請の申請書類管理番号をセットされている場合は自動遷移のダイアログ表示
 			if (NfwStringUtils.isNotEmpty(applNoBihinShinsei)) {
 				ServiceHelper.addResultMessage(agreeDto, MessageIdConstant.I_SKF_2047);
 				// ダイアログ表示フラグをセットする
 				agreeDto.setDialogFlg(true);
-				agreeDto.setBihinApplNo(applInfoBihin.get("applNo"));
+				agreeDto.setBihinApplNo(applNoBihinShinsei);
 			}
 
 		}
