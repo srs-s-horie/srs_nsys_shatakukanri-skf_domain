@@ -6862,7 +6862,7 @@ public class Skf3022Sc006SharedService {
 //					Using ta As New TB_T_RENTAL_PATTERNTableAdapter()
 //		
 //						If String.IsNullOrEmpty(rentalPatternTorokuList(14)) Then
-			if (!CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU))) {
+			if (CheckUtils.isEmpty(rentalPatternTorokuList.get(Skf3022Sc006CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU))) {
 				// データの登録（使用料パターン未計算）
 //							updCountRP = ta.InsertRentalPattern(CDec(rentalPatternTorokuList(0)), _
 //																CDec(rentalPatternTorokuList(1)), _
