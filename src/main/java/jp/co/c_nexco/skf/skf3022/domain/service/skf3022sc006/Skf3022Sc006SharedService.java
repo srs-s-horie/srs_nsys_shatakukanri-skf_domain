@@ -72,6 +72,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetNyukyoTeijiNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetNyutaikyoYoteiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetRentalPatternInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetRoomBackDateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetTeijiBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameAppNoCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameParkingBlockTeijiInfoExpRepository;
@@ -179,6 +180,8 @@ public class Skf3022Sc006SharedService {
 	private Skf3022Sc006UpdateNyutaikyoExpRepository skf3022Sc006UpdateNyutaikyoExpRepository;
 	@Autowired
 	private Skf3022Sc006UpdateShatakuRoomExpRepository skf3022Sc006UpdateShatakuRoomExpRepository;
+	@Autowired
+	private Skf3022Sc006GetRoomBackDateExpRepository skf3022Sc006GetRoomBackDateExpRepository;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
@@ -4195,6 +4198,17 @@ public class Skf3022Sc006SharedService {
 				// 表示タブを社宅情報タブに設定
 				setDisplayTabIndex(Skf3022Sc006CommonDto.SELECT_TAB_INDEX_SHATAKU, comDto);
 				LogUtils.debugByMsg("入居入力チェック：一時保存以外、入居予定日未設定");
+			} else if (!comDto.getSc006NyukyoYoteiDayDisableFlg()) {
+				// 前入居者の退居日と入居予定日の整合性チェック
+				if (checkNyukyoDay(comDto.getHdnShatakuKanriNo(), comDto.getHdnRoomKanriNo(), getDateText(comDto.getSc006NyukyoYoteiDay()))) {
+					// E_SKF_1074 {0}に誤りがあります。入力内容を確認してください。
+					ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1074, "入居予定日");
+					comDto.setSc006NyukyoYoteiDayErr(CodeConstant.NFW_VALIDATION_ERROR);
+					errorFlg = true;
+					// 表示タブを社宅情報タブに設定
+					setDisplayTabIndex(Skf3022Sc006CommonDto.SELECT_TAB_INDEX_SHATAKU, comDto);
+					LogUtils.debugByMsg("入居入力チェック：一時保存以外、社宅入居日が前入居者の退居日より過去");
+				}
 			}
 			// 役員算定が役員／執行役員、又は、相互利用情報がありの場合
 			if (CodeConstant.YAKUIN_KBN_YAKUIN.equals(comDto.getSc006YakuinSanteiSelect())
@@ -5831,22 +5845,23 @@ public class Skf3022Sc006SharedService {
 //														   ByVal rentalPatternTorokuList As List(Of String)) As Integer
 
 	/**
+	 * 一時保存／継続登録／作成完了／社宅管理台帳登録処理メソッド
 	 * 
-	 * @param param
-	 * @param updateMode
-	 * @param teijiNoOld
-	 * @param syoriFlg
-	 * @param columnInfoList
-	 * @param bihinCd
-	 * @param updCountMap
-	 * @param companyCd
-	 * @param bihinTaiyobi
-	 * @param rentalPatternUpdateDate
-	 * @param rentalPatternUpdateDateForRegist
-	 * @param rentalPatternTorokuList
-	 * @return
+	 * @param teijiParamMap							提示データパラメータMap
+	 * @param updateMode							提示データ更新区分(true:更新)
+	 * @param teijiNoOld							旧提示番号
+	 * @param syoriFlg								処理区分
+	 * @param columnInfoList						カラム情報
+	 * @param bihinCd								備品情報
+	 * @param systemDate							更新日時
+	 * @param updCountMap							更新カウンタMap
+	 * @param companyCd								会社コード
+	 * @param bihinTaiyobi							備品貸与日
+	 * @param rentalPatternUpdateDate				使用料パターン排他処理用更新日時
+	 * @param rentalPatternUpdateDateForRegist		使用料パターン更新日時
+	 * @param rentalPatternTorokuList				使用料パターン登録項目リスト
+	 * @return	更新件数
 	 */
-//	@Override
 	public int tmpSaveAndCreateAndShatakuLogin(
 			Map<Skf3022Sc006CommonDto.TEIJIDATA_PARAM, String> teijiParamMap,
 			Boolean updateMode,
@@ -6128,8 +6143,8 @@ public class Skf3022Sc006SharedService {
 //		
 //					If (SHATAKU_LOGIN.Equals(buttonFlg) OrElse _
 //						 TMP_SAVE.Equals(buttonFlg)) AndAlso newFlg Then
-				if (Skf3022Sc006CommonDto.SHATAKU_LOGIN.equals(buttonFlg)
-						|| Skf3022Sc006CommonDto.TMP_SAVE.equals(buttonFlg) && newFlg) {
+				if ((Skf3022Sc006CommonDto.SHATAKU_LOGIN.equals(buttonFlg)
+						|| Skf3022Sc006CommonDto.TMP_SAVE.equals(buttonFlg)) && newFlg) {
 //						'提示備品データテーブルアダプター生成
 					// 提示備品データを登録
 //								ta.InsertBihinListData(bihinCd.Item(i).BihinLentStatusKbn, _
@@ -6772,9 +6787,9 @@ public class Skf3022Sc006SharedService {
 		// 一時保存/作成完了/台帳登録をクリックして、且つ、使用料変更がある場合
 //			If (TMP_SAVE.Equals(buttonFlg) Or CREATE.Equals(buttonFlg) Or SHATAKU_LOGIN.Equals(buttonFlg)) And _
 //				(SIYOURYOFLG_HAVE.Equals(siyouryoFlg))Then
-		if (Skf3022Sc006CommonDto.TMP_SAVE.equals(buttonFlg)
+		if ((Skf3022Sc006CommonDto.TMP_SAVE.equals(buttonFlg)
 				|| Skf3022Sc006CommonDto.CREATE.equals(buttonFlg)
-				|| Skf3022Sc006CommonDto.SHATAKU_LOGIN.equals(buttonFlg)
+				|| Skf3022Sc006CommonDto.SHATAKU_LOGIN.equals(buttonFlg))
 				&& Skf3022Sc006CommonDto.SIYOURYOFLG_HAVE.equals(siyouryoFlg)) {
 			// 社宅使用料予約データを削除
 //						Dim delCount As Integer = ta.DeleteShatakuYoyaku(CDec(teijiNo))
@@ -6801,7 +6816,7 @@ public class Skf3022Sc006SharedService {
 //						Return 0
 //				End Select
 			Long shatakuKanriId = skfPageBusinessLogicUtils.updateShatakuKanriDaichoShatakuData(
-					Long.parseLong(teijiNoOld), false, nyukyoYoteiDate, sysShoriNenGetsu, updateUser, updateProgramId, systemDate);
+					Long.parseLong(teijiNo), false, nyukyoYoteiDate, sysShoriNenGetsu, updateUser, updateProgramId, systemDate);
 			if (Objects.equals(shatakuKanriId, null)) {
 				LogUtils.debugByMsg("社宅管理台帳データ登録（社宅情報）更新失敗②");
 				return 0;
@@ -7239,6 +7254,31 @@ public class Skf3022Sc006SharedService {
 		updCountMap.put(UPDATE_COUNTER.UPD_COUNT_SPB_2, updCountSPB2);
 		updCountMap.put(UPDATE_COUNTER.UPD_COUNT_RP, updCountRP);
 		return (updCountTJ + updCountNY + updCountTBD + updCountOldSR + updCountSR + updCountOldSPB1 + updCountSPB1 + updCountOldSPB2 + updCountSPB2 + updCountRP);
+	}
+
+	/**
+	 * 社宅入居日チェック
+	 * 
+	 * @param shatakuKanriNo	社宅管理番号
+	 * @param roomKanriNo		部屋管理番号
+	 * @param nyukyoDay			入居予定日
+	 * @return	true:エラー、false:正常
+	 */
+	private Boolean checkNyukyoDay(String shatakuKanriNo, String roomKanriNo, String nyukyoDay) {
+
+		LogUtils.debugByMsg("社宅入居日チェック");
+		Boolean isnyukyoDayError = false;
+		// 部屋前利用者の退居日を取得
+		Skf3022Sc006GetShatakuRoomExpParameter param = new Skf3022Sc006GetShatakuRoomExpParameter();
+		param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
+		param.setShatakuRoomKanriNo(Long.parseLong(roomKanriNo));
+		String backDate = skf3022Sc006GetRoomBackDateExpRepository.getRoomBackDate(param);
+		if (!CheckUtils.isEmpty(backDate)) {
+			if (Integer.parseInt(nyukyoDay) < Integer.parseInt(backDate)) {
+				isnyukyoDayError = true;
+			}
+		}
+		return isnyukyoDayError;
 	}
 
 	/**
