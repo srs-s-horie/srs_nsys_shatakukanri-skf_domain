@@ -10,10 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
@@ -55,19 +53,19 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-    @Autowired
-    private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
-	
+
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
-	
+
 	@Autowired
 	private Skf2020Sc003GetApplHistoryInfoForUpdateExpRepository skf2020Sc003GetApplHistoryInfoForUpdateExpRepository;
 
@@ -77,25 +75,24 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param updDto
-	 *            インプットDTO
+	 * @param updDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public BaseDto index(Skf2020Sc003UpdateDto updDto) throws Exception {
-		
+
 		updDto.setPageTitleKey(MessageIdConstant.SKF2020_SC003_TITLE);
 
-        // 提示状況汎用コード取得
-        Map<String, String> hitsuyouShatakuGenCodeMap = new HashMap<String, String>();
-        hitsuyouShatakuGenCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_STATUS_KBN);
-        String defaultHitsuyouShataku = CodeConstant.NONE;
-        if(updDto.getDefaultHitsuyoShataku() != null){
-        	defaultHitsuyouShataku = hitsuyouShatakuGenCodeMap.get(updDto.getDefaultHitsuyoShataku());
-        }
-		
+		// 提示状況汎用コード取得
+		Map<String, String> hitsuyouShatakuGenCodeMap = new HashMap<String, String>();
+		hitsuyouShatakuGenCodeMap = skfGenericCodeUtils
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_STATUS_KBN);
+		String defaultHitsuyouShataku = CodeConstant.NONE;
+		if (updDto.getDefaultHitsuyoShataku() != null) {
+			defaultHitsuyouShataku = hitsuyouShatakuGenCodeMap.get(updDto.getDefaultHitsuyoShataku());
+		}
+
 		// 必要とする社宅理由更新メソッド
 		boolean updResult = updateHitsuyoShataku(updDto);
 		if (!updResult) {
@@ -112,28 +109,29 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 		param.setCompanyCd(companyCd);
 		param.setApplNo(applNo);
 		applInfo = skf2020Sc003GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
-		if(applInfo == null){
+		if (applInfo == null) {
 			ServiceHelper.addErrorResultMessage(updDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(updDto.getResultMessages());
 		}
 		String afterApplStatus = applInfo.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2020_SC003);
+		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus, applId,
+				FunctionIdConstant.SKF2020_SC003);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
-		if(resultBatch != null){
+		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
 		}
-		
+
 		// 操作ログを出力する
 		String afterHitsuyouShataku = CodeConstant.NONE;
-        if(updDto.getHitsuyoShataku() != null){
-        	afterHitsuyouShataku = hitsuyouShatakuGenCodeMap.get(updDto.getHitsuyoShataku());
-        }
+		if (updDto.getHitsuyoShataku() != null) {
+			afterHitsuyouShataku = hitsuyouShatakuGenCodeMap.get(updDto.getHitsuyoShataku());
+		}
 		StringJoiner halfSpace = new StringJoiner(" ");
 		halfSpace.add("確定");
 		halfSpace.add(shainNo);
-		halfSpace.add(defaultHitsuyouShataku+"から"+afterHitsuyouShataku+"に変更");
+		halfSpace.add(defaultHitsuyouShataku + "から" + afterHitsuyouShataku + "に変更");
 		skfOperationLogUtils.setAccessLog(halfSpace.toString(), CodeConstant.C001, updDto.getPageId());
 
 		// 初期表示
@@ -145,7 +143,7 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 			// 提示データが存在する場合、更新完了メッセージ表示
 			ServiceHelper.addResultMessage(updDto, MessageIdConstant.I_SKF_1011);
 		} else {
-			// 提示データが存在しない場合、社宅の使用量変更を促すメッセージ表示
+			// 提示データが存在しない場合、社宅の使用料変更を促すメッセージ表示
 			ServiceHelper.addResultMessage(updDto, MessageIdConstant.I_SKF_2057);
 		}
 
@@ -176,13 +174,13 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 		String hitsuyoShataku = updDto.getHitsuyoShataku();
 		updData.setHitsuyoShataku(hitsuyoShataku);
 		int updResult = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKeySelective(updData);
-		if (updResult <= 0) {
+		if (updResult < 0) {
 			result = false;
 		}
 
 		return result;
 	}
-	
+
 	/**
 	 * 社宅連携処理を実施する
 	 * 
