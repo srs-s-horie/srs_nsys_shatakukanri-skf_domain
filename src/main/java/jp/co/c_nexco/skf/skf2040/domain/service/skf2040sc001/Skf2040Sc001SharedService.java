@@ -894,7 +894,7 @@ public class Skf2040Sc001SharedService {
 		// 会社コード
 		setValue.setCompanyCd(CodeConstant.C001);
 		// 申請書類番号
-		setValue.setApplNo(dto.getApplNo());
+		setValue.setApplNo(bihinHenkaykuShinseiApplNo);
 		// 更新SQLでは不要
 		if (isNewRecord) {
 
@@ -919,7 +919,7 @@ public class Skf2040Sc001SharedService {
 		// 申請年月日
 		setValue.setApplDate(applDate);
 		// 退居届書類管理番号
-		setValue.setTaikyoApplNo(bihinHenkaykuShinseiApplNo);
+		setValue.setTaikyoApplNo(dto.getApplNo());
 		// 社宅管理番号
 		setValue.setShatakuNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuKanriNo())));
 		// 部屋管理番号
