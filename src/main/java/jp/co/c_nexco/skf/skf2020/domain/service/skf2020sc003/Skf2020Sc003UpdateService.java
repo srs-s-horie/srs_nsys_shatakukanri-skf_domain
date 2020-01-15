@@ -118,7 +118,7 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 		}
 		String afterApplStatus = applInfo.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2020_SC003);
+		resultBatch = skf2020sc003SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2020_SC003);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
 		if(resultBatch != null){
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
