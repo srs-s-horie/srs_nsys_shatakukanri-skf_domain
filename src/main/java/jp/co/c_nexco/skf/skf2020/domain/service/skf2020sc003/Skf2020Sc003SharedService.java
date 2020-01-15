@@ -779,7 +779,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 社宅情報 入居可能日
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getNyukyoYoteiDate())) {
-			dto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getNyukyoYoteiDate(),
+			dto.setNyukyoKanoDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getNyukyoYoteiDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 社宅情報 寮長・自治会長 部屋名称
