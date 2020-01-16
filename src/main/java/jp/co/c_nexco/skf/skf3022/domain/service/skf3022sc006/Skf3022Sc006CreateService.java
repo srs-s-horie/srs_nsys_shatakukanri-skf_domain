@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiData;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -24,7 +25,6 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006CreateDto;
@@ -43,8 +43,6 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
 	@Value("${skf.common.company_cd}")
@@ -300,8 +298,7 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 												initDto.getHdnShatakuParkingBlock2UpdateDate());
 //		'更新者
 //		param.Add(HttpUtility.HtmlEncode(MyBase.userInfo.UserId()))
-		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_USER_ID,
-					skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName"));
+		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_USER_ID, LoginUserInfoUtils.getUserCd());
 //		'更新機能ID
 //		param.Add(HttpUtility.HtmlEncode(MyBase.publicInfo.IpAddress()))
 		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_PROGRAM_ID, initDto.getPageId());

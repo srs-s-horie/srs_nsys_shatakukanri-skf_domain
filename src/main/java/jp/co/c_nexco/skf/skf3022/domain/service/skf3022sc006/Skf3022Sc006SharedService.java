@@ -96,6 +96,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TRentalPatternRe
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CodeCacheUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -105,7 +106,6 @@ import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfPageBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonAsyncDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
@@ -182,8 +182,6 @@ public class Skf3022Sc006SharedService {
 	private Skf3022Sc006UpdateShatakuRoomExpRepository skf3022Sc006UpdateShatakuRoomExpRepository;
 	@Autowired
 	private Skf3022Sc006GetRoomBackDateExpRepository skf3022Sc006GetRoomBackDateExpRepository;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfPageBusinessLogicUtils skfPageBusinessLogicUtils;
 
@@ -5752,7 +5750,7 @@ public class Skf3022Sc006SharedService {
 //			columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CREATE_USER, _
 //													HttpUtility.HtmlEncode(Me.userInfo.UserId), _
 //													OracleType.VarChar))
-			columnInfoList.setInsertUserId(skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName"));
+			columnInfoList.setInsertUserId(LoginUserInfoUtils.getUserCd());
 			// 作成機能ID
 //			columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CREATE_IP, _
 //													HttpUtility.HtmlEncode(Me.publicInfo.IpAddress), _
@@ -5769,7 +5767,7 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.UPDATE_USER, _
 //												HttpUtility.HtmlEncode(Me.userInfo.UserId), _
 //												OracleType.VarChar))
-		columnInfoList.setUpdateUserId(skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName"));
+		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		// 更新機能ID
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.UPDATE_IP, _
 //												HttpUtility.HtmlEncode(Me.publicInfo.IpAddress), _
