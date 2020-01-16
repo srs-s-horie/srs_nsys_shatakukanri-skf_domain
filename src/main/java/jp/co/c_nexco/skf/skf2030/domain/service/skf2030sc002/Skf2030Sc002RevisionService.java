@@ -55,7 +55,7 @@ public class Skf2030Sc002RevisionService extends BaseServiceAbstract<Skf2030Sc00
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("status", revDto.getSendApplStatus());
+		applInfo.put("status", revDto.getApplStatus());
 		applInfo.put("applNo", revDto.getApplNo());
 		applInfo.put("applId", revDto.getApplId());
 
