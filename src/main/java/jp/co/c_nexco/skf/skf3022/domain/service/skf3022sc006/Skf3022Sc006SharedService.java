@@ -556,12 +556,12 @@ public class Skf3022Sc006SharedService {
 		// 社宅使用料月額（ヘッダ項目）
 		if (teijiData.getRental() != null) {
 			comDto.setSc006SiyoryoMonthPay(getKingakuEdit(teijiData.getRental().toString()));
-			/** AS imart移植 2019.11.19 */
+			/* AS imart移植 2019.11.19 */
 			// .NET版ではドロップダウン選択肢設定時自動で初期値"0"に設定されるため、未設定時は「"0"」を設定する
 			if (Objects.equals(comDto.getSc006YakuinSanteiSelect(), null)) {
 				comDto.setSc006YakuinSanteiSelect(CodeConstant.STRING_ZERO);
 			}
-			/** AE imart移植 2019.11.19 */
+			/* AE imart移植 2019.11.19 */
 			Map<String, String> paramMap = createSiyoryoKeiSanParam(comDto);	// 使用料計算パラメータ
 			Map<String, String> resultMap = new HashMap<String, String>();		// 使用料計算戻り値
 			StringBuffer errMsg = new StringBuffer();							// エラーメッセージ
