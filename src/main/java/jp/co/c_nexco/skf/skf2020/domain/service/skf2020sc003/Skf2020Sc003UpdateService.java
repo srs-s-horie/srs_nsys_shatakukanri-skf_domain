@@ -14,13 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
-import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -30,9 +28,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003UpdateDto;
 
@@ -52,16 +48,11 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
-
-	@Autowired
-	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
@@ -115,8 +106,8 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 		}
 		String afterApplStatus = applInfo.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus, applId,
-				FunctionIdConstant.SKF2020_SC003);
+		resultBatch = skf2020sc003SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, afterApplStatus,
+				applId, FunctionIdConstant.SKF2020_SC003);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
@@ -179,38 +170,6 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 		}
 
 		return result;
-	}
-
-	/**
-	 * 社宅連携処理を実施する
-	 * 
-	 * @param menuScopeSessionBean
-	 * @param applNo
-	 * @param applStatus
-	 * @param applId
-	 * @param pageId
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String shainNo, String applNo,
-			String applStatus, String applId, String pageId) {
-		// ログインユーザー情報取得
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		String userId = loginUserInfoMap.get("userCd");
-		// 排他チェック用データ取得
-		Map<String, Object> forUpdateObject = (Map<String, Object>) menuScopeSessionBean
-				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
-
-		List<String> resultBatch = new ArrayList<String>();
-		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0100 = skf2020Fc001NyukyoKiboSinseiDataImport
-				.forUpdateMapDownCaster(forUpdateObject);
-		skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0100);
-
-		// 連携処理開始
-		resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, CodeConstant.NONE,
-				applStatus, userId, pageId);
-
-		return resultBatch;
 	}
 
 }
