@@ -131,10 +131,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 
 		// 選択タブインデックス初期値
 		String setHdnTabIndexOld = initDto.getHdnTabIndex();
-		/* AS kami */
 		// 画面ステータス設定
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
-		/* AE kami */
 		initDto.setHdnTabIndex("999");
 		// 処理状態クリア
 		initDto.setSc006Status("");
