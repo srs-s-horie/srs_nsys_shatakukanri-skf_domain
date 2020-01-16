@@ -2294,6 +2294,22 @@ public class Skf3022Sc006SharedService {
 			roomBihinList = getBihinData(comDto.getHdnShatakuKanriNo(), comDto.getHdnShatakuKanriNoOld(),
 					comDto.getHdnRoomKanriNo(), comDto.getHdnRoomKanriNoOld(),
 					comDto.getHdnNyutaikyoKbnOld(), comDto.getHdnTeijiNo(), comDto.getHdnShatakuHeyaFlg());
+
+			for (Skf3022Sc006GetTeijiBihinDataExp roomBihinMap : roomBihinList) {
+				// プルダウン初期選択値貸与区分バックアップ
+				roomBihinMap.setBihinTaiyoSttsOld(roomBihinMap.getBihinTaiyoStts());
+				// 指示書文言取得
+//				String[] shijishoList = outPutShijishoLine(comDto.getHdnNyutaikyoKbnOld(), roomBihinMap.getHeyaSonaetukeStts(),
+//						roomBihinMap.getBihinTaiyoStts(), roomBihinMap.getBihinTaiyoStts());
+				String[] shijishoList = outPutShijishoLine(comDto.getHdnNyutaikyoKbn(), roomBihinMap.getHeyaSonaetukeStts(),
+											roomBihinMap.getBihinTaiyoStts(), roomBihinMap.getBihinTaiyoStts());
+				// 指示書文言設定
+				roomBihinMap.setShijisho(shijishoList[0]);
+				// 旧指示書文言
+				roomBihinMap.setShijishoOld(shijishoList[1]);
+				// 貸与状態エラー(初期は未設定)
+				roomBihinMap.setBihinTaiyoSttsErr("");
+			}
 		} else {
 			// 備品情報リスト
 			List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
@@ -2304,13 +2320,16 @@ public class Skf3022Sc006SharedService {
 			// 指示書文言設定ループ
 			for (Skf3022Sc006GetTeijiBihinDataExp roomBihinMap : roomBihinList) {
 				// 指示書文言取得
-				String[] shijishoList = outPutShijishoLine(comDto.getHdnNyutaikyoKbnOld(), roomBihinMap.getHeyaSonaetukeStts(),
-											roomBihinMap.getBihinTaiyoStts(), roomBihinMap.getBihinTaiyoStts());
+//				String[] shijishoList = outPutShijishoLine(comDto.getHdnNyutaikyoKbnOld(), roomBihinMap.getHeyaSonaetukeStts(),
+//											roomBihinMap.getBihinTaiyoStts(), roomBihinMap.getBihinTaiyoStts());
+				String[] shijishoList = outPutShijishoLine(comDto.getHdnNyutaikyoKbn(), roomBihinMap.getHeyaSonaetukeStts(),
+						roomBihinMap.getBihinTaiyoStts(), roomBihinMap.getBihinTaiyoStts());
 				// 指示書文言設定
 				roomBihinMap.setShijisho(shijishoList[0]);
+//				// 旧指示書文言
+//				roomBihinMap.setShijishoOld(shijishoList[1]);
 			}
 		}
-
 		// 指示書背景色設定
 		for (Skf3022Sc006GetTeijiBihinDataExp roomBihinMap : roomBihinList) {
 			// 新旧指示書文言判定
@@ -2422,19 +2441,6 @@ public class Skf3022Sc006SharedService {
 			param.setTeijiNo(teijiNo);
 			param.setNyutaikyoKbn(nyutaikyoKbn);
 			roomBihinList = skf3022Sc006GetTeijiBihinDataExpRepository.getTeijiBihinData(param);
-		}
-		for (Skf3022Sc006GetTeijiBihinDataExp roomBihinMap : roomBihinList) {
-			// プルダウン初期選択値貸与区分バックアップ
-			roomBihinMap.setBihinTaiyoSttsOld(roomBihinMap.getBihinTaiyoStts());
-			// 指示書文言取得
-			String[] shijishoList = outPutShijishoLine(nyutaikyoKbn, roomBihinMap.getHeyaSonaetukeStts(),
-										roomBihinMap.getBihinTaiyoStts(), roomBihinMap.getBihinTaiyoStts());
-			// 指示書文言設定
-			roomBihinMap.setShijisho(shijishoList[0]);
-			// 旧指示書文言
-			roomBihinMap.setShijishoOld(shijishoList[1]);
-			// 貸与状態エラー(初期は未設定)
-			roomBihinMap.setBihinTaiyoSttsErr("");
 		}
 		return roomBihinList;
 	}
@@ -4116,8 +4122,9 @@ public class Skf3022Sc006SharedService {
 			// 備品貸与ドロップダウン作成
 			String bihinTaiyoSttsCode = createStatusSelect(bihinTaiyoSttsKbn, lendStatusList);
 			bihinMap.put("bihinTaiyoStts", "<select id='bihinTaiyoStts" + i 
-					+ "' name='bihinTaiyoStts" + i + "' style='width:90px;'"
+					+ "' name='bihinTaiyoStts" + i + "' style='width:90px;' "
 					+ bihinTaiyoSttsErr + ">" + bihinTaiyoSttsCode + "</select>");
+			bihinMap.put("bihinTaiyoSttsErr", bihinTaiyoSttsErr);
 		}
 
 		// エラー存在判定
@@ -5585,6 +5592,7 @@ public class Skf3022Sc006SharedService {
 //				   Not Constant.BihinTeijiStatusKbn.DOI_SUMI.Equals(Me.hdnBihinTeijiStatus.Value) Then
 				if (CodeConstant.BIHIN_TAIYO_KBN_HITSUYO.equals(comDto.getHdnBihinTaiyoKbn())
 						&& !CodeConstant.BIHIN_STATUS_DOI_SUMI.equals(comDto.getHdnBihinTeijiStatus())) {
+					// 備品貸与区分が必要、且つ、備品提示ステータスが同意済以外
 //					'作成完了区分(備品作成済)
 //					columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CREATE_COMPLETE_KBN, _
 //															Constant.CreateCompleteKbn.BIHIN_SAKUSEI_SUMI, _
@@ -5594,7 +5602,7 @@ public class Skf3022Sc006SharedService {
 //					columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
 //															Constant.BihinTeijiStatusKbn.SAKUSEI_SUMI, _
 //															OracleType.Char))
-					columnInfoList.setBihinTeijiStatus(CodeConstant.TEIJI_CREATE_KBN_SAKUSEI_SUMI);
+					columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_SAKUSEI_SUMI);
 				} else {
 //					'作成完了区分（社宅作成済）
 //					columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CREATE_COMPLETE_KBN, _
@@ -6100,8 +6108,8 @@ public class Skf3022Sc006SharedService {
 //																			updateUser, _
 //																			updateIp)
 				Skf3022TTeijiData updateTeijiDataOldParam = new Skf3022TTeijiData();
-				updateTeijiDataOldParam.setShatakuTeijiStatus("5");
-				updateTeijiDataOldParam.setBihinTeijiStatus("9");
+				updateTeijiDataOldParam.setShatakuTeijiStatus(CodeConstant.PRESENTATION_SITUATION_SHONIN);
+				updateTeijiDataOldParam.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_SHONIN);
 				updateTeijiDataOldParam.setTeijiNo(Long.parseLong(teijiNoOld));
 				updateTeijiDataOldParam.setUpdateDate(systemDate);
 				updateTeijiDataOldParam.setUpdateUserId(updateUser);
@@ -6182,45 +6190,70 @@ public class Skf3022Sc006SharedService {
 //																	  bihinCd.Item(i).BihinRoomStatusKbn, _
 //																	  nyutaikyoKbn)
 					Skf3022TTeijiBihinData record = new Skf3022TTeijiBihinData();
+//					If Constant.BihinLentStatusKbn.RENTAL.Equals(lblRoomBihinCd) AndAlso _
+//						Constant.NyutaikyoKbn.NYUKYO.Equals(nyutaikyoKbn) AndAlso _
+//						Constant.BihinLentStatusKbn.RENTAL.Equals(bihinLentStatusKbn) Then
 					if (CodeConstant.BIHIN_STATE_RENTAL.equals(bihinMap.get("heyaSonaetukeStts").toString())
 							&& CodeConstant.NYUTAIKYO_KBN_NYUKYO.equals(nyutaikyoKbn)
 							&& CodeConstant.BIHIN_STATE_RENTAL.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())) {
-						// 部屋備付状態（最新）が”レンタル”、備品貸与状態が”レンタル”の場合
+						// 備付区分（最新）が”レンタル”、且つ、入退居区分が入居、貸与状態が”レンタル”の場合
 						record.setBihinApplKbn("1");
+						LogUtils.debugByMsg("備付区分（最新）が”レンタル”、且つ、入退居区分が入居、貸与状態が”レンタル”");
+//					ElseIf Constant.BihinLentStatusKbn.KAISHA_HOYU.Equals(lblRoomBihinCd) AndAlso _
+//						Constant.NyutaikyoKbn.NYUKYO.Equals(nyutaikyoKbn) AndAlso _
+//						Constant.BihinLentStatusKbn.KAISHA_HOYU.Equals(bihinLentStatusKbn) Then
 					} else if (CodeConstant.BIHIN_STATE_HOYU.equals(bihinMap.get("heyaSonaetukeStts").toString())
 							&& CodeConstant.NYUTAIKYO_KBN_NYUKYO.equals(nyutaikyoKbn)
 							&& CodeConstant.BIHIN_STATE_HOYU.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())) {
-						// 部屋備付状態（最新）が”会社保有”、備品貸与状態が”会社保有”の場合
+						// 備付区分（最新）が”会社保有”、且つ、入退居区分が入居、貸与状態が”会社保有”の場合
 						record.setBihinApplKbn("1");
+						LogUtils.debugByMsg("備付区分（最新）が”会社保有”、且つ、入退居区分が入居、貸与状態が”会社保有”");
+//					ElseIf Constant.BihinLentStatusKbn.RENTAL.Equals(bihinLentStatusKbn) AndAlso _
+//						Constant.NyutaikyoKbn.NYUKYO.Equals(nyutaikyoKbn) AndAlso _
+//						(Constant.BihinLentStatusKbn.SHARE.Equals(bihinLentStatusOldKbn) OrElse _
+//						Constant.BihinLentStatusKbn.NASHI.Equals(bihinLentStatusOldKbn) OrElse _
+//						Constant.BihinLentStatusKbn.KAISHA_HOYU.Equals(bihinLentStatusOldKbn)) Then
 					} else if (CodeConstant.BIHIN_STATE_RENTAL.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())
 							&& CodeConstant.NYUTAIKYO_KBN_NYUKYO.equals(nyutaikyoKbn)
 							&& (CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("bihinTaiyoSttsOldKbn").toString())
 									|| CodeConstant.BIHIN_STATE_NONE.equals(bihinMap.get("bihinTaiyoSttsOldKbn").toString())
 									|| CodeConstant.BIHIN_STATE_HOYU.equals(bihinMap.get("bihinTaiyoSttsOldKbn").toString()))) {
-						// 備品貸与状態変更前”なし”或は”共有”或は”会社保有”、備品貸与状態が”レンタル”の場合
+						// 貸与状態が”レンタル”、且つ、入退居区分が入居、且つ、貸与状態変更前が(共有、なし、会社保有)のいづれかの場合
 						record.setBihinApplKbn("2");
+						LogUtils.debugByMsg("貸与状態が”レンタル”、且つ、入退居区分が入居、且つ、貸与状態変更前が(共有、なし、会社保有)のいづれか");
+//					ElseIf Not Constant.BihinLentStatusKbn.RENTAL.Equals(bihinLentStatusKbn) AndAlso _
+//						Constant.NyutaikyoKbn.NYUKYO.Equals(nyutaikyoKbn) AndAlso _
+//						Constant.BihinLentStatusKbn.RENTAL.Equals(bihinLentStatusOldKbn) Then
 					} else if (!CodeConstant.BIHIN_STATE_RENTAL.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())
 							&& CodeConstant.NYUTAIKYO_KBN_NYUKYO.equals(nyutaikyoKbn)
 							&& CodeConstant.BIHIN_STATE_RENTAL.equals(bihinMap.get("bihinTaiyoSttsOldKbn").toString())) {
-						// 備品貸与状態変更前”レンタル”、備品貸与状態が”レンタル”以外の場合
+						// 貸与状態が”レンタル”以外、且つ、入退居区分が入居、且つ、貸与状態変更前が”レンタル”の場合
 						record.setBihinApplKbn("1");
+						LogUtils.debugByMsg("貸与状態が”レンタル”以外、且つ、入退居区分が入居、且つ、貸与状態変更前が”レンタル”");
 					}
 
 //					If bihinLentStatusKbn.Equals(lblRoomBihinCd) AndAlso _
 //						Constant.NyutaikyoKbn.TAIKYO.Equals(nyutaikyoKbn) Then
-					if (Objects.equals(bihinMap.get("bihinTaiyoSttsKbn"), bihinMap.get("heyaSonaetukeStts"))	// kamiushiya
+					if (Objects.equals(bihinMap.get("bihinTaiyoSttsKbn"), bihinMap.get("heyaSonaetukeStts"))
 							&& CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)) {
+						// 貸与状態と備付区分が一致(貸与状態変更なし)、且つ、入退居区分が退居
 //						If Not Constant.BihinLentStatusKbn.NASHI.Equals(lblRoomBihinCd) AndAlso _
 //							Not Constant.BihinLentStatusKbn.SHARE.Equals(lblRoomBihinCd) AndAlso _
 //							Not Constant.BihinLentStatusKbn.SONAETSUKE.Equals(lblRoomBihinCd) Then
 						if (!CodeConstant.BIHIN_STATE_NONE.equals(bihinMap.get("heyaSonaetukeStts").toString())
 								&& !CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("heyaSonaetukeStts").toString())
 								&& !CodeConstant.BIHIN_STATE_SONAETSUKE.equals(bihinMap.get("heyaSonaetukeStts").toString())) {
+							// 貸与状態と備付区分が一致(貸与状態変更なし)、且つ、入退居区分が退居
+							// 備付区分がなし以外、且つ、備付区分が共有以外、且つ、備付区分が備付以外の場合
 //							sql.Append(" BIHIN_RETURN_KBN = '0',")
 							record.setBihinReturnKbn("0");
+							LogUtils.debugByMsg("貸与状態と備付区分が一致(貸与状態変更なし)、且つ、入退居区分が退居、且つ、備付区分がなし以外、且つ、備付区分が共有以外、且つ、備付区分が備付以外");
 						} else {
+							// 貸与状態と備付区分が一致(貸与状態変更なし)、且つ、入退居区分が退居
+							// 備付区分がなし、または、備付区分が共有、または、備付区分が備付の場合
 //							sql.Append(" BIHIN_RETURN_KBN = NULL,")
 							record.setBihinReturnKbn(null);
+							LogUtils.debugByMsg("貸与状態と備付区分が一致(貸与状態変更なし)、且つ、入退居区分が退居、且つ、備付区分がなし、または、備付区分が共有、または、備付区分が備付");
 						}
 					}
 					// 備品備付区分が”共有”の場合も、返却備品として扱う。
@@ -6232,8 +6265,10 @@ public class Skf3022Sc006SharedService {
 							|| CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("heyaSonaetukeStts").toString()))
 							&& CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)
 							&& CodeConstant.BIHIN_STATE_RENTAL.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())) {
+						// 備付区分がなし、または共有で、入退居区分が退居、且つ、貸与状態がレンタルの場合
 //						sql.Append(" BIHIN_RETURN_KBN = '3',")
 						record.setBihinReturnKbn("3");
+						LogUtils.debugByMsg("備付区分がなし、または共有で、入退居区分が退居、且つ、貸与状態がレンタル");
 					}
 					// 備品貸与状態変更前”会社保有”の場合、備品返却区分を”2”に設定する
 //					If (Constant.BihinLentStatusKbn.NASHI.Equals(lblRoomBihinCd) Or Constant.BihinLentStatusKbn.SHARE.Equals(lblRoomBihinCd)) AndAlso _
@@ -6243,8 +6278,10 @@ public class Skf3022Sc006SharedService {
 							|| CodeConstant.BIHIN_STATE_KYOYO.equals(bihinMap.get("heyaSonaetukeStts").toString()))
 							&& CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)
 							&& CodeConstant.BIHIN_STATE_HOYU.equals(bihinMap.get("bihinTaiyoSttsKbn").toString())) {
+						// 備付区分がなし、または共有で、入退居区分が退居、且つ、貸与状態が会社保有の場合
 //						sql.Append(" BIHIN_RETURN_KBN = '2',")
 						record.setBihinReturnKbn("2");
+						LogUtils.debugByMsg("備付区分がなし、または共有で、入退居区分が退居、且つ、貸与状態が会社保有");
 					}
 					record.setTeijiNo(Long.parseLong(teijiNo));
 					record.setBihinCd(bihinMap.get("bihinCd").toString());
@@ -7455,21 +7492,21 @@ public class Skf3022Sc006SharedService {
 	 * @param addDay
 	 * @return
 	 */
-	public Date addDay(String targetDate, int addDay) {
+	public String addDay(String targetDate, int addDay) {
 		// 日付フォーマット
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3022Sc006CommonDto.DATE_FORMAT);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 		Date afterDate = null;
 		try {
 			afterDate = dateFormat.parse(getDateText(targetDate));
 		} catch (ParseException e) {
 			LogUtils.debugByMsg("日付変換失敗：" + e.getMessage());
-			return afterDate;
+			return null;
 		}
 		// Date型の日時をCalendar型に変換
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(afterDate);
 		calendar.add(Calendar.DATE, addDay);
 		afterDate = calendar.getTime();
-		return afterDate;
+		return dateFormat.format(afterDate);
 	}
 }

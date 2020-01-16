@@ -78,7 +78,6 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 
-
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006KyojyusyaKbnSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006YakuinSanteiSelectList = new ArrayList<Map<String, Object>>();
@@ -94,9 +93,9 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 		List<Map<String, Object>> sc006HaizokuKaisyaSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006TaiyoKaisyaSelectList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sc006KariukeKaisyaSelectList = new ArrayList<Map<String, Object>>();
-		// 可変ラベルリスト
-		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
-		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
+//		// 可変ラベルリスト
+//		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
+//		labelList.addAll(skf3022Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 
 		// エラーコントロールクリア
 		skf3022Sc006SharedService.clearVaridateErr(initDto);
@@ -105,7 +104,8 @@ public class Skf3022Sc006TmpSaveService extends BaseServiceAbstract<Skf3022Sc006
 //		// 現在のラベル値をDTOに設定
 //		skf3022Sc006SharedService.setErrVariableLabel(labelList, initDto);
 		// 備品は再取得しない
-		initDto.setBihinItiranFlg(false);
+//		initDto.setBihinItiranFlg(false);
+		initDto.setBihinItiranFlg(true);
 
 		// ドロップダウンリスト作成
 		skf3022Sc006SharedService.setDdlControlValues(

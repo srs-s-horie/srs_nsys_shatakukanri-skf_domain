@@ -131,6 +131,10 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 
 		// 選択タブインデックス初期値
 		String setHdnTabIndexOld = initDto.getHdnTabIndex();
+		/* AS kami */
+		// 画面ステータス設定
+		skf3022Sc006SharedService.pageLoadComplete(initDto);
+		/* AE kami */
 		initDto.setHdnTabIndex("999");
 		// 処理状態クリア
 		initDto.setSc006Status("");
@@ -150,8 +154,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 					CodeConstant.NYUTAIKYO_KBN_NYUKYO), initDto.getSc006NyutaikyoKbn())) {
 			// 入居入力チェック
 			if (skf3022Sc006SharedService.checkForNyukyo(false, bihinErrFlg, appBihinFlg, initDto)) {
-				// 画面ステータス設定
-				skf3022Sc006SharedService.pageLoadComplete(initDto);
+//				// 画面ステータス設定
+//				skf3022Sc006SharedService.pageLoadComplete(initDto);
 				return initDto;
 			}
 		// 退居の場合
@@ -159,16 +163,16 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 					CodeConstant.NYUTAIKYO_KBN_TAIKYO), initDto.getSc006NyutaikyoKbn())) {
 			// 退居入力チェック
 			if (skf3022Sc006SharedService.checkForTaikyo(false, bihinErrFlg, initDto)) {
-				// 画面ステータス設定
-				skf3022Sc006SharedService.pageLoadComplete(initDto);
+//				// 画面ステータス設定
+//				skf3022Sc006SharedService.pageLoadComplete(initDto);
 				return initDto;
 			}
 		// 変更の場合
 		} else {
 			// 変更入力チェック
 			if (skf3022Sc006SharedService.checkForHenko(false, initDto)) {
-				// 画面ステータス設定
-				skf3022Sc006SharedService.pageLoadComplete(initDto);
+//				// 画面ステータス設定
+//				skf3022Sc006SharedService.pageLoadComplete(initDto);
 				return initDto;
 			}
 		}
@@ -176,6 +180,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		update(initDto);
 		// 備品再取得しない
 		initDto.setBihinItiranFlg(false);
+//		// 備品再取得する
+//		initDto.setBihinItiranFlg(true);
 		// メッセージ設定
 		// 更新が完了しました。
 		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
@@ -360,10 +366,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		// 入居予定日
 //				Dim nyukyoAfter As Date = DateAndTime.DateAdd(DateInterval.Day, 1, _
 //								DateUtil.ConbersionFomatStringToDate(Me.GetDateText(Me.txtTaikyoYoteiDay.Text)))
-		Date nyukyoAfter = skf3022Sc006SharedService.addDay(initDto.getSc006TaikyoYoteiDay(), 1);
-
 //				Me.txtNyukyoYoteiDay.Text = DateUtil.ConvertSlashDateString(DateUtil.ConversionFormatYYYYMMDD(nyukyoAfter))
-		initDto.setSc006NyukyoYoteiDay(dateFormat.format(nyukyoAfter));
+		initDto.setSc006NyukyoYoteiDay(skf3022Sc006SharedService.addDay(initDto.getSc006TaikyoYoteiDay(), 1));
 //				Me.hdnTaikyoDay.Value = Me.GetDateText(Me.txtTaikyoYoteiDay.Text)
 		initDto.setHdnTaikyoDate(skf3022Sc006SharedService.getDateText(initDto.getSc006TaikyoYoteiDay()));
 //				Me.hdnNyukyoDay.Value = Me.GetDateText(Me.txtNyukyoYoteiDay.Text)
@@ -391,9 +395,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		if (!CheckUtils.isEmpty(skf3022Sc006SharedService.getDateText(initDto.getSc006RiyouEndDayOne()))) {
 //					Dim startOneAfter As Date = DateAndTime.DateAdd(DateInterval.Day, 1, _
 //					DateUtil.ConbersionFomatStringToDate(Me.GetDateText(Me.txtRiyouEndDayOne.Text)))
-			Date startOneAfter = skf3022Sc006SharedService.addDay(initDto.getSc006RiyouEndDayOne(), 1);
 //					Me.txtRiyouStartDayOne.Text = DateUtil.ConvertSlashDateString(DateUtil.ConversionFormatYYYYMMDD(startOneAfter))
-			initDto.setSc006RiyouStartDayOne(dateFormat.format(startOneAfter));
+			initDto.setSc006RiyouStartDayOne(skf3022Sc006SharedService.addDay(initDto.getSc006RiyouEndDayOne(), 1));
 			// 区画１利用終了日
 //					Me.txtRiyouEndDayOne.Text = String.Empty
 //					Me.hdnRiyouEndDayOne.Value = String.Empty
@@ -418,9 +421,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		if (!CheckUtils.isEmpty(skf3022Sc006SharedService.getDateText(initDto.getSc006RiyouEndDayTwo()))) {
 //					Dim startTwoAfter As Date = DateAndTime.DateAdd(DateInterval.Day, 1, _
 //					DateUtil.ConbersionFomatStringToDate(Me.GetDateText(Me.txtRiyouEndDayTwo.Text)))
-			Date startTwoAfter = skf3022Sc006SharedService.addDay(initDto.getSc006RiyouEndDayTwo(), 1);
 //					Me.txtRiyouStartDayTwo.Text = DateUtil.ConvertSlashDateString(DateUtil.ConversionFormatYYYYMMDD(startTwoAfter))
-			initDto.setSc006RiyouStartDayTwo(dateFormat.format(startTwoAfter));
+			initDto.setSc006RiyouStartDayTwo(skf3022Sc006SharedService.addDay(initDto.getSc006RiyouEndDayTwo(), 1));
 			// 区画２利用終了日
 //					Me.txtRiyouEndDayTwo.Text = String.Empty
 //					Me.hdnRiyouEndDayTwo.Value = String.Empty
@@ -444,9 +446,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		if (!CheckUtils.isEmpty(skf3022Sc006SharedService.getDateText(initDto.getSc006HenkyakuDay()))) {
 //					Dim taiyoAfter As Date = DateAndTime.DateAdd(DateInterval.Day, 1, _
 //					DateUtil.ConbersionFomatStringToDate(Me.GetDateText(Me.txtHenkyakuDay.Text)))
-			Date taiyoAfter = skf3022Sc006SharedService.addDay(initDto.getSc006HenkyakuDay(), 1);
 //					Me.txtTaiyoDay.Text = DateUtil.ConvertSlashDateString(DateUtil.ConversionFormatYYYYMMDD(taiyoAfter))
-			initDto.setSc006TaiyoDay(dateFormat.format(taiyoAfter));
+			initDto.setSc006TaiyoDay(skf3022Sc006SharedService.addDay(initDto.getSc006HenkyakuDay(), 1));
 			// 返却日
 //					Me.txtHenkyakuDay.Text = String.Empty
 			initDto.setSc006HenkyakuDay("");
@@ -456,9 +457,8 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		if (!CheckUtils.isEmpty(initDto.getSc006EndDay())) {
 //					Dim startAfter As Date = DateAndTime.DateAdd(DateInterval.Day, 1, _
 //					DateUtil.ConbersionFomatStringToDate(Me.GetDateText(Me.txtEndDay.Text)))
-			Date startAfter = skf3022Sc006SharedService.addDay(initDto.getSc006EndDay(), 1);
 //					Me.txtStartDay.Text = DateUtil.ConvertSlashDateString(DateUtil.ConversionFormatYYYYMMDD(startAfter))
-			initDto.setSc006StartDay(dateFormat.format(startAfter));
+			initDto.setSc006StartDay(skf3022Sc006SharedService.addDay(initDto.getSc006EndDay(), 1));
 			// 相互利用情報の終了日
 //					Me.txtEndDay.Text = String.Empty
 			initDto.setSc006EndDay("");
