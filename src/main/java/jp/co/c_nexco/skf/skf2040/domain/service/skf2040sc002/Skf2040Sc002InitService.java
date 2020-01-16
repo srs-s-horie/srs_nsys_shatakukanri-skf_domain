@@ -6,8 +6,10 @@ package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExp;
@@ -517,26 +519,23 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				List<Map<String, Object>> henkyakuList = new ArrayList<Map<String, Object>>();
 				henkyakuList = skf2040Sc002ShareService.updateBihinReturnKbn(initDto.getShainNo(), initDto.getApplNo(),
 						shatakuNo, roomNo, henkyakuDt);
-				// リストが設定できなかった場合はfalseでリターン
-				if (henkyakuList == null) {
-					return false;
-				} else {
+				// リストが設定できなかった場合は特に何もしていない
+				if (henkyakuList != null) {
 					initDto.setHenkyakuList(henkyakuList);
 					// 返却備品項目表示
 					initDto.setHenkyakuInfoViewFlg(sTrue);
 					// 表示項目の設定
 					skf2040Sc002ShareService.setBihinData(initDto, henkyakuList);
-				}
-
-				for (Map<String, Object> list : henkyakuList) {
-					String bihinLentStatusKbn = list.get("bihinLentStatusKbn").toString();
-					// 返却対象備品(会社保有かレンタル)がある場合は「返却備品なしフラグ」を折る
-					if (NfwStringUtils.isNotEmpty(bihinLentStatusKbn)
-							&& (CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU.equals(bihinLentStatusKbn)
-									|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU.equals(bihinLentStatusKbn))) {
-						// 返却対象備品がある場合は「返却備品なしフラグ」を折る
-						initDto.setHenkyakuBihinNothing(sFalse);
-						break;
+					for (Map<String, Object> list : henkyakuList) {
+						String bihinLentStatusKbn = list.get("bihinLentStatusKbn").toString();
+						// 返却対象備品(会社保有かレンタル)がある場合は「返却備品なしフラグ」を折る
+						if (NfwStringUtils.isNotEmpty(bihinLentStatusKbn)
+								&& (CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU.equals(bihinLentStatusKbn)
+										|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU.equals(bihinLentStatusKbn))) {
+							// 返却対象備品がある場合は「返却備品なしフラグ」を折る
+							initDto.setHenkyakuBihinNothing(sFalse);
+							break;
+						}
 					}
 				}
 			}

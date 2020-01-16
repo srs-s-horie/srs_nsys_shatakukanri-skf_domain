@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetBihinInfoExp;
@@ -28,6 +30,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
@@ -43,6 +46,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
@@ -66,6 +70,8 @@ import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc003common.Skf2020Sc003CommonDto;
 
 /**
@@ -125,6 +131,12 @@ public class Skf2020Sc003SharedService {
 	private Skf2030TBihinRepository skf2030TBihinRepository;
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
@@ -259,6 +271,7 @@ public class Skf2020Sc003SharedService {
 	public boolean saveApplInfo(String newStatus, Skf2020Sc003CommonDto dto, Map<String, String> errorMsg) {
 		String shainNo = dto.getShainNo();
 		String applNo = dto.getApplNo();
+		String applId = dto.getApplId();
 
 		Date operationDate = new Date();
 
@@ -349,7 +362,16 @@ public class Skf2020Sc003SharedService {
 			return false;
 		}
 
-		// TODO 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
+		// 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, newStatus, applId, FunctionIdConstant.SKF2020_SC003);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
+		if(resultBatch != null){
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(dto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
+		
+		
 		return true;
 	}
 
@@ -674,12 +696,25 @@ public class Skf2020Sc003SharedService {
 			dto.setGender(genderText);
 		}
 		// 備品希望申請を希望する/しない ラジオボタン
-		if (!NfwStringUtils.isEmpty(dto.getBihinKibo())
-				&& !NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getBihinKibo())) {
-			dto.setBihinKibo(shatakuNyukyoKiboInfo.getBihinKibo());
+		if (NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getBihinKibo())) {
+			if(!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getHitsuyoShataku())){
+				// 必要とする社宅
+				switch(shatakuNyukyoKiboInfo.getHitsuyoShataku()){
+					// 単身または独身の場合
+					case CodeConstant.TANSHIN:
+					case CodeConstant.DOKUSHIN:
+						dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO);
+						break;
+					// それ以外の場合
+					default:
+						dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
+						break;
+				}
+			}else{
+				dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
+			}
 		} else {
-			// 値が設定されていなければ「不要」
-			dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
+			dto.setBihinKibo(shatakuNyukyoKiboInfo.getBihinKibo());
 		}
 
 		return;
@@ -1796,6 +1831,39 @@ public class Skf2020Sc003SharedService {
 			return 0;
 		}
 		return bihinShinseiList.size();
+	}
+	
+	
+	/**
+	 * 社宅連携処理を実施する
+	 * 
+	 * @param menuScopeSessionBean
+	 * @param applNo
+	 * @param applStatus
+	 * @param applId
+	 * @param pageId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String shainNo, String applNo,
+			String applStatus, String applId, String pageId) {
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String userId = loginUserInfoMap.get("userCd");
+		// 排他チェック用データ取得
+		Map<String, Object> forUpdateObject = (Map<String, Object>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
+
+		List<String> resultBatch = new ArrayList<String>();
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0100 = skf2020Fc001NyukyoKiboSinseiDataImport
+				.forUpdateMapDownCaster(forUpdateObject);
+		skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0100);
+
+		// 連携処理開始
+		resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, CodeConstant.NONE,
+				applStatus, userId, pageId);
+
+		return resultBatch;
 	}
 
 }
