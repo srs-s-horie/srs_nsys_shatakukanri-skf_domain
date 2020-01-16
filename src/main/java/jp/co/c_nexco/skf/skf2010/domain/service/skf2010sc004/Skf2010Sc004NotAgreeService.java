@@ -9,11 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
@@ -213,12 +211,12 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	private boolean validateReason(Skf2010Sc004NotAgreeDto agreeDto) {
 		String reasonText = agreeDto.getCommentNote();
 		if (reasonText == null || CheckUtils.isEmpty(reasonText)) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1048, "承認者へのコメント");
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1048, "承認者へのコメント");
 			return false;
 		}
 		int byteCnt = reasonText.getBytes(Charset.forName("UTF-8")).length;
 		if (byteCnt >= 4000) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
 			return false;
 		}
 		return true;
