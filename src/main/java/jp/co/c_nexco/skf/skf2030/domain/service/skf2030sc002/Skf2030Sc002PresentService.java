@@ -55,7 +55,7 @@ public class Skf2030Sc002PresentService extends BaseServiceAbstract<Skf2030Sc002
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("status", preDto.getSendApplStatus());
+		applInfo.put("status", preDto.getApplStatus());
 		applInfo.put("applNo", preDto.getApplNo());
 		applInfo.put("applId", preDto.getApplId());
 
