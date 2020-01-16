@@ -440,11 +440,11 @@ public class Skf3022Sc006SharedService {
 				tmpMap.put("sc006TyusyaDayPayOne", getKanmaNumEdit(Integer.toString(hiwariPay1)));
 				// 駐車場月額1設定
 				tmpMap.put("sc006TyusyaMonthPayOne", getKanmaNumEdit(chushajoRiyoryou));
-			/* US imart移植 現行システムバグ改修 2019.11.14 */
+/* US imart移植 現行システムバグ改修 2019.11.14 区画1以外は区画2としている問題に対処 */
 			// } else {
 			// 区画種別が「1」以外の場合「2」の処理を実施していたが区画種別は空文字が渡されることもあるため区画種別が「2」であるか判定するよう修正
 			} else if("2".equals(parkBlockKind)) {
-			/* UE imart移植 現行システムバグ改修 */
+/* UE imart移植 現行システムバグ改修 2019.11.14 区画1以外は区画2としている問題に対処 */
 				/** 駐車場区画2日割金額算出 */
 				// 利用開始日（区画２）が変更された場合
 				if (CodeConstant.NYUTAIKYO_KBN_NYUKYO.equals(paramMap.get("hdnNyutaikyoKbn"))) {
@@ -556,12 +556,12 @@ public class Skf3022Sc006SharedService {
 		// 社宅使用料月額（ヘッダ項目）
 		if (teijiData.getRental() != null) {
 			comDto.setSc006SiyoryoMonthPay(getKingakuEdit(teijiData.getRental().toString()));
-			/* AS imart移植 2019.11.19 */
+/* AS imart移植 2019.11.19 */
 			// .NET版ではドロップダウン選択肢設定時自動で初期値"0"に設定されるため、未設定時は「"0"」を設定する
 			if (Objects.equals(comDto.getSc006YakuinSanteiSelect(), null)) {
 				comDto.setSc006YakuinSanteiSelect(CodeConstant.STRING_ZERO);
 			}
-			/* AE imart移植 2019.11.19 */
+/* AE imart移植 2019.11.19 */
 			Map<String, String> paramMap = createSiyoryoKeiSanParam(comDto);	// 使用料計算パラメータ
 			Map<String, String> resultMap = new HashMap<String, String>();		// 使用料計算戻り値
 			StringBuffer errMsg = new StringBuffer();							// エラーメッセージ
@@ -4475,12 +4475,13 @@ public class Skf3022Sc006SharedService {
 			}
 		}
 		// 区画１と区画２一致チェック
-		/* US imart移植 2019.12.09 区画番号比較ではなく、区画管理番号比較に修正 */
+/* US imart移植 2019.12.09 現行システムバグ改修 区画番号で比較としている問題に対処 */
+		//  区画番号比較ではなく、区画管理番号比較に修正 */
 //		if (!CheckUtils.isEmpty(comDto.getSc006KukakuNoOne()) && !CheckUtils.isEmpty(comDto.getSc006KukakuNoTwo())) {
 //			if (comDto.getSc006KukakuNoOne().equals(comDto.getSc006KukakuNoTwo())) {
 		if (!CheckUtils.isEmpty(comDto.getHdnChushajoNoOne()) && !CheckUtils.isEmpty(comDto.getHdnChushajoNoTwo())) {
 			if (Objects.equals(comDto.getHdnChushajoNoOne(), comDto.getHdnChushajoNoTwo())) {
-		/* UE imart移植 2019.12.09 区画番号比較ではなく、区画管理番号比較に修正 */
+/* UE imart移植 2019.12.09 現行システムバグ改修 区画番号で比較としている問題に対処 */
 				// 区画１と区画２の区画番号が重複しています。
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_3047);
 				errorFlg = true;
