@@ -145,6 +145,10 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		
 		// 備品ステータスのチェック処理
 		appBihinFlg = skf3022Sc006SharedService.checkBihinTaiyoStts(initDto);
+		// 備品エラー判定
+		if (Skf3022Sc006CommonDto.SELECT_TAB_INDEX_BIHIN.equals(initDto.getHdnTabIndex())) {
+			bihinErrFlg = true;
+		}
 		// 入居の場合
 		if (Objects.equals(codeCacheUtils.getGenericCodeName(FunctionIdConstant.GENERIC_CODE_NYUTAIKYO_KBN,
 					CodeConstant.NYUTAIKYO_KBN_NYUKYO), initDto.getSc006NyutaikyoKbn())) {
