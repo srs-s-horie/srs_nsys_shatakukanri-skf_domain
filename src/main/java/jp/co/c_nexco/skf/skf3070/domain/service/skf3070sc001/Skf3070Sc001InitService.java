@@ -4,9 +4,11 @@
 package jp.co.c_nexco.skf.skf3070.domain.service.skf3070sc001;
 
 import java.text.ParseException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExpParameter;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
@@ -16,6 +18,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc001.Skf3070Sc001InitDto;
 
@@ -34,6 +37,8 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3070Sc001SharedService skf3070Sc001SheardService;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
 
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3070.skf3070_sc001.max_row_count}")
@@ -128,8 +133,9 @@ public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001Ini
 		String resultYear = CodeConstant.NONE;
 		if (compareMonth.compareTo("01") == 0) {
 			// 比較用「月」が01である場合は、システム年-1の値を返す。
-			resultYear = DateUtils.addYearsString(DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYY_FLAT),
+			String resultYYYYMMDD = DateUtils.addYearsString(DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT),
 					-1);
+			resultYear = skfDateFormatUtils.dateFormatFromString(resultYYYYMMDD, SkfCommonConstant.YMD_STYLE_YYYY_FLAT);
 		} else {
 			resultYear = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYY_FLAT);
 		}
