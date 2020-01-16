@@ -178,10 +178,12 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		}
 		// DB更新
 		update(initDto);
-		// 備品再取得しない
-		initDto.setBihinItiranFlg(false);
-//		// 備品再取得する
-//		initDto.setBihinItiranFlg(true);
+/* US kami */
+//		// 備品再取得しない
+//		initDto.setBihinItiranFlg(false);
+		// 備品再取得する
+		initDto.setBihinItiranFlg(true);
+/* UE kami */
 		// メッセージ設定
 		// 更新が完了しました。
 		ServiceHelper.addResultMessage(initDto, MessageIdConstant.I_SKF_1011);
