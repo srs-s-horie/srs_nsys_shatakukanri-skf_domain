@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetApplHistoryInfoByParameterExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetShatakuAttachedFileExp;
@@ -245,7 +247,7 @@ public class Skf2010Sc002SharedService {
 	 */
 	protected boolean validateComment(String comment) throws UnsupportedEncodingException {
 		// コメント欄の入力文字数が4000バイト以上ならエラー
-		if (comment != null && CheckUtils.isMoreThanByteSize(comment.trim(), 4000)) {
+		if (NfwStringUtils.isNotEmpty(comment)  && CheckUtils.isMoreThanByteSize(comment.trim(), 4000)) {
 			return false;
 		}
 		return true;
