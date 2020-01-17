@@ -144,7 +144,7 @@ public class Skf2010Sc004SharedService {
 	private Skf2040TTaikyoReportRepository skf2040TTaikyoReportRepository;
 	@Autowired
 	private Skf2050TBihinHenkyakuShinseiRepository skf2050TBihinHenkyakuShinseiRepository;
-	
+
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 	@Autowired
@@ -442,7 +442,7 @@ public class Skf2010Sc004SharedService {
 		// 現社宅名(付加文字列)
 		insertData.setNowShatakuName(nowShatakuName);
 		// 登録ユーザー名
-		String insertUser = "";
+		String insertUser = CodeConstant.NONE;
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		if (CheckUtils.isEmpty(insertUser)) {
 			insertUser = loginUserInfo.get("name");
@@ -825,7 +825,7 @@ public class Skf2010Sc004SharedService {
 		}
 		return newApplNo;
 	}
-	
+
 	/**
 	 * 社宅連携処理を実施する
 	 * 
@@ -837,8 +837,8 @@ public class Skf2010Sc004SharedService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo,
-			String applStatus, String applId, String pageId) {
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String applStatus,
+			String applId, String pageId) {
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userId = loginUserInfoMap.get("userCd");
@@ -865,7 +865,8 @@ public class Skf2010Sc004SharedService {
 			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0103);
 
 			// 連携処理開始
-			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId, pageId);
+			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId,
+					pageId);
 			break;
 		default:
 			break;
