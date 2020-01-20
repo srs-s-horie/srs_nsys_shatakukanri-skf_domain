@@ -35,6 +35,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingB
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingContractRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -42,7 +43,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002RegistDto;
@@ -78,8 +78,6 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	private Skf3010MShatakuParkingContractRepository skf3010MShatakuParkingContractRepository;
 	@Autowired
 	private Skf3010Sc002GetParkingBlockContractDataExpRepository skf3010Sc002GetParkingBlockContractDataExpRepository;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	/** 定数 */
 	// 駐車場契約形態：社宅と一括
@@ -268,13 +266,13 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号取得
 		Long shatakuKanriNo = Long.parseLong(registDto.getHdnShatakuKanriNo());
 		// ユーザーID取得
-		String userName = skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName");
+		String userId = LoginUserInfoUtils.getUserCd();
 
 		/** 社宅基本更新 */
 		// 社宅管理番号設定
 		mShataku.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShataku.setUpdateUserId(userName);
+		mShataku.setUpdateUserId(userId);
 		// プログラムID設定
 		mShataku.setUpdateProgramId(pageId);
 		updateCnt = skf3010Sc002UpdateMshatakuTableDataExpRepository.updateShatakuKihon(mShataku);
@@ -287,7 +285,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号設定
 		mShatakuParking.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShatakuParking.setUpdateUserId(userName);
+		mShatakuParking.setUpdateUserId(userId);
 		// プログラムID設定
 		mShatakuParking.setUpdateProgramId(pageId);
 		updateCnt = skf3010Sc002UpdateMshatakuParkingTableDataExpRepository.updateShatakuParking(mShatakuParking);
@@ -503,14 +501,14 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号取得
 		Long shatakuKanriNo = skf3010Sc002SharedService.getNextShatakuKanriNo(syoriNengetu);
 		// ユーザーID取得
-		String userName = skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName");
+		String userId = LoginUserInfoUtils.getUserCd();
 
 		/** 社宅基本登録 */
 		// 社宅管理番号設定
 		mShataku.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShataku.setUpdateUserId(userName);
-		mShataku.setInsertUserId(userName);
+		mShataku.setUpdateUserId(userId);
+		mShataku.setInsertUserId(userId);
 		// プログラムID設定
 		mShataku.setUpdateProgramId(pageId);
 		mShataku.setInsertProgramId(pageId);
@@ -524,8 +522,8 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号設定
 		mShatakuParking.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShatakuParking.setUpdateUserId(userName);
-		mShatakuParking.setInsertUserId(userName);
+		mShatakuParking.setUpdateUserId(userId);
+		mShatakuParking.setInsertUserId(userId);
 		// プログラムID設定
 		mShatakuParking.setUpdateProgramId(pageId);
 		mShatakuParking.setInsertProgramId(pageId);

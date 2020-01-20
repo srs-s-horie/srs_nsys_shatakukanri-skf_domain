@@ -8,11 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
@@ -20,7 +17,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -76,7 +72,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	public Skf2010Sc006InitDto index(Skf2010Sc006InitDto initDto) throws Exception {
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC006_TITLE);
-		
+
 		// 操作ログ出力
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
 
@@ -96,11 +92,12 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// 承認ボタン非表示設定
 		setShoninBtnRemove(initDto);
-		
+
 		// データ連携用の排他制御用更新日を取得
 		// 申請者の社員番号
 		String shainNo = initDto.getShainNo();
-		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils.getUpdateDateForUpdateSQL(shainNo);
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils
+				.getUpdateDateForUpdateSQL(shainNo);
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC006, dateLinkageMap);
 
 		return initDto;
@@ -152,18 +149,18 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		Map<String, String> loginUserInfo = new HashMap<String, String>();
 		loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String roleId = loginUserInfo.get("roleId");
-		
+
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-			switch (roleId) {
-			case CodeConstant.NAKASA_SHATAKU_TANTO:
-			case CodeConstant.NAKASA_SHATAKU_KANRI:
-			case CodeConstant.SYSTEM_KANRI:
-				isAdmin = true;
-				break;
-			default:
-				isAdmin = false;
-				break;
+		switch (roleId) {
+		case CodeConstant.NAKASA_SHATAKU_TANTO:
+		case CodeConstant.NAKASA_SHATAKU_KANRI:
+		case CodeConstant.SYSTEM_KANRI:
+			isAdmin = true;
+			break;
+		default:
+			isAdmin = false;
+			break;
 		}
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {

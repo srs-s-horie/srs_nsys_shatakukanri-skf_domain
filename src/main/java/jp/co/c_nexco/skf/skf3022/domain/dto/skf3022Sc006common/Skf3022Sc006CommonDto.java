@@ -88,7 +88,7 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	// 備品コード：下取り
 	public static final String SHITADORI = "9";
 	// 貸与ステータスエラー
-	public static final String BIHIN_TAIYOSTTS_ERR = "'class='nfw-validation-error;'";
+	public static final String BIHIN_TAIYOSTTS_ERR = "class='nfw-validation-error'";
 
 	// 社員番号変更フラグ：なし
 	public static final String SHAINNO_CHANGE_UNAVAILABLE = "0";

@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetNyutaikyoYoteiDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetNyutaikyoYoteiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetTeijiDataExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetNyutaikyoYoteiDataExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -41,6 +44,8 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
 	@Autowired
 	private Skf3022Sc006GetIdmPreUserMasterInfoExpRepository skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
+	@Autowired
+	private Skf3022Sc006GetNyutaikyoYoteiDataExpRepository skf3022Sc006GetNyutaikyoYoteiDataExpRepository;
 
 	/** IdM_プレユーザマスタ（従業員区分）定数 */
 	// 役員
@@ -119,6 +124,19 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 			// Mapがnullの場合、0件エラー表示
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
 			return initDto;
+		}
+		// 入退居予定データを取得
+		List<Skf3022Sc006GetNyutaikyoYoteiDataExp> nyutaikyoYoteiDataList = new ArrayList<Skf3022Sc006GetNyutaikyoYoteiDataExp>();
+		Skf3022Sc006GetNyutaikyoYoteiDataExpParameter nyutaikyoParam = new Skf3022Sc006GetNyutaikyoYoteiDataExpParameter();
+		nyutaikyoParam.setShainNo(getTeijiData.getShainNo().replace("＊", "").replace("*", ""));
+		nyutaikyoParam.setNyutaikyoKbn(getTeijiData.getNyutaikyoKbn());
+		nyutaikyoYoteiDataList = skf3022Sc006GetNyutaikyoYoteiDataExpRepository.getNyutaikyoYoteiData(nyutaikyoParam);
+		// 取得結果判定
+		if (nyutaikyoYoteiDataList.size() > 0) {
+			hdnNyukyoDate = nyutaikyoYoteiDataList.get(0).getNyukyoYoteiDate();			// 入居予定日
+			hdnTaikyoDate = nyutaikyoYoteiDataList.get(0).getTaikyoYoteiDate();			// 退居予定日
+			initDto.setHdnNyukyoDate(hdnNyukyoDate);				// 入居予定日
+			initDto.setHdnTaikyoDate(hdnTaikyoDate);				// 退居予定日
 		}
 		// 非活性制御クリア
 		skf3022Sc006SharedService.setDisableCtrlAll(false, initDto);

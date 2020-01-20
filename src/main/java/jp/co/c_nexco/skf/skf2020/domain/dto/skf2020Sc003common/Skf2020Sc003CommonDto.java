@@ -37,17 +37,14 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 	private String newShatakuMenseki;
 	// 使用料
 	private String newRental;
-	private String newBaseRental;
 	// 共益費
 	private String newKyoekihi;
-	private String newBaseKyoekihi;
 	// 入居可能日
 	private String nyukyoKanoDate;
 	// 位置番号
 	private String carIchiNo;
 	// 駐車場使用料（月）
 	private String parkingRental;
-	private String parkingRentalBase;
 	// 現保有の社宅 管理番号
 	private String nowShatakuKanriNo;
 	// 現保有の社宅 部屋管理番号
@@ -152,6 +149,9 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 
 	// コメント
 	private String commentNote;
+
+	// 共益費協議中フラグ
+	private String kyoekihiKyogichuFlg;
 
 	// 表示フラグ類
 	// 編集ボタン非表示フラグ
