@@ -7,20 +7,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
+import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DeleteDto;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DeleteAsyncDto;
 
 /**
  * Skf2010Sc009 添付資料入力支援削除処理クラス
@@ -28,7 +26,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DeleteDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009DeleteDto> {
+public class Skf2010Sc009DeleteAsyncService extends AsyncBaseServiceAbstract<Skf2010Sc009DeleteAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -54,34 +52,43 @@ public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009D
 	 * @throws Exception 例外
 	 */
 	@Override
-	public Skf2010Sc009DeleteDto index(Skf2010Sc009DeleteDto delDto) throws Exception {
+	public AsyncBaseDto index(Skf2010Sc009DeleteAsyncDto delDto) throws Exception {
 
-		delDto.setPageTitleKey(MessageIdConstant.SKF2010_SC009_TITLE);
-		
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, FunctionIdConstant.SKF2010_SC009);
+		skfOperationLogUtils.setAccessLog("添付資料削除処理", CodeConstant.C001, FunctionIdConstant.SKF2010_SC009);
 
-		String applId = delDto.getApplId();
-		String candidateNo = delDto.getCandidateNo();
-		String applName = getBaseScreenName(applId);
-		delDto.setApplName(applName);
+		String applId = delDto.getPopApplId();
+		String attachedNo = delDto.getPopAttachedNo();
+		String candidateNo = delDto.getPopCandidateNo();
+
+		// 申請書類名取得
+		String applName = skf2010Sc009SharedService.getBaseScreenName(applId);
+		delDto.setPopApplName(applName);
 
 		// 申請書類が借上候補物件の場合、専用のセッションキーに切り替える
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
 			sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
 		}
 
-		String attachedNo = delDto.getAttachedNo();
-
+		// 添付資料の削除処理
 		List<Map<String, Object>> attachedFileList = skf2010Sc009SharedService.getAttachedFileInfo(sessionKey);
 		attachedFileList = deleteAttachedFileInfoList(attachedFileList, attachedNo);
 
 		// グリッドビューのバインド
-		delDto.setAttachedFileList(skf2010Sc009SharedService.createListTableData(attachedFileList));
+		delDto.setPopAttachedFileList(skf2010Sc009SharedService.createListTableData(attachedFileList));
+		// 添付ファイル情報は不要なのでNULL
+		delDto.setAttachedFile(null);
 
 		return delDto;
 	}
 
+	/**
+	 * 添付ファイル一覧から該当ファイルを削除します
+	 * 
+	 * @param attachedFileList
+	 * @param attachedNo
+	 * @return
+	 */
 	private List<Map<String, Object>> deleteAttachedFileInfoList(List<Map<String, Object>> attachedFileList,
 			String attachedNo) {
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
@@ -99,32 +106,17 @@ public class Skf2010Sc009DeleteService extends BaseServiceAbstract<Skf2010Sc009D
 					newAttachedFileData.put("attachedNo", newAttachedNo);
 
 					resultList.add(newAttachedFileData);
+					// 添付ファイル番号を１進める
+					newAttachedNo++;
 				}
 
 			}
 		}
-
+		// セッション情報置き換え
 		menuScopeSessionBean.put(sessionKey, resultList);
 
 		return resultList;
 
-	}
-
-	/**
-	 * 申請書類名を取得します
-	 * 
-	 * @param applId
-	 * @return String
-	 */
-	private String getBaseScreenName(String applId) {
-		String applName = "";
-
-		if (applId == null || CheckUtils.isEmpty(applId)) {
-			return "";
-		}
-		applName = skf2010Sc009SharedService.getApplName(applId);
-
-		return applName;
 	}
 
 }
