@@ -79,33 +79,35 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 		//備品搬入搬出督促リスト
 		String moveInOut = CodeConstant.DOUBLE_QUOTATION;
 		List<Map<String, Object>> moveInOutList = new ArrayList<Map<String, Object>>();
-		
-//        'コントロールの設定
-		skf3022Sc005SharedService.getDropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
-				bhJyokyo, bhJyokyoList, bhKakunin, bhKakuninList, moveInOut, moveInOutList);
 
 		Skf3022Sc005GetTeijiDataInfoExpParameter param = new Skf3022Sc005GetTeijiDataInfoExpParameter();
 		
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-				&& initDto.getPrePageId().equals(FunctionIdConstant.SKF3022_SC006)) {
+				&& (initDto.getPrePageId().equals(FunctionIdConstant.SKF3022_SC005)
+						|| initDto.getPrePageId().equals(FunctionIdConstant.SKF3022_SC006))) {
 //	        '登録画面から、検索条件の取得
 			//パラメータ設定
 			param.setShainNo(initDto.getSearchInfoShainNo());
 			param.setShainName(initDto.getSearchInfoShainName());
 			param.setShatakuName(initDto.getSearchInfoShatakuName());
 			param.setNyutaikyoKbn(initDto.getSearchInfoNyutaikyoKbn());
+			nyutaikyoKbn = initDto.getSearchInfoNyutaikyoKbn();
 			param.setStJyokyo(initDto.getSearchInfoStJyokyo());
+			stJyokyo = initDto.getSearchInfoStJyokyo();
 			param.setStKakunin(initDto.getSearchInfoStKakunin());
+			stKakunin = initDto.getSearchInfoStKakunin();
 			param.setBhJyokyo(initDto.getSearchInfoBhJyokyo());
+			bhJyokyo = initDto.getSearchInfoBhJyokyo();
 			param.setBhKakunin(initDto.getSearchInfoBhKakunin());
+			bhKakunin = initDto.getSearchInfoBhKakunin();
 			param.setMoveInOut(initDto.getSearchInfoMoveInout());
+			moveInOut = initDto.getSearchInfoMoveInout();
 			//提示データ一覧を取得
 			skf3022Sc005SharedService.getListTableData(param, listTableData);
 		}else{
 //          'メニューから
 //          '提示データ一覧を取得
 			skf3022Sc005SharedService.getListTableData(param, listTableData);
-			
 		}
 
 		initDto.setListTableMaxRowCount(listTableMaxRowCount);
@@ -114,6 +116,9 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 		initDto.setBtnShatakuTeijiDisabled("true");
 		initDto.setBtnBihinTeijiDisabled("true");
 		initDto.setBtnBihinInOutDisabled("true");
+//      'コントロールの設定
+		skf3022Sc005SharedService.getDropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
+				bhJyokyo, bhJyokyoList, bhKakunin, bhKakuninList, moveInOut, moveInOutList);
 		
 		initDto.setNyutaikyoKbnList(nyutaikyoKbnList);
 		initDto.setStJyokyoList(stJyokyoList);
