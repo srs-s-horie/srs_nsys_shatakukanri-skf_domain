@@ -84,6 +84,11 @@ public class Skf3090Sc999ExecuteService extends BaseServiceAbstract<Skf3090Sc999
 				userID, pageID);
 
 		if (resultList != null) {
+			// エラーメッセージ出力
+			skf2020Fc001.addResultMessageForDataLinkage(dto, resultList);
+		}
+
+		if (resultList != null) {
 			String errorMessage = "";
 			for (int listIndex = 0; listIndex < resultList.size(); listIndex++) {
 				if (listIndex == 0) {
