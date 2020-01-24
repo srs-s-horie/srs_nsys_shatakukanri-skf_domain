@@ -8,27 +8,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetCommentListExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004InitDto;
 
 /**
@@ -51,6 +54,8 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfOperationGuideUtils skfOperationGuideUtils;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -67,7 +72,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	@Override
 	public Skf2010Sc004InitDto index(Skf2010Sc004InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", companyCd, FunctionIdConstant.SKF2010_SC004);
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC004_TITLE);
 
@@ -84,6 +89,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		// コメントボタンの活性非活性処理
 		setCommentBtnDisabled(initDto);
+		
+		// データ連携用の排他制御用更新日を取得
+		//ログインセッションのユーザ情報
+		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		//ログインセッションユーザ情報の社員番号
+		String shainNo = userInfoMap.get("shainNo");
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils.getUpdateDateForUpdateSQL(shainNo);
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004, dateLinkageMap);
 
 		return initDto;
 	}
@@ -97,13 +110,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		List<Skf2010Sc004GetCommentListExp> commentList = new ArrayList<Skf2010Sc004GetCommentListExp>();
 		String applStatus = "";
 		// 権限チェック
-		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
-		if (roleIds == null) {
-			return;
-		}
+		Map<String, String> loginUserInfo = new HashMap<String, String>();
+		loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String roleId = loginUserInfo.get("roleId");
+		
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-		for (String roleId : roleIds) {
 			switch (roleId) {
 			case CodeConstant.NAKASA_SHATAKU_TANTO:
 			case CodeConstant.NAKASA_SHATAKU_KANRI:
@@ -113,7 +125,6 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			default:
 				isAdmin = false;
 				break;
-			}
 		}
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {
@@ -224,6 +235,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	private void setDisplayData(Skf2010Sc004InitDto initDto) {
 		String applNo = initDto.getApplNo();
 		String applId = initDto.getApplId();
+		
+		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
+		
+		if (applHistoryInfo == null) {
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
+		}
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
 

@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc005;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc005.Skf3090Sc005GetLedgerCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc005.Skf3090Sc005GetLedgerCountExpRepository;
@@ -54,7 +55,6 @@ public class Skf3090Sc005DeleteService extends BaseServiceAbstract<Skf3090Sc005D
 		// 社宅管理台帳存在チェック
 		if (getLedgerCount(deleteDto.getShainNo()) > 0) {
 			// レコードが存在する場合エラー
-			// TODO {0}の中のメッセージが出ない件
 			ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.E_SKF_3031, deleteDto.getShainNo());
 
 		} else {

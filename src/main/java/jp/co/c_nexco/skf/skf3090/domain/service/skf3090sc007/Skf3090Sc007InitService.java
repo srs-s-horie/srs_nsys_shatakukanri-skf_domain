@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshiki;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc007.Skf3090Sc007InitDto;
@@ -56,9 +59,6 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 	@SuppressWarnings("unchecked")
 	@Override
 	public Skf3090Sc007InitDto index(Skf3090Sc007InitDto initDto) throws Exception {
-
-		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC007_TITLE);
 
@@ -105,6 +105,10 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 
 		if (Skf309040CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
+			
+			// 操作ログを出力する
+			skfOperationLogUtils.setAccessLog("新規登録", CodeConstant.C001, FunctionIdConstant.SKF3090_SC006);
+			
 			// ドロップダウンリストを取得
 			Map<String, Object> returnMap = skf3090Sc007SharedService.getDropDownLists(initDto.getRegistCompanyCd(),
 					initDto.getRegistAgencyCd(), initDto.getRegistBusinessAreaCd());
@@ -112,6 +116,8 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 			/** 画面表示するドロップダウンを取得する */
 			// 会社ドロップダウン
 			companyList.addAll((List<Map<String, Object>>) returnMap.get(Skf3090Sc007SharedService.KEY_COMPANY_LIST));
+			// 事業領域ドロップダウン
+			businessAreaList.addAll((List<Map<String, Object>>) returnMap.get(Skf3090Sc007SharedService.KEY_BUSINESS_AREA_LIST));
 
 			// 会社ドロップダウンリスト操作可能
 			comapnyCdDisabled = "false";
@@ -147,13 +153,21 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 
 		} else {
 			/** リストテーブルから遷移 */
+			
+			// 操作ログを出力する
+			skfOperationLogUtils.setAccessLog("編集", CodeConstant.C001, FunctionIdConstant.SKF3090_SC006);
+			
 			// コントロールの値を取得
 			Map<String, Object> returnMap = this.getControlValues(initDto.getHdnCompanyCd(), initDto.getHdnAgencyCd(),
 					initDto.getHdnAffiliation1Cd(), initDto.getHdnAffiliation2Cd());
 
 			if (returnMap == null) {
 				// Mapがnullの場合、0件エラー表示
-				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1077);
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
+				// 登録ボタン表示可否判定
+				registButtonRemove = "true";
+				// 削除ボタン表示可否判定
+				deleteButtonDisabled = "true";
 			} else {
 				/** 画面表示するドロップダウンを取得 */
 				// 会社ドロップダウン
@@ -190,7 +204,7 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 				if (NfwStringUtils.isNotEmpty((String) returnMap.get(KEY_REGIST_FLAG))
 						&& REGIST_FLAG_SHATAKU.equals(returnMap.get(KEY_REGIST_FLAG))) {
 					// 社宅管理で登録されたデータの場合削除ボタンを活性
-					deleteButtonDisabled = "flase";
+					deleteButtonDisabled = "false";
 				} else {
 					// 社宅管理で登録されたデータではない場合削除ボタンを非活性
 					deleteButtonDisabled = "true";
@@ -206,6 +220,9 @@ public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007Ini
 			}
 
 		}
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3090_SC007);
+		
 		// Dtoに戻り値をセット
 		initDto.setCompanyCdDisabled(comapnyCdDisabled);
 		initDto.setAgencyCdDisabled(agencyCdDisabled);

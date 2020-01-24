@@ -9,9 +9,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetAgensyCdExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetAgensyCdExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetAgensyNameExp;
@@ -64,6 +66,7 @@ import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc002common.Skf2020Sc002CommonDto;
+import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ConfirmDto;
 
 /**
  * Skf2020Sc002 社宅入居希望等調書（申請者用） 共通処理クラス。
@@ -197,29 +200,12 @@ public class Skf2020Sc002SharedService {
 		/**
 		 * 申請書類履歴テーブル情報の取得
 		 */
-		// 申請書類履歴テーブルから申請日の取得
-		List<Skf2020Sc002GetApplHistoryInfoExp> historyInfo = new ArrayList<Skf2020Sc002GetApplHistoryInfoExp>();
-		Skf2020Sc002GetApplHistoryInfoExpParameter parameter = new Skf2020Sc002GetApplHistoryInfoExpParameter();
-		parameter.setCompanyCd(CodeConstant.C001);
-		parameter.setApplNo(dto.getApplNo());
-		historyInfo = skf2020Sc002GetApplHistoryInfoExpRepository.getApplHistoryInfo(parameter);
-		// 申請書類履歴テーブル排他制御用更新日の取得
-		if (historyInfo != null && historyInfo.size() > 0) {
-			dto.setApplDate(historyInfo.get(0).getApplDate());
-			dto.addLastUpdateDate(KEY_LAST_UPDATE_DATE_HISTORY, historyInfo.get(0).getUpdateDate());
-		}
+		setApplHistoryUpdateDate(dto);
 
 		/**
 		 * 備品返却申請テーブル情報の取得
 		 */
-		// 備品返却申請テーブルから備品返却申請情報を取得
-		Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo = new Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp();
-		bihinHenkyakuInfo = getBihinHenkyaku(dto.getApplNo());
-
-		// 備品返却申請テーブル排他制御用更新日の取得
-		if (bihinHenkyakuInfo != null) {
-			dto.addLastUpdateDate(KEY_LAST_UPDATE_DATE_BIHIN, bihinHenkyakuInfo.getUpdateDate());
-		}
+		setBihinHenkyakuUpdateDate(dto);
 
 		/**
 		 * 社宅入居希望等調書・入居決定通知テーブル情報の取得
@@ -685,6 +671,67 @@ public class Skf2020Sc002SharedService {
 	}
 
 	/**
+	 * 申請書類履歴テーブルの情報取得・排他制御更新日設定
+	 * 
+	 * @param dto
+	 */
+
+	protected void setApplHistoryUpdateDate(Skf2020Sc002CommonDto dto) {
+		// 申請書類履歴テーブルから申請日の取得
+		List<Skf2020Sc002GetApplHistoryInfoExp> historyInfo = new ArrayList<Skf2020Sc002GetApplHistoryInfoExp>();
+		Skf2020Sc002GetApplHistoryInfoExpParameter parameter = new Skf2020Sc002GetApplHistoryInfoExpParameter();
+		parameter.setCompanyCd(CodeConstant.C001);
+		parameter.setApplNo(dto.getApplNo());
+		historyInfo = skf2020Sc002GetApplHistoryInfoExpRepository.getApplHistoryInfo(parameter);
+		// 申請書類履歴テーブル排他制御用更新日の設定
+		if (historyInfo != null && historyInfo.size() > 0) {
+			dto.setApplDate(historyInfo.get(0).getApplDate());
+			dto.addLastUpdateDate(KEY_LAST_UPDATE_DATE_HISTORY, historyInfo.get(0).getUpdateDate());
+		}
+	}
+
+	/**
+	 * 備品返却テーブルの情報取得・排他制御更新日設定
+	 * 
+	 * @param dto
+	 */
+	protected void setBihinHenkyakuUpdateDate(Skf2020Sc002CommonDto dto) {
+		// 備品返却申請テーブルから備品返却申請情報を取得
+		Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp bihinHenkyakuInfo = new Skf2020Sc002GetBihinHenkyakuShinseiApplNoInfoExp();
+		bihinHenkyakuInfo = getBihinHenkyaku(dto.getApplNo());
+
+		// 備品返却申請テーブル排他制御用更新日の設定
+		if (bihinHenkyakuInfo != null) {
+			dto.addLastUpdateDate(KEY_LAST_UPDATE_DATE_BIHIN, bihinHenkyakuInfo.getUpdateDate());
+		}
+	}
+
+	/**
+	 * 入居希望等調書申請の情報取得・排他制御更新日設定
+	 * 
+	 * @param dto
+	 */
+	protected void setNyukyoChoshoUpdateDate(Skf2020Sc002ConfirmDto dto) {
+		/**
+		 * 社宅入居希望等調書・入居決定通知テーブル情報の取得
+		 */
+		Skf2020TNyukyoChoshoTsuchi nyukyoChoshoList = new Skf2020TNyukyoChoshoTsuchi();
+		Skf2020TNyukyoChoshoTsuchiKey setValue = new Skf2020TNyukyoChoshoTsuchiKey();
+		// 条件項目をセット
+		setValue.setCompanyCd(CodeConstant.C001);
+		setValue.setApplNo(dto.getApplNo());
+		nyukyoChoshoList = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(setValue);
+		LogUtils.debugByMsg("社宅入居希望等調書情報： " + nyukyoChoshoList);
+
+		// 更新日時
+		// 備品返却申請テーブル排他制御用更新日の設定
+		if (nyukyoChoshoList != null) {
+			LogUtils.debugByMsg("更新日時" + nyukyoChoshoList.getUpdateDate());
+			dto.addLastUpdateDate(KEY_LAST_UPDATE_DATE_NYUKYO, nyukyoChoshoList.getUpdateDate());
+		}
+	}
+
+	/**
 	 * 初期表示エラー時の処理 更新処理を行わせないようボタンを使用不可にする。
 	 * 
 	 * @param dto Skf2020Sc002CommonDto
@@ -695,7 +742,7 @@ public class Skf2020Sc002SharedService {
 		dto.setBtnSaveDisabeld(sTrue);
 		// 申請内容を確認
 		dto.setBtnCheckDisabled(sTrue);
-		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 	}
 
 	/**

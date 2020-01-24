@@ -10,6 +10,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -59,6 +61,7 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
 				&& initDto.getPrePageId().equals(FunctionIdConstant.SKF3010_SC005)) {
 			/** 保有社宅部屋登録画面からの遷移 */
+			LogUtils.debugByMsg("保有社宅部屋登録画面からの遷移");
 			// 登録画面のhidden項目をinitDtoに詰めなおす
 			initDto.setShatakuKanriNo(Long.parseLong(initDto.getHdnShatakuKanriNo()));
 			initDto.setShatakuName(initDto.getHdnShatakuName());
@@ -79,7 +82,7 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 			// 初期表示に限り、0件メッセージは表示しない
 
 		} else {
-
+			LogUtils.debugByMsg("社宅一覧から遷移");
 			// 社宅一覧から遷移
 			// 画面連携のhidden項目を初期化
 			initDto.setHdnRoomKanriNo(null);

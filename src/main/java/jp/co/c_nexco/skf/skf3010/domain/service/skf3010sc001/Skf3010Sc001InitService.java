@@ -6,6 +6,8 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc001;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,8 +48,9 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 
 		// デバッグログ
 		LogUtils.debugByMsg("初期表示");
+		initDto.setPageId(FunctionIdConstant.SKF3010_SC001);
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3010_SC001);
 
 		// 初期表示フラグ
 		Boolean initializeFlg = true;
@@ -76,15 +79,17 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 		String hdnShatakuName = initDto.getHdnShatakuName();
 		String hdnShatakuAddress = initDto.getHdnShatakuAddress();
 
-		// セッション情報存在判定
-		if (FunctionIdConstant.SKF3010_SC001.equals(initDto.getPrePageId())) {
-			// セッション情報ありの場合：検索キー設定
+		// 遷移元判定
+		if (FunctionIdConstant.SKF3010_SC001.equals(initDto.getPrePageId())
+				|| FunctionIdConstant.SKF3010_SC002.equals(initDto.getPrePageId())
+				|| FunctionIdConstant.SKF3010_SC004.equals(initDto.getPrePageId())
+				|| FunctionIdConstant.SKF3010_SC006.equals(initDto.getPrePageId())) {
 			// 初期表示フラグをfalseに設定
 			initializeFlg = false;
 			// 管理会社の選択値を設定
 			initDto.setSelectedCompanyCd(hdnSelectedCompanyCd);
 			// 管理会社選択値判定
-			if (hdnSelectedCompanyCd != null && hdnSelectedCompanyCd.equals("ZZZZ")) {
+			if (hdnSelectedCompanyCd != null && Objects.equals(hdnSelectedCompanyCd, "ZZZZ")) {
 				// デバッグログ
 				LogUtils.debugByMsg("管理会社：外部機関");
 				// 外部機関の場合
@@ -140,7 +145,7 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 				initDto.getEmptyParkingCd(), initDto.getShatakuName(), initDto.getShatakuAddress(), listTableData);
 
 		// 初期表示に限り、0件メッセージは表示しない
-		if (!initializeFlg && listCount == 0) {
+		if (!initializeFlg && listCount < 1) {
 			// 取得レコード0件のワーニング
 			ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
 		}

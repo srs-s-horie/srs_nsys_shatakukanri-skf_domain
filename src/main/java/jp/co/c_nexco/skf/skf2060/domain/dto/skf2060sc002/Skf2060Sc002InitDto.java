@@ -3,7 +3,9 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc002;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060Sc002common.Skf2060Sc002CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -59,6 +61,9 @@ public class Skf2060Sc002InitDto extends Skf2060Sc002CommonDto {
     private String riyuDropdownDisabled;
     //備考テキストボックス
     private String bikoDisabled;
+    
+	// 選択された借上候補物件
+	private String selectedRadioCandidateNo;
 		
 	
 

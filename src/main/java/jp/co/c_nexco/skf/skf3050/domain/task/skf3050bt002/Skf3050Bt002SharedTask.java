@@ -6,6 +6,7 @@ package jp.co.c_nexco.skf.skf3050.domain.task.skf3050bt002;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt002.Skf3050Bt002Upda
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt002.Skf3050Bt002UpdateGetsujiShoriKanriPositiveSakuseiZumiExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt001.Skf3050Bt001UpdateBihinGoukeiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt001.Skf3050Bt001UpdateGenbutsuSanteigakuExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt002.Skf3050Bt002GetDataForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt002.Skf3050Bt002GetPositiveRenkeiSakuseiJikkouKbnExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt002.Skf3050Bt002UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt002.Skf3050Bt002UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository;
@@ -50,11 +52,13 @@ public class Skf3050Bt002SharedTask {
 	@Autowired
 	private Skf3050Bt001UpdateBihinGoukeiExpRepository skf3050Bt001UpdateBihinGoukeiExpRepository;
 	@Autowired
-	private Skf3050Bt002GetPositiveRenkeiSakuseiJikkouKbnExpRepository skf3050Bt002GetHrRenkeiSakuseiJikkouKbnExpRepository;
+	private Skf3050Bt002GetPositiveRenkeiSakuseiJikkouKbnExpRepository skf3050Bt002GetPositiveRenkeiSakuseiJikkouKbnExpRepository;
 	@Autowired
-	private Skf3050Bt002UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository skf3050Bt002UpdateGetsujiShoriKanriHrSakuseiZumiExpRepository;
+	private Skf3050Bt002UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository skf3050Bt002UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository;
 	@Autowired
-	private Skf3050Bt002UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository skf3050Bt002UpdateGetsujiShoriKanriHrMiSakuseiExpRepository;
+	private Skf3050Bt002UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository skf3050Bt002UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository;
+	@Autowired
+	private Skf3050Bt002GetDataForUpdateExpRepository skf3050Bt002GetDataForUpdateExpRepository;
 
 	public static final String SKF3050BT002_BATCH_PRG_ID_KEY = "closeCancelBatchPrgId";
 	public static final String SKF3050BT002_COMPANY_CD_KEY = "closeCancelCompanyCd";
@@ -93,9 +97,8 @@ public class Skf3050Bt002SharedTask {
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
 
 			if (!retParameterName.contains(PARAM_NAME_COMPANY_CD)) {
-				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT002_COMPANY_CD_KEY),
-						programId, parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate,
-						getSystemDate());
+				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT002_COMPANY_CD_KEY), programId,
+						parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
 				LogUtils.error(MessageIdConstant.E_SKF_1089, retParameterName);
 				return CodeConstant.SYS_NG;
@@ -108,11 +111,11 @@ public class Skf3050Bt002SharedTask {
 
 		if (!BATCH_ID_B5002.equals(parameter.get(SKF3050BT002_BATCH_PRG_ID_KEY))) {
 
-			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT002_COMPANY_CD_KEY),
-					programId, parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate,
-					getSystemDate());
+			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT002_COMPANY_CD_KEY), programId,
+					parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
-			LogUtils.errorByMsg("バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT002_BATCH_PRG_ID_KEY) + "）");
+			LogUtils.errorByMsg(
+					"バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT002_BATCH_PRG_ID_KEY) + "）");
 			return CodeConstant.SYS_NG;
 		}
 
@@ -134,7 +137,7 @@ public class Skf3050Bt002SharedTask {
 	 */
 	@Transactional
 	public Map<String, String> updateGetsujiData(Map<String, String> parameter) {
-		
+
 		Map<String, String> rtnMap = new HashMap<String, String>();
 
 		String paramUserId = parameter.get(SKF3050BT002_USER_ID_KEY);
@@ -149,7 +152,7 @@ public class Skf3050Bt002SharedTask {
 
 		if (CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(hrRenkeiSakuseiKbn)) {
 			updateCnt = updateGetsujiShoriKanriHrSakuseiZumi(paramUserId, paramShoriNengetsu);
-			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, PARAM_1_POSITIVERENKEI);	
+			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, PARAM_1_POSITIVERENKEI);
 
 		} else if (CodeConstant.LINKDATA_CREATE_KBN_MI_JIKKO.equals(hrRenkeiSakuseiKbn)
 				|| CodeConstant.LINKDATA_CREATE_KBN_KAIJO_CHU.equals(hrRenkeiSakuseiKbn)) {
@@ -158,7 +161,7 @@ public class Skf3050Bt002SharedTask {
 		}
 
 		if (updateCnt > 0) {
-			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.COMPLETE);	
+			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.COMPLETE);
 		} else {
 			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.ABNORMAL);
 		}
@@ -196,6 +199,30 @@ public class Skf3050Bt002SharedTask {
 	}
 
 	/**
+	 * 対象のテーブルのロック制御
+	 * 
+	 * @param key
+	 *            主キー
+	 * @return 結果
+	 */
+	public boolean canLockTableData(String key) {
+
+		List<String> shatakuRentalRirekiData = skf3050Bt002GetDataForUpdateExpRepository
+				.getSkf3030TShatakuRentalRirekiData(key);
+		if (shatakuRentalRirekiData.size() == 0) {
+			return false;
+		}
+
+		List<String> monthlyManageData = skf3050Bt002GetDataForUpdateExpRepository
+				.getSkf3050TMonthlyManageDataForUpdate(key);
+		if (monthlyManageData.size() == 0) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * パラメータ取得可否チェック
 	 * 
 	 * @param parameter
@@ -211,15 +238,15 @@ public class Skf3050Bt002SharedTask {
 		}
 
 		if (isEmpty(parameter.get(SKF3050BT002_COMPANY_CD_KEY))) {
-			retParameterName = CodeConstant.COMMA + PARAM_NAME_COMPANY_CD;
+			retParameterName += CodeConstant.COMMA + PARAM_NAME_COMPANY_CD;
 		}
 
 		if (isEmpty(parameter.get(SKF3050BT002_USER_ID_KEY))) {
-			retParameterName = CodeConstant.COMMA + PARAM_NAME_USER_ID;
+			retParameterName += CodeConstant.COMMA + PARAM_NAME_USER_ID;
 		}
 
 		if (isEmpty(parameter.get(SKF3050BT002_SHORI_NENGETSU_KEY))) {
-			retParameterName = CodeConstant.COMMA + PARAM_NAME_SHORI_NENGETSU;
+			retParameterName += CodeConstant.COMMA + PARAM_NAME_SHORI_NENGETSU;
 		}
 
 		if (retParameterName.startsWith(CodeConstant.COMMA)) {
@@ -228,7 +255,7 @@ public class Skf3050Bt002SharedTask {
 
 		return retParameterName;
 	}
-	
+
 	/**
 	 * パラメータが空であるかチェックする。
 	 * 
@@ -250,7 +277,7 @@ public class Skf3050Bt002SharedTask {
 
 		return false;
 	}
-	
+
 	/**
 	 * システムデータを取得する。
 	 * 
@@ -271,7 +298,7 @@ public class Skf3050Bt002SharedTask {
 	 * @return ヘッダーログ
 	 */
 	public void outputStartLog(String shoriYymm) {
-		
+
 		LogUtils.info(MessageIdConstant.I_SKF_1022, Skf3050Bt002SharedTask.BATCH_NAME);
 
 		String log_1 = "プログラム名：" + BATCH_NAME;
@@ -296,7 +323,7 @@ public class Skf3050Bt002SharedTask {
 	 * 処理終了ログ
 	 * 
 	 * @param msg
-	 * 			出力する置き換えメッセージ
+	 *            出力する置き換えメッセージ
 	 */
 	public void outputEndProcLog(String msg) {
 
@@ -364,7 +391,8 @@ public class Skf3050Bt002SharedTask {
 	 */
 	private String getHrRenkeiSakuseiJikkouKbn(String shoriNengetsu) {
 
-		String rtnVal = skf3050Bt002GetHrRenkeiSakuseiJikkouKbnExpRepository.getPositiveRenkeiSakuseiJikkouKbn(shoriNengetsu);
+		String rtnVal = skf3050Bt002GetPositiveRenkeiSakuseiJikkouKbnExpRepository
+				.getPositiveRenkeiSakuseiJikkouKbn(shoriNengetsu);
 
 		if (NfwStringUtils.isEmpty(rtnVal)) {
 			rtnVal = "";
@@ -394,7 +422,7 @@ public class Skf3050Bt002SharedTask {
 
 		param.setCycleBillingYymm(shoriNengetsu);
 
-		Integer updateCnt = skf3050Bt002UpdateGetsujiShoriKanriHrSakuseiZumiExpRepository
+		Integer updateCnt = skf3050Bt002UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository
 				.updateGetsujiShoriKanriPositiveSakuseiZumi(param);
 
 		return updateCnt;
@@ -421,7 +449,7 @@ public class Skf3050Bt002SharedTask {
 
 		param.setCycleBillingYymm(shoriNengetsu);
 
-		Integer updateCnt = skf3050Bt002UpdateGetsujiShoriKanriHrMiSakuseiExpRepository
+		Integer updateCnt = skf3050Bt002UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository
 				.updateGetsujiShoriKanriPositiveMiSakusei(param);
 
 		return updateCnt;

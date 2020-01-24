@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeContractDrpDwnDto;
@@ -45,7 +47,7 @@ public class Skf3010Sc002ChangeContractDrpDwnService extends BaseServiceAbstract
 		// デバッグログ
 		LogUtils.debugByMsg("契約情報プルダウン変更");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報プルダウン変更", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約情報プルダウン変更", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 
 		// 選択契約番号
 		String selectedContraceNo = initDto.getHdnChangeContractSelectedIndex();
@@ -123,7 +125,7 @@ public class Skf3010Sc002ChangeContractDrpDwnService extends BaseServiceAbstract
 			// 削除ボタン活性
 			contractDelDisableFlg = false;
 			for (Map<String, Object> contractDataMap : contractList) {
-				if (contractDataMap.get("contractNo").equals(selectedContraceNo)) {
+				if (Objects.equals(contractDataMap.get("contractNo"), selectedContraceNo)) {
 					contractMap = contractDataMap;
 					break;
 				}

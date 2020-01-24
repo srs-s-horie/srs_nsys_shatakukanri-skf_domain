@@ -9,7 +9,7 @@ import jp.co.c_nexco.skf.skf3040.domain.dto.common.Skf304010CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * レンタル備品指示書出力画面のInitDto。
  * 
  */
 @lombok.Data
@@ -17,5 +17,16 @@ import lombok.EqualsAndHashCode;
 public class Skf3040Sc001CommonDto extends Skf304010CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
+	
+	// 希望日（From）
+	private String desiredTermFrom;
+	private String desiredTermFromErr;
+	
+	// 希望日（To）
+	private String desiredTermTo;
+	private String desiredTermToErr;
+	
+	// 再発行
+	private String reIssuance;
 	
 }

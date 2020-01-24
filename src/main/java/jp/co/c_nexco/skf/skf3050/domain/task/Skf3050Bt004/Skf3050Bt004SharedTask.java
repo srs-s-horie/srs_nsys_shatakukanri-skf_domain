@@ -73,6 +73,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTenninshaDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteZengetsuTenninshaExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetCompanyAgencyNameExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetDataForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetNyutaikyoYoteiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuHeyaDataExpRepository;
@@ -218,6 +219,8 @@ public class Skf3050Bt004SharedTask {
 	@Autowired
 	private Skf3050Bt004InsertTsukibetuSougoriyoRirekiDataExpRepository skf3050Bt004InsertTsukibetuSougoriyoRirekiDataExpRepository;
 	@Autowired
+	private Skf3050Bt004GetDataForUpdateExpRepository skf3050Bt004GetDataForUpdateExpRepository;
+	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	public static final String BATCH_NAME = "POSITIVE連携データ確定";
@@ -326,6 +329,14 @@ public class Skf3050Bt004SharedTask {
 				CodeConstant.LEND_JOKYO_TAIKYO_YOTEI, paramShoriNengetsu);
 
 		for (Skf3050Bt004GetShatakuHeyaDataExp shatakuHeyaDt : shatakuHeyaDtList) {
+
+			List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+					.getSkf3010MShatakuRoomData(shatakuHeyaDt.getShatakuKanriNo());
+			if (lockResult.size() == 0) {
+				endAbnormalProc();
+				return SkfCommonConstant.ABNORMAL;
+			}
+
 			updateShatakuHeyaData(CodeConstant.LEND_JOKYO_NASHI, paramUserId, shatakuHeyaDt.getShatakuKanriNo(),
 					shatakuHeyaDt.getShatakuRoomKanriNo());
 		}
@@ -334,11 +345,28 @@ public class Skf3050Bt004SharedTask {
 				CodeConstant.LEND_JOKYO_TAIKYO_YOTEI, paramShoriNengetsu);
 
 		for (Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp tyushaKukakuDt : tyushaKukakuDtList) {
+
+			List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+					.getSkf3010MShatakuParkingBlockData(tyushaKukakuDt.getShatakuKanriNo());
+			if (lockResult.size() == 0) {
+				endAbnormalProc();
+				return SkfCommonConstant.ABNORMAL;
+			}
+
 			updateShatakuTyusyajyoKukakuJyohoTaiyojyokyo(CodeConstant.LEND_JOKYO_NASHI, paramUserId,
 					tyushaKukakuDt.getShatakuKanriNo(), tyushaKukakuDt.getParkingKanriNo());
 		}
 
-		deleteData();
+		if (!deleteData()) {
+			endAbnormalProc();
+			return SkfCommonConstant.ABNORMAL;
+		}
+
+		List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository.getSkf3050TMonthlyManageData(paramShoriNengetsu);
+		if (lockResult.size() == 0) {
+			endAbnormalProc();
+			return SkfCommonConstant.ABNORMAL;
+		}
 
 		updateGetsujiSyoriKanri(paramShoriNengetsu, paramUserId);
 
@@ -383,7 +411,7 @@ public class Skf3050Bt004SharedTask {
 		String keinenTaishouTsuki = xmlKeinenTaishouTsukihi.substring(0, 2);
 		String shoriNengetsuTsuki = skfDateFormatUtils.addYearMonth(paramShoriNengetsu, 1);
 		shoriNengetsuTsuki = shoriNengetsuTsuki.substring(4, 6);
-		shoriNengetsuTsuki = "04";
+
 		if (keinenTaishouTsuki.equals(shoriNengetsuTsuki)) {
 			String keinenChouseiNengappi = paramShoriNengetsu.substring(0, 4) + xmlKeinenTaishouTsukihi;
 
@@ -402,6 +430,12 @@ public class Skf3050Bt004SharedTask {
 
 					if (!NfwStringUtils.isEmpty(outputCalcShatakuEntity.getErrMessage())) {
 						LogUtils.errorByMsg(outputCalcShatakuEntity.getErrMessage());
+						return false;
+					}
+
+					List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+							.getSkf3010MShatakuData(shatakuKanriNo);
+					if (lockResult.size() == 0) {
 						return false;
 					}
 
@@ -429,6 +463,12 @@ public class Skf3050Bt004SharedTask {
 
 				if (!NfwStringUtils.isEmpty(outputCalcShatakuEntity.getErrMessage())) {
 					LogUtils.errorByMsg(outputCalcShatakuEntity.getErrMessage());
+					return false;
+				}
+
+				List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+						.getSkf3030TRentalPatternData(ptnDt.getShatakuKanriNo());
+				if (lockResult.size() == 0) {
 					return false;
 				}
 
@@ -490,6 +530,12 @@ public class Skf3050Bt004SharedTask {
 						jigetsuShatakuShiyouryouTyouseiKingaku.intValue(),
 						jigetsuKojinKyouekihiTyouseiKingaku.intValue(), kyouekihiPersonTotal,
 						jigetsuTyushajoShiyouryouTyouseiKingaku.intValue(), paramUserId);
+
+				List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+						.getSkf3022TShatakuYoyakuData(nextShoriNengetsu);
+				if (lockResult.size() == 0) {
+					return false;
+				}
 
 				updateShatakuShiyouryouYoyakuData(shatakuKanriId, paramUserId, nextShoriNengetsu);
 			}
@@ -721,6 +767,12 @@ public class Skf3050Bt004SharedTask {
 				kojinHutankyouekihiGetsugaku = jigetsuTsukiJoin.getRirekiKyoekihiPerson();
 			}
 
+			List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+					.getSkf3030TShatakuRentalRireki(nextShoriNengetsu);
+			if (lockResult.size() == 0) {
+				return false;
+			}
+
 			int kyoekihiTotal = kojinHutankyouekihiGetsugaku + jigetsuTsukiJoin.getRirekiKyoekihiPersonAdjust();
 			updateTsukibetuShiyoryoRirekiData(shatakuShiyoryoGetsugaku.intValue(), shatakuShiyouryouHiwari.intValue(),
 					kyoekihiTotal, chushajoShiyoryoGetsugaku1.intValue(), chushajoShiyoryoGetsugaku2.intValue(),
@@ -736,7 +788,7 @@ public class Skf3050Bt004SharedTask {
 	 * 
 	 * @return 処理結果
 	 */
-	private void deleteData() {
+	private boolean deleteData() {
 
 		String delDate = getDeleteKijunbi();
 
@@ -745,29 +797,40 @@ public class Skf3050Bt004SharedTask {
 
 		if (nyutaikyoYoteiInfoList.size() > 0) {
 			for (Skf3050Bt004GetNyutaikyoYoteiInfoExp nyutaikyoYoteiInfo : nyutaikyoYoteiInfoList) {
+				List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+						.getSkf3021TNyutaikyoYoteiData(nyutaikyoYoteiInfo.getShainNo());
 
-				if (CodeConstant.TEIJI_CREATE_KBN_SAKUSEI_SUMI.equals(nyutaikyoYoteiInfo.getTeijiCreateKbn())) {
+				if (lockResult.size() != 0) {
 
-					int teijiNyutaikyoYoteiDateCnt = getTeijiNyutaikyoYoteiDateCnt(delDate,
-							nyutaikyoYoteiInfo.getShainNo(), nyutaikyoYoteiInfo.getNyutaikyoKbn(),
-							nyutaikyoYoteiInfo.getTeijiNo());
+					if (CodeConstant.TEIJI_CREATE_KBN_SAKUSEI_SUMI.equals(nyutaikyoYoteiInfo.getTeijiCreateKbn())) {
+						int teijiNyutaikyoYoteiDateCnt = getTeijiNyutaikyoYoteiDateCnt(delDate,
+								nyutaikyoYoteiInfo.getShainNo(), nyutaikyoYoteiInfo.getNyutaikyoKbn(),
+								nyutaikyoYoteiInfo.getTeijiNo());
 
-					if (teijiNyutaikyoYoteiDateCnt > 0) {
-						int deleCnt = deleteNyutaikyoYoteiData2(delDate, nyutaikyoYoteiInfo.getShainNo(),
-								nyutaikyoYoteiInfo.getNyutaikyoKbn(), nyutaikyoYoteiInfo.getTeijiNo());
+						if (teijiNyutaikyoYoteiDateCnt > 0) {
+							int deleCnt = deleteNyutaikyoYoteiData2(delDate, nyutaikyoYoteiInfo.getShainNo(),
+									nyutaikyoYoteiInfo.getNyutaikyoKbn(), nyutaikyoYoteiInfo.getTeijiNo());
+							if (deleCnt < 0) {
+								return false;
+							}
+						}
+
+					} else {
+						int deleCnt = deleteNyutaikyoYoteiData1(delDate, nyutaikyoYoteiInfo.getShainNo(),
+								nyutaikyoYoteiInfo.getNyutaikyoKbn());
 						if (deleCnt < 0) {
-							endAbnormalProc();
+							return false;
 						}
 					}
-
 				} else {
-					int deleCnt = deleteNyutaikyoYoteiData1(delDate, nyutaikyoYoteiInfo.getShainNo(),
-							nyutaikyoYoteiInfo.getNyutaikyoKbn());
-					if (deleCnt < 0) {
-						endAbnormalProc();
-					}
+					return false;
 				}
 			}
+		}
+
+		List<String> lockNyutaikyoDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteNyutaikyoData();
+		if (lockNyutaikyoDataResult.size() == 0) {
+			return false;
 		}
 
 		skf3050Bt004DeleteNyutaikyoDataExpRepository.deleteNyutaikyoData();
@@ -777,25 +840,56 @@ public class Skf3050Bt004SharedTask {
 
 		if (teijiDataInfoList.size() > 0) {
 			for (Skf3050Bt004GetTeijiDataInfoExp teijiDataInfo : teijiDataInfoList) {
+				List<String> lockBihinDataResult = skf3050Bt004GetDataForUpdateExpRepository
+						.getSkf3022TTeijiBihinData(teijiDataInfo.getTeijiNo());
 
-				int teijiBihinDataDeleCnt = skf3050Bt004DeleteTeijiBihinDataExpRepository
-						.deleteTeijiBihinData(teijiDataInfo.getTeijiNo());
-				if (teijiBihinDataDeleCnt < 0) {
-					endAbnormalProc();
+				if (lockBihinDataResult.size() != 0) {
+					int teijiBihinDataDeleCnt = skf3050Bt004DeleteTeijiBihinDataExpRepository
+							.deleteTeijiBihinData(teijiDataInfo.getTeijiNo());
+					if (teijiBihinDataDeleCnt < 0) {
+						return false;
+					}
+				} else {
+					return false;
 				}
 
-				int teijiDataDeleCnt = skf3022TTeijiDataRepository.deleteByPrimaryKey(teijiDataInfo.getTeijiNo());
-				if (teijiDataDeleCnt < 0) {
-					endAbnormalProc();
+				List<String> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository
+						.getSkf3022TTeijiData(teijiDataInfo.getTeijiNo());
+				if (lockTeijiDataResult.size() != 0) {
+
+					int teijiDataDeleCnt = skf3022TTeijiDataRepository.deleteByPrimaryKey(teijiDataInfo.getTeijiNo());
+					if (teijiDataDeleCnt < 0) {
+						return false;
+					}
+				} else {
+					return false;
 				}
 			}
 		}
 
+		List<String> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteTeijiData();
+		if (lockTeijiDataResult.size() == 0) {
+			return false;
+		}
+
 		skf3050Bt004DeleteTeijiDataExpRepository.deleteTeijiData();
+
+		List<String> lockZengetsuTenninshaResult = skf3050Bt004GetDataForUpdateExpRepository
+				.getDeleteZengetsuTenninsha(delDate);
+		if (lockZengetsuTenninshaResult.size() == 0) {
+			return false;
+		}
 
 		skf3050Bt004DeleteZengetsuTenninshaExpRepository.deleteZengetsuTenninsha(delDate);
 
+		List<String> lockTenninshaDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteTenninshaData();
+		if (lockTenninshaDataResult.size() == 0) {
+			return false;
+		}
+
 		skf3050Bt004DeleteTenninshaDataExpRepository.deleteTenninshaData();
+
+		return true;
 	}
 
 	/**

@@ -54,5 +54,4 @@ public class Skf3010Sc001CommonDto extends Skf301010CommonDto {
 	private String hdnRowEmptyParkingCount;
 	// 複写フラグ
 	private String copyFlg;
-
 }

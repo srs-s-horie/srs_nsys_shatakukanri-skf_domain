@@ -5,12 +5,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
-import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -63,7 +64,7 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public BaseDto index(Skf2010Sc005DownloadDto dlDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("CSV出力処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
+		skfOperationLogUtils.setAccessLog("承認一覧をCSV出力する", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 		// 汎用コード取得
 		applStatusMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 
@@ -117,11 +118,20 @@ public class Skf2010Sc005DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		BeanOutputCsv beanOutputCsvR0105 = new FileOutput().new BeanOutputCsv(r0105List, templateFilePropertyKeyR0105,
 				FILE_TEMPLETE_FUNCTION_CD, 1, null);
 		List<BeanOutputCsv> beanOutputCsvList = new ArrayList<BeanOutputCsv>();
-		beanOutputCsvList.add(beanOutputCsvR0100);
-		beanOutputCsvList.add(beanOutputCsvR0103);
-		beanOutputCsvList.add(beanOutputCsvR0104);
-		beanOutputCsvList.add(beanOutputCsvR0105);
-
+		
+		/** データがある書類のみ作成 */
+		if(beanOutputCsvR0100.getCsvDataList().size() > 0){
+			beanOutputCsvList.add(beanOutputCsvR0100);
+		}
+		if(beanOutputCsvR0103.getCsvDataList().size() > 0){
+			beanOutputCsvList.add(beanOutputCsvR0103);
+		}
+		if(beanOutputCsvR0104.getCsvDataList().size() > 0){
+			beanOutputCsvList.add(beanOutputCsvR0104);
+		}
+		if(beanOutputCsvR0105.getCsvDataList().size() > 0){
+			beanOutputCsvList.add(beanOutputCsvR0105);
+		}
 		OutputFileCsvProperties properties = new FileOutput().new OutputFileCsvProperties(
 				FileOutput.LineSeparatorType.LINE_SEPARATOR_CRLF, FileOutput.FileEncode.BOM_UTF8,
 				FileOutput.DelimiterType.COMMA, FileOutput.QuoteType.DOUBLE_QUOTATION);

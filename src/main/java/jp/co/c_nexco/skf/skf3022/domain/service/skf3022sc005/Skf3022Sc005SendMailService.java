@@ -339,7 +339,8 @@ public class Skf3022Sc005SendMailService extends BaseServiceAbstract<Skf3022Sc00
 			//送信結果
 			boolean ret = false;
 //    	       'メールアドレスを取得
-			String mailAddress = getSendMailAddressByShainNo(CodeConstant.C001,map.get("shainNo").toString());
+			String shainNo = map.get("shainNo").toString().replace(CodeConstant.ASTERISK, "");
+			String mailAddress = getSendMailAddressByShainNo(CodeConstant.C001,shainNo);
 			
 			if(!SkfCheckUtils.isNullOrEmpty(mailAddress)){
 				//メールアドレス無しの場合例外になるので、取得成功時のみ送信処理実行

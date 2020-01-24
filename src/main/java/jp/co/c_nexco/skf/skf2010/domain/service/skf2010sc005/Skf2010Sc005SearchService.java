@@ -1,27 +1,23 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005SearchDto;
@@ -51,7 +47,7 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 	@Override
 	public BaseDto index(Skf2010Sc005SearchDto searchDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("検索処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
+		skfOperationLogUtils.setAccessLog("申請書類を検索", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 		// タイトル設定
 		searchDto.setPageTitleKey(MessageIdConstant.SKF2010_SC005_TITLE);
 
@@ -160,7 +156,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1007);
 		} else if (tApplHistoryData.size() > Integer.parseInt(searchMaxCount)) {
 			// 検索結果表示最大数以上
-			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1002, "最大件数");
+			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1002, "1000", "条件を変更してください。");
+			return rtnList;
 		}
 
 		// グリッド表示（リストテーブル）作成

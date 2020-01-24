@@ -6,18 +6,23 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003InitDto;
 
 /**
@@ -36,6 +41,8 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
 
 	// カンマ区切りフォーマット
 	NumberFormat nfNum = NumberFormat.getNumberInstance();
@@ -52,7 +59,7 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 	@Override
 	public BaseDto index(Skf2020Sc003InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示処理開始", CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC003_TITLE);
 
@@ -69,6 +76,12 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 		// オペレーションガイド取得
 		String operationGuide = skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2020_SC003);
 		initDto.setOperationGuide(operationGuide);
+		
+		// データ連携用の排他制御用更新日を取得
+		// 申請者の社員番号
+		String shainNo = initDto.getShainNo();
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils.getUpdateDateForUpdateSQL(shainNo);
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003, dateLinkageMap);
 
 		return initDto;
 	}

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetAddressExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetAddressExpParameter;
@@ -39,6 +38,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004InsertBihinHenkyakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004InsertTaikyoReportInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004UpdateApplHistoryAgreeStatusExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
@@ -84,6 +84,8 @@ import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
 
 /**
  * Skf2010Sc004 申請内容表示/引戻し共通処理クラス
@@ -142,6 +144,11 @@ public class Skf2010Sc004SharedService {
 	private Skf2040TTaikyoReportRepository skf2040TTaikyoReportRepository;
 	@Autowired
 	private Skf2050TBihinHenkyakuShinseiRepository skf2050TBihinHenkyakuShinseiRepository;
+
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
+	@Autowired
+	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
@@ -435,7 +442,7 @@ public class Skf2010Sc004SharedService {
 		// 現社宅名(付加文字列)
 		insertData.setNowShatakuName(nowShatakuName);
 		// 登録ユーザー名
-		String insertUser = "";
+		String insertUser = CodeConstant.NONE;
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		if (CheckUtils.isEmpty(insertUser)) {
 			insertUser = loginUserInfo.get("name");
@@ -817,6 +824,55 @@ public class Skf2010Sc004SharedService {
 			newApplNo = data.getMaxApplNo();
 		}
 		return newApplNo;
+	}
+
+	/**
+	 * 社宅連携処理を実施する
+	 * 
+	 * @param menuScopeSessionBean
+	 * @param applNo
+	 * @param applStatus
+	 * @param applId
+	 * @param pageId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String applStatus,
+			String applId, String pageId) {
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String userId = loginUserInfoMap.get("userCd");
+		String shainNo = loginUserInfoMap.get("shainNo");
+		// 排他チェック用データ取得
+		Map<String, Object> forUpdateObject = (Map<String, Object>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
+
+		List<String> resultBatch = new ArrayList<String>();
+
+		switch (applId) {
+		case FunctionIdConstant.R0100:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0100 = skf2020Fc001NyukyoKiboSinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0100);
+
+			// 連携処理開始
+			resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, CodeConstant.NONE,
+					applStatus, userId, pageId);
+			break;
+		case FunctionIdConstant.R0103:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0103 = skf2040Fc001TaikyoTodokeDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0103);
+
+			// 連携処理開始
+			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId,
+					pageId);
+			break;
+		default:
+			break;
+		}
+
+		return resultBatch;
 	}
 
 }

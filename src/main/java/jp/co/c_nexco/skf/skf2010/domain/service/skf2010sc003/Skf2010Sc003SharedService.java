@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteApplHistoryExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteDocTableExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
@@ -13,18 +15,28 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateApplHistoryAgreeStatusExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteDocTableExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateApplHistoryAgreeStatusExpRepository;
+import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 
 /**
  * Skf2010Sc005 承認一覧内部処理クラス
@@ -44,6 +56,17 @@ public class Skf2010Sc003SharedService {
 	private Skf2010Sc003DeleteDocTableExpRepository skf2010Sc003DeleteDocTableExpRepository;
 	@Autowired
 	private Skf2010Sc003DeleteApplHistoryExpRepository skf2010Sc003DeleteApplHistoryExpRepository;
+	@Autowired
+	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
+
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
+	@Autowired
+	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
+	@Autowired
+	private Skf2030Fc001BihinKiboShinseiDataImport skf2030Fc001BihinKiboShinseiDataImport;
+	@Autowired
+	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
@@ -53,8 +76,6 @@ public class Skf2010Sc003SharedService {
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
-
-	private String datePattern = "yyyy/MM/dd";
 
 	public List<Skf2010Sc003GetApplHistoryStatusInfoExp> getApplHistoryStatusInfo(String shainNo, String applDateFrom,
 			String applDateTo, String agreDateFrom, String agreDateTo, String applName, List<String> applStatus) {
@@ -75,12 +96,12 @@ public class Skf2010Sc003SharedService {
 			param.setAgreDateFrom(agreDateFrom);
 		}
 		if (!CheckUtils.isEmpty(agreDateTo)) {
-			param.setAgreDateFrom(agreDateTo);
+			param.setAgreDateTo(agreDateTo);
 		}
 		if (!CheckUtils.isEmpty(applName)) {
 			param.setApplName(applName);
 		}
-		if (applStatus != null) {
+		if (applStatus != null && applStatus.size() != 0) {
 			if (applStatus.indexOf(CodeConstant.STATUS_SHINSACHU) >= 0) {
 				List<String> applStatusList = new ArrayList<String>();
 				applStatusList.addAll(applStatus);
@@ -125,7 +146,8 @@ public class Skf2010Sc003SharedService {
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 			if (applHistoryData.getAgreDate() != null) {
-				agreDate = skfDateFormatUtils.dateFormatFromString(applHistoryData.getAgreDate(), datePattern);
+				agreDate = skfDateFormatUtils.dateFormatFromDate(applHistoryData.getAgreDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
 
 			// 申請状況をコードから汎用コードに変更
@@ -250,5 +272,88 @@ public class Skf2010Sc003SharedService {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * 社宅連携処理を実施する
+	 * 
+	 * @param menuScopeSessionBean
+	 * @param applNo
+	 * @param applStatus
+	 * @param applId
+	 * @param pageId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo,
+			String applStatus, String applId, String pageId) {
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String userId = loginUserInfoMap.get("userCd");
+		String shainNo = loginUserInfoMap.get("shainNo");
+		// 排他チェック用データ取得
+		Map<String, Object> forUpdateObject = (Map<String, Object>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC003);
+
+		List<String> resultBatch = new ArrayList<String>();
+
+		switch (applId) {
+		case FunctionIdConstant.R0100:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0100 = skf2020Fc001NyukyoKiboSinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0100);
+
+			// 連携処理開始
+			resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, CodeConstant.NONE,
+					applStatus, userId, pageId);
+			break;
+		case FunctionIdConstant.R0103:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0103 = skf2040Fc001TaikyoTodokeDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0103);
+
+			// 連携処理開始
+			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId, pageId);
+			break;
+		case FunctionIdConstant.R0104:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0104 = skf2030Fc001BihinKiboShinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2030Fc001BihinKiboShinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0104);
+
+			// 連携処理開始
+			resultBatch = skf2030Fc001BihinKiboShinseiDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId,
+					pageId);
+			break;
+		case FunctionIdConstant.R0105:
+			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0105 = skf2050Fc001BihinHenkyakuSinseiDataImport
+					.forUpdateMapDownCaster(forUpdateObject);
+			skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0105);
+
+			// 連携処理開始
+			resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId,
+					pageId);
+			break;
+		default:
+			break;
+		}
+
+		return resultBatch;
+	}
+	
+	/**
+	 * 申請状況を取得する
+	 * 
+	 * @param applNo
+	 * @return applStatus
+	 */
+	public String getApplStatus(String applNo){
+		String afterApplStatus = CodeConstant.NONE;
+		List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> tApplHistoryList = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
+		tApplHistoryList = skfApplHistoryInfoUtils.getApplHistoryInfo(companyCd, applNo);
+		if(tApplHistoryList.size() > 0){
+			SkfApplHistoryInfoUtilsGetApplHistoryInfoExp tApplHistory = tApplHistoryList.get(0);
+			afterApplStatus = tApplHistory.getApplStatus();
+		}
+		return afterApplStatus;
 	}
 }

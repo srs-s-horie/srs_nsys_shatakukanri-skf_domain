@@ -65,8 +65,7 @@ public class Skf2060Sc001DeleteService extends BaseServiceAbstract<Skf2060Sc001D
  			
  		//対象の借上候補物件が存在しない場合
  		}else{
- 			ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.E_SKF_1076);
- 			throwBusinessExceptionIfErrors(deleteDto.getResultMessages());
+ 			// 特に何もしない(他のユーザによって削除は行われていると思われるため)
  		}
  		
 		// リストデータ取得用

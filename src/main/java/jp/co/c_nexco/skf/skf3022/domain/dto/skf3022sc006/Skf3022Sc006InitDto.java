@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006;
 
-import java.util.*;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import lombok.EqualsAndHashCode;
 

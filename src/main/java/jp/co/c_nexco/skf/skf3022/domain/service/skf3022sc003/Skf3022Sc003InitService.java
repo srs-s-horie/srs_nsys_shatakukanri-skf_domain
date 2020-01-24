@@ -73,7 +73,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		// デバッグログ
 		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3022_SC003);
 
 		// パラメータ判定
 		if (CheckUtils.isEmpty(initDto.getHdnShatakuKanriNo()) || CheckUtils.isEmpty(initDto.getHdnRoomKanriNo())
@@ -168,11 +168,29 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			if (nyukyoList.size() > 0) {
 				Skf3022Sc003GetNyukyoInfoExp nyukyoInfo = nyukyoList.get(0);
 				// 規格2
-				kikaakuSelectedValue = nyukyoInfo.getNewShatakuKikaku();
+				if (!CheckUtils.isEmpty(nyukyoInfo.getNewShatakuKikaku())) {
+					// 入居希望等調書・入居決定通知テーブルの値を設定
+					kikaakuSelectedValue = nyukyoInfo.getNewShatakuKikaku();
+				} else {
+					// 設定されていない場合、基本情報と同じ値を設定
+					kikaakuSelectedValue = initDto.getSc003KikakuSelect();
+				}
 				// ①用途2
-				youtoSelectedValue = nyukyoInfo.getHitsuyoShataku();
+				if (!CheckUtils.isEmpty(nyukyoInfo.getHitsuyoShataku())) {
+					// 入居希望等調書・入居決定通知テーブルの値を設定
+					youtoSelectedValue = nyukyoInfo.getHitsuyoShataku();
+				} else {
+					// 設定されていない場合、基本情報と同じ値を設定
+					youtoSelectedValue = initDto.getSc003YoutoSelect();
+				}
 				// ②延べ面積2
-				rateShienNobeMenseki = nyukyoInfo.getNewShatakuMenseki();
+				if (!CheckUtils.isEmpty(nyukyoInfo.getNewShatakuMenseki())) {
+					// 入居希望等調書・入居決定通知テーブルの値を設定
+					rateShienNobeMenseki = nyukyoInfo.getNewShatakuMenseki();
+				} else {
+					// 設定されていない場合、基本情報と同じ値を設定
+					rateShienNobeMenseki = initDto.getSc003NobeMenseki();
+				}
 			} else {
 				// 設定されていない場合、基本情報と同じ値を設定
 				// 規格2

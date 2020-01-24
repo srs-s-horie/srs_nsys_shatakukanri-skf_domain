@@ -6,8 +6,10 @@ package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001DeleteAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukkenFile;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001DeleteAttachedFileExpRepository;
@@ -15,9 +17,11 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenFi
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001AttachedAsyncDto;
 
 /**
@@ -31,6 +35,8 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf2060TKariageBukkenFileRepository skf2060TKariageBukkenFileRepository;
 	@Autowired
@@ -49,7 +55,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 	public Skf2060Sc001AttachedAsyncDto index(Skf2060Sc001AttachedAsyncDto attachedDto) throws Exception {
 
 		// 操作ログを出力
-		//skfOperationLogUtils.setAccessLog("再提示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("ファイル添付", companyCd, FunctionIdConstant.SKF2060_SC001);
 		//セッションキーの設定
 		String sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + attachedDto.getCandidateNo();
 
@@ -69,7 +75,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 		deleteCount = skf2060Sc001DeleteAttachedFileExpRepository.deleteAttachedFile(deleteData);
 		//削除できなかった場合
 		if (deleteCount < 0) {
-			// TODO エラー
+			// エラー
 			ServiceHelper.addErrorResultMessage(attachedDto, null, MessageIdConstant.E_SKF_2003);
 			throwBusinessExceptionIfErrors(attachedDto.getResultMessages());
 		}
@@ -90,7 +96,7 @@ public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<S
 			int res = skf2060TKariageBukkenFileRepository.insertSelective(insertData);
 
 			if (res <= 0) {
-				// TODO エラー
+				// エラー
 				ServiceHelper.addErrorResultMessage(attachedDto, null, MessageIdConstant.E_SKF_2003);
 				throwBusinessExceptionIfErrors(attachedDto.getResultMessages());
 			}

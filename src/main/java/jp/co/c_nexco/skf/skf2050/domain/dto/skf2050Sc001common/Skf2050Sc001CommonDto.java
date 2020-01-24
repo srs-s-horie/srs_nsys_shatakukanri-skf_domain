@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2050.domain.dto.skf2050Sc001common;
 
 import java.util.List;
 import java.util.Map;
+
 import jp.co.c_nexco.skf.skf2050.domain.dto.common.Skf205010CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -101,4 +102,14 @@ public class Skf2050Sc001CommonDto extends Skf205010CommonDto {
 
 	// 備品返却立会時刻ドロップダウンリスト
 	private List<Map<String, Object>> ddSessionTimeList;
+	
+	/** ボタン表示非表示 */
+	// 同意するボタン
+	private String btnAgreeDisabled;
+	
+	// 同意しないボタン
+	private String btnNotAgreeDisabled;
+	
+	// 搬出完了ボタン
+	private String btnCarryingOutDisabled;
 }

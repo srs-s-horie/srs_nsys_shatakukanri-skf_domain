@@ -38,7 +38,7 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 
 	@Override
 	protected void execute() throws Exception {
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> paramMap = (Map<String, String>) this.params.get("parameter");
 
@@ -59,14 +59,26 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 			return;
 		}
 
-		Map<String, String> result = skf3050Bt002SharedTask.updateGetsujiData(paramMap);
+		String endFlag = SkfCommonConstant.ABNORMAL;
+		String updateGetsujiDataMsg = "";
+		boolean canLock = skf3050Bt002SharedTask
+				.canLockTableData(paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_SHORI_NENGETSU_KEY));
 
-		Integer dbPrcRtn = skf3050Bt002SharedTask.endProc(result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_RESULT_KEY),
+		if (canLock) {
+			Map<String, String> result = skf3050Bt002SharedTask.updateGetsujiData(paramMap);
+			endFlag = result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_RESULT_KEY);
+			updateGetsujiDataMsg = result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_MSG_KEY);
+
+		} else {
+			LogUtils.error(MessageIdConstant.E_SKF_1079, "");
+		}
+
+		Integer dbPrcRtn = skf3050Bt002SharedTask.endProc(endFlag,
 				paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_COMPANY_CD_KEY), Skf3050Bt002SharedTask.BATCH_ID_B5002,
 				SkfCommonConstant.PROCESSING);
 
 		if (dbPrcRtn == CodeConstant.SYS_OK) {
-			skf3050Bt002SharedTask.outputEndProcLog(result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_MSG_KEY));
+			skf3050Bt002SharedTask.outputEndProcLog(updateGetsujiDataMsg);
 		} else {
 			skf3050Bt002SharedTask.outputEndProcLog("");
 		}

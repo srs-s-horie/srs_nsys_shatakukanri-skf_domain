@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc002;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -43,7 +45,7 @@ public class Skf2030Sc002ApproveService extends BaseServiceAbstract<Skf2030Sc002
 	@Override
 	public BaseDto index(Skf2030Sc002ApproveDto applyDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("承認処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC002);
+		skfOperationLogUtils.setAccessLog("承認", CodeConstant.C001, FunctionIdConstant.SKF2030_SC002);
 		// タイトル設定
 		applyDto.setPageTitleKey(MessageIdConstant.SKF2030_SC002_TITLE);
 
@@ -52,7 +54,7 @@ public class Skf2030Sc002ApproveService extends BaseServiceAbstract<Skf2030Sc002
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("status", applyDto.getSendApplStatus());
+		applInfo.put("status", applyDto.getApplStatus());
 		applInfo.put("applNo", applyDto.getApplNo());
 		applInfo.put("applId", applyDto.getApplId());
 

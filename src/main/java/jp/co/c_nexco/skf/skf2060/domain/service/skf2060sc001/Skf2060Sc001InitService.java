@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 		//申請書類情報が取得できた場合
 		if(!(initDto.getShainNo() == null || CheckUtils.isEmpty(initDto.getShainNo().trim())) && !(initDto.getApplNo() == null || CheckUtils.isEmpty(initDto.getApplNo().trim()))){
 			// 操作ログを出力
-			skfOperationLogUtils.setAccessLog("再提示", companyCd, initDto.getPageId());
+			skfOperationLogUtils.setAccessLog("再提示", companyCd, FunctionIdConstant.SKF2060_SC004);
 			
 			//申請書類管理番号からコメントを取得
 			List<SkfCommentUtilsGetCommentInfoExp> commentList =  skfCommentUtils.getCommentInfo(companyCd, initDto.getApplNo(), null);
@@ -84,7 +85,7 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			}
 			//セッションの申請書類情報をもとに申請履歴テーブルより申請情報を取得
 			Skf2060Sc001GetApplHistoryExp applHistoryData = new Skf2060Sc001GetApplHistoryExp();
-			applHistoryData = skf2060Sc001SharedService.getApplHistoryInfo(companyCd, initDto.getShainNo(), initDto.getApplNo());
+			applHistoryData = skf2060Sc001SharedService.getApplHistoryInfo(companyCd, initDto.getShainNo(), initDto.getApplNo(), FunctionIdConstant.R0106);
 			//申請履歴テーブルより申請情報を取得出来た場合
 			if(applHistoryData != null){
 				//申請書類履歴テーブル用更新日
@@ -110,8 +111,19 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			initDto.setSupportDisabled("true");
 		}else{
 			// 操作ログを出力
-			skfOperationLogUtils.setAccessLog("新規作成", companyCd, initDto.getPageId());
+			skfOperationLogUtils.setAccessLog("新規作成", companyCd, FunctionIdConstant.SKF2060_SC004);
+			
+			// 項目初期化
+			initDto.setPresentedName(CodeConstant.NONE);
+			initDto.setPresentedStatus(CodeConstant.NONE);
+			initDto.setPresentedDate(CodeConstant.NONE);
+			initDto.setAddress(CodeConstant.NONE);
+			initDto.setPostalCd(CodeConstant.NONE);
+			initDto.setShatakuName(CodeConstant.NONE);
+			initDto.setComment(CodeConstant.NONE);
 		}
+		
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2060_SC001);
 		
 		//隠し要素として現在日時を設定
 		Date updateDate = new Date();
@@ -127,7 +139,8 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 
 		//借上候補物件テーブル用更新日
 		for(Map<String, Object> dataParam:dataParamList){
-			Date lastUpdateDate = skfDateFormatUtils.formatStringToDate(dataParam.get("lastUpdateDate").toString());
+			SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			Date lastUpdateDate = sdf.parse(dataParam.get("lastUpdateDate").toString());
 			lastUpdateDateMap.put(initDto.KariageBukkenLastUpdateDate + dataParam.get("candidateNo").toString(), lastUpdateDate);
 		}
 		

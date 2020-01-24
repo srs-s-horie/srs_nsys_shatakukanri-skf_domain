@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002DelContractListDto;
 import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
@@ -43,7 +45,7 @@ public class Skf3010Sc002DelContractListService extends BaseServiceAbstract<Skf3
 		// デバッグログ
 		LogUtils.debugByMsg("契約情報削除");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報削除", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約情報削除", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 
 		/** DTO設定値 */
 		// 賃貸人（代理人）名
@@ -120,7 +122,7 @@ public class Skf3010Sc002DelContractListService extends BaseServiceAbstract<Skf3
 					contractNoMap.remove("selected");
 				}
 				// 削除契約番号判定
-				if (deletedConstractNo.equals(contractNoMap.get("value"))) {
+				if (Objects.equals(deletedConstractNo, contractNoMap.get("value"))) {
 					// 削除インデックス取得
 					delContractIndex = i;
 				}
@@ -139,7 +141,7 @@ public class Skf3010Sc002DelContractListService extends BaseServiceAbstract<Skf3
 			// 契約情報リストから最大契約番号の契約情報を取得
 			String maxContractNo = contractNoList.get(contractNoList.size() - 1).get("value").toString();
 			for (Map<String, Object> contractDataMap : contractList) {
-				if (contractDataMap.get("contractNo").equals(maxContractNo)) {
+				if (Objects.equals(contractDataMap.get("contractNo"), maxContractNo)) {
 					contractMap = contractDataMap;
 					break;
 				}

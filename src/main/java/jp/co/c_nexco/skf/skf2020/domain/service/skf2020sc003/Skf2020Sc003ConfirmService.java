@@ -4,12 +4,12 @@
 package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
@@ -19,7 +19,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003ConfirmDto;
@@ -52,7 +51,7 @@ public class Skf2020Sc003ConfirmService extends BaseServiceAbstract<Skf2020Sc003
 	public BaseDto index(Skf2020Sc003ConfirmDto confDto) throws Exception {
 
 		// 操作ログ出力メソッドを呼び出す
-		skfOperationLogUtils.setAccessLog("掲示内容を確認処理開始", companyCd, confDto.getPageId());
+		skfOperationLogUtils.setAccessLog("掲示内容を確認", companyCd, confDto.getPageId());
 
 		confirmClickProcess(confDto);
 

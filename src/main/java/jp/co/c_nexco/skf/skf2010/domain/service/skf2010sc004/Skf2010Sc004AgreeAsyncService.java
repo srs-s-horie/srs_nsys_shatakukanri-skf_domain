@@ -12,28 +12,28 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetShatakuKiboForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
-import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004AgreeAsyncDto;
 
 /**
@@ -55,6 +55,10 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	private SkfMailUtils skfMailUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -74,13 +78,15 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	@Override
 	public AsyncBaseDto index(Skf2010Sc004AgreeAsyncDto agreeDto) throws Exception {
 		// 操作ログの出力
-		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, FunctionIdConstant.SKF2010_SC004);
+		skfOperationLogUtils.setAccessLog("同意する", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		// 初期化処理
 		init(agreeDto);
 
 		// 申請書類ID
 		String applId = agreeDto.getApplId();
+		// 申請書番号
+		String applNo = agreeDto.getApplNo();
 		// エラーメッセージ保持用
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
@@ -244,6 +250,25 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 			}
 
 		}
+
+		// 社宅管理データ連携処理実行
+		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
+		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
+		if (tApplHistoryData == null) {
+			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1073);
+			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+			return agreeDto;
+		}
+		String afterApplStatus = tApplHistoryData.getApplStatus();
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId,
+				FunctionIdConstant.SKF2010_SC004);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
+		if (resultBatch != null) {
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(agreeDto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
+
 		// Hidden領域の備品希望要否
 		String applNoBihinShinsei = CodeConstant.NONE;
 		String bihinKibo = agreeDto.getBihinKibo();
@@ -258,27 +283,12 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 				return agreeDto;
 			}
 
-			// 同意確認通知のメールを送信する
-			Map<String, String> applInfoBihin = new HashMap<String, String>();
-			applInfoBihin.put("applNo", applNoBihinShinsei);
-			applInfoBihin.put("applId", FunctionIdConstant.R0104);
-			applInfoBihin.put("applShainNo", shainNo);
-
-			// 案内文取得
-			String annai = PropertyUtils.getValue("skf2010.skf2010_sc004.mail_bihin_kibo");
-
-			String urlBase = "/skf/Skf2010Sc005/init";
-
-			// メール送信
-			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoBihin, agreeDto.getCommentNote(), annai,
-					shainNo, CodeConstant.NONE, urlBase);
-
 			// 備品申請の申請書類管理番号をセットされている場合は自動遷移のダイアログ表示
 			if (NfwStringUtils.isNotEmpty(applNoBihinShinsei)) {
 				ServiceHelper.addResultMessage(agreeDto, MessageIdConstant.I_SKF_2047);
 				// ダイアログ表示フラグをセットする
 				agreeDto.setDialogFlg(true);
-				agreeDto.setBihinApplNo(applInfoBihin.get("applNo"));
+				agreeDto.setBihinApplNo(applNoBihinShinsei);
 			}
 
 		}

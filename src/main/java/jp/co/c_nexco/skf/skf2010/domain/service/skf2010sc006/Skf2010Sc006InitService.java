@@ -8,25 +8,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
+import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006InitDto;
 
 /**
@@ -48,6 +50,10 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfBatchUtils skfBatchUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -67,6 +73,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC006_TITLE);
 
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
+
 		String applStatus = initDto.getApplStatus();
 		initDto.setApplStatusText(changeApplStatusText(applStatus));
 
@@ -83,6 +92,13 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// 承認ボタン非表示設定
 		setShoninBtnRemove(initDto);
+
+		// データ連携用の排他制御用更新日を取得
+		// 申請者の社員番号
+		String shainNo = initDto.getShainNo();
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils
+				.getUpdateDateForUpdateSQL(shainNo);
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC006, dateLinkageMap);
 
 		return initDto;
 	}
@@ -107,9 +123,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// ユーザーの権限チェック
 		switch (roleId) {
-		case CodeConstant.SKF_021:
-		case CodeConstant.SKF_030:
-		case CodeConstant.SKF_090:
+		case CodeConstant.SKF_220:
+		case CodeConstant.SKF_230:
+		case CodeConstant.SKF_900:
 			break;
 		default:
 			// 承認権限がないユーザーは「再提示」「資料添付」「承認」ボタンを非表示にする。
@@ -130,23 +146,21 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
 		String applStatus = "";
 		// 権限チェック
-		Set<String> roleIds = LoginUserInfoUtils.getRoleIds();
-		if (roleIds == null) {
-			return;
-		}
+		Map<String, String> loginUserInfo = new HashMap<String, String>();
+		loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String roleId = loginUserInfo.get("roleId");
+
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-		for (String roleId : roleIds) {
-			switch (roleId) {
-			case CodeConstant.NAKASA_SHATAKU_TANTO:
-			case CodeConstant.NAKASA_SHATAKU_KANRI:
-			case CodeConstant.SYSTEM_KANRI:
-				isAdmin = true;
-				break;
-			default:
-				isAdmin = false;
-				break;
-			}
+		switch (roleId) {
+		case CodeConstant.NAKASA_SHATAKU_TANTO:
+		case CodeConstant.NAKASA_SHATAKU_KANRI:
+		case CodeConstant.SYSTEM_KANRI:
+			isAdmin = true;
+			break;
+		default:
+			isAdmin = false;
+			break;
 		}
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {

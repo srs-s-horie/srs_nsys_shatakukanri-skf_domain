@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepo
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -30,12 +32,12 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001CandidateDto;
-import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailService;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001CandidateDto;
+import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailService;
 
 /**
  * TestPrjTop画面のCandidateDtoサービス処理クラス。　 
@@ -99,6 +101,10 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		//ログインセッションユーザ情報のユーザ名
 		String userName = userInfoMap.get("userName");
+		//ユーザCD
+		String updateUserId = userInfoMap.get("userCd");
+		//ページID
+		String updateProgramId = candidateDto.getPageId();
 		//選択物件番号
 		long checkCandidateNo = 0;
 		//一覧フラグ
@@ -155,6 +161,12 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			}else if(applStatus.equals(candidateStatusGenCodeMap.get(CodeConstant.STATUS_KANRYOU))){
 				//申請書類管理番号を作成する
 				applNo = skf2060Sc001SharedService.getApplNo(companyCd, shainNo, updateDate, applId);
+				//申請書類管理番号を作成に失敗した場合
+				if(applNo == null || CheckUtils.isEmpty(applNo.trim())){
+					//エラーメッセージを設定
+					ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1024);
+					throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
+				}
 				//提示回数に"1"を設定する
 				teijiKaisu = 1; 
 				//新規作成フラグをTrueに設定する
@@ -169,6 +181,12 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		}else{
 			//申請書類管理番号を作成する
 			applNo = skf2060Sc001SharedService.getApplNo(companyCd, shainNo, updateDate, applId);
+			//申請書類管理番号を作成に失敗した場合
+			if(applNo == null || CheckUtils.isEmpty(applNo.trim())){
+				//エラーメッセージを設定
+				ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1024);
+				throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
+			}
 			//提示回数に"1"を設定する
 			teijiKaisu = 1; 
 			//新規作成フラグをTrueに設定する
@@ -199,14 +217,28 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 				throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
 			}
 			
-			//借上候補物件提示明細テーブルに情報を登録する
 			//チェックが入っているデータを取得
-			List<Map<String, Object>> dataParamList = skf2060Sc001SharedService.getDataParamList(itiranFlg, shainNo, applNo);
+			List<Map<String, Object>> dataParamList = candidateDto.getListTableData();
 			List<Map<String, Object>> checkDataParamList = new ArrayList<Map<String, Object>>();
 			for(int i = 0; i < candidateDto.getTeijiVal().length; i++){
 				int checkDataNum = Integer.parseInt(candidateDto.getTeijiVal()[i]);
 				checkDataParamList.add(dataParamList.get(checkDataNum));
+				long candidateNo = (long)dataParamList.get(checkDataNum).get("candidateNo");
+				
+				LogUtils.debugByMsg("チェックされた物件の借上候補物件番号："+candidateNo);
+				
+				// データ削除排他チェック
+				Skf2060TKariageBukken data = new Skf2060TKariageBukken();
+				Skf2060TKariageBukkenKey key = new Skf2060TKariageBukkenKey();
+				key.setCompanyCd(companyCd);
+				key.setCandidateNo(candidateNo);
+				data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+				if(data == null){
+					ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1134, "");
+					throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
+				}
 			}
+			
 			//借上候補物件提示明細テーブルに情報を登録
 			for(int j = 0; j < checkDataParamList.size(); j++){
 				boolean kariageTeijiDetailCheck = skf2060Sc001SharedService.insertKatiageTeijiDetail(companyCd, applNo, teijiKaisu, (long)checkDataParamList.get(j).get("candidateNo"), (String)checkDataParamList.get(j).get("shatakuName"), (String)checkDataParamList.get(j).get("address"), (String)checkDataParamList.get(j).get("money"), 
@@ -241,9 +273,12 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 				key.setCompanyCd(companyCd);
 				key.setCandidateNo((long)checkDataParamList.get(j).get("candidateNo"));
 				data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+				String lastUpdateDateString = skfDateFormatUtils.dateFormatFromDate(data.getUpdateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+				SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+				Date lastUpdateDate = sdf.parse(lastUpdateDateString);
 				// 楽観的排他チェック
 	            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate + checkDataParamList.get(j).get("candidateNo").toString())
-	            		, data.getUpdateDate());
+	            		, lastUpdateDate);
 				boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd, (long)checkDataParamList.get(j).get("candidateNo"));
 				//登録に失敗した場合
 				if(!(updateKariageKohoCheck))	{
@@ -258,12 +293,12 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		}else{
 			//楽観的排他チェック用データ取得
 			Skf2060Sc001GetApplHistoryInfoForUpdateExp existCheckData = skf2060Sc001SharedService.getApplHistoryInfoForUpdate(companyCd, applNo);
-			//楽観的排他チェック
-            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.applHistoryLastUpdateDate) ,existCheckData.getUpdateDate());
 			//該当する「申請書類履歴テーブル」のデータが取得できた場合
 			if(existCheckData != null){
+				//楽観的排他チェック
+				super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.applHistoryLastUpdateDate) ,existCheckData.getUpdateDate());
 				//申請書類履歴テーブルよりステータスを更新
-				boolean updateApplHistoryCheck = skf2060Sc001SharedService.updateApplHistory(companyCd, shainNo, existCheckData.getApplDate(), applNo, existCheckData.getApplId());
+				boolean updateApplHistoryCheck = skf2060Sc001SharedService.updateApplHistory(companyCd, shainNo, existCheckData.getApplDate(), applNo, existCheckData.getApplId(), updateUserId, updateProgramId);
 				//更新に失敗した場合
 				if(!(updateApplHistoryCheck)){
 					//エラーメッセージの設定
@@ -292,14 +327,28 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 					throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
 				}
 				
-				//借上候補物件提示明細テーブルに情報を登録する
 				//チェックが入っているデータを取得
-				List<Map<String, Object>> dataParamList = skf2060Sc001SharedService.getDataParamList(itiranFlg, shainNo, applNo);
+				List<Map<String, Object>> dataParamList = candidateDto.getListTableData();
 				List<Map<String, Object>> checkDataParamList = new ArrayList<Map<String, Object>>();
 				for(int i = 0; i < candidateDto.getTeijiVal().length; i++){
 					int checkDataNum = Integer.parseInt(candidateDto.getTeijiVal()[i]);
 					checkDataParamList.add(dataParamList.get(checkDataNum));
+					long candidateNo = (long)dataParamList.get(checkDataNum).get("candidateNo");
+					
+					LogUtils.debugByMsg("チェックされた物件の借上候補物件番号："+candidateNo);
+					
+					// データ削除排他チェック
+					Skf2060TKariageBukken data = new Skf2060TKariageBukken();
+					Skf2060TKariageBukkenKey key = new Skf2060TKariageBukkenKey();
+					key.setCompanyCd(companyCd);
+					key.setCandidateNo(candidateNo);
+					data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+					if(data == null){
+						ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1134, "");
+						throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
+					}
 				}
+				
 				//借上候補物件提示明細テーブルに情報を登録
 				for(int j = 0; j < checkDataParamList.size(); j++){
 					boolean kariageTeijiDetailCheck = skf2060Sc001SharedService.insertKatiageTeijiDetail(companyCd, applNo, teijiKaisu, (long)checkDataParamList.get(j).get("candidateNo"), (String)checkDataParamList.get(j).get("shatakuName"), (String)checkDataParamList.get(j).get("address"), (String)checkDataParamList.get(j).get("money"), 
@@ -334,9 +383,12 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 					key.setCompanyCd(companyCd);
 					key.setCandidateNo((long)checkDataParamList.get(j).get("candidateNo"));
 					data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
+					String lastUpdateDateString = skfDateFormatUtils.dateFormatFromDate(data.getUpdateDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+					SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+					Date lastUpdateDate = sdf.parse(lastUpdateDateString);
 					// 楽観的排他チェック
 		            super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate + checkDataParamList.get(j).get("candidateNo").toString())
-		            		, data.getUpdateDate());
+		            		, lastUpdateDate);
 					boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd, (long)checkDataParamList.get(j).get("candidateNo"));
 					//登録に失敗した場合
 					if(!(updateKariageKohoCheck))	{

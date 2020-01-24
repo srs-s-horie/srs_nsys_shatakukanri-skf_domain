@@ -5,8 +5,10 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc002;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
@@ -38,7 +40,7 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 	public BaseDto index(Skf2020Sc002ConfirmDto dto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請内容を確認する", CodeConstant.C001, dto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請内容を確認", CodeConstant.C001, dto.getPageId());
 
 		// 登録処理
 		// ステータスの設定
@@ -51,6 +53,11 @@ public class Skf2020Sc002ConfirmService extends BaseServiceAbstract<Skf2020Sc002
 		if (!skf2020Sc002SharedService.saveInfo(applInfo, dto)) {
 			return dto;
 		}
+
+		// 排他制御用の値を再設定
+		skf2020Sc002SharedService.setApplHistoryUpdateDate(dto);
+		skf2020Sc002SharedService.setBihinHenkyakuUpdateDate(dto);
+		skf2020Sc002SharedService.setNyukyoChoshoUpdateDate(dto);
 
 		// フォームデータを設定
 		dto.setPrePageId(dto.getPageId());

@@ -5,17 +5,55 @@ package jp.co.c_nexco.skf.skf3050.domain.dto.skf3050Sc002common;
 
 import java.util.*;
 
-import jp.co.c_nexco.skf.skf3050.domain.dto.common.Skf305020CommonDto;
+import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf3050Sc002CommonDto 月次運用管理画面の同期共通Dto
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3050Sc002CommonDto extends Skf305020CommonDto {
+public class Skf3050Sc002CommonDto extends FileDownloadDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
+	
+	/** ドロップダウンリスト */
+	private List<Map<String, Object>> dropDownList;
+	/** 月次処理状況グリッド */
+	private List<Map<String, Object>> getujiGrid;
+	
+	/**
+	 * hidden 項目
+	 */
+	/** 実行指示予定処理年月 */
+	private String hdnJikkouShijiYoteiNengetsu;
+	/** 実行指示予定カラム */
+	private String hdnJikkouShijiYoteiShoriCol;
+	/** 実行指示予定インデックス */
+	private String hdnJikkouShijiYoteiShoriIdx;
+	/** 選択された「対象年度」（ドロップダウン） */
+	private String hdnSelectedTaisyonendo;
+	/** 「仮計算」ボタン非活性判定用 */
+	private boolean hdnBtnKariKeisanDisabled;
+	/** 「締め処理」ボタン非活性判定用 */
+	private boolean hdnBtnShimeShoriDisabled;
+	/** 「給与連携データ作成」ボタン非活性判定用 */
+	private boolean hdnBtnRenkeiDataSakuseiDisabled;
+	/** 「締め解除」ボタン非活性判定用 */
+	private boolean hdnBtnShimeKaijoDisabled;
+	/** 「給与連携データ確定」ボタン非活性判定用 */
+	private boolean hdnBtnRenkeiDataKakuteiDisabled;
+	/** 「仮計算」ボタン押下時のメッセージ */
+	private String hdnKariKeisanBtnMsg;
+	/** 「締め処理」ボタン押下時のメッセージ */
+	private String hdnShimeShoriBtnMsg;
+	/** 「給与連携データ作成」ボタン押下時のメッセージ */
+	private String hdnRenkeiDataSakuseiBtnMsg;
+	/** 「締め解除」ボタン押下時のメッセージ */
+	private String hdnShimeKaijoBtnMsg;
+	/** 「給与連携データ確定」ボタン押下時のメッセージ */
+	private String hdnRenkeiDataKakuteiBtnMsg;
 	
 }

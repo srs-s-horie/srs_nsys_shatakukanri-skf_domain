@@ -3,9 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001InsertKariageDto;
 
@@ -27,6 +33,8 @@ public class Skf2060Sc001InsertKariageService extends BaseServiceAbstract<Skf206
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
 	
 	private String companyCd = CodeConstant.C001;
 	
@@ -66,6 +74,15 @@ public class Skf2060Sc001InsertKariageService extends BaseServiceAbstract<Skf206
 		List<Map<String, Object>> dataParamList = new ArrayList<Map<String, Object>>();
 		boolean itiranFlg = true;
 		dataParamList = skf2060Sc001SharedService.getDataParamList(itiranFlg, insertDto.getShainNo(), insertDto.getApplNo());
+		
+		//更新日を設定
+		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
+		for(Map<String, Object> dataParam:dataParamList){
+			SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			Date lastUpdateDate = sdf.parse(dataParam.get("lastUpdateDate").toString());
+			lastUpdateDateMap.put(insertDto.KariageBukkenLastUpdateDate + dataParam.get("candidateNo").toString(), lastUpdateDate);
+		}
+		
 		insertDto.setListTableData(dataParamList);
 		
 		return insertDto;

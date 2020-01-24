@@ -60,6 +60,11 @@ public class Skf3090Sc008InitService extends BaseServiceAbstract<Skf3090Sc008Ini
 		// 操作ガイドの設定
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
 		
+		// 項目初期化
+		initDto.setOpenDateBox(CodeConstant.NONE);
+		initDto.setNote(CodeConstant.NONE);
+
+		
 		//更新日を設定
 		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
  		

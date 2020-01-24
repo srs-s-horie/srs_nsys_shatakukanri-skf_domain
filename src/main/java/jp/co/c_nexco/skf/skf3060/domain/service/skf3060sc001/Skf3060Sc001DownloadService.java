@@ -31,8 +31,9 @@ import jp.co.c_nexco.skf.skf3060.domain.service.skf3060sc001.Skf3060Sc001SharedS
 import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060sc001.Skf3060Sc001DownloadDto;
 
 /**
- * 事業領域名マスタ登録画面のDownloadサービス処理クラス。　 
+ * Skf3060Sc001DownloadService 事業領域名マスタ登録画面のDownloadサービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3060Sc001DownloadService extends BaseServiceAbstract<Skf3060Sc001DownloadDto> {

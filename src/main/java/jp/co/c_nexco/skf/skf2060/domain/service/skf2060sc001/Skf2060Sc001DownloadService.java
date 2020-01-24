@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -15,6 +17,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001DownloadDto;
 
@@ -29,9 +32,14 @@ public class Skf2060Sc001DownloadService extends BaseServiceAbstract<Skf2060Sc00
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
 	
 	private String companyCd = CodeConstant.C001;
-	private String fileName = "skf2060.skf2060_sc001.FileId";
+	@Value("${skf2060.skf2060_sc001.preFileName}")
+	private String preFileName;
+	@Value("${skf2060.skf2060_sc001.fileStartLine}")
+	private Integer fileStartLine;
 	
 
 	/**
@@ -62,14 +70,51 @@ public class Skf2060Sc001DownloadService extends BaseServiceAbstract<Skf2060Sc00
 		//CSVデータ作成
 		List<String[]> rowdatas = new ArrayList<String[]>();
 		for(Map<String, Object> mapData : dataParamList){
-			
-			String[] csvData = new String[]{mapData.get("insertDate").toString(), (String)mapData.get("candidateDate"), mapData.get("shatakuName").toString(),
-					mapData.get("address").toString(), mapData.get("attachedName").toString()};
+			String[] csvData = new String[4];
+			//提示ステータス
+			csvData[0] = "";
+			if(mapData.get("teijiFlg") != null){
+				String teijiStatus = "";
+				switch(mapData.get("teijiFlg").toString()){
+				case "0":
+					teijiStatus = "提示可";
+					break;
+				case "1":
+					teijiStatus = "提示中";
+					break;
+				case "2":
+					teijiStatus = "選択済";
+					break;				
+				}
+				csvData[0] = teijiStatus;
+			}
+			//登録日
+			csvData[1] = "";
+			if(mapData.get("insertDate") != null){
+				csvData[1] = skfDateFormatUtils.dateFormatFromString(mapData.get("insertDate").toString(), "yyyyMMdd");
+			}
+			//借上所在地
+			csvData[2] = "";
+			if(mapData.get("shatakuName") != null){
+				csvData[2] = mapData.get("shatakuName").toString();
+			}
+			//社宅所在地
+			csvData[3] = "";
+			if(mapData.get("address") != null){
+				csvData[3] = mapData.get("address").toString();
+			}
 			rowdatas.add(csvData);
 		}
-		//CSV出力を行う
-		FileOutput.fileOutputCsv(rowdatas, fileName, "skf2060fl001", 1, null, downloadDto);
 		
+		List<String> messageList = new ArrayList<String>();
+		
+		String fileName = DateTime.now().toString("YYYYMMddHHmmss") + preFileName;
+		
+		//CSV出力を行う
+		//SkfFileOutputUtils.fileOutputCsv(rowdatas, "skf2060.skf2060_sc001.templateFileName", "skf2060fl001", fileStartLine, messageList, null);
+		FileOutput.fileOutputCsv(rowdatas, "skf2060.skf2060_sc001.templateFileName", "skf2060fl001", 1, messageList, downloadDto);
+		downloadDto.setUploadFileName(fileName);
+
 		return downloadDto;
 	}
 	

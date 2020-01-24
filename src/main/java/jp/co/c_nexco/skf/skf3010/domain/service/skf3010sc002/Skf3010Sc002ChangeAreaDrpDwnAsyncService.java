@@ -13,6 +13,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeAreaDrpDwnAsyncDto;
 
@@ -39,7 +40,7 @@ public class Skf3010Sc002ChangeAreaDrpDwnAsyncService
 	public AsyncBaseDto index(Skf3010Sc002ChangeAreaDrpDwnAsyncDto asyncDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("地域区分変更", CodeConstant.C001, asyncDto.getLocalPrePageId());
+		skfOperationLogUtils.setAccessLog("地域区分変更", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 		// デバッグログ
 		LogUtils.debugByMsg("地域区分変更");
 		/** DTO設定用 */

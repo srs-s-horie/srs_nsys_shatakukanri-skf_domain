@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -57,14 +59,14 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 	@Override
 	public Skf2030Sc001ApplyDto index(Skf2030Sc001ApplyDto applyDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("申請処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("申請", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
 
 		// タイトル設定
 		applyDto.setPageTitleKey(MessageIdConstant.SKF2030_SC001_TITLE);
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("status", applyDto.getSendApplStatus());
+		applInfo.put("status", applyDto.getApplStatus());
 		applInfo.put("applNo", applyDto.getApplNo());
 		applInfo.put("applId", applyDto.getApplId());
 		applInfo.put("shainNo", applyDto.getHdnShainNo());

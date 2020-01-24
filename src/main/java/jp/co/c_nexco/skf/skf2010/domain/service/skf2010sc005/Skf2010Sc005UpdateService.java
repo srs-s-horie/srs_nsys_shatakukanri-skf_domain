@@ -1,12 +1,13 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
@@ -45,7 +46,7 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 	@Override
 	public BaseDto index(Skf2010Sc005UpdateDto updDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("一括承認処理開始", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
+		skfOperationLogUtils.setAccessLog("一括承認する", CodeConstant.C001, FunctionIdConstant.SKF2010_SC005);
 
 		// 申請情報履歴更新処理
 		updateApplStatus(updDto);
@@ -117,7 +118,8 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1007);
 			} else if (tApplHistoryData.size() > Integer.parseInt(searchMaxCount)) {
 				// 検索結果表示最大数以上
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1002, "最大件数");
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.W_SKF_1002, "1000", "条件を変更してください。");
+				return rtnList;
 			}
 		}
 

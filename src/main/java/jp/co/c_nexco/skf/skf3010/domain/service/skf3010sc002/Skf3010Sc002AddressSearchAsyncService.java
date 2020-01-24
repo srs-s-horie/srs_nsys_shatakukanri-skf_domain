@@ -23,6 +23,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AddressSearchAsyncDto;
 
 
@@ -35,8 +36,9 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AddressSear
  */
 @Service
 public class Skf3010Sc002AddressSearchAsyncService extends AsyncBaseServiceAbstract<Skf3010Sc002AddressSearchAsyncDto> {
-	
-	
+
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3010Sc002GetZipToAddressExpRepository skf3010Sc002GetZipToAddressExpRepository;
 	@Autowired
@@ -54,7 +56,8 @@ public class Skf3010Sc002AddressSearchAsyncService extends AsyncBaseServiceAbstr
 	public AsyncBaseDto index(Skf3010Sc002AddressSearchAsyncDto asyncDto) throws Exception {
 
 		// Debugログで出力
-		LogUtils.debugByMsg("基本情報-郵便番号：" + asyncDto.getZipCd());
+		LogUtils.debugByMsg("基本情報-郵便番号検索：" + asyncDto.getZipCd());
+		skfOperationLogUtils.setAccessLog("基本情報-住所検索", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 		//
 		asyncDto.setZipCdErr(CodeConstant.DOUBLE_QUOTATION);
 		// 都道府県リスト

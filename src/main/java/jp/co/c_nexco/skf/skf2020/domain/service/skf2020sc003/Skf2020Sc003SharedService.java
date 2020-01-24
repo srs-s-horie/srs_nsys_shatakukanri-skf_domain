@@ -28,8 +28,10 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetApplHistoryInfoForUpdateExpRepository;
@@ -43,11 +45,13 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -65,6 +69,9 @@ import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc003common.Skf2020Sc003CommonDto;
 
 /**
@@ -89,9 +96,10 @@ public class Skf2020Sc003SharedService {
 	private final String BIHIN_STATE_SONAETSUKE = "備付";
 
 	// 排他処理用
-	private final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
-	private final String BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_kibo_shinsei_UpdateDate";
-	private final String BIHIN_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_UpdateDate";
+	public final String APPL_HISTORY_KEY_LAST_UPDATE_DATE = "skf2010_t_appl_history_UpdateDate";
+	public final String SHATAKU_CHOSHO_TSUCHI_UPDATE_DATE = "Skf2020TShatakuChoshoTsuchiUpdateDate";
+	public final String BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_kibo_shinsei_UpdateDate";
+	public final String BIHIN_KEY_LAST_UPDATE_DATE = "skf2030_t_bihin_UpdateDate";
 
 	@Autowired
 	private Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
@@ -123,6 +131,12 @@ public class Skf2020Sc003SharedService {
 	private Skf2030TBihinRepository skf2030TBihinRepository;
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
+	@Autowired
+	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
@@ -142,6 +156,8 @@ public class Skf2020Sc003SharedService {
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
+	@Autowired
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 
 	public void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
 		menuScopeSessionBean = bean;
@@ -200,6 +216,16 @@ public class Skf2020Sc003SharedService {
 		// 申請番号取得
 		String applNo = dto.getApplNo();
 
+		// 排他チェック用
+		Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo = new Skf2020Sc003GetApplHistoryInfoForUpdateExp();
+		Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter param = new Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setApplNo(applNo);
+		applInfo = skf2020Sc003GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
+		if (applInfo != null) {
+			dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, applInfo.getUpdateDate());
+		}
+
 		// 申請情報の設定（社宅入居希望等調書の表示）
 		getSinseiInfo(applNo, dto);
 
@@ -213,8 +239,8 @@ public class Skf2020Sc003SharedService {
 		}
 
 		// 提示情報の設定
-		String shainNo = dto.getShainNo();
 		dto.setMaskPattern(CodeConstant.NONE);
+		String shainNo = dto.getShainNo();
 		if (!setTeijiDataInfo(shainNo, applNo, dto)) {
 			// 備品申請要否の非活性制御
 			// 備品非表示制御
@@ -222,7 +248,6 @@ public class Skf2020Sc003SharedService {
 			dto.setMaskPattern("TeijiNG");
 		}
 		dto.setBihinVisible(bihinVisible);
-
 		if (!NfwStringUtils.isEmpty(shainNo)) {
 			setBihinInfo(applNo, dto);
 		}
@@ -246,6 +271,7 @@ public class Skf2020Sc003SharedService {
 	public boolean saveApplInfo(String newStatus, Skf2020Sc003CommonDto dto, Map<String, String> errorMsg) {
 		String shainNo = dto.getShainNo();
 		String applNo = dto.getApplNo();
+		String applId = dto.getApplId();
 
 		Date operationDate = new Date();
 
@@ -336,7 +362,16 @@ public class Skf2020Sc003SharedService {
 			return false;
 		}
 
-		// TODO 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
+		// 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = this.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, newStatus, applId,
+				FunctionIdConstant.SKF2020_SC003);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
+		if (resultBatch != null) {
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(dto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
+
 		return true;
 	}
 
@@ -377,7 +412,7 @@ public class Skf2020Sc003SharedService {
 		}
 
 		// 排他処理用最終更新日時保持
-		dto.addLastUpdateDate("Skf2020TShatakuChoshoTsuchiUpdateDate", shatakuNyukyoKiboInfo.getLastUpdateDate());
+		dto.addLastUpdateDate(SHATAKU_CHOSHO_TSUCHI_UPDATE_DATE, shatakuNyukyoKiboInfo.getLastUpdateDate());
 
 		// 申請内容
 		// 申請状況
@@ -588,12 +623,12 @@ public class Skf2020Sc003SharedService {
 			dto.setNowShatakuMenseki(shatakuNyukyoKiboInfo.getNowShatakuMenseki() + SkfCommonConstant.SQUARE_MASTER);
 		}
 		// 駐車場 １台目 保管場所
-		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingArea())) {
-			dto.setParking1stPlace(shatakuNyukyoKiboInfo.getParkingArea());
+		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNowParkingArea())) {
+			dto.setParking1stPlace(shatakuNyukyoKiboInfo.getNowParkingArea());
 		}
 		// 駐車場 ２台目 保管場所
-		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getParkingArea2())) {
-			dto.setParking2stPlace(shatakuNyukyoKiboInfo.getParkingArea2());
+		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNowParkingArea2())) {
+			dto.setParking2stPlace(shatakuNyukyoKiboInfo.getNowParkingArea2());
 		}
 		// 特殊事情など
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getTokushuJijo())) {
@@ -661,8 +696,24 @@ public class Skf2020Sc003SharedService {
 			dto.setGender(genderText);
 		}
 		// 備品希望申請を希望する/しない ラジオボタン
-		if (NfwStringUtils.isEmpty(dto.getBihinKibo())
-				&& !NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getBihinKibo())) {
+		if (NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getBihinKibo())) {
+			if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getHitsuyoShataku())) {
+				// 必要とする社宅
+				switch (shatakuNyukyoKiboInfo.getHitsuyoShataku()) {
+				// 単身または独身の場合
+				case CodeConstant.TANSHIN:
+				case CodeConstant.DOKUSHIN:
+					dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO);
+					break;
+				// それ以外の場合
+				default:
+					dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
+					break;
+				}
+			} else {
+				dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
+			}
+		} else {
 			dto.setBihinKibo(shatakuNyukyoKiboInfo.getBihinKibo());
 		}
 
@@ -748,6 +799,7 @@ public class Skf2020Sc003SharedService {
 		String kyoekihiKyogichuFlg = CodeConstant.NONE;
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getKyoekihiPersonKyogichuFlg())) {
 			kyoekihiKyogichuFlg = teijiDataInfo.getKyoekihiPersonKyogichuFlg();
+			dto.setKyoekihiKyogichuFlg(kyoekihiKyogichuFlg);
 		}
 		// 社宅情報 共益費
 		// 個人負担共益費協議中フラグが1だったら「協議中」を表示する
@@ -762,7 +814,7 @@ public class Skf2020Sc003SharedService {
 		}
 		// 社宅情報 入居可能日
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getNyukyoYoteiDate())) {
-			dto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getNyukyoYoteiDate(),
+			dto.setNyukyoKanoDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getNyukyoYoteiDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 		// 社宅情報 寮長・自治会長 部屋名称
@@ -1157,15 +1209,133 @@ public class Skf2020Sc003SharedService {
 
 			if (NfwStringUtils.isNotEmpty(bihinKiboKbn)) {
 				// 備品希望申請可否を入居希望調書テーブルに書き込む
-				Skf2020TNyukyoChoshoTsuchi nyukyoChoshoTsuchiInfo = new Skf2020TNyukyoChoshoTsuchi();
-				nyukyoChoshoTsuchiInfo.setCompanyCd(companyCd);
-				nyukyoChoshoTsuchiInfo.setApplNo(applNo);
-				nyukyoChoshoTsuchiInfo.setBihinKibo(bihinKiboKbn);
-				returnValue = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKeySelective(nyukyoChoshoTsuchiInfo);
-
+				returnValue = this.updateBihinKiboKbnInfo(applNo, bihinKiboKbn, dto);
 			}
 
 		}
+		return returnValue;
+	}
+
+	/**
+	 * 備品希望申請可否を入居希望調書テーブルに書き込む<br />
+	 * 提示データの更新も同時に行う
+	 * 
+	 * @param applNo
+	 * @param bihinKiboKbn
+	 * @param dto
+	 * @return
+	 */
+	private int updateBihinKiboKbnInfo(String applNo, String bihinKiboKbn, Skf2020Sc003CommonDto dto) {
+		Skf2020TNyukyoChoshoTsuchi nyukyoChoshoTsuchiInfo = new Skf2020TNyukyoChoshoTsuchi();
+		Skf2020TNyukyoChoshoTsuchiKey key = new Skf2020TNyukyoChoshoTsuchiKey();
+		key.setCompanyCd(companyCd);
+		key.setApplNo(applNo);
+		nyukyoChoshoTsuchiInfo = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
+
+		// プライマリキー
+		// 会社コード
+		nyukyoChoshoTsuchiInfo.setCompanyCd(companyCd);
+		// 申請書類管理番号
+		nyukyoChoshoTsuchiInfo.setApplNo(applNo);
+
+		// 更新対象
+		// 備品希望区分
+		nyukyoChoshoTsuchiInfo.setBihinKibo(bihinKiboKbn);
+		// 新入居社宅所在地
+		nyukyoChoshoTsuchiInfo.setNewShozaichi(dto.getNewShozaichi());
+		// 新入居社宅名
+		nyukyoChoshoTsuchiInfo.setNewShatakuName(dto.getNewShatakuName());
+		// 新入居室番号
+		nyukyoChoshoTsuchiInfo.setNewShatakuNo(dto.getNewShatakuNo());
+		// 新入居規格（貸与規格）
+		nyukyoChoshoTsuchiInfo.setNewShatakuKikaku(dto.getNewShatakuKikaku());
+		// 新入居面積（貸与面積）
+		if (NfwStringUtils.isNotEmpty(dto.getNewShatakuMenseki())) {
+			String newShatakuMenseki = dto.getNewShatakuMenseki().replace(SkfCommonConstant.SQUARE_MASTER,
+					CodeConstant.NONE);
+			nyukyoChoshoTsuchiInfo.setNewShatakuMenseki(newShatakuMenseki);
+		} else {
+			nyukyoChoshoTsuchiInfo.setNewShatakuMenseki(null);
+		}
+		// 新入居使用料
+		String rental = dto.getNewRental();
+		if (NfwStringUtils.isNotEmpty(rental)) {
+			rental = rental.replace(SkfCommonConstant.FORMAT_EN, CodeConstant.NONE).replace(CodeConstant.COMMA,
+					CodeConstant.NONE);
+			nyukyoChoshoTsuchiInfo.setNewRental(rental);
+		} else {
+			nyukyoChoshoTsuchiInfo.setNewRental(null);
+		}
+
+		// 新共益費
+		String kyoekihiKyogichuFlg = dto.getKyoekihiKyogichuFlg();
+		if (CheckUtils.isEqual(kyoekihiKyogichuFlg, SkfCommonConstant.KYOGICHU)) {
+			nyukyoChoshoTsuchiInfo.setNewKyoekihi(CodeConstant.STRING_ZERO);
+		} else {
+			if (NfwStringUtils.isNotEmpty(dto.getNewKyoekihi())) {
+				String kyoekihi = dto.getNewKyoekihi().replace(SkfCommonConstant.FORMAT_EN, CodeConstant.NONE)
+						.replace(CodeConstant.COMMA, CodeConstant.NONE);
+				nyukyoChoshoTsuchiInfo.setNewKyoekihi(kyoekihi);
+			}
+		}
+		// 入居可能日
+		nyukyoChoshoTsuchiInfo.setNyukyoKanoDate(dto.getNyukyoKanoDate());
+		// 自動車の保管場所
+		nyukyoChoshoTsuchiInfo.setParkingArea(dto.getParkingAddress1());
+		// 自動車の位置番号
+		nyukyoChoshoTsuchiInfo.setCarIchiNo(dto.getCarIchiNo1());
+		// 保管場所使用料
+		if (NfwStringUtils.isNotEmpty(dto.getCarIchiNo1())) {
+			String parkingRental1 = dto.getParkingRental1();
+			if (NfwStringUtils.isNotEmpty(parkingRental1)) {
+				parkingRental1 = parkingRental1.replace(SkfCommonConstant.FORMAT_EN, CodeConstant.NONE)
+						.replace(CodeConstant.COMMA, CodeConstant.NONE);
+				nyukyoChoshoTsuchiInfo.setParkingRental(parkingRental1);
+			}
+		} else {
+			nyukyoChoshoTsuchiInfo.setParkingRental(null);
+		}
+		// 保管場所使用開始可能日
+		if (NfwStringUtils.isNotEmpty(dto.getParking1StartDate())) {
+			String parkingUseDate1 = skfDateFormatUtils.dateFormatFromString(dto.getParking1StartDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+			nyukyoChoshoTsuchiInfo.setParkingKanoDate(parkingUseDate1);
+		}
+		// 自動車の保管場所2
+		nyukyoChoshoTsuchiInfo.setParkingArea2(dto.getParkingAddress2());
+		// 自動車の位置番号2
+		nyukyoChoshoTsuchiInfo.setCarIchiNo2(dto.getCarIchiNo2());
+		// 保管場所使用料2
+		if (NfwStringUtils.isNotEmpty(dto.getCarIchiNo2())) {
+			String parkingRental2 = dto.getParkingRental2();
+			if (NfwStringUtils.isNotEmpty(parkingRental2)) {
+				parkingRental2 = parkingRental2.replace(SkfCommonConstant.FORMAT_EN, CodeConstant.NONE)
+						.replace(CodeConstant.COMMA, CodeConstant.NONE);
+				nyukyoChoshoTsuchiInfo.setParkingRental2(parkingRental2);
+			}
+		} else {
+			nyukyoChoshoTsuchiInfo.setParkingRental2(null);
+		}
+		// 保管場所使用開始可能日2
+		if (NfwStringUtils.isNotEmpty(dto.getParking2StartDate())) {
+			String parkingUseDate2 = skfDateFormatUtils.dateFormatFromString(dto.getParking2StartDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+			nyukyoChoshoTsuchiInfo.setParkingKanoDate2(parkingUseDate2);
+		}
+		// 社宅管理番号
+		String shatakuKanriNo = dto.getNewShatakuKanriNo();
+		if (NfwStringUtils.isNotEmpty(shatakuKanriNo)) {
+			nyukyoChoshoTsuchiInfo.setShatakuNo(Long.parseLong(shatakuKanriNo));
+		}
+		// 部屋管理番号
+		String roomKanriNo = dto.getNewShatakuRoomKanriNo();
+		if (NfwStringUtils.isNotEmpty(roomKanriNo)) {
+			nyukyoChoshoTsuchiInfo.setRoomKanriNo(Long.parseLong(roomKanriNo));
+		}
+		// 希望可否区分
+
+		int returnValue = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKey(nyukyoChoshoTsuchiInfo);
+
 		return returnValue;
 	}
 
@@ -1746,6 +1916,38 @@ public class Skf2020Sc003SharedService {
 			return 0;
 		}
 		return bihinShinseiList.size();
+	}
+
+	/**
+	 * 社宅連携処理を実施する
+	 * 
+	 * @param menuScopeSessionBean
+	 * @param applNo
+	 * @param applStatus
+	 * @param applId
+	 * @param pageId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String shainNo, String applNo,
+			String applStatus, String applId, String pageId) {
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String userId = loginUserInfoMap.get("userCd");
+		// 排他チェック用データ取得
+		Map<String, Object> forUpdateObject = (Map<String, Object>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003);
+
+		List<String> resultBatch = new ArrayList<String>();
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0100 = skf2020Fc001NyukyoKiboSinseiDataImport
+				.forUpdateMapDownCaster(forUpdateObject);
+		skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0100);
+
+		// 連携処理開始
+		resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, CodeConstant.NONE,
+				applStatus, userId, pageId);
+
+		return resultBatch;
 	}
 
 }

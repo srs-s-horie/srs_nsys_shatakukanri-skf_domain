@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -46,7 +47,7 @@ public class Skf2050Sc001AgreeService extends BaseServiceAbstract<Skf2050Sc001Ag
 		// タイトル設定
 		agreeDto.setPageTitleKey(MessageIdConstant.SKF2050_SC001_TITLE);
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("同意する処理開始", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
+		skfOperationLogUtils.setAccessLog("同意する", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
 
 		// 入力チェック
 		boolean validateResult = checkValidate(agreeDto);

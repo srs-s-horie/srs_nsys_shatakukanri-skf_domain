@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -57,7 +59,7 @@ public class Skf2030Sc001CompleteService extends BaseServiceAbstract<Skf2030Sc00
 	@Override
 	public Skf2030Sc001CompleteDto index(Skf2030Sc001CompleteDto dto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("入力内容をクリア処理開始", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
+		skfOperationLogUtils.setAccessLog("搬入完了日相関チェックOK", CodeConstant.C001, FunctionIdConstant.SKF2030_SC001);
 
 		// タイトル設定
 		dto.setPageTitleKey(MessageIdConstant.SKF2030_SC001_TITLE);

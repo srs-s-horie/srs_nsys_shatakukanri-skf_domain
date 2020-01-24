@@ -2,9 +2,11 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc001;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc001.Skf2010Sc001GetAllShainInfoExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -35,7 +37,7 @@ public class Skf2010Sc001SearchAsyncService extends AsyncBaseServiceAbstract<Skf
 	@Override
 	public AsyncBaseDto index(Skf2010Sc001SearchAsyncDto searchDto) throws Exception {
 		// 操作ログ登録
-		skfOperationLogUtils.setAccessLog("検索処理開始", companyCd, FunctionIdConstant.SKF2010_SC001);
+		skfOperationLogUtils.setAccessLog("検索", companyCd, FunctionIdConstant.SKF2010_SC001);
 
 		List<Skf2010Sc001GetAllShainInfoExp> shainInfoList = new ArrayList<Skf2010Sc001GetAllShainInfoExp>();
 

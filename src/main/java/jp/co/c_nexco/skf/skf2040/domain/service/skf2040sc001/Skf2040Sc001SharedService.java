@@ -7,9 +7,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinHenkyakuApplNoInfoExp;
@@ -392,7 +394,7 @@ public class Skf2040Sc001SharedService {
 			// 退居届情報の取得に失敗した場合はエラーメッセージを表示してボタンを使用不可にする
 			this.setDisableBtn(dto);
 			LogUtils.debugByMsg("該当する退居届情報が存在しません。");
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return;
 		}
 		this.convTaikyoEntityToDto(dto, taikyoInfo);
@@ -892,7 +894,7 @@ public class Skf2040Sc001SharedService {
 		// 会社コード
 		setValue.setCompanyCd(CodeConstant.C001);
 		// 申請書類番号
-		setValue.setApplNo(dto.getApplNo());
+		setValue.setApplNo(bihinHenkaykuShinseiApplNo);
 		// 更新SQLでは不要
 		if (isNewRecord) {
 
@@ -917,7 +919,7 @@ public class Skf2040Sc001SharedService {
 		// 申請年月日
 		setValue.setApplDate(applDate);
 		// 退居届書類管理番号
-		setValue.setTaikyoApplNo(bihinHenkaykuShinseiApplNo);
+		setValue.setTaikyoApplNo(dto.getApplNo());
 		// 社宅管理番号
 		setValue.setShatakuNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuKanriNo())));
 		// 部屋管理番号

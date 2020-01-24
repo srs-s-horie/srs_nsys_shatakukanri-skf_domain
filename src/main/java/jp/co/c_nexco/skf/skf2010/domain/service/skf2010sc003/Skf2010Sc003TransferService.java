@@ -5,7 +5,10 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
@@ -15,7 +18,9 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003TransferDto;
 
 /**
@@ -25,6 +30,12 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003TransferDto
  */
 @Service
 public class Skf2010Sc003TransferService extends BaseServiceAbstract<Skf2010Sc003TransferDto> {
+	
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
 
 	/**
 	 * サービス処理を行う。
@@ -35,6 +46,9 @@ public class Skf2010Sc003TransferService extends BaseServiceAbstract<Skf2010Sc00
 	 */
 	@Override
 	public BaseDto index(Skf2010Sc003TransferDto transDto) throws Exception {
+		// 操作ログを出力する
+		skfOperationLogUtils.setAccessLog("表示", companyCd, transDto.getPageId());
+		
 		String applId = transDto.getApplId();
 		String applNo = transDto.getApplNo();
 		String applStatus = transDto.getSendApplStatus();
@@ -65,6 +79,9 @@ public class Skf2010Sc003TransferService extends BaseServiceAbstract<Skf2010Sc00
 				break;
 			}
 		}
+		
+		// 連携用Map削除
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC003);
 
 		// フォームデータを設定
 		transDto.setPrePageId(FunctionIdConstant.SKF2010_SC003);

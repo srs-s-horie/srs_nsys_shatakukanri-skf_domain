@@ -6,19 +6,25 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003DeleteDto;
 
 /**
@@ -35,11 +41,20 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Value("${skf2010.skf2010_sc005.search_max_count}")
 	private String searchMaxCount;
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
+	
+	// 基準会社コード
+	private String companyCd = CodeConstant.C001;
 
 	private String pattern = "yyyyMMdd";
 
@@ -52,6 +67,8 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 	 */
 	@Override
 	public BaseDto index(Skf2010Sc003DeleteDto delDto) throws Exception {
+		// 操作ログを出力する
+	    skfOperationLogUtils.setAccessLog("削除", companyCd, delDto.getPageId());
 
 		delDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
@@ -69,8 +86,15 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 			throwBusinessExceptionIfErrors(delDto.getResultMessages());
 		}
 
-		// TODO 社宅管理データ連携処理実行
-
+		// 社宅管理データ連携処理実行（データ連携用Mapは消さない）
+		String afterApplStatus = skf2010Sc003SharedService.getApplStatus(applNo);
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC003);
+		if(resultBatch != null){
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(delDto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
+		
 		// 表示データ取得
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(delDto);
 		if (resultList == null || resultList.size() <= 0) {

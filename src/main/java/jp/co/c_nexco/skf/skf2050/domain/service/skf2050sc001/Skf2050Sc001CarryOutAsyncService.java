@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -48,7 +49,7 @@ public class Skf2050Sc001CarryOutAsyncService extends AsyncBaseServiceAbstract<S
 	@Override
 	public AsyncBaseDto index(Skf2050Sc001CarryOutAsyncDto coDto) throws Exception {
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("搬出完了処理開始", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
+		skfOperationLogUtils.setAccessLog("搬出完了", CodeConstant.C001, FunctionIdConstant.SKF2050_SC001);
 
 		// 入力チェック
 		boolean validateResult = checkValidate(coDto);

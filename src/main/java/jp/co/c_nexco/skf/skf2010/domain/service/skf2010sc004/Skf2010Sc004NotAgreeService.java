@@ -4,14 +4,18 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc004;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -19,9 +23,11 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004NotAgreeDto;
 
 /**
@@ -41,6 +47,10 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	private SkfMailUtils skfMailUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -58,7 +68,7 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	@Override
 	public Skf2010Sc004NotAgreeDto index(Skf2010Sc004NotAgreeDto notAgreeDto) throws Exception {
 		// 操作ログの出力
-		skfOperationLogUtils.setAccessLog("「同意しない」", companyCd, FunctionIdConstant.SKF2010_SC004);
+		skfOperationLogUtils.setAccessLog("同意しない", companyCd, FunctionIdConstant.SKF2010_SC004);
 
 		// タイトル設定
 		notAgreeDto.setPageTitleKey(MessageIdConstant.SKF2010_SC004_TITLE);
@@ -105,7 +115,22 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
 				shainNo, CodeConstant.NONE, urlBase);
 
-		// TODO 社宅管理データ連携処理実行
+		// 社宅管理データ連携処理実行
+		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
+		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
+		if(tApplHistoryData == null){
+			ServiceHelper.addErrorResultMessage(notAgreeDto, null, MessageIdConstant.E_SKF_1073);
+			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
+			return notAgreeDto;
+		}
+		String afterApplStatus = tApplHistoryData.getApplStatus();
+		List<String> resultBatch = new ArrayList<String>();
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
+		if(resultBatch != null){
+			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(notAgreeDto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+		}
 
 		// ページ遷移先は「申請状況一覧」
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);
@@ -186,12 +211,12 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	private boolean validateReason(Skf2010Sc004NotAgreeDto agreeDto) {
 		String reasonText = agreeDto.getCommentNote();
 		if (reasonText == null || CheckUtils.isEmpty(reasonText)) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1048, "承認者へのコメント");
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1048, "承認者へのコメント");
 			return false;
 		}
 		int byteCnt = reasonText.getBytes(Charset.forName("UTF-8")).length;
 		if (byteCnt >= 4000) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
 			return false;
 		}
 		return true;

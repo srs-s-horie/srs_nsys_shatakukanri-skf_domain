@@ -10,9 +10,11 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DownloadDto;
 
 /**
@@ -24,6 +26,8 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DownloadDto
 public class Skf2010Sc009DownloadService extends BaseServiceAbstract<Skf2010Sc009DownloadDto> {
 
 	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
@@ -31,12 +35,16 @@ public class Skf2010Sc009DownloadService extends BaseServiceAbstract<Skf2010Sc00
 	@SuppressWarnings("unchecked")
 	@Override
 	protected BaseDto index(Skf2010Sc009DownloadDto dlDto) throws Exception {
+
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("添付資料表示処理", CodeConstant.C001, FunctionIdConstant.SKF2010_SC009);
+
 		// 添付資料番号
-		String attachedNo = dlDto.getAttachedNo();
+		String attachedNo = dlDto.getPopAttachedNo();
 		// 申請書類ID
-		String applId = dlDto.getApplId();
+		String applId = dlDto.getPopApplId();
 		// 借上候補物件番号
-		String candidateNo = dlDto.getCandidateNo();
+		String candidateNo = dlDto.getPopCandidateNo();
 		// 申請書類が借上候補物件の場合、専用のセッションキーに切り替える
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
 			sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
@@ -52,6 +60,8 @@ public class Skf2010Sc009DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		// 申請情報の取得を行う
 		if (attachedFileList == null || attachedFileList.size() <= 0) {
 			ServiceHelper.addErrorResultMessage(dlDto, null, MessageIdConstant.E_SKF_1067, "添付資料");
+			throwBusinessExceptionIfErrors(dlDto.getResultMessages());
+			return dlDto;
 		}
 
 		for (Map<String, Object> attachedFileMap : attachedFileList) {
@@ -63,6 +73,7 @@ public class Skf2010Sc009DownloadService extends BaseServiceAbstract<Skf2010Sc00
 			}
 		}
 
+		// ダウンロードに必要なデータをDtoに設定する
 		dlDto.setFileData(fileData);
 		dlDto.setUploadFileName(fileName);
 		dlDto.setViewPath(NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH);

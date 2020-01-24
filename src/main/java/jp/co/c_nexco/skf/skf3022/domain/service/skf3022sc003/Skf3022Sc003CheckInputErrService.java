@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -117,7 +118,7 @@ public class Skf3022Sc003CheckInputErrService
 		// 返却用リスト
 		List<Map<String, Object>> listData = new ArrayList<Map<String, Object>>();
 		// JSON文字列判定
-		if (jsonStr == null || jsonStr.length() <= 0) {
+		if (Objects.equals(jsonStr, null) || jsonStr.length() <= 0) {
 			LogUtils.debugByMsg("文字列未設定");
 			// 文字列未設定のため処理しない
 			return listData;

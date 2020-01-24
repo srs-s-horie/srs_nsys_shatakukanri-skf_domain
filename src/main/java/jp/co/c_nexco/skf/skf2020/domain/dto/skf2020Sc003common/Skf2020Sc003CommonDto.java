@@ -93,6 +93,7 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 	private String carIchiNo1;
 	// 駐車場情報 １台目 使用料（月）
 	private String parkingRental1;
+	private String parkingRental1Base;
 	// 駐車場情報 １台目 使用開始可能日
 	private String parking1StartDate;
 	// 駐車場情報 １台目 自動車の保管場所
@@ -101,6 +102,7 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 	private String carIchiNo2;
 	// 駐車場情報 １台目 使用料（月）
 	private String parkingRental2;
+	private String parkingRental2Base;
 	// 駐車場情報 １台目 使用開始可能日
 	private String parking2StartDate;
 
@@ -147,6 +149,9 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 
 	// コメント
 	private String commentNote;
+
+	// 共益費協議中フラグ
+	private String kyoekihiKyogichuFlg;
 
 	// 表示フラグ類
 	// 編集ボタン非表示フラグ

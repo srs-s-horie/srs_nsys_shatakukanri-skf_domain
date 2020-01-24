@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockContractInfoTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetParkingBlockHistroyCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuContract;
@@ -34,17 +35,17 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingB
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingContractRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002RegistDto;
-import jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc002.Skf3010Sc002SharedService;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -77,8 +78,6 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	private Skf3010MShatakuParkingContractRepository skf3010MShatakuParkingContractRepository;
 	@Autowired
 	private Skf3010Sc002GetParkingBlockContractDataExpRepository skf3010Sc002GetParkingBlockContractDataExpRepository;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	/** 定数 */
 	// 駐車場契約形態：社宅と一括
@@ -107,7 +106,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// デバッグログ
 		LogUtils.debugByMsg("保有社宅情報登録");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("保有社宅情報登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("保有社宅登録", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト
@@ -267,13 +266,13 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号取得
 		Long shatakuKanriNo = Long.parseLong(registDto.getHdnShatakuKanriNo());
 		// ユーザーID取得
-		String userName = skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName");
+		String userId = LoginUserInfoUtils.getUserCd();
 
 		/** 社宅基本更新 */
 		// 社宅管理番号設定
 		mShataku.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShataku.setUpdateUserId(userName);
+		mShataku.setUpdateUserId(userId);
 		// プログラムID設定
 		mShataku.setUpdateProgramId(pageId);
 		updateCnt = skf3010Sc002UpdateMshatakuTableDataExpRepository.updateShatakuKihon(mShataku);
@@ -286,7 +285,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号設定
 		mShatakuParking.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShatakuParking.setUpdateUserId(userName);
+		mShatakuParking.setUpdateUserId(userId);
 		// プログラムID設定
 		mShatakuParking.setUpdateProgramId(pageId);
 		updateCnt = skf3010Sc002UpdateMshatakuParkingTableDataExpRepository.updateShatakuParking(mShatakuParking);
@@ -310,7 +309,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			Long dbKanriNo = Long.parseLong(parkingBlock.get("parkingKanriNo").toString());
 			for (Skf3010MShatakuParkingBlock mShatakuParkingBlock : mShatakuParkingBlockList) {
 				// DB取得管理番号と画面から取得の管理番号を比較
-				if (dbKanriNo.equals(mShatakuParkingBlock.getParkingKanriNo())) {
+				if (Objects.equals(dbKanriNo, mShatakuParkingBlock.getParkingKanriNo())) {
 					// 存在したためループを抜ける
 					existFlg = true;
 					break;
@@ -359,7 +358,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			// 社宅管理番号設定
 			mShatakuParkingBlock.setShatakuKanriNo(shatakuKanriNo);
 			// 駐車場管理番号設定判定
-			if (mShatakuParkingBlock.getParkingKanriNo() != 0L) {
+			if (!Objects.equals(mShatakuParkingBlock.getParkingKanriNo(), 0L)) {
 				// 既存データ更新
 				updateCnt = skf3010MShatakuParkingBlockRepository.updateByPrimaryKeySelective(mShatakuParkingBlock);
 				// 更新カウント判定
@@ -502,14 +501,14 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号取得
 		Long shatakuKanriNo = skf3010Sc002SharedService.getNextShatakuKanriNo(syoriNengetu);
 		// ユーザーID取得
-		String userName = skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName");
+		String userId = LoginUserInfoUtils.getUserCd();
 
 		/** 社宅基本登録 */
 		// 社宅管理番号設定
 		mShataku.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShataku.setUpdateUserId(userName);
-		mShataku.setInsertUserId(userName);
+		mShataku.setUpdateUserId(userId);
+		mShataku.setInsertUserId(userId);
 		// プログラムID設定
 		mShataku.setUpdateProgramId(pageId);
 		mShataku.setInsertProgramId(pageId);
@@ -523,8 +522,8 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		// 社宅管理番号設定
 		mShatakuParking.setShatakuKanriNo(shatakuKanriNo);
 		// ユーザーID設定
-		mShatakuParking.setUpdateUserId(userName);
-		mShatakuParking.setInsertUserId(userName);
+		mShatakuParking.setUpdateUserId(userId);
+		mShatakuParking.setInsertUserId(userId);
 		// プログラムID設定
 		mShatakuParking.setUpdateProgramId(pageId);
 		mShatakuParking.setInsertProgramId(pageId);
@@ -658,7 +657,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			debugMessage += " 必須入力チェック - 社宅名";
 		}
 		// 地域区分
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("areaKbn") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("areaKbn"), null)
 				|| CheckUtils.isEmpty(drpDwnSelectedMap.get("areaKbn").toString())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "地域区分");
@@ -666,7 +665,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			debugMessage += " 必須入力チェック - 地域区分";
 		}
 		// 社宅区分
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("shatakuKbn") == null 
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("shatakuKbn"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("shatakuKbn").toString())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "社宅区分");
@@ -674,7 +673,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			debugMessage += " 必須入力チェック - 社宅区分";
 		}
 		// 利用区分
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("useKbn") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("useKbn"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("useKbn").toString())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "利用区分");
@@ -684,7 +683,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON, registDto);
 		}
 		// 管理会社
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("manageCompany") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("manageCompany"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("manageCompany").toString())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "管理会社");
@@ -694,7 +693,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON, registDto);
 		}
 		// 管理機関
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("manageAgency") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("manageAgency"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("manageAgency").toString())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "管理機関");
@@ -704,7 +703,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON, registDto);
 		}
 		// 管理事業領域
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("manageBusinessArea") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("manageBusinessArea"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("manageBusinessArea").toString())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "管理事業領域");
@@ -714,7 +713,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON, registDto);
 		}
 		// 社宅所在地
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("pref") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("pref"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("pref").toString())
 				|| SkfCheckUtils.isNullOrEmpty(registDto.getShatakuAddress())) {
 			isCheckOk = false;
@@ -726,7 +725,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON, registDto);
 		}
 		// 構造
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("shatakuStructure") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("shatakuStructure"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("shatakuStructure").toString())) {
 			isCheckOk = false;
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "構造");
@@ -745,7 +744,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON, registDto);
 		}
 		// 駐車場構造
-		if (drpDwnSelectedMap == null || drpDwnSelectedMap.get("parkingStructure") == null
+		if (Objects.equals(drpDwnSelectedMap, null) || Objects.equals(drpDwnSelectedMap.get("parkingStructure"), null)
 				|| SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("parkingStructure").toString())) {
 			// 駐車場構造が未選択
 			isCheckOk = false;
@@ -988,12 +987,12 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 				}
 			}catch(ParseException ex){
 				isCheckOk = false;
-				if(startDate == null){
+				if(Objects.equals(startDate, null)){
 					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約開始日");
 					registDto.setContractStartDayErr(CodeConstant.NFW_VALIDATION_ERROR);
 					debugMessage += " 形式チェック - 契約開始日 - " + registDto.getContractStartDay();
 				}
-				if(endDate == null){
+				if(Objects.equals(endDate, null)){
 					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
 					registDto.setContractEndDayErr(CodeConstant.NFW_VALIDATION_ERROR);
 					debugMessage += " 形式チェック - 契約終了日 - " + registDto.getContractEndDay();

@@ -6,8 +6,10 @@ package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc001;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -48,7 +50,7 @@ public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001
 		confirmDto.setPageTitleKey(MessageIdConstant.SKF2040_SC001_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請内容を確認する", CodeConstant.C001, confirmDto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請内容を確認", CodeConstant.C001, confirmDto.getPageId());
 
 		// 申請書情報の取得
 		skf2040Sc001SharedService.setSkfApplInfo(confirmDto);

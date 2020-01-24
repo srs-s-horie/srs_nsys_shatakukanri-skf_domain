@@ -17,8 +17,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005InitDto;
@@ -53,10 +53,10 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
-	
+
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	
+
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
 
@@ -66,15 +66,15 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 	@SuppressWarnings("unchecked")
 	@Override
 	public BaseDto index(Skf3090Sc005InitDto initDto) throws Exception {
-		
+
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
 		initDto.setPageId(FunctionIdConstant.SKF3090_SC005);
-		
+
 		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("新規", companyCd, initDto.getPrePageId());
-		}else{
+		} else {
 			/** リストテーブルから遷移 */
 			// 操作ログを出力
 			skfOperationLogUtils.setAccessLog("詳細", companyCd, initDto.getPrePageId());
@@ -98,9 +98,9 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		List<Map<String, Object>> businessAreaList = new ArrayList<Map<String, Object>>();
 
 		// 社員番号テキストボックス操作可否設定
-		String shainNoDisabled = CodeConstant.DOUBLE_QUOTATION;
+		String shainNoDisabled = "false";
 		// 削除ボタン表示設定
-		String deleteRemoveFlag = "false";
+		String deleteRemoveFlag = "true";
 
 		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
@@ -124,11 +124,15 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 			// 削除ボタン表示設定（非表示）
 			deleteRemoveFlag = "true";
 			// テキスト系の文言を初期化する
-			initDto.setShainNo(null);
-			initDto.setName(null);
-			initDto.setNameKk(null);
-			initDto.setMailAddress(null);
-			initDto.setRetireDate(null);
+			initDto.setShainNo(CodeConstant.NONE);
+			initDto.setName(CodeConstant.NONE);
+			initDto.setNameKk(CodeConstant.NONE);
+			initDto.setMailAddress(CodeConstant.NONE);
+			initDto.setOriginalCompanyCd(CodeConstant.NONE);
+			initDto.setAgencyCd(CodeConstant.NONE);
+			initDto.setAffiliation1Cd(CodeConstant.NONE);
+			initDto.setAffiliation2Cd(CodeConstant.NONE);
+			initDto.setBusinessAreaCd(CodeConstant.NONE);
 
 		} else {
 			/** リストテーブルから遷移 */
@@ -137,7 +141,7 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 
 			if (returnMap == null) {
 				// Mapがnullの場合、0件エラー表示
-				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1077);
+				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
 			} else {
 				// 画面表示するドロップダウンリストを取得
 				companyList
@@ -226,13 +230,12 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		// 退職日
 		String retireDate = resultValue.getRetireDate();
 		if (NfwStringUtils.isNotEmpty(retireDate)) {
-			retireDate = skfDateFormatUtils.dateFormatFromString(retireDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			retireDate = skfDateFormatUtils.dateFormatFromString(retireDate,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 		}
 		returnMap.put(KEY_RETIRE_DATE, retireDate);
 		// 原籍会社コード
 		returnMap.put(KEY_ORIGINAL_COMPANY_CD, resultValue.getOriginalCompanyCd());
-		// ロールID
-		returnMap.put(KEY_ROLE_ID, resultValue.getRoleId());
 		// 登録フラグ
 		returnMap.put(KEY_REGIST_FLG, resultValue.getRegistFlg());
 		// タイムスタンプ

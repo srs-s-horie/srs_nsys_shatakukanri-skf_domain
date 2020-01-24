@@ -139,7 +139,7 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, comment, annai,
 					preDto.getShainNo(), CodeConstant.NONE, urlBase);
 
-			// TODO 社宅管理データ連携処理実行
+			// 社宅管理データ連携処理実行
 			// ユーザIDの取得
 			UserContext userContext = Contexts.get(UserContext.class);
 			UserProfile profile = userContext.getUserProfile();
