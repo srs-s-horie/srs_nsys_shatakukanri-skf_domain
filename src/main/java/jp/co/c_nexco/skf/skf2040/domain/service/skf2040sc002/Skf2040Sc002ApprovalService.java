@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,10 +87,11 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		Map<String, String> userInfo = new HashMap<String, String>();
 		userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
-		String nextStatus = CodeConstant.DOUBLE_QUOTATION;
-		String mailKbn = CodeConstant.DOUBLE_QUOTATION;
-		String shoninName1 = CodeConstant.DOUBLE_QUOTATION;
-		String shoninName2 = CodeConstant.DOUBLE_QUOTATION;
+		String nextStatus = null;
+		String mailKbn = null;
+		String shoninName1 = null;
+		String shoninName2 = null;
+		Date agreDate = null;
 
 		// 次のステータスを設定する
 		switch (appDto.getApplStatus()) {
@@ -106,7 +108,9 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 			// 次のステータス、メール区分、承認者名2、承認済みを設定
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
+			shoninName1 = applInfo.getAgreName1();
 			shoninName2 = userInfo.get("userName");
+			agreDate = new Date();
 			break;
 		}
 
@@ -114,8 +118,8 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 
 		// 申請書類履歴テーブル」よりステータスを更新
 		String resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
-				appDto.getShainNo(), appDto.getApplNo(), shoninName1, shoninName2, appDto.getApplId(), applTacFlg,
-				userInfo.get("userCd"), appDto.getPageId(), applInfo.getUpdateDate(),
+				appDto.getShainNo(), appDto.getApplNo(), agreDate, shoninName1, shoninName2, appDto.getApplId(),
+				applTacFlg, userInfo.get("userCd"), appDto.getPageId(), applInfo.getUpdateDate(),
 				appDto.getLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_TAIKYO));
 		if (resultUpdateApplInfo.equals("updateError")) {
 			// 更新エラー
@@ -137,6 +141,13 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		} else {
 			comment = CodeConstant.NONE;
 		}
+
+		// 申請履歴の更新後データを取り直す
+		applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
+		param = new Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter();
+		param.setCompanyCd(CodeConstant.C001);
+		param.setApplNo(appDto.getApplNo());
+		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
 
 		// 添付ファイル管理テーブル更新処理
 		boolean resultUpdateFile = skf2040Sc002SharedService.updateAttachedFileInfo(nextStatus, appDto.getApplNo(),

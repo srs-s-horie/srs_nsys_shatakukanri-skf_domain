@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,10 +97,11 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		Map<String, String> userInfo = new HashMap<String, String>();
 		userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
-		String nextStatus = CodeConstant.DOUBLE_QUOTATION;
-		String mailKbn = CodeConstant.DOUBLE_QUOTATION;
-		String shoninName1 = CodeConstant.DOUBLE_QUOTATION;
-		String shoninName2 = CodeConstant.DOUBLE_QUOTATION;
+		String nextStatus = null;
+		String mailKbn = null;
+		String shoninName1 = null;
+		String shoninName2 = null;
+		Date agreDate = null;
 
 		// 次のステータスを設定する
 		switch (preDto.getApplStatus()) {
@@ -116,7 +118,9 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			// 次のステータス、メール区分、承認者名2、承認済みを設定
 			nextStatus = CodeConstant.STATUS_SHONIN_ZUMI;
 			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
+			shoninName1 = applInfo.getAgreName1();
 			shoninName2 = userInfo.get("userName");
+			agreDate = new Date();
 			break;
 		}
 
@@ -129,8 +133,8 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			/* 申請書類履歴テーブルの更新（退居届） */
 			// 申請書類履歴テーブル」よりステータスを更新
 			String resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
-					preDto.getShainNo(), preDto.getApplNo(), shoninName1, shoninName2, preDto.getApplId(), applTacFlg,
-					userInfo.get("userCd"), preDto.getPageId(), applInfo.getUpdateDate(),
+					preDto.getShainNo(), preDto.getApplNo(), agreDate, shoninName1, shoninName2, preDto.getApplId(),
+					applTacFlg, userInfo.get("userCd"), preDto.getPageId(), applInfo.getUpdateDate(),
 					preDto.getLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_TAIKYO));
 			if ("updateError".equals(resultUpdateApplInfo)) {
 				// 更新エラー
@@ -168,7 +172,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			if (sFalse.equals(preDto.getHenkyakuBihinNothing())) {
 				// 申請書類履歴テーブル 備品返却申請を登録/更新処理
 				if (!skf2040Sc002SharedService.insertOrUpdateApplHistoryForBihinHenkyaku(nextStatus, applTacFlg, preDto,
-						shoninName1, shoninName2, FunctionIdConstant.R0105, userInfo.get("userCd"))) {
+						agreDate, shoninName1, shoninName2, FunctionIdConstant.R0105, userInfo.get("userCd"))) {
 					// エラーがある場合、処理を中断
 					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
@@ -223,7 +227,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 			// 申請書類履歴テーブル 備品返却申請を登録/更新処理
 			if (!skf2040Sc002SharedService.insertOrUpdateApplHistoryForBihinHenkyaku(nextStatus, applTacFlg, preDto,
-					shoninName1, shoninName2, FunctionIdConstant.R0105, userInfo.get("userCd"))) {
+					agreDate, shoninName1, shoninName2, FunctionIdConstant.R0105, userInfo.get("userCd"))) {
 				// エラーがある場合、処理を中断
 				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 				return preDto;

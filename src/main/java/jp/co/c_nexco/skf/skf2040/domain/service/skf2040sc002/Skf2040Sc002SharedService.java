@@ -43,6 +43,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRep
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuShinseiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -590,9 +591,12 @@ public class Skf2040Sc002SharedService {
 	 * @param dto
 	 * @param errorMsg
 	 * @return
+	 * @throws Exception
+	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	protected boolean saveApplInfo(String newStatus, Skf2040Sc002CommonDto dto, Map<String, String> errorMsg) {
+	protected boolean saveApplInfo(String newStatus, Skf2040Sc002CommonDto dto, Map<String, String> errorMsg)
+			throws Exception {
 
 		String shainNo = dto.getShainNo();
 		String applNo = dto.getApplNo();
@@ -628,19 +632,6 @@ public class Skf2040Sc002SharedService {
 		switch (newStatus) {
 		case CodeConstant.STATUS_SASHIMODOSHI:
 		case CodeConstant.STATUS_HININ:
-			// 承認者設定処理
-			String shonin1 = CodeConstant.NONE;
-			String shonin2 = CodeConstant.NONE;
-			switch (applInfo.getApplStatus()) {
-			case CodeConstant.STATUS_SHINSACHU:
-			case CodeConstant.STATUS_DOI_ZUMI:
-				shonin1 = userInfo.get("userName");
-				break;
-			case CodeConstant.STATUS_SHONIN1:
-				shonin2 = userInfo.get("userName");
-				break;
-			}
-
 			Date lastUpdateDate;
 			if (FunctionIdConstant.R0105.equals(dto.getApplId())) {
 				// 備品返却申請
@@ -651,7 +642,7 @@ public class Skf2040Sc002SharedService {
 			}
 
 			// 申請書類履歴テーブルの更新
-			String resultUpdateApplInfo = updateApplHistoryAgreeStatus(newStatus, shainNo, applNo, shonin1, shonin2,
+			String resultUpdateApplInfo = updateApplHistoryAgreeStatus(newStatus, shainNo, applNo, null, null, null,
 					applInfo.getApplId(), applTacFlg, userInfo.get("userCd"), dto.getPageId(), applInfo.getUpdateDate(),
 					lastUpdateDate);
 			if ("updateError".equals(resultUpdateApplInfo)) {
@@ -674,6 +665,16 @@ public class Skf2040Sc002SharedService {
 			}
 		}
 
+		// 申請書類情報の更新後データを再取得
+		applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
+		param = new Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter();
+		param.setCompanyCd(CodeConstant.C001);
+		param.setApplNo(applNo);
+		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
+		if (applInfo == null) {
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+			return false;
+		}
 		// 添付ファイル管理テーブル更新処理
 		boolean resultUpdateFile = updateAttachedFileInfo(newStatus, applNo, shainNo, attachedFileList, applTacFlg,
 				applInfo, errorMsg, userInfo.get("userCd"), dto.getPageId());
@@ -774,20 +775,16 @@ public class Skf2040Sc002SharedService {
 	 * @param lastUpdateDate 楽観的最終更新日
 	 * @return 空文字：正常 exclusiveError：排他チェックエラー updateError:更新エラー
 	 */
-	protected String updateApplHistoryAgreeStatus(String newStatus, String shainNo, String applNo, String shonin1,
-			String shonin2, String applId, String applTacFlg, String userId, String programId, Date updateDate,
-			Date lastUpdateDate) {
+	protected String updateApplHistoryAgreeStatus(String newStatus, String shainNo, String applNo, Date agreDate,
+			String shonin1, String shonin2, String applId, String applTacFlg, String userId, String programId,
+			Date updateDate, Date lastUpdateDate) {
 
 		String result = CodeConstant.NONE;
 
 		Skf2040Sc002UpdateApplHistoryExp record = new Skf2040Sc002UpdateApplHistoryExp();
-		if (NfwStringUtils.isNotEmpty(shonin1)) {
-			record.setAgreName1(shonin1);
-		}
-		if (NfwStringUtils.isNotEmpty(shonin2)) {
-			record.setAgreName2(shonin2);
-		}
-		record.setAgreDate(new Date());
+		record.setAgreName1(shonin1);
+		record.setAgreName2(shonin2);
+		record.setAgreDate(agreDate);
 		record.setApplStatus(newStatus);
 		record.setApplTacFlg(applTacFlg);
 		record.setUpdateUserId(userId);
@@ -829,11 +826,13 @@ public class Skf2040Sc002SharedService {
 	 * @param userId 更新者のuserId
 	 * @param programId 機能ID
 	 * @return
+	 * @throws Exception
+	 * @throws IllegalAccessException
 	 */
 	protected boolean updateAttachedFileInfo(String newStatus, String applNo, String shainNo,
 			List<Map<String, Object>> attachedFileList, String applTacFlg,
 			Skf2040Sc002GetApplHistoryInfoForUpdateExp applInfo, Map<String, String> errorMsg, String userId,
-			String pageId) {
+			String pageId) throws IllegalAccessException, Exception {
 
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
@@ -848,6 +847,10 @@ public class Skf2040Sc002SharedService {
 		// 申請書類履歴テーブルの添付書類有無を更新
 		String applId = applInfo.getApplId();
 		Skf2040Sc002UpdateApplHistoryExp updateData = new Skf2040Sc002UpdateApplHistoryExp();
+
+		// 更新対象に現在のデータを反映させる
+		CopyUtils.copyProperties(updateData, applInfo);
+		// 更新対象の項目を入れる
 		updateData.setApplTacFlg(String.valueOf(applTacFlg));
 		updateData.setUpdateUserId(userId);
 		updateData.setUpdateProgramId(pageId);
@@ -910,7 +913,8 @@ public class Skf2040Sc002SharedService {
 	 * @return
 	 */
 	protected boolean insertOrUpdateApplHistoryForBihinHenkyaku(String nextStatus, String applTacFlg,
-			Skf2040Sc002CommonDto dto, String shoninName1, String shoninName2, String applId, String userId) {
+			Skf2040Sc002CommonDto dto, Date agreDate, String shoninName1, String shoninName2, String applId,
+			String userId) {
 
 		String mailKbn = CodeConstant.DOUBLE_QUOTATION;
 		// 次のステータスを設定する
@@ -946,7 +950,7 @@ public class Skf2040Sc002SharedService {
 			// あれば更新処理
 			// 申請書類履歴テーブルの更新
 			String resultUpdateApplInfo = updateApplHistoryAgreeStatus(nextStatus, dto.getShainNo(),
-					dto.getHdnBihinHenkyakuApplNo(), shoninName1, shoninName2, applId, applTacFlg, userId,
+					dto.getHdnBihinHenkyakuApplNo(), agreDate, shoninName1, shoninName2, applId, applTacFlg, userId,
 					dto.getPageId(), applHistoryBihinHenkyakuList.get(0).getUpdateDate(),
 					dto.getLastUpdateDate(KEY_LAST_UPDATE_DATE_HISTORY_BIHIN));
 			if ("updateError".equals(resultUpdateApplInfo)) {

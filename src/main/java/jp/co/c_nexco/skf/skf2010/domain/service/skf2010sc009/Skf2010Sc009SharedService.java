@@ -15,6 +15,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc009.Skf2010Sc009
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsGetKariageBukkenFileInfoExpRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
@@ -36,13 +37,22 @@ public class Skf2010Sc009SharedService {
 
 	private String companyCd = CodeConstant.C001;
 
+	public String getBaseScreenName(String applId) {
+		String applName = CodeConstant.NONE;
+
+		if (NfwStringUtils.isNotEmpty(applId)) {
+			applName = this.getApplName(applId);
+		}
+		return applName;
+	}
+
 	/**
 	 * 申請書名を取得します
 	 * 
 	 * @param applId
 	 * @return String
 	 */
-	public String getApplName(String applId) {
+	private String getApplName(String applId) {
 		String applName = "";
 
 		Skf2010Sc009GetApplInfoExp applInfo = new Skf2010Sc009GetApplInfoExp();
@@ -83,16 +93,15 @@ public class Skf2010Sc009SharedService {
 	 * 
 	 * @param sessionKey
 	 * @param applId
-	 * @param attachedMap
+	 * @param dto
 	 * @return
 	 */
-	public List<Map<String, Object>> getAttachedFileListByTable(String sessionKey, String applId,
-			Map<String, String> attachedMap) {
+	public List<Map<String, Object>> getAttachedFileListByTable(String sessionKey, String applId, String candidateNo) {
 		List<Map<String, Object>> resultAttachedFileList = new ArrayList<Map<String, Object>>();
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
 			// 借上候補物件の時のみテーブルから読み込む
 			List<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp> fileInfoList = new ArrayList<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp>();
-			fileInfoList = getKariageBukkenFileList(attachedMap.get("candidateNo"));
+			fileInfoList = getKariageBukkenFileList(candidateNo);
 			if (fileInfoList != null && fileInfoList.size() > 0) {
 				for (SkfAttachedFileUtilsGetKariageBukkenFileInfoExp fileInfo : fileInfoList) {
 					Map<String, Object> attachedFileMap = new HashMap<String, Object>();
@@ -115,6 +124,12 @@ public class Skf2010Sc009SharedService {
 		return resultAttachedFileList;
 	}
 
+	/**
+	 * 借上候補物件の添付資料情報を取得する
+	 * 
+	 * @param candidateNo
+	 * @return
+	 */
 	private List<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp> getKariageBukkenFileList(String candidateNo) {
 		List<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp> fileList = new ArrayList<SkfAttachedFileUtilsGetKariageBukkenFileInfoExp>();
 		SkfAttachedFileUtilsGetKariageBukkenFileInfoExpParameter param = new SkfAttachedFileUtilsGetKariageBukkenFileInfoExpParameter();
