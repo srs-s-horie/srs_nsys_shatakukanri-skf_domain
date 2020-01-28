@@ -6,10 +6,8 @@ package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExp;
@@ -27,6 +25,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinUpdateDateExpRepository;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -37,6 +36,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002InitDto;
@@ -60,6 +60,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtiles;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private Skf2040Sc002SharedService skf2040Sc002ShareService;
 	@Autowired
@@ -328,7 +330,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			}
 
 			// ボタン制御
-			setButtonControl(initDto, teijiDataInfo);
+			setButtonControl(initDto, teijiDataInfo, applHistoryList.get(0));
 			break;
 		}
 
@@ -343,7 +345,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 * @param initDto
 	 * @param teijiDataInfo
 	 */
-	private void setButtonControl(Skf2040Sc002InitDto initDto, Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo) {
+	private void setButtonControl(Skf2040Sc002InitDto initDto, Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo,
+			Skf2040Sc002GetApplHistoryInfoExp applHistoryInfo) {
 
 		// ◆退居（自動車の保管場所返還）届
 		switch (initDto.getApplStatus()) {
@@ -409,6 +412,13 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// 【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：非表示】【差戻しボタン：非表示】【添付資料ボタン：非表示】→PTN_B
 				// 【PDFダウンロードボタン：表示】
 				skf2040Sc002ShareService.setButtonVisible("PTN_B", sTrue, initDto);
+			}
+
+			// 承認者１がログインユーザー名と同じだった場合
+			Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+			if (CheckUtils.isEqual(applHistoryInfo.getAgreName1(), loginUserInfo.get("userName"))) {
+				// 承認ボタン
+				initDto.setBtnApproveDisabled(sTrue);
 			}
 
 			break;
@@ -531,7 +541,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 						// 返却対象備品(会社保有かレンタル)がある場合は「返却備品なしフラグ」を折る
 						if (NfwStringUtils.isNotEmpty(bihinLentStatusKbn)
 								&& (CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU.equals(bihinLentStatusKbn)
-										|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU.equals(bihinLentStatusKbn))) {
+										|| CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU
+												.equals(bihinLentStatusKbn))) {
 							// 返却対象備品がある場合は「返却備品なしフラグ」を折る
 							initDto.setHenkyakuBihinNothing(sFalse);
 							break;
