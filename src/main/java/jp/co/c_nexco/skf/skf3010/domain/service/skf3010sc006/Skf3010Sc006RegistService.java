@@ -38,6 +38,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomBihi
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -297,7 +298,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		Long shatakuRoomKanriNo = Long.parseLong(registDto.getShatakuRoomKanriNo());
 
 		// ユーザーID取得
-		String userName = skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName");
+		String userName = LoginUserInfoUtils.getUserCd();
 
 		/** 社宅基本更新 */
 		// 社宅管理番号設定

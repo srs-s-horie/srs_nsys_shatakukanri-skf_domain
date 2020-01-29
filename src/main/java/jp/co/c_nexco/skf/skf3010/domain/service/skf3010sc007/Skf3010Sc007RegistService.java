@@ -24,6 +24,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingB
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingContractRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -543,9 +544,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		int registCount = 0;
 		if (modeUpdate) {
 			// 更新の場合はUPDATE
-			Map<String, String> userInfo = new HashMap<String, String>();
-			userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-			setValue.setUpdateUserId(userInfo.get("userName"));
+			setValue.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 			setValue.setUpdateProgramId(dto.getPageId());
 			try{
 				//更新日時設定
