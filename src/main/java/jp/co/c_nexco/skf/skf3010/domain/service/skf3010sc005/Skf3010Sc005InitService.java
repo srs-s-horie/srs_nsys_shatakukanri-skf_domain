@@ -216,7 +216,6 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		//物置調整面積
 		initDto.setBarnMensekiAdjust(roomInfo.getBarnMensekiAdjust().toPlainString());
 		//社宅部屋情報マスタ排他用更新日付
-		
 		initDto.addLastUpdateDate("Skf3010Sc005GetRoomInfoUpdateDate", roomInfo.getLastUpdateDate());
 	}
 	

@@ -454,14 +454,17 @@ public class Skf3021Sc001SharedService {
 			}
 			//駐車場申請の時、用途を”―”に設定する
 			if(CodeConstant.SHINSEI_KBN_PARKING.equals(shinseiKbn)){
-				colYouto = CodeConstant.HYPHEN;
+				colYouto = CodeConstant.ZEN_HYPHEN;
 			}else{
 				colYouto = setHaifunBySinseiKbn(shinseiKbn,colYouto);
 			}
 			tmpMap.put("colYouto", colYouto);
 			
 			//駐車場希望の設定
-			String colParkingReqest = String.valueOf(tmpData.getParkingRequestSu());
+			String colParkingReqest = CodeConstant.DOUBLE_QUOTATION;
+			if(tmpData.getParkingRequestSu() != null){
+				colParkingReqest = String.valueOf(tmpData.getParkingRequestSu());
+			}
 			if(SkfCheckUtils.isNullOrEmpty(colParkingReqest)){
 				//―を設定
 				colParkingReqest = setHaifun(colShainNo);
@@ -505,7 +508,7 @@ public class Skf3021Sc001SharedService {
 			}
 			tmpMap.put("colTeijiDataKbn", setHaifunBySinseiKbn(shinseiKbn,colTeijiDataKbn));
 			
-			if(CodeConstant.HYPHEN.equals(colShinseiJyokyo) || 
+			if(CodeConstant.ZEN_HYPHEN.equals(colShinseiJyokyo) || 
 					SkfCheckUtils.isNullOrEmpty(colShinseiJyokyo)){
 				//「申請内容ボタン」を非表示
 			}else{
@@ -541,12 +544,12 @@ public class Skf3021Sc001SharedService {
 		if(RENKEI_ARI.equals(jssLinkFlg)){
 			if(STRING_K.equals(shainNo.trim().substring(0, 1)) ||
 					shainNo.endsWith(CodeConstant.ASTERISK)){
-				return CodeConstant.HYPHEN;
+				return CodeConstant.ZEN_HYPHEN;
 			}else{
 				return CodeConstant.DOUBLE_QUOTATION;
 			}
 		}else{
-			return CodeConstant.HYPHEN;
+			return CodeConstant.ZEN_HYPHEN;
 		}
 	}
 	
@@ -561,7 +564,7 @@ public class Skf3021Sc001SharedService {
 		if(CodeConstant.SHINSEI_KBN_JITAKU.equals(sinseiKbn) ||
 			CodeConstant.SHINSEI_KBN_JIKO_KARIAGE.equals(sinseiKbn)	||
 			CodeConstant.SHINSEI_KBN_OTHER.equals(sinseiKbn)){
-			return CodeConstant.HYPHEN;
+			return CodeConstant.ZEN_HYPHEN;
 		}else{
 			return value;
 		}

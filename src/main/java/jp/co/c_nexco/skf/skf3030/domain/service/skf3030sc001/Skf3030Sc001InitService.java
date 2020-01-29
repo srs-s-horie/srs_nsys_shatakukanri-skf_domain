@@ -112,9 +112,9 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 		initDto.setYearDropDownList(yearDropDownList);
 		initDto.setHdnYearSelect((String) yearDropDownList.get(0).get("value"));
 
-		List<Map<String, Object>> monthDropDownList = createMonthDropDownList();
+		List<Map<String, Object>> monthDropDownList = createMonthDropDownList(systemDateNengetsu.substring(4, 6));
 		initDto.setMonthDropDownList(monthDropDownList);
-		initDto.setHdnMonthSelect((String) monthDropDownList.get(0).get("value"));
+		initDto.setHdnMonthSelect(systemDateNengetsu.substring(4, 6));
 
 		String selectNengetsu = initDto.getHdnYearSelect() + initDto.getHdnMonthSelect();
 		Map<String, String> getsujiShoriJoukyouShoukaiMap = skf3030Sc001SharedService
@@ -174,7 +174,7 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 	 * 
 	 * @return 「月」ドロップダウンリスト
 	 */
-	private List<Map<String, Object>> createMonthDropDownList() {
+	private List<Map<String, Object>> createMonthDropDownList(String selectMonth) {
 
 		List<Map<String, Object>> rtnList = new ArrayList<Map<String, Object>>();
 
@@ -184,6 +184,10 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 			String month = String.format("%02d", i + 1);
 			monthMap.put("value", month);
 			monthMap.put("label", month);
+			if(month.equals(selectMonth)){
+				monthMap.put("selected", true);
+			}
+
 
 			rtnList.add(monthMap);
 		}

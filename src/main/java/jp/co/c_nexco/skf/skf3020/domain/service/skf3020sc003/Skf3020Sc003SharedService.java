@@ -17,6 +17,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc003.Skf3020Sc003GetShatakuNyukyoCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc003.Skf3020Sc003GetTenninshaInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3020.domain.service.common.Skf302010CommonSharedService;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -97,8 +98,8 @@ public class Skf3020Sc003SharedService {
 	public String updateTenninshaInfo(Skf3020TTenninshaChoshoData tenninshaInfo, Map<String, Object> targetMap,
 			String shatakKbn) {
 		// 転任者調書データ更新
-		Skf3020TTenninshaChoshoData updaeData = editUpdateTenninshaInfoData(tenninshaInfo, targetMap, shatakKbn);
-		int result = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKeySelective(updaeData);
+		Skf3020TTenninshaChoshoData updateData = editUpdateTenninshaInfoData(tenninshaInfo, targetMap, shatakKbn);
+		int result = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKeySelective(updateData);
 
 		String outMsg = "";
 		switch (result) {
@@ -176,9 +177,9 @@ public class Skf3020Sc003SharedService {
 	 * @param targetMap
 	 * @return
 	 */
-	public String insertTenninshaInfo(Map<String, Object> targetMap) {
+	public String insertTenninshaInfo(Map<String, Object> targetMap, String shatakKbn) {
 		// 転任者調書データ登録
-		Skf3020TTenninshaChoshoData insertData = createInsertTenninshaInfoData(targetMap);
+		Skf3020TTenninshaChoshoData insertData = createInsertTenninshaInfoData(targetMap, shatakKbn);
 		int result = skf3020TTenninshaChoshoDataRepository.insert(insertData);
 
 		String outMsg = "";
@@ -203,13 +204,19 @@ public class Skf3020Sc003SharedService {
 	 * @param kariShainNo
 	 * @return
 	 */
-	private Skf3020TTenninshaChoshoData createInsertTenninshaInfoData(Map<String, Object> targetData) {
+	private Skf3020TTenninshaChoshoData createInsertTenninshaInfoData(Map<String, Object> targetData , String shatakKbn) {
 		Skf3020TTenninshaChoshoData tenninshaChoshoData = new Skf3020TTenninshaChoshoData();
 
-		// 仮社員番号を取得
-		String kariShainNo = skfBaseBusinessLogicUtils.getMaxKariShainNo();
-		// 社員番号
-		tenninshaChoshoData.setShainNo(kariShainNo);
+		String shainNo = (String) targetData.get(SHAIN_NO_COL); // 社員番号
+		if (shainNo == null || CheckUtils.isEmpty(shainNo)) {
+			// 社員番号が空白の場合、仮社員番号を取得する。
+			String kariShainNo = skfBaseBusinessLogicUtils.getMaxKariShainNo();
+			// 社員番号
+			tenninshaChoshoData.setShainNo(kariShainNo);
+		}else{
+			tenninshaChoshoData.setShainNo(shainNo);
+		}
+		
 		// 社員氏名
 		String name = (String) targetData.get(NAME_COL);
 		tenninshaChoshoData.setName(skf302010CommonSharedService.replaceEscapeStr(name));
@@ -243,7 +250,7 @@ public class Skf3020Sc003SharedService {
 		// 入退居予定作成区分
 		tenninshaChoshoData.setNyutaikyoYoteiKbn("0");
 		// 現社宅区分
-		tenninshaChoshoData.setNowShatakuKbn("0");
+		tenninshaChoshoData.setNowShatakuKbn(shatakKbn);
 		// 転任者調書取込日
 		Date nowTime = skfBaseBusinessLogicUtils.getSystemDateTime();
 		tenninshaChoshoData.setDataTakinginDate(new SimpleDateFormat("yyyyMMdd").format(nowTime));

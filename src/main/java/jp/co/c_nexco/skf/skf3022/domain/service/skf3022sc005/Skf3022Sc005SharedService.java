@@ -232,26 +232,26 @@ public class Skf3022Sc005SharedService {
 				stKakunin = skfDateFormatUtils.dateFormatFromString(stKakunin, "yyyy/MM/dd");
 			}else if(SkfCheckUtils.isNullOrEmpty(shinseiKbn)){
 				//申請なしの場合
-				stKakunin = CodeConstant.HYPHEN;
+				stKakunin = CodeConstant.ZEN_HYPHEN;
 			}
 			tmpMap.put("colStKakunin", stKakunin);
 			
 			//備品提示状況の設定
 			String bhJyokyo = tmpData.getBihinTeijiStatus();
 			tmpMap.put("hdnBhJyokyoCd", bhJyokyo);
-			String colBhJyokyo = CodeConstant.HYPHEN;
+			String colBhJyokyo = CodeConstant.ZEN_HYPHEN;
 			if (!SkfCheckUtils.isNullOrEmpty(bhJyokyo)) {
 				colBhJyokyo = genericCodeMapBhJyokyo.get(bhJyokyo);
 			}else if(SkfCheckUtils.isNullOrEmpty(shinseiKbn)){
 				//申請なしの場合
-				colBhJyokyo = CodeConstant.HYPHEN;
+				colBhJyokyo = CodeConstant.ZEN_HYPHEN;
 			}else if(CodeConstant.SHINSEI_KBN_PARKING.equals(shinseiKbn)){
-				colBhJyokyo = CodeConstant.HYPHEN;
+				colBhJyokyo = CodeConstant.ZEN_HYPHEN;
 			}else if(CodeConstant.BIHIN_TAIYO_KBN_FUYO.equals(hdnTaiyoKbn)){
 				//退居或は同意済の場合
 				if(CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn) || 
 						CodeConstant.PRESENTATION_SITUATION_DOI_SUMI.equals(stJyokyo)){
-					colBhJyokyo = CodeConstant.HYPHEN;
+					colBhJyokyo = CodeConstant.ZEN_HYPHEN;
 				}
 			}
 			tmpMap.put("colBhJyokyo", colBhJyokyo);
@@ -262,11 +262,11 @@ public class Skf3022Sc005SharedService {
 				bhKakunin = skfDateFormatUtils.dateFormatFromString(bhKakunin, "yyyy/MM/dd");
 			}else if(SkfCheckUtils.isNullOrEmpty(shinseiKbn)){
 				//申請なしの場合
-				bhKakunin = CodeConstant.HYPHEN;
+				bhKakunin = CodeConstant.ZEN_HYPHEN;
 			}else if(CodeConstant.BIHIN_TAIYO_KBN_FUYO.equals(hdnTaiyoKbn) || 
 					CodeConstant.SHINSEI_KBN_PARKING.equals(shinseiKbn) ||
 					CodeConstant.NYUTAIKYO_KBN_HENKO.equals(nyutaikyoKbn)){
-				bhKakunin = CodeConstant.HYPHEN;
+				bhKakunin = CodeConstant.ZEN_HYPHEN;
 			}
 			tmpMap.put("colBhkakunin", bhKakunin);
 			
@@ -276,11 +276,11 @@ public class Skf3022Sc005SharedService {
 				mobeInOut = skfDateFormatUtils.dateFormatFromString(mobeInOut, "yyyy/MM/dd");
 			}else if(SkfCheckUtils.isNullOrEmpty(shinseiKbn)){
 				//申請なしの場合
-				mobeInOut = CodeConstant.HYPHEN;
+				mobeInOut = CodeConstant.ZEN_HYPHEN;
 			}else if(CodeConstant.BIHIN_TAIYO_KBN_FUYO.equals(hdnTaiyoKbn) || 
 					CodeConstant.SHINSEI_KBN_PARKING.equals(shinseiKbn) ||
 					CodeConstant.NYUTAIKYO_KBN_HENKO.equals(nyutaikyoKbn)){
-				mobeInOut = CodeConstant.HYPHEN;
+				mobeInOut = CodeConstant.ZEN_HYPHEN;
 			}
 			tmpMap.put("colMoveInOut", mobeInOut);
 			tmpMap.put("colDetail", "");
