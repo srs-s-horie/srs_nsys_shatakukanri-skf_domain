@@ -763,6 +763,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// 自動車１台目
 		// 自動車の保管場所
+		// TODO 保管場所は駐車場を借りなくても表示？
 		initDto.setParkingArea(tNyukyoChoshoTsuchi.getParkingArea());
 		// 自動車の位置番号
 		initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo());

@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
@@ -89,13 +87,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		// コメントボタンの活性非活性処理
 		setCommentBtnDisabled(initDto);
-		
+
 		// データ連携用の排他制御用更新日を取得
-		//ログインセッションのユーザ情報
+		// ログインセッションのユーザ情報
 		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		//ログインセッションユーザ情報の社員番号
+		// ログインセッションユーザ情報の社員番号
 		String shainNo = userInfoMap.get("shainNo");
-		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils.getUpdateDateForUpdateSQL(shainNo);
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils
+				.getUpdateDateForUpdateSQL(shainNo);
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004, dateLinkageMap);
 
 		return initDto;
@@ -113,18 +112,18 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		Map<String, String> loginUserInfo = new HashMap<String, String>();
 		loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String roleId = loginUserInfo.get("roleId");
-		
+
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-			switch (roleId) {
-			case CodeConstant.NAKASA_SHATAKU_TANTO:
-			case CodeConstant.NAKASA_SHATAKU_KANRI:
-			case CodeConstant.SYSTEM_KANRI:
-				isAdmin = true;
-				break;
-			default:
-				isAdmin = false;
-				break;
+		switch (roleId) {
+		case CodeConstant.NAKASA_SHATAKU_TANTO:
+		case CodeConstant.NAKASA_SHATAKU_KANRI:
+		case CodeConstant.SYSTEM_KANRI:
+			isAdmin = true;
+			break;
+		default:
+			isAdmin = false;
+			break;
 		}
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {
@@ -235,9 +234,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	private void setDisplayData(Skf2010Sc004InitDto initDto) {
 		String applNo = initDto.getApplNo();
 		String applId = initDto.getApplId();
-		
-		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
-		
+
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String shainNo = loginUserInfo.get("shainNo");
+
+		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService
+				.getApplHistoryInfo(applNo);
+
 		if (applHistoryInfo == null) {
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
 		}
@@ -270,9 +274,6 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		} else if (applId.equals(FunctionIdConstant.R0103)) {
 			// 退居（自動車の保管場所返還）届
 
-			// ログインユーザー情報取得
-			Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-			loginUserInfo.get("shainNo");
 			// 退居（自動車の保管場所返還）届情報取得
 			Skf2040TTaikyoReport tTaikyoReport = new Skf2040TTaikyoReport();
 			tTaikyoReport = skf2010Sc004SharedService.getTaikkyoReportInfo(applNo);
@@ -295,6 +296,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		}
 
 		// 添付資料情報取得
+
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
 		attachedFileList = skf2010Sc004SharedService.getAttachedFileInfo(applNo);
 		initDto.setAttachedFileList(attachedFileList);

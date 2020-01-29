@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc003common;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import jp.co.c_nexco.skf.skf2020.domain.dto.common.Skf202010CommonDto;
@@ -20,6 +21,8 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 
 	// 申請ID
 	private String applId;
+	// 申請日（表示しないのでDtoのみ）
+	private Date applDate;
 	// 申請状況
 	private String applStatus;
 	// 申請番号

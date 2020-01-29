@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
@@ -30,11 +29,9 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public AsyncBaseDto index(Skf2020Sc003AttachedFileAreaAsyncDto dto) {
@@ -43,22 +40,25 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 		String applNo = dto.getApplNo();
 
 		// 社宅向け添付資料取得
-		List<Map<String, Object>> shatakuAttachedFileList = skfAttachedFileUtils
-				.getAttachedFileInfo(menuScopeSessionBean, applNo, SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
 		// 一般添付資料取得
 		List<Map<String, Object>> attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean,
 				applNo, SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 		// 社宅向け添付資料が無い場合配列のインスタンス化だけ行う
-		if (shatakuAttachedFileList == null) {
-			shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
+		if (attachedFileList == null) {
+			attachedFileList = new ArrayList<Map<String, Object>>();
 		}
-		
+		// 重複チェック用添付ファイル名リスト
+		List<String> attahedFileNameList = new ArrayList<String>();
+		for (Map<String, Object> attachedFileInfo : attachedFileList) {
+			attahedFileNameList.add(attachedFileInfo.get("attachedName").toString());
+		}
+
 		String baseLinkTag = "<a id=\"attached_$ATTACHEDNO$\">$ATTACHEDNAME$</a>";
 		List<String> listTagList = new ArrayList<String>();
 
 		// 添付ファイルがあればリンクタグを生成する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
-			int attachedNo = shatakuAttachedFileList.size();
+			int attachedNo = 0;
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
 				String linkTag = baseLinkTag;
 				linkTag = linkTag.replace("$ATTACHEDNO$", String.valueOf(attachedNo));
