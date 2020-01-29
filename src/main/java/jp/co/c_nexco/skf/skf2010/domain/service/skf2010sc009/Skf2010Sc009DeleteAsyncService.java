@@ -35,7 +35,7 @@ public class Skf2010Sc009DeleteAsyncService extends AsyncBaseServiceAbstract<Skf
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
-	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
+	private String sessionKey;
 
 	@Value("${skf2010.skf2010_sc009.max_search_count}")
 	private String maxSearchCount;
@@ -66,6 +66,7 @@ public class Skf2010Sc009DeleteAsyncService extends AsyncBaseServiceAbstract<Skf
 		delDto.setPopApplName(applName);
 
 		// 申請書類が借上候補物件の場合、専用のセッションキーに切り替える
+		sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0106)) {
 			sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + candidateNo;
 		}

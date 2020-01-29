@@ -127,7 +127,10 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 
 		// 初期表示
 		skf2020sc003SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
-		skf2020sc003SharedService.setDispInfo(updDto);
+		boolean res = skf2020sc003SharedService.setDispInfo(updDto);
+		if (!res) {
+			throwBusinessExceptionIfErrors(updDto.getResultMessages());
+		}
 
 		// 提示データが存在するかチェックする。
 		if (NfwStringUtils.isNotEmpty(updDto.getNewShatakuKanriNo())) {

@@ -7,10 +7,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -50,11 +48,9 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public BaseDto index(Skf2020Sc003InitDto initDto) throws Exception {
@@ -68,7 +64,10 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 		// セッション情報初期化
 		skf2020sc003SharedService.clearMenuScopeSessionBean();
 		// 初期情報セット
-		skf2020sc003SharedService.setDispInfo(initDto);
+		boolean res = skf2020sc003SharedService.setDispInfo(initDto);
+		if (!res) {
+			throwBusinessExceptionIfErrors(initDto.getResultMessages());
+		}
 		// コメントボタン表示チェック
 		boolean commentFlg = checkComment(initDto);
 		initDto.setCommentViewFlag(commentFlg);
@@ -76,11 +75,12 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 		// オペレーションガイド取得
 		String operationGuide = skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2020_SC003);
 		initDto.setOperationGuide(operationGuide);
-		
+
 		// データ連携用の排他制御用更新日を取得
 		// 申請者の社員番号
 		String shainNo = initDto.getShainNo();
-		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils.getUpdateDateForUpdateSQL(shainNo);
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils
+				.getUpdateDateForUpdateSQL(shainNo);
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2020SC003, dateLinkageMap);
 
 		return initDto;
@@ -89,7 +89,6 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 	private boolean checkComment(Skf2020Sc003InitDto initDto) {
 		// コメント取得
 		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-		//commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), initDto.getApplStatus());
 		commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(), null);
 		if (commentList != null && commentList.size() > 0) {
 			return true;
