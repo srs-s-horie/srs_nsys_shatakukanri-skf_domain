@@ -1,14 +1,10 @@
 package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -44,26 +40,18 @@ public class Skf2020Sc003DownloadService extends BaseServiceAbstract<Skf2020Sc00
 		byte[] fileData = null;
 
 		// 添付ファイル情報を取得
-		List<Map<String, Object>> shatakuAttachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
-				.get(SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
 		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
-
-		if (shatakuAttachedFileList == null) {
-			shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
-		}
 
 		if (attachedFileList == null || attachedFileList.size() <= 0) {
 			ServiceHelper.addErrorResultMessage(dlDto, null, MessageIdConstant.E_SKF_1067, "添付資料");
 		}
-		shatakuAttachedFileList.addAll(attachedFileList);
-
 		// ダウンロード対象ファイルデータを設定する
 		int target = Integer.parseInt(attachedNo);
-		Map<String, Object> attachedFileMap = shatakuAttachedFileList.get(target);
+		Map<String, Object> attachedFileMap = attachedFileList.get(target);
 		fileName = attachedFileMap.get("attachedName").toString();
 		fileData = (byte[]) attachedFileMap.get("fileStream");
-		
+
 		// 操作ログ出力メソッドを呼び出す
 		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
 
