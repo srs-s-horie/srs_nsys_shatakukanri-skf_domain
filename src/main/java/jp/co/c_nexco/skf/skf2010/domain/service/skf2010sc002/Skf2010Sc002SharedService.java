@@ -87,7 +87,7 @@ public class Skf2010Sc002SharedService {
 			return;
 		}
 		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
-				SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 	}
 
 	/**

@@ -23,6 +23,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -309,7 +310,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// 添付資料情報取得
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-		attachedFileList = skf2010Sc006SharedService.getAttachedFileInfo(applNo);
+		attachedFileList = skf2010Sc006SharedService.getAttachedFileInfo(applNo, false);
 		initDto.setAttachedFileList(attachedFileList);
 
 		switch (applStatus) {
@@ -758,33 +759,41 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		}
 
 		// 入居日
-		initDto.setNyukyoKanoDate(
-				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(), "yyyy年MM月dd日"));
+		initDto.setNyukyoKanoDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(),
+				SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 
 		// 自動車１台目
 		// 自動車の保管場所
-		// TODO 保管場所は駐車場を借りなくても表示？
-		initDto.setParkingArea(tNyukyoChoshoTsuchi.getParkingArea());
-		// 自動車の位置番号
-		initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo());
-		// 保管場所使用料
-		String parkingRental = tNyukyoChoshoTsuchi.getParkingRental();
-		if (parkingRental != null && NfwStringUtils.isNotEmpty(parkingRental)) {
-			parkingRental = nfNum.format(Long.parseLong(parkingRental));
-		}
-		initDto.setParkingRental(parkingRental);
+		if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getParkingUmu(), CodeConstant.CAR_PARK_HITUYO)) {
+			initDto.setParkingArea(tNyukyoChoshoTsuchi.getParkingArea());
+			// 自動車の位置番号
+			initDto.setCarIchiNo(tNyukyoChoshoTsuchi.getCarIchiNo());
+			// 保管場所使用料
+			String parkingRental = tNyukyoChoshoTsuchi.getParkingRental();
+			if (parkingRental != null && NfwStringUtils.isNotEmpty(parkingRental)) {
+				parkingRental = nfNum.format(Long.parseLong(parkingRental));
+			}
+			initDto.setParkingRental(parkingRental);
 
-		// 自動車２台目
-		// 自動車の保管場所
-		initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
-		// 自動車の位置番号
-		initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getCarIchiNo2());
-		// 保管場所使用料
-		String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
-		if (parkingRental2 != null && NfwStringUtils.isNotEmpty(parkingRental2)) {
-			parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
+			// 自動車２台目
+			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())
+					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarName2())
+					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())
+					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())
+					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarIchiNo2())
+					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingRental2())) {
+				// 自動車の保管場所
+				initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
+				// 自動車の位置番号
+				initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getCarIchiNo2());
+				// 保管場所使用料
+				String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
+				if (parkingRental2 != null && NfwStringUtils.isNotEmpty(parkingRental2)) {
+					parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
+				}
+				initDto.setParkingRental2(parkingRental2);
+			}
 		}
-		initDto.setParkingRental2(parkingRental2);
 
 		// 自動車保管場所（１台目）の使用開始予定日
 		initDto.setParkingKanoDate(

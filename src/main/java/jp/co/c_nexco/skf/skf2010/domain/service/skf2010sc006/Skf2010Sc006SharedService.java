@@ -7,11 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetAttachedFileInfoExp;
@@ -98,7 +96,7 @@ public class Skf2010Sc006SharedService {
 	private Skf1010MShainRepository skf1010MShainRepository;
 	@Autowired
 	private Skf2010TAttachedFileRepository skf2010TAttachedFileRepository;
-	
+
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
 	@Autowired
@@ -159,12 +157,14 @@ public class Skf2010Sc006SharedService {
 	 * @param applNo
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> getAttachedFileInfo(String applNo) {
+	public List<Map<String, Object>> getAttachedFileInfo(String applNo, boolean useSessionFlg) {
 		List<Map<String, Object>> resultAttachedFileList = null;
 
-		resultAttachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
-		if (resultAttachedFileList != null) {
-			return resultAttachedFileList;
+		if (useSessionFlg) {
+			resultAttachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
+			if (resultAttachedFileList != null) {
+				return resultAttachedFileList;
+			}
 		}
 		// 初期化
 		resultAttachedFileList = new ArrayList<Map<String, Object>>();
@@ -383,7 +383,7 @@ public class Skf2010Sc006SharedService {
 		case FunctionIdConstant.R0100:
 			// 社宅入居希望等調書の場合
 			applStatus = getBihinApplStatus(applNo, applInfo.getApplId());
-			if(applStatus != null){
+			if (applStatus != null) {
 				switch (applStatus) {
 				case CodeConstant.STATUS_MISAKUSEI:
 				case CodeConstant.STATUS_ICHIJIHOZON:
@@ -400,7 +400,7 @@ public class Skf2010Sc006SharedService {
 		case FunctionIdConstant.R0103:
 			// 社宅入居希望等調書の場合
 			applStatus = getBihinApplStatus(applNo, applInfo.getApplId());
-			if(applStatus != null){
+			if (applStatus != null) {
 				switch (applStatus) {
 				case CodeConstant.STATUS_MISAKUSEI:
 				case CodeConstant.STATUS_ICHIJIHOZON:
@@ -769,7 +769,7 @@ public class Skf2010Sc006SharedService {
 		NfwSendMailUtils.sendMail("SKF_ML06", replaceMap);
 		return;
 	}
-	
+
 	/**
 	 * 社宅連携処理を実施する
 	 * 
@@ -808,7 +808,8 @@ public class Skf2010Sc006SharedService {
 			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0103);
 
 			// 連携処理開始
-			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId, pageId);
+			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId,
+					pageId);
 			break;
 		default:
 			break;

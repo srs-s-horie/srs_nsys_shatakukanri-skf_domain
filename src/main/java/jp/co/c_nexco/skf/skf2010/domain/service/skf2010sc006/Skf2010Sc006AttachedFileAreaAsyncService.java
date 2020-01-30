@@ -6,10 +6,8 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -36,20 +34,18 @@ public class Skf2010Sc006AttachedFileAreaAsyncService
 	/**
 	 * サービス処理を行う。
 	 * 
-	 * @param initDto
-	 *            インプットDTO
+	 * @param initDto インプットDTO
 	 * @return 処理結果
-	 * @throws Exception
-	 *             例外
+	 * @throws Exception 例外
 	 */
 	@Override
 	public AsyncBaseDto index(Skf2010Sc006AttachedFileAreaAsyncDto dto) {
-		
+
 		// 操作ログ出力
 		skfOperationLogUtils.setAccessLog("資料を添付", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
 
 		String applNo = dto.getApplNo();
-		List<Map<String, Object>> attachedFileList = skf2010Sc006SharedService.getAttachedFileInfo(applNo);
+		List<Map<String, Object>> attachedFileList = skf2010Sc006SharedService.getAttachedFileInfo(applNo, true);
 
 		String baseLinkTag = "<a id=\"attached_$ATTACHEDNO$\">$ATTACHEDNAME$</a>";
 		List<String> listTagList = new ArrayList<String>();

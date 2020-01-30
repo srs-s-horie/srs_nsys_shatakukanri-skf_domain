@@ -69,7 +69,6 @@ import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
-import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc003common.Skf2020Sc003CommonDto;
@@ -156,8 +155,6 @@ public class Skf2020Sc003SharedService {
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
-	@Autowired
-	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 
 	public void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
 		menuScopeSessionBean = bean;
@@ -173,7 +170,7 @@ public class Skf2020Sc003SharedService {
 			return;
 		}
 		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
-				SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 	}
 
 	/**
@@ -282,13 +279,8 @@ public class Skf2020Sc003SharedService {
 		Date operationDate = new Date();
 
 		// セッションの添付資料情報を取得
-		List<Map<String, Object>> shatakuAttachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
-				.get(SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
-		List<Map<String, Object>> baseAttachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
+		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
-
-		List<Map<String, Object>> attachedFileList = margeAttachedFileList(baseAttachedFileList,
-				shatakuAttachedFileList);
 
 		Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo = new Skf2020Sc003GetApplHistoryInfoForUpdateExp();
 		Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter param = new Skf2020Sc003GetApplHistoryInfoForUpdateExpParameter();
@@ -384,32 +376,6 @@ public class Skf2020Sc003SharedService {
 		}
 
 		return true;
-	}
-
-	private List<Map<String, Object>> margeAttachedFileList(List<Map<String, Object>> attachedFileList,
-			List<Map<String, Object>> shatakuAttachedFileList) {
-		List<Map<String, Object>> returnAttachedFileList = new ArrayList<Map<String, Object>>();
-		if (shatakuAttachedFileList == null || shatakuAttachedFileList.size() <= 0) {
-			return attachedFileList;
-		}
-		if (attachedFileList == null) {
-			attachedFileList = new ArrayList<Map<String, Object>>();
-		}
-		// 添付ファイル名一覧を取得
-		List<String> attachedFileNameList = new ArrayList<String>();
-		if (attachedFileList != null && attachedFileList.size() > 0) {
-			for (Map<String, Object> attachedFileInfo : attachedFileList) {
-				attachedFileNameList.add(attachedFileInfo.get("attachedName").toString());
-			}
-		}
-
-		for (Map<String, Object> shatakuAttachedFileInfo : shatakuAttachedFileList) {
-			if (!attachedFileNameList.contains(shatakuAttachedFileInfo.get("attachedName").toString())) {
-				returnAttachedFileList.add(shatakuAttachedFileInfo);
-			}
-		}
-		returnAttachedFileList.addAll(attachedFileList);
-		return returnAttachedFileList;
 	}
 
 	/**
@@ -920,49 +886,55 @@ public class Skf2020Sc003SharedService {
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getPrefCdParking())) {
 			wkPrefNameParking = getShatakuPrefName(teijiDataInfo.getPrefCdParking());
 		}
-		// 駐車場情報 １台目 自動車の保管場所
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress1())) {
-			dto.setParkingAddress1(wkPrefNameParking + teijiDataInfo.getParkingAddress1());
-		}
-		// 駐車場情報 １台目 位置番号等
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock1())) {
-			dto.setCarIchiNo1(teijiDataInfo.getParkingBlock1());
-		}
-		// 駐車場情報 １台目 自動車の保管場所に係わる使用料(月)
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental1())) {
-			Long parkingRental1 = Long.parseLong(teijiDataInfo.getParkingRental1());
-			dto.setParkingRental1(nfNum.format(parkingRental1) + SkfCommonConstant.FORMAT_EN);
-		}
-		// 駐車場情報 １台目 使用開始可能日
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking1StartDate())) {
-			dto.setParking1StartDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getParking1StartDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
-		}
-
 		// 駐車場情報 ２台目存在チェック
 		boolean bCar2 = false;
 
-		// 駐車場情報 ２台目 自動車の保管場所
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress2())) {
-			dto.setParkingAddress2(wkPrefNameParking + teijiDataInfo.getParkingAddress2());
-			bCar2 = true;
-		}
-		// 駐車場情報 ２台目 位置番号等
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock2())) {
-			dto.setCarIchiNo2(teijiDataInfo.getParkingBlock2());
-			bCar2 = true;
-		}
-		// 駐車場情報 ２台目 自動車の保管場所に係わる使用料(月)
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental2())) {
-			Long parkingRental2 = Long.parseLong(teijiDataInfo.getParkingRental2());
-			dto.setParkingRental2(nfNum.format(parkingRental2) + SkfCommonConstant.FORMAT_EN);
-			bCar2 = true;
-		}
-		// 駐車場情報 ２台目 使用開始可能日
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking2StartDate())) {
-			dto.setParking2StartDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getParking2StartDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
-			bCar2 = true;
+		// 駐車場が必要な場合のみ駐車場情報を表示する
+		String parkingUmu = dto.getParkingUmu();
+		if (CheckUtils.isEqual(parkingUmu, CodeConstant.CAR_PARK_HITUYO)) {
+			// 駐車場情報 １台目 自動車の保管場所
+			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress1())) {
+				dto.setParkingAddress1(wkPrefNameParking + teijiDataInfo.getParkingAddress1());
+			}
+			// 駐車場情報 １台目 位置番号等
+			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock1())) {
+				dto.setCarIchiNo1(teijiDataInfo.getParkingBlock1());
+			}
+			// 駐車場情報 １台目 自動車の保管場所に係わる使用料(月)
+			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental1())) {
+				Long parkingRental1 = Long.parseLong(teijiDataInfo.getParkingRental1());
+				dto.setParkingRental1(nfNum.format(parkingRental1) + SkfCommonConstant.FORMAT_EN);
+			}
+			// 駐車場情報 １台目 使用開始可能日
+			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking1StartDate())) {
+				dto.setParking1StartDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getParking1StartDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			}
+
+			if (NfwStringUtils.isNotEmpty(dto.getCarNoInputFlg2())) {
+				// 駐車場情報 ２台目 自動車の保管場所
+				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress2())) {
+					dto.setParkingAddress2(wkPrefNameParking + teijiDataInfo.getParkingAddress2());
+					bCar2 = true;
+				}
+				// 駐車場情報 ２台目 位置番号等
+				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock2())) {
+					dto.setCarIchiNo2(teijiDataInfo.getParkingBlock2());
+					bCar2 = true;
+				}
+				// 駐車場情報 ２台目 自動車の保管場所に係わる使用料(月)
+				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental2())) {
+					Long parkingRental2 = Long.parseLong(teijiDataInfo.getParkingRental2());
+					dto.setParkingRental2(nfNum.format(parkingRental2) + SkfCommonConstant.FORMAT_EN);
+					bCar2 = true;
+				}
+				// 駐車場情報 ２台目 使用開始可能日
+				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking2StartDate())) {
+					dto.setParking2StartDate(skfDateFormatUtils.dateFormatFromString(
+							teijiDataInfo.getParking2StartDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+					bCar2 = true;
+				}
+			}
 		}
 
 		// 社宅管理番号
@@ -1468,44 +1440,6 @@ public class Skf2020Sc003SharedService {
 
 		return columnInfoList;
 	}
-
-	/**
-	 * 申請履歴の承認者と申請状況を更新します
-	 * 
-	 * @param shainNo
-	 * @param applNo
-	 * @param shonin1
-	 * @param shonin2
-	 * @param applInfo
-	 * @return
-	 */
-	// private boolean updateApplHistoryAgreeStatus(String newStatus, String
-	// shainNo, String applNo, String shonin1,
-	// String shonin2, Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo) {
-	// Skf2020Sc003UpdateApplHistoryExp record = new
-	// Skf2020Sc003UpdateApplHistoryExp();
-	// if (NfwStringUtils.isNotEmpty(shonin1)) {
-	// record.setAgreName1(shonin1);
-	// }
-	// if (NfwStringUtils.isNotEmpty(shonin2)) {
-	// record.setAgreName1(shonin2);
-	// }
-	// record.setAgreDate(new Date());
-	// record.setApplStatus(newStatus);
-	//
-	// // 条件
-	// record.setCompanyCd(companyCd);
-	// record.setApplNo(applNo);
-	// record.setShainNo(shainNo);
-	// record.setApplId(applInfo.getApplId());
-	//
-	// int result =
-	// skf2020Sc003UpdateApplHistoryExpRepository.updateApplHistory(record);
-	// if (result <= 0) {
-	// return false;
-	// }
-	// return true;
-	// }
 
 	/**
 	 * 添付資料情報を更新する。

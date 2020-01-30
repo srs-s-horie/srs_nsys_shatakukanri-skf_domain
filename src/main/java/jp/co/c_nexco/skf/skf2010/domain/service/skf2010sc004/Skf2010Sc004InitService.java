@@ -257,6 +257,35 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 						&& CheckUtils.isEqual(tNyukyoChoshoTsuchi.getTaikyoYotei(), CodeConstant.LEAVE))) {
 					// 退居予定がNULLかもしくは「１：退居」以外の場合は退居予定日と駐車場返還予定日を非活性にする
 					initDto.setNotTaikyo(true);
+				} else {
+					// 退居日、駐車場返還日をセット
+					initDto.setTaikyobi(tNyukyoChoshoTsuchi.getTaikyoYoteiDate());
+					initDto.setHenkanbi(tNyukyoChoshoTsuchi.getTaikyoYoteiDate());
+				}
+
+				if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNyukyoKanoDate())) {
+					// 入居予定日をセット
+					initDto.setNyukyobi(tNyukyoChoshoTsuchi.getNyukyoKanoDate());
+				}
+
+				if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUmu())
+						|| CheckUtils.isEqual(tNyukyoChoshoTsuchi.getParkingUmu(), CodeConstant.CAR_PARK_HITUYO)) {
+					if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingKanoDate())) {
+						// 保管場所使用開始日をセット
+						initDto.setShiyobi(tNyukyoChoshoTsuchi.getParkingKanoDate());
+					}
+				}
+
+				if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())
+						|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarName2())
+						|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())
+						|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())
+						|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarIchiNo2())
+						|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingRental2())) {
+					if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingKanoDate2())) {
+						// 保管場所使用開始日（２台目）をセット
+						initDto.setShiyobi2(tNyukyoChoshoTsuchi.getParkingKanoDate2());
+					}
 				}
 
 				// 更新用
@@ -665,6 +694,9 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getTaikyoYoteiDate(), "yyyy年MM月dd日"));
 		// 特殊事情
 		initDto.setTokushuJijo(tNyukyoChoshoTsuchi.getTokushuJijo());
+		// 入居日
+		initDto.setNyukyobi(tNyukyoChoshoTsuchi.getNyukyoKanoDate());
+		//
 
 		return;
 	}
