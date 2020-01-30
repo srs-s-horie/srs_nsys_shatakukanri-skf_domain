@@ -3,10 +3,8 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -43,15 +41,15 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		// 初期化処理
 		init(initDto);
 
+		// 所属機関の初期値セット
+		initDto.setShozokuKikan(CodeConstant.SHOZOKU_SHINSEI);
+
 		// ドロップダウン作成
 		setDropDown(initDto);
 
 		// チェックボックスの初期値セット
 		List<String> defaultApplStatusList = getDefaultApplStatusValue();
 		initDto.setApplStatus(defaultApplStatusList.toArray(new String[defaultApplStatusList.size()]));
-
-		// 所属機関の初期値セット
-		initDto.setShozokuKikan(CodeConstant.SHOZOKU_SHINSEI);
 
 		// 検索処理（リストテーブル作成）
 		initDto.setLtResultList(searchApplList(initDto, defaultApplStatusList));
@@ -69,7 +67,8 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		String agencyCd = dto.getAgency();
 		String affiliation1Cd = dto.getAffiliation1();
 		String affiliation2Cd = dto.getAffiliation2();
-		skf2010Sc005SharedService.setDropDown(dto, companyCd, agencyCd, affiliation1Cd, affiliation2Cd);
+		String shozoku = dto.getShozokuKikan();
+		skf2010Sc005SharedService.setDropDown(dto, shozoku, agencyCd, affiliation1Cd, affiliation2Cd);
 
 		return;
 	}
