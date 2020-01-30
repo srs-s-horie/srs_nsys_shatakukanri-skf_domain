@@ -23,5 +23,7 @@ public class Skf2010Sc005ChangeDropDownAsyncDto extends Skf2010Sc005CommonAsyncD
 	private String affiliation1;
 	/** 室、チーム又は課 */
 	private String affiliation2;
+	/** 所属機関 */
+	private String shozokuKikan;
 
 }
