@@ -189,7 +189,7 @@ public class Skf2010Sc005SharedService {
 	 * @param affiliation1Cd
 	 * @param affiliation2Cd
 	 */
-	public void setDropDown(Skf2010Sc005CommonDto dto, String companyCd, String agencyCd, String affiliation1Cd,
+	public void setDropDown(Skf2010Sc005CommonDto dto, String shozoku, String agencyCd, String affiliation1Cd,
 			String affiliation2Cd) {
 		List<Map<String, Object>> ddlAgencyList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> ddlAffiliation1List = new ArrayList<Map<String, Object>>();
@@ -197,11 +197,22 @@ public class Skf2010Sc005SharedService {
 
 		// 機関ドロップダウンを作成
 		ddlAgencyList = skfDropDownUtils.getDdlAgencyByCd(companyCd, agencyCd, true);
-		// 部等ドロップダウンを作成
-		ddlAffiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
-		// 室、チーム又は課ドロップダウを作成
-		ddlAffiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd,
-				affiliation2Cd, true);
+
+		// 所属によりドロップダウン取得元変更
+		if (CheckUtils.isEqual(shozoku, CodeConstant.SHOZOKU_SHINSEI)) {
+			// 部等ドロップダウンを作成
+			ddlAffiliation1List = skfDropDownUtils.getDdlBkAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
+			// 室、チーム又は課ドロップダウを作成
+			ddlAffiliation2List = skfDropDownUtils.getDdlBkAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd,
+					affiliation2Cd, true);
+
+		} else {
+			// 部等ドロップダウンを作成
+			ddlAffiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
+			// 室、チーム又は課ドロップダウを作成
+			ddlAffiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd,
+					affiliation2Cd, true);
+		}
 
 		dto.setDdlAgencyList(ddlAgencyList);
 		dto.setDdlAffiliation1List(ddlAffiliation1List);

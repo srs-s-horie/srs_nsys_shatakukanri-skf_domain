@@ -29,6 +29,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -57,6 +58,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
 
@@ -144,12 +147,16 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		// 返還日の有無をチェック
 		if (NfwStringUtils.isEmpty(syokiHenkanbi)) {
 			// 返還日が無い時にテキストボックスの入力があった場合、変更フラグを1:変更ありにする。
-			if (!NfwStringUtils.isEmpty(henkanbi)) {
+			if (NfwStringUtils.isNotEmpty(henkanbi)) {
 				// 返還日変更フラグに1：変更ありを設定
 				henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		} else {
-			if (!syokiHenkanbi.equals(henkanbi)) {
+			String henkanbiNoSlash = skfDateFormatUtils.dateFormatFromString(henkanbi,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+			String syokiHenkanbiNoSlash = skfDateFormatUtils.dateFormatFromString(syokiHenkanbi,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+			if (!CheckUtils.isEqual(henkanbiNoSlash, syokiHenkanbiNoSlash)) {
 				// 返還日変更フラグに1：変更ありを設定
 				henkanChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
@@ -166,12 +173,17 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		// 入居日の有無をチェック
 		if (NfwStringUtils.isEmpty(syokiNyukyobi)) {
 			// 入居日が無い時にテキストボックスの入力があった場合、変更フラグを1:変更ありにする。
-			if (!NfwStringUtils.isEmpty(nyukyobi)) {
+			if (NfwStringUtils.isNotEmpty(nyukyobi)) {
 				// 入居日変更フラグに1：変更ありを設定
 				nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}
 		} else {
-			if (!syokiNyukyobi.equals(nyukyobi)) {
+			// 念のため比較対象の形式を合わせる
+			String syokiNyukyobiNoSlash = skfDateFormatUtils.dateFormatFromString(syokiNyukyobi,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+			String nyukyobiNoSlash = skfDateFormatUtils.dateFormatFromString(nyukyobi,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+			if (!CheckUtils.isEqual(syokiNyukyobiNoSlash, nyukyobiNoSlash)) {
 				// 入居日変更フラグに1：変更ありを設定
 				nyukyoChangeFlag = SkfCommonConstant.DATE_CHANGE;
 			}

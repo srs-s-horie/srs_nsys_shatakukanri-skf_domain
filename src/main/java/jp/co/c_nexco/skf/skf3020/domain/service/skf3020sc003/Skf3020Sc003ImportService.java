@@ -277,7 +277,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 			
 			if (shainNo == null || CheckUtils.isEmpty(shainNo)) {
 				// 社員番号が無い場合は登録処理
-				errResult = skf3020Sc003SharedService.insertTenninshaInfo(targetMap);
+				errResult = skf3020Sc003SharedService.insertTenninshaInfo(targetMap,flg);
 				if (!"".equals(errResult)) {
 					return errResult;
 				}
@@ -287,16 +287,16 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 				Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository
 						.selectByPrimaryKey(shainNo);
 				
+				// 現社宅判定フラグ設定
+				flg = skf3020Sc003SharedService.setGenshatakuFlg(shainNo);
+				
 				if (tenninshaInfo != null) {
-					if (tenninshaInfo.getShainNo() == null || CheckUtils.isEmpty(tenninshaInfo.getShainNo())) {
-						LogUtils.debugByMsg("転任者調書データ内の指定の社員番号が取得出来なかった。");
-						importDto.setResultMessages(null);
-						ServiceHelper.addErrorResultMessage(importDto, null, "");
-						throwBusinessExceptionIfErrors(importDto.getResultMessages());
-					}
-
-					// 現社宅判定フラグ設定
-					flg = skf3020Sc003SharedService.setGenshatakuFlg(tenninshaInfo.getShainNo());
+//					if (tenninshaInfo.getShainNo() == null || CheckUtils.isEmpty(tenninshaInfo.getShainNo())) {
+//						LogUtils.debugByMsg("転任者調書データ内の指定の社員番号が取得出来なかった。");
+//						importDto.setResultMessages(null);
+//						ServiceHelper.addErrorResultMessage(importDto, null, "");
+//						throwBusinessExceptionIfErrors(importDto.getResultMessages());
+//					}
 
 					String update_data_2 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
 					Date updateData = sdFormat.parse(update_data_2);
@@ -311,7 +311,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 					}
 
 				} else {
-					errResult = skf3020Sc003SharedService.insertTenninshaInfo(targetMap);
+					errResult = skf3020Sc003SharedService.insertTenninshaInfo(targetMap,flg);
 					if (!"".equals(errResult)) {
 						return errResult;
 					}
