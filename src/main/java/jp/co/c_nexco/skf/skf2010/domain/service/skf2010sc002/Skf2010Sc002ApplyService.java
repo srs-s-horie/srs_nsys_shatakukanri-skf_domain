@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -44,6 +45,8 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	// 承認者更新フラグ
 	private String agreNameNoUpdate = "0";
@@ -131,6 +134,7 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2020Fc001NyukyoKiboSinseiDataImport.addResultMessageForDataLinkage(applyDto, resultList);
+				throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			}
 
 		} else if (FunctionIdConstant.R0103.equals(applyDto.getApplId())) {
@@ -148,6 +152,7 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(applyDto, resultList);
+				throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			}
 		}
 
