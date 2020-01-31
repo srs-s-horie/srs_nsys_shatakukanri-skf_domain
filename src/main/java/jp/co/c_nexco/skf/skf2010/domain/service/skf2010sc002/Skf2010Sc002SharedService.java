@@ -245,7 +245,7 @@ public class Skf2010Sc002SharedService {
 	 */
 	protected boolean validateComment(String comment) throws UnsupportedEncodingException {
 		// コメント欄の入力文字数が4000バイト以上ならエラー
-		if (NfwStringUtils.isNotEmpty(comment)  && CheckUtils.isMoreThanByteSize(comment.trim(), 4000)) {
+		if (comment != null && CheckUtils.isMoreThanByteSize(comment.trim(), 4000)) {
 			return false;
 		}
 		return true;
