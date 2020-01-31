@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,6 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -91,7 +89,7 @@ public class Skf2010Sc002SharedService {
 			return;
 		}
 		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
-				SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY);
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 	}
 
 	/**
@@ -283,116 +281,13 @@ public class Skf2010Sc002SharedService {
 	 */
 	protected void setAttachedFileList(String shainNo, String applNo, Skf2010Sc002CommonDto dto) {
 
-		// 社宅添付ファイル情報の取得
-		String nyutaikyoKbn = CodeConstant.NONE;
-		switch (dto.getPrePageId()) {
-		case FunctionIdConstant.SKF2020_SC002:
-		case FunctionIdConstant.SKF2020_SC003:
-			// 入居希望申請情報の取得
-			nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_NYUKYO;
-			break;
-		case FunctionIdConstant.SKF2040_SC001:
-			// 退居（自動車の保管場所返還）届情報の取得
-			nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_TAIKYO;
-			break;
-		}
-
-		List<Skf2010Sc002GetShatakuAttachedFileExp> shatakuAttachedDtList = new ArrayList<Skf2010Sc002GetShatakuAttachedFileExp>();
-		shatakuAttachedDtList = getshatakuAttachedDt(shainNo, nyutaikyoKbn, applNo, shatakuAttachedDtList);
-
-		// 既存の添付資料をクリアする
-		Skf2010Sc002GetShatakuAttachedFileExp shatakuAttachedDt = new Skf2010Sc002GetShatakuAttachedFileExp();
-		List<Map<String, Object>> shatakuAttachedFileList = new ArrayList<Map<String, Object>>();
-
-		if (shatakuAttachedDtList.size() > 0) {
-
-			// shatakuAttachedDtList = getshatakuAttachedDt(shainNo,
-			// nyutaikyoKbn,
-			// applNo);
-
-			// 社宅添付ファイル情報の設定
-			shatakuAttachedDt = shatakuAttachedDtList.get(0);
-
-			// 社宅補足ファイル1
-			if (shatakuAttachedDt.getShatakuSupplementFile1() != null
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName1())
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize1())) {
-				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName1(),
-						shatakuAttachedDt.getShatakuSupplementFile1(), shatakuAttachedDt.getShatakuSupplementSize1(),
-						shatakuAttachedFileList.size(), shatakuAttachedFileList);
-			}
-			// 社宅補足ファイル2
-			if (shatakuAttachedDt.getShatakuSupplementFile2() != null
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName2())
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize2())) {
-				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName2(),
-						shatakuAttachedDt.getShatakuSupplementFile2(), shatakuAttachedDt.getShatakuSupplementSize2(),
-						shatakuAttachedFileList.size(), shatakuAttachedFileList);
-			}
-			// 社宅補足ファイル3
-			if (shatakuAttachedDt.getShatakuSupplementFile3() != null
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementName3())
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShatakuSupplementSize3())) {
-				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShatakuSupplementName3(),
-						shatakuAttachedDt.getShatakuSupplementFile3(), shatakuAttachedDt.getShatakuSupplementSize3(),
-						shatakuAttachedFileList.size(), shatakuAttachedFileList);
-			}
-			// 駐車場補足ファイル1
-			if (shatakuAttachedDt.getParkingSupplementFile1() != null
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName1())
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize1())) {
-				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName1(),
-						shatakuAttachedDt.getParkingSupplementFile1(), shatakuAttachedDt.getParkingSupplementSize1(),
-						shatakuAttachedFileList.size(), shatakuAttachedFileList);
-			}
-			// 駐車場補足ファイル2
-			if (shatakuAttachedDt.getParkingSupplementFile2() != null
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName2())
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize2())) {
-				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName2(),
-						shatakuAttachedDt.getParkingSupplementFile2(), shatakuAttachedDt.getParkingSupplementSize2(),
-						shatakuAttachedFileList.size(), shatakuAttachedFileList);
-			}
-			// 駐車場補足ファイル3
-			if (shatakuAttachedDt.getParkingSupplementFile3() != null
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementName3())
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getParkingSupplementSize3())) {
-				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getParkingSupplementName3(),
-						shatakuAttachedDt.getParkingSupplementFile3(), shatakuAttachedDt.getParkingSupplementSize3(),
-						shatakuAttachedFileList.size(), shatakuAttachedFileList);
-			}
-			// 資料補足ファイル
-			if (shatakuAttachedDt.getShiryoHosokuFile() != null
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuName())
-					&& StringUtils.isNotEmpty(shatakuAttachedDt.getShiryoHosokuSize())) {
-				skfAttachedFileUtils.addShatakuAttachedFile(shatakuAttachedDt.getShiryoHosokuName(),
-						shatakuAttachedDt.getShiryoHosokuFile(), shatakuAttachedDt.getShiryoHosokuSize(),
-						shatakuAttachedFileList.size(), shatakuAttachedFileList);
-			}
-		}
-
-		menuScopeSessionBean.put(SessionCacheKeyConstant.SHATAKU_ATTACHED_FILE_SESSION_KEY, shatakuAttachedFileList);
-
 		// 添付ファイルの設定
-		List<Map<String, Object>> tmpAttachedFileList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-		tmpAttachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, dto.getApplNo(),
+
+		attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, dto.getApplNo(),
 				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
-		if (tmpAttachedFileList != null && tmpAttachedFileList.size() > 0) {
-			int defaultAttachedNo = 0;
-			if (shatakuAttachedFileList != null && shatakuAttachedFileList.size() > 0) {
-				defaultAttachedNo = Integer.parseInt(
-						shatakuAttachedFileList.get(shatakuAttachedFileList.size() - 1).get("attachedNo").toString())
-						+ 1;
-			}
-			for (Map<String, Object> tmpAttachedFileMap : tmpAttachedFileList) {
-				skfAttachedFileUtils.addShatakuAttachedFile(tmpAttachedFileMap.get("attachedName").toString(),
-						(byte[]) tmpAttachedFileMap.get("fileStream"), tmpAttachedFileMap.get("fileSize").toString(),
-						defaultAttachedNo, attachedFileList);
-			}
-		}
+
 		// 添付ファイル情報設定（社宅添付ファイルと通常添付ファイルを別に保持）
-		dto.setShatakuAttachedFileList(shatakuAttachedFileList);
 		dto.setAttachedFileList(attachedFileList);
 
 	}
