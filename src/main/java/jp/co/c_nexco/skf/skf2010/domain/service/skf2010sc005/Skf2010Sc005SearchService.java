@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
@@ -65,20 +63,6 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		searchDto.setLtResultList(searchApplList(searchDto));
 
 		return searchDto;
-	}
-
-	/**
-	 * ドロップダウンを作成します
-	 * 
-	 * @param dto
-	 */
-	@SuppressWarnings("unchecked")
-	private void setDropDown(Skf2010Sc005SearchDto dto) {
-		// ドロップダウン作成
-		skf2010Sc005SharedService.setDropDown(dto, companyCd, dto.getAgency(), dto.getAffiliation1(),
-				dto.getAffiliation2());
-
-		return;
 	}
 
 	/**
