@@ -22,10 +22,10 @@ public class Skf2010Sc008LogoutService extends BaseServiceAbstract<Skf2010Sc008L
 	private MenuScopeSessionBean sessionBean;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	
+
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
-	
+
 	/**
 	 * 代行ログイン画面 ログアウトサービス処理を行う。
 	 * 
@@ -37,16 +37,19 @@ public class Skf2010Sc008LogoutService extends BaseServiceAbstract<Skf2010Sc008L
 	public Skf2010Sc008LogoutDto index(Skf2010Sc008LogoutDto logoutDto) throws Exception {
 
 		logoutDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
-		
+
 		// 操作ログを出力
 		skfOperationLogUtils.setAccessLog("代行ログアウト", companyCd, logoutDto.getPageId());
-		
+
 		// ログアウト処理
 		sessionBean.put(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY, CodeConstant.NONLOGIN);
 
 		// 代行ログイン対象社員情報をセッションからクリアする
 		sessionBean.remove(SessionCacheKeyConstant.ALTER_LOGIN_USER_INFO_MAP);
 		logoutDto = new Skf2010Sc008LogoutDto();
+
+		// タイトル情報の再設定
+		logoutDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
 
 		return logoutDto;
 	}
