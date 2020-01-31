@@ -115,6 +115,7 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 		attribute.put(SkfCommonConstant.KEY_APPL_NO, applNo);
 		attribute.put(SkfCommonConstant.KEY_SHAIN_NO, cancelDto.getShainNo());
 		attribute.put(SkfCommonConstant.KEY_STATUS, CodeConstant.STATUS_ICHIJIHOZON);
+		attribute.put("backUrl", "skf/Skf2010Sc003/init");
 
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(nextPageId, "init");
 		nextPage.addResultMessage(MessageIdConstant.I_SKF_2047);

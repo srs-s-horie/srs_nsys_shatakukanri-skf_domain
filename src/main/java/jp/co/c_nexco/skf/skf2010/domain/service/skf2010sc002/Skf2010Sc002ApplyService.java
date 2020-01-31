@@ -134,7 +134,6 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2020Fc001NyukyoKiboSinseiDataImport.addResultMessageForDataLinkage(applyDto, resultList);
-				skfRollBackExpRepository.rollBack();
 				throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			}
 
@@ -153,7 +152,6 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(applyDto, resultList);
-				skfRollBackExpRepository.rollBack();
 				throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			}
 		}
