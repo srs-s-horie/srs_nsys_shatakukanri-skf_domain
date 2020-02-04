@@ -19,6 +19,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc003.Skf3020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005GetShatakuShainCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005GetTenninshaShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005GetTenninshaShatakuInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005UpdateTenninshaInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
@@ -28,6 +29,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc005.Skf3020Sc005
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -112,12 +114,13 @@ public class Skf3020Sc005SharedService {
 	 * @throws ParseException
 	 */
 	public void setTenninshaInfo(Skf3020Sc005CommonDto inDto, String shainNo) throws ParseException {
+		shainNo = shainNo.replace(CodeConstant.ASTERISK,"");
 		// 転任者情報取得
 		Skf3020Sc005GetTenninshaShatakuInfoExp resultTableData = getTenninshaShatakuInfo(shainNo);
 
 		if (resultTableData != null) {
 
-			inDto.setTxtShainNo(skf302010CommonSharedService.cnvString(resultTableData.getShainNo()));
+			inDto.setShainNo(skf302010CommonSharedService.cnvString(resultTableData.getShainNo()));
 
 			String shainNoHenkoKbn = resultTableData.getShainNoHenkoKbn();
 			String chkShainNoHenkoKbn = ""; // 仮社員番号設定(社員番号の変更の要否)
@@ -170,7 +173,7 @@ public class Skf3020Sc005SharedService {
 	 */
 	public void setInitInfo(Skf3020Sc005CommonDto inDto) {
 
-		inDto.setTxtShainNo("");
+		inDto.setShainNo("");
 		String[] checkBox = new String[] { "" };
 		inDto.setId_check_shainNo(checkBox);
 		inDto.setTxtShainMei("");
@@ -272,7 +275,7 @@ public class Skf3020Sc005SharedService {
 	public String insertTenninshaInfo(Skf3020Sc005CommonDto inDto, String chkShainNoHenkoKbn) throws ParseException {
 
 		String outMsgId = "";
-		String shainNo = inDto.getTxtShainNo();
+		String shainNo = inDto.getShainNo();
 		int result = Skf302010CommonSharedService.DB_RESULT_NORMAL;
 		Skf3020Sc005GetTenninshaShatakuInfoExp existData = getTenninshaShatakuInfo(shainNo);
 
@@ -327,39 +330,19 @@ public class Skf3020Sc005SharedService {
 	/**
 	 * 社宅社員マスタへの更新
 	 * 
-	 * @param oldShainNo
-	 *            変更前の社員番号
-	 * @param newShainNo
-	 *            変更後の社員番号
+	 * @param shainNo
+	 *            変更社員番号
 	 * @param chkShainNoHenkoKbn
 	 *            社員番号変更対象区分
 	 * @return DB処理結果
 	 */
-	public int updateShatakuShain(String oldShainNo, String newShainNo, String chkShainNoHenkoKbn) {
-
-		String updateShainNo = "";
-		String updateChkShainNoHenkoKbn = "";
-		// 仮社員番号ではない場合
-		if (!Skf302010CommonSharedService.KARI_K.equals(oldShainNo.substring(0, 1))) {
-
-			if (oldShainNo.equals(newShainNo)) {
-				updateShainNo = oldShainNo;
-				updateChkShainNoHenkoKbn = chkShainNoHenkoKbn;
-
-			} else {
-				updateShainNo = newShainNo;
-				updateChkShainNoHenkoKbn = "0";
-			}
-
-		} else {
-			updateShainNo = newShainNo;
-			updateChkShainNoHenkoKbn = chkShainNoHenkoKbn;
-		}
+	public int updateShatakuShain(String shainNo, String chkShainNoHenkoKbn) {
 
 		// 「社宅社員マスタ」へ更新
-		Skf1010MShain updateData = getShainData(newShainNo);
-		updateData.setShainNo(updateShainNo);
-		updateData.setShainNoChangeFlg(updateChkShainNoHenkoKbn);
+		Skf1010MShain updateData = new Skf1010MShain();
+		updateData.setCompanyCd(CodeConstant.C001);
+		updateData.setShainNo(shainNo);
+		updateData.setShainNoChangeFlg(chkShainNoHenkoKbn);
 		int result = skf1010MShainRepository.updateByPrimaryKeySelective(updateData);
 
 		if (result <= 0) {
@@ -460,10 +443,10 @@ public class Skf3020Sc005SharedService {
 	 *            社員番号変更対象区分
 	 * @return 登録する転任者調書データ
 	 */
-	public Skf3020TTenninshaChoshoData createUpdateTenninshaInfoData(Skf3020Sc005CommonDto inDto, String shainNo,
+	public Skf3020Sc005UpdateTenninshaInfoExp createUpdateTenninshaInfoData(Skf3020Sc005CommonDto inDto, String shainNo,
 			String chkShainNoHenkoKbn, Skf3020TTenninshaChoshoData inData) {
 
-		Skf3020TTenninshaChoshoData tenninshaChoshoData = new Skf3020TTenninshaChoshoData();
+		Skf3020Sc005UpdateTenninshaInfoExp tenninshaChoshoData = new Skf3020Sc005UpdateTenninshaInfoExp();
 
 		tenninshaChoshoData.setShainNo(shainNo.trim());
 		tenninshaChoshoData.setName(inDto.getTxtShainMei().trim());
@@ -481,12 +464,15 @@ public class Skf3020Sc005SharedService {
 		tenninshaChoshoData.setBiko(inDto.getTxtBiko().trim());
 		tenninshaChoshoData.setShainNoHenkoKbn(chkShainNoHenkoKbn);
 
-		String genShatakuKbn = getGenShatakuKbn(shainNo);
-		tenninshaChoshoData.setNowShatakuKbn(genShatakuKbn);
+		//String genShatakuKbn = getGenShatakuKbn(shainNo);
+		//tenninshaChoshoData.setNowShatakuKbn(genShatakuKbn);
 
-		tenninshaChoshoData.setNyutaikyoYoteiKbn(inData.getNyutaikyoYoteiKbn());
-		tenninshaChoshoData.setDataTakinginDate(inData.getDataTakinginDate());
-		tenninshaChoshoData.setDeleteFlag(inData.getDeleteFlag());
+		//tenninshaChoshoData.setNyutaikyoYoteiKbn(inData.getNyutaikyoYoteiKbn());
+		//tenninshaChoshoData.setDataTakinginDate(inData.getDataTakinginDate());
+		//tenninshaChoshoData.setDeleteFlag(inData.getDeleteFlag());
+		
+		tenninshaChoshoData.setUpdateProgramId(inDto.getPageId());
+		tenninshaChoshoData.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 
 		return tenninshaChoshoData;
 	}

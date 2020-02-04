@@ -22,6 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Rp003.Skf3030Rp003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Rp003.Skf3030Rp003GetShatakuDaichoInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Rp003.Skf3030Rp003PreMonthCompareDataExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -199,8 +200,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		
 		String yearMonth = inDto.getHdnYearSelect() + inDto.getHdnMonthSelect();
 
-		Map<String, String> userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		String userId = userInfo.get("userName");
+		String userId = LoginUserInfoUtils.getUserCd();
 
 		if (NfwStringUtils.isEmpty(yearMonth) || NfwStringUtils.isEmpty(userId)) {
 			LogUtils.debugByMsg("パラメータ不正。対象年月：" + yearMonth + "、 ユーザーID：" + userId);

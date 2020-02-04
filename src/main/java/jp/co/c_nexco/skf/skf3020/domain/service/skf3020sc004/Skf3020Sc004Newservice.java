@@ -43,6 +43,9 @@ public class Skf3020Sc004Newservice extends BaseServiceAbstract<Skf3020Sc004NewD
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("新規", CodeConstant.C001, newDto.getPageId());		
 		
+		//社員番号リセット
+		newDto.setHdnShainNo("");
+		
 		return newDto;
 	}
 	

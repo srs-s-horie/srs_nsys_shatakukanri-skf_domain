@@ -133,8 +133,23 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			int indexNyukyo = nyukyoChkValList.indexOf(Integer.toString(rowIndex));
 			int indexTaikyo = taikyoChkValList.indexOf(Integer.toString(rowIndex));
 			int indexHenkou = henkouChkValList.indexOf(Integer.toString(rowIndex));
+			Map<String, Object> listTableData = registDto.getListTableData().get(rowIndex);
 			
-			if((indexNyukyo != -1) || (indexTaikyo != -1) || (indexHenkou != -1)){
+			Boolean nyukyoEnabled = true;
+			Boolean taikyoEnabled = true;
+			Boolean henkouEnabled = true;
+			
+			if(listTableData.get("col1").toString().indexOf("disabled") != -1){
+				nyukyoEnabled = false;
+			}
+			if(listTableData.get("col2").toString().indexOf("disabled") != -1){
+				taikyoEnabled = false;
+			}
+			if(listTableData.get("col3").toString().indexOf("disabled") != -1){
+				henkouEnabled = false;
+			}
+			
+			if((nyukyoEnabled && (indexNyukyo != -1)) || ( taikyoEnabled && (indexTaikyo != -1)) || (henkouEnabled && (indexHenkou != -1))){
 				checkCnt = checkCnt + 1;
 			}
 			
@@ -249,118 +264,125 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			
 			Map<String, Object> listTableData = dto.getListTableData().get(rowIndex);
 			
-			// Mapからキーをもとに値をとる
-			// - 社員番号
-			String shaiNoStr = listTableData.get("col4").toString();
-			int indexAster = shaiNoStr.indexOf("*");
-			if(indexAster >= 0){
-				shaiNoStr = shaiNoStr.replace("*", "");
+			if(!nyukyoFlgStr.equals(listTableData.get("col17").toString()) ||
+				!taikyoFlgStr.equals(listTableData.get("col18").toString()) ||
+				!henkouFlgStr.equals(listTableData.get("col19").toString())){
+				
+				// Mapからキーをもとに値をとる
+				// - 社員番号
+				String shaiNoStr = listTableData.get("col4").toString();
+				int indexAster = shaiNoStr.indexOf("*");
+				if(indexAster >= 0){
+					shaiNoStr = shaiNoStr.replace("*", "");
+				}
+				// - 社員氏名
+				String shaiNameStr = listTableData.get("col5").toString();
+				// - 取込日
+				String takingDateStr = listTableData.get("col11").toString();
+				takingDateStr = takingDateStr.replace("/", "");
+				
+				// 排他チェック
+				Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository.selectByPrimaryKey(shaiNoStr);
+				if(tenninshaInfo == null){
+					LogUtils.debugByMsg("転任者調書データ取得結果NULL");
+					return -1;
+				}
+				
+				// 日付変換
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+				Date mapDate = null;
+				try{
+					mapDate = dateFormat.parse(listTableData.get("col16").toString());
+				}catch(ParseException ex){
+					LogUtils.debugByMsg("転任者情報-更新日時変換エラー :" + listTableData.get("col16").toString());
+					return -1;
+				}			
+				super.checkLockException(mapDate, tenninshaInfo.getUpdateDate());			
+
+				// 転任者調書データ更新
+				// - 社員番号
+				setVal.setShainNo(shaiNoStr);
+				// - 社員名
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getName())){
+					setVal.setName(tenninshaInfo.getName());
+				}
+				// - 等級
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getTokyu())){
+					setVal.setTokyu(tenninshaInfo.getTokyu());
+				}
+				// - 年齢
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getAge())){
+					setVal.setAge(tenninshaInfo.getAge());
+				}
+				// - 現所属
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNowAffiliation())){
+					setVal.setNowAffiliation(tenninshaInfo.getNowAffiliation());
+				}
+				// - 新所属
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNewAffiliation())){
+					setVal.setNewAffiliation(tenninshaInfo.getNewAffiliation());
+				}
+				// - 備考
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getBiko())){
+					setVal.setBiko(tenninshaInfo.getBiko());
+				}
+				// - 社員番号変更区分
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getShainNoHenkoKbn())){
+					setVal.setShainNoHenkoKbn(tenninshaInfo.getShainNoHenkoKbn());
+				}
+				// - 入居フラグ、退居フラグ、変更フラグ ：設定済み
+				// - 現社宅区分
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNowShatakuKbn())){
+					setVal.setNowShatakuKbn(tenninshaInfo.getNowShatakuKbn());
+				}
+				// - 入退居予定作成区分
+				setVal.setNyutaikyoYoteiKbn("1");
+				// - 転任者調書取込日
+				if(NfwStringUtils.isNotEmpty(tenninshaInfo.getDataTakinginDate())){
+					setVal.setDataTakinginDate(tenninshaInfo.getDataTakinginDate());
+				}
+				// - 削除フラグ
+				setVal.setDeleteFlag("0");
+
+				int resultTenninsha = updateTenninshaChoshoData(setVal); 
+				if(resultTenninsha > 0){
+					updateCount += resultTenninsha;
+				}else{
+					return 0;
+				}
+
+				// 入退居予定データ更新
+				// - 入居("1")
+				if(nyukyoFlgStr.equals("1")){
+					int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "1", takingDateStr);
+					if(resultNyutaikyo > 0){
+						updateCount += resultNyutaikyo;
+					}else{
+						return 0;
+					}
+				}
+				// - 退居("2")
+				if(taikyoFlgStr.equals("1")){
+					int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "2", takingDateStr);
+					if(resultNyutaikyo > 0){
+						updateCount += resultNyutaikyo;
+					}else{
+						return 0;
+					}
+				}
+				// - 変更("3")
+				if(henkouFlgStr.equals("1")){
+					int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "3", takingDateStr);
+					if(resultNyutaikyo > 0){
+						updateCount += resultNyutaikyo;
+					}else{
+						return 0;
+					}
+				}
+				setVal = null;
 			}
-			// - 社員氏名
-			String shaiNameStr = listTableData.get("col5").toString();
-			// - 取込日
-			String takingDateStr = listTableData.get("col11").toString();
-			takingDateStr = takingDateStr.replace("/", "");
 			
-			// 排他チェック
-			Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository.selectByPrimaryKey(shaiNoStr);
-			if(tenninshaInfo == null){
-				LogUtils.debugByMsg("転任者調書データ取得結果NULL");
-				return -1;
-			}
-			
-			// 日付変換
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-			Date mapDate = null;
-			try{
-				mapDate = dateFormat.parse(listTableData.get("col16").toString());
-			}catch(ParseException ex){
-				LogUtils.debugByMsg("転任者情報-更新日時変換エラー :" + listTableData.get("col16").toString());
-				return -1;
-			}			
-			super.checkLockException(mapDate, tenninshaInfo.getUpdateDate());			
 
-			// 転任者調書データ更新
-			// - 社員番号
-			setVal.setShainNo(shaiNoStr);
-			// - 社員名
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getName())){
-				setVal.setName(tenninshaInfo.getName());
-			}
-			// - 等級
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getTokyu())){
-				setVal.setTokyu(tenninshaInfo.getTokyu());
-			}
-			// - 年齢
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getAge())){
-				setVal.setAge(tenninshaInfo.getAge());
-			}
-			// - 現所属
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNowAffiliation())){
-				setVal.setNowAffiliation(tenninshaInfo.getNowAffiliation());
-			}
-			// - 新所属
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNewAffiliation())){
-				setVal.setNewAffiliation(tenninshaInfo.getNewAffiliation());
-			}
-			// - 備考
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getBiko())){
-				setVal.setBiko(tenninshaInfo.getBiko());
-			}
-			// - 社員番号変更区分
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getShainNoHenkoKbn())){
-				setVal.setShainNoHenkoKbn(tenninshaInfo.getShainNoHenkoKbn());
-			}
-			// - 入居フラグ、退居フラグ、変更フラグ ：設定済み
-			// - 現社宅区分
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getNowShatakuKbn())){
-				setVal.setNowShatakuKbn(tenninshaInfo.getNowShatakuKbn());
-			}
-			// - 入退居予定作成区分
-			setVal.setNyutaikyoYoteiKbn("1");
-			// - 転任者調書取込日
-			if(NfwStringUtils.isNotEmpty(tenninshaInfo.getDataTakinginDate())){
-				setVal.setDataTakinginDate(tenninshaInfo.getDataTakinginDate());
-			}
-			// - 削除フラグ
-			setVal.setDeleteFlag("0");
-
-			int resultTenninsha = updateTenninshaChoshoData(setVal); 
-			if(resultTenninsha > 0){
-				updateCount += resultTenninsha;
-			}else{
-				return 0;
-			}
-
-			// 入退居予定データ更新
-			// - 入居("1")
-			if(nyukyoFlgStr.equals("1")){
-				int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "1", takingDateStr);
-				if(resultNyutaikyo > 0){
-					updateCount += resultNyutaikyo;
-				}else{
-					return 0;
-				}
-			}
-			// - 退居("2")
-			if(taikyoFlgStr.equals("1")){
-				int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "2", takingDateStr);
-				if(resultNyutaikyo > 0){
-					updateCount += resultNyutaikyo;
-				}else{
-					return 0;
-				}
-			}
-			// - 変更("3")
-			if(henkouFlgStr.equals("1")){
-				int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "3", takingDateStr);
-				if(resultNyutaikyo > 0){
-					updateCount += resultNyutaikyo;
-				}else{
-					return 0;
-				}
-			}
-			setVal = null;
 		}
 		
 		return updateCount;

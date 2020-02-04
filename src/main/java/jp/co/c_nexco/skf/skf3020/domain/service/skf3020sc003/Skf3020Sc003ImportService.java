@@ -259,15 +259,15 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 		
 		String firstShainNo = (String) infoList.get(0).get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
 		
-		// 最新更新日を取得
-		String update_data_1 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
+//		// 最新更新日を取得
+//		String update_data_1 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-		
-		if (!NfwStringUtils.isEmpty(update_data_1)) {
-			Date lastUpdateData = sdFormat.parse(update_data_1);
-			// 排他用更新日設定
-			importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, lastUpdateData);
-		}
+//		
+//		if (!NfwStringUtils.isEmpty(update_data_1)) {
+//			Date lastUpdateData = sdFormat.parse(update_data_1);
+//			// 排他用更新日設定
+//			importDto.addLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY, lastUpdateData);
+//		}
 
 		for (int i = 0; i < infoList.size(); i++) {
 
@@ -298,11 +298,11 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 //						throwBusinessExceptionIfErrors(importDto.getResultMessages());
 //					}
 
-					String update_data_2 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
-					Date updateData = sdFormat.parse(update_data_2);
-					// 排他チェック
-					super.checkLockException(importDto.getLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY),
-							updateData);
+//					String update_data_2 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
+//					Date updateData = sdFormat.parse(update_data_2);
+//					// 排他チェック
+//					super.checkLockException(importDto.getLastUpdateDate(TENNIN_CHOSHO_DATA_UPDATE_KEY),
+//							updateData);
 
 					// 転任者調書データ更新結果
 					errResult = skf3020Sc003SharedService.updateTenninshaInfo(tenninshaInfo, targetMap, flg);
@@ -311,6 +311,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 					}
 
 				} else {
+					//転任者調書データが存在しない場合、登録処理を行う。
 					errResult = skf3020Sc003SharedService.insertTenninshaInfo(targetMap,flg);
 					if (!"".equals(errResult)) {
 						return errResult;
