@@ -1141,7 +1141,6 @@ public class Skf2020Sc002SharedService {
 		/*
 		 * 必要とする社宅 初期表示活性制御
 		 */
-		dto.setRdoKikonDisabled(sTrue);
 		dto.setRdoHitsuyoSetaiDisabled(sTrue);
 		dto.setRdoHitsuyoTanshinDisabled(sTrue);
 		dto.setRdoHitsuyoDokushinDisabled(sTrue);
@@ -1202,6 +1201,13 @@ public class Skf2020Sc002SharedService {
 			} else if (CodeConstant.DOKUSHIN.equals(dto.getHitsuyoShataku())) {
 				// 「独身」選択時
 				dto.setRdoKikonDisabled(sTrue);
+
+				dto.setRdoHitsuyoSetaiDisabled(sTrue);
+				dto.setRdoHitsuyoTanshinDisabled(sTrue);
+				dto.setRdoHitsuyoDokushinDisabled(sFalse);
+			} else {
+				// それ以外
+				dto.setRdoKikonDisabled(sFalse);
 				dto.setRdoHitsuyoSetaiDisabled(sTrue);
 				dto.setRdoHitsuyoTanshinDisabled(sTrue);
 				dto.setRdoHitsuyoDokushinDisabled(sFalse);
