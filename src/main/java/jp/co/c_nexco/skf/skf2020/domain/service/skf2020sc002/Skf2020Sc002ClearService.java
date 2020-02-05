@@ -6,7 +6,6 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc002;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -51,6 +50,8 @@ public class Skf2020Sc002ClearService extends BaseServiceAbstract<Skf2020Sc002Cl
 		/*
 		 * 保存状態の復帰
 		 */
+		// ドロップダウンの設定
+		skf2020Sc002SharedService.setControlDdl(clearDto);
 		// 登録済みデータの情報設定
 		skf2020Sc002SharedService.setSinseiInfo(clearDto, false);
 		// 返却備品の設定
