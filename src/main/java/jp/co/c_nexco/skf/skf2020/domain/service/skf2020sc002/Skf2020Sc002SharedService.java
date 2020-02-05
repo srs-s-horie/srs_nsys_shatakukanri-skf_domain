@@ -1141,6 +1141,7 @@ public class Skf2020Sc002SharedService {
 		/*
 		 * 必要とする社宅 初期表示活性制御
 		 */
+		dto.setRdoKikonDisabled(sTrue);
 		dto.setRdoHitsuyoSetaiDisabled(sTrue);
 		dto.setRdoHitsuyoTanshinDisabled(sTrue);
 		dto.setRdoHitsuyoDokushinDisabled(sTrue);
