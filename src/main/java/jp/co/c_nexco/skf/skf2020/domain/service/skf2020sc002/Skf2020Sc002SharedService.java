@@ -1187,25 +1187,21 @@ public class Skf2020Sc002SharedService {
 			 */
 			if (CodeConstant.SETAI.equals(dto.getHitsuyoShataku())) {
 				// 「世帯」選択時
-				dto.setRdoKikonDisabled(sTrue);
+				dto.setRdoKikonDisabled(sFalse);
+				dto.setRdoKikonChecked(sTrue);
 				dto.setRdoHitsuyoSetaiDisabled(sFalse);
 				dto.setRdoHitsuyoTanshinDisabled(sFalse);
 				dto.setRdoHitsuyoDokushinDisabled(sFalse);
 			} else if (CodeConstant.TANSHIN.equals(dto.getHitsuyoShataku())) {
 				// 「単身」選択時
-				dto.setRdoKikonDisabled(sTrue);
+				dto.setRdoKikonDisabled(sFalse);
+				dto.setRdoKikonChecked(sTrue);
 				dto.setRdoHitsuyoSetaiDisabled(sFalse);
 				dto.setRdoHitsuyoTanshinDisabled(sFalse);
 				dto.setRdoHitsuyoDokushinDisabled(sFalse);
 			} else if (CodeConstant.DOKUSHIN.equals(dto.getHitsuyoShataku())) {
 				// 「独身」選択時
-				dto.setRdoKikonDisabled(sFalse);
-				dto.setRdoHitsuyoSetaiDisabled(sTrue);
-				dto.setRdoHitsuyoTanshinDisabled(sTrue);
-				dto.setRdoHitsuyoDokushinDisabled(sFalse);
-			} else {
-				// それ以外
-				dto.setRdoKikonDisabled(sFalse);
+				dto.setRdoKikonDisabled(sTrue);
 				dto.setRdoHitsuyoSetaiDisabled(sTrue);
 				dto.setRdoHitsuyoTanshinDisabled(sTrue);
 				dto.setRdoHitsuyoDokushinDisabled(sFalse);
