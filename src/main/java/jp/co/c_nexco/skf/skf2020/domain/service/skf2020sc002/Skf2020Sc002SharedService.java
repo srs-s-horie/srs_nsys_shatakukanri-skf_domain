@@ -1201,8 +1201,7 @@ public class Skf2020Sc002SharedService {
 				dto.setRdoHitsuyoDokushinDisabled(sFalse);
 			} else if (CodeConstant.DOKUSHIN.equals(dto.getHitsuyoShataku())) {
 				// 「独身」選択時
-				dto.setRdoKikonDisabled(sTrue);
-
+				dto.setRdoKikonDisabled(sFalse);
 				dto.setRdoHitsuyoSetaiDisabled(sTrue);
 				dto.setRdoHitsuyoTanshinDisabled(sTrue);
 				dto.setRdoHitsuyoDokushinDisabled(sFalse);
