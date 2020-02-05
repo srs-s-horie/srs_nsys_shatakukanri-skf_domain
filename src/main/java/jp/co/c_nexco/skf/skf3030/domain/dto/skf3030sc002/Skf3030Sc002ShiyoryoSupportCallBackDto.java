@@ -7,14 +7,14 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030Sc002common.Skf3030Sc002Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3030Sc002InitDto 入退居情報登録画面：初期処理Dto。
+ * Skf3030Sc002ShiyoryoSupportCallBackDto 入退居情報登録画面：使用料計算入力支援コールバック時処理Dto。
  * 
  * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3030Sc002InitDto extends Skf3030Sc002CommonDto {
+public class Skf3030Sc002ShiyoryoSupportCallBackDto extends Skf3030Sc002CommonDto {
 	
-	private static final long serialVersionUID = -1902278406295003652L;	
-	
+	private static final long serialVersionUID = -1902278406295003652L;
+
 }

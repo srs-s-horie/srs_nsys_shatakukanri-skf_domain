@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
@@ -98,6 +99,10 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 			return colStr;
 		}
 	}
+	
+	// リストテーブルの１ページ最大表示行数
+	@Value("${skf3020.skf3020_sc002.sheet_name}")
+	private String readSheetName;	
 
 	@Override
 	public BaseDto index(Skf3020Sc002ImportDto tenninshaChoshoDto) throws Exception {
@@ -171,13 +176,31 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 
 		List<SheetDataBean> sheetDataBeanList = excelFile.getSheetDataBeanList();
 		// エクセルのシート数チェック
-		if (sheetDataBeanList.size() > SHEET_COUNT) {
+		//複数シートのファイルに変更されたので、0以下でエラーに変更
+		if (sheetDataBeanList.size() <= 0) {
 			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
 					MessageIdConstant.E_SKF_1043, MSG_SHEET_COUNT);
 			return false;
 		}
 
-		SheetDataBean sheetDataBean = sheetDataBeanList.get(0);
+		SheetDataBean sheetDataBean = null;
+		for(int i=0; i < sheetDataBeanList.size(); i++){
+			sheetDataBean = sheetDataBeanList.get(i);
+			//シート名が読込対象と一致するか
+			if(readSheetName.equals(sheetDataBean.getSheetName())){
+				//一致でループ抜け
+				break;
+			}
+			//不一致の場合nullに戻す
+			sheetDataBean = null;
+		}
+		if(sheetDataBean == null){
+			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+					MessageIdConstant.E_SKF_1043, MSG_SHEET_COUNT);
+			return false;
+		}
+				
+		//SheetDataBean sheetDataBean = sheetDataBeanList.get(0);
 		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();
 		Map<String, Integer> posMap = createColumnNoMap(rowDataBeanList); // 対象のデータ格納position
 		int shimeiEmptyCnt = 0; // 空の社員氏名カウント
@@ -232,16 +255,17 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 				// 社員番号存在チェック
 				if (!skf3020Sc002SharedService.checkShainExists(shainNo)) {
 					nonexistShainNo = true;
+					exsistNoFlg = true;
 					for (int j = 0; j < nonexistShainNoList.size(); j++) {
 						// 社員番号重複チェック
 						if (shainNo.equals(nonexistShainNoList.get(j))) {
-							exsistNoFlg = true;
+							exsistNoFlg = false;
 							break;
 						}
 					}
 				}
 				
-				if (!exsistNoFlg) {
+				if (exsistNoFlg) {
 					nonexistShainNoList.add(shainNo);
 				}
 			}
@@ -414,7 +438,10 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		saveDto.setTokyu(cellDataBeanList.get(tokyuPos).getValue());
 		// 年齢
 		int agePos = posMap.get(IMPORT_COL.IMPORT_COL_AGE.getColStr());
-		saveDto.setAge(cellDataBeanList.get(agePos).getValue());
+		//saveDto.setAge(cellDataBeanList.get(agePos).getValue());
+		if(cellDataBeanList.get(agePos).getValue() != null){
+			saveDto.setAge(cellDataBeanList.get(agePos).getValue().replace("歳", ""));
+		}
 		// 備考
 		int bikoPos = posMap.get(IMPORT_COL.IMPORT_COL_BIKO.getColStr());
 		saveDto.setBiko(cellDataBeanList.get(bikoPos).getValue());

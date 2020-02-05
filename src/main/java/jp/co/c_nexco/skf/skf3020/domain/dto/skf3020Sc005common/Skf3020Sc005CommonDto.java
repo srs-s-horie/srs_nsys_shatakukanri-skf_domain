@@ -20,7 +20,7 @@ public class Skf3020Sc005CommonDto extends Skf302010CommonDto {
 	 * 画面項目 *
 	 **********/
 	/** 社員番号 */
-	private String txtShainNo;
+	private String shainNo;
 	/** 「社員番号の変更が必要」チェックボックス */
 	private String[] id_check_shainNo;
 	/** 社員氏名  */

@@ -32,7 +32,7 @@ public class Skf3020Sc005SupportService extends BaseServiceAbstract<Skf3020Sc005
 
 		// 入力支援画面で選択された社員番号
 		String shainNo = supportDto.getHdnSelShainNo();
-		supportDto.setTxtShainNo("");
+		supportDto.setShainNo("");
 
 		if (NfwStringUtils.isNotEmpty(shainNo)) {
 			skf3020Sc005SharedService.setTenninshaInfo(supportDto, shainNo);
