@@ -103,10 +103,10 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 
 		// 社宅を必要としますか？
-		LogUtils.debugByMsg(msg + "社宅を必要としますか？ " + checkDto.getTaiyoHituyo());
+		LogUtils.debugByMsg(msg + "新たに社宅を必要としますか？ " + checkDto.getTaiyoHituyo());
 		if (NfwStringUtils.isBlank(checkDto.getTaiyoHituyo())) {
 			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taiyoHituyo" }, MessageIdConstant.E_SKF_1054,
-					"社宅を必要としますか？");
+					"新たに社宅を必要としますか？");
 			result = false;
 		}
 
