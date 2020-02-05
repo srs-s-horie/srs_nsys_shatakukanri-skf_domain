@@ -3045,7 +3045,7 @@ public class Skf3010Sc002SharedService {
 			if (CodeConstant.ITTOU.equals(workMap.get("value"))) {
 				ittoNo = i;
 			} else 	if (CodeConstant.KARIAGE.equals(workMap.get("value"))) {
-				ittoNo = i;
+				kariageNo = i;
 			}
 		}
 		if (ittoNo != -1) {
