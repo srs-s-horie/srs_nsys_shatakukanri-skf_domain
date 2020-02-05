@@ -133,7 +133,7 @@ public class Skf3020Sc004InitService extends BaseServiceAbstract<Skf3020Sc004Ini
 		initDto.setYoteiSakuseiList(yoteiSakuseiList);
 
         // グリッドビューデータの転任者一覧取得
-		SetGridViewData(initDto);
+		setGridViewData(initDto);
 		
 		return initDto;
 	}
@@ -144,7 +144,7 @@ public class Skf3020Sc004InitService extends BaseServiceAbstract<Skf3020Sc004Ini
 	 * 
 	 * @param initDto
 	 */
-	private void SetGridViewData(Skf3020Sc004InitDto initDto){
+	private void setGridViewData(Skf3020Sc004InitDto initDto){
 		
         // 検索条件をもとに検索結果カウントの取得
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();

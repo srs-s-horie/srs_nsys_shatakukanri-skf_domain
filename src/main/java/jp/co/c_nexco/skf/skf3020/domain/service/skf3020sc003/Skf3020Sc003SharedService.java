@@ -99,6 +99,7 @@ public class Skf3020Sc003SharedService {
 			String shatakKbn) {
 		// 転任者調書データ更新
 		Skf3020TTenninshaChoshoData updateData = editUpdateTenninshaInfoData(tenninshaInfo, targetMap, shatakKbn);
+		updateData.setLastUpdateDate(tenninshaInfo.getUpdateDate());
 		int result = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKeySelective(updateData);
 
 		String outMsg = "";
@@ -152,18 +153,18 @@ public class Skf3020Sc003SharedService {
 		// 備考
 		String biko = (String) targetData.get(BIKO_COL);
 		tenninshaChoshoData.setBiko(skf302010CommonSharedService.replaceEscapeStr(biko));
-		// 社員番号変更対象区分
-		tenninshaChoshoData.setShainNoHenkoKbn(inData.getShainNoHenkoKbn());
-		// 入居フラグ
-		tenninshaChoshoData.setNyukyoFlg(inData.getNyukyoFlg());
-		// 退居フラグ
-		tenninshaChoshoData.setTaikyoFlg(inData.getTaikyoFlg());
-		// 変更フラグ
-		tenninshaChoshoData.setHenkouFlg(inData.getHenkouFlg());
+//		// 社員番号変更対象区分
+//		tenninshaChoshoData.setShainNoHenkoKbn(inData.getShainNoHenkoKbn());
+//		// 入居フラグ
+//		tenninshaChoshoData.setNyukyoFlg(inData.getNyukyoFlg());
+//		// 退居フラグ
+//		tenninshaChoshoData.setTaikyoFlg(inData.getTaikyoFlg());
+//		// 変更フラグ
+//		tenninshaChoshoData.setHenkouFlg(inData.getHenkouFlg());
 		// 現社宅区分
 		tenninshaChoshoData.setNowShatakuKbn(shatakKbn);
-		// 入退居予定作成区分
-		tenninshaChoshoData.setNyutaikyoYoteiKbn(inData.getNyutaikyoYoteiKbn());
+//		// 入退居予定作成区分
+//		tenninshaChoshoData.setNyutaikyoYoteiKbn(inData.getNyutaikyoYoteiKbn());
 		// 転任者調書取込日
 		Date nowTime = skfBaseBusinessLogicUtils.getSystemDateTime();
 		tenninshaChoshoData.setDataTakinginDate(new SimpleDateFormat("yyyyMMdd").format(nowTime));
@@ -240,13 +241,13 @@ public class Skf3020Sc003SharedService {
 		String biko = (String) targetData.get(BIKO_COL);
 		tenninshaChoshoData.setBiko(skf302010CommonSharedService.replaceEscapeStr(biko));
 		// 社員番号変更対象区分
-		tenninshaChoshoData.setShainNoHenkoKbn("");
+		tenninshaChoshoData.setShainNoHenkoKbn(null);
 		// 入居フラグ
-		tenninshaChoshoData.setNyukyoFlg("");
+		tenninshaChoshoData.setNyukyoFlg(null);
 		// 退居フラグ
-		tenninshaChoshoData.setTaikyoFlg("");
+		tenninshaChoshoData.setTaikyoFlg(null);
 		// 変更フラグ
-		tenninshaChoshoData.setHenkouFlg("");
+		tenninshaChoshoData.setHenkouFlg(null);
 		// 入退居予定作成区分
 		tenninshaChoshoData.setNyutaikyoYoteiKbn("0");
 		// 現社宅区分

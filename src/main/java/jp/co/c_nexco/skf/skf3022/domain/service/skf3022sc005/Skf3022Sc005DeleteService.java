@@ -233,14 +233,17 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
         	shatakuNol = Long.parseLong(shatakuNo);
         	roomNol = Long.parseLong(roomNo);
 
-        	String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
+        	String lendJokyo = CodeConstant.STRING_ZERO;
         	List<Skf3022Sc005GetRoomLendJokyoExp> lendJokyoList = new ArrayList<Skf3022Sc005GetRoomLendJokyoExp>();
         	Skf3022Sc005GetRoomLendJokyoExpParameter lendParam = new Skf3022Sc005GetRoomLendJokyoExpParameter();
         	lendParam.setShatakuNo(shatakuNol);
         	lendParam.setRoomNo(roomNol);
         	//貸与状況取得
         	lendJokyoList = skf3022Sc005GetRoomLendJokyoExpRepository.getRoomLendJokyo(lendParam);
-        	lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
+        	if(lendJokyoList.size() > 0){
+        		lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
+        	}
+        	
         	//社宅部屋情報更新
         	Skf3010MShatakuRoom roomRecord = new Skf3010MShatakuRoom();
         	roomRecord.setShatakuKanriNo(shatakuNol);
@@ -271,14 +274,16 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
         if(!SkfCheckUtils.isNullOrEmpty(updateDateParkOne)){
             parkOnel = Long.parseLong(parkOne);
 
-        	String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
+        	String lendJokyo = CodeConstant.STRING_ZERO;
         	List<Skf3022Sc005GetParkLendJokyoExp> lendJokyoList = new ArrayList<Skf3022Sc005GetParkLendJokyoExp>();
         	Skf3022Sc005GetParkLendJokyoExpParameter parkParam = new Skf3022Sc005GetParkLendJokyoExpParameter();
         	parkParam.setShatakuNo(shatakuNol);
         	parkParam.setParkingNo(parkOnel);
         	//貸与状況取得
         	lendJokyoList = skf3022Sc005GetParkLendJokyoExpRepository.getParkLendJokyo(parkParam);
-        	lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
+        	if(lendJokyoList.size() > 0){
+        		lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
+        	}
         	
         	Skf3010MShatakuParkingBlock parkRecord = new Skf3010MShatakuParkingBlock();
         	parkRecord.setShatakuKanriNo(shatakuNol);
@@ -309,14 +314,16 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
         if(!SkfCheckUtils.isNullOrEmpty(updateDateParkTwo)){
             parkTwol = Long.parseLong(parkTwo);
             
-        	String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
+        	String lendJokyo = CodeConstant.STRING_ZERO;
         	List<Skf3022Sc005GetParkLendJokyoExp> lendJokyoList = new ArrayList<Skf3022Sc005GetParkLendJokyoExp>();
         	Skf3022Sc005GetParkLendJokyoExpParameter parkParam = new Skf3022Sc005GetParkLendJokyoExpParameter();
         	parkParam.setShatakuNo(shatakuNol);
         	parkParam.setParkingNo(parkTwol);
         	//貸与状況取得
         	lendJokyoList = skf3022Sc005GetParkLendJokyoExpRepository.getParkLendJokyo(parkParam);
-        	lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
+        	if(lendJokyoList.size() > 0){
+        		lendJokyo = lendJokyoList.get(0).getLendJokyoKbn();
+        	}
         	
         	Skf3010MShatakuParkingBlock parkRecord = new Skf3010MShatakuParkingBlock();
         	parkRecord.setShatakuKanriNo(shatakuNol);

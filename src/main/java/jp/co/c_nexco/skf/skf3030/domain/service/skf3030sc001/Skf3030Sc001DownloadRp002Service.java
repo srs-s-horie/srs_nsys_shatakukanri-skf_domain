@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Rp002.Skf3030Rp002GetShatakuDaichoInfoExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -193,8 +194,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 		String sysNengetsu = skf3030Sc001SharedService.getSystemProcessNenGetsu();
 		String yearMonth = inDto.getHdnYearSelect() + inDto.getHdnMonthSelect();
 
-		Map<String, String> userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		String userId = userInfo.get("userName");
+		String userId = LoginUserInfoUtils.getUserCd();
 		
 		if (NfwStringUtils.isEmpty(yearMonth) || NfwStringUtils.isEmpty(userId)) {
 			LogUtils.debugByMsg("パラメータ不正。対象年月：" + yearMonth + "、 ユーザーID：" + userId);

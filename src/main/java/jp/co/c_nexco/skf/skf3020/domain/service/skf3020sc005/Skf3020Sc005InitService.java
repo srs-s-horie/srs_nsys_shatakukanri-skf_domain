@@ -36,6 +36,7 @@ public class Skf3020Sc005InitService extends BaseServiceAbstract<Skf3020Sc005Ini
 		String hdnRowShainNo = initDto.getHdnRowShainNo();
 		// セッション情報存在判定(社員番号存在判定)
 		if (NfwStringUtils.isNotEmpty(hdnRowShainNo)) {
+			initDto.setHdnRowShainNo(hdnRowShainNo.replace(CodeConstant.ASTERISK, ""));
 			skf3020Sc005SharedService.setTenninshaInfo(initDto, hdnRowShainNo);
 
 		} else {

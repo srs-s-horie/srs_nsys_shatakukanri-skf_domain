@@ -21,6 +21,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc004.Skf3020Sc004GetT
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc004.Skf3020Sc004GetTenninshaInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -206,7 +207,7 @@ public class Skf3020Sc004SharedService {
             //社員番号変更フラグが｢1｣の場合、社員番号の末尾に｢*｣を付与する。
 			String shaiNO = tmpData.getShainNo();
 			if(tmpData.getShainNoChangeFlg() != null && tmpData.getShainNoChangeFlg().equals("1")){
-				shaiNO = shaiNO + "*";
+				shaiNO = shaiNO + CodeConstant.ASTERISK;
 				// 変更フラグはチェックが付いた状態とする
 				tmpData.setHenkouFlg("1");
 			}
@@ -292,7 +293,12 @@ public class Skf3020Sc004SharedService {
 			// 詳細
 			tmpMap.put("col14", "");	
 			// 更新日時
-			tmpMap.put("col16", tmpData.getUpdateDateStr());	
+			tmpMap.put("col16", tmpData.getUpdateDateStr());
+			
+			//各フラグ取得値
+			tmpMap.put("col17", tmpData.getNyukyoFlg());
+			tmpMap.put("col18", tmpData.getTaikyoFlg());
+			tmpMap.put("col19", tmpData.getHenkouFlg());
 
 			setViewList.add(tmpMap);
 		}

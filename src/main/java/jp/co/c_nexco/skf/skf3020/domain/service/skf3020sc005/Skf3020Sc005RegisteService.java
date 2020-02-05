@@ -12,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.icu.text.SimpleDateFormat;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005GetShatakuShainCountExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005UpdateTenninshaInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc005.Skf3020Sc005UpdateTenninshaInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -42,6 +45,8 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 	private Skf3020Sc005SharedService skf3020Sc005SharedService;
 	@Autowired
 	private Skf3020TTenninshaChoshoDataRepository skf3020TTenninshaChoshoDataRepository;
+	@Autowired
+	private Skf3020Sc005UpdateTenninshaInfoExpRepository skf3020Sc005UpdateTenninshaInfoExpRepository;
 
 	@Override
 	public Skf3020Sc005RegisteDto index(Skf3020Sc005RegisteDto registDto) throws Exception {
@@ -77,8 +82,8 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 		boolean result = true;
 		registDto.setResultMessages(null);
 
-		if (!checkShainNo(registDto.getTxtShainNo())) {
-			ServiceHelper.addErrorResultMessage(registDto, new String[] { "txtShainNo" }, MessageIdConstant.E_SKF_1044,
+		if (!checkShainNo(registDto.getShainNo())) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "shainNo" }, MessageIdConstant.E_SKF_1044,
 					"社員番号");
 			result = false;
 		}
@@ -138,11 +143,13 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 		String dbErrMsgId = "";
 		String oldShainNo = registDto.getHdnRowShainNo();
 
+		//転任者情報がない場合（登録）転任者調書を登録する
 		if (NfwStringUtils.isEmpty(oldShainNo)) {
 			// DB登録
 			dbErrMsgId = skf3020Sc005SharedService.insertTenninshaInfo(registDto, chkShainNoHenkoKbn);
 
 		} else {
+			//転任者情報がある場合（編集）転任者調書を更新する
 			// DB更新
 			dbErrMsgId = updateTenninshaInfo(registDto, chkShainNoHenkoKbn);
 		}
@@ -172,16 +179,13 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 
 		String dbErrMsgId = "";
 		String oldShainNo = registDto.getHdnRowShainNo();
-		String newShainNo = registDto.getTxtShainNo();
+		String newShainNo = registDto.getShainNo();
 
 		// 転任者調書データを取得
 		Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository
-				.selectByPrimaryKey(newShainNo);
+				.selectByPrimaryKey(oldShainNo);
 
 		if (tenninshaInfo != null) {
-
-			Skf3020TTenninshaChoshoData updateData = skf3020Sc005SharedService.createUpdateTenninshaInfoData(registDto,
-					newShainNo, chkShainNoHenkoKbn, tenninshaInfo);
 
 			SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 			// 転任者調書データ排他チェック
@@ -193,28 +197,61 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 						registDto.getLastUpdateDate(Skf302010CommonSharedService.TENNIN_CHOSHO_DATA_UPDATE_KEY),
 						tenninshaInfo.getUpdateDate());
 			}
-
+			
+			// 変更先転任者調書データを取得
+			Skf3020TTenninshaChoshoData newTenninshaInfo = skf3020TTenninshaChoshoDataRepository
+					.selectByPrimaryKey(newShainNo);
+			if(newTenninshaInfo != null){
+				//変更先（同一社員番号が既にある）
+				return MessageIdConstant.E_SKF_1020;
+			}
+			
+			Skf3020Sc005UpdateTenninshaInfoExp updateData = skf3020Sc005SharedService.createUpdateTenninshaInfoData(registDto,
+					newShainNo, chkShainNoHenkoKbn, tenninshaInfo);
+			updateData.setOldShainNo(oldShainNo);
 			// 転任者調書更新
-			int rtn = skf3020TTenninshaChoshoDataRepository.updateByPrimaryKeySelective(updateData);
+			int rtn = skf3020Sc005UpdateTenninshaInfoExpRepository.updateTenninshaInfo(updateData);
 
 			if (rtn <= 0) {
 				return MessageIdConstant.W_SKF_1009;
 			}
 
-			// 社宅社員マスタデータ排他チェック
-			if (!NfwStringUtils.isEmpty(registDto.getHdnUpdateDateShain())) {
-				Date shatakuShainLastUpdateDate = sdFormat.parse(registDto.getHdnUpdateDateShain());
-				registDto.addLastUpdateDate(Skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY, shatakuShainLastUpdateDate);
-				Skf1010MShain shatakuShainData = skf3020Sc005SharedService.getShainData(newShainNo);
-				super.checkLockException(registDto.getLastUpdateDate(Skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY),
-						shatakuShainData.getUpdateDate());
+			if (!Skf302010CommonSharedService.KARI_K.equals(oldShainNo.substring(0, 1))) {//仮社員番号以外の場合
+				// 社宅社員マスタデータ排他チェック
+				if (!NfwStringUtils.isEmpty(registDto.getHdnUpdateDateShain())) {
+					Date shatakuShainLastUpdateDate = sdFormat.parse(registDto.getHdnUpdateDateShain());
+					registDto.addLastUpdateDate(Skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY, shatakuShainLastUpdateDate);
+					Skf1010MShain shatakuShainData = skf3020Sc005SharedService.getShainData(oldShainNo);
+					super.checkLockException(registDto.getLastUpdateDate(Skf302010CommonSharedService.SHAIN_DATA_UPDATE_KEY),
+							shatakuShainData.getUpdateDate());
+				}
+				
+				if (oldShainNo.equals(newShainNo)) {
+					//社員番号が未変更
+					rtn = skf3020Sc005SharedService.updateShatakuShain(oldShainNo,  chkShainNoHenkoKbn);
+
+				} else {
+					//社員番号が変更
+					rtn = skf3020Sc005SharedService.updateShatakuShain(newShainNo,  chkShainNoHenkoKbn);
+					
+					if (rtn <= 0) {
+						//更新できなかった場合
+						return MessageIdConstant.W_SKF_1009;
+					}
+					
+					//社員番号を変更した場合、社宅社員マスタ（TB_M_SHATAKU_SHAIN）の変更前の社員番号の下記設定を戻す。
+					rtn = skf3020Sc005SharedService.updateShatakuShain(oldShainNo, "0");
+				}
+
+				
+			}else {//仮社員番号の場合、
+				if (!oldShainNo.equals(newShainNo)) {
+					rtn = skf3020Sc005SharedService.updateShatakuShain(newShainNo, chkShainNoHenkoKbn);
+				}
 			}
-
-			// 「社宅社員マスタ」更新
-			rtn = skf3020Sc005SharedService.updateShatakuShain(oldShainNo, newShainNo, chkShainNoHenkoKbn);
-
+			
 			if (rtn <= 0) {
-				return MessageIdConstant.E_SKF_1009;
+				return MessageIdConstant.W_SKF_1009;
 			} else {
 				dbErrMsgId = "";
 			}

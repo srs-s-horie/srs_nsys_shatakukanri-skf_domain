@@ -33,7 +33,7 @@ public class Skf3020Sc005SetService extends BaseServiceAbstract<Skf3020Sc005SetD
 		// 仮社員番号
 		String kariShainNo = skfBaseBusinessLogicUtils.getMaxKariShainNo();
 
-		setDto.setTxtShainNo(kariShainNo);
+		setDto.setShainNo(kariShainNo);
 
 		return setDto;
 	}
