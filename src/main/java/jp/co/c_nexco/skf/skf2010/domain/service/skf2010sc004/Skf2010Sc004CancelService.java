@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -85,7 +83,7 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 			return cancelDto;
 		}
-		String afterApplStatus = tApplHistoryData.getApplStatus();
+		String afterApplStatus = CodeConstant.STATUS_TORISAGE;
 		List<String> resultBatch = new ArrayList<String>();
 		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);

@@ -4,10 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MAgency;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshiki;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MAgencyRepository;
@@ -146,105 +144,95 @@ public class Skf3090Sc007RegistService extends BaseServiceAbstract<Skf3090Sc007R
 
 		boolean isCheck = true;
 
-		/** 必須入力チェック */
-		// 会社
+		/** 会社 */
+		// 必須チェック
 		if (registDto.getRegistCompanyCd() == null || CheckUtils.isEmpty(registDto.getRegistCompanyCd().trim())) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registCompanyCd" },
 					MessageIdConstant.E_SKF_1048, "会社");
 			isCheck = false;
 		}
 
-		// 機関コード
+		/** 機関コード */
+		// 必須チェック
+		// 桁数チェック
+		// 形式チェック
 		if (registDto.getRegistAgencyCd() == null || CheckUtils.isEmpty(registDto.getRegistAgencyCd().trim())) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyCd" },
 					MessageIdConstant.E_SKF_1048, "機関コード");
 			isCheck = false;
+		} else if (CheckUtils.isMoreThanByteSize(registDto.getRegistAgencyCd().trim(), 4)) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyCd" },
+					MessageIdConstant.E_SKF_1071, "機関コード", "4");
+			isCheck = false;
+		} else if (NfwStringUtils.isNotEmpty(registDto.getRegistAgencyCd())
+				&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAgencyCd().trim()))) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyCd" },
+					MessageIdConstant.E_SKF_1052, "機関コード");
+			isCheck = false;
 		}
 
-		// 機関名称
+		/** 部等コード */
+		// 桁数チェック
+		// 形式チェック
+		if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
+				&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation1Cd().trim(), 3)) {
+					ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
+						MessageIdConstant.E_SKF_1071, "部等コード", "3");
+				isCheck = false;
+		}else if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
+					&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAffiliation1Cd().trim()))) {
+						ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
+							MessageIdConstant.E_SKF_1052, "部等コード");
+			isCheck = false;
+		}
+		
+		/** 室、チーム又は課コード */
+		// 桁数チェック
+		// 形式チェック
+		if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation2Cd())
+				&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation2Cd().trim(), 3)) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation2Cd" },
+					MessageIdConstant.E_SKF_1071, "室、チーム又は課コード", "3");
+			isCheck = false;
+		} else if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation2Cd())
+				&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAffiliation2Cd().trim()))) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation2Cd" },
+					MessageIdConstant.E_SKF_1052, "室、チーム又は課コード");
+			isCheck = false;
+		}		
+		
+		/** 機関名称 */
+		// 必須チェック
+		// 桁数チェック
 		if (registDto.getRegistAgencyName() == null || CheckUtils.isEmpty(registDto.getRegistAgencyName().trim())) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyName" },
 					MessageIdConstant.E_SKF_1048, "機関名称");
 			isCheck = false;
+		} else if (CheckUtils.isMoreThanByteSize(registDto.getRegistAgencyName().trim(), 128)) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyName" },
+					MessageIdConstant.E_SKF_1071, "機関名称", "64");
+			isCheck = false;
 		}
 
-		/** 必須チェックOKだったら桁数チェック */
-		if (isCheck) {
-			// 機関コード
-			if (CheckUtils.isMoreThanByteSize(registDto.getRegistAgencyCd().trim(), 4)) {
-				ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyCd" },
-						MessageIdConstant.E_SKF_1071, "機関コード", "4");
-				isCheck = false;
-			}
-
-			// 部等コード
-			if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
-					&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation1Cd().trim(), 3)) {
-				ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
-						MessageIdConstant.E_SKF_1071, "部等コード", "3");
-				isCheck = false;
-			}
-
-			// 室、チーム又は課コード
-			if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation2Cd())
-					&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation2Cd().trim(), 3)) {
-				ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation2Cd" },
-						MessageIdConstant.E_SKF_1071, "室、チーム又は課コード", "3");
-				isCheck = false;
-			}
-
-			// 機関名称
-			if (CheckUtils.isMoreThanByteSize(registDto.getRegistAgencyName().trim(), 128)) {
-				ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyName" },
-						MessageIdConstant.E_SKF_1071, "機関名称", "64");
-				isCheck = false;
-			}
-
-			// 部等名称
-			if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Name())
-					&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation1Name().trim(), 128)) {
-				ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Name" },
-						MessageIdConstant.E_SKF_1071, "部等名称", "64");
-				isCheck = false;
-			}
-
-			// 室、チーム又は課名称
-			if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation2Name())
-					&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation2Name().trim(), 128)) {
-				ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation2Name" },
-						MessageIdConstant.E_SKF_1071, "室、チーム又は課名称", "64");
-				isCheck = false;
-			}
-
-			/** 必須チェック、桁数チェックOKだったら形式チェック */
-			if (isCheck) {
-				// 機関コード
-				if (NfwStringUtils.isNotEmpty(registDto.getRegistAgencyCd())
-						&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAgencyCd().trim()))) {
-					ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyCd" },
-							MessageIdConstant.E_SKF_1052, "機関コード");
-					isCheck = false;
-				}
-
-				// 部等コード
-				if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
-						&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAffiliation1Cd().trim()))) {
-					ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
-							MessageIdConstant.E_SKF_1052, "部等コード");
-					isCheck = false;
-				}
-
-				// 室、チーム又は課コード
-				if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation2Cd())
-						&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAffiliation2Cd().trim()))) {
-					ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation2Cd" },
-							MessageIdConstant.E_SKF_1052, "室、チーム又は課コード");
-					isCheck = false;
-				}
-			}
+		/** 部等名称 */
+		// 桁数チェック
+		if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Name())
+				&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation1Name().trim(), 128)) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Name" },
+					MessageIdConstant.E_SKF_1071, "部等名称", "64");
+			isCheck = false;
 		}
+
+		/** 室、チーム又は課名称 */
+		// 桁数チェック
+		if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation2Name())
+				&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation2Name().trim(), 128)) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation2Name" },
+					MessageIdConstant.E_SKF_1071, "室、チーム又は課名称", "64");
+			isCheck = false;
+		}
+			
 		return isCheck;
-
 	}
 
 	/**
