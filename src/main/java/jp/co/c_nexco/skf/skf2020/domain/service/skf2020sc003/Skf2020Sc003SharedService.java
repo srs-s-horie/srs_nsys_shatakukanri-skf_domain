@@ -248,6 +248,8 @@ public class Skf2020Sc003SharedService {
 			// 備品申請要否の非活性制御
 			// 備品非表示制御
 			bihinVisible = false;
+			// 備品希望申請不要に設定
+			dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
 			dto.setMaskPattern("TeijiNG");
 		}
 		dto.setBihinVisible(bihinVisible);
