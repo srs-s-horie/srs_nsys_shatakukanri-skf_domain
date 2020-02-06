@@ -254,7 +254,7 @@ public class Skf3010Sc006SharedService {
 		if (shatakuKanriNo.length() > 0 && parkingKanriNo.length() > 0) {
 			Skf3010Sc002GetParkingBlockHistroyCountExpParameter param = new Skf3010Sc002GetParkingBlockHistroyCountExpParameter();
 			param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
-			param.setShatakuKanriNo(Long.parseLong(parkingKanriNo));
+			param.setParkingKanriNo(Long.parseLong(parkingKanriNo));
 			parkingBlockTeijiHistoryCount = skf3010Sc002GetTeijiDataCountForParkingBlockExpRepository.getTeijiDataCountForParkingBlock(param);
 			param = null;
 		}
