@@ -1395,7 +1395,7 @@ public class Skf2020Sc002SharedService {
 
 		} else {
 			LogUtils.debugByMsg("保有社宅が存在する場合" + dto.getShatakuList());
-			if (dto.getShatakuList() != null) {
+			if (dto.getDdlNowShatakuNameList().size() > 0) {
 				// 保有社宅がある場合
 				// 現居住宅 保有(会社借上を含む)をチェック状態にする
 				dto.setNowShataku(CodeConstant.GENNYUKYO_SHATAKU_KBN_HOYU);
@@ -1657,8 +1657,6 @@ public class Skf2020Sc002SharedService {
 			LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課 その他" + dto.getNewAffiliation2Other());
 
 			// 必要とする社宅
-			dto.setRdoKikon(null);
-			LogUtils.debugByMsg(Msg + "必要とする社宅　既婚" + dto.getRdoKikon());
 			dto.setHitsuyoShataku(null);
 			LogUtils.debugByMsg(Msg + "必要とする社宅" + dto.getHitsuyoShataku());
 
