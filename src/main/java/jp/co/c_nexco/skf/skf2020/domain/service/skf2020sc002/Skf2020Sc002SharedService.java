@@ -1141,6 +1141,7 @@ public class Skf2020Sc002SharedService {
 		/*
 		 * 必要とする社宅 初期表示活性制御
 		 */
+		dto.setRdoKikonDisabled(sTrue);
 		dto.setRdoHitsuyoSetaiDisabled(sTrue);
 		dto.setRdoHitsuyoTanshinDisabled(sTrue);
 		dto.setRdoHitsuyoDokushinDisabled(sTrue);
@@ -1245,10 +1246,6 @@ public class Skf2020Sc002SharedService {
 			dto.setRdoFuyouJikoKariageDisabled(sFalse);
 			dto.setRdoFuyouSonotaDisabled(sFalse);
 
-			// 必要とする社宅
-			dto.setRdoKikonDisabled(sTrue);
-			dto.setRdoKikonChecked(sFalse);
-
 			/*
 			 * 自動車の保管場所
 			 */
@@ -1281,10 +1278,6 @@ public class Skf2020Sc002SharedService {
 			dto.setRdoFuyouJitakuTsuukinnDisabled(sTrue);
 			dto.setRdoFuyouJikoKariageDisabled(sTrue);
 			dto.setRdoFuyouSonotaDisabled(sTrue);
-
-			// 必要とする社宅
-			dto.setRdoKikonDisabled(sTrue);
-			dto.setRdoKikonChecked(sFalse);
 
 			/*
 			 * 社宅を必要とする理由「その他」 社宅を必要としない理由「その他」
