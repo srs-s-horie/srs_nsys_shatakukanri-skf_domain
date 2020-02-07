@@ -85,6 +85,9 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		// 操作ガイド取得
 		dto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(dto.getPageId()));
 
+		// 社員番号初期化
+		dto.setShainNo(null);
+
 		// 画面ID保持
 		dto.setPrePageId(FunctionIdConstant.SKF2010_SC005);
 

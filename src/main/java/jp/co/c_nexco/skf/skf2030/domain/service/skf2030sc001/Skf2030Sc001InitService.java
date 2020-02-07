@@ -75,6 +75,7 @@ public class Skf2030Sc001InitService extends BaseServiceAbstract<Skf2030Sc001Ini
 		String pageId = initDto.getPageId();
 		if (!CheckUtils.isEqual(pageId, FunctionIdConstant.SKF2030_SC001)) {
 			initDto.setPageId(null);
+			initDto.setPrePageId(FunctionIdConstant.SKF1010_SC001);
 		}
 
 		return initDto;
