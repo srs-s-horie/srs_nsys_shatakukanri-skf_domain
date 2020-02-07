@@ -36,6 +36,8 @@ public class Skf2010Sc005CommonDto extends Skf201030CommonDto {
 	private String affiliation1;
 	// 室、チーム又は課
 	private String affiliation2;
+	// 社員番号
+	private String shainNo;
 	// 申請者名
 	private String name;
 	// 申請書類種別

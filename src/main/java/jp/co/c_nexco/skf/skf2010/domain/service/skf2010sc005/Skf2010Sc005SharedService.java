@@ -267,6 +267,10 @@ public class Skf2010Sc005SharedService {
 			param.setAgreDateTo(skfDateFormatUtils.dateFormatFromString(dto.getAgreDateTo(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 		}
+		// 社員番号
+		if (dto.getShainNo() != null && !CheckUtils.isEmpty(dto.getShainNo())) {
+			param.setShainNo(dto.getShainNo());
+		}
 		// 申請者名
 		if (dto.getName() != null && !CheckUtils.isEmpty(dto.getName())) {
 			param.setName(dto.getName());
