@@ -25,15 +25,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc002.Skf2030Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc002.Skf2030Sc002GetTeijiBihinInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
-import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
-import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
-import jp.co.c_nexco.skf.common.util.SkfMailUtils;
-import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
-import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -45,6 +36,15 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfMailUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
+import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030Sc002common.Skf2030Sc002CommonDto;
 
 /**
@@ -702,7 +702,7 @@ public class Skf2030Sc002SharedService {
 			case CodeConstant.HANNYU_MACHI_TSUCHI:
 			case CodeConstant.TEJI_TSUCHI:
 				// 掲載URL
-				String urlBase = "skf/Skf2010Sc003/init";
+				String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 				skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, commentNote, null, sendUserId, CodeConstant.NONE,
 						urlBase);
 				break;
