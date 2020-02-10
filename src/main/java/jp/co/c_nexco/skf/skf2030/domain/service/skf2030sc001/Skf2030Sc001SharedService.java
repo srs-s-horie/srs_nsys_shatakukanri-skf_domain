@@ -433,11 +433,6 @@ public class Skf2030Sc001SharedService {
 			break;
 		}
 
-		/*
-		 * if (!updateApplHistoryAgreeStatus(applInfo.get("applNo"),
-		 * applInfo.get("applId"), applInfo.get("applStatus"), updateStatus,
-		 * applInfo.get("shainNo"))) { return false; }
-		 */
 		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
 
 		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("shainNo"),
@@ -469,7 +464,7 @@ public class Skf2030Sc001SharedService {
 
 		dto.setApplStatus(updateStatus);
 
-		// TODO 社宅管理データ連携処理実行
+		// 社宅管理データ連携処理実行
 		String shainNo = dto.getShainNo();
 		String applNo = dto.getApplNo();
 		String pageId = FunctionIdConstant.SKF2030_SC001;
