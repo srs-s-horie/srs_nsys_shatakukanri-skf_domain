@@ -86,7 +86,8 @@ public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003Ini
 
 		// バナー戻るボタン遷移先調整
 		String pageId = initDto.getPageId();
-		if (!CheckUtils.isEqual(pageId, FunctionIdConstant.SKF2020_SC003)) {
+		if (!CheckUtils.isEqual(pageId, FunctionIdConstant.SKF2020_SC003)
+				|| CheckUtils.isEqual(pageId, FunctionIdConstant.SKF2010_SC006)) {
 			initDto.setPageId(null);
 			initDto.setPrePageId(FunctionIdConstant.SKF1010_SC001);
 		}

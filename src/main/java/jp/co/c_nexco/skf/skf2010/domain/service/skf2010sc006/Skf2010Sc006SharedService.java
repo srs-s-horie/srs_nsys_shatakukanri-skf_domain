@@ -1,7 +1,6 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,17 +17,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetB
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetBHSApplStatusInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetBKSApplStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetBKSApplStatusInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetSendApplMailInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetSendApplMailInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
@@ -51,7 +44,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRep
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
-import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -60,6 +52,7 @@ import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
 
@@ -110,6 +103,8 @@ public class Skf2010Sc006SharedService {
 	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
+	@Autowired
+	private SkfMailUtils skfMailUtils;
 
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
@@ -341,11 +336,11 @@ public class Skf2010Sc006SharedService {
 		// 承認完了通知の場合のみ
 		if (mailKbn.equals(CodeConstant.SHONIN_KANRYO_TSUCHI)) {
 			// メール送付
-			comment = "";
-			String annai = "";
-			String furikomiStartDate = "";
+			comment = CodeConstant.NONE;
+			String annai = CodeConstant.NONE;
 			String sendUser = applInfo.get("applShainNo");
-			sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId);
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, comment, annai, sendUser, sendGroupId, urlBase);
 		}
 
 		return true;
@@ -604,170 +599,6 @@ public class Skf2010Sc006SharedService {
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * 申請通知メール送信のメイン処理を行います
-	 * 
-	 * @param sendMailKbn
-	 * @param applInfo
-	 * @param comment
-	 * @param annai
-	 * @param furikomiStartDate
-	 * @param sendUser
-	 * @param sendGroundId
-	 * @throws Exception
-	 */
-	private void sendApplTsuchiMail(String sendMailKbn, Map<String, String> applInfo, String comment, String annai,
-			String furikomiStartDate, String sendUser, String sendGroundId) throws Exception {
-
-		// 申請書類名を取得
-		Skf2010MApplication skf2010MApplication = new Skf2010MApplication();
-		Skf2010MApplicationKey key = new Skf2010MApplicationKey();
-		key.setCompanyCd(companyCd);
-		key.setApplId(applInfo.get("applId"));
-		skf2010MApplication = skf2010MApplicationRepository.selectByPrimaryKey(key);
-		if (skf2010MApplication == null) {
-			// 申請書類名が取れない時はエラーログを出力
-			return;
-		}
-		String applName = skf2010MApplication.getApplName();
-
-		// 申請社員名、申請日を取得
-		String applShainName = "";
-		String applDate = "";
-		String applAgencyCd = "";
-
-		// 申請通知メール情報の取得
-		Skf2010Sc006GetSendApplMailInfoExp skfMShainData = new Skf2010Sc006GetSendApplMailInfoExp();
-		List<Skf2010Sc006GetSendApplMailInfoExp> skfMShainList = new ArrayList<Skf2010Sc006GetSendApplMailInfoExp>();
-		Skf2010Sc006GetSendApplMailInfoExpParameter mShainParam = new Skf2010Sc006GetSendApplMailInfoExpParameter();
-		mShainParam.setCompanyCd(companyCd);
-		mShainParam.setShainNo(applInfo.get("applShainNo"));
-		mShainParam.setApplNo(applInfo.get("applNo"));
-		skfMShainList = skf2010Sc006GetSendApplMailInfoExpRepository.getSendApplMailInfo(mShainParam);
-		if (skfMShainList == null || skfMShainList.size() <= 0) {
-			// 申請通知メール情報が取れない時はエラーログを出力
-			return;
-		}
-		skfMShainData = skfMShainList.get(0);
-
-		if (!CheckUtils.isEmpty(skfMShainData.getName())) {
-			applShainName = skfMShainData.getName();
-		}
-		if (skfMShainData.getApplDate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			applDate = sdf.format(skfMShainData.getApplDate());
-		}
-		if (!CheckUtils.isEmpty(skfMShainData.getAgencyCd())) {
-			applAgencyCd = skfMShainData.getAgencyCd();
-		}
-
-		// アウトソース担当者共通のメールアドレスを取得
-		String outMailAddress = getApplOutMailInfo(applAgencyCd, applInfo.get("applId"));
-
-		// メール送信
-		if (!CheckUtils.isEmpty(sendUser)) {
-			String mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
-
-			// URLを設定
-			String urlBase = "/skf/Skf2010Sc005/init?SKF2010_SC005&menuflg=1&tokenCheck=0";
-			sendApplTsuchiMailExist(companyCd, sendMailKbn, applInfo.get("applNo"), applDate, applShainName, comment,
-					annai, furikomiStartDate, urlBase, sendUser, mailAddress, null, applName);
-		} else {
-			sendApplTsuchiMailExist(companyCd, sendMailKbn, applInfo.get("applNo"), applDate, applShainName, comment,
-					annai, furikomiStartDate, null, sendUser, outMailAddress, null, applName);
-
-		}
-
-		return;
-	}
-
-	/**
-	 * アウトソース担当者共通にメールを送信します
-	 * 
-	 * @param agencyCd
-	 * @param applId
-	 * @return
-	 */
-	private String getApplOutMailInfo(String agencyCd, String applId) {
-		String mailAddress = "";
-
-		// 設定ファイル情報の取得
-
-		if (applId.equals(FunctionIdConstant.R0100)) {
-			// 社宅入居希望等調書
-		} else if (applId.equals(FunctionIdConstant.R0105)) {
-			// 備品返却申請
-		}
-
-		return mailAddress;
-	}
-
-	/**
-	 * 通知メール用の社員情報を取得します
-	 * 
-	 * @param companyCd
-	 * @param shainNo
-	 * @return
-	 */
-	private String getSendMailAddressByShainNo(String companyCd, String shainNo) {
-		String mailAddress = "";
-		Skf1010MShainKey key = new Skf1010MShainKey();
-		key.setCompanyCd(companyCd);
-		key.setShainNo(shainNo);
-		Skf1010MShain mShainData = skf1010MShainRepository.selectByPrimaryKey(key);
-		if (mShainData != null) {
-			mailAddress = mShainData.getMailAddress();
-		}
-		return mailAddress;
-	}
-
-	/**
-	 * 認識通知メールを送信します
-	 * 
-	 * @param companyCd
-	 * @param mailKbn
-	 * @param applNo
-	 * @param applDate
-	 * @param applShainName
-	 * @param comment
-	 * @param annai
-	 * @param furikomiStartDate
-	 * @param urlBase
-	 * @param sendUser
-	 * @param mailAddress
-	 * @param bccAddress
-	 * @param applName
-	 * @throws Exception
-	 */
-	private void sendApplTsuchiMailExist(String companyCd, String mailKbn, String applNo, String applDate,
-			String applShainName, String comment, String annai, String furikomiStartDate, String urlBase,
-			String sendUser, String mailAddress, String bccAddress, String applName) throws Exception {
-
-		// メール送信テスト
-		Map<String, String> replaceMap = new HashMap<String, String>();
-
-		// メール件名
-		replaceMap.put("【to】", mailAddress); // 送信先メールアドレス
-		replaceMap.put("【applno】", applNo); // 申請書類番号
-		replaceMap.put("【shinseishorui】", applName); // 申請書類名
-
-		// メール本文
-		replaceMap.put("【shainname】", applShainName); // 申請社員名
-		replaceMap.put("【appldate】", applDate); // 申請日
-		replaceMap.put("【reason】", comment); // 承認者からのコメント
-
-		// 短縮URL作成
-		if (urlBase != null) {
-			Map<String, String> urlMap = new HashMap<String, String>();
-			String url = NfwSendMailUtils.createShotcutUrl(urlBase, urlMap, 2);
-			replaceMap.put("【url】", url);
-		}
-
-		// メール送信
-		NfwSendMailUtils.sendMail("SKF_ML06", replaceMap);
-		return;
 	}
 
 	/**
