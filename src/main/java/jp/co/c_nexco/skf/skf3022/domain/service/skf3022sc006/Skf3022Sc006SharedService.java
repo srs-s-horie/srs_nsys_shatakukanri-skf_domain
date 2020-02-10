@@ -385,7 +385,7 @@ public class Skf3022Sc006SharedService {
 			chushajoRiyoryou = outputEntity.getChushajouShiyoryou().toPlainString();
 		} else {
 			errMsg.append(outputEntity.getErrMessage());
-			LogUtils.debugByMsg("使用料計算でエラー検出:" + outputEntity.getErrMessage());
+			LogUtils.debugByMsg("使用料計算で異常検出:" + outputEntity.getErrMessage());
 			return true;
 		}
 
@@ -3955,7 +3955,7 @@ public class Skf3022Sc006SharedService {
 		if (siyoryoKeiSan("", "", paramMap, resultMap, errMsg)) {
 			// 使用料計算でエラー
 			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-			LogUtils.debugByMsg("社宅使用料計算でエラー:" + errMsg);
+			LogUtils.debugByMsg("社宅使用料計算で異常:" + errMsg);
 			return false;
 		} else {
 			// 使用料計算戻り値設定
@@ -3968,7 +3968,7 @@ public class Skf3022Sc006SharedService {
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoOneOld(), "1", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
 					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-					LogUtils.debugByMsg("駐車場１(old)の使用料計算でエラー:" + errMsg);
+					LogUtils.debugByMsg("駐車場１(old)の使用料計算で異常:" + errMsg);
 					return false;
 				}
 			} else {
@@ -3976,7 +3976,7 @@ public class Skf3022Sc006SharedService {
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoOne(), "1", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
 					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-					LogUtils.debugByMsg("駐車場１の使用料計算でエラー:" + errMsg);
+					LogUtils.debugByMsg("駐車場１の使用料計算で異常:" + errMsg);
 					return false;
 				}
 			}
@@ -3994,7 +3994,7 @@ public class Skf3022Sc006SharedService {
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoTwoOld(), "2", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
 					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-					LogUtils.debugByMsg("駐車場2(old)の使用料計算でエラー:" + errMsg);
+					LogUtils.debugByMsg("駐車場2(old)の使用料計算で異常:" + errMsg);
 					return false;
 				}
 			} else {
@@ -4002,7 +4002,7 @@ public class Skf3022Sc006SharedService {
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoTwo(), "2", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
 					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-					LogUtils.debugByMsg("駐車場2の使用料計算でエラー:" + errMsg);
+					LogUtils.debugByMsg("駐車場2の使用料計算で異常:" + errMsg);
 					return false;
 				}
 			}
@@ -6030,7 +6030,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("継続あり、提示データ更新");
 			} else {
 				// 排他エラー
-				LogUtils.debugByMsg("継続あり、提示データ排他エラー");
+				LogUtils.debugByMsg("継続あり、提示データ排他チェック検知");
 				return -1;
 			}
 		} else {
@@ -6065,7 +6065,7 @@ public class Skf3022Sc006SharedService {
 					LogUtils.debugByMsg("継続なし、入居提示データあり、提示データ更新");
 				} else {
 					// 排他エラー
-					LogUtils.debugByMsg("継続なし、入居提示データあり、提示データ排他エラー");
+					LogUtils.debugByMsg("継続なし、入居提示データあり、提示データ排他チェック検知");
 					return -1;
 				}
 			} else {
@@ -6343,7 +6343,7 @@ public class Skf3022Sc006SharedService {
 					LogUtils.debugByMsg("社宅部屋情報マスタ更新, LendJokyo:貸与なし");
 				} else {
 					// 排他エラーメッセージ
-					LogUtils.debugByMsg("社宅部屋情報マスタ排他エラー①");
+					LogUtils.debugByMsg("社宅部屋情報マスタ排他チェック検知①");
 					return -1;
 				}
 			}
@@ -6384,7 +6384,7 @@ public class Skf3022Sc006SharedService {
 					LogUtils.debugByMsg("社宅部屋情報マスタ更新, LendJokyo:貸与中");
 				} else {
 					// 排他エラーメッセージ
-					LogUtils.debugByMsg("社宅部屋情報マスタ排他エラー②");
+					LogUtils.debugByMsg("社宅部屋情報マスタ排他チェック検知②");
 					return -1;
 				}
 			// 作成完了／社宅管理台帳登録以外の場合：貸与状況→"1"
@@ -6423,7 +6423,7 @@ public class Skf3022Sc006SharedService {
 					LogUtils.debugByMsg("社宅部屋情報マスタ更新, LendJokyo:提示中");
 				} else {
 					// 排他エラーメッセージ
-					LogUtils.debugByMsg("社宅部屋情報マスタ排他エラー③");
+					LogUtils.debugByMsg("社宅部屋情報マスタ排他チェック検知③");
 					return -1;
 				}
 			}
@@ -6465,7 +6465,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("社宅部屋情報マスタ更新, LendJokyo:退居予定");
 			} else {
 				// 排他エラーメッセージ
-				LogUtils.debugByMsg("社宅部屋情報マスタ排他エラー④");
+				LogUtils.debugByMsg("社宅部屋情報マスタ排他チェック検知④");
 				return -1;
 			}
 		}
@@ -6513,7 +6513,7 @@ public class Skf3022Sc006SharedService {
 					LogUtils.debugByMsg("駐車場区画1:更新①");
 				} else {
 					// 排他エラーメッセージ
-					LogUtils.debugByMsg("駐車場区画1:排他エラー①");
+					LogUtils.debugByMsg("駐車場区画1:排他チェック検知①");
 					return -1;
 				}
 			}
@@ -6558,7 +6558,7 @@ public class Skf3022Sc006SharedService {
 						LogUtils.debugByMsg("駐車場区画1:更新②");
 					} else {
 						// 排他エラーメッセージ
-						LogUtils.debugByMsg("駐車場区画1:排他エラー②");
+						LogUtils.debugByMsg("駐車場区画1:排他チェック検知②");
 						return -1;
 					}
 				// 作成完了／社宅管理台帳登録以外の場合：貸与状況→"1"
@@ -6597,7 +6597,7 @@ public class Skf3022Sc006SharedService {
 						LogUtils.debugByMsg("駐車場区画1:更新③");
 					} else {
 						// 排他エラーメッセージ
-						LogUtils.debugByMsg("駐車場区画1:排他エラー③");
+						LogUtils.debugByMsg("駐車場区画1:排他チェック検知③");
 						return -1;
 					}
 				}
@@ -6641,7 +6641,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("駐車場区画1:更新④");
 			} else {
 				// 排他エラーメッセージ
-				LogUtils.debugByMsg("駐車場区画1:排他エラー④");
+				LogUtils.debugByMsg("駐車場区画1:排他チェック検知④");
 				return -1;
 			}
 		}
@@ -6688,7 +6688,7 @@ public class Skf3022Sc006SharedService {
 					LogUtils.debugByMsg("駐車場区画2:更新①");
 				} else {
 					// 排他エラーメッセージ
-					LogUtils.debugByMsg("駐車場区画2:排他エラー①");
+					LogUtils.debugByMsg("駐車場区画2:排他チェック検知①");
 					return -1;
 				}
 			}
@@ -6733,7 +6733,7 @@ public class Skf3022Sc006SharedService {
 						LogUtils.debugByMsg("駐車場区画2:更新②");
 					} else {
 						// 排他エラーメッセージ
-						LogUtils.debugByMsg("駐車場区画2:排他エラー②");
+						LogUtils.debugByMsg("駐車場区画2:排他チェック検知②");
 						return -1;
 					}
 				// 作成完了／社宅管理台帳登録以外の場合：貸与状況→"1"
@@ -6772,7 +6772,7 @@ public class Skf3022Sc006SharedService {
 						LogUtils.debugByMsg("駐車場区画2:更新③");
 					} else {
 						// 排他エラーメッセージ
-						LogUtils.debugByMsg("駐車場区画2:排他エラー③");
+						LogUtils.debugByMsg("駐車場区画2:排他チェック検知③");
 						return -1;
 					}
 				}
@@ -6816,7 +6816,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("駐車場区画2:更新④");
 			} else {
 				// 排他エラーメッセージ
-				LogUtils.debugByMsg("駐車場区画2:排他エラー④");
+				LogUtils.debugByMsg("駐車場区画2:排他チェック検知④");
 				return -1;
 			}
 		}
@@ -7268,13 +7268,13 @@ public class Skf3022Sc006SharedService {
 				}
 			} else {
 				// 排他エラーメッセージ
-				LogUtils.debugByMsg("使用料パターン排他エラー");
+				LogUtils.debugByMsg("使用料パターン排他チェック検知");
 				return -1;
 			}
 		}
 //			If DATA_COUNT_0 < updCountTJ AndAlso _
 		if (updCountTJ <= 0 || !Objects.equals(bihinCd.size(), updCountTBD)) {
-			LogUtils.debugByMsg("備品更新件数不一致エラー");
+			LogUtils.debugByMsg("備品更新件数不一致");
 			return 0;
 		}
 //		Return updCountTJ + updCountNY + updCountTBD + updCountOldSR + updCountSR + updCountOldSPB1 + updCountSPB1 + updCountOldSPB2 + updCountSPB2 + updCountRP

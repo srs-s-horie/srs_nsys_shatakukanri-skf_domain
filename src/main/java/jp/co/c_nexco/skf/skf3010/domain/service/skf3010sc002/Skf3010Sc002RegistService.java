@@ -278,7 +278,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		updateCnt = skf3010Sc002UpdateMshatakuTableDataExpRepository.updateShatakuKihon(mShataku);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅基本更新エラー");
+			LogUtils.debugByMsg("社宅基本更新失敗");
 			return updateCnt;
 		}
 		/** 社宅駐車場更新 */
@@ -291,7 +291,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		updateCnt = skf3010Sc002UpdateMshatakuParkingTableDataExpRepository.updateShatakuParking(mShatakuParking);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅駐車場更新エラー");
+			LogUtils.debugByMsg("社宅駐車場更新失敗");
 			return updateCnt;
 		}
 		/** 駐車場区画更新 */
@@ -363,7 +363,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 				updateCnt = skf3010MShatakuParkingBlockRepository.updateByPrimaryKeySelective(mShatakuParkingBlock);
 				// 更新カウント判定
 				if (updateCnt < 1) {
-					LogUtils.debugByMsg("駐車場区画更新エラー：" + mShatakuParkingBlock.getParkingBlock());
+					LogUtils.debugByMsg("駐車場区画更新失敗：" + mShatakuParkingBlock.getParkingBlock());
 					return updateCnt;
 				}
 			} else {
@@ -373,7 +373,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 				updateCnt = skf3010MShatakuParkingBlockRepository.insertSelective(mShatakuParkingBlock);
 				// 更新カウント判定
 				if (updateCnt < 1) {
-					LogUtils.debugByMsg("駐車場区画登録エラー：" + mShatakuParkingBlock.getParkingBlock());
+					LogUtils.debugByMsg("駐車場区画登録失敗：" + mShatakuParkingBlock.getParkingBlock());
 					return updateCnt;
 				}
 //				// 一棟借上判定
@@ -389,7 +389,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 					updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(parkingContract);
 					// 更新カウント判定
 					if (updateCnt < 1) {
-						LogUtils.debugByMsg("駐車場契約情報登録エラー：" + mShatakuParkingBlock.getParkingBlock());
+						LogUtils.debugByMsg("駐車場契約情報登録失敗：" + mShatakuParkingBlock.getParkingBlock());
 						return updateCnt;
 					}
 //				}
@@ -411,7 +411,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			}
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("備品更新エラー：" + bihin.getBihinCd());
+				LogUtils.debugByMsg("備品更新失敗：" + bihin.getBihinCd());
 				return updateCnt;
 			}
 		}
@@ -422,7 +422,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			updateCnt = skf3010MShatakuManegeRepository.updateByPrimaryKeySelective(manage);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅管理者更新エラー：" + manage.getManegeKbn());
+				LogUtils.debugByMsg("社宅管理者更新失敗：" + manage.getManegeKbn());
 				return updateCnt;
 			}
 		}
@@ -469,7 +469,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			}
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅契約情報更新エラー：" + mShatakuContract.getContractPropertyId());
+				LogUtils.debugByMsg("社宅契約情報更新失敗：" + mShatakuContract.getContractPropertyId());
 				return updateCnt;
 			}
 		}
@@ -515,7 +515,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		updateCnt = skf3010Sc002UpdateMshatakuTableDataExpRepository.insertShatakuKihon(mShataku);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅基本登録エラー");
+			LogUtils.debugByMsg("社宅基本登録失敗");
 			return updateCnt;
 		}
 		/** 社宅駐車場登録 */
@@ -530,7 +530,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		updateCnt = skf3010Sc002UpdateMshatakuParkingTableDataExpRepository.insertShatakuParking(mShatakuParking);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅駐車場登録エラー");
+			LogUtils.debugByMsg("社宅駐車場登録失敗");
 			return updateCnt;
 		}
 		/** 駐車場区画情報登録 */
@@ -545,7 +545,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			updateCnt = skf3010MShatakuParkingBlockRepository.insertSelective(mShatakuParkingBlock);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("駐車場区画登録エラー：" + mShatakuParkingBlock.getParkingBlock());
+				LogUtils.debugByMsg("駐車場区画登録失敗：" + mShatakuParkingBlock.getParkingBlock());
 				return updateCnt;
 			}
 //			// 一棟借上判定
@@ -560,7 +560,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 				updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(parkingContract);
 				// 更新カウント判定
 				if (updateCnt < 1) {
-					LogUtils.debugByMsg("駐車場契約情報登録エラー：" + mShatakuParkingBlock.getParkingBlock());
+					LogUtils.debugByMsg("駐車場契約情報登録失敗：" + mShatakuParkingBlock.getParkingBlock());
 					return updateCnt;
 				}
 //			}
@@ -573,7 +573,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			updateCnt = skf3010MShatakuBihinRepository.insertSelective(bihin);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("備品登録エラー：" + bihin.getBihinCd());
+				LogUtils.debugByMsg("備品登録失敗：" + bihin.getBihinCd());
 				return updateCnt;
 			}
 		}
@@ -584,7 +584,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			updateCnt = skf3010MShatakuManegeRepository.insertSelective(manage);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅管理者登録エラー：" + manage.getManegeKbn());
+				LogUtils.debugByMsg("社宅管理者登録失敗：" + manage.getManegeKbn());
 				return updateCnt;
 			}
 		}
@@ -598,7 +598,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			updateCnt = skf3010MShatakuContractRepository.insertSelective(mShatakuContract);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅契約情報登録エラー：" + mShatakuContract.getContractPropertyId());
+				LogUtils.debugByMsg("社宅契約情報登録失敗：" + mShatakuContract.getContractPropertyId());
 				return updateCnt;
 			}
 		}
@@ -625,7 +625,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		if (shatakuCnt > 0) {
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_3050);
 			registDto.setShatakuNameErr(CodeConstant.NFW_VALIDATION_ERROR);
-			LogUtils.debugByMsg("社宅重複チェックエラー：同名、同住所の社宅が既に存在する");
+			LogUtils.debugByMsg("社宅重複チェックあり：同名、同住所の社宅が既に存在する");
 			return false;
 		}
 		return true;
@@ -846,7 +846,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		}
 		// 必須チェック結果判定
 		if (!isCheckOk) {
-			LogUtils.debugByMsg("必須入力チェックエラー：" + debugMessage);
+			LogUtils.debugByMsg("必須入力チェック検知：" + debugMessage);
 			return isCheckOk;
 		}
 		/** 形式チェック */

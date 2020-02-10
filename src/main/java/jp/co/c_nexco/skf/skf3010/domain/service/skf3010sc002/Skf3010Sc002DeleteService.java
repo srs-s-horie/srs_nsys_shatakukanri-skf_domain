@@ -154,7 +154,7 @@ public class Skf3010Sc002DeleteService extends BaseServiceAbstract<Skf3010Sc002D
 			// 元の画面状態に戻す
 			skf3010Sc002SharedService.setBeforeInfo(drpDwnSelectedList, labelList, bihinList, parkingList, delDto);
 			// 入居実績、または提示中データ存在
-			ServiceHelper.addErrorResultMessage(delDto, null, MessageIdConstant.E_SKF_3010);
+			ServiceHelper.addErrorResultMessage(delDto, null, MessageIdConstant.E_SKF_3010, delDto.getShatakuName());
 			// ロールバック
 			throwBusinessExceptionIfErrors(delDto.getResultMessages());
 			return delDto;
@@ -396,17 +396,16 @@ public class Skf3010Sc002DeleteService extends BaseServiceAbstract<Skf3010Sc002D
 		Skf3010Sc002GetHoyuShatakuInfoExpParameter param = new Skf3010Sc002GetHoyuShatakuInfoExpParameter();
 		param.setShatakuKanriNo(shatakuKanriNo);
 		cnt = skf3010Sc002GetShatakuRentalHistroyCountExpRepository.getShatakuRentalHistroyCount(param);
-		param = null;
 		// 入居実績件数判定
 		if (cnt > 0) {
-			LogUtils.debugByMsg("入居実績ありエラー：" + shatakuKanriNo.toString());
+			LogUtils.debugByMsg("入居実績ありー：" + shatakuKanriNo.toString());
 			return false;
 		}
 		// 提示件数取得
 		cnt = skf3010Sc002GetTeijiDataCountExpRepository.getTeijiDataCount(param);
 		// 提示件数判定
 		if (cnt > 0) {
-			LogUtils.debugByMsg("提示データエラー：" + shatakuKanriNo.toString());
+			LogUtils.debugByMsg("提示データあり：" + shatakuKanriNo.toString());
 			return false;
 		}
 		return true;
