@@ -348,6 +348,10 @@ public class Skf2010Sc004SharedService {
 		updData.setCompanyCd(companyCd); // 会社コード
 		updData.setApplNo(applNo); // 申請番号
 
+		// 制約日
+		updData.setSeiyakuDate(
+				skfDateFormatUtils.dateFormatFromDate(new Date(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
+
 		// 入居日
 		if (!CheckUtils.isEmpty(nyukyobi)) {
 			updData.setNyukyoYoteiDate(nyukyobi);

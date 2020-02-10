@@ -701,25 +701,27 @@ public class Skf2020Sc003SharedService {
 			dto.setGender(genderText);
 		}
 		// 備品希望申請を希望する/しない ラジオボタン
-		if (NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getBihinKibo())) {
-			if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getHitsuyoShataku())) {
-				// 必要とする社宅
-				switch (shatakuNyukyoKiboInfo.getHitsuyoShataku()) {
-				// 単身または独身の場合
-				case CodeConstant.TANSHIN:
-				case CodeConstant.DOKUSHIN:
-					dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO);
-					break;
-				// それ以外の場合
-				default:
+		if (NfwStringUtils.isEmpty(dto.getBihinKibo())) {
+			if (NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getBihinKibo())) {
+				if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getHitsuyoShataku())) {
+					// 必要とする社宅
+					switch (shatakuNyukyoKiboInfo.getHitsuyoShataku()) {
+					// 単身または独身の場合
+					case CodeConstant.TANSHIN:
+					case CodeConstant.DOKUSHIN:
+						dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO);
+						break;
+					// それ以外の場合
+					default:
+						dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
+						break;
+					}
+				} else {
 					dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
-					break;
 				}
 			} else {
-				dto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_FUYO);
+				dto.setBihinKibo(shatakuNyukyoKiboInfo.getBihinKibo());
 			}
-		} else {
-			dto.setBihinKibo(shatakuNyukyoKiboInfo.getBihinKibo());
 		}
 
 		return;
@@ -1432,7 +1434,11 @@ public class Skf2020Sc003SharedService {
 		columnInfoList.setNowShatakuKikaku(dto.getNewShatakuKikaku());
 
 		// 社宅情報 面積
-		columnInfoList.setNowShatakuMenseki(dto.getNewShatakuMenseki());
+		if (NfwStringUtils.isNotEmpty(dto.getNewShatakuMenseki())) {
+			String newShatakuMenseki = dto.getNewShatakuMenseki().replace(SkfCommonConstant.SQUARE_MASTER,
+					CodeConstant.NONE);
+			columnInfoList.setNowShatakuMenseki(newShatakuMenseki);
+		}
 
 		// 部屋管理番号
 		columnInfoList.setShatakuNo(Long.parseLong(dto.getNewShatakuKanriNo()));

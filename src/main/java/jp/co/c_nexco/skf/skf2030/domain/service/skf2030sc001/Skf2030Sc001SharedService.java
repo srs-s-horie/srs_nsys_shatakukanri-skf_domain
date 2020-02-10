@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp;
@@ -34,6 +32,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinseiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinShinseiInfoForUpdateExpRepository;
@@ -774,6 +773,16 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
+	public Skf2030TBihinKiboShinsei getBihinKiboShinseiData(String applNo) {
+		Skf2030TBihinKiboShinsei returnData = new Skf2030TBihinKiboShinsei();
+		Skf2030TBihinKiboShinseiKey key = new Skf2030TBihinKiboShinseiKey();
+		key.setCompanyCd(companyCd);
+		key.setApplNo(applNo);
+		returnData = skf2030TBihinKiboShinseiRepository.selectByPrimaryKey(key);
+
+		return returnData;
+	}
+
 	/**
 	 * 備品希望申請情報の更新
 	 * 
@@ -782,7 +791,7 @@ public class Skf2030Sc001SharedService {
 	 */
 	public boolean updateBihinKiboShinsei(Skf2030TBihinKiboShinsei updateData) {
 		// 申請履歴情報更新処理
-		int res = skf2030TBihinKiboShinseiRepository.updateByPrimaryKeySelective(updateData);
+		int res = skf2030TBihinKiboShinseiRepository.updateByPrimaryKey(updateData);
 		if (res <= 0) {
 			return false;
 		}
@@ -979,7 +988,7 @@ public class Skf2030Sc001SharedService {
 			String status, String pageId) {
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAlterLogin(this.menuScopeSessionBean);
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		String userId = loginUserInfoMap.get("userCd");
 		// 排他チェック用データ取得
 		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC001);

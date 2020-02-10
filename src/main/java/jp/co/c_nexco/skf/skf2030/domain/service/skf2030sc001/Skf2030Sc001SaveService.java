@@ -6,17 +6,14 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetBihinShinseiInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -144,22 +141,16 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 
 		// 更新データ作成
 		Skf2030TBihinKiboShinsei updBihinShinseiData = new Skf2030TBihinKiboShinsei();
-		// 主キー設定
-		updBihinShinseiData.setCompanyCd(companyCd);
-		updBihinShinseiData.setApplNo(applNo);
+		updBihinShinseiData = skf2030Sc001SharedService.getBihinKiboShinseiData(applNo);
 		// 更新データ設定
-		if (NfwStringUtils.isNotEmpty(saveDto.getSessionDay())) {
-			updBihinShinseiData.setSessionDay(saveDto.getSessionDay());
-		}
-		if (NfwStringUtils.isNotEmpty(saveDto.getSessionTime())) {
-			updBihinShinseiData.setSessionTime(saveDto.getSessionTime());
-		}
-		if (NfwStringUtils.isNotEmpty(saveDto.getTel())) {
-			updBihinShinseiData.setTel(saveDto.getTel());
-		}
-		if (NfwStringUtils.isNotEmpty(saveDto.getRenrakuSaki())) {
-			updBihinShinseiData.setRenrakuSaki(saveDto.getRenrakuSaki());
-		}
+		// 備品搬入希望日
+		updBihinShinseiData.setSessionDay(saveDto.getSessionDay());
+		// 備品搬入希望時刻
+		updBihinShinseiData.setSessionTime(saveDto.getSessionTime());
+		// TEL
+		updBihinShinseiData.setTel(saveDto.getTel());
+		// 連絡先
+		updBihinShinseiData.setRenrakuSaki(saveDto.getRenrakuSaki());
 		boolean bihinKiboShinseiRes = skf2030Sc001SharedService.updateBihinKiboShinsei(updBihinShinseiData);
 		if (!bihinKiboShinseiRes) {
 			ServiceHelper.addErrorResultMessage(saveDto, null, MessageIdConstant.E_SKF_1075);

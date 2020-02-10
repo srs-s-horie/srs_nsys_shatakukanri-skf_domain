@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetApplHistoryInfoInDescendingOrderExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -185,7 +183,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 			if (!SkfCheckUtils.isSkfDateFormat(applyDto.getSessionDay().trim(), CheckUtils.DateFormatType.YYYYMMDD)) {
 				errorTarget.add("sessionDay");
 				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "comment" }, MessageIdConstant.E_SKF_1055,
-						"搬入希望日");
+						"備品搬入希望日");
 				// ServiceHelper.addErrorResultMessage(applyDto,
 				// errorTarget.toArray(new String[errorTarget.size()]),
 				// MessageIdConstant.E_SKF_1055, "搬入希望日");
@@ -198,9 +196,6 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 				errorTarget.add("completionDay");
 				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "completionDay" },
 						MessageIdConstant.E_SKF_1055, "搬入完了日");
-				// ServiceHelper.addErrorResultMessage(applyDto,
-				// errorTarget.toArray(new String[errorTarget.size()]),
-				// MessageIdConstant.E_SKF_1055, "搬入完了日");
 				result = false;
 			}
 		}
@@ -268,7 +263,7 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 			if (NfwStringUtils.isEmpty(applyDto.getSessionDay())) {
 				errorTarget.add("sessionDay");
 				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "sessionDay" },
-						MessageIdConstant.E_SKF_1048, "搬入希望日");
+						MessageIdConstant.E_SKF_1048, "備品搬入希望日");
 				result = false;
 			}
 		}
