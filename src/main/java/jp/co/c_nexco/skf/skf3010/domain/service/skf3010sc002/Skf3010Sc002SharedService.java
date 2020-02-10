@@ -2853,7 +2853,7 @@ public class Skf3010Sc002SharedService {
 
 		// 警告メッセージ
 		ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.E_SKF_3059);
-		LogUtils.debugByMsg("社宅情報取得エラー");
+		LogUtils.debugByMsg("社宅情報取得失敗");
 	}
 
 	/**

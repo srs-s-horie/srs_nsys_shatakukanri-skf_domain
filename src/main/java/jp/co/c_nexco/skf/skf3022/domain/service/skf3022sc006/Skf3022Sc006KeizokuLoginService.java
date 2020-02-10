@@ -379,7 +379,7 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		if (skf3022Sc006SharedService.siyoryoKeiSan("", "", calcParamMap, resultMap, errMsg)) {
 			// 使用料計算でエラー
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-			LogUtils.debugByMsg("社宅使用料計算でエラー:" + errMsg);
+			LogUtils.debugByMsg("社宅使用料計算で異常:" + errMsg);
 			// ロールバック
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		} else {
@@ -407,7 +407,7 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 			if (skf3022Sc006SharedService.siyoryoKeiSan(initDto.getHdnChushajoNoOne(), "1", calcParamMap, resultMap, errMsg)) {
 				// 使用料計算でエラー
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-				LogUtils.debugByMsg("区画1使用料計算でエラー:" + errMsg);
+				LogUtils.debugByMsg("区画1使用料計算で異常:" + errMsg);
 				// ロールバック
 				throwBusinessExceptionIfErrors(initDto.getResultMessages());
 			} else {
@@ -432,7 +432,7 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 			if (skf3022Sc006SharedService.siyoryoKeiSan(initDto.getHdnChushajoNoTwo(), "2", calcParamMap, resultMap, errMsg)) {
 				// 使用料計算でエラー
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-				LogUtils.debugByMsg("区画2使用料計算でエラー:" + errMsg);
+				LogUtils.debugByMsg("区画2使用料計算で異常:" + errMsg);
 				// ロールバック
 				throwBusinessExceptionIfErrors(initDto.getResultMessages());
 			} else {
