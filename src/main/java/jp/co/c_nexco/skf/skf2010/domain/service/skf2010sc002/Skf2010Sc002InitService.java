@@ -17,6 +17,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
@@ -289,6 +290,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 入居希望申請調書
 		// 社宅必要可否
+		LogUtils.debugByMsg("入居希望等調書の表示データ  社宅必要可否:" + tNyukyoChoshoTsuchi.getTaiyoHitsuyo());
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTaiyoHitsuyo())) {
 			switch (tNyukyoChoshoTsuchi.getTaiyoHitsuyo()) {
 			case CodeConstant.ASKED_SHATAKU_HITSUYO:
@@ -462,76 +464,41 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 家族1
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation1())) {
-			initDto.setDokyoRelation1(tNyukyoChoshoTsuchi.getDokyoRelation1());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName1())) {
-			initDto.setDokyoName1(tNyukyoChoshoTsuchi.getDokyoName1());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge1())) {
-			initDto.setDokyoAge1(tNyukyoChoshoTsuchi.getDokyoAge1());
-		}
+		initDto.setDokyoRelation1(tNyukyoChoshoTsuchi.getDokyoRelation1());
+		initDto.setDokyoName1(tNyukyoChoshoTsuchi.getDokyoName1());
+		initDto.setDokyoAge1(tNyukyoChoshoTsuchi.getDokyoAge1());
 
 		// 家族2
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation2())) {
-			initDto.setDokyoRelation2(tNyukyoChoshoTsuchi.getDokyoRelation2());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName2())) {
-			initDto.setDokyoName2(tNyukyoChoshoTsuchi.getDokyoName2());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge2())) {
-			initDto.setDokyoAge2(tNyukyoChoshoTsuchi.getDokyoAge2());
-		}
+		initDto.setDokyoRelation2(tNyukyoChoshoTsuchi.getDokyoRelation2());
+		initDto.setDokyoName2(tNyukyoChoshoTsuchi.getDokyoName2());
+		initDto.setDokyoAge2(tNyukyoChoshoTsuchi.getDokyoAge2());
 
 		// 家族3
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation3())) {
-			initDto.setDokyoRelation3(tNyukyoChoshoTsuchi.getDokyoRelation3());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName3())) {
-			initDto.setDokyoName3(tNyukyoChoshoTsuchi.getDokyoName3());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge3())) {
-			initDto.setDokyoAge3(tNyukyoChoshoTsuchi.getDokyoAge3());
-		}
+		initDto.setDokyoRelation3(tNyukyoChoshoTsuchi.getDokyoRelation3());
+		initDto.setDokyoName3(tNyukyoChoshoTsuchi.getDokyoName3());
+		initDto.setDokyoAge3(tNyukyoChoshoTsuchi.getDokyoAge3());
 
 		// 家族4
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation4())) {
-			initDto.setDokyoRelation4(tNyukyoChoshoTsuchi.getDokyoRelation4());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName4())) {
-			initDto.setDokyoName4(tNyukyoChoshoTsuchi.getDokyoName4());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge4())) {
-			initDto.setDokyoAge4(tNyukyoChoshoTsuchi.getDokyoAge4());
-		}
+		initDto.setDokyoRelation4(tNyukyoChoshoTsuchi.getDokyoRelation4());
+		initDto.setDokyoName4(tNyukyoChoshoTsuchi.getDokyoName4());
+		initDto.setDokyoAge4(tNyukyoChoshoTsuchi.getDokyoAge4());
 
 		// 家族5
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation5())) {
-			initDto.setDokyoRelation5(tNyukyoChoshoTsuchi.getDokyoRelation5());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName5())) {
-			initDto.setDokyoName5(tNyukyoChoshoTsuchi.getDokyoName5());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge5())) {
-			initDto.setDokyoAge5(tNyukyoChoshoTsuchi.getDokyoAge5());
-		}
+		initDto.setDokyoRelation5(tNyukyoChoshoTsuchi.getDokyoRelation5());
+		initDto.setDokyoName5(tNyukyoChoshoTsuchi.getDokyoName5());
+		initDto.setDokyoAge5(tNyukyoChoshoTsuchi.getDokyoAge5());
 
 		// 家族6
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoRelation6())) {
-			initDto.setDokyoRelation6(tNyukyoChoshoTsuchi.getDokyoRelation6());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoName6())) {
-			initDto.setDokyoName6(tNyukyoChoshoTsuchi.getDokyoName6());
-		}
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getDokyoAge6())) {
-			initDto.setDokyoAge6(tNyukyoChoshoTsuchi.getDokyoAge6());
-		}
+		initDto.setDokyoRelation6(tNyukyoChoshoTsuchi.getDokyoRelation6());
+		initDto.setDokyoName6(tNyukyoChoshoTsuchi.getDokyoName6());
+		initDto.setDokyoAge6(tNyukyoChoshoTsuchi.getDokyoAge6());
 
 		// 入居予定日
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNyukyoYoteiDate())) {
 			initDto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoYoteiDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 		}
+
 		// 保管場所
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUmu())) {
 			switch (tNyukyoChoshoTsuchi.getParkingUmu()) {
@@ -564,22 +531,24 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 		initDto.setCarName(carName);
 		// 自動車の登録番号
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo())) {
-			initDto.setCarNo(tNyukyoChoshoTsuchi.getCarNo());
-		}
+		initDto.setCarNo(tNyukyoChoshoTsuchi.getCarNo());
 		// 自動車の使用者
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser())) {
-			initDto.setCarUser(tNyukyoChoshoTsuchi.getCarUser());
-		}
+
+		initDto.setCarUser(tNyukyoChoshoTsuchi.getCarUser());
+
 		// 車検の有効期間満了日
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarExpirationDate())) {
 			initDto.setCarExpirationDate(skfDateFormatUtils.dateFormatFromString(
 					tNyukyoChoshoTsuchi.getCarExpirationDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		} else {
+			initDto.setCarExpirationDate(null);
 		}
 		// 自動車の保管場所使用開始日
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUseDate())) {
 			initDto.setParkingUserDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingUseDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		} else {
+			initDto.setCarExpirationDate(null);
 		}
 		// 自動車番号登録フラグ2
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNoInputFlg2())) {
@@ -595,22 +564,22 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 		initDto.setCarName2(carName2);
 		// 自動車の登録番号2
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())) {
-			initDto.setCarNo2(tNyukyoChoshoTsuchi.getCarNo2());
-		}
+		initDto.setCarNo2(tNyukyoChoshoTsuchi.getCarNo2());
 		// 自動車の使用者2
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
-			initDto.setCarUser2(tNyukyoChoshoTsuchi.getCarUser2());
-		}
+		initDto.setCarUser2(tNyukyoChoshoTsuchi.getCarUser2());
 		// 車検の有効期間満了日2
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarExpirationDate2())) {
 			initDto.setCarExpirationDate2(skfDateFormatUtils.dateFormatFromString(
 					tNyukyoChoshoTsuchi.getCarExpirationDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		} else {
+			initDto.setCarExpirationDate2(null);
 		}
 		// 自動車の保管場所使用開始日2
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUseDate2())) {
 			initDto.setParkingUserDate2(skfDateFormatUtils.dateFormatFromString(
 					tNyukyoChoshoTsuchi.getParkingUseDate2(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		} else {
+			initDto.setParkingUserDate2(null);
 		}
 
 		// 入居社宅
@@ -716,9 +685,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 特殊事情
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTokushuJijo())) {
-			initDto.setTokushuJijo(tNyukyoChoshoTsuchi.getTokushuJijo());
-		}
+		initDto.setTokushuJijo(tNyukyoChoshoTsuchi.getTokushuJijo());
 
 		return;
 	}
