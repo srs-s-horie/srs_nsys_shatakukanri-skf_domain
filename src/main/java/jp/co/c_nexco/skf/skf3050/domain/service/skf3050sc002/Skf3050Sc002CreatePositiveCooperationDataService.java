@@ -51,12 +51,15 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 		
 		String jikkouShijiYoteiNengetsu = createPositiveCoopDto.getHdnJikkouShijiYoteiNengetsu();
 		
+		//▼連携データ作成処理起動事前チェック
 		String errMsg = checkBeforeStartup(jikkouShijiYoteiNengetsu);
 		if (!"".equals(errMsg)) {
+			//HR連携データ作成処理事前チェックが異常の場合、エラーメッセージを表示し処理を中断する
 			ServiceHelper.addErrorResultMessage(createPositiveCoopDto, null, MessageIdConstant.E_SKF_3024, errMsg);
 			return createPositiveCoopDto;
 		}
 
+		//▼連携データ作成処理バッチを起動
 		Map<String, String> dataMap = new HashMap<>();
 		dataMap.put(Skf3050Sc002SharedService.BATCH_PRG_ID_KEY, batchPrgId);
 		dataMap.put(Skf3050Sc002SharedService.COMPANY_CD_KEY, CodeConstant.C001);
@@ -65,11 +68,13 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 		
 		outputStartLog(dataMap);
 
+		//パラメータ数のチェック
 		if (dataMap.size() != Skf3050Sc002SharedService.PARAMETER_NUM) {
 			LogUtils.error(MessageIdConstant.E_SKF_1092, dataMap.size());
 			outputEndProcLog();
 		}
 
+		//トランザクションAを開始
 		int registResult = CodeConstant.SYS_NG;
 		registResult = skf3050Sc002SharedService.registBatchControl(dataMap, batchPrgId);
 
@@ -78,6 +83,7 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 			return createPositiveCoopDto;
 		}
 
+		//トランザクションBの開始
 		String endFlg = SkfCommonConstant.COMPLETE;
 		Map<String, Object> fileOutputData = null;
 		fileOutputData = skf3050Sc002SharedService.createPositiveCooperationData(dataMap);
@@ -95,8 +101,11 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 			ServiceHelper.addErrorResultMessage(createPositiveCoopDto, null, MessageIdConstant.E_SKF_1079);
 		}
 		
+		//トランザクションCの開始
+		//終了処理
 		skf3050Sc002SharedService.endCreatePositiveDataProc(dataMap.get(Skf3050Sc002SharedService.COMPANY_CD_KEY), endFlg);
 		
+		//▼再表示処理
 		createPositiveCoopDto = reDisplay(createPositiveCoopDto);
 		
 		return createPositiveCoopDto;
@@ -112,19 +121,24 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 		
 		String errMsg = "";
 		
+		//▼二重起動チェック
 		boolean notDoubleStartup = skf3050Sc002SharedService.checkDoubleStartup();
 		if (!notDoubleStartup) {
 			errMsg = Skf3050Sc002SharedService.ERRMSG_DOUBLE_START;
 			return errMsg;
 		}
 		
+		//▼連携データ作成処理可能チェック
 		Skf3050TMonthlyManageData renkeiKbnData = skf3050Sc002SharedService.getShimePositiveRenkeiKbn(jikkouShijiYoteiNengetsu);
 		if (renkeiKbnData == null) {
+			//月次処理管理データが取得できない場合エラー
 			errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 			return errMsg;
 		
 		} else {
-			if (!CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getBillingActKbn()) || CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+			if (!CodeConstant.BILLINGACTKBN_JIKKO_SUMI.equals(renkeiKbnData.getBillingActKbn()) || 
+				CodeConstant.LINKDATA_COMMIT_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+				//締め処理≠実行済、またはHR連携データ確定実行区分＝実行済の場合エラー
 				errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 				return errMsg;
 			}

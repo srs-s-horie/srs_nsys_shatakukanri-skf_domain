@@ -90,13 +90,16 @@ public class Skf3050Bt002SharedTask {
 	@Transactional
 	public int registBatchControl(Map<String, String> parameter) throws ParseException {
 
+		//取得可否チェック
 		String retParameterName = checkParameter(parameter);
 		String programId = BATCH_ID_B5002;
 		Date sysDate = getSystemDate();
 
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
-
+			//パラメータチェックエラーの場合
 			if (!retParameterName.contains(PARAM_NAME_COMPANY_CD)) {
+				//パラメータの会社コードが設定済みの場合
+				//異常終了として、バッチ制御テーブルを登録
 				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT002_COMPANY_CD_KEY), programId,
 						parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
@@ -109,8 +112,9 @@ public class Skf3050Bt002SharedTask {
 			}
 		}
 
+		//プログラムIDの設定
 		if (!BATCH_ID_B5002.equals(parameter.get(SKF3050BT002_BATCH_PRG_ID_KEY))) {
-
+			//異常終了として、バッチ制御テーブルを登録
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT002_COMPANY_CD_KEY), programId,
 					parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
@@ -119,6 +123,7 @@ public class Skf3050Bt002SharedTask {
 			return CodeConstant.SYS_NG;
 		}
 
+		//処理中として、バッチ制御テーブルを登録
 		int retStat = skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT002_COMPANY_CD_KEY),
 				programId, parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.PROCESSING, sysDate, null);
 
@@ -143,19 +148,23 @@ public class Skf3050Bt002SharedTask {
 		String paramUserId = parameter.get(SKF3050BT002_USER_ID_KEY);
 		String paramShoriNengetsu = parameter.get(SKF3050BT002_SHORI_NENGETSU_KEY);
 
+		//▼月別使用料履歴の現物算定額の初期化▼
 		updateGenbutsuSanteigaku(paramUserId, paramShoriNengetsu);
-
+		//▼月別使用料履歴の備品現物支給合計額の初期化▼
 		updateBihinGoukei(paramUserId, paramShoriNengetsu);
 
+		//▼連携作成区分取得▼
 		int updateCnt = 0;
 		String hrRenkeiSakuseiKbn = getHrRenkeiSakuseiJikkouKbn(paramShoriNengetsu);
 
 		if (CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(hrRenkeiSakuseiKbn)) {
+			//▼連携作成区分＝実行済の場合▼
 			updateCnt = updateGetsujiShoriKanriHrSakuseiZumi(paramUserId, paramShoriNengetsu);
 			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, PARAM_1_POSITIVERENKEI);
 
 		} else if (CodeConstant.LINKDATA_CREATE_KBN_MI_JIKKO.equals(hrRenkeiSakuseiKbn)
 				|| CodeConstant.LINKDATA_CREATE_KBN_KAIJO_CHU.equals(hrRenkeiSakuseiKbn)) {
+			//▼連携作成区分＝未行済または解除中の場合▼
 			updateCnt = updateGetsujiShoriKanriHrMiSakusei(paramUserId, paramShoriNengetsu);
 			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, PARAM_1_SHIME);
 		}

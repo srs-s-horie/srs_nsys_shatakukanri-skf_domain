@@ -46,21 +46,24 @@ public class Skf3050Bt003AsyncCreatePositiveCooperationTask extends AsyncTaskAbs
 
 		outputStartLog(paramMap);
 
+		//パラメータ数のチェック
 		if (paramMap.size() != Skf3050Bt003SharedTask.PARAMETER_NUM) {
 			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
 			outputEndProcLog();
 		}
 
+		//トランザクションAを開始
 		int registResult = skf3050Bt003SharedTask.registBatchControl(paramMap);
 
 		if (registResult == CodeConstant.SYS_NG) {
 			outputEndProcLog();
 		}
 
+		//トランザクションBの開始
 		Map<String, Object> fileOutputData = skf3050Bt003SharedTask.createPositiveCooperationData(paramMap);
 
 		if (fileOutputData != null && fileOutputData.size() != 0) {
-			// TODO 呼び出し画面作成後、Excel出力データの渡し方を修正する。
+			// 呼び出し画面作成後、Excel出力データの渡し方を修正する。⇒同期処置として画面側で実装
 			// byte[] writeFileData = (byte[]) fileOutputData.get("fileData");
 			// 解放
 			// writeFileData = null;

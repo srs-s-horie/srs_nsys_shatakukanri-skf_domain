@@ -423,7 +423,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				}
 				
 				// 経理連携用管理番号
-				if (!CheckUtils.isAlphabetNumeric(registDto.getAssetRegisterNo())) {
+				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getAssetRegisterNo())) {
 					isCheckOk = false;
 					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1052, "経理連携用管理番号");
 					registDto.setAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
