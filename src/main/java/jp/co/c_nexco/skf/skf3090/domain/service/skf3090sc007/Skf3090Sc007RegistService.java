@@ -212,6 +212,11 @@ public class Skf3090Sc007RegistService extends BaseServiceAbstract<Skf3090Sc007R
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyName" },
 					MessageIdConstant.E_SKF_1071, "機関名称", "64");
 			isCheck = false;
+		} else if (NfwStringUtils.isNotEmpty(registDto.getRegistAgencyName())
+				&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAgencyName().trim()))) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyName" },
+					MessageIdConstant.E_SKF_1052, "機関名称");
+			isCheck = false;
 		}
 
 		/** 部等名称 */
