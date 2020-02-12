@@ -568,7 +568,7 @@ public class Skf3060Sc001SharedService {
 				// - 役員区分()
 				shatakuRentCalcInput.setYakuinKbn(tmpData.getYakuinSannteiKbn());
 				// - 社宅賃貸料()
-				shatakuRentCalcInput.setShatakuChintairyou(tmpData.getAgeKasanRentalMonth());
+				shatakuRentCalcInput.setShatakuChintairyou(tmpData.getRentalMonth());
 				// - 生年月日()
 				shatakuRentCalcInput.setSeinengappi(tmpData.getBirthday());
 				// 社宅使用料計算を呼び出し

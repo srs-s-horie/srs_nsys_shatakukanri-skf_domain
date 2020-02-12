@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinGenbutsuShikyugokeigakuExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinMeisaiExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinMeisaiExpParameter;
@@ -62,6 +63,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetK
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetParkingRirekiDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetParkingRirekiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetShatakuKanriParking1RiyoKaishiExistExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002PositiveRenkeiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MCompany;
@@ -118,6 +120,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
+import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -329,6 +332,9 @@ public class Skf3050Sc002SharedService {
 	private static final String KEIJOU_KAMOKU_RTN_STS_KEY = "returnStatus";
 	private static final String KEIJOU_KAMOKU_ERR_MSG_KEY = "errMsg";
 	
+	private static final String TAISHOUNENDO_NENDO = "年度　";
+	private static final String LIST_CNT_KEY = "skf3050.skf3050sc002.list_max_cnt";
+	
 	@Value("${skf3050.skf3050_bt001.batch_prg_id}")
 	private String closeBatchPrgId;
 	@Value("${skf3050.skf3050_bt002.batch_prg_id}")
@@ -360,6 +366,37 @@ public class Skf3050Sc002SharedService {
 	}
 
 	/**
+	 * 対象年度ドロップダウンリストを作成する。
+	 * 
+	 * @param sysDateYyyymm
+	 *            システム日付
+	 * @return 対象年度ドロップダウンリスト
+	 */
+	public List<Map<String, Object>> createTaishouNendoDropDownList(String sysDateYyyymm) {
+
+		List<Map<String, Object>> rtnList = new ArrayList<Map<String, Object>>();
+
+		if (NfwStringUtils.isEmpty(sysDateYyyymm) || sysDateYyyymm.length() < Skf3050Sc002SharedService.NENGETSU_LEN) {
+			return rtnList;
+		}
+
+		int standardYyyy = Integer.parseInt(sysDateYyyymm);
+
+		int listMaxCnt = Integer.parseInt(PropertyUtils.getValue(LIST_CNT_KEY));
+
+		for (int i = 0; i < listMaxCnt; i++) {
+			Map<String, Object> dropDownMap = new HashMap<String, Object>();
+
+			String addYyyy = String.valueOf(standardYyyy - i);
+			dropDownMap.put("value", addYyyy);
+			dropDownMap.put("label", addYyyy + TAISHOUNENDO_NENDO);
+			rtnList.add(dropDownMap);
+		}
+
+		return rtnList;
+	}
+	
+	/**
 	 * 締め処理区分、Positive連携区分の情報取得
 	 * 
 	 * @param cycleBillingYymm
@@ -384,13 +421,16 @@ public class Skf3050Sc002SharedService {
 	@Transactional
 	public int registBatchControl(Map<String, String> parameter, String jikkoBatchId) throws ParseException {
 
+		//取得可否チェック
 		String retParameterName = checkParameter(parameter);
 		String programId = createPositiveDataBatchPrgId;
 		Date sysDate = getSystemDate();
 
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
-
+			//パラメータチェックエラーの場合
 			if (!retParameterName.contains(BATCH_PARAM_NAME_COMPANY_CD)) {
+				//パラメータの会社コードが設定済みの場合
+				//異常終了として、バッチ制御テーブルを登録
 				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(COMPANY_CD_KEY), programId,
 						parameter.get(USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
@@ -403,8 +443,9 @@ public class Skf3050Sc002SharedService {
 			}
 		}
 
+		//プログラムIDの設定
 		if (!jikkoBatchId.equals(parameter.get(BATCH_PRG_ID_KEY))) {
-
+			//異常終了として、バッチ制御テーブルを登録
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(COMPANY_CD_KEY), programId,
 					parameter.get(USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
@@ -412,6 +453,7 @@ public class Skf3050Sc002SharedService {
 			return CodeConstant.SYS_NG;
 		}
 
+		//処理中として、バッチ制御テーブルを登録
 		skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(COMPANY_CD_KEY), programId,
 				parameter.get(USER_ID_KEY), SkfCommonConstant.PROCESSING, sysDate, null);
 
@@ -431,37 +473,68 @@ public class Skf3050Sc002SharedService {
 		String paramShoriNengetsu = parameter.get(SHORI_NENGETSU_KEY);
 		String paramCompanyCd = parameter.get(COMPANY_CD_KEY);
 
+		//社員番号ごとの行リスト
+		Map<String,Skf3050Sc002PositiveRenkeiInfoExp> shainRowMap = new HashMap<String,Skf3050Sc002PositiveRenkeiInfoExp>();
+		
 		List<RowDataBean> rowDataBeanList = new ArrayList<>();
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd,
+		//HR連携データ出力（IF0002）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd,
 				KEIRIKANJOU_SHATAKU_KASHI_GYOUGAI, "", true, false, false, false, IF0002);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd,
+		//HR連携データ出力（IF0003）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd,
 				KEIRIKANJOU_SHATAKU_KASHI_GYOUGAI, "", false, true, false, false, IF0003);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd,
+		//HR連携データ出力（IF0004）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd,
 				KEIRIKANJOU_AZUKARI_SHATAKU_KASHI, "", true, false, false, false, IF0004);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd,
+		//HR連携データ出力（IF0005）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd,
 				KEIRIKANJOU_AZUKARI_SHATAKU_KASHI, "", false, true, false, false, IF0005);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd,
+		//HR連携データ出力（IF0006）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd,
 				KEIRIKANJOU_CHIDAI_YACHIN, "", true, false, false, false, IF0006);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd,
+		//HR連携データ出力（IF0007）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd,
 				KEIRIKANJOU_CHIDAI_YACHIN, "", false, true, false, false, IF0007);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd, "",
+		//HR連携データ出力（IF0008）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd, "",
 				KEIRIKANJOU_AZUKARI_KYOUEKIHI, false, false, true, false, IF0008);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd, "",
+		//HR連携データ出力（IF0009）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd, "",
 				KEIRIKANJOU_AZUKARI_KYOUEKIHI_SHAGAI, false, false, true, false, IF0009);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiInfo(rowDataBeanList, paramShoriNengetsu, paramCompanyCd, "", "",
+		//HR連携データ出力（IF0010）
+		shainRowMap = createExcelFilePositiveRenkeiInfo(shainRowMap, paramShoriNengetsu, paramCompanyCd, "", "",
 				false, false, false, true, IF0010);
 
-		rowDataBeanList = createExcelFilePositiveRenkeiBihinIF0011Info(rowDataBeanList, paramShoriNengetsu,
+		//▼備品現物支給額データ作成処理▼
+		//貸与備品現物データ出力（IF0011）
+		shainRowMap = createExcelFilePositiveRenkeiBihinIF0011Info(shainRowMap, paramShoriNengetsu,
 				paramCompanyCd);
+		
+		int targetRow = START_LINE;
+		//キーでソート
+		Object[] mapKey = shainRowMap.keySet().toArray();
+		Arrays.sort(mapKey);
+		for(Object shainNo : mapKey){
+			Skf3050Sc002PositiveRenkeiInfoExp rowExp = shainRowMap.get(shainNo.toString());
+			targetRow++;
+			RowDataBean rowData = createRowData(targetRow, shainNo.toString(), paramShoriNengetsu, 
+					rowExp.getSiyoryoHoyu(), rowExp.getChusyajyoHoyu(), rowExp.getSiyoryoShagai(), 
+					rowExp.getChusyajyoShagai(), rowExp.getSiyoryoKasiage(), rowExp.getChusyajyoKasiage(), 
+					rowExp.getKyoekihiHoyu(), rowExp.getKyoekihiShagai(), 
+					rowExp.getGenbutugakuShaho(), rowExp.getBihingenbutuShaho());
+			if (rowData != null) {
+				rowDataBeanList.add(rowData);
+			}
+		}
 
 		Map<String, Object> rtnMap = outputExcel(rowDataBeanList);
 
@@ -471,6 +544,7 @@ public class Skf3050Sc002SharedService {
 			return null;
 		}
 		
+		//▼月次処理管理データ更新▼
 		updateGetsujiShoriKanri(parameter.get(USER_ID_KEY), paramShoriNengetsu);
 
 		return rtnMap;
@@ -494,6 +568,7 @@ public class Skf3050Sc002SharedService {
 
 		Date endDate = getSystemDate();
 
+		//バッチ制御テーブルを更新
 		skfBatchBusinessLogicUtils.updateBatchControl(endDate, endFlg, companyCd, createPositiveDataBatchPrgId,
 				SkfCommonConstant.PROCESSING);
 	}
@@ -536,53 +611,134 @@ public class Skf3050Sc002SharedService {
 	 * @return 作成件数
 	 * @throws Exception
 	 */
-	private List<RowDataBean> createExcelFilePositiveRenkeiInfo(List<RowDataBean> rowDataBeanList, String shoriNengetsu,
+	private Map<String,Skf3050Sc002PositiveRenkeiInfoExp> createExcelFilePositiveRenkeiInfo(Map<String,Skf3050Sc002PositiveRenkeiInfoExp> shainRowMap, String shoriNengetsu,
 			String kyuyoCompanyCd, String shatakuKanjouCd, String kyouekiKanjouCd, boolean shatakuShiyouFlg,
 			boolean tyushajoShiyouFlg, boolean kyouekihiFlg, boolean genbutsuSanteiFlg, String interfaceId)
 			throws Exception {
 
+		//社宅現物算定(1310)データ出力の場合
 		if (IF0010.equals(interfaceId)) {
 
+			//連携データを取得(入居中の社宅のみ）
 			List<Skf3050Bt003GetPositiveGenbutsuSanteiSakuseiSyoriDataExp> genbutsuDataList = getPositiveGenbutsuSanteiSakuseiSyoriData(
 					shoriNengetsu, kyuyoCompanyCd, genbutsuSanteiFlg);
 
+			//データが取得出来たら
 			if (genbutsuDataList.size() > 0) {
-				int targetRow = START_LINE;
+//				int targetRow = START_LINE;
+				//社員番号
+				String shainNo = "";
+				//現物算定額合計(入居中のみ）
+				Integer genbutsuSum = 0;
+				//現物算定額合計
+				Integer genbutsuAllSum = 0;
+				
 
-				if (rowDataBeanList.size() != 0) {
-					targetRow = rowDataBeanList.size() + START_LINE;
-				}
+//				if (rowDataBeanList.size() != 0) {
+//					targetRow = rowDataBeanList.size() + START_LINE;
+//				}
 
+				//データ行だけ繰り返す
 				for (int i = 0; i < genbutsuDataList.size(); i++) {
 					Skf3050Bt003GetPositiveGenbutsuSanteiSakuseiSyoriDataExp genbutsuShori = genbutsuDataList.get(i);
 
-					targetRow++;
+//					targetRow++;
 
-					String genbutuSantei = "";
-					if (genbutsuShori.getGenbutuSantei() != null) {
-						genbutuSantei = genbutsuShori.getGenbutuSantei().toString();
-					}
+					//処理月翌月の末日(YYYYMMDD)
+					String shoriNengetsuMatsujitsu = getTaishoutsukiYokugetsuMatsu(shoriNengetsu);
 
-					RowDataBean rowData = createRowData(targetRow, genbutsuShori.getShainNo(), shoriNengetsu, "", "",
-							"", "", "", "", "", "", genbutuSantei, "");
-					if (rowData != null) {
-						rowDataBeanList.add(rowData);
+					//社員番号有無
+					if (SkfCheckUtils.isNullOrEmpty(genbutsuShori.getShainNo())) {
+						//nullまたは空の場合スキップ
+						continue;
 					}
+					//社員番号が空だった場合
+					if(SkfCheckUtils.isNullOrEmpty(shainNo)){
+						shainNo = genbutsuShori.getShainNo();
+					//社員番号が変更された場合
+					}else if(!shainNo.equals(genbutsuShori.getShainNo())){
+						Skf3050Sc002PositiveRenkeiInfoExp setExp = shainRowMap.get(shainNo);
+						
+						if(genbutsuSum > 0){
+							//現物算定額合計(入居中のみ）
+							setExp.setGenbutugakuShaho(genbutsuSum.toString());
+						}else{
+							//現物算定額合計
+							setExp.setGenbutugakuShaho(genbutsuAllSum.toString());
+						}
+						
+						shainRowMap.replace(shainNo, setExp);
+						//社員番号変更時の初期化処理
+						//現物算定額合計(入居中のみ）
+						genbutsuSum = 0;
+						//現物算定額合計
+						genbutsuAllSum = 0;
+						shainNo = genbutsuShori.getShainNo();
+					}
+					
+					//社員番号リスト存在確認
+					if(!shainRowMap.containsKey(shainNo)){
+						//存在していないため、Mapに追加
+						Skf3050Sc002PositiveRenkeiInfoExp newExp = new Skf3050Sc002PositiveRenkeiInfoExp();
+						newExp.setShainNo(shainNo);
+						newExp.setShoriNengetsu(shoriNengetsu);
+						shainRowMap.put(shainNo, newExp);
+					}
+					
+					//入居日が処理月翌月の末日より小さく、退居日が空、もしくは処理月翌月初日より大きい場合
+					if(genbutsuShori.getNyukyoDate() != null){
+						int nyukyoDate = Integer.parseInt(genbutsuShori.getNyukyoDate());
+						int shoriNengetsuMatsujitsuNum = Integer.parseInt(shoriNengetsuMatsujitsu);
+						if(nyukyoDate <= shoriNengetsuMatsujitsuNum &&
+							(SkfCheckUtils.isNullOrEmpty(genbutsuShori.getTaikyoDate()) || Integer.parseInt(genbutsuShori.getTaikyoDate()) > shoriNengetsuMatsujitsuNum)){
+							//現物算定額合計(入居中のみ）
+							 genbutsuSum += genbutsuShori.getGenbutuSantei();
+						}
+					}
+					
+
+					
+					//現物算定額合計
+					genbutsuAllSum += genbutsuShori.getGenbutuSantei();
+//					String genbutuSantei = "";
+//					if (genbutsuShori.getGenbutuSantei() != null) {
+//						genbutuSantei = genbutsuShori.getGenbutuSantei().toString();
+//					}
+//
+//					RowDataBean rowData = createRowData(targetRow, genbutsuShori.getShainNo(), shoriNengetsu, "", "",
+//							"", "", "", "", "", "", genbutuSantei, "");
+//					if (rowData != null) {
+//						rowDataBeanList.add(rowData);
+//					}
 				}
+				Skf3050Sc002PositiveRenkeiInfoExp setExp = shainRowMap.get(shainNo);
+				
+				if(genbutsuSum > 0){
+					//現物算定額合計(入居中のみ）
+					setExp.setGenbutugakuShaho(genbutsuSum.toString());
+				}else{
+					//現物算定額合計
+					setExp.setGenbutugakuShaho(genbutsuAllSum.toString());
+				}
+				
+				shainRowMap.replace(shainNo, setExp);
 			}
-
+		//現物支給額WT（1310）以外
 		} else {
+			//連携データを取得
 			List<Skf3050Bt003GetPositiveRenkeiDataSakuseiSyoriDataExp> sakuseiSyoriDataList = getPositiveRenkeiDataSakuseiSyoriData(
 					shoriNengetsu, kyuyoCompanyCd, shatakuKanjouCd, kyouekiKanjouCd, shatakuShiyouFlg,
 					tyushajoShiyouFlg, kyouekihiFlg, genbutsuSanteiFlg);
 
+			//該当データが存在する場合
 			if (sakuseiSyoriDataList.size() > 0) {
-				int targetRow = START_LINE;
+//				int targetRow = START_LINE;
+//
+//				if (rowDataBeanList.size() != 0) {
+//					targetRow = rowDataBeanList.size() + START_LINE;
+//				}
 
-				if (rowDataBeanList.size() != 0) {
-					targetRow = rowDataBeanList.size() + START_LINE;
-				}
-
+				//取得した情報分繰り返す
 				for (int i = 0; i < sakuseiSyoriDataList.size(); i++) {
 
 					Skf3050Bt003GetPositiveRenkeiDataSakuseiSyoriDataExp sakuseiSyoriData = sakuseiSyoriDataList.get(i);
@@ -590,7 +746,20 @@ public class Skf3050Sc002SharedService {
 					String shainNo = "";
 					if (sakuseiSyoriData.getShainNo() != null) {
 						shainNo = sakuseiSyoriData.getShainNo();
+					}else{
+						continue;
 					}
+					
+					//社員番号リスト存在確認
+					if(!shainRowMap.containsKey(shainNo)){
+						//存在していないため、Mapに追加
+						Skf3050Sc002PositiveRenkeiInfoExp newExp = new Skf3050Sc002PositiveRenkeiInfoExp();
+						newExp.setShainNo(shainNo);
+						newExp.setShoriNengetsu(shoriNengetsu);
+						shainRowMap.put(shainNo, newExp);
+					}
+					
+					Skf3050Sc002PositiveRenkeiInfoExp setExp = shainRowMap.get(shainNo);
 
 					String siyoryoHoyu = "";
 					String chusyajyoHoyu = "";
@@ -600,62 +769,79 @@ public class Skf3050Sc002SharedService {
 					String chusyajyoKasiage = "";
 					String kyoekihiHoyu = "";
 					String kyoekihiShagai = "";
-
+					//社宅使用料、駐車場使用料、共益費、社宅現物算定額
 					switch (interfaceId) {
 					case IF0002:
 						if (sakuseiSyoriData.getRentalTotal() != null) {
+							//社宅使用料月額（調整後）
 							siyoryoHoyu = sakuseiSyoriData.getRentalTotal().toString();
+							setExp.setSiyoryoHoyu(siyoryoHoyu);
 						}
 						break;
 					case IF0003:
 						if (sakuseiSyoriData.getParkingRentalTotal() != null) {
+							//駐車場使用料月額（調整後）
 							chusyajyoHoyu = sakuseiSyoriData.getParkingRentalTotal().toString();
+							setExp.setChusyajyoHoyu(chusyajyoHoyu);
 						}
 						break;
 					case IF0004:
 						if (sakuseiSyoriData.getRentalTotal() != null) {
+							//社宅使用料月額（調整後）
 							siyoryoShagai = sakuseiSyoriData.getRentalTotal().toString();
+							setExp.setSiyoryoShagai(siyoryoShagai);
 						}
 						break;
 					case IF0005:
 						if (sakuseiSyoriData.getParkingRentalTotal() != null) {
+							//駐車場使用料月額（調整後）
 							chusyajyoShagai = sakuseiSyoriData.getParkingRentalTotal().toString();
+							setExp.setChusyajyoShagai(chusyajyoShagai);
 						}
 						break;
 					case IF0006:
 						if (sakuseiSyoriData.getRentalTotal() != null) {
+							//社宅使用料月額（調整後）
 							siyoryoKasiage = sakuseiSyoriData.getRentalTotal().toString();
+							setExp.setSiyoryoKasiage(siyoryoKasiage);
 						}
 						break;
 					case IF0007:
 						if (sakuseiSyoriData.getParkingRentalTotal() != null) {
+							//駐車場使用料月額（調整後）
 							chusyajyoKasiage = sakuseiSyoriData.getParkingRentalTotal().toString();
+							setExp.setChusyajyoKasiage(chusyajyoKasiage);
 						}
 						break;
 					case IF0008:
 						if (sakuseiSyoriData.getKyoekihiPersonTotal() != null) {
+							//個人負担共益費月額（調整後）
 							kyoekihiHoyu = sakuseiSyoriData.getKyoekihiPersonTotal().toString();
+							setExp.setKyoekihiHoyu(kyoekihiHoyu);
 						}
 						break;
 					case IF0009:
 						if (sakuseiSyoriData.getKyoekihiPersonTotal() != null) {
+							//個人負担共益費月額（調整後）
 							kyoekihiShagai = sakuseiSyoriData.getKyoekihiPersonTotal().toString();
+							setExp.setKyoekihiShagai(kyoekihiShagai);
 						}
 						break;
 					}
 
-					targetRow++;
-					RowDataBean rowData = createRowData(targetRow, shainNo, shoriNengetsu, siyoryoHoyu, chusyajyoHoyu,
-							siyoryoShagai, chusyajyoShagai, siyoryoKasiage, chusyajyoKasiage, kyoekihiHoyu,
-							kyoekihiShagai, "", "");
-					if (rowData != null) {
-						rowDataBeanList.add(rowData);
-					}
+					shainRowMap.replace(shainNo, setExp);
+//					targetRow++;
+//					RowDataBean rowData = createRowData(targetRow, shainNo, shoriNengetsu, siyoryoHoyu, chusyajyoHoyu,
+//							siyoryoShagai, chusyajyoShagai, siyoryoKasiage, chusyajyoKasiage, kyoekihiHoyu,
+//							kyoekihiShagai, "", "");
+//					if (rowData != null) {
+//						rowDataBeanList.add(rowData);
+//					}
 				}
 			}
 		}
 
-		return rowDataBeanList;
+		return shainRowMap;
 	}
 
 	/**
@@ -898,43 +1084,62 @@ public class Skf3050Sc002SharedService {
 	 * @return 作成件数
 	 * @throws Exception
 	 */
-	private List<RowDataBean> createExcelFilePositiveRenkeiBihinIF0011Info(List<RowDataBean> rowDataBeanList,
+	private Map<String,Skf3050Sc002PositiveRenkeiInfoExp> createExcelFilePositiveRenkeiBihinIF0011Info(Map<String,Skf3050Sc002PositiveRenkeiInfoExp> shainRowMap,
 			String shoriNengetsu, String kyuyoCompanyCd) throws Exception {
 
+		//連携データ備品を取得
 		List<Skf3050Bt003GetPositiveRenkeiDataSakuseiBihinDataExp> bihinDataList = getPositiveRenkeiDataSakuseiBihinData(
 				shoriNengetsu, kyuyoCompanyCd);
 
+		//該当データが存在する場合
 		if (bihinDataList.size() > 0) {
-			int targetRow = START_LINE;
+//			int targetRow = START_LINE;
+//
+//			if (rowDataBeanList.size() != 0) {
+//				targetRow = rowDataBeanList.size() + START_LINE;
+//			}
 
-			if (rowDataBeanList.size() != 0) {
-				targetRow = rowDataBeanList.size() + START_LINE;
-			}
-
+			//取得した情報分繰り返す
 			for (int i = 0; i < bihinDataList.size(); i++) {
 				Skf3050Bt003GetPositiveRenkeiDataSakuseiBihinDataExp bihinData = bihinDataList.get(i);
 
 				String shainNo = "";
 				if (!NfwStringUtils.isEmpty(bihinData.getShainNo())) {
 					shainNo = bihinData.getShainNo();
+				}else{
+					continue;
 				}
+				
+				//社員番号リスト存在確認
+				if(!shainRowMap.containsKey(shainNo)){
+					//存在していないため、Mapに追加
+					Skf3050Sc002PositiveRenkeiInfoExp newExp = new Skf3050Sc002PositiveRenkeiInfoExp();
+					newExp.setShainNo(shainNo);
+					newExp.setShoriNengetsu(shoriNengetsu);
+					shainRowMap.put(shainNo, newExp);
+				}
+				
+				Skf3050Sc002PositiveRenkeiInfoExp setExp = shainRowMap.get(shainNo);
 
+				//貸与備品レンタル額
 				String bihinGenbutuGoukei = "";
 				if (bihinData.getBihinGenbutuGoukei() != null) {
 					bihinGenbutuGoukei = bihinData.getBihinGenbutuGoukei().toString();
+					setExp.setBihingenbutuShaho(bihinGenbutuGoukei);
 				}
 
-				targetRow++;
-
-				RowDataBean rowData = createRowData(targetRow, shainNo, shoriNengetsu, "", "", "", "", "", "", "", "",
-						"", bihinGenbutuGoukei);
-				if (rowData != null) {
-					rowDataBeanList.add(rowData);
-				}
+				shainRowMap.replace(shainNo, setExp);
+//				targetRow++;
+//
+//				RowDataBean rowData = createRowData(targetRow, shainNo, shoriNengetsu, "", "", "", "", "", "", "", "",
+//						"", bihinGenbutuGoukei);
+//				if (rowData != null) {
+//					rowDataBeanList.add(rowData);
+//				}
 			}
 		}
 
-		return rowDataBeanList;
+		return shainRowMap;
 	}
 
 	/**
@@ -1181,73 +1386,93 @@ public class Skf3050Sc002SharedService {
 
 		String rtnErrMsg = "";
 
+		//▼二重起動チェック
 		boolean notDoubleStartup = checkDoubleStartup();
 		if (!notDoubleStartup) {
 			rtnErrMsg = ERRMSG_DOUBLE_START;
 			return rtnErrMsg;
 		}
 
+		//▼締め処理可能チェック
 		Skf3050TMonthlyManageData renkeiKbnData = getShimePositiveRenkeiKbn(jikkouShijiYoteiNengetsu);
 		if (renkeiKbnData == null) {
+			//月次処理管理データが取得できない場合エラー
 			rtnErrMsg = ERRMSG_SHIME_IMPOSSIBLE;
 			return rtnErrMsg;
 
 		} else {
 			if (Skf3050Sc002SharedService.BILLING_ACT_KBN_JIKKO_SUMI.equals(renkeiKbnData.getBillingActKbn())
 					|| CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+				//締め処理＝実行済、または連携データ確定実行区分＝実行済の場合エラー
 				rtnErrMsg = ERRMSG_SHIME_IMPOSSIBLE;
 				return rtnErrMsg;
 			}
 		}
 
+		//締め処理の場合はチェックを行う
 		if (SHIME_SHORI_ON.equals(closeBatchFlg)) {
 
+			//▼仮社員番号チェック
 			List<String> kariShainNoList = getKariShainBango(jikkouShijiYoteiNengetsu);
 			if (kariShainNoList.size() > 0) {
+				//仮社員データが存在する場合エラー
 				rtnErrMsg = ERRMSG_SHIME_KARISHAIN;
 				return rtnErrMsg;
 			}
 
+			//▼社員番号変更対象者チェック
+			//社員番号変更対象者の取得
 			List<String> henkanShainBangoList = getHenkanShainBango(jikkouShijiYoteiNengetsu);
 			if (henkanShainBangoList.size() > 0) {
+				//社員番号変更対象者が存在する場合エラー
 				rtnErrMsg = ERRMSG_SHIME_KARISHAIN_CHG;
 				return rtnErrMsg;
 			}
 
+			//▼当日入居データ、社宅管理台帳基本テーブルデータ存在チェック
 			List<String> teijiNyukyoList = getShatakuKanriNyukyoExists(jikkouShijiYoteiNengetsu);
 			if (teijiNyukyoList.size() > 0) {
+				//提示データテーブルの台帳作成区分≠作成済の場合エラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_NYUKYO;
 				return rtnErrMsg;
 			}
-
+			
+			//▼提示データ未作成の駐車場利用申請データ存在チェック
 			List<String> parkingTeijiMisakuseiDataList = getShatakuKanriParkingTeijiMisakuseiData(
 					jikkouShijiYoteiNengetsu);
 			if (parkingTeijiMisakuseiDataList.size() > 0) {
+				//提示データが未作成の駐車場利用申請が存在する場合エラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_PARKING_TEIJI_MISAKUSEI_DATA;
 				return rtnErrMsg;
 			}
 
+			//▼当月駐車場利用開始データ、社宅管理台帳基本テーブルデータ存在チェック
 			int parkingRiyoKaishiCount = 0;
-
+			//① 駐車場のみ入居、かつ2台分利用の件数をカウント
 			List<String> parking2RiyoKaishiList = getShatakuKanriParking2RiyoKaishiExist(jikkouShijiYoteiNengetsu);
 			parkingRiyoKaishiCount += parking2RiyoKaishiList.size();
-
+			//② 駐車場のみ入居、かつ1台分利用の件数をカウント
 			int parking1RiyoKaishiCount = getShatakuKanriParking1RiyoKaishiCnt(jikkouShijiYoteiNengetsu);
 			parkingRiyoKaishiCount += parking1RiyoKaishiCount;
 
 			if (parkingRiyoKaishiCount > 0) {
+				//処理年月内で未承認の駐車場貸出がある場合はエラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_PARKING_RIYOKAISHI;
 				return rtnErrMsg;
 			}
 
+			//▼当日退居データ、社宅管理台帳基本テーブルデータ存在チェック
 			List<String> teijiTaikyoDataList = getShatakuKanriTaikyoExist(jikkouShijiYoteiNengetsu);
 			if (teijiTaikyoDataList.size() > 0) {
+				//提示データテーブルの台帳作成区分≠作成済の場合エラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_TAIKYO;
 				return rtnErrMsg;
 			}
 
+			//▼当月駐車場利用終了データ、社宅管理台帳基本テーブルデータ存在チェック
 			List<String> parkingRiyoShuryoDataList = getShatakuKanriParkingRiyoShuryoExist(jikkouShijiYoteiNengetsu);
 			if (parkingRiyoShuryoDataList.size() > 0) {
+				//処理年月内で未承認の駐車場返却がある場合はエラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_PARKING_RIYOSHURYO;
 				return rtnErrMsg;
 			}
@@ -1263,26 +1488,31 @@ public class Skf3050Sc002SharedService {
 	 */
 	public boolean checkDoubleStartup() {
 
+		//締め処理バッチ二重起動チェック
 		int shimeShoriBatchCnt = getBatchStartupCnt(closeBatchPrgId);
 		if (shimeShoriBatchCnt > 0) {
 			return false;
 		}
 
+		//締め解除バッチ二重起動チェック
 		int shimeKaijoBatchCnt = getBatchStartupCnt(closeCanselBatchPrgId);
 		if (shimeKaijoBatchCnt > 0) {
 			return false;
 		}
 
+		//連携データ作成処理バッチ二重起動チェック
 		int createPositiveDataBatchCnt = getBatchStartupCnt(createPositiveDataBatchPrgId);
 		if (createPositiveDataBatchCnt > 0) {
 			return false;
 		}
 
+		//連携データ確定処理バッチ二重起動チェック
 		int confirmPositiveDataBatchCnt = getBatchStartupCnt(confirmPositiveDataBatchPrgId);
 		if (confirmPositiveDataBatchCnt > 0) {
 			return false;
 		}
 
+		//上記のバッチ全てが起動していない場合のみ正常とする
 		return true;
 	}
 
@@ -2346,6 +2576,34 @@ public class Skf3050Sc002SharedService {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dtEnd);
 		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+		Date changedDate = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+
+		String outDate = sdf.format(changedDate);
+
+		return outDate;
+	}
+	
+	/**
+	 * 対象月翌月の末日取得
+	 * 
+	 * @param nengetsu
+	 *            処理年月(yyyyMM)
+	 * @return 対象月末日(yyyyMMdd)
+	 */
+	private String getTaishoutsukiYokugetsuMatsu(String nengetsu) {
+
+		if (NfwStringUtils.isEmpty(nengetsu)) {
+			return nengetsu;
+		}
+
+		Date dtEnd = skfDateFormatUtils.formatStringToDate(nengetsu + "01");
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dtEnd);
+		calendar.add(Calendar.MONTH, 2);
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
 
 		Date changedDate = calendar.getTime();

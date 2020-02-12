@@ -4,6 +4,7 @@
 package jp.co.c_nexco.skf.skf3050.domain.service.skf3050sc002;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +52,14 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionAsyncService ext
 		
 		String jikkouShijiYoteiNengetsu = confirmPositiveCoopDto.getHdnJikkouShijiYoteiNengetsu();
 		
+		//▼連携データ確定処理起動事前チェック
 		String errMsg = checkBeforeStartup(jikkouShijiYoteiNengetsu);
 		if (!"".equals(errMsg)) {
 			ServiceHelper.addErrorResultMessage(confirmPositiveCoopDto, null, MessageIdConstant.E_SKF_3026, errMsg);
 			throwBusinessExceptionIfErrors(confirmPositiveCoopDto.getResultMessages());
 		}
 		
+		//HR連携データ確定処理バッチを起動
 		Map<String, Object> param = new HashMap<>();
 
 		// タスク設定ユーザー
@@ -87,6 +90,9 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionAsyncService ext
 
 		confirmPositiveCoopDto.setTaskMsgId(msgId);
 		
+		//▼処理年月が3月の場合、対象年度リストも更新する
+		//⇒非同期バッチのため、実装不可
+		
 		return confirmPositiveCoopDto;
 	}
 	
@@ -100,19 +106,25 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionAsyncService ext
 		
 		String errMsg = "";
 		
+		//▼二重起動チェック
 		boolean notDoubleStartup = skf3050Sc002SharedService.checkDoubleStartup();
 		if (!notDoubleStartup) {
 			errMsg = Skf3050Sc002SharedService.ERRMSG_DOUBLE_START;
 			return errMsg;
 		}
 		
+		//▼連携データ確定処理可能チェック
 		Skf3050TMonthlyManageData renkeiKbnData = skf3050Sc002SharedService.getShimePositiveRenkeiKbn(jikkouShijiYoteiNengetsu);
 		if (renkeiKbnData == null) {
+			//月次処理管理データが取得できない場合エラー
 			errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 			return errMsg;
 		
 		} else {
-			if (NfwStringUtils.isEmpty(renkeiKbnData.getBillingActKbn()) || !CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCreateKbn()) || CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+			if (NfwStringUtils.isEmpty(renkeiKbnData.getBillingActKbn()) || 
+				!CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCreateKbn()) || 
+				CodeConstant.LINKDATA_COMMIT_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+				//締め処理＝Null、またはHR連携データ作成≠実行済、またはHR連携データ確定実行区分＝実行済の場合エラー
 				errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 				return errMsg;
 			}

@@ -52,8 +52,10 @@ public class Skf3050Sc002ProvCalcService extends BaseServiceAbstract<Skf3050Sc00
 		String jikkouShijiYoteiNengetsu = provCalcDto.getHdnJikkouShijiYoteiNengetsu();
 		provCalcDto.setResultMessages(null);
 		
+		//▼締め処理起動事前チェック
 		String errMsg = skf3050Sc002SharedService.checkShimeShori(jikkouShijiYoteiNengetsu, SHIME_SHORI_OFF);
 		if (!"".equals(errMsg)) {
+			//締め処理事前チェックが異常の場合、エラーメッセージを表示し処理を中断する
 			ServiceHelper.addErrorResultMessage(provCalcDto, null, MessageIdConstant.E_SKF_3013, errMsg);
 			return provCalcDto;
 		}

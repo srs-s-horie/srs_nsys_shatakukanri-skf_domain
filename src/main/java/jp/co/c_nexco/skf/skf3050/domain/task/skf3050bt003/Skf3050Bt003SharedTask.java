@@ -106,13 +106,16 @@ public class Skf3050Bt003SharedTask {
 	@Transactional
 	public int registBatchControl(Map<String, String> parameter) throws ParseException {
 
+		//取得可否チェック
 		String retParameterName = checkParameter(parameter);
 		String programId = BATCH_ID_B5003;
 		Date sysDate = getSystemDate();
 
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
-
+			//パラメータチェックエラーの場合
 			if (!retParameterName.contains(PARAM_NAME_COMPANY_CD)) {
+				//パラメータの会社コードが設定済みの場合
+				//異常終了として、バッチ制御テーブルを登録
 				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT003_COMPANY_CD_KEY), programId,
 						parameter.get(SKF3050BT003_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
@@ -124,9 +127,10 @@ public class Skf3050Bt003SharedTask {
 				return CodeConstant.SYS_NG;
 			}
 		}
-
+		
+		//プログラムIDの設定
 		if (!BATCH_ID_B5003.equals(parameter.get(SKF3050BT003_BATCH_PRG_ID_KEY))) {
-
+			//異常終了として、バッチ制御テーブルを登録
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT003_COMPANY_CD_KEY), programId,
 					parameter.get(SKF3050BT003_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
@@ -134,7 +138,8 @@ public class Skf3050Bt003SharedTask {
 					"バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT003_BATCH_PRG_ID_KEY) + "）");
 			return CodeConstant.SYS_NG;
 		}
-
+		
+		//処理中として、バッチ制御テーブルを登録
 		skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT003_COMPANY_CD_KEY), programId,
 				parameter.get(SKF3050BT003_USER_ID_KEY), SkfCommonConstant.PROCESSING, sysDate, null);
 

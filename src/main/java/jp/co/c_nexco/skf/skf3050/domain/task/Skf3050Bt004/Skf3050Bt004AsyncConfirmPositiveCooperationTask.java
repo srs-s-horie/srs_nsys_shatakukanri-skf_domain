@@ -45,6 +45,7 @@ public class Skf3050Bt004AsyncConfirmPositiveCooperationTask extends AsyncTaskAb
 
 		outputStartLog(paramMap);
 
+		//パラメータ数のチェック
 		if (paramMap.size() != Skf3050Bt004SharedTask.PARAMETER_NUM) {
 			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Bt004SharedTask.outputEndProcLog();
@@ -53,17 +54,22 @@ public class Skf3050Bt004AsyncConfirmPositiveCooperationTask extends AsyncTaskAb
 
 		LogUtils.info(MessageIdConstant.I_SKF_1022, Skf3050Bt004SharedTask.BATCH_NAME);
 
+		//トランザクションAを開始
 		int registResult = skf3050Bt004SharedTask.registBatchControl(paramMap);
 
 		if (registResult == CodeConstant.SYS_NG) {
 			skf3050Bt004SharedTask.outputEndProcLog();
 			return;
 		}
-
+		
+		//トランザクションBの開始
 		String confirmResult = skf3050Bt004SharedTask.confirmData(paramMap);
 
+		//トランザクションCの開始
+		//終了処理
 		skf3050Bt004SharedTask.endProc(confirmResult, paramMap.get(Skf3050Bt004SharedTask.SKF3050BT004_COMPANY_CD_KEY));
 
+		//管理ログ終了処理
 		skf3050Bt004SharedTask.outputEndProcLog();
 	}
 

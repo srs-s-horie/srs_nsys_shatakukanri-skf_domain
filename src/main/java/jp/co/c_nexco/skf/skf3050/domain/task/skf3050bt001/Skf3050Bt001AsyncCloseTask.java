@@ -55,6 +55,7 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 
 		List<String> endList = setEndList();
 
+		//パラメータ数のチェック
 		if (paramMap.size() == 0 || paramMap.size() != Skf3050Bt001SharedTask.PARAMETER_NUM) {
 			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Bt001SharedTask.outputManagementLogEndProc(endList, sysDate);
@@ -63,20 +64,23 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 
 		LogUtils.info(MessageIdConstant.I_SKF_1022, BATCH_NAME);
 
+		//トランザクションAを開始
 		int registResult = skf3050Bt001SharedTask.registBatchControl(paramMap, sysDate, endList);
 
 		if (Skf3050Bt001SharedTask.RETURN_STATUS_NG == registResult) {
 			return;
 		}
-
+		//トランザクションBの開始
 		String result = skf3050Bt001SharedTask.updateTsukibetsuTsukiji(paramMap, endList);
 		if (SkfCommonConstant.ABNORMAL.equals(result)) {
 			LogUtils.error(MessageIdConstant.E_SKF_1079);
 		}
 
+		//トランザクションCの開始
 		Integer dbPrcRtn = skf3050Bt001SharedTask.endProc(result, paramMap.get(Skf3050Bt001SharedTask.COMPANY_CD),
 				Skf3050Bt001SharedTask.BATCH_ID_B5001, SkfCommonConstant.PROCESSING);
 
+		//管理ログ終了処理
 		if (dbPrcRtn > 0) {
 			skf3050Bt001SharedTask.outputManagementLogEndProc(endList, null);
 		}

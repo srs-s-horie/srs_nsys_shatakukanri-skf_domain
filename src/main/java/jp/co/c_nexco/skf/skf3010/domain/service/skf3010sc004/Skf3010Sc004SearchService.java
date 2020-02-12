@@ -69,7 +69,7 @@ public class Skf3010Sc004SearchService extends BaseServiceAbstract<Skf3010Sc004S
 		// initDto.setEmptyRoomCount(initDto.getHdnEmptyRoomCount());
 
 		// 検索部をセット
-		SetSearchInfo(searchDto);
+		//SetSearchInfo(searchDto);
 
 		// // リストテーブルの情報を取得
 		int listCount = skf3010Sc004SharedService.getListTableData(searchDto.getShatakuKanriNo(),
