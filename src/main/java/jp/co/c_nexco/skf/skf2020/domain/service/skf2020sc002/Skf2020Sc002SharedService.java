@@ -2494,50 +2494,50 @@ public class Skf2020Sc002SharedService {
 
 		// 社宅が不要以外で駐車場が必要な場合
 		if (!CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())
-				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())
-				&& CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg())) {
+				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())) {
 
 			// 自動車の登録番号入力フラグ
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の登録番号入力フラグ :" + dto.getCarNoInputFlg());
 			setValue.setCarNoInputFlg(dto.getCarNoInputFlg());
+
 			// 自動車の車名(１台目)
-			setValue.setCarName(dto.getCarName());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の車名(１台目) :" + dto.getCarName());
+			if (NfwStringUtils.isNotEmpty(dto.getCarName())) {
+				setValue.setCarName(dto.getCarName());
+			} else {
+				setValue.setCarName(null);
+			}
+
 			// 自動車の登録番号(１台目)
-			setValue.setCarNo(dto.getCarNo());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の登録番号(１台目) :" + dto.getCarNo());
+			if (NfwStringUtils.isNotEmpty(dto.getCarNo())) {
+				setValue.setCarNo(dto.getCarNo());
+			} else {
+				setValue.setCarNo(null);
+			}
+
 			// 車検の有効期間満了日(１台目)
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 車検の有効期間満了日(１台目):" + dto.getCarExpirationDate());
 			if (NfwStringUtils.isNotEmpty(dto.getCarExpirationDate())) {
 				setValue.setCarExpirationDate(
 						dto.getCarExpirationDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
-				LogUtils.debugByMsg(dto.getCarExpirationDate());
-			}
-			// 自動車の使用者(１台目)
-			setValue.setCarUser(dto.getCarUser());
-			// 保管場所使用開始日(１台目)
-			if (NfwStringUtils.isNotEmpty(dto.getParkingUseDate())) {
-				setValue.setParkingUseDate(
-						dto.getParkingUseDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
-			}
-		} else if (!CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())
-				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())
-				&& CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg())) {
-
-			// 自動車の登録番号入力フラグ
-			setValue.setCarNoInputFlg(dto.getCarNoInputFlg());
-			// 自動車の車名(１台目)
-			setValue.setCarName(null);
-			// 自動車の登録番号(１台目)
-			setValue.setCarNo(null);
-			// 車検の有効期間満了日(１台目)
-			if (NfwStringUtils.isNotEmpty(dto.getCarExpirationDate())) {
+			} else {
 				setValue.setCarExpirationDate(null);
 			}
+
 			// 自動車の使用者(１台目)
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の使用者(１台目):" + dto.getCarUser());
 			setValue.setCarUser(dto.getCarUser());
 			// 保管場所使用開始日(１台目)
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 保管場所使用開始日(１台目):" + dto.getParkingUseDate());
 			if (NfwStringUtils.isNotEmpty(dto.getParkingUseDate())) {
 				setValue.setParkingUseDate(
 						dto.getParkingUseDate().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			}
+
 		} else {
+			// 社宅が不要又は駐車場を必要としない場合
+
 			// 自動車の登録番号入力フラグ
 			setValue.setCarNoInputFlg(null);
 			// 自動車の車名(１台目)
@@ -2545,65 +2545,56 @@ public class Skf2020Sc002SharedService {
 			// 自動車の登録番号(１台目)
 			setValue.setCarNo(null);
 			// 車検の有効期間満了日(１台目)
-			if (NfwStringUtils.isNotEmpty(dto.getCarExpirationDate())) {
-				setValue.setCarExpirationDate(null);
-			}
+			setValue.setCarExpirationDate(null);
 			// 自動車の使用者(１台目)
 			setValue.setCarUser(null);
 			// 保管場所使用開始日(１台目)
-			if (NfwStringUtils.isNotEmpty(dto.getParkingUseDate())) {
-				setValue.setParkingUseDate(null);
-			}
+			setValue.setParkingUseDate(null);
 		}
 
 		// 自動車の登録番号入力フラグ2
-		setValue.setCarNoInputFlg2(dto.getCarNoInputFlg2());
+		// 駐車場2台目の入力項目に何か登録されている場合は登録
+		if (NfwStringUtils.isNotEmpty(dto.getCarName2()) || NfwStringUtils.isNotEmpty(dto.getCarNo2())
+				|| NfwStringUtils.isNotEmpty(dto.getCarExpirationDate2())
+				|| NfwStringUtils.isNotEmpty(dto.getCarUser2())
+				|| NfwStringUtils.isNotEmpty(dto.getParkingUseDate2())) {
 
-		// 自動車の登録番号入力フラグだけで、2台目の車両情報が入っていない場合
-		if (NfwStringUtils.isNotEmpty(dto.getCarNoInputFlg2())) {
-			if (CheckUtils.isEmpty(dto.getCarName2()) && CheckUtils.isEmpty(dto.getCarNo2())
-					&& CheckUtils.isEmpty(dto.getCarExpirationDate2()) && CheckUtils.isEmpty(dto.getCarUser2())
-					&& CheckUtils.isEmpty(dto.getParkingUseDate2())) {
-				setValue.setCarNoInputFlg2(null);
-			}
+			setValue.setCarNoInputFlg2(dto.getCarNoInputFlg2());
+		} else {
+			setValue.setCarNoInputFlg2(null);
 		}
 
 		// 社宅が不要以外で駐車場が必要な場合
 		if (!CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())
-				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())
-				&& CodeConstant.CAR_HOYU.equals(dto.getCarNoInputFlg2())) {
+				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())) {
+
 			// 自動車の車名(2台目)
-			setValue.setCarName2(dto.getCarName2());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の車名(2台目) :" + dto.getCarName2());
+			if (NfwStringUtils.isNotEmpty(dto.getCarName2())) {
+				setValue.setCarName2(dto.getCarName2());
+			} else {
+				setValue.setCarName2(null);
+			}
+
 			// 自動車の登録番号(2台目)
-			setValue.setCarNo2(dto.getCarNo2());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の登録番号(2台目) :" + dto.getCarNo2());
+			if (NfwStringUtils.isNotEmpty(dto.getCarNo2())) {
+				setValue.setCarNo2(dto.getCarNo2());
+			} else {
+				setValue.setCarNo2(null);
+			}
+
 			// 車検の有効期間満了日(2台目)
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 車検の有効期間満了日(2台目) :" + dto.getCarExpirationDate2());
 			if (NfwStringUtils.isNotEmpty(dto.getCarExpirationDate2())) {
 				setValue.setCarExpirationDate2(
 						dto.getCarExpirationDate2().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 				LogUtils.debugByMsg(dto.getCarExpirationDate2());
-			}
-			// 自動車の使用者(2台目)
-			setValue.setCarUser2(dto.getCarUser2());
-			// 保管場所使用開始日(2台目)
-			if (NfwStringUtils.isNotEmpty(dto.getParkingUseDate2())) {
-				setValue.setParkingUseDate2(
-						dto.getParkingUseDate2().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
-				LogUtils.debugByMsg(dto.getParkingUseDate2());
-			}
-
-		} else if (!CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())
-				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())
-				&& CodeConstant.CAR_YOTEI.equals(dto.getCarNoInputFlg2())) {
-
-			// 自動車の車名(2台目)
-			setValue.setCarName2(null);
-			// 自動車の登録番号(2台目)
-			setValue.setCarNo2(null);
-			// 車検の有効期間満了日(2台目)
-			if (NfwStringUtils.isNotEmpty(dto.getCarExpirationDate2())) {
+			} else {
 				setValue.setCarExpirationDate2(null);
 			}
 			// 自動車の使用者(2台目)
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の使用者(2台目):" + dto.getParkingUseDate2());
 			setValue.setCarUser2(dto.getCarUser2());
 			// 保管場所使用開始日(2台目)
 			if (NfwStringUtils.isNotEmpty(dto.getParkingUseDate2())) {
@@ -2611,6 +2602,7 @@ public class Skf2020Sc002SharedService {
 						dto.getParkingUseDate2().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 				LogUtils.debugByMsg(dto.getParkingUseDate2());
 			}
+
 		} else {
 			// それ以外
 			// 自動車の登録番号入力フラグ2

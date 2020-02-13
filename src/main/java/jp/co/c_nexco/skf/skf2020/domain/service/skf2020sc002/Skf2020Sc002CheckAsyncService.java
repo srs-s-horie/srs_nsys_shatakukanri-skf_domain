@@ -187,7 +187,10 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		if (NfwStringUtils.isNotBlank(checkDto.getHitsuyoShataku())
 				&& CodeConstant.SETAI.equals(checkDto.getHitsuyoShataku())) {
 			// 家族情報の未選択確認
-			result = checkEmptyKazokuInfo(checkDto);
+			if (!checkEmptyKazokuInfo(checkDto)) {
+				// 戻り値がfalseだった場合に設定
+				result = false;
+			}
 		}
 
 		// 入居希望日(予定日)
@@ -885,11 +888,17 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 				&& NfwStringUtils.isNotBlank(checkDto.getHitsuyoShataku()))
 				&& CodeConstant.SETAI.equals(checkDto.getHitsuyoShataku())) {
 			// 続柄
-			result = checkByteCountZokugara(checkDto);
+			if (!checkByteCountZokugara(checkDto)) {
+				result = false;
+			}
 			// 氏名
-			result = checkByteCountShimei(checkDto);
+			if (!checkByteCountShimei(checkDto)) {
+				result = false;
+			}
 			// 年齢
-			result = checkByteCountNenrei(checkDto);
+			if (!checkByteCountNenrei(checkDto)) {
+				result = false;
+			}
 		}
 
 		// 自動車の保管場所
@@ -1201,26 +1210,8 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		boolean result = true;
 		// システム日付を文字列に変換
 		String sysDate = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+		LogUtils.debugByMsg("形式チェック " + "システム日付を文字列に変換 : " + sysDate);
 
-		// 入居希望日(予定日)
-		LogUtils.debugByMsg("形式チェック " + "入居希望日(予定日) - " + checkDto.getNyukyoYoteiDate() + checkDto.getTaiyoHituyo());
-		if ((NfwStringUtils.isNotBlank(checkDto.getTaiyoHituyo())
-				&& CodeConstant.ASKED_SHATAKU_HITSUYO.equals(checkDto.getTaiyoHituyo()))
-				&& NfwStringUtils.isNotBlank(checkDto.getNyukyoYoteiDate()) && !(SkfCheckUtils
-						.isSkfDateFormat(checkDto.getNyukyoYoteiDate().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "nyukyoYoteiDate" },
-					MessageIdConstant.E_SKF_1055, "入居希望日(予定日)");
-			result = false;
-		}
-
-		// 車検の有効期間満了日(１台目)
-		LogUtils.debugByMsg("形式チェック " + "車検の有効期間満了日(１台目) - " + checkDto.getCarExpirationDate());
-		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate())) && !(SkfCheckUtils
-				.isSkfDateFormat(checkDto.getCarExpirationDate().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate" },
-					MessageIdConstant.E_SKF_1055, "車検の有効期間満了日(1台目)");
-			result = false;
-		}
 		// 当日未満ならエラー
 		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate()))
 				&& CheckUtils.isDateUnder(checkDto.getCarExpirationDate(), sysDate)) {
@@ -1228,14 +1219,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 					MessageIdConstant.E_SKF_2017, "車検の有効期間満了日(1台目)");
 			result = false;
 		}
-		// 車検の有効期間満了日(２台目)
-		LogUtils.debugByMsg("形式チェック " + "車検の有効期間満了日(2台目) - " + checkDto.getCarExpirationDate2());
-		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate2())) && !(SkfCheckUtils
-				.isSkfDateFormat(checkDto.getCarExpirationDate2().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate2" },
-					MessageIdConstant.E_SKF_1055, "車検の有効期間満了日(2台目)");
-			result = false;
-		}
+
 		// 当日未満ならエラー
 		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate2()))
 				&& CheckUtils.isDateUnder(checkDto.getCarExpirationDate2(), sysDate)) {
@@ -1244,43 +1228,6 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 			result = false;
 		}
 
-		// 保管場所使用開始日(1台目)
-		LogUtils.debugByMsg("形式チェック " + "保管場所使用開始日(1台目) - " + checkDto.getParkingUseDate());
-		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate())) && !(SkfCheckUtils
-				.isSkfDateFormat(checkDto.getParkingUseDate().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate" },
-					MessageIdConstant.E_SKF_1055, "保管場所使用開始日(1台目)");
-			result = false;
-		}
-		// 保管場所使用開始日(2台目)
-		LogUtils.debugByMsg("形式チェック " + "保管場所使用開始日(2台目) - " + checkDto.getParkingUseDate2());
-		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate2())) && !(SkfCheckUtils
-				.isSkfDateFormat(checkDto.getParkingUseDate2().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate2" },
-					MessageIdConstant.E_SKF_1055, "保管場所使用開始日(2台目)");
-			result = false;
-		}
-
-		// 現保有の社宅
-		// 退居予定が退居するの場合
-		if (CodeConstant.LEAVE.equals(checkDto.getTaikyoYotei())) {
-			// 退居予定日
-			LogUtils.debugByMsg("形式チェック " + "退居予定日 - " + checkDto.getTaikyoYoteiDate());
-			if ((NfwStringUtils.isNotBlank(checkDto.getTaikyoYoteiDate())) && !(SkfCheckUtils
-					.isSkfDateFormat(checkDto.getTaikyoYoteiDate().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoYoteiDate" },
-						MessageIdConstant.E_SKF_1055, "退居予定日");
-				result = false;
-			}
-			// 返却立会希望日(日)
-			LogUtils.debugByMsg("形式チェック " + "返却立会希望日(日) - " + checkDto.getSessionDay());
-			if ((NfwStringUtils.isNotBlank(checkDto.getSessionDay())) && !(SkfCheckUtils
-					.isSkfDateFormat(checkDto.getSessionDay().trim(), CheckUtils.DateFormatType.YYYYMMDD))) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionDay" },
-						MessageIdConstant.E_SKF_1055, "返却立会希望日(日)");
-				result = false;
-			}
-		}
 		return result;
 	}
 }
