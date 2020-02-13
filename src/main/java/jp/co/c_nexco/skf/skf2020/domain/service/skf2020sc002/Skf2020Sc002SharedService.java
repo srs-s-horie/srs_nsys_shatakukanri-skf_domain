@@ -339,6 +339,7 @@ public class Skf2020Sc002SharedService {
 
 						afflication1List.add(soshikiMap);
 					}
+
 					dto.setDdlAffiliation1List(afflication1List);
 
 				} else if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())) {
@@ -389,8 +390,9 @@ public class Skf2020Sc002SharedService {
 					}
 					dto.setDdlAffiliation2List(afflication2List);
 
-				} else if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())
-						&& NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation1())) {
+				} else if ((NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())
+						&& NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation1()))
+						|| dto.getDdlAffiliation1List().size() > 0) {
 					// 新所属 室、チーム又は課は、空。新所属 機関と部が空ではない
 
 					// 室、チーム又は課ドロップダウンをセット
@@ -1634,10 +1636,6 @@ public class Skf2020Sc002SharedService {
 			dto.setAgencyCd(null);
 			LogUtils.debugByMsg(Msg + "新所属-機関" + dto.getDdlAgencyList());
 
-			// 新所属-機関 その他
-			dto.setNewAgencyOther(null);
-			LogUtils.debugByMsg(Msg + " 新所属-機関 その他" + dto.getNewAgencyOther());
-
 			// 新所属-部等
 			dto.setDdlAffiliation1List(null);
 			dto.setAffiliation1Cd(null);
@@ -2281,20 +2279,14 @@ public class Skf2020Sc002SharedService {
 				}
 
 				// 機関ドロップダウンリストが選択されている場合
-				LogUtils.debugByMsg(msg + dto.getAgencyCd() + agensyList.getAgencyName() + dto.getNewAgency());
+				LogUtils.debugByMsg(msg + dto.getAgencyCd() + agensyList.getAgencyName());
 				if (NfwStringUtils.isNotEmpty(dto.getAgencyCd())) {
-					// 「新規追加支社」が選択されている場合は新所属-機関 その他をセット
-					if (CodeConstant.OTHER_AGENCY_ITEM_VALUE.equals(dto.getAgencyCd())) {
-						setValue.setNewAgency(dto.getNewAgency());
-						setValue.setNewAgencyOther(CodeConstant.OTHER_AGENCY_FLG);
-					} else {
-						setValue.setNewAgency(agensyList.getAgencyName());
-					}
+					setValue.setNewAgency(agensyList.getAgencyName());
 				}
+
 				// 新所属-部等
 				// 新所属-部等ドロップダウンリストが選択されている場合
-				LogUtils.debugByMsg(
-						msg + dto.getAffiliation1Cd() + agensyList.getAffiliation1Name() + dto.getNewAffiliation1());
+				LogUtils.debugByMsg(msg + dto.getAffiliation1Cd() + agensyList.getAffiliation1Name());
 				if (NfwStringUtils.isNotEmpty(dto.getAffiliation1Cd())) {
 					// 「新所属-部等」が選択されている場合は新所属-部等 その他をセット
 					if (CodeConstant.OTHER_AGENCY_ITEM_VALUE.equals(dto.getAffiliation1Cd())) {
@@ -2305,8 +2297,7 @@ public class Skf2020Sc002SharedService {
 					}
 				}
 				// 新所属-室、チーム又は課
-				LogUtils.debugByMsg(
-						msg + dto.getAffiliation2Cd() + agensyList.getAffiliation2Name() + dto.getNewAffiliation2());
+				LogUtils.debugByMsg(msg + dto.getAffiliation2Cd() + agensyList.getAffiliation2Name());
 				// 新所属-室、チーム又は課ドロップダウンリストが選択されている場合
 				if (NfwStringUtils.isNotEmpty(dto.getAffiliation2Cd())) {
 					// 「新所属-部等」が選択されている場合は新所属-部等 その他をセット

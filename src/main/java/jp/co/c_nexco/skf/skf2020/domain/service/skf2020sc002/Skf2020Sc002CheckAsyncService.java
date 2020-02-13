@@ -889,14 +889,17 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 				&& CodeConstant.SETAI.equals(checkDto.getHitsuyoShataku())) {
 			// 続柄
 			if (!checkByteCountZokugara(checkDto)) {
+				// 戻り値がfalseだった場合に設定
 				result = false;
 			}
 			// 氏名
 			if (!checkByteCountShimei(checkDto)) {
+				// 戻り値がfalseだった場合に設定
 				result = false;
 			}
 			// 年齢
 			if (!checkByteCountNenrei(checkDto)) {
+				// 戻り値がfalseだった場合に設定
 				result = false;
 			}
 		}
@@ -1210,9 +1213,10 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		boolean result = true;
 		// システム日付を文字列に変換
 		String sysDate = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-		LogUtils.debugByMsg("形式チェック " + "システム日付を文字列に変換 : " + sysDate);
+		LogUtils.debugByMsg("形式チェック　システム日付を文字列に変換 : " + sysDate);
 
 		// 当日未満ならエラー
+		LogUtils.debugByMsg("形式チェック　システム日付を文字列に変換 : " + checkDto.getCarExpirationDate());
 		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate()))
 				&& CheckUtils.isDateUnder(checkDto.getCarExpirationDate(), sysDate)) {
 			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate" },
@@ -1221,6 +1225,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 
 		// 当日未満ならエラー
+		LogUtils.debugByMsg("形式チェック　システム日付を文字列に変換 : " + checkDto.getCarExpirationDate2());
 		if ((NfwStringUtils.isNotBlank(checkDto.getCarExpirationDate2()))
 				&& CheckUtils.isDateUnder(checkDto.getCarExpirationDate2(), sysDate)) {
 			ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carExpirationDate2" },
