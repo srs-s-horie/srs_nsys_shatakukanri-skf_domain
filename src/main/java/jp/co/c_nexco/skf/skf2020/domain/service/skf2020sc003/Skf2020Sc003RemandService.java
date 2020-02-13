@@ -6,10 +6,8 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -76,7 +74,7 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 			String commentNote = rmdDto.getCommentNote();
 
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-					loginUserInfo.get("shainNo"), CodeConstant.NONE, CodeConstant.NONE);
+					applInfo.get("applShainNo"), CodeConstant.NONE, CodeConstant.NONE);
 			;
 		} else if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
 			ServiceHelper.addErrorResultMessage(rmdDto, null, errorMsg.get("error"));
