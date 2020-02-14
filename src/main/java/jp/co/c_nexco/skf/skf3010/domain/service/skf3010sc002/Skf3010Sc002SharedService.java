@@ -742,7 +742,7 @@ public class Skf3010Sc002SharedService {
 			tmpMap.put("parkingKanriNo", HtmlUtils.htmlEscape(parkingKanriNo));
 			// 区画番号
 			tmpMap.put("parkingBlock", "<input id='parkingBlockNo" + i + "' name='parkingBlockNo" + i 
-					+ "' placeholder='例　01（半角）' type='text' value='" + blockNo + "' style='width:140px;' maxlength='30'/>");
+					+ "' placeholder='例　01' type='text' value='" + blockNo + "' style='width:140px;' maxlength='30'/>");
 			// 「貸与区分」プルダウンの設定
 			String lendStatusListCode = 
 					createStatusSelect(parkingLendKbn,lendStatusList);
@@ -3325,11 +3325,11 @@ public class Skf3010Sc002SharedService {
 			if (tmpData.containsKey("parkingBlockNoErr")) {
 				// エラー表示設定
 				tmpMap.put("parkingBlock", "<input id='parkingBlockNo" + rId + "' name='parkingBlockNo" + rId 
-								+ "' placeholder='例　01（半角）' type='text' value='"
+								+ "' placeholder='例　01' type='text' value='"
 								+ blockNo + "' class='nfw-validation-error' style='width:140px;' maxlength='30'/>");
 			} else {
 				tmpMap.put("parkingBlock", "<input id='parkingBlockNo" + rId + "' name='parkingBlockNo" + rId 
-								+ "' placeholder='例　01（半角）' type='text' value='"
+								+ "' placeholder='例　01' type='text' value='"
 								+ blockNo + "' style='width:140px;' maxlength='30'/>");
 			}
 			// 「貸与区分」プルダウンの設定
