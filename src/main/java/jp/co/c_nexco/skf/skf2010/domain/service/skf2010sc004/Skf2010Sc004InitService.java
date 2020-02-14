@@ -28,6 +28,7 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfShatakuInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004InitDto;
@@ -54,6 +55,8 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	private SkfOperationGuideUtils skfOperationGuideUtils;
 	@Autowired
 	private SkfBatchUtils skfBatchUtils;
+	@Autowired
+	private SkfShatakuInfoUtils skfShatakuInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -261,6 +264,8 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 					// 退居日、駐車場返還日をセット
 					initDto.setTaikyobi(tNyukyoChoshoTsuchi.getTaikyoYoteiDate());
 					initDto.setHenkanbi(tNyukyoChoshoTsuchi.getTaikyoYoteiDate());
+					initDto.setSyokiTaikyoDate(tNyukyoChoshoTsuchi.getTaikyoYoteiDate());
+					initDto.setSyokiParkingDate(tNyukyoChoshoTsuchi.getTaikyoYoteiDate());
 				}
 
 				if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNyukyoKanoDate())) {
@@ -666,7 +671,11 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 保有社宅号室
 		initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
 		// 保有社宅企画
-		initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuKikaku())) {
+			initDto.setNowShatakuKikaku(
+					skfShatakuInfoUtils.getShatakuKikakuByCode(tNyukyoChoshoTsuchi.getNowShatakuKikaku()));
+		}
+
 		// 保有社宅面積
 		initDto.setNowShatakuMenseki(tNyukyoChoshoTsuchi.getNowShatakuMenseki());
 
