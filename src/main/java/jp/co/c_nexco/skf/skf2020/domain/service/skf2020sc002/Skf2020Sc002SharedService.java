@@ -2848,7 +2848,7 @@ public class Skf2020Sc002SharedService {
 		// 会社コード
 		setValue.setCompanyCd(CodeConstant.C001);
 		// 申請書類番号
-		setValue.setApplNo(dto.getApplNo());
+		setValue.setApplNo(bihinHenkaykuShinseiApplNo);
 
 		// 社員番号
 		setValue.setShainNo(dto.getShainNo());
@@ -2868,7 +2868,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setGender(dto.getGender());
 
 		// 退居届書類管理番号
-		setValue.setTaikyoApplNo(bihinHenkaykuShinseiApplNo);
+		setValue.setTaikyoApplNo(dto.getApplNo());
 		// 申請年月日
 		setValue.setApplDate(applDate);
 		// 社宅管理番号
