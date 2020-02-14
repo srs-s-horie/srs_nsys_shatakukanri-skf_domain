@@ -617,10 +617,11 @@ public class Skf2020Sc002SharedService {
 				dto.setTaikyoRiyuKbn(nyukyoChoshoList.getTaikyoRiyuKbn());
 				dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils.getGenericForDoropDownList(
 						FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
-			}
 
-			if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getTaikyoRiyu())) {
-				dto.setTaikyoRiyu(nyukyoChoshoList.getTaikyoRiyu());
+				// 退居理由区分がその他の場合のみ設定
+				if (CodeConstant.OTHER_RIYU_VALUE.equals(dto.getTaikyoRiyuKbn())) {
+					dto.setTaikyoRiyu(nyukyoChoshoList.getTaikyoRiyu());
+				}
 			}
 
 			// 退居後の連絡先
@@ -1808,15 +1809,15 @@ public class Skf2020Sc002SharedService {
 		// 自動車の保管場所使用開始日(２台目)
 		dto.setParkingUseDate2(NfwStringUtils.rightTrimbyByte(dto.getParkingUseDate2(), 10));
 		LogUtils.debugByMsg(Msg + "自動車の保管場所使用開始日(2台目)" + dto.getParkingUseDate2());
-		// 室番号
-		dto.setNowShatakuNo(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuNo(), 6));
-		LogUtils.debugByMsg(Msg + "室番号" + dto.getNowShatakuNo());
-		// 規格(間取り)
-		dto.setNowShatakuKikaku(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuKikaku(), 10));
-		LogUtils.debugByMsg(Msg + "規格(間取り)" + dto.getNowShatakuKikaku());
-		// 面積
-		dto.setNowShatakuMenseki(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuMenseki(), 6));
-		LogUtils.debugByMsg(Msg + "面積" + dto.getNowShatakuMenseki());
+//		// 室番号
+//		dto.setNowShatakuNo(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuNo(), 6));
+//		LogUtils.debugByMsg(Msg + "室番号" + dto.getNowShatakuNo());
+//		// 規格(間取り)
+//		dto.setNowShatakuKikaku(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuKikaku(), 10));
+//		LogUtils.debugByMsg(Msg + "規格(間取り)" + dto.getNowShatakuKikaku());
+//		// 面積
+//		dto.setNowShatakuMenseki(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuMenseki(), 7));
+//		LogUtils.debugByMsg(Msg + "面積" + dto.getNowShatakuMenseki());
 		// 特殊事情等
 		dto.setTokushuJijo(NfwStringUtils.rightTrimbyByte(dto.getTokushuJijo(), 256));
 		LogUtils.debugByMsg(Msg + "特殊事情等" + dto.getTokushuJijo());
