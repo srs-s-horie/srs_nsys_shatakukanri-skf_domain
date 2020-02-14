@@ -49,6 +49,11 @@ public class Skf2010Sc004CommonDto extends Skf2010CommonDto {
 	// 入力フォーム表示フラグ
 	private String inputAreaVisible;
 
+	// 初期退居日
+	private String syokiTaikyoDate;
+	// 初期駐車場返還日
+	private String syokiParkingDate;
+
 	// 退居フラグ
 	private boolean notTaikyo = false;
 
