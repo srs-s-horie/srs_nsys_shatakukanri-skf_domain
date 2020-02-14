@@ -55,6 +55,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 	private final static String MSG_FILE_NAME = "転任者調書ファイル名";
 	private final static String MSG_FILE_FORMAT = "ファイル形式";
 	private final static String MSG_SHEET_COUNT = "シート数";
+	private final static String MSG_SHEET_NAME = "シート名";
 
 	private final static String JOGAI_MOJI_1 = "氏名";
 	private final static String JOGAI_MOJI_2 = "人事異動";
@@ -100,7 +101,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		}
 	}
 	
-	// リストテーブルの１ページ最大表示行数
+	// 読み取り対象シート名
 	@Value("${skf3020.skf3020_sc002.sheet_name}")
 	private String readSheetName;	
 
@@ -196,7 +197,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		}
 		if(sheetDataBean == null){
 			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-					MessageIdConstant.E_SKF_1043, MSG_SHEET_COUNT);
+					MessageIdConstant.E_SKF_1043, MSG_SHEET_NAME);
 			return false;
 		}
 				
@@ -206,6 +207,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		int shimeiEmptyCnt = 0; // 空の社員氏名カウント
 		boolean duplicateShainNo = false; // 重複する社員番号の判定用
 		List<String> existShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複確認用)
+		List<String> existShainNoErrorList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複エラー用)
 		boolean nonexistShainNo = false; // 存在しない社員番号の判定用
 		List<String> nonexistShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(既存確認用)
 
@@ -242,6 +244,20 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 					if (shainNo.equals(listShainNo)) {
 						exsistNoFlg = true;
 						duplicateShainNo = true;
+						
+						boolean errorFlg = true;
+						for (int k = 0; k < existShainNoErrorList.size(); k++) {
+							// エラー社員番号重複チェック
+							if (shainNo.equals(existShainNoErrorList.get(k))) {
+								//エラー用リストに存在する
+								errorFlg = false;
+								break;
+							}
+						}
+						if(errorFlg){
+							// エラー用リストに無い場合
+							existShainNoErrorList.add(shainNo);
+						}
 						break;
 					}
 				}
@@ -287,9 +303,9 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
 					MessageIdConstant.E_SKF_3045, "");
 			
-			for (int i=0; i < existShainNoList.size(); i++) {
+			for (int i=0; i < existShainNoErrorList.size(); i++) {
 					ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-							MessageIdConstant.SKF3020_ERR_MSG_COMMON, existShainNoList.get(i));
+							MessageIdConstant.SKF3020_ERR_MSG_COMMON, existShainNoErrorList.get(i));
 			}
 			return false;
 		}
