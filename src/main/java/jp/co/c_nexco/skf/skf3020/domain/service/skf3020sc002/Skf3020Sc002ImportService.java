@@ -456,7 +456,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		int agePos = posMap.get(IMPORT_COL.IMPORT_COL_AGE.getColStr());
 		//saveDto.setAge(cellDataBeanList.get(agePos).getValue());
 		if(cellDataBeanList.get(agePos).getValue() != null){
-			saveDto.setAge(cellDataBeanList.get(agePos).getValue().replace("歳", ""));
+			saveDto.setAge(cellDataBeanList.get(agePos).getValue());
 		}
 		// 備考
 		int bikoPos = posMap.get(IMPORT_COL.IMPORT_COL_BIKO.getColStr());

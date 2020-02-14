@@ -139,7 +139,7 @@ public class Skf3020Sc003SharedService {
 		tenninshaChoshoData.setTokyu(skf302010CommonSharedService.replaceEscapeStr(tokyu));
 		// 年齢
 		String age = (String) targetData.get(AGE_COL);
-		tenninshaChoshoData.setAge(skf302010CommonSharedService.replaceEscapeStr(age));
+		tenninshaChoshoData.setAge(skf302010CommonSharedService.replaceEscapeStr(age).replace("歳", ""));
 		// 現所属
 		String nowAffiliation = (String) targetData.get(NOW_AFFILIATION_COL);
 		nowAffiliation = nowAffiliation.replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
