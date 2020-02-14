@@ -68,10 +68,12 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 		closeTaskDto.setResultMessages(null);
 
 		if (!FLG_ON.equals(bihinTaiyoWarnContinueFlg) && !FLG_ON.equals(bihinHenkyakuWarnContinueFlg)) {
+			//▼締め処理起動事前チェック
 			String errMsg = skf3050Sc002SharedService.checkShimeShori(jikkouShijiYoteiNengetsu,
 					Skf3050Sc002SharedService.SHIME_SHORI_ON);
 
 			if (!"".equals(errMsg)) {
+				//締め処理事前チェックが異常の場合、エラーメッセージを表示し処理を中断する
 				ServiceHelper.addErrorResultMessage(closeTaskDto, null, MessageIdConstant.E_SKF_3013, errMsg);
 				throwBusinessExceptionIfErrors(closeTaskDto.getResultMessages());
 			}
@@ -80,9 +82,11 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 		closeTaskDto.setHdnWarnMsg("");
 
 		if (!FLG_ON.equals(bihinTaiyoWarnContinueFlg)) {
+			//▼入居情報について備品貸与日の設定確認
 			String bihinTaiyoWarningMsg = checkBihinTaiyoData(jikkouShijiYoteiNengetsu);
 
 			if (!"".equals(bihinTaiyoWarningMsg)) {
+				//備品の貸与日が設定されていない場合、警告メッセージを表示
 				String msg = skf3050Sc002SharedService.editMsg(MessageIdConstant.I_SKF_3008, bihinTaiyoWarningMsg);
 				closeTaskDto.setHdnWarnMsg(msg);
 				closeTaskDto.setHdnBihinTaiyoWarnContinueFlg(FLG_ON);
@@ -91,9 +95,11 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 		}
 
 		if (!FLG_ON.equals(bihinHenkyakuWarnContinueFlg)) {
+			//▼退居情報について備品返却日の設定確認（※エラーとしない）
 			String bihinHenkyakuWarningMsg = checkBihinHenkyakuData(jikkouShijiYoteiNengetsu);
 
 			if (!"".equals(bihinHenkyakuWarningMsg)) {
+				//品の返却日が設定されていない場合、警告メッセージを表示
 				String msg = skf3050Sc002SharedService.editMsg(MessageIdConstant.I_SKF_3008, bihinHenkyakuWarningMsg);
 				closeTaskDto.setHdnWarnMsg(msg);
 				closeTaskDto.setHdnBihinHenkyakuWarnContinueFlg(FLG_ON);
@@ -104,6 +110,7 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 		closeTaskDto.setHdnBihinTaiyoWarnContinueFlg("");
 		closeTaskDto.setHdnBihinHenkyakuWarnContinueFlg("");
 
+		//▼締め処理バッチを起動
 		Map<String, Object> param = new HashMap<>();
 
 		// タスク設定ユーザー
@@ -134,6 +141,7 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 			LogUtils.debugByMsg("タスク処理メッセージID：" + taskMsg.getMessageId());
 		}
 
+		//▼締め処理完了メッセージ表示
 		closeTaskDto.setTaskMsgId(msgId);
 
 		return closeTaskDto;

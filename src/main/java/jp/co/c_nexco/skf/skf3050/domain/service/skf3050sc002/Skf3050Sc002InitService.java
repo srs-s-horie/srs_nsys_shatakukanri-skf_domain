@@ -72,7 +72,7 @@ public class Skf3050Sc002InitService extends BaseServiceAbstract<Skf3050Sc002Ini
 	 */
 	private Skf3050Sc002InitDto init(Skf3050Sc002InitDto initDto) {
 
-		String sysDateYyyymm = getSystemProcessNenGetsu();
+		String sysDateYyyymm = skfBaseBusinessLogicUtils.getSystemProcessNenGetsu();
 		String standardYear = skf3050Sc002SharedService.getStandardYear(sysDateYyyymm);
 
 		List<Map<String, Object>> dropDownList = createTaishouNendoDropDownList(standardYear);
@@ -128,26 +128,26 @@ public class Skf3050Sc002InitService extends BaseServiceAbstract<Skf3050Sc002Ini
 		return rtnList;
 	}
 
-	/**
-	 * システム処理年月を取得する。
-	 * 
-	 * @return システム処理年月
-	 */
-	private String getSystemProcessNenGetsu() {
-
-		String rtn = "";
-		String strNenGetsuMax = skfBaseBusinessLogicUtils.getMaxNenGetsu();
-		String strNenGetsuMin = skfBaseBusinessLogicUtils.getMinNenGetsu();
-
-		if (!NfwStringUtils.isEmpty(strNenGetsuMax) && !NfwStringUtils.isEmpty(strNenGetsuMin)) {
-			String nextNenGetsuMax = skfDateFormatUtils.addYearMonth(strNenGetsuMax, Skf3050Sc002SharedService.MONTH_1);
-
-			if (nextNenGetsuMax.equals(strNenGetsuMin)) {
-				rtn = nextNenGetsuMax;
-			}
-		}
-
-		return rtn;
-	}
+//	/**
+//	 * システム処理年月を取得する。
+//	 * 
+//	 * @return システム処理年月
+//	 */
+//	private String getSystemProcessNenGetsu() {
+//
+//		String rtn = "";
+//		String strNenGetsuMax = skfBaseBusinessLogicUtils.getMaxNenGetsu();
+//		String strNenGetsuMin = skfBaseBusinessLogicUtils.getMinNenGetsu();
+//
+//		if (!NfwStringUtils.isEmpty(strNenGetsuMax) && !NfwStringUtils.isEmpty(strNenGetsuMin)) {
+//			String nextNenGetsuMax = skfDateFormatUtils.addYearMonth(strNenGetsuMax, Skf3050Sc002SharedService.MONTH_1);
+//
+//			if (nextNenGetsuMax.equals(strNenGetsuMin)) {
+//				rtn = nextNenGetsuMax;
+//			}
+//		}
+//
+//		return rtn;
+//	}
 
 }

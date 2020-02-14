@@ -44,6 +44,8 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 
 		skf3050Bt002SharedTask.outputStartLog(paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_SHORI_NENGETSU_KEY));
 
+		//トランザクションAを開始
+		//パラメータ数のチェック
 		if (paramMap.size() != Skf3050Bt002SharedTask.PARAMETER_NUM) {
 			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Bt002SharedTask.outputEndProcLog("");
@@ -59,6 +61,7 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 			return;
 		}
 
+		//トランザクションBの開始
 		String endFlag = SkfCommonConstant.ABNORMAL;
 		String updateGetsujiDataMsg = "";
 		boolean canLock = skf3050Bt002SharedTask
@@ -73,6 +76,8 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 			LogUtils.error(MessageIdConstant.E_SKF_1079, "");
 		}
 
+		//トランザクションCの開始
+		//終了処理
 		Integer dbPrcRtn = skf3050Bt002SharedTask.endProc(endFlag,
 				paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_COMPANY_CD_KEY), Skf3050Bt002SharedTask.BATCH_ID_B5002,
 				SkfCommonConstant.PROCESSING);

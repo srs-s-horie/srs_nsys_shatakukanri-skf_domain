@@ -67,7 +67,7 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 			initDto.setShatakuName(initDto.getHdnShatakuName());
 			initDto.setAreaKbn(initDto.getHdnAreaKbn());
 			initDto.setShatakuKbn(initDto.getHdnShatakuKbn());
-			initDto.setEmptyParkingCount(initDto.getHdnEmptyParkingCount());
+			initDto.setHdnEmptyParkingCount(initDto.getHdnEmptyParkingCount());
 			// initDto.setEmptyRoomCount(initDto.getHdnEmptyRoomCount());
 			initDto.setOriginalAuse(initDto.getHdnOriginalAuse());
 			initDto.setLendKbn(initDto.getHdnLendKbn());
@@ -184,6 +184,12 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 		int roomCount = skf3010Sc004SharedService.getRoomCount(initDto.getShatakuKanriNo());
 		String emptyRoomCount = initDto.getHdnEmptyRoomCount() + CodeConstant.SLASH + roomCount;
 		initDto.setEmptyRoomCount(emptyRoomCount);
+		
+		// 駐車場総数を取得する
+		int parkingCouunt = skf3010Sc004SharedService.getParkingCount(initDto.getShatakuKanriNo());
+		// 「空き駐車場数」を設定する
+		String emptyParkingCount = initDto.getHdnEmptyParkingCount() + CodeConstant.SLASH + parkingCouunt;
+		initDto.setEmptyParkingCount(emptyParkingCount);
 
 		// 「地域区分」の設定
 		// 汎用コード取得

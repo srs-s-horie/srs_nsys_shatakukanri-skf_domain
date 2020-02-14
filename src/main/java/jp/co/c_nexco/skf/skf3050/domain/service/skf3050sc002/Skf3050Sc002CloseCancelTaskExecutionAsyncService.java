@@ -57,12 +57,14 @@ public class Skf3050Sc002CloseCancelTaskExecutionAsyncService
 
 		String jikkouShijiYoteiNengetsu = closeCancelDto.getHdnJikkouShijiYoteiNengetsu();
 
+		//▼締め解除処理起動事前チェック
 		String errMsg = checkBeforeStartup(jikkouShijiYoteiNengetsu);
 		if (!"".equals(errMsg)) {
 			ServiceHelper.addErrorResultMessage(closeCancelDto, null, MessageIdConstant.E_SKF_3025, errMsg);
 			throwBusinessExceptionIfErrors(closeCancelDto.getResultMessages());
 		}
 
+		//▼締め解除処理バッチを起動
 		Map<String, Object> param = new HashMap<>();
 
 		// タスク設定ユーザー
@@ -107,21 +109,25 @@ public class Skf3050Sc002CloseCancelTaskExecutionAsyncService
 
 		String errMsg = "";
 
+		//▼二重起動チェック
 		boolean notDoubleStartup = skf3050Sc002SharedService.checkDoubleStartup();
 		if (!notDoubleStartup) {
 			errMsg = Skf3050Sc002SharedService.ERRMSG_DOUBLE_START;
 			return errMsg;
 		}
 
+		//▼締め解除処理可能チェック
 		Skf3050TMonthlyManageData renkeiKbnData = skf3050Sc002SharedService
 				.getShimePositiveRenkeiKbn(jikkouShijiYoteiNengetsu);
 		if (renkeiKbnData == null) {
+			//月次処理管理データが取得できない場合エラー
 			errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 			return errMsg;
 
 		} else {
 			if (NfwStringUtils.isEmpty(renkeiKbnData.getBillingActKbn())
 					|| CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+				//締め処理＝Null、またはHR連携データ確定実行区分＝実行済の場合エラー
 				errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 				return errMsg;
 			}

@@ -3,6 +3,9 @@
  */
 package jp.co.c_nexco.skf.skf3050.domain.dto.skf3050Sc002common;
 
+import java.util.List;
+import java.util.Map;
+
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import lombok.EqualsAndHashCode;
 
@@ -27,5 +30,8 @@ public class Skf3050Sc002CommonAsyncDto extends AsyncBaseDto {
 	private String hdnBihinTaiyoWarnContinueFlg;
 	/** 備品返却日について警告が出ている状態でも処理続行するか判定するフラグ */
 	private String hdnBihinHenkyakuWarnContinueFlg;
+	
+	/** ドロップダウンリスト */
+	private List<Map<String, Object>> dropDownList;
 
 }

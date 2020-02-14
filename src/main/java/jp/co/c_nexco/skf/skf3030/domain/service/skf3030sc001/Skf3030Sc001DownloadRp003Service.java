@@ -227,13 +227,14 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 
 		long procTime = System.currentTimeMillis();
 
+		//社宅台帳情報データを取得
 		List<Skf3030Rp003GetShatakuDaichoInfoExp> daichoData = skf3030Sc001SharedService
 				.getShatakuDaichoCompareInfo(yearMonth, true);
 		if (daichoData.size() == 0) {
 			ServiceHelper.addErrorResultMessage(inDto, null, MessageIdConstant.E_SKF_1067, "出力対象データ");
 			return inDto;
 		}
-
+		
 		String preYearMonth = skfDateFormatUtils.addYearMonth(yearMonth, -1);
 		List<Skf3030Rp003GetShatakuDaichoInfoExp> preMonthDaichoData = skf3030Sc001SharedService
 				.getShatakuDaichoCompareInfo(preYearMonth, true);
@@ -275,6 +276,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			List<Skf3030Rp003GetShatakuDaichoDiffDataInfoExp> diffDataList,
 			List<Skf3030Rp003GetShatakuDaichoDiffDataInfoExp> preDiffDataList) {
 
+		// 帳票用データ作成
 		List<Skf3030Rp003PreMonthCompareDataExp> nowDataList = new ArrayList<Skf3030Rp003PreMonthCompareDataExp>();
 		List<Skf3030Rp003PreMonthCompareDataExp> preDataList = new ArrayList<Skf3030Rp003PreMonthCompareDataExp>();
 
@@ -285,6 +287,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			Long roomKanriNo = daichoData.getShatakuRoomKanriNo();
 			Long kanriId = daichoData.getShatakuKanriId();
 
+			//判定データ抽出
 			Skf3030Rp003GetShatakuDaichoDiffDataInfoExp targetNowDiffData = null;
 			for (Skf3030Rp003GetShatakuDaichoDiffDataInfoExp diffData : diffDataList) {
 				if (shatakuKanriNo.equals(diffData.getShatakuKanriNo())
@@ -305,12 +308,14 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 				}
 			}
 
+			//比較した結果が同じ場合、次ループに移る
 			if (targetNowDiffData != null && targetPreDiffData != null) {
 				if (Objects.deepEquals(targetNowDiffData, targetPreDiffData)) {
 					continue;
 				}
 			}
 
+			//違う場合、出力用データの抽出
 			Skf3030Rp003PreMonthCompareDataExp nowData = createExcelData(daichoData);
 
 			Skf3030Rp003GetShatakuDaichoInfoExp tagetKanriIdPreData = null;
@@ -324,12 +329,15 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			Skf3030Rp003PreMonthCompareDataExp preData = null;
 			if (tagetKanriIdPreData != null) {
 				preData = createExcelData(tagetKanriIdPreData);
+			}else{
+				preData = new Skf3030Rp003PreMonthCompareDataExp();
 			}
-
+			//出力判定情報データ取得
 			if (targetNowDiffData != null) {
 				nowData = setDiffDataInfo(targetNowDiffData, targetPreDiffData, nowData);
 			}
 
+			//データを追加
 			if (nowData != null) {
 				nowDataList.add(nowData);
 			}
@@ -359,7 +367,10 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 	private Skf3030Rp003PreMonthCompareDataExp createExcelData(Skf3030Rp003GetShatakuDaichoInfoExp daichoData) {
 
 		Skf3030Rp003PreMonthCompareDataExp rtnData = new Skf3030Rp003PreMonthCompareDataExp();
-
+		//社宅基礎データ
+		// ┗管理機関データ
+		// ┗会社コード(外部)
+		// ┗社宅会社コード(内部)
 		if (!NfwStringUtils.isEmpty(daichoData.getAgencyExternalKbn())
 				&& !"1".equals(daichoData.getAgencyExternalKbn())) {
 			rtnData.setManageCompanyCd(
@@ -369,57 +380,74 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 					skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getManageShatakuCompanyCd()));
 		}
 
+		// ┗会社名
 		rtnData.setManageCompanyName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getCompanyName()));
+		// ┗機関コード
 		rtnData.setManageAgencyCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getManageBusinessAreaCd()));
+		// ┗機関名
 		rtnData.setManageAgencyName(
 				skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getManageBusinessAreaName()));
 
+		//┗物件データ
+		// ┗保有借上
 		Map<String, String> shatakKbnMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
 		rtnData.setHoyuKariage(shatakKbnMap.get(daichoData.getShatakKbn()));
-
+		// ┗社宅名
 		rtnData.setShatakName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getShatakName()));
+		// ┗部屋番号
 		rtnData.setRoomNo(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getRoomNo()));
-
+		// ┗改廃等計画
 		if (!NfwStringUtils.isEmpty(daichoData.getLendKbn()) && !"1".equals(daichoData.getLendKbn())) {
 			rtnData.setKaihaitoKeikaku(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getLendKbnHosoku()));
 		} else {
 			rtnData.setKaihaitoKeikaku("");
 		}
-
+		// ┗都道府県コード
 		String prefCd = skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPrefCd());
 		rtnData.setPrefCd(prefCd);
 
+		// ┗所在地
+		//都道府県コードリストを取得
 		String prefName = "";
 		Map<String, String> prefCdMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+		//レコードが都道府県コードに存在し、かつ「その他」以外の場合、都道府県名を先頭に追加する。
 		if (prefCdMap.get(prefCd) != null && !Skf3030Sc001SharedService.CD_PREF_OTHER.equals(prefCd)) {
 			prefName = prefCdMap.get(prefCd);
 		}
 		rtnData.setAddress(prefName + skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAddress()));
 
+		// ┗本来規格
 		Map<String, String> orgKikakMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN);
 		rtnData.setOriginalKikaku(orgKikakMap.get(daichoData.getOriginalKikaku()));
-
+		// ┗本来延面積
 		rtnData.setOriginalMenseki(String.valueOf(daichoData.getOriginalMenseki()));
 
+		//┗社宅使用料
+		// ┗地域
 		Map<String, String> areaKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_AREA_KBN);
 		rtnData.setArea(areaKbnMap.get(daichoData.getAreaKbn()));
 
+		//┗駐車場
+		// ┗構造
 		Map<String, String> parkStrucKbnMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_PARKING_STRUCTURE_KBN);
 		rtnData.setParkingStructure(parkStrucKbnMap.get(daichoData.getParkingStructureKbn()));
 
+		//┗社宅使用料
+		// ┗貸与規格
 		rtnData.setTaiyoKikaku(orgKikakMap.get(daichoData.getKikaku()));
+		// ┗対象面積
 		rtnData.setTaishoMenseki(String.valueOf(daichoData.getMenseki()));
-
+		// ┗寮(0.7)減免
 		Map<String, String> auseKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_AUSE_KBN);
 		rtnData.setRyoGemmen07(auseKbnMap.get(daichoData.getAuse()));
-
+		// ┗狭小減免
 		Map<String, String> kyoshoKbnMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOSHOADJUST_KBN);
 		rtnData.setKyoshoGemmen(kyoshoKbnMap.get(daichoData.getKyosyoFlg()));
-
+		// ┗寒冷地減免
 		String kanreitiFlg = skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getKanreitiFlg());
 		if (!"0".equals(kanreitiFlg)) {
 			Map<String, String> kanreitiKbnMap = skfGenericCodeUtils
@@ -429,21 +457,31 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			rtnData.setKanreichiGemmen("");
 		}
 
+		// ┗役員適用
 		Map<String, String> yakuinKbnMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_YAKUIN_KBN);
 		rtnData.setYakuinTekiyo(yakuinKbnMap.get(daichoData.getYakuinSannteiKbn()));
-
+		// ┗月額
 		rtnData.setRentalTotal(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getRentalMonth()));
+		// ┗調整金額
 		rtnData.setRentalAdjust(String.valueOf(daichoData.getRentalAdjust()));
+		//┗駐車場
+		// ┗調整
 		rtnData.setParkingRentalAdjust(String.valueOf(daichoData.getParkingRentalAdjust()));
+		// ┗調整後
 		rtnData.setParkingRentalTotal(String.valueOf(daichoData.getParkingRentalMonth()));
 
+		//┗個人負担共益費
+		// ┗種別
 		Map<String, String> kyoekihiPayMonthMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOEKIHI_PAY_MONTH_KBN);
 		rtnData.setKyoekihiPayMonth(kyoekihiPayMonthMap.get(daichoData.getKyoekihiPayMonth()));
-
+		// ┗個人負担月額
 		rtnData.setKyoekihiPerson(String.valueOf(daichoData.getNowKyoekihiPerson()));
 
+		//社宅等相互利用協定データ
+		//┗賃貸借契約
+		// ┗原籍違い判定
 		if (!NfwStringUtils.isEmpty(daichoData.getGensekiHanteiKbn())) {
 			Map<String, String> gensekiHanteiKbnMap = skfGenericCodeUtils
 					.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOJUSHA_KBN);
@@ -452,26 +490,56 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			rtnData.setGensekichigaiHantei("");
 		}
 
+		//入居者データ
+		//┗給与支給データ
+		// ┗機関名
 		rtnData.setKikanName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAgencyName()));
+		// ┗機関コード
 		rtnData.setKikanCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAgencyCd()));
+		// ┗室・部名
 		rtnData.setShitsuBuName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAffiliation1Name()));
+		// ┗所属Ⅰコード
 		rtnData.setShitsuBuCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAffiliation1Cd()));
+		// ┗課等名
 		rtnData.setKaName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAffiliation2Name()));
+		// ┗所属Ⅱコード
 		rtnData.setKaCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAffiliation2Cd()));
+		//┗入居者データ
+		// ┗氏名
 		rtnData.setShainName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getName()));
+		// ┗社員番号
 		rtnData.setShainNo(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getShainNo()));
+		//┗当月事業領域
+		// ┗当月コード番号
 		rtnData.setBusinessAreaCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getBusinessAreaCd()));
+		// ┗当月組織名称
 		rtnData.setBusinessAreaName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getBusinessAreaName()));
+		//┗前月事業領域
+		// ┗前月コード番号
 		rtnData.setPreBusinessAreaCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPreBusinessAreaCd()));
+		// ┗前月組織名称
 		rtnData.setPreBusinessAreaName(
 				skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPreBusinessAreaName()));
+		//入退居管理
+		// ┗入居日
 		rtnData.setNyukyoDate(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getNyukyoDate()));
+		// ┗退居日
 		rtnData.setTaikyoDate(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getTaikyoDate()));
+		//徴収すべき使用料等の額
+		// ┗共益費
 		rtnData.setKyoekihi(String.valueOf(daichoData.getKyoekihiPersonTotal()));
+		//備考
 		rtnData.setBiko(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getBikoLedger()));
+		//入居者データ
+		// ┗原籍データ
+		//  ┗原籍会社名
 		rtnData.setOriginalCompanyName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getOriginalName()));
+		// ┗給与支給データ
+		//  ┗支給会社名
 		rtnData.setPayCompanyName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPayName()));
 
+		// ┗会社コード(外部)
+		// ┗社宅会社コード(内部)
 		if (!NfwStringUtils.isEmpty(daichoData.getOriginalAgencyExternalKbn())
 				&& !"1".equals(daichoData.getOriginalAgencyExternalKbn())) {
 			rtnData.setOriginalCompanyCd(
@@ -480,46 +548,71 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			rtnData.setOriginalCompanyCd(
 					skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getOriginalShatakuCompanyCd()));
 		}
-
+		// ┗会社コード(外部)
+		// ┗社宅会社コード(内部)
 		if (!NfwStringUtils.isEmpty(daichoData.getPayAgencyExternalKbn())
 				&& !"1".equals(daichoData.getPayAgencyExternalKbn())) {
 			rtnData.setPayCompanyCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPayCompanyCd()));
 		} else {
 			rtnData.setPayCompanyCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPayShatakuCompanyCd()));
 		}
-
+		// ┗共益費預り金会計処理　給与控除　会社名
 		if (daichoData.getKyoekihiPersonTotal() != 0) {
 			rtnData.setKyoekiKojyoCompany(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPayName()));
 		} else {
 			rtnData.setKyoekiKojyoCompany("");
 		}
 
+		// ┗社宅使用料計上勘定科目
 		rtnData.setShatakuAccountKamoku(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getShatakuAccountCd())
 				+ skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getShatakuAccountName()));
+		// ┗共益費個人負担金勘計上勘定科目
 		rtnData.setKyoekiAccountKamoku(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getKyoekiAccountCd())
 				+ skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getKyoekiAccountName()));
-
+		//社宅等相互利用協定データ
+		// ┗対象
+		//  ┗有無
 		Map<String, String> mutualUseKbnMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_MUTUALUSE_KBN);
 		rtnData.setMutualUse(mutualUseKbnMap.get(daichoData.getMutualUseKbn()));
 
+		// ┗賃貸借契約
+		//  ┗貸付会社
 		rtnData.setKashitukeCompany(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getKashitukeName()));
+		//  ┗借受会社
 		rtnData.setKariukeCompany(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getKariukeName()));
+		//  ┗開始日
 		rtnData.setMutualUseStartDay(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getMutualUseStartDay()));
+		//  ┗終了日
 		rtnData.setMutualUseEndDay(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getMutualUseEndDay()));
 
+		//社宅使用料会計処理
+		// ┗会社間送金
+		//  ┗有無（○×）
 		Map<String, String> compTransKbnMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_COMPANY_TRANSFER_DISP_KBN);
 		rtnData.setShatakuCompanyTransfer(compTransKbnMap.get(daichoData.getShatakuCompanyTransferKbn()));
+		//共益費預り金会計処理
+		// ┗会社間送金
+		//  ┗有無（○×）
 		rtnData.setKyoekihiCompanyTransfer(compTransKbnMap.get(daichoData.getKyoekihiCompanyTransferKbn()));
-
+		//入居者データ
+		// ┗配属データ
+		//  ┗配属会社名
 		rtnData.setAssignCompanyName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAssignName()));
+		//  ┗所属機関名
 		rtnData.setAssignAgencyName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAssignAgencyName()));
+		//  ┗室・部名
 		rtnData.setAssignAffiliation1(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAssignAffiliation1()));
+		//  ┗課等名
 		rtnData.setAssignAffiliation2(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAssignAffiliation2()));
+		//  ┗配属データコード番号
 		rtnData.setAssignCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getAssignCd()));
+		//  ┗用途
 		rtnData.setNyukyoYoto(auseKbnMap.get(daichoData.getAuse()));
 
+		//駐車場管理
+		// ┗台数(0 ～ 2、3以上の場合は、履歴データが不正)
 		if (!NfwStringUtils.isEmpty(daichoData.getParkingCnt())) {
 			rtnData.setParkingCount(daichoData.getParkingCnt());
 		} else {
@@ -533,7 +626,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		String parkStartDate2 = daichoData.getParkingStartDate2();
 		String parkEndDate1 = daichoData.getParkingEndDate1();
 		String parkEndDate2 = daichoData.getParkingEndDate2();
-
+		//駐車場管理_開始日
 		if ("1".equals(daichoData.getParkingCnt())) {
 			if (!NfwStringUtils.isEmpty(parkStartDate1)) {
 				daichoData.setParkingStartDate(parkStartDate1);
@@ -555,6 +648,8 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			}
 
 		} else if ("2".equals(daichoData.getParkingCnt())) {
+			//2台の場合、2台の履歴を比較して、設定。
+			// ┗開始日
 			if (!NfwStringUtils.isEmpty(parkEndDate1)) {
 				daichoData.setParkingStartDate(parkStartDate1);
 				rtnData.setParkingStartDate(parkStartDate1);
@@ -577,7 +672,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 					rtnData.setParkingStartDate(parkStartDate2);
 				}
 			}
-
+			// ┗返還日
 			if (!NfwStringUtils.isEmpty(parkEndDate1)) {
 				daichoData.setParkingEndDate(parkEndDate1);
 				rtnData.setParkingEndDate(parkEndDate1);
@@ -602,8 +697,11 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			}
 		}
 
+		//┗個人負担共益費調整金
 		rtnData.setKyoekihiPersonAdjust(String.valueOf(daichoData.getKyoekihiPersonAdjust()));
 
+		//備品貸与データ
+		// ┗単身備品
 		Map<String, String> bihinStsKbnMap = skf3030Sc001SharedService.getBihinLentStsMap();
 		rtnData.setSentakuki(bihinStsKbnMap.get(daichoData.getSentakukiLentStatusKbn()));
 		rtnData.setReizoko(bihinStsKbnMap.get(daichoData.getReizokoLentStatusKbn()));
@@ -618,7 +716,10 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		rtnData.setKaten(bihinStsKbnMap.get(daichoData.getKatenLentStatusKbn()));
 		rtnData.setShomei(bihinStsKbnMap.get(daichoData.getShomeiLentStatusKbn()));
 		rtnData.setGas(bihinStsKbnMap.get(daichoData.getGasLentStatusKbn()));
+		//備品貸与データ
+		// ┗貸与日
 		rtnData.setTaiyoDate(bihinStsKbnMap.get(daichoData.getTaiyoDate()));
+		// ┗返却日
 		rtnData.setHenkyakuDate(bihinStsKbnMap.get(daichoData.getHenkyakuDate()));
 
 		return rtnData;
@@ -638,94 +739,96 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 	private Skf3030Rp003PreMonthCompareDataExp setDiffDataInfo(Skf3030Rp003GetShatakuDaichoDiffDataInfoExp nowDiffData,
 			Skf3030Rp003GetShatakuDaichoDiffDataInfoExp preDiffData, Skf3030Rp003PreMonthCompareDataExp targetData) {
 
+		//前月データが取得されない場合
 		if (preDiffData == null) {
 
+			//役員算定
 			if (!NfwStringUtils.isEmpty(nowDiffData.getYakuinSannteiKbn())
 					&& !"0".equals(nowDiffData.getYakuinSannteiKbn())) {
 				targetData.setDiffYakuinSannteiKbn(true);
 			}
-
+			//社宅使用料月額
 			if (!NfwStringUtils.isEmpty(nowDiffData.getRentalMonth())) {
 				targetData.setDiffRentalMonth(true);
 			}
-
+			//駐車場使用料月額
 			if (nowDiffData.getParkingRental() != null) {
 				targetData.setDiffParkingRental(true);
 			}
-
+			//個人負担共益費月額
 			if (nowDiffData.getKyoekihiPerson() != null) {
 				targetData.setDiffKyoekihiPerson(true);
 			}
-
+			//社員氏名
 			if (!NfwStringUtils.isEmpty(nowDiffData.getName())) {
 				targetData.setDiffName(true);
 			}
-
+			//社員番号
 			if (!NfwStringUtils.isEmpty(nowDiffData.getShainNo())) {
 				targetData.setDiffShainNo(true);
 			}
-
+			//前月事業領域コード
 			if (!NfwStringUtils.isEmpty(nowDiffData.getPreBusinessAreaCd())) {
 				targetData.setDiffPreBusinessAreaCd(true);
 			}
-
+			//前月事業領域名
 			if (!NfwStringUtils.isEmpty(nowDiffData.getPreBusinessAreaName())) {
 				targetData.setDiffPreBusinessAreaName(true);
 			}
-
+			//当月事業領域コード
 			if (!NfwStringUtils.isEmpty(nowDiffData.getBusinessAreaCd())) {
 				targetData.setDiffBusinessAreaCd(true);
 			}
-
+			//当月事業領域名
 			if (!NfwStringUtils.isEmpty(nowDiffData.getBusinessAreaName())) {
 				targetData.setDiffBusinessAreaName(true);
 			}
-
+			//社宅使用料月額(調整後)
 			if (nowDiffData.getRentalTotal() != 0) {
 				targetData.setDiffRentalTotal(true);
 			}
-
+			//駐車場使用料月額(調整後)
 			if (nowDiffData.getParkingRentalTotal() != 0) {
 				targetData.setDiffParkingRentalTotal(true);
 			}
-
+			//社宅及び車　→　社宅使用料月額（調整後） + 駐車場使用料月額（調整後）
 			int nowShatakuOrCar = nowDiffData.getRentalTotal() + nowDiffData.getParkingRentalTotal();
 			if (nowShatakuOrCar != 0) {
 				targetData.setDiffShatakuOrCar(true);
 			}
-
+			//個人負担共益費月額(調整後)
 			if (nowDiffData.getKyoekihiPersonTotal() != 0) {
 				targetData.setDiffKyoekihiPersonTotal(true);
 			}
-
+			//徴収すべき使用料の額（合計）→ 社宅及び車 + 共益費（調整後）
 			if ((nowShatakuOrCar + nowDiffData.getKyoekihiPersonTotal()) != 0) {
 				targetData.setDiffChoshuTotal(true);
 			}
-
+			//社宅使用料調整金
 			if (nowDiffData.getRentalAdjust() != 0) {
 				targetData.setDiffRentalAdjust(true);
 			}
-
+			//駐車場使用料調整金
 			if (nowDiffData.getParkingRentalAdjust() != 0) {
 				targetData.setDiffParkingRentalAdjust(true);
 			}
-
+			//個人負担共益費調整金
 			if (nowDiffData.getKyoekihiPersonAdjust() != 0) {
 				targetData.setDiffKyoekihiPersonAdjust(true);
 			}
-
+			//配属先会社
 			if (!NfwStringUtils.isEmpty(nowDiffData.getAssignCompanyCd())) {
 				targetData.setDiffAssignCompanyCd(true);
 			}
-
+			//配属先室・部名
 			if (!NfwStringUtils.isEmpty(nowDiffData.getAssignAffiliation1())) {
 				targetData.setDiffAssignAffiliation1(true);
 			}
-
+			//配属先課等名
 			if (!NfwStringUtils.isEmpty(nowDiffData.getAssignAffiliation2())) {
 				targetData.setDiffAssignAffiliation2(true);
 			}
-
+			//配属先所属機関
 			if (!NfwStringUtils.isEmpty(nowDiffData.getAssignAgencyName())) {
 				targetData.setDiffAssignAgencyName(true);
 			}
@@ -745,96 +848,105 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			if (!NfwStringUtils.isEmpty(nowDiffData.getParkingEndDate())) {
 				targetData.setDiffParkingEndDate(true);
 			}
+			
+			if (!NfwStringUtils.isEmpty(nowDiffData.getParkingStartDate2())) {
+				targetData.setDiffParkingStartDate2(true);
+			}
+
+			if (!NfwStringUtils.isEmpty(nowDiffData.getParkingEndDate2())) {
+				targetData.setDiffParkingEndDate2(true);
+			}
 
 		} else {
+			//役員算定
 			if (isDiffData(nowDiffData.getYakuinSannteiKbn(), preDiffData.getYakuinSannteiKbn())) {
 				targetData.setDiffYakuinSannteiKbn(true);
 			}
-
+			//社宅使用料月額
 			if (isDiffData(nowDiffData.getRentalMonth(), preDiffData.getRentalMonth())) {
 				targetData.setDiffRentalMonth(true);
 			}
-
+			//駐車場使用料月額
 			if (isDiffData(nowDiffData.getParkingRental(), preDiffData.getParkingRental())) {
 				targetData.setDiffParkingRental(true);
 			}
-
+			//個人負担共益費月額
 			if (isDiffData(nowDiffData.getKyoekihiPerson(), preDiffData.getKyoekihiPerson())) {
 				targetData.setDiffKyoekihiPerson(true);
 			}
-
+			//社員番号
 			if (isDiffData(nowDiffData.getShainNo(), preDiffData.getShainNo())) {
 				targetData.setDiffShainNo(true);
 			}
-
+			//社員氏名
 			if (isDiffData(nowDiffData.getName(), preDiffData.getName())) {
 				targetData.setDiffName(true);
 			}
-
+			//前月事業領域コード
 			if (isDiffData(nowDiffData.getPreBusinessAreaCd(), preDiffData.getPreBusinessAreaCd())) {
 				targetData.setDiffPreBusinessAreaCd(true);
 			}
-
+			//前月事業領域名
 			if (isDiffData(nowDiffData.getPreBusinessAreaName(), preDiffData.getPreBusinessAreaName())) {
 				targetData.setDiffPreBusinessAreaName(true);
 			}
-
+			//当月事業領域コード
 			if (isDiffData(nowDiffData.getBusinessAreaCd(), preDiffData.getBusinessAreaCd())) {
 				targetData.setDiffBusinessAreaCd(true);
 			}
-
+			//当月事業領域名
 			if (isDiffData(nowDiffData.getBusinessAreaName(), preDiffData.getBusinessAreaName())) {
 				targetData.setDiffBusinessAreaName(true);
 			}
-
+			//社宅使用料月額（調整後）
 			if (isDiffData(nowDiffData.getRentalTotal(), preDiffData.getRentalTotal())) {
 				targetData.setDiffRentalTotal(true);
 			}
-
+			//駐車場使用料月額（調整後）
 			if (isDiffData(nowDiffData.getParkingRentalTotal(), preDiffData.getParkingRentalTotal())) {
 				targetData.setDiffParkingRentalTotal(true);
 			}
-
+			//社宅及び車　→　社宅使用料月額（調整後） + 駐車場使用料月額（調整後）
 			int nowShatakuOrCar = nowDiffData.getRentalTotal() + nowDiffData.getParkingRentalTotal();
 			int preShatakuOrCar = preDiffData.getRentalTotal() + preDiffData.getParkingRentalTotal();
 			if (nowShatakuOrCar != preShatakuOrCar) {
 				targetData.setDiffShatakuOrCar(true);
 			}
-
+			//個人負担共益費月額(調整後)
 			if (isDiffData(nowDiffData.getKyoekihiPersonTotal(), preDiffData.getKyoekihiPersonTotal())) {
 				targetData.setDiffKyoekihiPersonTotal(true);
 			}
-
+			//徴収すべき使用料の額（合計）→ 社宅及び車 + 共益費（調整後）
 			int nowChoshuTotal = nowShatakuOrCar + nowDiffData.getKyoekihiPersonTotal();
 			int preChoshuTotal = preShatakuOrCar + preDiffData.getKyoekihiPersonTotal();
 			if (nowChoshuTotal != preChoshuTotal) {
 				targetData.setDiffChoshuTotal(true);
 			}
-
+			//社宅使用料調整金
 			if (isDiffData(nowDiffData.getRentalAdjust(), preDiffData.getRentalAdjust())) {
 				targetData.setDiffRentalAdjust(true);
 			}
-
+			//駐車場使用料調整金
 			if (isDiffData(nowDiffData.getParkingRentalAdjust(), preDiffData.getParkingRentalAdjust())) {
 				targetData.setDiffParkingRentalAdjust(true);
 			}
-
+			//個人負担共益費調整金
 			if (isDiffData(nowDiffData.getKyoekihiPersonAdjust(), preDiffData.getKyoekihiPersonAdjust())) {
 				targetData.setDiffKyoekihiPersonAdjust(true);
 			}
-
+			//配属先会社名
 			if (isDiffData(nowDiffData.getAssignCompanyCd(), preDiffData.getAssignCompanyCd())) {
 				targetData.setDiffAssignCompanyCd(true);
 			}
-
+			//配属先課等名
 			if (isDiffData(nowDiffData.getAssignAffiliation1(), preDiffData.getAssignAffiliation1())) {
 				targetData.setDiffAssignAffiliation1(true);
 			}
-
+			//配属先室・部名
 			if (isDiffData(nowDiffData.getAssignAffiliation2(), preDiffData.getAssignAffiliation2())) {
 				targetData.setDiffAssignAffiliation2(true);
 			}
-
+			//配属先所属機関
 			if (isDiffData(nowDiffData.getAssignAgencyName(), preDiffData.getAssignAgencyName())) {
 				targetData.setDiffAssignAgencyName(true);
 			}
@@ -853,6 +965,14 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 
 			if (isDiffData(nowDiffData.getParkingEndDate(), preDiffData.getParkingEndDate())) {
 				targetData.setDiffParkingEndDate(true);
+			}
+			
+			if (isDiffData(nowDiffData.getParkingStartDate2(), preDiffData.getParkingStartDate2())) {
+				targetData.setDiffParkingStartDate2(true);
+			}
+
+			if (isDiffData(nowDiffData.getParkingEndDate2(), preDiffData.getParkingEndDate2())) {
+				targetData.setDiffParkingEndDate2(true);
 			}
 		}
 
@@ -893,7 +1013,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 				}
 
 			} else {
-				if (val_1 == val_2) {
+				if (Objects.equals(val_1, val_2)) {
 					rtn = false;
 				} else {
 					rtn = true;
@@ -959,17 +1079,17 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		RowDataBean preMonthDayData = new RowDataBean();
 
 		String preFirstDay = skfDateFormatUtils.addYearMonth(yearMonth, -1);
-		String preEditFirstDay = skf3030Sc001SharedService.cnvExcelDate(firstDay);
+		String preEditFirstDay = skf3030Sc001SharedService.cnvExcelDate(preFirstDay + "01");
 		preMonthDayData.addCellDataBean(Rp003Info.FIRST_DAY.col, preEditFirstDay, Cell.CELL_TYPE_NUMERIC);
 
 		String preLastDay = skf3030Sc001SharedService.getLastDay(preFirstDay + "01");
-		String preEditLastDay = skf3030Sc001SharedService.cnvExcelDate(lastDay);
+		String preEditLastDay = skf3030Sc001SharedService.cnvExcelDate(preLastDay);
 		preMonthDayData.addCellDataBean(Rp003Info.LAST_DAY.col, preEditLastDay, Cell.CELL_TYPE_NUMERIC);
 
 		cellParams = initTargetDayCellParams(cellParams);
 		preMonthDataBeanList.add(preMonthDayData);
 
-		int preDayCnt = Integer.parseInt(preLastDay) - Integer.parseInt(preFirstDay) + 1;
+		int preDayCnt = Integer.parseInt(preLastDay) - Integer.parseInt(preFirstDay+"01") + 1;
 
 		for (int i = 0; i < preMonthData.size(); i++) {
 
@@ -977,7 +1097,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 
 			Skf3030Rp003PreMonthCompareDataExp data = preMonthData.get(i);
 
-			RowDataBean rowData = createCellData(data, preFirstDay, preLastDay, preDayCnt, tagetRowIdx);
+			RowDataBean rowData = createCellData(data, preFirstDay + "01", preLastDay, preDayCnt, tagetRowIdx);
 			cellParams = initCellParams(cellParams, preMonthSheetName, tagetRowIdx);
 
 			preMonthDataBeanList.add(rowData);
@@ -1334,12 +1454,12 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			if (Skf3030Sc001SharedService.MUTUAL_USE_ARI.equals(data.getMutualUse())) {
 				kyoekiUkeireCompany = data.getKariukeCompany();
 			} else {
-				kyoekiUkeireCompany = data.getManageCompanyCd();
+				kyoekiUkeireCompany = data.getManageCompanyName();
 			}
 		}
 
 		String kyoekiCompTrans = "";
-		if (kyoekiUkeireCompany.equals(kyoekiKojyoCompany)) {
+		if (Objects.equals(skf3030Sc001SharedService.cnvEmptyStrToNull(kyoekiUkeireCompany), skf3030Sc001SharedService.cnvEmptyStrToNull(kyoekiKojyoCompany))) {
 			kyoekiCompTrans = Skf3030Sc001SharedService.KAISHAKAN_SOKIN_NASI;
 
 		} else {

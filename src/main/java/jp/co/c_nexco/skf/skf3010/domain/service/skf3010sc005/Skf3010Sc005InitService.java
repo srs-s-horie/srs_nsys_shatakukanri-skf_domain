@@ -60,8 +60,10 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		initDto.setShatakuName(initDto.getHdnShatakuName());
 		initDto.setAreaKbn(initDto.getHdnAreaKbn());
 		initDto.setShatakuKbn(initDto.getHdnShatakuKbn());
-		initDto.setEmptyRoomCount(initDto.getHdnEmptyRoomCount());
-		initDto.setEmptyParkingCount(initDto.getHdnEmptyParkingCount());
+		initDto.setHdnEmptyRoomCount(initDto.getHdnEmptyRoomCount());
+		initDto.setEmptyRoomCount(initDto.getEmptyRoomCount());
+		initDto.setEmptyParkingCount(initDto.getEmptyParkingCount());
+		initDto.setHdnEmptyParkingCount(initDto.getHdnEmptyParkingCount());
 
 		// 'ヘッダ部の値をセット
 		setSearchInfo(initDto);

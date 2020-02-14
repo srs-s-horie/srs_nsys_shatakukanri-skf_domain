@@ -201,12 +201,15 @@ public class Skf3050Bt001SharedTask {
 	public int registBatchControl(Map<String, String> parameter, Date sysDate, List<String> endList)
 			throws ParseException {
 
+		//取得可否チェック
 		String retParameterName = checkParameter(parameter);
 		String programId = BATCH_ID_B5001;
 
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
-
+			//パラメータチェックエラーの場合
 			if (!retParameterName.contains(PARAM_NAME_COMPANY_CD)) {
+				//パラメータの会社コードが設定済みの場合
+				//異常終了として、バッチ制御テーブルを登録
 				int retStat = insertBatchControl(parameter.get(COMPANY_CD), programId, parameter.get(USER_ID),
 						SkfCommonConstant.ABNORMAL, sysDate, getStrSystemDate());
 
@@ -216,17 +219,19 @@ public class Skf3050Bt001SharedTask {
 				}
 
 				LogUtils.error(MessageIdConstant.E_SKF_1089, retParameterName);
-				outputManagementLogEndProc(endList, null);
+				outputManagementLogEndProc(endList, getStrSystemDate());
 				return RETURN_STATUS_NG;
 
 			} else {
 				LogUtils.error(MessageIdConstant.E_SKF_1089, PARAM_NAME_COMPANY_CD);
+				outputManagementLogEndProc(endList, null);
 				return RETURN_STATUS_NG;
 			}
 		}
 
+		//プログラムIDの設定
 		if (!BATCH_ID_B5001.equals(parameter.get(BATCH_PRG_ID))) {
-
+			//異常終了として、バッチ制御テーブルを登録
 			int retStat = insertBatchControl(parameter.get(COMPANY_CD), programId, parameter.get(USER_ID),
 					SkfCommonConstant.ABNORMAL, sysDate, getStrSystemDate());
 
@@ -240,6 +245,7 @@ public class Skf3050Bt001SharedTask {
 			return RETURN_STATUS_NG;
 		}
 
+		//処理中として、バッチ制御テーブルを登録
 		int retStat = insertBatchControl(parameter.get(COMPANY_CD), programId, parameter.get(USER_ID),
 				SkfCommonConstant.PROCESSING, sysDate, null);
 
@@ -274,18 +280,23 @@ public class Skf3050Bt001SharedTask {
 			return SkfCommonConstant.ABNORMAL;
 		}
 
+		//▼月別使用料履歴の現物算定額の初期化▼
 		updateGenbutsuSanteigaku(paramUserId, paramShoriNengetsu);
 
+		//▼月別使用料履歴の備品現物支給合計額の初期化▼
 		updateBihinGoukei(paramUserId, paramShoriNengetsu);
 
+		//▼▼社宅使用料再計算▼▼
 		List<Skf3050Bt001GetTsukibetuSyoryoRirekiDataJoinDataExp> renRirekiDtList = getTsukibetuSyoryoRirekiDataJoinData(
 				paramShoriNengetsu);
 
 		int shiyouUpdCount = 0;
 
+		//取得した情報分繰り返す（処理年月の月別使用料履歴テーブル．社宅管理台帳ID分）
 		for (int i = 0; i < renRirekiDtList.size(); i++) {
 			Skf3050Bt001GetTsukibetuSyoryoRirekiDataJoinDataExp renRirekiRow = renRirekiDtList.get(i);
 
+			//社宅管理台帳相互利用基本データ（社宅賃貸料、駐車場料金）取得
 			List<Skf3050Bt001GetShatakuKanriDaityoSogoriyoDataExp> sougoDt = getShatakuKanriDaityoSogoriyoData(
 					renRirekiRow.getShatakuKanriId());
 
@@ -296,200 +307,246 @@ public class Skf3050Bt001SharedTask {
 				break;
 			}
 
+			//▼社宅使用料月額の取得▼
+			//社宅使用料計算部品呼び出し
 			SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp shatakuRentCalcOutputData = getShatakuShiyoryoGetsugaku(
 					paramShoriNengetsu, renRirekiRow, sougoDt.get(0).getRent());
 
+			//社宅使用料計算部品内でエラーが発生した場合
 			if (!NfwStringUtils.isEmpty(shatakuRentCalcOutputData.getErrMessage())) {
 				LogUtils.errorByMsg(shatakuRentCalcOutputData.getErrMessage());
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
 			}
 
+			//▼社宅使用料日割額の算出▼ ※小数点以下切り捨て
 			BigDecimal shatakuShiyouryouHiwari = getShatakuShiyoryoHiwari(paramShoriNengetsu,
 					renRirekiRow.getNyukyoDate(), renRirekiRow.getTaikyoDate(),
 					shatakuRentCalcOutputData.getShatakuShiyouryouGetsugaku());
+			//▼社宅使用料月額（調整後）の取得▼
+			//社宅使用料月額日割 + 社宅使用料調整金額
 			BigDecimal decimalRentalAdjust = BigDecimal.valueOf(renRirekiRow.getRentalAdjust());
 			BigDecimal shatakuShiyouryouTyouseigo = shatakuShiyouryouHiwari.add(decimalRentalAdjust);
 
+			//▼駐車場使用料月額、日割額の算出（駐車場貸与番号：1）▼
 			BigDecimal chushajoShiyoryoGetsugaku1 = BigDecimal.ZERO;
 			BigDecimal tyuushajouShiyouryouHiwari1 = BigDecimal.ZERO;
-
+			//駐車場貸与番号1の月別駐車場履歴情報取得(1レコード取得)
 			List<Skf3050Bt001GetTsukibetuTyusyajyoRirekiDataExp> tsukiDt1List = getTsukibetuTyusyajyoRirekiData(
 					renRirekiRow.getShatakuKanriId(), paramShoriNengetsu,
 					Long.parseLong(CodeConstant.PARKING_LEND_NO_FIRST));
 
 			if (tsukiDt1List.size() > 0) {
+				//▼1台目の駐車場使用料月額▼
+				//社宅使用料計算部品呼び出し（区画情報より駐車場使用料月額を取得）
 				SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp chushajoShiyoryoGetsugakuData = getChushajoShiyoryoGetsugaku(
 						paramShoriNengetsu, renRirekiRow, sougoDt.get(0).getParkingRental(),
 						tsukiDt1List.get(0).getParkingKanriNo());
 
+				//社宅使用料計算部品内でエラーが発生した場合
 				if (!NfwStringUtils.isEmpty(chushajoShiyoryoGetsugakuData.getErrMessage())) {
 					LogUtils.errorByMsg(chushajoShiyoryoGetsugakuData.getErrMessage());
 					rtn = SkfCommonConstant.ABNORMAL;
 					break;
 				}
-
+				
+				//▼1台目の駐車場使用料日割額▼ ※小数点以下切り捨て
 				chushajoShiyoryoGetsugaku1 = chushajoShiyoryoGetsugakuData.getChushajouShiyoryou();
 				tyuushajouShiyouryouHiwari1 = getChushajoShiyoryoHiwari(paramShoriNengetsu,
 						tsukiDt1List.get(0).getParkingStartDate(), tsukiDt1List.get(0).getParkingEndDate(),
 						chushajoShiyoryoGetsugaku1);
 			}
 
+			//▼駐車場使用料月額、日割額の算出（駐車場貸与番号：2）▼
 			BigDecimal chushajoShiyoryoGetsugaku2 = BigDecimal.ZERO;
 			BigDecimal tyuushajouShiyouryouHiwari2 = BigDecimal.ZERO;
-
+			//駐車場貸与番号2の月別駐車場履歴情報取得(1レコード取得)
 			List<Skf3050Bt001GetTsukibetuTyusyajyoRirekiDataExp> tsukiDt2List = getTsukibetuTyusyajyoRirekiData(
 					renRirekiRow.getShatakuKanriId(), paramShoriNengetsu,
 					Long.parseLong(CodeConstant.PARKING_LEND_NO_SECOND));
 
 			if (tsukiDt2List.size() > 0) {
+				//▼2台目の駐車場使用料月額▼
+				//社宅使用料計算部品呼び出し（区画情報より駐車場使用料月額を取得）
 				SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp chushajoShiyoryoGetsugakuData = getChushajoShiyoryoGetsugaku(
 						paramShoriNengetsu, renRirekiRow, sougoDt.get(0).getParkingRental(),
 						tsukiDt2List.get(0).getParkingKanriNo());
 
+				//社宅使用料計算部品内でエラーが発生した場合
 				if (!NfwStringUtils.isEmpty(chushajoShiyoryoGetsugakuData.getErrMessage())) {
 					LogUtils.errorByMsg(chushajoShiyoryoGetsugakuData.getErrMessage());
 					rtn = SkfCommonConstant.ABNORMAL;
 					break;
 				}
 
+				//▼2台目の駐車場使用料日割額▼ ※小数点以下切り捨て
 				chushajoShiyoryoGetsugaku2 = chushajoShiyoryoGetsugakuData.getChushajouShiyoryou();
 				tyuushajouShiyouryouHiwari2 = getChushajoShiyoryoHiwari(paramShoriNengetsu,
 						tsukiDt2List.get(0).getParkingStartDate(), tsukiDt2List.get(0).getParkingEndDate(),
 						chushajoShiyoryoGetsugaku2);
 			}
 
+			//▼備品使用料明細の備品現物支給額を更新（レンタルと会社保有と備付）▼
 			List<Skf3050Bt001GetBihinMeisaiExp> bihinMeisaiDtList = getBihinMeisai(paramShoriNengetsu,
 					renRirekiRow.getShatakuKanriId());
 
 			for (int j = 0; j < bihinMeisaiDtList.size(); j++) {
 
-				List<String> lockBihinMeisaiResult = skf3050Bt001GetDataForUpdateExpRepository
-						.getSkf3030TShatakuBihinRirekiData(paramShoriNengetsu);
-				if (lockBihinMeisaiResult.size() == 0) {
-					return SkfCommonConstant.ABNORMAL;
-				}
+//				List<String> lockBihinMeisaiResult = skf3050Bt001GetDataForUpdateExpRepository
+//						.getSkf3030TShatakuBihinRirekiData(paramShoriNengetsu);
+//				if (lockBihinMeisaiResult.size() == 0) {
+//					return SkfCommonConstant.ABNORMAL;
+//				}
 
 				updateBihinMeisai(renRirekiRow.getShatakuKanriId(), bihinMeisaiDtList.get(j).getBihinPayment(),
 						paramUserId, bihinMeisaiDtList.get(j).getBihinCd(), paramShoriNengetsu);
-
-				BigDecimal bihinDt = getBihinGenbutsuShikyugokeigaku(paramShoriNengetsu,
-						renRirekiRow.getShatakuKanriId());
-				BigDecimal bihinGenbutsuShikyuugakuGoukei = BigDecimal.ZERO;
-
-				if (bihinDt != null) {
-					bihinGenbutsuShikyuugakuGoukei = bihinDt;
-				}
-
-				BigDecimal decimalParkingRentalAdjust = BigDecimal.valueOf(renRirekiRow.getParkingRentalAdjust());
-				BigDecimal tyuushajouShiyouryouTyouseigo = tyuushajouShiyouryouHiwari1.add(tyuushajouShiyouryouHiwari2)
-						.add(decimalParkingRentalAdjust);
-
-				Integer kojinHutanKyoekihiGetsugakuTyouseigo = renRirekiRow.getKyoekihiPerson()
-						+ renRirekiRow.getKyoekihiPersonAdjust();
-
-				Integer shatakuShiyoryoGetsugaku = shatakuRentCalcOutputData.getShatakuShiyouryouGetsugaku().intValue();
-
-				shiyouUpdCount += updateTsukibetsuSiyoryorirekiData(shatakuShiyoryoGetsugaku,
-						shatakuShiyouryouHiwari.intValue(), shatakuShiyouryouTyouseigo.intValue(),
-						chushajoShiyoryoGetsugaku1.intValue(), tyuushajouShiyouryouHiwari1.intValue(),
-						chushajoShiyoryoGetsugaku2.intValue(), tyuushajouShiyouryouHiwari2.intValue(),
-						tyuushajouShiyouryouTyouseigo.intValue(), bihinGenbutsuShikyuugakuGoukei.intValue(),
-						kojinHutanKyoekihiGetsugakuTyouseigo, paramUserId, paramShoriNengetsu,
-						renRirekiRow.getShatakuKanriId());
-
-				String touJigyoCd = "";
-				String touJigyoName = "";
-				String companyCd = "";
-				String agencyCd = "";
-				String agencyName = "";
-				String affilCd1 = "";
-				String affilName1 = "";
-				String affilCd2 = "";
-				String affilName2 = "";
-
-				String shoriNengetsuAddMonth = skfDateFormatUtils.addYearMonth(paramShoriNengetsu, 1);
-				List<Skf3050Bt001GetShatakuSyainIdoRirekiDataExp> shainIdoDt1List = getShatakuSyainIdoRirekiDataSyutoku(
-						shoriNengetsuAddMonth, CodeConstant.BEGINNING_END_KBN_MONTH_BEGIN, parameter.get(COMPANY_CD),
-						renRirekiRow.getShainNo());
-
-				if (shainIdoDt1List.size() > 0) {
-					Skf3050Bt001GetShatakuSyainIdoRirekiDataExp shainIdoDt1 = shainIdoDt1List.get(0);
-
-					if (!NfwStringUtils.isEmpty(shainIdoDt1.getRirekiBusinessAreaCd())) {
-						touJigyoCd = shainIdoDt1.getRirekiBusinessAreaCd();
-						touJigyoName = shainIdoDt1.getRirekiBusinessAreaName();
-					} else {
-						touJigyoCd = shainIdoDt1.getShainBusinessAreaCd();
-						touJigyoName = shainIdoDt1.getShainBusinessAreaName();
-					}
-
-					if (NfwStringUtils.isEmpty(shainIdoDt1.getRirekiAgencyCd())
-							&& NfwStringUtils.isEmpty(shainIdoDt1.getRirekiAffiliation1Cd())
-							&& NfwStringUtils.isEmpty(shainIdoDt1.getRirekiAffiliation2Cd())) {
-						List<Skf3050Bt001GetShainSoshikiDataExp> dtSoshikiList = getShainSoshikiData(
-								parameter.get(COMPANY_CD), renRirekiRow.getShainNo());
-
-						if (dtSoshikiList.size() > 0) {
-							Skf3050Bt001GetShainSoshikiDataExp dtSoshiki = dtSoshikiList.get(0);
-							companyCd = dtSoshiki.getOriginalCompanyCd();
-							agencyCd = dtSoshiki.getSoshikiAgencyCd();
-							agencyName = dtSoshiki.getSoshikiAgencyName();
-							affilCd1 = dtSoshiki.getSoshikiAffiliation1Cd();
-							affilName1 = dtSoshiki.getSoshikiAffiliation1Name();
-							affilCd2 = dtSoshiki.getSoshikiAffiliation2Cd();
-							affilName2 = dtSoshiki.getSoshikiAffiliation2Name();
-						}
-
-					} else {
-						companyCd = shainIdoDt1.getCompanyCd();
-						agencyCd = shainIdoDt1.getRirekiAgencyCd();
-						agencyName = shainIdoDt1.getRirekiAgencyName();
-						affilCd1 = shainIdoDt1.getRirekiAffiliation1Cd();
-						affilName1 = shainIdoDt1.getRirekiAffiliation1Name();
-						affilCd2 = shainIdoDt1.getRirekiAffiliation2Cd();
-						affilName2 = shainIdoDt1.getRirekiAffiliation2Name();
-					}
-				}
-
-				String preJigyoCd = "";
-				String preJigyoName = "";
-
-				List<Skf3050Bt001GetShatakuSyainIdoRirekiDataExp> shainIdoDt2List = getShatakuSyainIdoRirekiDataSyutoku(
-						paramShoriNengetsu, CodeConstant.BEGINNING_END_KBN_MONTH_END, parameter.get(COMPANY_CD),
-						renRirekiRow.getShainNo());
-
-				if (shainIdoDt2List.size() > 0) {
-					Skf3050Bt001GetShatakuSyainIdoRirekiDataExp shainIdoDt2 = shainIdoDt2List.get(0);
-
-					if (!NfwStringUtils.isEmpty(shainIdoDt2.getRirekiBusinessAreaCd())) {
-						preJigyoCd = shainIdoDt2.getRirekiBusinessAreaCd();
-						preJigyoName = shainIdoDt2.getRirekiBusinessAreaName();
-					} else {
-						preJigyoCd = shainIdoDt2.getShainBusinessAreaCd();
-						preJigyoName = shainIdoDt2.getShainBusinessAreaName();
-					}
-				}
-
-				List<String> lockShozokuRirekiResult = skf3050Bt001GetDataForUpdateExpRepository
-						.getSkf3030TShozokuRirekiData(paramShoriNengetsu);
-				if (lockShozokuRirekiResult.size() == 0) {
-					return SkfCommonConstant.ABNORMAL;
-				}
-
-				updateShozokuRireki(companyCd, agencyCd, agencyName, affilCd1, affilName1, affilCd2, affilName2,
-						touJigyoCd, touJigyoName, preJigyoCd, preJigyoName, paramUserId,
-						renRirekiRow.getShatakuKanriId(), paramShoriNengetsu);
 			}
+
+			//▼備品現物支給合計額再算出▼
+			//月別備品使用料明細テーブルから取得（レンタルと会社保有と備付）
+			BigDecimal bihinDt = getBihinGenbutsuShikyugokeigaku(paramShoriNengetsu,
+					renRirekiRow.getShatakuKanriId());
+			BigDecimal bihinGenbutsuShikyuugakuGoukei = BigDecimal.ZERO;
+
+			if (bihinDt != null) {
+				bihinGenbutsuShikyuugakuGoukei = bihinDt;
+			}
+			
+			//▼個人負担共益費の取得▼
+			//当月に入居がない場合、当月以前に退居の場合は0とする
+//			BigDecimal kojinHutanKyoekihi = BigDecimal.ZERO;
+//			kojinHutanKyoekihi = BigDecimal.valueOf(renRirekiRow.getKyoekihiPerson());⇒分岐処理が無くなったので不要
+
+			BigDecimal decimalParkingRentalAdjust = BigDecimal.valueOf(renRirekiRow.getParkingRentalAdjust());
+			//▼駐車場使用料月額（調整後）の取得▼
+			//'駐車場使用料日割(貸与区分1) + 駐車場使用料日割(貸与区分2) + 駐車場使用料調整金額
+			BigDecimal tyuushajouShiyouryouTyouseigo = tyuushajouShiyouryouHiwari1.add(tyuushajouShiyouryouHiwari2)
+					.add(decimalParkingRentalAdjust);
+
+			//▼個人負担共益費月額（調整後）の取得▼
+			//個人負担共益費 + 個人負担共益費調整金額
+			Integer kojinHutanKyoekihiGetsugakuTyouseigo = renRirekiRow.getKyoekihiPerson()
+					+ renRirekiRow.getKyoekihiPersonAdjust();
+
+			Integer shatakuShiyoryoGetsugaku = shatakuRentCalcOutputData.getShatakuShiyouryouGetsugaku().intValue();
+
+			//▼月別使用料履歴テーブル更新▼
+			shiyouUpdCount += updateTsukibetsuSiyoryorirekiData(shatakuShiyoryoGetsugaku,
+					shatakuShiyouryouHiwari.intValue(), shatakuShiyouryouTyouseigo.intValue(),
+					chushajoShiyoryoGetsugaku1.intValue(), tyuushajouShiyouryouHiwari1.intValue(),
+					chushajoShiyoryoGetsugaku2.intValue(), tyuushajouShiyouryouHiwari2.intValue(),
+					tyuushajouShiyouryouTyouseigo.intValue(), bihinGenbutsuShikyuugakuGoukei.intValue(),
+					kojinHutanKyoekihiGetsugakuTyouseigo, paramUserId, paramShoriNengetsu,
+					renRirekiRow.getShatakuKanriId());
+
+			//▼月別所属情報履歴テーブル更新▼
+			//当月事業領域コード
+			String touJigyoCd = "";
+			//当月事業領域名
+			String touJigyoName = "";
+			String companyCd = "";
+			String agencyCd = "";
+			String agencyName = "";
+			String affilCd1 = "";
+			String affilName1 = "";
+			String affilCd2 = "";
+			String affilName2 = "";
+
+			String shoriNengetsuAddMonth = skfDateFormatUtils.addYearMonth(paramShoriNengetsu, 1);
+			//社宅社員異動履歴取得(getJigyoRyoiki)
+			List<Skf3050Bt001GetShatakuSyainIdoRirekiDataExp> shainIdoDt1List = getShatakuSyainIdoRirekiDataSyutoku(
+					shoriNengetsuAddMonth, CodeConstant.BEGINNING_END_KBN_MONTH_BEGIN, parameter.get(COMPANY_CD),
+					renRirekiRow.getShainNo());
+
+			if (shainIdoDt1List.size() > 0) {
+				Skf3050Bt001GetShatakuSyainIdoRirekiDataExp shainIdoDt1 = shainIdoDt1List.get(0);
+
+				if (!NfwStringUtils.isEmpty(shainIdoDt1.getRirekiBusinessAreaCd())) {
+					//社宅社員異動履歴から取得
+					touJigyoCd = shainIdoDt1.getRirekiBusinessAreaCd();
+					touJigyoName = shainIdoDt1.getRirekiBusinessAreaName();
+				} else {
+					//社宅社員異動履歴から取得できない場合、社宅社員マスタ・事業領域マスタから取得
+					touJigyoCd = shainIdoDt1.getShainBusinessAreaCd();
+					touJigyoName = shainIdoDt1.getShainBusinessAreaName();
+				}
+
+				if (NfwStringUtils.isEmpty(shainIdoDt1.getRirekiAgencyCd())
+						&& NfwStringUtils.isEmpty(shainIdoDt1.getRirekiAffiliation1Cd())
+						&& NfwStringUtils.isEmpty(shainIdoDt1.getRirekiAffiliation2Cd())) {
+					//組織情報が履歴から取得できない場合、組織マスタから取得する
+					List<Skf3050Bt001GetShainSoshikiDataExp> dtSoshikiList = getShainSoshikiData(
+							parameter.get(COMPANY_CD), renRirekiRow.getShainNo());
+
+					if (dtSoshikiList.size() > 0) {
+						Skf3050Bt001GetShainSoshikiDataExp dtSoshiki = dtSoshikiList.get(0);
+						companyCd = dtSoshiki.getOriginalCompanyCd();
+						agencyCd = dtSoshiki.getSoshikiAgencyCd();
+						agencyName = dtSoshiki.getSoshikiAgencyName();
+						affilCd1 = dtSoshiki.getSoshikiAffiliation1Cd();
+						affilName1 = dtSoshiki.getSoshikiAffiliation1Name();
+						affilCd2 = dtSoshiki.getSoshikiAffiliation2Cd();
+						affilName2 = dtSoshiki.getSoshikiAffiliation2Name();
+					}
+
+				} else {
+					//組織情報が履歴から取得できる場合
+					companyCd = shainIdoDt1.getCompanyCd();
+					agencyCd = shainIdoDt1.getRirekiAgencyCd();
+					agencyName = shainIdoDt1.getRirekiAgencyName();
+					affilCd1 = shainIdoDt1.getRirekiAffiliation1Cd();
+					affilName1 = shainIdoDt1.getRirekiAffiliation1Name();
+					affilCd2 = shainIdoDt1.getRirekiAffiliation2Cd();
+					affilName2 = shainIdoDt1.getRirekiAffiliation2Name();
+				}
+			}
+
+			//前月事業領域コード
+			String preJigyoCd = "";
+			//前月事業領域名
+			String preJigyoName = "";
+
+			//前月事業領域取得（事業領域コード、事業領域名）
+			//社宅社員異動履歴取得(getJigyoRyoiki)
+			List<Skf3050Bt001GetShatakuSyainIdoRirekiDataExp> shainIdoDt2List = getShatakuSyainIdoRirekiDataSyutoku(
+					paramShoriNengetsu, CodeConstant.BEGINNING_END_KBN_MONTH_END, parameter.get(COMPANY_CD),
+					renRirekiRow.getShainNo());
+
+			if (shainIdoDt2List.size() > 0) {
+				Skf3050Bt001GetShatakuSyainIdoRirekiDataExp shainIdoDt2 = shainIdoDt2List.get(0);
+
+				if (!NfwStringUtils.isEmpty(shainIdoDt2.getRirekiBusinessAreaCd())) {
+					//社宅社員異動履歴から取得
+					preJigyoCd = shainIdoDt2.getRirekiBusinessAreaCd();
+					preJigyoName = shainIdoDt2.getRirekiBusinessAreaName();
+				} else {
+					//社宅社員異動履歴から取得できない場合、社宅社員マスタ・事業領域マスタから取得
+					preJigyoCd = shainIdoDt2.getShainBusinessAreaCd();
+					preJigyoName = shainIdoDt2.getShainBusinessAreaName();
+				}
+			}
+
+//			List<String> lockShozokuRirekiResult = skf3050Bt001GetDataForUpdateExpRepository
+//					.getSkf3030TShozokuRirekiData(paramShoriNengetsu);
+//			if (lockShozokuRirekiResult.size() == 0) {
+//				return SkfCommonConstant.ABNORMAL;
+//			}
+
+			//月別所属情報履歴の当月事業領域、前月事業領域の更新
+			updateShozokuRireki(companyCd, agencyCd, agencyName, affilCd1, affilName1, affilCd2, affilName2,
+					touJigyoCd, touJigyoName, preJigyoCd, preJigyoName, paramUserId,
+					renRirekiRow.getShatakuKanriId(), paramShoriNengetsu);
 		}
 
+		//▼▼現物算定額算出▼▼
 		int genUpdCount = 0;
+		//現物算定額算出用データテーブル取得
 		List<Skf3050Bt001GetShatakiKanriDaityoDataTodoufukenDataExp> genSanteiDtList = getShatakiKanriDaityoDataTodoufukenData(
 				paramShoriNengetsu);
-
+		//取得した情報分繰り返す（複数レコード：現物支給価額設定テーブルから適用日が処理年月末日直近のデータを取得）
 		for (int i = 0; i < genSanteiDtList.size(); i++) {
 			Skf3050Bt001GetShatakiKanriDaityoDataTodoufukenDataExp genSanteiRow = genSanteiDtList.get(i);
-
+			//現物支給価額設定テーブルからデータが取得できない場合はエラー
 			if (NfwStringUtils.isEmpty(genSanteiRow.getEffectiveDate())) {
 				String errMsg = ERRMSG_GENSHIKYU_TEKIYO_1 + CodeConstant.COLON + getGetsumatsujitu(paramShoriNengetsu)
 						+ CodeConstant.COMMA + ERRMSG_GENSHIKYU_TODOFU_1 + CodeConstant.COLON
@@ -499,22 +556,28 @@ public class Skf3050Bt001SharedTask {
 				break;
 			}
 
+			//対象面積算出
 			BigDecimal genSanMenseki = genSanteiRow.getMenseki().add(genSanteiRow.getBarnMenseki());
 			genSanMenseki = genSanMenseki.setScale(0, RoundingMode.DOWN);
-
+			//現物算定額設定 ※小数点以下切り捨て、面積は社宅使用料算定上延べ面積
 			BigDecimal genSanteiGaku = calcGenSanteiGaku(genSanMenseki, genSanteiRow);
 
+			//月別使用料履歴テーブル更新
 			genUpdCount += updateTsukibetsuSiyoryorirekiGenbutsuSantei(genSanteiGaku.intValue(), paramUserId,
 					paramShoriNengetsu, genSanteiRow.getShatakuKanriId());
 		}
 
+		//▼▼連携データ作成前処理▼▼
 		List<Skf3050Bt001GetHrRenkeiDataSakuseiMaeSyoriDataExp> renkeiDataSakuseiMaeDataList = getHrRenkeiDataSakuseiMaeSyoriData(
 				paramShoriNengetsu);
 
+		//取得データ分ループする
 		for (int i = 0; i < renkeiDataSakuseiMaeDataList.size(); i++) {
 			Skf3050Bt001GetHrRenkeiDataSakuseiMaeSyoriDataExp renkeiDataSakuseiMaeData = renkeiDataSakuseiMaeDataList
 					.get(i);
 
+			//▼社宅使用料計上勘定科目の設定▼
+			//社宅基本情報（1レコード取得）
 			List<Skf3050Bt001GetShatakuKihonJyohoExp> shatakuKihonDtList = getShatakuKihonJyoho(
 					renkeiDataSakuseiMaeData.getShatakuKanriNo());
 
@@ -527,6 +590,7 @@ public class Skf3050Bt001SharedTask {
 
 			Skf3050Bt001GetShatakuKihonJyohoExp shatakuKihonDt = shatakuKihonDtList.get(0);
 
+			//会計転記用計上勘定科目設定テーブル取得（1レコード取得）
 			int shiyouryo = renkeiDataSakuseiMaeData.getRentalTotal()
 					+ renkeiDataSakuseiMaeData.getParkingRentalTotal();
 			Map<String, Object> ret1Map = getKeijouKamoku(shiyouryo, renkeiDataSakuseiMaeData.getPayCompanyCd(),
@@ -542,6 +606,8 @@ public class Skf3050Bt001SharedTask {
 				break;
 			}
 
+			//▼共益費個人負担金計上勘定科目の設定▼
+			//会計転記用計上勘定科目設定テーブル取得（1レコード取得）
 			Map<String, Object> ret2Map = getKeijouKamoku(renkeiDataSakuseiMaeData.getKyoekihiPersonTotal(),
 					renkeiDataSakuseiMaeData.getPayCompanyCd(), shatakuKihonDt.getManegeCompanyCd(),
 					renkeiDataSakuseiMaeData.getKariukeCompanyCd(), renkeiDataSakuseiMaeData.getMutualUseKbn(),
@@ -560,18 +626,20 @@ public class Skf3050Bt001SharedTask {
 			String kanjouKamokuCdKojin = (String) ret2Map.get(KEIJOU_KAMOKU_ACNT_CD_KEY);
 			String kanjouKamokuMeishouKojin = (String) ret2Map.get(KEIJOU_KAMOKU_ACNT_NM_KEY);
 
+			//▼月別使用料履歴テーブル（勘定科目）の更新▼
 			updateTsukibetsuShiyoryoAccount(kanjouKamokuCdShataku, kanjouKamokuMeishouShataku, kanjouKamokuCdKojin,
 					kanjouKamokuMeishouKojin, paramUserId, renkeiDataSakuseiMaeData.getShatakuKanriId(),
 					paramShoriNengetsu);
 		}
 
+		//締め処理の場合は月次処理管理データを更新
 		if (SHIME_SHORI.equals(parameter.get(SHIME_SHORI_FLG))) {
 			List<String> lockGetsujiShoriKanriResult = skf3050Bt001GetDataForUpdateExpRepository
 					.getSkf3050TMonthlyManageData(paramShoriNengetsu);
 			if (lockGetsujiShoriKanriResult.size() == 0) {
 				return SkfCommonConstant.ABNORMAL;
 			}
-
+			//▼月次処理管理データ更新▼
 			updateGetsujiShoriKanriData(paramUserId, paramShoriNengetsu);
 		}
 
@@ -599,6 +667,7 @@ public class Skf3050Bt001SharedTask {
 
 		Date endDate = getStrSystemDate();
 
+		//バッチ制御テーブルを更新
 		int updateCnt = skfBatchBusinessLogicUtils.updateBatchControl(endDate, endFlag, companyCd, programId,
 				searchEndFlag);
 
@@ -655,22 +724,23 @@ public class Skf3050Bt001SharedTask {
 
 		String retParameterName = "";
 
+		//バッチクラスNo設定チェック
 		if (isParamEmpty(parameter.get(BATCH_PRG_ID))) {
 			retParameterName = PARAM_NAME_PRG_ID;
 		}
-
+		//会社コード設定チェック
 		if (isParamEmpty(parameter.get(COMPANY_CD))) {
 			retParameterName += CodeConstant.COMMA + PARAM_NAME_COMPANY_CD;
 		}
-
+		//ユーザＩＤ設定チェック
 		if (isParamEmpty(parameter.get(USER_ID))) {
 			retParameterName += CodeConstant.COMMA + PARAM_NAME_USER_ID;
 		}
-
+		//処理年月設定チェック
 		if (isParamEmpty(parameter.get(SHORI_NENGETSU))) {
 			retParameterName += CodeConstant.COMMA + PARAM_NAME_SHORI_NENGETSU;
 		}
-
+		//締めフラグ設定チェック
 		if (isParamEmpty(parameter.get(SHIME_SHORI_FLG))) {
 			retParameterName += CodeConstant.COMMA + PARAM_NAME_SHIME_SHORI_FLG;
 		}
@@ -678,7 +748,7 @@ public class Skf3050Bt001SharedTask {
 		if (retParameterName.startsWith(CodeConstant.COMMA)) {
 			retParameterName = retParameterName.substring(1);
 		}
-
+		//戻り値としてパラメータ名を戻す
 		return retParameterName;
 	}
 
@@ -1575,6 +1645,7 @@ public class Skf3050Bt001SharedTask {
 		BigDecimal outVal = num_3.setScale(0, RoundingMode.DOWN);
 
 		if (outVal.compareTo(BigDecimal.ZERO) < 0) {
+			//現物算定額が0より小さい場合0とする
 			outVal = BigDecimal.ZERO;
 		}
 
