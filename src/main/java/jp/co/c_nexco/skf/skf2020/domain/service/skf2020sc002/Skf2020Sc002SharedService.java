@@ -1809,15 +1809,6 @@ public class Skf2020Sc002SharedService {
 		// 自動車の保管場所使用開始日(２台目)
 		dto.setParkingUseDate2(NfwStringUtils.rightTrimbyByte(dto.getParkingUseDate2(), 10));
 		LogUtils.debugByMsg(Msg + "自動車の保管場所使用開始日(2台目)" + dto.getParkingUseDate2());
-//		// 室番号
-//		dto.setNowShatakuNo(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuNo(), 6));
-//		LogUtils.debugByMsg(Msg + "室番号" + dto.getNowShatakuNo());
-//		// 規格(間取り)
-//		dto.setNowShatakuKikaku(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuKikaku(), 10));
-//		LogUtils.debugByMsg(Msg + "規格(間取り)" + dto.getNowShatakuKikaku());
-//		// 面積
-//		dto.setNowShatakuMenseki(NfwStringUtils.rightTrimbyByte(dto.getNowShatakuMenseki(), 7));
-//		LogUtils.debugByMsg(Msg + "面積" + dto.getNowShatakuMenseki());
 		// 特殊事情等
 		dto.setTokushuJijo(NfwStringUtils.rightTrimbyByte(dto.getTokushuJijo(), 256));
 		LogUtils.debugByMsg(Msg + "特殊事情等" + dto.getTokushuJijo());
