@@ -120,7 +120,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String taikyoChangeFlag = SkfCommonConstant.NOT_CHANGE;
 
 		// 初期退居日
-		String syokiTaikyobi = agreeDto.getTaikyoDate();
+		String syokiTaikyobi = agreeDto.getSyokiTaikyoDate();
 
 		// 退居日の有無をチェック
 		if (NfwStringUtils.isEmpty(syokiTaikyobi)) {
@@ -140,7 +140,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String henkanbi = agreeDto.getHenkanbi();
 
 		// 初期返還日
-		String syokiHenkanbi = agreeDto.getParkingHenkanDate();
+		String syokiHenkanbi = agreeDto.getSyokiParkingDate();
 		// 返還日変更フラグ(0：変更なし)
 		String henkanChangeFlag = SkfCommonConstant.NOT_CHANGE;
 
@@ -222,8 +222,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo");
 
-		if (NfwStringUtils.isEmpty(taikyobi) || NfwStringUtils.isEmpty(henkanbi)) {
-			newApplNo = skf2010Sc004SharedService.getApplNo(shainNo, applId);
+		if (NfwStringUtils.isNotEmpty(taikyobi) || NfwStringUtils.isNotEmpty(henkanbi)) {
+			newApplNo = skf2010Sc004SharedService.getApplNo(shainNo, FunctionIdConstant.R0103);
 
 			nowAddress = skf2010Sc004SharedService.getAddressInfo(shainNo);
 		}
@@ -286,7 +286,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String bihinKibo = agreeDto.getBihinKibo();
 		if (!NfwStringUtils.isEmpty(bihinKibo) && bihinKibo.equals(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO)) {
 			// 備品希望申請の申請書類履歴テーブルを作成する
-			applNoBihinShinsei = skf2010Sc004SharedService.insertApplHistoryBihinKibo(newApplNo, applId, shainNo,
+			applNoBihinShinsei = skf2010Sc004SharedService.insertApplHistoryBihinKibo(applNo, applId, shainNo,
 					errorMsg);
 			if (applNoBihinShinsei == null) {
 				// エラーの時のみNULL

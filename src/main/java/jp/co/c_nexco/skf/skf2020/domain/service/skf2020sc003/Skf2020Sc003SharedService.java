@@ -68,6 +68,7 @@ import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfShatakuInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
@@ -153,6 +154,8 @@ public class Skf2020Sc003SharedService {
 	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
+	@Autowired
+	private SkfShatakuInfoUtils skfShatakuInfoUtils;
 	@Autowired
 	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
 
@@ -621,7 +624,8 @@ public class Skf2020Sc003SharedService {
 		}
 		// 現居住宅 規格(間取り)
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNowShatakuKikaku())) {
-			dto.setNowShatakuKikaku(shatakuNyukyoKiboInfo.getNowShatakuKikaku());
+			String shatakuKikaku = getShatakuKikakuKBN(shatakuNyukyoKiboInfo.getNowShatakuKikaku());
+			dto.setNowShatakuKikaku(shatakuKikaku);
 		}
 		// 現居住宅 面積
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNowShatakuMenseki())) {
@@ -1280,7 +1284,12 @@ public class Skf2020Sc003SharedService {
 			}
 		}
 		// 入居可能日
-		nyukyoChoshoTsuchiInfo.setNyukyoKanoDate(dto.getNyukyoKanoDate());
+		String nyukyoKanoDate = null;
+		if (NfwStringUtils.isNotEmpty(dto.getNyukyoKanoDate())) {
+			nyukyoKanoDate = skfDateFormatUtils.dateFormatFromString(dto.getNyukyoKanoDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+		}
+		nyukyoChoshoTsuchiInfo.setNyukyoKanoDate(nyukyoKanoDate);
 		// 自動車の保管場所
 		nyukyoChoshoTsuchiInfo.setParkingArea(dto.getParkingAddress1());
 		// 自動車の位置番号
@@ -1668,16 +1677,10 @@ public class Skf2020Sc003SharedService {
 		if (bihinInfoList != null && bihinInfoList.size() > 0) {
 			List<String> colList = new ArrayList<String>(); // テーブルのTD領域
 			List<List<String>> rowList = new ArrayList<List<String>>(); // テーブルのTR領域
-			int index = 0;
 			for (Skf2020Sc003GetBihinInfoExp bihinInfo : bihinInfoList) {
-				if (index <= 2) {
-					colList.add(bihinInfo.getBihinName());
-				} else {
-					rowList.add(colList);
-					colList = new ArrayList<String>();
-					colList.add(bihinInfo.getBihinName());
-					index = 1;
-				}
+				colList = new ArrayList<String>();
+				colList.add(bihinInfo.getBihinName());
+				rowList.add(colList);
 			}
 			returnEquipment = skfHtmlCreateUtils.htmlBihinCreateTable(rowList, 2);
 		}
@@ -1826,13 +1829,7 @@ public class Skf2020Sc003SharedService {
 	private String getShatakuKikakuKBN(String kikakuCd) {
 		String retKikakuName = CodeConstant.NONE;
 
-		// 規格区分の取得
-		Map<String, String> kikakuMap = new HashMap<String, String>();
-		kikakuMap = skfGenericCodeUtils.getGenericCode("SKF1073");
-		if (kikakuMap != null) {
-			retKikakuName = kikakuMap.get(kikakuCd);
-		}
-
+		retKikakuName = skfShatakuInfoUtils.getShatakuKikakuByCode(kikakuCd);
 		return retKikakuName;
 	}
 

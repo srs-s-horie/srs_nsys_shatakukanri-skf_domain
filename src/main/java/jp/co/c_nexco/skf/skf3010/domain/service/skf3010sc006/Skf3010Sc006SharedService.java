@@ -3856,13 +3856,13 @@ public class Skf3010Sc006SharedService {
 
 		/** 社宅基本情報マスタの更新データを作成 */
 		// 郵便番号
-		String zipCd = ("".equals(comDto.getZipCd())) ? null : comDto.getZipCd();
+		String zipCd = ("".equals(comDto.getZipCd())) ? "" : comDto.getZipCd();
 		// 社宅構造補足
-		String structureSupplement = ("".equals(comDto.getShatakuStructureDetail())) ? null : comDto.getShatakuStructureDetail();
+		String structureSupplement = ("".equals(comDto.getShatakuStructureDetail())) ? "" : comDto.getShatakuStructureDetail();
 		// エレベーター区分
 		String elevatorKbn = ("".equals(comDto.getElevator()) ? "" : comDto.getElevator());
 		// 備考
-		String biko = ("".equals(comDto.getBiko())) ? null : comDto.getBiko();
+		String biko = ("".equals(comDto.getBiko())) ? "" : comDto.getBiko();
 
 		// 社宅補足ファイル名
 		String shatakuSupplementName1 = ("".equals(comDto.getShatakuHosokuFileName1())) ? null : comDto.getShatakuHosokuFileName1();

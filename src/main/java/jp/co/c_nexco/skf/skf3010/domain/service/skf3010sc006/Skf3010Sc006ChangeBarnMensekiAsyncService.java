@@ -54,7 +54,7 @@ public class Skf3010Sc006ChangeBarnMensekiAsyncService
 			}
 
 		}
-		barnMensekiAdjust = barnMensekiAdjust.setScale(2);
+		barnMensekiAdjust = barnMensekiAdjust.setScale(2,BigDecimal.ROUND_HALF_UP);
 		asyncDto.setBarnMensekiAdjust(barnMensekiAdjust.toPlainString());
 
 		// Debugログで出力

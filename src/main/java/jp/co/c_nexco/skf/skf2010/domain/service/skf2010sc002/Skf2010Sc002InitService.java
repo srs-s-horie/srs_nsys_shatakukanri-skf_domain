@@ -639,7 +639,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuKikaku())) {
 			initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
 			// 規格名称取得
-			String kikakuName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_LAYOUT_KBN,
+			String kikakuName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN,
 					initDto.getNowShatakuKikaku());
 			initDto.setNowShatakuKikakuName(kikakuName);
 		}
@@ -704,7 +704,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 規格変換用Map
 		Map<String, BaseCodeEntity> shatakuKikakuMap = new HashMap<String, BaseCodeEntity>();
-		shatakuKikakuMap = codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_LAYOUT_KBN);
+		shatakuKikakuMap = codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN);
 
 		// 案内日
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTsuchiDate())) {
