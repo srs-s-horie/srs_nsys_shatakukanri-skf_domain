@@ -705,7 +705,7 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 		// 規格変換用Map
 		Map<String, BaseCodeEntity> shatakuKikakuMap = new HashMap<String, BaseCodeEntity>();
-		shatakuKikakuMap = codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_LAYOUT_KBN);
+		shatakuKikakuMap = codeCacheUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN);
 
 		// 案内日
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getTsuchiDate())) {
