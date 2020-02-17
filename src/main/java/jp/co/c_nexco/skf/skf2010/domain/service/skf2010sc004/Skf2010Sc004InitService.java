@@ -172,17 +172,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		int displayLevel = 1;
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
+			// 社宅入居希望等調書の「社宅を必要としない」場合には、社宅入居希望等調書のみ
+			if (skf2010Sc004SharedService.isShatakuTaiyoFuyo(dto.getApplNo())) {
+				// 必要としない場合はステータス変更
+				applStatus = CodeConstant.STATUS_SHINSEICHU;
+			}
+
 			// 社宅入居希望等申請
 			switch (applStatus) {
-			case CodeConstant.STATUS_SHINSEICHU:
-			case CodeConstant.STATUS_SHINSACHU:
-				/**
-				 * 申請中、審査中： 社宅入居希望等調書のみ表示
-				 */
-				dto.setMaskPattern("PTN_A");
-				dto.setLevel1Open("true");
-				dto.setRepresentBtnFlg("false");
-				break;
 			case CodeConstant.STATUS_KAKUNIN_IRAI:
 				/**
 				 * 確認依頼： 案内＋誓約書追加
@@ -193,21 +190,30 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				break;
 			case CodeConstant.STATUS_DOI_ZUMI:
 			case CodeConstant.STATUS_DOI_SHINAI:
+			case CodeConstant.STATUS_SHONIN1:
 				/**
-				 * 同意済、同意しない： 案内＋誓約書追加（ボタンは全て非表示）
+				 * 同意済、同意しない、承認１： 案内＋誓約書追加（ボタンは全て非表示）
 				 */
 				dto.setMaskPattern("PTN_C");
 				displayLevel = 2;
 				dto.setLevel2Open("true");
 				dto.setRepresentBtnFlg("false");
 				break;
-			default:
+			case CodeConstant.STATUS_SHONIN_ZUMI:
 				/**
 				 * それ以外（同意済み以降）： 入居決定通知書追加
 				 */
 				dto.setMaskPattern("PTN_C");
 				displayLevel = 3;
 				dto.setLevel3Open("true");
+				dto.setRepresentBtnFlg("false");
+				break;
+			default:
+				/**
+				 * それ以外： 社宅入居希望等調書のみ表示
+				 */
+				dto.setMaskPattern("PTN_A");
+				dto.setLevel1Open("true");
 				dto.setRepresentBtnFlg("false");
 				break;
 			}
@@ -804,6 +810,11 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
 		}
 		initDto.setParkingRental2(parkingRental2);
+
+		String parkingUmu = tNyukyoChoshoTsuchi.getParkingUmu();
+		if (CheckUtils.isEqual(parkingUmu, CodeConstant.CAR_PARK_FUYO)) {
+			initDto.setParkingDateDisabled(true);
+		}
 
 		// 自動車保管場所（１台目）の使用開始予定日
 		initDto.setParkingKanoDate(
