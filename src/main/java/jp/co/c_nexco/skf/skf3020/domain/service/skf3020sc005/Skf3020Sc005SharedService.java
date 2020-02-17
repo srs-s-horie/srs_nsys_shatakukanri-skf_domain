@@ -298,6 +298,7 @@ public class Skf3020Sc005SharedService {
 				Skf1010MShain updateData = new Skf1010MShain();
 				updateData.setShainNoChangeFlg(chkShainNoHenkoKbn);
 				updateData.setShainNo(shainNo);
+				updateData.setCompanyCd(CodeConstant.C001);
 				int updateResult = skf1010MShainRepository.updateByPrimaryKeySelective(updateData);
 
 				if (updateResult <= 0) {

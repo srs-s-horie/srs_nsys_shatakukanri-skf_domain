@@ -33,6 +33,7 @@ import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfShatakuInfoUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
 
@@ -56,6 +57,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfBatchUtils skfBatchUtils;
+	@Autowired
+	private SkfShatakuInfoUtils skfShatakuInfoUtils;
 
 	private String sTrue = "true";
 	private String sFalse = "false";
@@ -637,11 +640,9 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 		// 保有社宅規格
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuKikaku())) {
-			initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
 			// 規格名称取得
-			String kikakuName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN,
-					initDto.getNowShatakuKikaku());
-			initDto.setNowShatakuKikakuName(kikakuName);
+			String kikakuName = skfShatakuInfoUtils.getShatakuKikakuByCode(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
+			initDto.setNowShatakuKikaku(kikakuName);
 		}
 
 		// 保有社宅面積

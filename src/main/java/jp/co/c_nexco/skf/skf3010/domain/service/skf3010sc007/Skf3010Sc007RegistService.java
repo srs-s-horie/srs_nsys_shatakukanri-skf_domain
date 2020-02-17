@@ -34,6 +34,7 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007RegistDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
@@ -422,14 +423,21 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 					
 				}
 				
+//				// 経理連携用管理番号
+//				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getAssetRegisterNo())) {
+//					isCheckOk = false;
+//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1052, "経理連携用管理番号");
+//					registDto.setAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
+//					debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
+//				}
+
 				// 経理連携用管理番号
-				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getAssetRegisterNo())) {
+				if (!CheckUtils.isHalfWidth(registDto.getAssetRegisterNo())) {
 					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1052, "経理連携用管理番号");
+					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
 					registDto.setAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
 					debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
 				}
-				
 			}
 		}
 		

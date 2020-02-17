@@ -53,7 +53,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryStatusInfoForUpdateExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetAttachedFileInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetBihinShinseiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc004.Skf2010Sc004GetCommentListExpRepository;
@@ -73,6 +72,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRep
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuShinseiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -126,9 +126,6 @@ public class Skf2010Sc004SharedService {
 	private Skf2010Sc004GetAttachedFileInfoExpRepository skf2010Sc004GetAttachedFileInfoExpRepository;
 	@Autowired
 	private Skf2010Sc004GetBihinShinseiInfoExpRepository skf2010Sc004GetBihinShinseiInfoExpRepository;
-	@Autowired
-	private Skf2010Sc004GetApplNoExpRepository skf2010Sc004GetApplNoExpRepository;
-
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;
 	@Autowired
@@ -874,6 +871,30 @@ public class Skf2010Sc004SharedService {
 		}
 
 		return resultBatch;
+	}
+
+	/**
+	 * 社宅貸与不要判定
+	 * 
+	 * @param applNo
+	 * @return
+	 */
+	public boolean isShatakuTaiyoFuyo(String applNo) {
+		boolean result = false;
+
+		Skf2020TNyukyoChoshoTsuchi dtNyukyo = new Skf2020TNyukyoChoshoTsuchi();
+		Skf2020TNyukyoChoshoTsuchiKey key = new Skf2020TNyukyoChoshoTsuchiKey();
+		key.setCompanyCd(companyCd);
+		key.setApplNo(applNo);
+		dtNyukyo = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
+		if (dtNyukyo != null) {
+			if (NfwStringUtils.isNotEmpty(dtNyukyo.getTaiyoHitsuyo())
+					&& CheckUtils.isEqual(dtNyukyo.getTaiyoHitsuyo(), CodeConstant.ASKED_SHATAKU_FUYOU)) {
+				result = true;
+			}
+		}
+
+		return result;
 	}
 
 }

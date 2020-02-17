@@ -997,7 +997,21 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 					registDto.setContractEndDayErr(CodeConstant.NFW_VALIDATION_ERROR);
 					debugMessage += " 形式チェック - 契約終了日 - " + registDto.getContractEndDay();
 				}
-				
+				setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+		}
+		// 契約情報
+		if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("contractNo") != null) 
+				&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("contractNo").toString())) {
+			// 契約情報が存在する場合
+			// 経理連携用管理番号
+			if (!CheckUtils.isHalfWidth(registDto.getAssetRegisterNo())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
+				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
 			}
 		}
 		// 形式チェック結果判定
