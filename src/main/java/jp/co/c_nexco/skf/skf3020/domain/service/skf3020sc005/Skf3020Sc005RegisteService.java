@@ -64,7 +64,8 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 
 		if (registDto.getResultMessages() == null) {
 			// 画面遷移(転任者一覧画面へ遷移)
-			TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF3020_SC004, "init");
+//			TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF3020_SC004, "init");
+			TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3020_SC004, "init");
 			registDto.setTransferPageInfo(nextPage);
 		}
 
