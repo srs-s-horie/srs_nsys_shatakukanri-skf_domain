@@ -307,15 +307,15 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 		
 		/** 必須チェック、形式チェックOKなら桁数チェック */
 		if (isCheckOk) {
-			// 部屋番号
-			if (CheckUtils.isMoreThanByteSize(registDto.getRoomNo().trim(), 10)) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1049, "部屋番号", "10");
-				registDto.setRoomNoError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += "　桁数チェック - " + "部屋番号 - " + registDto.getRoomNo();
-			} else {
-				debugMessage += "　部屋番号入力桁数 - " + registDto.getRoomNo().trim().getBytes("MS932").length;
-			}
+//			// 部屋番号
+//			if (CheckUtils.isMoreThanByteSize(registDto.getRoomNo().trim(), 10)) {
+//				isCheckOk = false;
+//				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1049, "部屋番号", "10");
+//				registDto.setRoomNoError(CodeConstant.NFW_VALIDATION_ERROR);
+//				debugMessage += "　桁数チェック - " + "部屋番号 - " + registDto.getRoomNo();
+//			} else {
+//				debugMessage += "　部屋番号入力桁数 - " + registDto.getRoomNo().trim().getBytes("MS932").length;
+//			}
 			
 			// 本来延面積
 			if (CheckUtils.isMoreThanByteSize(registDto.getOriginalMenseki().trim(), 8)) {

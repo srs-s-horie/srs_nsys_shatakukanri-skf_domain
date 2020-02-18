@@ -28,6 +28,7 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfShatakuInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006InitDto;
@@ -55,6 +56,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfBatchUtils skfBatchUtils;
+	@Autowired
+	private SkfShatakuInfoUtils skfShatakuInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -655,7 +658,10 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 保有社宅号室
 		initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
 		// 保有社宅企画
-		initDto.setNowShatakuKikaku(tNyukyoChoshoTsuchi.getNowShatakuKikaku());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuKikaku())) {
+			initDto.setNowShatakuKikaku(
+					skfShatakuInfoUtils.getShatakuKikakuByCode(tNyukyoChoshoTsuchi.getNowShatakuKikaku()));
+		}
 		// 保有社宅面積
 		initDto.setNowShatakuMenseki(tNyukyoChoshoTsuchi.getNowShatakuMenseki());
 

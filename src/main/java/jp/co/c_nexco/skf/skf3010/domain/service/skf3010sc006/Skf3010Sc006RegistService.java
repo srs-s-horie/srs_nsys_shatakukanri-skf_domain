@@ -1116,10 +1116,20 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 				}
 			}
 			
+//			// 経理連携用管理番号
+//			if (!CheckUtils.isAlphabetNumericSymbol(registDto.getAssetRegisterNo())) {
+//				isCheckOk = false;
+//				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
+//				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
+//				debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
+//				// 選択タブインデックス設定：契約情報タブ
+//				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+//			}
+
 			// 経理連携用管理番号
-			if (!CheckUtils.isAlphabetNumericSymbol(registDto.getAssetRegisterNo())) {
+			if (!CheckUtils.isHalfWidth(registDto.getAssetRegisterNo())) {
 				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
 				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
 				debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
 				// 選択タブインデックス設定：契約情報タブ
@@ -1143,10 +1153,19 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 					// 選択タブインデックス設定：基本情報タブ
 					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
 				}
+//				// 経理連携用管理番号
+//				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getParkingAssetRegisterNo())) {
+//					isCheckOk = false;
+//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
+//					registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
+//					debugMessage += " 形式チェック - 駐車場経理連携用管理番号 - " +registDto.getAssetRegisterNo();
+//					// 選択タブインデックス設定：契約情報タブ
+//					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+//				}
 				// 経理連携用管理番号
-				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getParkingAssetRegisterNo())) {
+				if (!CheckUtils.isHalfWidth(registDto.getParkingAssetRegisterNo())) {
 					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
+					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
 					registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
 					debugMessage += " 形式チェック - 駐車場経理連携用管理番号 - " +registDto.getAssetRegisterNo();
 					// 選択タブインデックス設定：契約情報タブ

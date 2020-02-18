@@ -18,6 +18,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc005.Skf3020Sc005UpdateTenninshaInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -91,6 +92,11 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 		if (NfwStringUtils.isEmpty(registDto.getTxtShainMei().trim())) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "txtShainMei" }, MessageIdConstant.E_SKF_1044,
 					"社員氏名");
+			result = false;
+		}
+		if (!CheckUtils.isEmpty(registDto.getTxtNenrei()) && !CheckUtils.isHalfWidth(registDto.getTxtNenrei())) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "txtNenrei" }, MessageIdConstant.E_SKF_1002,
+					"年齢");
 			result = false;
 		}
 

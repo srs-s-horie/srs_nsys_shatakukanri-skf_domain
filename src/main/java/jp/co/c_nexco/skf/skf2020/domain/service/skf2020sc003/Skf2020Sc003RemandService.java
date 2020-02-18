@@ -73,8 +73,11 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 
 			String commentNote = rmdDto.getCommentNote();
 
+			// メールの記載URLは「申請状況一覧画面」
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-					applInfo.get("applShainNo"), CodeConstant.NONE, CodeConstant.NONE);
+					applInfo.get("applShainNo"), CodeConstant.NONE, urlBase);
 			;
 		} else if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
 			ServiceHelper.addErrorResultMessage(rmdDto, null, errorMsg.get("error"));
