@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Objects;
 import com.ibm.icu.text.SimpleDateFormat;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005GetShatakuShainCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005UpdateTenninshaInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
@@ -207,7 +207,7 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 			// 変更先転任者調書データを取得
 			Skf3020TTenninshaChoshoData newTenninshaInfo = skf3020TTenninshaChoshoDataRepository
 					.selectByPrimaryKey(newShainNo);
-			if(newTenninshaInfo != null){
+			if(newTenninshaInfo != null && !Objects.equal(oldShainNo, newShainNo)){
 				//変更先（同一社員番号が既にある）
 				return MessageIdConstant.E_SKF_1020;
 			}
