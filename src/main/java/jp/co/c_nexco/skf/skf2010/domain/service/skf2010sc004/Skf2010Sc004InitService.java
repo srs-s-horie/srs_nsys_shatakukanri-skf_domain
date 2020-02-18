@@ -173,9 +173,10 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
 			// 社宅入居希望等調書の「社宅を必要としない」場合には、社宅入居希望等調書のみ
-			if (skf2010Sc004SharedService.isShatakuTaiyoFuyo(dto.getApplNo())) {
+			if (skf2010Sc004SharedService.isShatakuTaiyoFuyo(dto.getApplNo())
+					&& !CheckUtils.isEqual(applStatus, CodeConstant.STATUS_HININ)) {
 				// 必要としない場合はステータス変更
-				applStatus = CodeConstant.STATUS_SHINSEICHU;
+				applId = CodeConstant.STATUS_SHINSEICHU;
 			}
 
 			// 社宅入居希望等申請
@@ -206,6 +207,15 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				dto.setMaskPattern("PTN_C");
 				displayLevel = 3;
 				dto.setLevel3Open("true");
+				dto.setRepresentBtnFlg("false");
+				break;
+			case CodeConstant.STATUS_HININ:
+			case CodeConstant.STATUS_SHINSACHU:
+				/**
+				 * 差戻し： 社宅入居希望等調書のみ表示（取下げボタン非表示）
+				 */
+				dto.setMaskPattern("PTN_C");
+				dto.setLevel1Open("true");
 				dto.setRepresentBtnFlg("false");
 				break;
 			default:
@@ -305,10 +315,20 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				initDto.setApplUpdateDate(applDate);
 				// 社宅入居希望等調書
 				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
-				// 貸与（予定）社宅等のご案内
-				mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
-				// 備品希望
-				initDto.setBihinKibo(tNyukyoChoshoTsuchi.getBihinKibo());
+				switch (initDto.getApplStatus()) {
+				case CodeConstant.STATUS_KAKUNIN_IRAI:
+				case CodeConstant.STATUS_DOI_ZUMI:
+				case CodeConstant.STATUS_DOI_SHINAI:
+				case CodeConstant.STATUS_SHONIN1:
+				case CodeConstant.STATUS_SHONIN_ZUMI:
+					// 貸与（予定）社宅等のご案内
+					mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
+					// 備品希望
+					initDto.setBihinKibo(tNyukyoChoshoTsuchi.getBihinKibo());
+					break;
+				default:
+					break;
+				}
 
 			}
 		} else if (applId.equals(FunctionIdConstant.R0103)) {

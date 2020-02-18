@@ -16,7 +16,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006AttachedFileAreaAsyncDto;
 
 /**
- * Skf2010Sc006 申請書類承認／差戻し／通知初期表示処理クラス
+ * Skf2010Sc006 申請書類承認／差戻し／通知添付ファイル表示非同期処理クラス
  *
  * @author NEXCOシステムズ
  */
