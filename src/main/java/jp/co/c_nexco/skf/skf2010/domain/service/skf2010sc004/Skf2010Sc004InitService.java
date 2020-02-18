@@ -210,6 +210,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				dto.setRepresentBtnFlg("false");
 				break;
 			case CodeConstant.STATUS_HININ:
+			case CodeConstant.STATUS_SHINSACHU:
 				/**
 				 * 差戻し： 社宅入居希望等調書のみ表示（取下げボタン非表示）
 				 */
