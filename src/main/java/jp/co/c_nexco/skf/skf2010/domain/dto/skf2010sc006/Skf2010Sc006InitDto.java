@@ -7,8 +7,9 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf2010_Sc006画面のInitDto。
- * 
+ * Skf2010Sc006 申請書類承認／差戻し／通知初期表示Dtoクラス
+ *
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

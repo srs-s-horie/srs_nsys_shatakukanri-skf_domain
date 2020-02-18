@@ -3,13 +3,13 @@ package jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf2010Sc006 申請書類承認／差戻し／通知再提示Dtoクラス
+ * Skf2010Sc006 申請書類承認／差戻し／通知 修正依頼Dtoクラス
  *
  * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf2010Sc006RepresentDto extends Skf2010Sc006InitDto {
+public class Skf2010Sc006RevisionDto extends Skf2010Sc006InitDto {
 
 	/**
 	 * シリアルナンバー
