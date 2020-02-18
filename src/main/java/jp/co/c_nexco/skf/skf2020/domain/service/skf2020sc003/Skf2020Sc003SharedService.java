@@ -1101,7 +1101,7 @@ public class Skf2020Sc003SharedService {
 		// なければ備品希望申請の書類管理番号を新規発行
 		if (NfwStringUtils.isEmpty(bihinShinseiApplNo)) {
 			// 備品希望申請用の申請書類管理番号を取得
-			bihinShinseiApplNo = skfShinseiUtils.getApplNo(companyCd, dto.getShainNo(), FunctionIdConstant.R0104);
+			bihinShinseiApplNo = skfShinseiUtils.getBihinKiboShinseiNewApplNo(companyCd, dto.getShainNo());
 
 			Skf2030TBihinKiboShinsei record = getColumnInfoListForBihinKiboShinsei(bihinShinseiApplNo, applDate, applNo,
 					dto);
