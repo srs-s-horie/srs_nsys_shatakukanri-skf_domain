@@ -39,6 +39,9 @@ public class Skf2010CommonDto extends BaseDto {
 	// コメント欄表示フラグ
 	private boolean commentAreaVisibled = true;
 
+	// 差戻し、修正依頼ボタン表示フラグ
+	private boolean revisionRemandBtnFlg = false;
+
 	/** 入居希望申請調書 **/
 	// 社宅必要可否
 	private String taiyoHitsuyo; // 社宅必要可否コード

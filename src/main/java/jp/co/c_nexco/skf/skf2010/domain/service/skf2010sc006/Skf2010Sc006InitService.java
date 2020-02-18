@@ -113,11 +113,12 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	 * @param initDto
 	 */
 	private void setShoninBtnRemove(Skf2010Sc006InitDto initDto) {
-		// 承認者が前の承認者と同一の場合、「再提示」「資料ファイル添付」「承認」「コメント表示」ボタンを非表示にする
+		// ステータスが審査中以外で承認者が前の承認者と同一の場合、「再提示」「資料ファイル添付」「承認」「コメント表示」ボタンを非表示にする
 		Map<String, String> loginUser = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userName = loginUser.get("userName");
 		String roleId = loginUser.get("roleId");
-		if (userName.equals(initDto.getShonin1Name())) {
+		if (userName.equals(initDto.getShonin1Name())
+				&& !CheckUtils.isEqual(initDto.getApplStatus(), CodeConstant.STATUS_SHINSACHU)) {
 			initDto.setShoninBtnViewFlag("false");
 			initDto.setCommentViewFlag("false");
 			initDto.setCommentAreaVisibled(false);
@@ -217,6 +218,11 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 				initDto.setLevel1Open("true");
 				initDto.setLevel2Open("false");
 				initDto.setLevel3Open("false");
+
+				if (!CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSACHU)) {
+					initDto.setRevisionRemandBtnFlg(true);
+				}
+
 				break;
 			case CodeConstant.STATUS_KAKUNIN_IRAI:
 				initDto.setDisplayLevel(2);
@@ -224,6 +230,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 				initDto.setLevel1Open("false");
 				initDto.setLevel2Open("true");
 				initDto.setLevel3Open("false");
+				initDto.setRevisionRemandBtnFlg(true);
 				break;
 			case CodeConstant.STATUS_DOI_ZUMI:
 			case CodeConstant.STATUS_SHONIN:
@@ -240,6 +247,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 					initDto.setLevel3Open("true");
 				}
 				initDto.setDisplayLevel(defaultDisplayLevel);
+				initDto.setRevisionRemandBtnFlg(true);
 				break;
 			case CodeConstant.STATUS_SHONIN_ZUMI:
 				defaultDisplayLevel = 3;
@@ -255,6 +263,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 				}
 				initDto.setDisplayLevel(defaultDisplayLevel);
 				initDto.setMaskPattern("NON");
+				initDto.setRevisionRemandBtnFlg(true);
 				break;
 			default:
 				initDto.setDisplayLevel(1);
@@ -262,6 +271,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 				initDto.setLevel1Open("true");
 				initDto.setLevel2Open("false");
 				initDto.setLevel3Open("false");
+				initDto.setRevisionRemandBtnFlg(true);
 				break;
 			}
 		} else if (CheckUtils.isEqual(initDto.getApplId(), FunctionIdConstant.R0103)) {
