@@ -170,7 +170,8 @@ public class Skf3020Sc004InitService extends BaseServiceAbstract<Skf3020Sc004Ini
 		
 		if(listCount == 0){
 			// 取得レコード0件のワーニング
-			ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
+			//ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
+			//初期表示時はエラー表示しない
 		}else{
 			// 最大行数を設定
 			initDto.setListTableMaxRowCount(listTableMaxRowCount);
