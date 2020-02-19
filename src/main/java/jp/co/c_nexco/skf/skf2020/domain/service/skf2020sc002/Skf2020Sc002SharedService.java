@@ -1971,12 +1971,9 @@ public class Skf2020Sc002SharedService {
 			if (saveNewData(dto, applInfo)) {
 				// 退居社宅がある場合は備品返却の作成
 				if (NfwStringUtils.isNotEmpty(dto.getNowShatakuNo())) {
-					if (dto.getTaikyoYotei() != null && CodeConstant.LEAVE.equals(dto.getTaikyoYotei())
-							&& CodeConstant.BIHIN_HENKYAKU_SURU.equals(dto.getHdnBihinHenkyakuUmu())) {
 						// 備品返却申請テーブル登録処理
 						if (!registrationBihinShinsei(dto, applInfo)) {
 							return false;
-						}
 					}
 				}
 			} else {
