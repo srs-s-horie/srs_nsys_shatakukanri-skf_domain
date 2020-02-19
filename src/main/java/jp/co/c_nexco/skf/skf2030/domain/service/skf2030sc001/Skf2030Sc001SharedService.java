@@ -305,9 +305,9 @@ public class Skf2030Sc001SharedService {
 			Long count = CodeConstant.LONG_ZERO;
 
 			if (bihinInfoList != null && bihinInfoList.size() > 0) {
-				bihinInfoMap = skfGenericCodeUtils.getGenericCode("SKF1051"); // 備品状況
-				bihinApplMap = skfGenericCodeUtils.getGenericCode("SKF1049"); // 備品申請区分
-				bihinAdjustMap = skfGenericCodeUtils.getGenericCode("SKF1144"); // 備品搬入状況
+				bihinInfoMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_EQUIPMENT_STATE); // 備品状況
+				bihinApplMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_APPL_KBN); // 備品申請区分
+				bihinAdjustMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_IN_KBN); // 備品搬入状況
 
 				int keyIndex = 11;
 				// 備品申請情報をレイアウトに合うように整形

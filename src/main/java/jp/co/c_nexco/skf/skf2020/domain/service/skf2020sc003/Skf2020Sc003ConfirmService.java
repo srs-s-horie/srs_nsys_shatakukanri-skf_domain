@@ -6,10 +6,8 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc003;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
@@ -67,7 +65,7 @@ public class Skf2020Sc003ConfirmService extends BaseServiceAbstract<Skf2020Sc003
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC002);
 		tpi.setTransferAttributes(attribute);
-		confDto.setTransferPageInfo(tpi);
+		confDto.setTransferPageInfo(tpi, true);
 
 		return confDto;
 	}

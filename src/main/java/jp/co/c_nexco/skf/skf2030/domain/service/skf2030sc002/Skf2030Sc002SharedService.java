@@ -128,9 +128,9 @@ public class Skf2030Sc002SharedService {
 		boolean bCreateComplete = true;
 
 		// 画面表示用汎用コード取得
-		bihinInfoMap = skfGenericCodeUtils.getGenericCode("SKF1051"); // 備品状況
-		bihinApplMap = skfGenericCodeUtils.getGenericCode("SKF1049"); // 備品申請区分
-		bihinAdjustMap = skfGenericCodeUtils.getGenericCode("SKF1144"); // 備品搬入状況
+		bihinInfoMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_EQUIPMENT_STATE); // 備品状況
+		bihinApplMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_APPL_KBN); // 備品申請区分
+		bihinAdjustMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_IN_KBN); // 備品搬入状況
 
 		// 申請書類履歴取得
 		List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> applHistoryList = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
