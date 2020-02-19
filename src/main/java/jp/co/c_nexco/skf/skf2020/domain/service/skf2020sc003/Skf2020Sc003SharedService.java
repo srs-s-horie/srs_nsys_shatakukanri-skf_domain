@@ -1547,7 +1547,8 @@ public class Skf2020Sc003SharedService {
 		List<Skf2020Sc003GetBihinShinseiInfoExp> bihinShinseiInfoList = new ArrayList<Skf2020Sc003GetBihinShinseiInfoExp>();
 		bihinShinseiInfoList = getBihinShinseiInfo(companyCd, applNo);
 
-		Map<String, String> bihinInfoMap = skfGenericCodeUtils.getGenericCode("SKF1051");
+		Map<String, String> bihinInfoMap = skfGenericCodeUtils
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_EQUIPMENT_STATE);
 		List<Map<String, Object>> bihinShinseiList = new ArrayList<Map<String, Object>>();
 		if (bihinShinseiInfoList != null && bihinShinseiInfoList.size() > 0) {
 			for (Skf2020Sc003GetBihinShinseiInfoExp bihinShinseiInfo : bihinShinseiInfoList) {
