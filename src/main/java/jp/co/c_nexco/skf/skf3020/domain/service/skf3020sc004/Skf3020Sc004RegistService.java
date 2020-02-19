@@ -421,78 +421,10 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			LogUtils.debugByMsg("入退居予定データ取得結果NULL");
 			// - 提示データ作成区分
 			yoteiData.setTeijiCreateKbn("0");
-			// - 転任者調書発令日
-			yoteiData.setDataIssuedDate("");
 			
 			updateCount = skf3021TNyutaikyoYoteiDataRepository.insertSelective(yoteiData);
 		}else{
-			// 入退居予定データを更新する
-			// 更新の場合、取得したデータを設定して更新する（出ないと、デフォルト値で更新されてしまうみたい）
-			// - 入居予定日
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getNyukyoYoteiDate())){
-				yoteiData.setNyukyoYoteiDate(nyutaikyoInfo.getNyukyoYoteiDate());
-			}
-			// - 退居予定日
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getTaikyoYoteiDate())){
-				yoteiData.setTaikyoYoteiDate(nyutaikyoInfo.getTaikyoYoteiDate());
-			}
-			// - 用途
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getAuse())){
-				yoteiData.setAuse(nyutaikyoInfo.getAuse());
-			}
-			// - 駐車場区画１開始日
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getParking1StartDate())){
-				yoteiData.setParking1StartDate(nyutaikyoInfo.getParking1StartDate());
-			}
-			// - 駐車場区画２開始日
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getParking2StartDate())){
-				yoteiData.setParking2StartDate(nyutaikyoInfo.getParking2StartDate());
-			}
-			// - 駐車希望台数
-			if(nyutaikyoInfo.getParkingRequestSu() != null){
-				yoteiData.setParkingRequestSu(nyutaikyoInfo.getParkingRequestSu());
-			}
-			// - 入退居申請状況区分
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getNyutaikyoApplStatusKbn())){
-				yoteiData.setNyutaikyoApplStatusKbn(nyutaikyoInfo.getNyutaikyoApplStatusKbn());
-			}
-			// - 入退居申請督促日
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getNyutaikyoApplUrgeDate())){
-				yoteiData.setNyutaikyoApplUrgeDate(nyutaikyoInfo.getNyutaikyoApplUrgeDate());
-			}
-			// - 特殊事情
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getTokushuJijo())){
-				yoteiData.setTokushuJijo(nyutaikyoInfo.getTokushuJijo());
-			}
-			// - 申請書類管理番号
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getApplNo())){
-				yoteiData.setApplNo(nyutaikyoInfo.getApplNo());
-			}
-			// - 申請日
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getSinseiDate())){
-				yoteiData.setSinseiDate(nyutaikyoInfo.getSinseiDate());
-			}
-			// - 提示データ作成区分
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getTeijiCreateKbn())){
-				yoteiData.setTeijiCreateKbn(nyutaikyoInfo.getTeijiCreateKbn());
-			}
-			// - 提示番号
-			if(nyutaikyoInfo.getTeijiNo() != null){
-				yoteiData.setTeijiNo(nyutaikyoInfo.getTeijiNo());
-			}
-			// - 転任者調書発令日
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getDataIssuedDate())){
-				yoteiData.setDataIssuedDate(nyutaikyoInfo.getDataIssuedDate());
-			}
-			// - 現所属
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getNowAffiliation())){
-				yoteiData.setNowAffiliation(nyutaikyoInfo.getNowAffiliation());
-			}
-			// - 新所属
-			if(NfwStringUtils.isNotEmpty(nyutaikyoInfo.getNewAffiliation())){
-				yoteiData.setNewAffiliation(nyutaikyoInfo.getNewAffiliation());
-			}
-			
+			// 入退居予定データを更新する	
 			updateCount = skf3021TNyutaikyoYoteiDataRepository.updateByPrimaryKeySelective(yoteiData);
 		}
 		
