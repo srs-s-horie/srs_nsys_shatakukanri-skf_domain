@@ -28,7 +28,6 @@ import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
@@ -132,7 +131,7 @@ public class Skf2050Sc002SharedService {
 		Map<String, String> bihinStatusMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHINSTATUS_KBN);
 		Map<String, String> bihinAdjustMap = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHIN_ADJUST_KUBUN);
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_IN_KBN);
 
 		bihinShinseiList = skfBihinInfoUtils.getBihinInfo(companyCd, applNo);
 		List<Map<String, String>> bihinList = new ArrayList<Map<String, String>>();
