@@ -587,75 +587,96 @@ public class Skf2030Sc001SharedService {
 			btnDisabled = true;
 		}
 
-		String bihinStateText = bihinInfoMap.get(bihinInfo.getBihinState());
+		String bihinState = bihinInfo.getBihinState();
+		String bihinAdjust = bihinInfo.getBihinAdjust();
+
+		String bihinStateText = bihinInfoMap.get(bihinState);
 		String bihinApplText = bihinApplMap.get(bihinAppl);
-		String bihinAdjustText = bihinAdjustMap.get(bihinInfo.getBihinAdjust());
+		String bihinAdjustText = bihinAdjustMap.get(bihinAdjust);
 		if (NfwStringUtils.isEmpty(bihinAdjustText)) {
 			bihinAdjustText = CodeConstant.HYPHEN;
 		}
 
 		switch (bihinCd) {
 		case CodeConstant.BIHIN_WASHER:
-			dto.setBihinState11(bihinStateText);
+			dto.setBihinState11(bihinState);
+			dto.setBihinStateText11(bihinStateText);
 			dto.setBihinAppl11(bihinAppl);
 			dto.setBihinApplText11(bihinApplText);
-			dto.setBihinAdjust11(bihinAdjustText);
+			dto.setBihinAdjust11(bihinAdjust);
+			dto.setBihinAdjustText11(bihinAdjustText);
 			dto.setBihinDisabled11(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_FREEZER:
-			dto.setBihinState12(bihinStateText);
+			dto.setBihinState12(bihinState);
+			dto.setBihinStateText12(bihinStateText);
 			dto.setBihinAppl12(bihinAppl);
 			dto.setBihinApplText12(bihinApplText);
-			dto.setBihinAdjust12(bihinAdjustText);
+			dto.setBihinAdjust12(bihinAdjust);
+			dto.setBihinAdjustText12(bihinAdjustText);
 			dto.setBihinDisabled12(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_OVEN:
-			dto.setBihinState13(bihinStateText);
+			dto.setBihinState13(bihinState);
+			dto.setBihinStateText13(bihinStateText);
 			dto.setBihinAppl13(bihinAppl);
 			dto.setBihinApplText13(bihinApplText);
-			dto.setBihinAdjust13(bihinAdjustText);
+			dto.setBihinAdjust13(bihinAdjust);
+			dto.setBihinAdjustText13(bihinAdjustText);
 			dto.setBihinDisabled13(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_CLENER:
-			dto.setBihinState14(bihinStateText);
+			dto.setBihinState14(bihinState);
+			dto.setBihinStateText14(bihinStateText);
 			dto.setBihinAppl14(bihinAppl);
 			dto.setBihinApplText14(bihinApplText);
-			dto.setBihinAdjust14(bihinAdjustText);
+			dto.setBihinAdjust14(bihinAdjust);
+			dto.setBihinAdjustText14(bihinAdjustText);
 			dto.setBihinDisabled14(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_RICE_COOKER:
-			dto.setBihinState15(bihinStateText);
+			dto.setBihinState15(bihinState);
+			dto.setBihinStateText15(bihinStateText);
 			dto.setBihinAppl15(bihinAppl);
 			dto.setBihinApplText15(bihinApplText);
-			dto.setBihinAdjust15(bihinAdjustText);
+			dto.setBihinAdjust15(bihinAdjust);
+			dto.setBihinAdjustText15(bihinAdjustText);
 			dto.setBihinDisabled15(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_TV:
-			dto.setBihinState16(bihinStateText);
+			dto.setBihinState16(bihinState);
+			dto.setBihinStateText16(bihinStateText);
 			dto.setBihinAppl16(bihinAppl);
 			dto.setBihinApplText16(bihinApplText);
-			dto.setBihinAdjust16(bihinAdjustText);
+			dto.setBihinAdjust16(bihinAdjust);
+			dto.setBihinAdjustText16(bihinAdjustText);
 			dto.setBihinDisabled16(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_TV_STANDS:
-			dto.setBihinState17(bihinStateText);
+			dto.setBihinState17(bihinState);
+			dto.setBihinStateText17(bihinStateText);
 			dto.setBihinAppl17(bihinAppl);
 			dto.setBihinApplText17(bihinApplText);
-			dto.setBihinAdjust17(bihinAdjustText);
+			dto.setBihinAdjust17(bihinAdjust);
+			dto.setBihinAdjustText17(bihinAdjustText);
 			dto.setBihinDisabled17(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_KOTATSU:
-			dto.setBihinState18(bihinStateText);
+			dto.setBihinState18(bihinState);
+			dto.setBihinStateText18(bihinStateText);
 			dto.setBihinAppl18(bihinAppl);
 			dto.setBihinApplText18(bihinApplText);
-			dto.setBihinAdjust18(bihinAdjustText);
+			dto.setBihinAdjust18(bihinAdjust);
+			dto.setBihinAdjustText18(bihinAdjustText);
 			dto.setBihinDisabled18(btnDisabled);
 			break;
 		case CodeConstant.BIHIN_KICHEN_CABINET:
-			dto.setBihinState19(bihinStateText);
+			dto.setBihinState19(bihinState);
+			dto.setBihinStateText19(bihinStateText);
 			dto.setBihinAppl19(bihinAppl);
 			dto.setBihinApplText19(bihinApplText);
-			dto.setBihinAdjust19(bihinAdjustText);
+			dto.setBihinAdjust19(bihinAdjust);
+			dto.setBihinAdjustText19(bihinAdjustText);
 			dto.setBihinDisabled19(btnDisabled);
 			break;
 		}
