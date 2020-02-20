@@ -254,7 +254,12 @@ public class Skf3021Sc001SharedService {
 			tmpMap.put("hdnParking2StartDate", tmpData.getParking2StartDate());
 			tmpMap.put("hdnUpdateDateNtkyo", tmpData.getUpdateDateNtk());
 			tmpMap.put("hdnUpdateDateTenninsha", tmpData.getUpdateDateTc());
-
+/* AS 結合1041対応 */
+			// 現所属
+			tmpMap.put("hdnNowAffiliation", tmpData.getNowAffiliation());
+			// 新所属
+			tmpMap.put("hdnNewAffiliation", tmpData.getNewAffiliation());
+/* AE 結合1041対応 */
 			//提示チェックボックスの活性を設定
 			boolean chkSlSentaku = false;
 			if(RENKEI_ARI.equals(jssLinkFlg)){

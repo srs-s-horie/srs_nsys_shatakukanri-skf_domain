@@ -5,11 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2050Sc001.Skf2050Sc001GetTaikyobiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2050Sc001.Skf2050Sc001GetTaikyobiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
@@ -145,7 +143,7 @@ public class Skf2050Sc001SharedService {
 		Map<String, String> bihinStatusMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHINSTATUS_KBN);
 		Map<String, String> bihinAdjustMap = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHIN_ADJUST_KUBUN);
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_IN_KBN);
 
 		bihinShinseiList = skfBihinInfoUtils.getBihinInfo(companyCd, applNo);
 		List<Map<String, String>> bihinList = new ArrayList<Map<String, String>>();
