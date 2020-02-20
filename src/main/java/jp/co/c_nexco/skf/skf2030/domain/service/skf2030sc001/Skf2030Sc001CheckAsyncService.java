@@ -5,11 +5,8 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
@@ -18,7 +15,6 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc001.Skf2030Sc001CheckAsyncDto;
@@ -93,12 +89,6 @@ public class Skf2030Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 					"搬入完了日");
 			result = false;
 		}
-		if (!SkfCheckUtils.isSkfDateFormat(completeDate, CheckUtils.DateFormatType.YYYYMMDD)) {
-			ServiceHelper.addErrorResultMessage(chkDto, new String[] { "completionDay" }, MessageIdConstant.E_SKF_1055,
-					"搬入完了日");
-			result = false;
-		}
-
 		return result;
 	}
 
