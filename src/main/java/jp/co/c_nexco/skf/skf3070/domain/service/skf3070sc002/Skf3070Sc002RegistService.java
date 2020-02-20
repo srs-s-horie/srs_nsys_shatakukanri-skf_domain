@@ -10,6 +10,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3070TOwnerInfo;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Sc002.Skf3070Sc002UpdateOwnerInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3070TOwnerInfoRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -173,30 +174,34 @@ public class Skf3070Sc002RegistService extends BaseServiceAbstract<Skf3070Sc002R
 		boolean result = true;
 
 		// 氏名又は名称
+		LogUtils.debugByMsg("氏名又は名称 　桁数チェック：" + registDto.getOwnerName());
 		if (NfwStringUtils.isNotBlank(registDto.getOwnerName())
-				&& CheckUtils.isMoreThanByteSize(registDto.getOwnerName().trim(), 60)) {
+				&& CheckUtils.isMoreThanByteSize(registDto.getOwnerName().trim(), 120)) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "ownerName" }, MessageIdConstant.E_SKF_1071,
-					"氏名又は名称", "30");
+					"氏名又は名称", "60");
 			result = false;
 		}
 
 		// 氏名又は名称（フリガナ）
+		LogUtils.debugByMsg("氏名又は名称（フリガナ） 　桁数チェック：" + registDto.getOwnerNameKk());
 		if (NfwStringUtils.isNotBlank(registDto.getOwnerNameKk())
-				&& CheckUtils.isMoreThanByteSize(registDto.getOwnerNameKk().trim(), 80)) {
+				&& CheckUtils.isMoreThanByteSize(registDto.getOwnerNameKk().trim(), 120)) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "ownerNameKk" }, MessageIdConstant.E_SKF_1071,
-					"氏名又は名称（フリガナ）", "40");
+					"氏名又は名称（フリガナ）", "60");
 			result = false;
 		}
 
 		// 住所
+		LogUtils.debugByMsg("住所 　桁数チェック：" + registDto.getAddress());
 		if (NfwStringUtils.isNotBlank(registDto.getAddress())
-				&& CheckUtils.isMoreThanByteSize(registDto.getAddress().trim(), 100)) {
+				&& CheckUtils.isMoreThanByteSize(registDto.getAddress().trim(), 120)) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "address" }, MessageIdConstant.E_SKF_1071,
-					"住所", "50");
+					"住所", "60");
 			result = false;
 		}
 
 		// 個人番号(督促状況）
+		LogUtils.debugByMsg("個人番号(督促状況） 　桁数チェック：" + registDto.getAcceptStatus());
 		if (NfwStringUtils.isNotBlank(registDto.getAcceptStatus())
 				&& CheckUtils.isMoreThanByteSize(registDto.getAcceptStatus().trim(), 40)) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "acceptStatus" },
@@ -205,6 +210,7 @@ public class Skf3070Sc002RegistService extends BaseServiceAbstract<Skf3070Sc002R
 		}
 
 		// 備考
+		LogUtils.debugByMsg("備考 　桁数チェック：" + registDto.getRemarks());
 		if (NfwStringUtils.isNotBlank(registDto.getRemarks())
 				&& CheckUtils.isMoreThanByteSize(registDto.getRemarks().trim(), 800)) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "remarks" }, MessageIdConstant.E_SKF_1071,
