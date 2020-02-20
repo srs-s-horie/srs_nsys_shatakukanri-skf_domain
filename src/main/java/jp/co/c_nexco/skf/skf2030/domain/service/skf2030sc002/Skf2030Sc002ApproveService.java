@@ -18,7 +18,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002ApproveDto;
 
 /**
- * Skf2030Sc002 備品希望申請（アウトソース用)申請処理クラス
+ * Skf2030Sc002 備品希望申請（アウトソース用)承認処理クラス
  *
  * @author NEXCOシステムズ
  */

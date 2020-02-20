@@ -271,9 +271,9 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 				// Mapからキーをもとに値をとる
 				// - 社員番号
 				String shaiNoStr = listTableData.get("col4").toString();
-				int indexAster = shaiNoStr.indexOf("*");
+				int indexAster = shaiNoStr.indexOf(CodeConstant.ASTERISK);
 				if(indexAster >= 0){
-					shaiNoStr = shaiNoStr.replace("*", "");
+					shaiNoStr = shaiNoStr.replace(CodeConstant.ASTERISK, "");
 				}
 				// - 社員氏名
 				String shaiNameStr = listTableData.get("col5").toString();
