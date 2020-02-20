@@ -639,7 +639,7 @@ public class Skf2020Sc002SharedService {
 				LogUtils.debugByMsg("返却立会希望日(時)" + nyukyoChoshoList.getSessionTime());
 				dto.setSessionTime(nyukyoChoshoList.getSessionTime());
 				dto.setDdlReturnWitnessRequestDateList(skfDropDownUtils.getGenericForDoropDownList(
-						FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), true));
+						FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), false));
 			}
 			// 連絡先
 			if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getRenrakuSaki())) {
@@ -1567,7 +1567,7 @@ public class Skf2020Sc002SharedService {
 		// 返却立会希望日(時)ドロップダウンリストの設定
 		List<Map<String, Object>> returnWitnessRequestDateList = new ArrayList<Map<String, Object>>();
 		returnWitnessRequestDateList.addAll(skfDropDownUtils.getGenericForDoropDownList(
-				FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), true));
+				FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), false));
 		returnMap.put(KEY_SESSION_TIME_LIST, returnWitnessRequestDateList);
 
 		return returnMap;
@@ -1737,7 +1737,12 @@ public class Skf2020Sc002SharedService {
 			dto.setShatakuJotai(null);
 
 			// 退居理由
+			dto.setTaikyoRiyuKbn(null);
+			dto.setDdlTaikyoRiyuKbnList(null);
 			dto.setTaikyoRiyu(null);
+			LogUtils.debugByMsg(Msg + "退居理由区分" + dto.getTaikyoRiyuKbn());
+			LogUtils.debugByMsg(Msg + "退居理由ドロップダウン" + dto.getDdlTaikyoRiyuKbnList());
+			LogUtils.debugByMsg(Msg + "退居理由" + dto.getTaikyoRiyu());
 
 			// 退居後の連絡先
 			dto.setTaikyogoRenrakuSaki(null);
@@ -1971,9 +1976,9 @@ public class Skf2020Sc002SharedService {
 			if (saveNewData(dto, applInfo)) {
 				// 退居社宅がある場合は備品返却の作成
 				if (NfwStringUtils.isNotEmpty(dto.getNowShatakuNo())) {
-						// 備品返却申請テーブル登録処理
-						if (!registrationBihinShinsei(dto, applInfo)) {
-							return false;
+					// 備品返却申請テーブル登録処理
+					if (!registrationBihinShinsei(dto, applInfo)) {
+						return false;
 					}
 				}
 			} else {
@@ -3099,8 +3104,8 @@ public class Skf2020Sc002SharedService {
 		dto.setShatakuJotai(dto.getShatakuJotai());
 
 		// 退居理由
-		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils
-				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
+		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils.getGenericForDoropDownList(
+				FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
 		dto.setTaikyoRiyu(dto.getTaikyoRiyu());
 
 		// 連絡先
@@ -3112,7 +3117,7 @@ public class Skf2020Sc002SharedService {
 		// 返却立会希望日
 		dto.setSessionDay(dto.getSessionDay());
 		dto.setDdlReturnWitnessRequestDateList(skfDropDownUtils.getGenericForDoropDownList(
-				FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), true));
+				FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), false));
 
 		// 連絡先
 		dto.setRenrakuSaki(dto.getRenrakuSaki());
