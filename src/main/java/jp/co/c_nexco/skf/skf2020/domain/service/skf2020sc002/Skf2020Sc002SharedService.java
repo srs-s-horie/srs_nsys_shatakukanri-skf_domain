@@ -2669,6 +2669,7 @@ public class Skf2020Sc002SharedService {
 			if (NfwStringUtils.isNotEmpty(dto.getSessionDay())) {
 				setValue.setSessionDay(dto.getSessionDay().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
 			}
+			// 返却立会希望日(時間)
 			setValue.setSessionTime(dto.getSessionTime());
 			// 連絡先
 			setValue.setRenrakuSaki(dto.getRenrakuSaki());
