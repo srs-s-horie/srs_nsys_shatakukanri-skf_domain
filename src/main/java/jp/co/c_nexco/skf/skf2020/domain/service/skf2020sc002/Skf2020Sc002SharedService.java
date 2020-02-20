@@ -3105,7 +3105,7 @@ public class Skf2020Sc002SharedService {
 
 		// 退居理由
 		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils.getGenericForDoropDownList(
-				FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), false));
+				FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
 		dto.setTaikyoRiyu(dto.getTaikyoRiyu());
 
 		// 連絡先
@@ -3117,7 +3117,7 @@ public class Skf2020Sc002SharedService {
 		// 返却立会希望日
 		dto.setSessionDay(dto.getSessionDay());
 		dto.setDdlReturnWitnessRequestDateList(skfDropDownUtils.getGenericForDoropDownList(
-				FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), true));
+				FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, dto.getSessionTime(), false));
 
 		// 連絡先
 		dto.setRenrakuSaki(dto.getRenrakuSaki());
