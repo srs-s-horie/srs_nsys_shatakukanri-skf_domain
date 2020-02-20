@@ -292,6 +292,7 @@ public class Skf2030Sc002SharedService {
 
 			if (bihinInfoList != null && bihinInfoList.size() > 0) {
 				boolean isBihinAppl = false;
+				int bihinIndex = 11;
 
 				List<Skf2030Sc002GetTeijiBihinInfoExp> teijiBihinList = new ArrayList<Skf2030Sc002GetTeijiBihinInfoExp>();
 				teijiBihinList = getTeijiBihinInfo(shainNo, CodeConstant.SYS_NYUKYO_KBN);
@@ -318,6 +319,8 @@ public class Skf2030Sc002SharedService {
 					}
 
 					Map<String, String> bihinMap = setBihinData(bihinInfo);
+					bihinMap.put("bihinIndex", String.valueOf(bihinIndex));
+					bihinIndex++;
 					bihinList.add(bihinMap);
 				}
 				// 「申請する」セットフラグ
@@ -416,9 +419,12 @@ public class Skf2030Sc002SharedService {
 
 		Map<String, String> bihinMap = new HashMap<String, String>();
 		bihinMap.put("bihinName", bihinInfo.getBihinName());
-		bihinMap.put("bihinState", bihinStateText);
-		bihinMap.put("bihinAppl", bihinApplText);
-		bihinMap.put("bihinAdjust", bihinAdjustText);
+		bihinMap.put("bihinState", bihinInfo.getBihinState());
+		bihinMap.put("bihinAppl", bihinAppl);
+		bihinMap.put("bihinAdjust", bihinInfo.getBihinAdjust());
+		bihinMap.put("bihinStateText", bihinStateText);
+		bihinMap.put("bihinApplText", bihinApplText);
+		bihinMap.put("bihinAdjustText", bihinAdjustText);
 
 		return bihinMap;
 	}
@@ -782,36 +788,58 @@ public class Skf2030Sc002SharedService {
 			updData.setApplNo(applNo);
 			updData.setBihinCd(bihinCd);
 			String bihinAppl = CodeConstant.NONE;
+			String bihinState = CodeConstant.NONE;
+			String bihinAdjust = CodeConstant.NONE;
 			switch (bihinCd) {
 			case CodeConstant.BIHIN_WASHER:
 				bihinAppl = dto.getBihinAppl11();
+				bihinState = dto.getBihinState11();
+				bihinAdjust = dto.getBihinAdjust11();
 				break;
 			case CodeConstant.BIHIN_FREEZER:
 				bihinAppl = dto.getBihinAppl12();
+				bihinState = dto.getBihinState12();
+				bihinAdjust = dto.getBihinAdjust12();
 				break;
 			case CodeConstant.BIHIN_OVEN:
 				bihinAppl = dto.getBihinAppl13();
+				bihinState = dto.getBihinState13();
+				bihinAdjust = dto.getBihinAdjust13();
 				break;
 			case CodeConstant.BIHIN_CLENER:
 				bihinAppl = dto.getBihinAppl14();
+				bihinState = dto.getBihinState14();
+				bihinAdjust = dto.getBihinAdjust14();
 				break;
 			case CodeConstant.BIHIN_RICE_COOKER:
 				bihinAppl = dto.getBihinAppl15();
+				bihinState = dto.getBihinState15();
+				bihinAdjust = dto.getBihinAdjust15();
 				break;
 			case CodeConstant.BIHIN_TV:
 				bihinAppl = dto.getBihinAppl16();
+				bihinState = dto.getBihinState16();
+				bihinAdjust = dto.getBihinAdjust16();
 				break;
 			case CodeConstant.BIHIN_TV_STANDS:
 				bihinAppl = dto.getBihinAppl17();
+				bihinState = dto.getBihinState17();
+				bihinAdjust = dto.getBihinAdjust17();
 				break;
 			case CodeConstant.BIHIN_KOTATSU:
 				bihinAppl = dto.getBihinAppl18();
+				bihinState = dto.getBihinState18();
+				bihinAdjust = dto.getBihinAdjust18();
 				break;
 			case CodeConstant.BIHIN_KICHEN_CABINET:
 				bihinAppl = dto.getBihinAppl19();
+				bihinState = dto.getBihinState19();
+				bihinAdjust = dto.getBihinAdjust19();
 				break;
 			}
 			updData.setBihinAppl(bihinAppl);
+			updData.setBihinState(bihinState);
+			updData.setBihinAdjust(bihinAdjust);
 			if (!updateBihinInfo(updData)) {
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 				return false;
