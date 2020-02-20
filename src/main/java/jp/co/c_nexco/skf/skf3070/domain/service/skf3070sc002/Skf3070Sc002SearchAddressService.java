@@ -29,6 +29,8 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
+	private Skf3070Sc002SharedService skf3070Sc002SheardService;
+	@Autowired
 	private SkfGetInfoUtilsGetPostalCodeAddressExpRepository skfGetInfoUtilsGetPostalCodeAddressExpRepository;
 
 	/**
@@ -49,6 +51,8 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 			// 郵便番号と住所が未入力の場合
 			ServiceHelper.addErrorResultMessage(dto, new String[] { "zipCode" }, MessageIdConstant.E_SKF_1048, "郵便番号");
 			ServiceHelper.addErrorResultMessage(dto, new String[] { "address" }, MessageIdConstant.E_SKF_1048, "住所");
+			// ドロップダウンリストを再検索して処理を終了する
+			skf3070Sc002SheardService.getDropDownList(dto);
 			return dto;
 		}
 
@@ -63,6 +67,8 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 			// 該当する郵便番号が無かった場合
 			if (resultEntity == null) {
 				ServiceHelper.addErrorResultMessage(dto, new String[] { "zipCode" }, MessageIdConstant.E_SKF_1047);
+				// ドロップダウンリストを再検索して処理を終了する
+				skf3070Sc002SheardService.getDropDownList(dto);
 			}
 		} else if (NfwStringUtils.isNotEmpty(dto.getAddress())) {
 			// 「郵便番号」が未入力で、「住所」が入力されている場合、住所で郵便番号を検索
@@ -73,6 +79,8 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 			// 該当する住所が無かった場合
 			if (resultEntity == null) {
 				ServiceHelper.addErrorResultMessage(dto, new String[] { "address" }, MessageIdConstant.E_SKF_2019);
+				// ドロップダウンリストを再検索して処理を終了する
+				skf3070Sc002SheardService.getDropDownList(dto);
 			}
 		}
 
