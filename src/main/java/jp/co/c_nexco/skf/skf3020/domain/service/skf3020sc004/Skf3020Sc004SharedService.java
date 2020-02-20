@@ -193,7 +193,7 @@ public class Skf3020Sc004SharedService {
 					takingDateStr = null;
 				}
 			}
-			tmpMap.put("col11", HtmlUtils.htmlEscape(takingDateStr));			
+			tmpMap.put("col11", HtmlUtils.htmlEscape(takingDateStr));
 			
 			// 入退居予定作成区分
 			// 汎用コードに変更
@@ -201,7 +201,12 @@ public class Skf3020Sc004SharedService {
 			if (tmpData.getNyutaikyoYoteiKbn() != null) {
 				NyutaikyoYoteiKbn = genericCodeMapNyutaikyoYoteiKbn.get(tmpData.getNyutaikyoYoteiKbn());
 			}			
-			tmpMap.put("col12", NyutaikyoYoteiKbn);			
+			tmpMap.put("col12", NyutaikyoYoteiKbn);
+			
+			//各フラグ取得値
+			tmpMap.put("col17", tmpData.getNyukyoFlg());
+			tmpMap.put("col18", tmpData.getTaikyoFlg());
+			tmpMap.put("col19", tmpData.getHenkouFlg());
 			
 			// 社員番号
             //社員番号変更フラグが｢1｣の場合、社員番号の末尾に｢*｣を付与する。
@@ -295,10 +300,7 @@ public class Skf3020Sc004SharedService {
 			// 更新日時
 			tmpMap.put("col16", tmpData.getUpdateDateStr());
 			
-			//各フラグ取得値
-			tmpMap.put("col17", tmpData.getNyukyoFlg());
-			tmpMap.put("col18", tmpData.getTaikyoFlg());
-			tmpMap.put("col19", tmpData.getHenkouFlg());
+
 
 			setViewList.add(tmpMap);
 		}
