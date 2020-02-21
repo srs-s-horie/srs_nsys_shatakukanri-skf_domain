@@ -78,9 +78,9 @@ public class Skf3020Sc001InitService extends BaseServiceAbstract<Skf3020Sc001Ini
 		// 社員情報の設定
 		// - 社員番号
 		String shaiNoStr = initDto.getHdnRowShainNo();
-		int indexAster = shaiNoStr.indexOf("*");
+		int indexAster = shaiNoStr.indexOf(CodeConstant.ASTERISK);
 		if(indexAster >= 0){
-			shaiNoStr = shaiNoStr.replace("*", "");
+			shaiNoStr = shaiNoStr.replace(CodeConstant.ASTERISK, "");
 		}		
 		initDto.setShainNo(shaiNoStr);
 		

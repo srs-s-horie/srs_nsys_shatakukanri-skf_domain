@@ -81,7 +81,7 @@ public class Skf3050Sc001SharedService {
 			//社員番号
 			String shainNo =  tmpData.getShainNo();
 			if("1".equals(flg)){
-				//'旧社員番号「社員番号＋"*"」で表示する
+				//'旧社員番号「社員番号＋"＊"」で表示する
 				shainNo = shainNo + CodeConstant.ASTERISK;
 			}
 			tmpMap.put("colShainNo", shainNo);

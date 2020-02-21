@@ -61,8 +61,6 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
     @Value("${skf.common.validate_error}")
     private String validationErrorCode;	
     
-    private String ASTERISK = "*";
-    
     private String AGE_40 = "40";
     
     /** メールテンプレートID */
@@ -77,7 +75,6 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
 	 * @throws Exception
 	 *             例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3060Sc001SendMailDto index(Skf3060Sc001SendMailDto sendMailDto) throws Exception {
@@ -249,7 +246,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
         	String mailAddress = "";
         	String shainNoShape = "";
         	String checkAsterisk = shainNo.substring(0, shainNo.length() - 1);
-        	if(ASTERISK.equals(checkAsterisk)){
+        	if(CodeConstant.ASTERISK.equals(checkAsterisk)){
         		// 末尾に*がある
         		shainNoShape = shainNo.substring(shainNo.length() - 2);
         	}else{
