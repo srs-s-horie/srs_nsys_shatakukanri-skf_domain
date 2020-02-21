@@ -149,6 +149,8 @@ public class Skf3020Sc004DeleteService extends BaseServiceAbstract<Skf3020Sc004D
 
 		int delCount = 0;
 		
+		String shainNo = dto.getHdnRowShainNo().replace(CodeConstant.ASTERISK ,"");
+		
 		// 日付変換
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 		//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -161,15 +163,15 @@ public class Skf3020Sc004DeleteService extends BaseServiceAbstract<Skf3020Sc004D
 		}
 		
 		// 排他チェック
-		Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository.selectByPrimaryKey(dto.getHdnRowShainNo());
+		Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository.selectByPrimaryKey(shainNo);
 		if(tenninshaInfo == null){
 			LogUtils.debugByMsg("転任者調書データ取得結果NULL");
 			return -1;
 		}
-		super.checkLockException(mapDate, tenninshaInfo.getUpdateDate());			
+		super.checkLockException(mapDate, tenninshaInfo.getUpdateDate());
 		
 		// 転任者調書データ削除
-		delCount = skf3020TTenninshaChoshoDataRepository.deleteByPrimaryKey(dto.getHdnRowShainNo());
+		delCount = skf3020TTenninshaChoshoDataRepository.deleteByPrimaryKey(shainNo);
 	
 		return delCount;
 	}
