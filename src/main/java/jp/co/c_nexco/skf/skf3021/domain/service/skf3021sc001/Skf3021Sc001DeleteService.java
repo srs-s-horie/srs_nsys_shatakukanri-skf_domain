@@ -133,7 +133,7 @@ public class Skf3021Sc001DeleteService extends BaseServiceAbstract<Skf3021Sc001D
 		}
 		
 		//削除処理
-		int res = deleteNyutaikyoYoteiInfo(deleteDto.getDelShainNo(),
+		int res = deleteNyutaikyoYoteiInfo(deleteDto.getDelShainNo().replace(CodeConstant.ASTERISK, ""),
 				deleteDto.getDelNyuTaikyoKbn(), deleteDto.getDelApplNo(), CodeConstant.C001, 
 				nyutaikyoYoteiUpdateDate, tenninshaChoshoUpdateDate);
 		

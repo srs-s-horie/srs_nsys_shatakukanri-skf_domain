@@ -22,7 +22,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyu;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyuKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiData;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiDataKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetGenShatakuInfoExpRepository;
@@ -65,8 +64,6 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	@Autowired
 	private Skf1010MTokyuRepository skf1010MTokyuRepository;
 	@Autowired
-	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
-	@Autowired
 	private Skf3021TNyutaikyoYoteiDataRepository skf3021TNyutaikyoYoteiDataRepository;
 	@Autowired
 	private Skf3021Sc002GetGenShatakuInfoExpRepository skf3021Sc002GetGenShatakuInfoExpRepository;
@@ -77,8 +74,6 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	
 	//社員番号変更フラグ
 	private static final String SHAIN_NO_CHANGE_FLG = "1";
-	//社員番号変更フラグの値
-	private static final String DATA_SHAIN_NO_CHANGE_FLG = "*";
 	//年齢
 	private static final String DATA_NENREI = "歳";
 	//面積の単位
