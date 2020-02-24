@@ -22,7 +22,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyu;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MTokyuKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiData;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiDataKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Sc002.Skf3021Sc002GetGenShatakuInfoExpRepository;
@@ -65,8 +64,6 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	@Autowired
 	private Skf1010MTokyuRepository skf1010MTokyuRepository;
 	@Autowired
-	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
-	@Autowired
 	private Skf3021TNyutaikyoYoteiDataRepository skf3021TNyutaikyoYoteiDataRepository;
 	@Autowired
 	private Skf3021Sc002GetGenShatakuInfoExpRepository skf3021Sc002GetGenShatakuInfoExpRepository;
@@ -77,8 +74,6 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 	
 	//社員番号変更フラグ
 	private static final String SHAIN_NO_CHANGE_FLG = "1";
-	//社員番号変更フラグの値
-	private static final String DATA_SHAIN_NO_CHANGE_FLG = "*";
 	//年齢
 	private static final String DATA_NENREI = "歳";
 	//面積の単位
@@ -150,7 +145,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		//申請書類管理番号の取得
 		String applNo = initDto.getHdnRowApplNo();
 		//社員番号の取得
-		String shainNo = initDto.getHdnRowShainNo().replace("*", "");
+		String shainNo = initDto.getHdnRowShainNo().replace(CodeConstant.ASTERISK, "");
 		//入退居区分の取得
 		String nyutaikyokbn = initDto.getHdnRowNyutaikyoKbn();
 		
@@ -199,7 +194,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		if(dt_TSUCHI.getDokyoRelation1() != null ){
 			dokyoRelation1 = dt_TSUCHI.getDokyoRelation1();
 		}
-		if(dt_TSUCHI.getDokyoAge1() != null){
+		if(!SkfCheckUtils.isNullOrEmpty(dt_TSUCHI.getDokyoAge1())){
 			dokyoAge1 = dt_TSUCHI.getDokyoAge1() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap1 = new HashMap<String, Object>();
@@ -220,7 +215,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		if(dt_TSUCHI.getDokyoRelation2() != null ){
 			dokyoRelation2 = dt_TSUCHI.getDokyoRelation2();
 		}
-		if(dt_TSUCHI.getDokyoAge2() != null){
+		if(!SkfCheckUtils.isNullOrEmpty(dt_TSUCHI.getDokyoAge2())){
 			dokyoAge2 = dt_TSUCHI.getDokyoAge2() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap2 = new HashMap<String, Object>();
@@ -241,7 +236,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		if(dt_TSUCHI.getDokyoRelation3() != null ){
 			dokyoRelation3 = dt_TSUCHI.getDokyoRelation3();
 		}
-		if(dt_TSUCHI.getDokyoAge3() != null){
+		if(!SkfCheckUtils.isNullOrEmpty(dt_TSUCHI.getDokyoAge3())){
 			dokyoAge3 = dt_TSUCHI.getDokyoAge3() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap3 = new HashMap<String, Object>();
@@ -262,7 +257,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		if(dt_TSUCHI.getDokyoRelation4() != null ){
 			dokyoRelation4 = dt_TSUCHI.getDokyoRelation4();
 		}
-		if(dt_TSUCHI.getDokyoAge4() != null){
+		if(!SkfCheckUtils.isNullOrEmpty(dt_TSUCHI.getDokyoAge4())){
 			dokyoAge4 = dt_TSUCHI.getDokyoAge4() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap4 = new HashMap<String, Object>();
@@ -283,7 +278,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		if(dt_TSUCHI.getDokyoRelation5() != null ){
 			dokyoRelation5 = dt_TSUCHI.getDokyoRelation5();
 		}
-		if(dt_TSUCHI.getDokyoAge5() != null){
+		if(!SkfCheckUtils.isNullOrEmpty(dt_TSUCHI.getDokyoAge5())){
 			dokyoAge5 = dt_TSUCHI.getDokyoAge5() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap5 = new HashMap<String, Object>();
@@ -304,7 +299,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		if(dt_TSUCHI.getDokyoRelation6() != null ){
 			dokyoRelation6 = dt_TSUCHI.getDokyoRelation6();
 		}
-		if(dt_TSUCHI.getDokyoAge6() != null){
+		if(!SkfCheckUtils.isNullOrEmpty(dt_TSUCHI.getDokyoAge6())){
 			dokyoAge6 = dt_TSUCHI.getDokyoAge6() + DATA_NENREI;
 		}
 		Map<String, Object> tmpMap6 = new HashMap<String, Object>();
@@ -420,7 +415,7 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 			//社員番号
 			if(dt_Getshain.getShainNoChangeFlg() != null){
 				if(SHAIN_NO_CHANGE_FLG.equals(dt_Getshain.getShainNoChangeFlg())){
-					shainNo = shainNo + DATA_SHAIN_NO_CHANGE_FLG;
+					shainNo = shainNo + CodeConstant.ASTERISK;
 				}
 			}
 			
@@ -491,10 +486,10 @@ public class Skf3021Sc002InitService extends BaseServiceAbstract<Skf3021Sc002Ini
 		Skf2020TNyukyoChoshoTsuchi dt_TSUCHI = null;
 		List<Skf2020TNyukyoChoshoTsuchi> dt_TSUCHIList = new ArrayList<Skf2020TNyukyoChoshoTsuchi>();
 		if(!SkfCheckUtils.isNullOrEmpty(applNo)){
-			Skf2020TNyukyoChoshoTsuchiKey nctKey = new Skf2020TNyukyoChoshoTsuchiKey();
-			nctKey.setCompanyCd(CodeConstant.C001);
-			nctKey.setApplNo(applNo);
-			dt_TSUCHI = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(nctKey);
+//			Skf2020TNyukyoChoshoTsuchiKey nctKey = new Skf2020TNyukyoChoshoTsuchiKey();
+//			nctKey.setCompanyCd(CodeConstant.C001);
+//			nctKey.setApplNo(applNo);
+//			dt_TSUCHI = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(nctKey);
 			dt_TSUCHIList = skf3021Sc002GetNyukyoChoshoInfoExpRepository.getNyukyoChoshoInfo(applNo);
 		}
 		

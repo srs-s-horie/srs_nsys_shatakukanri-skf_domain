@@ -2203,21 +2203,18 @@ public class Skf2020Sc002SharedService {
 
 		dto.setNyukyoApplDate(DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 
-		// 登録項目をセット
-		String msg = "入力項目　：";
-
 		// 会社コード
 		setValue.setCompanyCd(CodeConstant.C001);// 会社コード
 		// 新規の場合セット
 		if (CodeConstant.STRING_ZERO.equals(applInfo.get("updateFlg"))) {
 			// 申請書番号の設定
 			setValue.setApplNo(applInfo.get("applNo"));
-			LogUtils.debugByMsg(msg + applInfo.get("applNo"));
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 申請書番号 ：" + applInfo.get("applNo"));
 
 		} else {
 			// 申請書番号の設定
 			setValue.setApplNo(dto.getApplNo());
-			LogUtils.debugByMsg(msg + dto.getApplNo());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 申請書番号 ：" + dto.getApplNo());
 		}
 
 		// 入居希望等調書申請テーブルの設定
@@ -2250,13 +2247,17 @@ public class Skf2020Sc002SharedService {
 
 		// 社宅を必要としますか？が「必要とする」場合
 		if (CodeConstant.ASKED_SHATAKU_HITSUYO.equals(dto.getTaiyoHituyo())) {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅を必要とする ：");
 			// 社宅を必要とする理由
 			setValue.setHitsuyoRiyu(dto.getHitsuyoRiyu());
 			// 社宅を必要としない理由
 			setValue.setFuhitsuyoRiyu(null);
+			/** 社宅を必要としない理由 dtoの値もクリア */
+			dto.setFuhitsuyoRiyu(null);
 
 			// 社宅を必要とする理由が「異動」の場合
 			if (NfwStringUtils.isNotBlank(dto.getHitsuyoRiyu()) && dto.getHitsuyoRiyu().equals(CodeConstant.IDOU)) {
+				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅を必要とする理由が異動 ：");
 				// 新所属
 				// 機関名称の取得
 				Skf2020Sc002GetAgensyNameExp agensyList = new Skf2020Sc002GetAgensyNameExp();
@@ -2270,14 +2271,15 @@ public class Skf2020Sc002SharedService {
 				}
 
 				// 機関ドロップダウンリストが選択されている場合
-				LogUtils.debugByMsg(msg + dto.getAgencyCd() + agensyList.getAgencyName());
+				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 新機関：" + dto.getAgencyCd() + agensyList.getAgencyName());
 				if (NfwStringUtils.isNotEmpty(dto.getAgencyCd())) {
 					setValue.setNewAgency(agensyList.getAgencyName());
 				}
 
 				// 新所属-部等
 				// 新所属-部等ドロップダウンリストが選択されている場合
-				LogUtils.debugByMsg(msg + dto.getAffiliation1Cd() + agensyList.getAffiliation1Name());
+				LogUtils.debugByMsg(
+						"入居希望等調査・入居決定通知テーブルの更新値 新所属-部等：" + dto.getAffiliation1Cd() + agensyList.getAffiliation1Name());
 				if (NfwStringUtils.isNotEmpty(dto.getAffiliation1Cd())) {
 					// 「新所属-部等」が選択されている場合は新所属-部等 その他をセット
 					if (CodeConstant.OTHER_AGENCY_ITEM_VALUE.equals(dto.getAffiliation1Cd())) {
@@ -2288,7 +2290,8 @@ public class Skf2020Sc002SharedService {
 					}
 				}
 				// 新所属-室、チーム又は課
-				LogUtils.debugByMsg(msg + dto.getAffiliation2Cd() + agensyList.getAffiliation2Name());
+				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 新所属-室、チーム又は課：" + dto.getAffiliation2Cd()
+						+ agensyList.getAffiliation2Name());
 				// 新所属-室、チーム又は課ドロップダウンリストが選択されている場合
 				if (NfwStringUtils.isNotEmpty(dto.getAffiliation2Cd())) {
 					// 「新所属-部等」が選択されている場合は新所属-部等 その他をセット
@@ -2301,6 +2304,7 @@ public class Skf2020Sc002SharedService {
 				}
 
 			} else {
+				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅を必要とする理由が異動以外 ：");
 				// 異動以外
 				setValue.setNewAgency(null);
 				setValue.setNewAgencyOther(null);
@@ -2308,6 +2312,13 @@ public class Skf2020Sc002SharedService {
 				setValue.setNewAffiliation1Other(null);
 				setValue.setNewAffiliation2(null);
 				setValue.setNewAffiliation2Other(null);
+
+				/** 新所属 dtoの値もクリア */
+				dto.setNewAgencyOther(null);
+				dto.setNewAffiliation1(null);
+				dto.setNewAffiliation1Other(null);
+				dto.setNewAffiliation2(null);
+				dto.setNewAffiliation2Other(null);
 			}
 
 			// 必要とする社宅
@@ -2318,6 +2329,7 @@ public class Skf2020Sc002SharedService {
 			// 必要とする社宅が世帯の場合
 			if (NfwStringUtils.isNotBlank(dto.getHitsuyoShataku())
 					&& CodeConstant.SETAI.equals(dto.getHitsuyoShataku())) {
+				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 必要とする社宅が世帯 ：");
 				// 同居家族-続柄
 				setValue.setDokyoRelation1(dto.getDokyoRelation1());
 				setValue.setDokyoRelation2(dto.getDokyoRelation2());
@@ -2344,7 +2356,7 @@ public class Skf2020Sc002SharedService {
 
 			} else {
 				// 必要とする社宅が世帯以外
-
+				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 必要とする社宅が世帯以外 ：");
 				// 同居家族-続柄
 				setValue.setDokyoRelation1(null);
 				setValue.setDokyoRelation2(null);
@@ -2352,6 +2364,14 @@ public class Skf2020Sc002SharedService {
 				setValue.setDokyoRelation4(null);
 				setValue.setDokyoRelation5(null);
 				setValue.setDokyoRelation6(null);
+
+				/** 同居家族-続柄 dtoの値もクリア */
+				dto.setDokyoRelation1(null);
+				dto.setDokyoRelation2(null);
+				dto.setDokyoRelation3(null);
+				dto.setDokyoRelation4(null);
+				dto.setDokyoRelation5(null);
+				dto.setDokyoRelation6(null);
 
 				// 同居家族-氏名
 				setValue.setDokyoName1(null);
@@ -2361,6 +2381,14 @@ public class Skf2020Sc002SharedService {
 				setValue.setDokyoName5(null);
 				setValue.setDokyoName6(null);
 
+				/** 同居家族-氏名 dtoの値もクリア */
+				dto.setDokyoName1(null);
+				dto.setDokyoName2(null);
+				dto.setDokyoName3(null);
+				dto.setDokyoName4(null);
+				dto.setDokyoName5(null);
+				dto.setDokyoName6(null);
+
 				// 同居家族-年齢
 				setValue.setDokyoAge1(null);
 				setValue.setDokyoAge2(null);
@@ -2368,6 +2396,15 @@ public class Skf2020Sc002SharedService {
 				setValue.setDokyoAge4(null);
 				setValue.setDokyoAge5(null);
 				setValue.setDokyoAge6(null);
+
+				/** 同居家族-年齢 dtoの値もクリア */
+				dto.setDokyoAge1(null);
+				dto.setDokyoAge2(null);
+				dto.setDokyoAge3(null);
+				dto.setDokyoAge4(null);
+				dto.setDokyoAge5(null);
+				dto.setDokyoAge6(null);
+
 			}
 
 			// 入居予定日
@@ -2377,21 +2414,35 @@ public class Skf2020Sc002SharedService {
 			}
 
 		} else if (CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())) {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅を必要としない ：");
 			// 社宅を必要としますか？が「必要としない」場合
+
 			// 社宅を必要とする理由
 			setValue.setHitsuyoRiyu(null);
+			/** 社宅を必要とする理由 dtoの値もクリア */
+			dto.setHitsuyoRiyu(null);
+
 			// 社宅を必要としない理由
 			setValue.setFuhitsuyoRiyu(dto.getFuhitsuyoRiyu());
+
 			// 新所属
 			setValue.setNewAgency(null);
-			setValue.setNewAgencyOther(null);
 			setValue.setNewAffiliation1(null);
 			setValue.setNewAffiliation1Other(null);
 			setValue.setNewAffiliation2(null);
 			setValue.setNewAffiliation2Other(null);
 
+			/** 新所属 dtoの値もクリア */
+			dto.setNewAgency(null);
+			dto.setNewAffiliation1(null);
+			dto.setNewAffiliation1Other(null);
+			dto.setNewAffiliation2(null);
+			dto.setNewAffiliation2Other(null);
+
 			// 必要とする社宅
 			setValue.setHitsuyoShataku(null);
+			/** 必要とする社宅 dtoの値もクリア */
+			dto.setHitsuyoShataku(null);
 
 			// 同居家族-続柄
 			setValue.setDokyoRelation1(null);
@@ -2401,6 +2452,14 @@ public class Skf2020Sc002SharedService {
 			setValue.setDokyoRelation5(null);
 			setValue.setDokyoRelation6(null);
 
+			/** 同居家族-続柄 dtoの値もクリア */
+			dto.setDokyoRelation1(null);
+			dto.setDokyoRelation2(null);
+			dto.setDokyoRelation3(null);
+			dto.setDokyoRelation4(null);
+			dto.setDokyoRelation5(null);
+			dto.setDokyoRelation6(null);
+
 			// 同居家族-氏名
 			setValue.setDokyoName1(null);
 			setValue.setDokyoName2(null);
@@ -2408,6 +2467,14 @@ public class Skf2020Sc002SharedService {
 			setValue.setDokyoName4(null);
 			setValue.setDokyoName5(null);
 			setValue.setDokyoName6(null);
+
+			/** 同居家族-氏名 dtoの値もクリア */
+			dto.setDokyoName1(null);
+			dto.setDokyoName2(null);
+			dto.setDokyoName3(null);
+			dto.setDokyoName4(null);
+			dto.setDokyoName5(null);
+			dto.setDokyoName6(null);
 
 			// 同居家族-年齢
 			setValue.setDokyoAge1(null);
@@ -2417,15 +2484,27 @@ public class Skf2020Sc002SharedService {
 			setValue.setDokyoAge5(null);
 			setValue.setDokyoAge6(null);
 
+			/** 同居家族-年齢 dtoの値もクリア */
+			dto.setDokyoAge1(null);
+			dto.setDokyoAge2(null);
+			dto.setDokyoAge3(null);
+			dto.setDokyoAge4(null);
+			dto.setDokyoAge5(null);
+			dto.setDokyoAge6(null);
+
 			// 入居予定日
 			setValue.setNyukyoYoteiDate(null);
+			/** 入居予定日 dtoの値もクリア */
+			dto.setNyukyoYoteiDate(null);
 
 		} else if (CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(dto.getTaiyoHituyo())) {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 駐車場のみ：");
 			// 駐車場のみの場合
 			// 社宅を必要とする理由
 			setValue.setHitsuyoRiyu(dto.getHitsuyoRiyu());
 			// 社宅を必要としない理由
 			setValue.setFuhitsuyoRiyu(dto.getFuhitsuyoRiyu());
+
 			// 新所属
 			setValue.setNewAgency(null);
 			setValue.setNewAgencyOther(null);
@@ -2434,8 +2513,17 @@ public class Skf2020Sc002SharedService {
 			setValue.setNewAffiliation2(null);
 			setValue.setNewAffiliation2Other(null);
 
+			/** 新所属 dtoの値もクリア */
+			dto.setNewAgency(null);
+			dto.setNewAffiliation1(null);
+			dto.setNewAffiliation1Other(null);
+			dto.setNewAffiliation2(null);
+			dto.setNewAffiliation2Other(null);
+
 			// 必要とする社宅
 			setValue.setHitsuyoShataku(null);
+			/** 必要とする社宅 dtoの値もクリア */
+			dto.setHitsuyoShataku(null);
 
 			// 同居家族-続柄
 			setValue.setDokyoRelation1(null);
@@ -2445,6 +2533,14 @@ public class Skf2020Sc002SharedService {
 			setValue.setDokyoRelation5(null);
 			setValue.setDokyoRelation6(null);
 
+			/** 同居家族-続柄 dtoの値もクリア */
+			dto.setDokyoRelation1(null);
+			dto.setDokyoRelation2(null);
+			dto.setDokyoRelation3(null);
+			dto.setDokyoRelation4(null);
+			dto.setDokyoRelation5(null);
+			dto.setDokyoRelation6(null);
+
 			// 同居家族-氏名
 			setValue.setDokyoName1(null);
 			setValue.setDokyoName2(null);
@@ -2452,6 +2548,14 @@ public class Skf2020Sc002SharedService {
 			setValue.setDokyoName4(null);
 			setValue.setDokyoName5(null);
 			setValue.setDokyoName6(null);
+
+			/** 同居家族-氏名 dtoの値もクリア */
+			dto.setDokyoName1(null);
+			dto.setDokyoName2(null);
+			dto.setDokyoName3(null);
+			dto.setDokyoName4(null);
+			dto.setDokyoName5(null);
+			dto.setDokyoName6(null);
 
 			// 同居家族-年齢
 			setValue.setDokyoAge1(null);
@@ -2461,11 +2565,23 @@ public class Skf2020Sc002SharedService {
 			setValue.setDokyoAge5(null);
 			setValue.setDokyoAge6(null);
 
+			/** 同居家族-年齢 dtoの値もクリア */
+			dto.setDokyoAge1(null);
+			dto.setDokyoAge2(null);
+			dto.setDokyoAge3(null);
+			dto.setDokyoAge4(null);
+			dto.setDokyoAge5(null);
+			dto.setDokyoAge6(null);
+
 			// 入居予定日
 			setValue.setNyukyoYoteiDate(null);
+			/** 入居予定日 dtoの値もクリア */
+			dto.setNyukyoYoteiDate(null);
 
 			// 退居予定をなしに設定
 			dto.setTaikyoYotei(null);
+			/** 退居予定 dtoの値もクリア */
+			dto.setNyukyoYoteiDate(null);
 
 			// 備品返却有無をなしに設定
 			dto.setHdnBihinHenkyakuUmu(SkfCommonConstant.PRESEMCE_NOT_NEED);
@@ -2477,13 +2593,14 @@ public class Skf2020Sc002SharedService {
 		// 社宅が不要以外で駐車場が必要な場合
 		if (!CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())
 				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())) {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅が不要以外で駐車場が必要な場合");
 
 			// 自動車の登録番号入力フラグ
-			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の登録番号入力フラグ :" + dto.getCarNoInputFlg());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を 自動車の登録番号入力フラグ :" + dto.getCarNoInputFlg());
 			setValue.setCarNoInputFlg(dto.getCarNoInputFlg());
 
 			// 自動車の車名(１台目)
-			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の車名(１台目) :" + dto.getCarName());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 自動車の車名(１台目) :" + dto.getCarName());
 			if (NfwStringUtils.isNotEmpty(dto.getCarName())) {
 				setValue.setCarName(dto.getCarName());
 			} else {
@@ -2491,7 +2608,7 @@ public class Skf2020Sc002SharedService {
 			}
 
 			// 自動車の登録番号(１台目)
-			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の登録番号(１台目) :" + dto.getCarNo());
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 自動車の登録番号(１台目) :" + dto.getCarNo());
 			if (NfwStringUtils.isNotEmpty(dto.getCarNo())) {
 				setValue.setCarNo(dto.getCarNo());
 			} else {
@@ -2519,7 +2636,7 @@ public class Skf2020Sc002SharedService {
 
 		} else {
 			// 社宅が不要又は駐車場を必要としない場合
-
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅が不要又は駐車場を必要としない");
 			// 自動車の登録番号入力フラグ
 			setValue.setCarNoInputFlg(null);
 			// 自動車の車名(１台目)
@@ -2532,6 +2649,20 @@ public class Skf2020Sc002SharedService {
 			setValue.setCarUser(null);
 			// 保管場所使用開始日(１台目)
 			setValue.setParkingUseDate(null);
+
+			/** 自動車情報 dtoの値もクリア */
+			// 自動車の登録番号入力フラグ
+			dto.setCarNoInputFlg(null);
+			// 自動車の車名(１台目)
+			dto.setCarName(null);
+			// 自動車の登録番号(１台目)
+			dto.setCarNo(null);
+			// 車検の有効期間満了日(１台目)
+			dto.setCarExpirationDate(null);
+			// 自動車の使用者(１台目)
+			dto.setCarUser(null);
+			// 保管場所使用開始日(１台目)
+			dto.setParkingUseDate(null);
 		}
 
 		// 自動車の登録番号入力フラグ2
@@ -2543,12 +2674,14 @@ public class Skf2020Sc002SharedService {
 
 			setValue.setCarNoInputFlg2(dto.getCarNoInputFlg2());
 		} else {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 駐車場2台目の入力項目に何もない");
 			setValue.setCarNoInputFlg2(null);
 		}
 
 		// 社宅が不要以外で駐車場が必要な場合
 		if (!CodeConstant.ASKED_SHATAKU_FUYOU.equals(dto.getTaiyoHituyo())
 				&& CodeConstant.CAR_PARK_HITUYO.equals(dto.getParkingUmu())) {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅が不要以外で駐車場が必要な場合の2台目の車情報");
 
 			// 自動車の車名(2台目)
 			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値を設定 自動車の車名(2台目) :" + dto.getCarName2());
@@ -2587,6 +2720,7 @@ public class Skf2020Sc002SharedService {
 
 		} else {
 			// それ以外
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 社宅が不要又は駐車場を必要としない以外");
 			// 自動車の登録番号入力フラグ2
 			setValue.setCarNoInputFlg2(null);
 			// 自動車の車名(2台目)
@@ -2599,6 +2733,20 @@ public class Skf2020Sc002SharedService {
 			setValue.setCarUser2(null);
 			// 保管場所使用開始日(2台目)
 			setValue.setParkingUseDate2(null);
+
+			/** 自動車情報2台目 dtoの値もクリア */
+			// 自動車の登録番号入力フラグ2
+			dto.setCarNoInputFlg2(null);
+			// 自動車の車名(2台目)
+			dto.setCarName2(null);
+			// 自動車の登録番号(2台目)
+			dto.setCarNo2(null);
+			// 車検の有効期間満了日(2台目)
+			dto.setCarExpirationDate2(null);
+			// 自動車の使用者(2台目)
+			dto.setCarUser2(null);
+			// 保管場所使用開始日(2台目)
+			dto.setParkingUseDate2(null);
 		}
 
 		// 現居社宅
@@ -2627,7 +2775,7 @@ public class Skf2020Sc002SharedService {
 
 		// 退居予定が退居するの場合
 		if (CodeConstant.LEAVE.equals(dto.getTaikyoYotei())) {
-
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 退居予定が退居する");
 			// 退居予定日
 			if (NfwStringUtils.isNotEmpty(dto.getTaikyoYoteiDate())) {
 				setValue.setTaikyoYoteiDate(
@@ -2651,6 +2799,7 @@ public class Skf2020Sc002SharedService {
 			setValue.setTaikyogoRenrakusaki(dto.getTaikyogoRenrakuSaki());
 
 		} else {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 退居予定が退居する以外");
 			// 退居予定日
 			setValue.setTaikyoYoteiDate(null);
 			// 社宅の状態
@@ -2661,10 +2810,23 @@ public class Skf2020Sc002SharedService {
 			setValue.setTaikyoRiyuKbn(null);
 			// 退居後連絡先
 			setValue.setTaikyogoRenrakusaki(null);
+
+			/** 退居情報 dtoの値もクリア */
+			// 退居予定日
+			dto.setTaikyoYoteiDate(null);
+			// 社宅の状態
+			dto.setShatakuJotai(null);
+			// 退居理由
+			dto.setTaikyoRiyu(null);
+			// 退居理由区分
+			dto.setTaikyoRiyuKbn(null);
+			// 退居後連絡先
+			dto.setTaikyogoRenrakuSaki(null);
 		}
 
 		// 備品返却フラグが有の場合
 		if (SkfCommonConstant.PRESEMCE_NEED.equals(dto.getHdnBihinHenkyakuUmu())) {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 備品返却フラグが有");
 			// 返却立会希望日
 			if (NfwStringUtils.isNotEmpty(dto.getSessionDay())) {
 				setValue.setSessionDay(dto.getSessionDay().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
@@ -2674,12 +2836,21 @@ public class Skf2020Sc002SharedService {
 			// 連絡先
 			setValue.setRenrakuSaki(dto.getRenrakuSaki());
 		} else {
+			LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 備品返却フラグが有以外");
 			// 返却立会希望日
 			setValue.setSessionDay(null);
 			// 返却立会希望日(時間)
 			setValue.setSessionTime(null);
 			// 連絡先
 			setValue.setRenrakuSaki(null);
+
+			/** 備品返却情報情報 dtoの値もクリア */
+			// 返却立会希望日
+			dto.setSessionDay(null);
+			// 返却立会希望日(時間)
+			dto.setSessionTime(null);
+			// 連絡先
+			dto.setRenrakuSaki(null);
 		}
 
 		// 社宅管理番号
@@ -2876,7 +3047,9 @@ public class Skf2020Sc002SharedService {
 		setValue.setNowShatakuMenseki(
 				dto.getNowShatakuMenseki().replace(SkfCommonConstant.SQUARE_MASTER, CodeConstant.DOUBLE_QUOTATION));
 		// 返却立会希望日
-		setValue.setSessionDay(dto.getSessionDay().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
+		if (NfwStringUtils.isNotEmpty(dto.getSessionDay())) {
+			setValue.setSessionDay(dto.getSessionDay().replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION));
+		}
 		// 返却立会希望日(時間)
 		setValue.setSessionTime(dto.getSessionTime());
 		// 連絡先
@@ -3104,8 +3277,8 @@ public class Skf2020Sc002SharedService {
 		dto.setShatakuJotai(dto.getShatakuJotai());
 
 		// 退居理由
-		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils.getGenericForDoropDownList(
-				FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
+		dto.setDdlTaikyoRiyuKbnList(skfDropDownUtils
+				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_TAIKYO_RIYU, dto.getTaikyoRiyuKbn(), true));
 		dto.setTaikyoRiyu(dto.getTaikyoRiyu());
 
 		// 連絡先

@@ -197,7 +197,7 @@ public abstract class OutputPdfR0100BaseService<DTO extends Skf2010OutputPdfBase
 		super.setCheckMark(pdfData, "nowShatakuOther", dto.getNowShatakuOther());
 
 		pdfData.setData("nowShatakuName", NfwStringUtils.defaultString(dto.getNowShatakuName()));
-		pdfData.setData("nowShatakuKikakuName", NfwStringUtils.defaultString(dto.getNowShatakuKikakuName()));
+		pdfData.setData("nowShatakuKikakuName", NfwStringUtils.defaultString(dto.getNowShatakuKikaku()));
 		pdfData.setData("nowShatakuMenseki", NfwStringUtils.defaultString(dto.getNowShatakuMenseki()));
 		pdfData.setData("nowShatakuNo", NfwStringUtils.defaultString(dto.getNowShatakuNo()));
 

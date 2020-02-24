@@ -331,7 +331,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 		
 		for(Map<String,Object> map : teijiList){
 			//社員番号
-			shainNo = map.get("shainNo").toString();
+			shainNo = map.get("shainNo").toString().replace(CodeConstant.ASTERISK, "");
 			//入退居区分
 			nyutaikyoKbn = map.get("nyutaikyoKbn").toString();
 			//社員氏名
