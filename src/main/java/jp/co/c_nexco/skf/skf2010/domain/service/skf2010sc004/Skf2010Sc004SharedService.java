@@ -835,7 +835,7 @@ public class Skf2010Sc004SharedService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String applStatus,
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String newApplNo, String applStatus,
 			String applId, String pageId) {
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
@@ -854,7 +854,7 @@ public class Skf2010Sc004SharedService {
 			skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0100);
 
 			// 連携処理開始
-			resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, CodeConstant.NONE,
+			resultBatch = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(companyCd, shainNo, applNo, newApplNo,
 					applStatus, userId, pageId);
 			break;
 		case FunctionIdConstant.R0103:
