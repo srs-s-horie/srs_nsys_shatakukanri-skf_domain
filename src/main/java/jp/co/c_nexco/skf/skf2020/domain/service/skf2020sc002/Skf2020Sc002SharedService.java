@@ -2783,7 +2783,7 @@ public class Skf2020Sc002SharedService {
 		String bihinHenkaykuShinseiApplNo = null;
 		Date bihinHenkyakuUpdate = null;
 		if (bihinHenkyakuInfo != null) {
-			bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getTaikyoApplNo();
+			bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getApplNo();
 			bihinHenkyakuUpdate = bihinHenkyakuInfo.getUpdateDate();
 		}
 
@@ -2929,7 +2929,7 @@ public class Skf2020Sc002SharedService {
 
 		// 備品返却申請テーブルの更新項目設定
 		Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
-		setValue = setColumnInfoBihinList(setValue, dto, applInfo, bihinHenkyakuInfo.getTaikyoApplNo());
+		setValue = setColumnInfoBihinList(setValue, dto, applInfo, bihinHenkyakuInfo.getApplNo());
 
 		// 更新
 		int updateCnt = skf2020Sc002UpdateBihinHenkyakuInfoExpRepository.updateBihinHenkyakuInfo(setValue);
