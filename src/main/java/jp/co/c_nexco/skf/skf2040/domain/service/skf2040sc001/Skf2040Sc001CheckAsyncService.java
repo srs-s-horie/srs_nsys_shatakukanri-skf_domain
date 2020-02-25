@@ -109,14 +109,6 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 
 		if (isShatakuReturnChecked) {
 			// 「社宅を退居する」がチェックされている場合に以下のチェックを行う
-			// 「社宅の状態」
-			LogUtils.debugByMsg(msg + "社宅の状態" + checkDto.getShatakuJotai());
-			if (NfwStringUtils.isBlank(checkDto.getShatakuJotai())) {
-				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "shatakuJotai" },
-						MessageIdConstant.E_SKF_1048, "社宅の状態");
-				isError = true;
-			}
-
 			// 「退居後の連絡先」
 			LogUtils.debugByMsg(msg + "退居後の連絡先" + checkDto.getTaikyogoRenrakuSaki());
 			if (NfwStringUtils.isBlank(checkDto.getTaikyogoRenrakuSaki())) {
