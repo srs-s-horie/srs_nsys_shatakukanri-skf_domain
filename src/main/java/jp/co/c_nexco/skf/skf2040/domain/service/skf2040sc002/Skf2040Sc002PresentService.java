@@ -212,6 +212,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(preDto, resultList);
+				return preDto;
 			}
 
 			break;
@@ -266,8 +267,15 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 		// 備品返却の提示作成がある場合
 		if (sFalse.equals(preDto.getHenkyakuBihinNothing())) {
+
 			// 社宅管理データ連携処理実行
-			doBihinHenkyakuShatakuRenkei(preDto, userInfo);
+			List<String> resultListBihin = doBihinHenkyakuShatakuRenkei(preDto, userInfo);
+
+			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
+			if (resultListBihin != null) {
+				skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(preDto, resultListBihin);
+				return preDto;
+			}
 		}
 
 		// 終了メッセージ出力
@@ -285,8 +293,9 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 	 * 
 	 * @param preDto
 	 * @param userInfo
+	 * @return List<String>
 	 */
-	private void doBihinHenkyakuShatakuRenkei(Skf2040Sc002PresentDto preDto, Map<String, String> userInfo) {
+	private List<String> doBihinHenkyakuShatakuRenkei(Skf2040Sc002PresentDto preDto, Map<String, String> userInfo) {
 		// 備品返却
 		// 社宅管理データ連携処理実行 ステータス審査中
 		// menuScopeSessionBeanからオブジェクトを取得
@@ -297,14 +306,14 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkHenkyakuMap);
 		// 連携実行
 		List<String> resultList = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
-				preDto.getShainNo(), preDto.getApplNo(), CodeConstant.STATUS_SHINSACHU, userInfo.get("userCd"),
-				preDto.getPageId());
+				preDto.getShainNo(), preDto.getHdnBihinHenkyakuApplNo(), CodeConstant.STATUS_SHINSACHU,
+				userInfo.get("userCd"), preDto.getPageId());
 		// セッション情報の削除
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
 		// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 		if (resultList != null) {
-			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(preDto, resultList);
+			return resultList;
 		}
 
 		// 再度排他制御用更新日取得
@@ -322,15 +331,17 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkHenkyakuMap2);
 		// 連携実行
 		List<String> resultList2 = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
-				preDto.getShainNo(), preDto.getApplNo(), CodeConstant.STATUS_KAKUNIN_IRAI, userInfo.get("userCd"),
-				preDto.getPageId());
+				preDto.getShainNo(), preDto.getHdnBihinHenkyakuApplNo(), CodeConstant.STATUS_KAKUNIN_IRAI,
+				userInfo.get("userCd"), preDto.getPageId());
 		// セッション情報の削除
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
 		// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 		if (resultList2 != null) {
-			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(preDto, resultList2);
+			return resultList2;
 		}
+
+		return null;
 	}
 
 }
