@@ -182,8 +182,11 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 
 		// 社宅部屋総数を取得する
 		int roomCount = skf3010Sc004SharedService.getRoomCount(initDto.getShatakuKanriNo());
-		String emptyRoomCount = initDto.getHdnEmptyRoomCount() + CodeConstant.SLASH + roomCount;
-		initDto.setEmptyRoomCount(emptyRoomCount);
+		// 空き社宅部屋総数を取得する
+		int emptyRoomCount = skf3010Sc004SharedService.getEmptyRoomCount(initDto.getShatakuKanriNo());
+
+		String emptyRoomCountStr = emptyRoomCount + CodeConstant.SLASH + roomCount;
+		initDto.setEmptyRoomCount(emptyRoomCountStr);
 		
 		// 駐車場総数を取得する
 		int parkingCouunt = skf3010Sc004SharedService.getParkingCount(initDto.getShatakuKanriNo());

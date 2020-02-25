@@ -106,7 +106,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 	// 駐車場構造区分：なし
 	private static final String PARKING_STRUCTURE_NASHI = "5";
 	// メールアドレスチェック正規表現
-	private static final String MAIL_ADDRESS_CHECK_REG = "[!-~]+@[!-~]+.[!-~]+";
+	private static final String MAIL_ADDRESS_CHECK_REG = "[!-~]+@[!-~]+\\.[!-~]+";
 	// 管理者電話番号チェック正規表現
 	private static final String MANAGE_TELNO_CHECK_REG = "^[0-9-]*$";
 	// 添付ファイル上限サイズ(10M)
@@ -471,7 +471,10 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			if ( mShatakuParkingContract.getContractPropertyId() > dbParkingContractList.size() ||
 					mShatakuParkingContract.getContractPropertyId().equals(parkingDelNo) ) {
 				// 追加(契約情報リストより大きい、または削除番号と一致
-				updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(mShatakuParkingContract);
+				if(!PARKING_STRUCTURE_NASHI.equals(mShatakuParking.getParkingStructureKbn())){
+					//駐車場構造が"なし"でない場合のみ登録する
+					updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(mShatakuParkingContract);
+				}
 			} else {
 				// 更新
 				updateCnt = skf3010Sc006UpdateParkingContractExpRepository.updateByPrimaryKeySelective(mShatakuParkingContract);
@@ -608,17 +611,21 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		}
 		
 		// 駐車場契約情報登録
-		if(!SkfCheckUtils.isNullOrEmpty(mShatakuParkingContract.getParkingContractType())){
-			mShatakuParkingContract.setShatakuKanriNo(shatakuKanriNo);
-			mShatakuParkingContract.setParkingKanriNo(parkingKanriNo);
-			mShatakuParkingContract.setContractPropertyId(1L);
-			updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(mShatakuParkingContract);
-			// 更新カウント判定
-			if (updateCnt < 1) {
-				LogUtils.debugByMsg("駐車場契約情報登録エラー：" + mShatakuParkingBlock.getParkingBlock());
-				return updateCnt;
+		if(!PARKING_STRUCTURE_NASHI.equals(mShatakuParking.getParkingStructureKbn())){
+			//駐車場構造が"なし"でない場合のみ登録する
+			if(!SkfCheckUtils.isNullOrEmpty(mShatakuParkingContract.getParkingContractType())){
+				mShatakuParkingContract.setShatakuKanriNo(shatakuKanriNo);
+				mShatakuParkingContract.setParkingKanriNo(parkingKanriNo);
+				mShatakuParkingContract.setContractPropertyId(1L);
+				updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(mShatakuParkingContract);
+				// 更新カウント判定
+				if (updateCnt < 1) {
+					LogUtils.debugByMsg("駐車場契約情報登録エラー：" + mShatakuParkingBlock.getParkingBlock());
+					return updateCnt;
+				}
 			}
 		}
+
 
 		return updateCnt;
 	}
@@ -795,6 +802,84 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 				// 選択タブインデックス設定：駐車場情報タブ
 				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_PARKING, registDto);
 			}
+			
+			//駐車場契約情報
+			if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("parkingContractNo") != null) 
+					&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("parkingContractNo").toString())) {
+				//駐車場契約情報有の場合
+				// 契約形態
+				if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingContractType())) {
+					isCheckOk = false;
+					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "契約形態");
+					registDto.setParkingContractTypeError(CodeConstant.NFW_VALIDATION_ERROR);
+					debugMessage += " 必須入力チェック - 契約形態";
+					// 選択タブインデックス設定：契約情報タブ
+					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+				}
+				if(PARKING_CONTRACT_TYPE2.equals(registDto.getParkingContractType())){
+					//契約形態が「社宅と別契約」の場合
+					//賃貸人（代理人）
+					if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingOwnerName())) {
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "賃貸人（代理人）");
+						registDto.setParkingOwnerNameError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 必須入力チェック - 賃貸人（代理人）";
+						// 選択タブインデックス設定：契約情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+					
+					// 住所
+					if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingContractAddress())) {
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "住所");
+						registDto.setParkingAddressError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 必須入力チェック - 住所";
+						// 選択タブインデックス設定：契約情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+					
+					// 駐車場名
+					if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingName())) {
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場名");
+						registDto.setParkingNameError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 必須入力チェック - 駐車場名";
+						// 選択タブインデックス設定：契約情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+					
+					// 経理連携用管理番号
+					if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingAssetRegisterNo())) {
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "経理連携用管理番号");
+						registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 必須入力チェック - 経理連携用管理番号";
+						// 選択タブインデックス設定：契約情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+					
+					// 契約開始日
+					if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingContractStartDay())) {
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "契約開始日");
+						registDto.setParkingContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 必須入力チェック - 契約開始日";
+						// 選択タブインデックス設定：契約情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+					
+					// 駐車場代（地代） 
+					String rentStr = registDto.getParkingLandRent();
+					if(SkfCheckUtils.isNullOrEmpty(rentStr)){
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
+						registDto.setParkingLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 必須入力チェック - 駐車場代（地代）";
+						// 選択タブインデックス設定：契約情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+				}
+			}
 		}
 		// 契約情報
 		if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("contractNo") != null) 
@@ -856,83 +941,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			}
 		}
 
-		//駐車場契約情報
-		if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("parkingContractNo") != null) 
-				&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("parkingContractNo").toString())) {
-			//駐車場契約情報有の場合
-			// 契約形態
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingContractType())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "契約形態");
-				registDto.setParkingContractTypeError(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 契約形態";
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
-			if(PARKING_CONTRACT_TYPE2.equals(registDto.getParkingContractType())){
-				//契約形態が「社宅と別契約」の場合
-				//賃貸人（代理人）
-				if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingOwnerName())) {
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "賃貸人（代理人）");
-					registDto.setParkingOwnerNameError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 必須入力チェック - 賃貸人（代理人）";
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-				
-				// 住所
-				if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingContractAddress())) {
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "住所");
-					registDto.setParkingAddressError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 必須入力チェック - 住所";
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-				
-				// 駐車場名
-				if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingName())) {
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場名");
-					registDto.setParkingNameError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 必須入力チェック - 駐車場名";
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-				
-				// 経理連携用管理番号
-				if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingAssetRegisterNo())) {
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "経理連携用管理番号");
-					registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 必須入力チェック - 経理連携用管理番号";
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-				
-				// 契約開始日
-				if (SkfCheckUtils.isNullOrEmpty(registDto.getParkingContractStartDay())) {
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "契約開始日");
-					registDto.setParkingContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 必須入力チェック - 契約開始日";
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-				
-				// 駐車場代（地代） 
-				String rentStr = registDto.getParkingLandRent();
-				if(SkfCheckUtils.isNullOrEmpty(rentStr)){
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場代（地代） ");
-					registDto.setParkingLandRentError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 必須入力チェック - 駐車場代（地代）";
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-			}
-		}
+
 		// 必須チェック結果判定
 		if (!isCheckOk) {
 			LogUtils.debugByMsg("必須入力チェックエラー：" + debugMessage);
