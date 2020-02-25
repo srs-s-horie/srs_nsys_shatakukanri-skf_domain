@@ -3628,6 +3628,8 @@ public class Skf3010Sc006SharedService {
 		if (comDto.getParkingContractNoList() != null) {
 			parkingContractNoList.addAll(comDto.getParkingContractNoList());
 		}
+		//契約形態
+		String parkingContractType = CodeConstant.DOUBLE_QUOTATION;
 		//駐車場契約の初期状態
 		String parkingStructureKbn = comDto.getParkingStructure();
 		if(SkfCheckUtils.isNullOrEmpty(parkingStructureKbn) || PARKING_NASHI.equals(parkingStructureKbn)){
@@ -3639,49 +3641,49 @@ public class Skf3010Sc006SharedService {
 			contractAddDisableFlg = false;
 			contractDelDisableFlg = true;
 			comDto.setParkingContractInfoDisabled(TRUE);
+			
+
+			// 契約番号指定判定
+			if (!parkingContractNo.isEmpty() && parkingContractNoList.size() > 0) {
+				// 契約番号ループ
+				for (Map<String, Object> contractMap : parkingContractNoList) {
+					// 選択値判定
+					if (parkingContractNo.equals(contractMap.get("value").toString())) {
+						// ドロップダウン選択値設定
+						contractMap.put("selected", "true");
+					} else {
+						// ドロップダウン選択解除
+						contractMap.remove("selected");
+					}
+				}
+				//契約形態
+				if (comDto.getParkingContractType() != null) {
+					parkingContractType = comDto.getParkingContractType() ;
+				}
+				//契約形態リスト
+				//操作可
+				parkingContractTypeDisableFlg = FALSE;
+
+				
+				if(CONTRACT_TYPE_2.equals(parkingContractType)){
+					//社宅と別契約の場合
+					//入力項目活性
+					comDto.setParkingContractInfoDisabled(FALSE);
+				}else{
+					//社宅と一括又は空の場合
+					//入力項目非活性
+					comDto.setParkingContractInfoDisabled(TRUE);
+				}
+				//契約番号有なので削除ボタンを操作可
+				contractDelDisableFlg = false;
+				if(FALSE.equals(comDto.getParkingEditFlg())){
+					//追加中でないので、追加ボタン操作可
+					contractAddDisableFlg = false;
+				}			
+				
+			}
 		}
 		
-		//契約形態
-		String parkingContractType = CodeConstant.DOUBLE_QUOTATION;
-		// 契約番号指定判定
-		if (!parkingContractNo.isEmpty() && parkingContractNoList.size() > 0) {
-			// 契約番号ループ
-			for (Map<String, Object> contractMap : parkingContractNoList) {
-				// 選択値判定
-				if (parkingContractNo.equals(contractMap.get("value").toString())) {
-					// ドロップダウン選択値設定
-					contractMap.put("selected", "true");
-				} else {
-					// ドロップダウン選択解除
-					contractMap.remove("selected");
-				}
-			}
-			//契約形態
-			if (comDto.getParkingContractType() != null) {
-				parkingContractType = comDto.getParkingContractType() ;
-			}
-			//契約形態リスト
-			//操作可
-			parkingContractTypeDisableFlg = FALSE;
-
-			
-			if(CONTRACT_TYPE_2.equals(parkingContractType)){
-				//社宅と別契約の場合
-				//入力項目活性
-				comDto.setParkingContractInfoDisabled(FALSE);
-			}else{
-				//社宅と一括又は空の場合
-				//入力項目非活性
-				comDto.setParkingContractInfoDisabled(TRUE);
-			}
-			//契約番号有なので削除ボタンを操作可
-			contractDelDisableFlg = false;
-			if(FALSE.equals(comDto.getParkingEditFlg())){
-				//追加中でないので、追加ボタン操作可
-				contractAddDisableFlg = false;
-			}			
-			
-		}
 		parkingContractTypeList.clear();
 		parkingContractTypeList.addAll(ddlUtils.getGenericForDoropDownList(
 				FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN, parkingContractType, true));
@@ -3836,6 +3838,13 @@ public class Skf3010Sc006SharedService {
 		comDto.setContractLandRent(contractLandRent.replace(",", ""));
 		comDto.setParkingLandRent(parkingLandRent.replace(",", ""));
 		
+		
+		if(CONTRACT_TYPE_2.equals(comDto.getParkingContractType())){
+			//入力可に設定する
+			comDto.setParkingContractInfoDisabled(FALSE);
+		}else{
+			comDto.setParkingContractInfoDisabled(TRUE);
+		}
 	}
 	
 	/**
