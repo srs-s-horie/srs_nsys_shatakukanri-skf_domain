@@ -273,7 +273,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId,
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, newApplNo, afterApplStatus, applId,
 				FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
 		if (resultBatch != null) {
