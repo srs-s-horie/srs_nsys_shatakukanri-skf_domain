@@ -87,7 +87,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	// 駐車場構造区分：なし
 	private static final String PARKING_STRUCTURE_NASHI = "5";
 	// メールアドレスチェック正規表現
-	private static final String MAIL_ADDRESS_CHECK_REG = "[!-~]+@[!-~]+.[!-~]+";
+	private static final String MAIL_ADDRESS_CHECK_REG = "[!-~]+@[!-~]+\\.[!-~]+";
 	// 管理者電話番号チェック正規表現
 	private static final String MANAGE_TELNO_CHECK_REG = "^[0-9-]*$";
 	// 添付ファイル上限サイズ(10M)
