@@ -35,6 +35,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinShinseiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryApplTacFlgExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
@@ -43,7 +44,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRep
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuShinseiRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -96,6 +96,8 @@ public class Skf2040Sc002SharedService {
 	Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
 	Skf2040Sc002UpdateApplHistoryExpRepository skf2040Sc002UpdateApplHistoryExpRepository;
+	@Autowired
+	Skf2040Sc002UpdateApplHistoryApplTacFlgExpRepository skf2040Sc002UpdateApplHistoryApplTacFlgExpRepository;
 	@Autowired
 	Skf2010TAttachedFileRepository skf2010TAttachedFileRepository;
 	@Autowired
@@ -435,9 +437,8 @@ public class Skf2040Sc002SharedService {
 
 		// 社宅退居区分
 		taikyoRepDt.getShatakuTaikyoKbn();
-
 		// 社宅
-		dto.setShatakuName(taikyoRepDt.getTaikyoArea());
+		dto.setTaikyoArea(taikyoRepDt.getTaikyoArea());
 		// 駐車場1
 		dto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
 		// 駐車場2
@@ -760,7 +761,7 @@ public class Skf2040Sc002SharedService {
 	}
 
 	/**
-	 * 申請履歴の承認者と申請状況を更新します
+	 * 申請履歴の承認者と申請状況を更新
 	 * 
 	 * @param newStatus 次のステータス
 	 * @param shainNo 申請者の社員番号
@@ -778,6 +779,8 @@ public class Skf2040Sc002SharedService {
 	protected String updateApplHistoryAgreeStatus(String newStatus, String shainNo, String applNo, Date agreDate,
 			String shonin1, String shonin2, String applId, String applTacFlg, String userId, String programId,
 			Date updateDate, Date lastUpdateDate) {
+
+		LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　申請履歴の承認者と申請状況を更新");
 
 		String result = CodeConstant.NONE;
 
@@ -799,6 +802,7 @@ public class Skf2040Sc002SharedService {
 		// 楽観的排他チェック（申請情報履歴）
 		if (!CheckUtils.isEqual(updateDate, lastUpdateDate)) {
 			// 排他チェックエラー
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　排他チェックエラー");
 			result = "exclusiveError";
 			return result;
 		}
@@ -836,6 +840,7 @@ public class Skf2040Sc002SharedService {
 
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　添付ファイル管理テーブルを登録");
 			// 添付ファイルの更新は削除→登録で行う
 			skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
@@ -844,22 +849,25 @@ public class Skf2040Sc002SharedService {
 				skf2010TAttachedFileRepository.insertSelective(insertData);
 			}
 		}
-		// 申請書類履歴テーブルの添付書類有無を更新
-		String applId = applInfo.getApplId();
-		Skf2040Sc002UpdateApplHistoryExp updateData = new Skf2040Sc002UpdateApplHistoryExp();
 
-		// 更新対象に現在のデータを反映させる
-		CopyUtils.copyProperties(updateData, applInfo);
-		// 更新対象の項目を入れる
-		updateData.setApplTacFlg(String.valueOf(applTacFlg));
-		updateData.setUpdateUserId(userId);
-		updateData.setUpdateProgramId(pageId);
-		// 条件項目
-		updateData.setCompanyCd(CodeConstant.C001);
-		updateData.setApplNo(applNo);
-		updateData.setApplId(applId);
-		updateData.setShainNo(shainNo);
-		int cnt = skf2040Sc002UpdateApplHistoryExpRepository.updateApplHistory(updateData);
+		// 申請書類履歴テーブルの添付書類有無を更新
+		LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　申請書類履歴テーブルの添付書類有無を更新");
+
+		String applId = applInfo.getApplId();
+		Skf2010TApplHistory setValue = new Skf2010TApplHistory();
+
+		// キー項目をセット
+		setValue.setCompanyCd(CodeConstant.C001);
+		setValue.setApplNo(applNo);
+		setValue.setApplId(applId);
+		setValue.setShainNo(shainNo);
+
+		// 更新項目をセット
+		setValue.setApplTacFlg(String.valueOf(applTacFlg));
+		setValue.setUpdateUserId(userId);
+		setValue.setUpdateProgramId(pageId);
+
+		int cnt = skf2040Sc002UpdateApplHistoryApplTacFlgExpRepository.updateApplHistoryApplTacFlg(setValue);
 		if (cnt <= 0) {
 			return false;
 		}
@@ -941,6 +949,7 @@ public class Skf2040Sc002SharedService {
 		dto.setMailKbn(mailKbn);
 
 		// 申請書類履歴テーブルに備品返却申請があるかどうか確認
+		LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　申請書類履歴テーブルに備品返却申請があるかどうか確認");
 		List<Skf2040Sc002GetApplHistoryInfoExp> applHistoryBihinHenkyakuList = new ArrayList<Skf2040Sc002GetApplHistoryInfoExp>();
 		Skf2040Sc002GetApplHistoryInfoExpParameter param = new Skf2040Sc002GetApplHistoryInfoExpParameter();
 		param.setApplNo(dto.getHdnBihinHenkyakuApplNo());
@@ -948,6 +957,7 @@ public class Skf2040Sc002SharedService {
 
 		if (applHistoryBihinHenkyakuList != null && applHistoryBihinHenkyakuList.size() > 0) {
 			// あれば更新処理
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　申請書類履歴テーブルに備品返却申請の更新");
 			// 申請書類履歴テーブルの更新
 			String resultUpdateApplInfo = updateApplHistoryAgreeStatus(nextStatus, dto.getShainNo(),
 					dto.getHdnBihinHenkyakuApplNo(), agreDate, shoninName1, shoninName2, applId, applTacFlg, userId,
@@ -964,6 +974,7 @@ public class Skf2040Sc002SharedService {
 			}
 
 		} else {
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　申請書類履歴テーブルに備品返却申請の新規作成");
 			// 新規作成
 			boolean resutInsertApplInfo = insertApplHistory(dto.getShainNo(), dto.getHdnBihinHenkyakuApplNo(), applId,
 					CodeConstant.STATUS_KAKUNIN_IRAI, applTacFlg, SkfCommonConstant.NOT_RENKEI);

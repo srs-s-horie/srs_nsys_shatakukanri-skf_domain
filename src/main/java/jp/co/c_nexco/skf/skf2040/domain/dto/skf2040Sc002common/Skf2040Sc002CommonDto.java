@@ -47,8 +47,8 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private String applDate;
 	// 現住所
 	private String address;
-	// 社宅名
-	private String shatakuName;
+	// 退居場所
+	private String taikyoArea;
 	// 駐車場１
 	private String parkingAddress1;
 	// 駐車場2

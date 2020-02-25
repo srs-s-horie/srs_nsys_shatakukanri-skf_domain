@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -130,6 +131,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		switch (preDto.getApplId()) {
 		case FunctionIdConstant.R0103:
 			// ◆退居（自動車の保管場所返還）届
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　退居（自動車の保管場所返還）届");
 			/* 申請書類履歴テーブルの更新（退居届） */
 			// 申請書類履歴テーブル」よりステータスを更新
 			String resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
@@ -149,12 +151,14 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 			// コメントがある場合は更新
 			if (NfwStringUtils.isNotEmpty(comment)) {
+				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　コメントあり");
 				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(), nextStatus, errorMsg,
 						comment)) {
 					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
 			} else {
+				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　コメント不要");
 				comment = CodeConstant.NONE;
 			}
 
@@ -170,6 +174,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 			// 備品返却の提示作成がある場合
 			if (sFalse.equals(preDto.getHenkyakuBihinNothing())) {
+				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　備品返却の提示作成がある場合");
 				// 申請書類履歴テーブル 備品返却申請を登録/更新処理
 				if (!skf2040Sc002SharedService.insertOrUpdateApplHistoryForBihinHenkyaku(nextStatus, applTacFlg, preDto,
 						agreDate, shoninName1, shoninName2, FunctionIdConstant.R0105, userInfo.get("userCd"))) {
@@ -219,7 +224,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 		case FunctionIdConstant.R0105:
 			// ◆備品返却希望
-
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　備品返却希望");
 			// /申請書類履歴テーブルの更新（備品返却希望）
 			preDto.setHenkyakuBihinNothing(sFalse);
 
