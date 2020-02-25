@@ -74,7 +74,10 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 		
 		// 検索結果一覧
 		// ----- エラー時用に、画面入力情報で置き換える（置き換えないと、検索した時の情報に戻ってしまう）
-		String[] editInfoList = addRegistDto.getRegistEditData().split("EndOfEditData");
+		String[] editInfoList = null;
+		if(NfwStringUtils.isNotEmpty(addRegistDto.getRegistEditData())){
+			editInfoList = addRegistDto.getRegistEditData().split("EndOfEditData");
+		}
 		// 機関リスト
 		List<Map<String, Object>> manageAgencyList = new ArrayList<Map<String, Object>>();
 		for (int rowIndex = 0; rowIndex < addRegistDto.getListTableData().size(); rowIndex++){

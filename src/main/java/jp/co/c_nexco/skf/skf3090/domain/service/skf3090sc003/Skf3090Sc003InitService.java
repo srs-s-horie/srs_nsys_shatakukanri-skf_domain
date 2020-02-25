@@ -49,7 +49,8 @@ public class Skf3090Sc003InitService extends BaseServiceAbstract<Skf3090Sc003Ini
 		
 		// 「管理会社」ドロップダウンリストの設定
 		List<Map<String, Object>> manageCompanyKubunList = new ArrayList<Map<String, Object>>();
-		skf3090Sc003SharedService.getDoropDownManageCompanyList(initDto.getSelectedManageCompanyCd(), manageCompanyKubunList);
+		//skf3090Sc003SharedService.getDoropDownManageCompanyList(initDto.getSelectedManageCompanyCd(), manageCompanyKubunList);
+		skf3090Sc003SharedService.getDoropDownManageCompanyList(null, manageCompanyKubunList);
 		initDto.setManageCompanyList(manageCompanyKubunList);
 		
 		// 登録ボタン非活性
