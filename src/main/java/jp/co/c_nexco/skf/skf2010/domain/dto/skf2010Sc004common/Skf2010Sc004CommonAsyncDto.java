@@ -46,6 +46,12 @@ public class Skf2010Sc004CommonAsyncDto extends Skf2010CommonAsyncDto {
 	// 入力フォーム表示フラグ
 	private String inputAreaVisible;
 
+	// 初期入居日
+	private String syokiNyukyoDate;
+	// 初期駐車場使用日
+	private String syokiParkingUseDate;
+	// 初期駐車場使用日（2台目）
+	private String syokiParkingUseDate2;
 	// 初期退居日
 	private String syokiTaikyoDate;
 	// 初期駐車場返還日

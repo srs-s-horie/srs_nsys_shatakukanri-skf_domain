@@ -166,7 +166,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String nyukyobi = agreeDto.getNyukyobi();
 
 		// 初期入居日
-		String syokiNyukyobi = agreeDto.getNyukyoYoteiDate();
+		String syokiNyukyobi = agreeDto.getSyokiNyukyoDate();
 		// 入居日変更フラグ(0：変更なし)
 		String nyukyoChangeFlag = SkfCommonConstant.NOT_CHANGE;
 
@@ -194,8 +194,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String shiyobi2 = agreeDto.getShiyobi2();
 
 		// 初期駐車場使用開始日
-		String syokiShiyobi = agreeDto.getParkingUserDate();
-		String syokiShiyobi2 = agreeDto.getParkingUserDate2();
+		String syokiShiyobi = agreeDto.getSyokiParkingUseDate();
+		String syokiShiyobi2 = agreeDto.getSyokiParkingUseDate2();
 
 		String kaishiChangeFlg = SkfCommonConstant.NOT_CHANGE;
 

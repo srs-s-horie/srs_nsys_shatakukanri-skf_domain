@@ -287,6 +287,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNyukyoKanoDate())) {
 					// 入居予定日をセット
 					initDto.setNyukyobi(tNyukyoChoshoTsuchi.getNyukyoKanoDate());
+					initDto.setSyokiNyukyoDate(tNyukyoChoshoTsuchi.getNyukyoKanoDate());
 				}
 
 				if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUmu())
@@ -294,6 +295,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 					if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingKanoDate())) {
 						// 保管場所使用開始日をセット
 						initDto.setShiyobi(tNyukyoChoshoTsuchi.getParkingKanoDate());
+						initDto.setSyokiParkingUseDate(tNyukyoChoshoTsuchi.getParkingKanoDate());
 					}
 				}
 
@@ -306,6 +308,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 					if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingKanoDate2())) {
 						// 保管場所使用開始日（２台目）をセット
 						initDto.setShiyobi2(tNyukyoChoshoTsuchi.getParkingKanoDate2());
+						initDto.setSyokiParkingUseDate2(tNyukyoChoshoTsuchi.getParkingKanoDate2());
 					}
 				}
 
@@ -598,6 +601,8 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 入居可能日
 		initDto.setNyukyoKanoDate(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(), "yyyy年MM月dd日"));
+		// 初期入居可能日
+		initDto.setSyokiNyukyoDate(tNyukyoChoshoTsuchi.getNyukyoKanoDate());
 
 		// 保管場所
 		if (tNyukyoChoshoTsuchi.getParkingUmu() != null) {
