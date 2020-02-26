@@ -74,7 +74,10 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 		
 		// 検索結果一覧
 		// ----- エラー時用に、画面入力情報で置き換える（置き換えないと、検索した時の情報に戻ってしまう）
-		String[] editInfoList = addRegistDto.getRegistEditData().split("EndOfEditData");
+		String[] editInfoList = null;
+		if(NfwStringUtils.isNotEmpty(addRegistDto.getRegistEditData())){
+			editInfoList = addRegistDto.getRegistEditData().split("EndOfEditData");
+		}
 		// 機関リスト
 		List<Map<String, Object>> manageAgencyList = new ArrayList<Map<String, Object>>();
 		for (int rowIndex = 0; rowIndex < addRegistDto.getListTableData().size(); rowIndex++){
@@ -119,11 +122,18 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 		List<Map<String, Object>> listAddTableData = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> manageCompanyKubunList = new ArrayList<Map<String, Object>>();
 		skf3090Sc003SharedService.getDoropDownManageCompanyList(addRegistDto.getHdnAddCompanyCd(), manageCompanyKubunList);		
+		
+		// 「管理会社」ドロップダウンリストの設定
+		List<Map<String, Object>> manageCompanyKubunListSearch = new ArrayList<Map<String, Object>>();
+		skf3090Sc003SharedService.getDoropDownManageCompanyList(addRegistDto.getSelectedManageCompanyCd(), manageCompanyKubunListSearch);
+		//skf3090Sc003SharedService.getDoropDownManageCompanyList(null, manageCompanyKubunList);
+		addRegistDto.setManageCompanyList(manageCompanyKubunListSearch);
+		
 		if(isValidateInput(addRegistDto, errorListAddTable) == false){
 			// 入力チェックエラーの場合、追加領域の項目を再設定して処理を終了する
 			listAddTableData = skf3090Sc003SharedService.getListAddTableDataViewColumn(addRegistDto.getHdnAddCompanyCd(), manageCompanyKubunList, addRegistDto.getHdnAddBusinessAreaCd(), addRegistDto.getHdnAddBusinessAreaName(), addRegistDto.getHdnAddAgencyCd(), errorListAddTable);
 			addRegistDto.setListAddTableData(listAddTableData);
-
+			
 			// セッション情報
 			addRegistDto.setErrorListAddTable(errorListAddTable);
 			addRegistDto.setHdnAddCompanyCd(addRegistDto.getHdnAddCompanyCd());

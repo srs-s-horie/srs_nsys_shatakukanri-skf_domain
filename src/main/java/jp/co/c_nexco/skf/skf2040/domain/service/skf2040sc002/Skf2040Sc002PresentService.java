@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -130,6 +131,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		switch (preDto.getApplId()) {
 		case FunctionIdConstant.R0103:
 			// ◆退居（自動車の保管場所返還）届
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　退居（自動車の保管場所返還）届");
 			/* 申請書類履歴テーブルの更新（退居届） */
 			// 申請書類履歴テーブル」よりステータスを更新
 			String resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
@@ -149,12 +151,14 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 			// コメントがある場合は更新
 			if (NfwStringUtils.isNotEmpty(comment)) {
+				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　コメントあり");
 				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(), nextStatus, errorMsg,
 						comment)) {
 					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 					return preDto;
 				}
 			} else {
+				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　コメント不要");
 				comment = CodeConstant.NONE;
 			}
 
@@ -170,6 +174,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 			// 備品返却の提示作成がある場合
 			if (sFalse.equals(preDto.getHenkyakuBihinNothing())) {
+				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　備品返却の提示作成がある場合");
 				// 申請書類履歴テーブル 備品返却申請を登録/更新処理
 				if (!skf2040Sc002SharedService.insertOrUpdateApplHistoryForBihinHenkyaku(nextStatus, applTacFlg, preDto,
 						agreDate, shoninName1, shoninName2, FunctionIdConstant.R0105, userInfo.get("userCd"))) {
@@ -212,13 +217,14 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(preDto, resultList);
+				return preDto;
 			}
 
 			break;
 
 		case FunctionIdConstant.R0105:
 			// ◆備品返却希望
-
+			LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　備品返却希望");
 			// /申請書類履歴テーブルの更新（備品返却希望）
 			preDto.setHenkyakuBihinNothing(sFalse);
 
@@ -266,8 +272,15 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 		// 備品返却の提示作成がある場合
 		if (sFalse.equals(preDto.getHenkyakuBihinNothing())) {
+
 			// 社宅管理データ連携処理実行
-			doBihinHenkyakuShatakuRenkei(preDto, userInfo);
+			List<String> resultListBihin = doBihinHenkyakuShatakuRenkei(preDto, userInfo);
+
+			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
+			if (resultListBihin != null) {
+				skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(preDto, resultListBihin);
+				return preDto;
+			}
 		}
 
 		// 終了メッセージ出力
@@ -285,8 +298,9 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 	 * 
 	 * @param preDto
 	 * @param userInfo
+	 * @return List<String>
 	 */
-	private void doBihinHenkyakuShatakuRenkei(Skf2040Sc002PresentDto preDto, Map<String, String> userInfo) {
+	private List<String> doBihinHenkyakuShatakuRenkei(Skf2040Sc002PresentDto preDto, Map<String, String> userInfo) {
 		// 備品返却
 		// 社宅管理データ連携処理実行 ステータス審査中
 		// menuScopeSessionBeanからオブジェクトを取得
@@ -297,14 +311,14 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkHenkyakuMap);
 		// 連携実行
 		List<String> resultList = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
-				preDto.getShainNo(), preDto.getApplNo(), CodeConstant.STATUS_SHINSACHU, userInfo.get("userCd"),
-				preDto.getPageId());
+				preDto.getShainNo(), preDto.getHdnBihinHenkyakuApplNo(), CodeConstant.STATUS_SHINSACHU,
+				userInfo.get("userCd"), preDto.getPageId());
 		// セッション情報の削除
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
 		// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 		if (resultList != null) {
-			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(preDto, resultList);
+			return resultList;
 		}
 
 		// 再度排他制御用更新日取得
@@ -322,15 +336,17 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 		skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkHenkyakuMap2);
 		// 連携実行
 		List<String> resultList2 = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
-				preDto.getShainNo(), preDto.getApplNo(), CodeConstant.STATUS_KAKUNIN_IRAI, userInfo.get("userCd"),
-				preDto.getPageId());
+				preDto.getShainNo(), preDto.getHdnBihinHenkyakuApplNo(), CodeConstant.STATUS_KAKUNIN_IRAI,
+				userInfo.get("userCd"), preDto.getPageId());
 		// セッション情報の削除
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
 		// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 		if (resultList2 != null) {
-			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(preDto, resultList2);
+			return resultList2;
 		}
+
+		return null;
 	}
 
 }
