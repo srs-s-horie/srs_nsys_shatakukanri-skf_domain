@@ -53,6 +53,9 @@ public class Skf3090Sc003InitService extends BaseServiceAbstract<Skf3090Sc003Ini
 		skf3090Sc003SharedService.getDoropDownManageCompanyList(null, manageCompanyKubunList);
 		initDto.setManageCompanyList(manageCompanyKubunList);
 		
+		initDto.setBusinessAreaCd(null);
+		initDto.setBusinessAreaName(null);
+		
 		// 登録ボタン非活性
 		initDto.setRegistButtonDisabled(true);
 		
