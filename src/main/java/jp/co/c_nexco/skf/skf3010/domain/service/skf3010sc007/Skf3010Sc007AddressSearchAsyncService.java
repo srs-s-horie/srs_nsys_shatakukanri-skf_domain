@@ -81,7 +81,7 @@ public class Skf3010Sc007AddressSearchAsyncService
 		// 取得データレコード数判定
 		if (resultList.size() <= 0) {
 			// 取得データレコード数が0件場合、エラー設定して処理終了
-			ServiceHelper.addErrorResultMessage(searchDto, null, MessageIdConstant.E_SKF_1047);
+			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.E_SKF_1047);// .addErrorResultMessage(searchDto, new String[] { "txtParkingZipCd" }, );
 			searchDto.setParkingZipCdError(CodeConstant.NFW_VALIDATION_ERROR);
 			return searchDto;
 		}

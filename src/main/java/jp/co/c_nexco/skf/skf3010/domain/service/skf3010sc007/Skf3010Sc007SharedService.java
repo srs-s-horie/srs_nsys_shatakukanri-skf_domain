@@ -58,7 +58,7 @@ public class Skf3010Sc007SharedService {
 		// 契約形態リスト
 		contractTypeList.clear();
 		contractTypeList.addAll(ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_PARKING_CONTRACTTYPE_KBN, contractType,
-				isFirstRowEmpty));
+				false));
 
 		// 貸与区分リスト
 		lendList.clear();
