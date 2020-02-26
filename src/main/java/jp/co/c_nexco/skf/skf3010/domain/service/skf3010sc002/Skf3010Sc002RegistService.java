@@ -866,7 +866,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			String parkingRentalAdjust = (parkingMap.get("parkingRentalAdjust") != null) ?
 								parkingMap.get("parkingRentalAdjust").toString().trim().replace("　", "") : "";
 			// 入力値判定
-			if (CheckUtils.isNumeric(parkingRentalAdjust) && parkingRentalAdjust.length() > 0) {
+			if (CheckUtils.isNumberFormat(parkingRentalAdjust) && parkingRentalAdjust.length() > 0) {
 				// 数値の為、次の区画情報へ
 				continue;
 			}

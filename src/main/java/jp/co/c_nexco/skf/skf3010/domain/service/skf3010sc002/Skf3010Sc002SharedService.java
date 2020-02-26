@@ -3367,7 +3367,7 @@ public class Skf3010Sc002SharedService {
 						+ parkingRentalAdjust + "' placeholder='例　半角数字'  style='ime-mode: disabled; width:75px;text-align: right;' maxlength='6'/> 円");
 			}
 			// 駐車場月額使用料
-			if (CheckUtils.isNumeric(parkingRentalAdjust) && parkingRentalAdjust.length() > 0) {
+			if (CheckUtils.isNumberFormat(parkingRentalAdjust) && parkingRentalAdjust.length() > 0) {
 				parkingBlockRentMany += Long.parseLong(parkingRentalAdjust);
 			}
 			tmpMap.put("parkingMonthRental", "<label id='parkingMonthRental" + rId
