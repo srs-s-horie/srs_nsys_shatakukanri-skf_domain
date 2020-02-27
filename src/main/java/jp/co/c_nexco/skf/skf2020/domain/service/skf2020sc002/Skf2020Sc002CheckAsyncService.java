@@ -525,8 +525,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 
 					// 社宅を「必要としない」以外の場合
 					LogUtils.debugByMsg(msg + "退居理由" + checkDto.getTaikyoRiyuKbn() + checkDto.getTaiyoHituyo());
-					if (NfwStringUtils.isNotBlank(checkDto.getTaiyoHituyo())
-							&& !(CodeConstant.ASKED_SHATAKU_FUYOU.equals(checkDto.getTaiyoHituyo()))) {
+					if (!(CodeConstant.ASKED_SHATAKU_FUYOU.equals(checkDto.getTaiyoHituyo()))) {
 						// 退居理由
 						if (NfwStringUtils.isBlank(checkDto.getTaikyoRiyuKbn())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyuKbn" },
