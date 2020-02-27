@@ -212,6 +212,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			initDto.setShatakuJotaiViewFlg(sFalse);
 			// 返却情報欄の表示
 			initDto.setHenkyakuInfoViewFlg(sTrue);
+			// 返却備品項目の表示
+			initDto.setBihinViewFlg(sTrue);
 			// 返却備品なしフラグはありに設定
 			initDto.setHenkyakuBihinNothing(sFalse);
 
@@ -266,12 +268,12 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			initDto.setLevelOpen(sTrue);
 			// 帳票情報の設定
 			skf2040Sc002ShareService.setReportInfo(initDto, taikyoRepDt);
-
 			// 添付資料欄表示
 			initDto.setTenpViewFlg(sTrue);
-
 			// 返却情報欄の表示
 			initDto.setHenkyakuInfoViewFlg(sTrue);
+			// 返却備品項目の非表示
+			initDto.setBihinViewFlg(sFalse);
 			// 返却備品があるかどうか
 			initDto.setHenkyakuBihinNothing(sFalse);
 
@@ -417,8 +419,9 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 			// 承認者１がログインユーザー名と同じだった場合
 			Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 			if (CheckUtils.isEqual(applHistoryInfo.getAgreName1(), loginUserInfo.get("userName"))) {
-				// 承認ボタン
-				initDto.setBtnApproveDisabled(sTrue);
+				// 【全ボタン非表示】→"PTN_F"【PDFダウンロードボタン：表示】
+				skf2040Sc002ShareService.setButtonVisible("PTN_F", sTrue, initDto);
+				// initDto.setBtnApproveDisabled(sTrues);
 			}
 
 			break;
@@ -516,6 +519,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 
 			// 「返却備品なしフラグ」を立てる
 			initDto.setHenkyakuBihinNothing(sTrue);
+			// 返却備品項目の非表示表示
+			initDto.setBihinViewFlg(sFalse);
 
 			long roomNo = taikyoRepDt.getRoomKanriNo();// 部屋管理番号
 			long shatakuNo = taikyoRepDt.getShatakuNo();// 社宅管理番号
@@ -532,8 +537,6 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// リストが設定できなかった場合は特に何もしていない
 				if (henkyakuList != null) {
 					initDto.setHenkyakuList(henkyakuList);
-					// 返却備品項目表示
-					initDto.setHenkyakuInfoViewFlg(sTrue);
 					// 表示項目の設定
 					skf2040Sc002ShareService.setBihinData(initDto, henkyakuList);
 					for (Map<String, Object> list : henkyakuList) {
@@ -550,6 +553,9 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					}
 				}
 			}
+
+			// 返却備品項目の表示
+			initDto.setBihinViewFlg(sTrue);
 
 			// 備品返却申請の書類管理番号を備品返却申請テーブルより取得する
 			String BihinHenkyakuApplNo = getBihinHenkyakuShinseiApplNo(initDto.getShainNo(), initDto.getApplNo(),
@@ -583,6 +589,8 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				initDto.addLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_BIHIN, record.getUpdateDate());
 			}
 
+			// 返却情報表示
+			initDto.setHenkyakuInfoViewFlg(sTrue);
 			// 社宅の状態の設定
 			initDto.setShatakuJotaiViewFlg(sTrue);
 			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getShatakuJotai())) {
@@ -598,12 +606,12 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 				// 備品がある場合の表示項目の設定
 				skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt);
 			}
-		} else
-
-		{
+		} else {
 			// 退居届情報の退居する社宅区分が3：駐車場のみの場合
 			// 「返却備品なしフラグ」を立てる
 			initDto.setHenkyakuBihinNothing(sTrue);
+			// 返却情報欄の非表示
+			initDto.setHenkyakuInfoViewFlg(sFalse);
 		}
 		return true;
 	}
@@ -676,13 +684,13 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 					return returnValue;
 				} else {
 					initDto.setHenkyakuList(henkyakuList);
-					// 返却備品項目表示
-					initDto.setHenkyakuInfoViewFlg(sTrue);
 					// 表示項目の設定
 					skf2040Sc002ShareService.setBihinData(initDto, henkyakuList);
 				}
 			}
 
+			// 返却備品項目表示
+			initDto.setHenkyakuInfoViewFlg(sTrue);
 			// 返却情報の設定
 			skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt);
 		}
