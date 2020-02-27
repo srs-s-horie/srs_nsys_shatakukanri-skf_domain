@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteApplHistoryExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteDocTableExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
@@ -133,12 +131,13 @@ public class Skf2010Sc003SharedService {
 
 		// 汎用コード取得
 		Map<String, String> genericCodeMap = new HashMap<String, String>();
-		genericCodeMap = skfGenericCodeUtils.getGenericCode("SKF1001");
+		genericCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 
 		for (Skf2010Sc003GetApplHistoryStatusInfoExp applHistoryData : applHistoryList) {
-			String applDate = "";
-			String agreDate = "";
-			String applStatus = "";
+			String applDate = CodeConstant.NONE;
+			String agreDate = CodeConstant.NONE;
+			String applStatus = CodeConstant.NONE;
+			String applStatusCd = CodeConstant.NONE;
 
 			// 日付型を文字列型に変更する
 			if (applHistoryData.getApplDate() != null) {
@@ -156,15 +155,17 @@ public class Skf2010Sc003SharedService {
 				if (CheckUtils.isEqual(applHistoryData.getApplStatus(), CodeConstant.STATUS_SHONIN1)
 						&& !checkAdminRole(loginUserInfo.get("roleId"))) {
 					applStatus = genericCodeMap.get(CodeConstant.STATUS_SHINSACHU);
+					applStatusCd = CodeConstant.STATUS_SHINSACHU;
 				} else {
 					applStatus = genericCodeMap.get(applHistoryData.getApplStatus());
+					applStatusCd = applHistoryData.getApplStatus();
 				}
 			}
 
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 			tmpMap.put("detail", ""); // 表示（アイコン）
 			tmpMap.put("applId", applHistoryData.getApplId()); // 申請書ID
-			tmpMap.put("applStatus", applHistoryData.getApplStatus()); // 申請状況
+			tmpMap.put("applStatus", applStatusCd); // 申請状況
 			tmpMap.put("applDate", applDate); // 申請日
 			tmpMap.put("applStatusText", applStatus); // 申請状況（テキスト）
 			tmpMap.put("applNo", applHistoryData.getApplNo()); // 申請書番号
@@ -273,7 +274,7 @@ public class Skf2010Sc003SharedService {
 
 		return false;
 	}
-	
+
 	/**
 	 * 社宅連携処理を実施する
 	 * 
@@ -285,8 +286,8 @@ public class Skf2010Sc003SharedService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo,
-			String applStatus, String applId, String pageId) {
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String applStatus,
+			String applId, String pageId) {
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userId = loginUserInfoMap.get("userCd");
@@ -313,7 +314,8 @@ public class Skf2010Sc003SharedService {
 			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0103);
 
 			// 連携処理開始
-			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId, pageId);
+			resultBatch = skf2040Fc001TaikyoTodokeDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId,
+					pageId);
 			break;
 		case FunctionIdConstant.R0104:
 			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMapR0104 = skf2030Fc001BihinKiboShinseiDataImport
@@ -330,8 +332,8 @@ public class Skf2010Sc003SharedService {
 			skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(forUpdateMapR0105);
 
 			// 連携処理開始
-			resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, applStatus, userId,
-					pageId);
+			resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, applStatus,
+					userId, pageId);
 			break;
 		default:
 			break;
@@ -339,18 +341,18 @@ public class Skf2010Sc003SharedService {
 
 		return resultBatch;
 	}
-	
+
 	/**
 	 * 申請状況を取得する
 	 * 
 	 * @param applNo
 	 * @return applStatus
 	 */
-	public String getApplStatus(String applNo){
+	public String getApplStatus(String applNo) {
 		String afterApplStatus = CodeConstant.NONE;
 		List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> tApplHistoryList = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
 		tApplHistoryList = skfApplHistoryInfoUtils.getApplHistoryInfo(companyCd, applNo);
-		if(tApplHistoryList.size() > 0){
+		if (tApplHistoryList.size() > 0) {
 			SkfApplHistoryInfoUtilsGetApplHistoryInfoExp tApplHistory = tApplHistoryList.get(0);
 			afterApplStatus = tApplHistory.getApplStatus();
 		}

@@ -256,7 +256,6 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		String shainNo = loginUserInfo.get("shainNo");
 
 		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService
 				.getApplHistoryInfo(applNo);
