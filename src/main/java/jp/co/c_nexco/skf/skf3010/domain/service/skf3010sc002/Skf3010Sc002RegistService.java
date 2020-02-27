@@ -194,6 +194,9 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			}
 			// 新規の為、空き部屋数を「0/0」に設定
 			registDto.setEmptyRoomCount("0/0");
+			
+			// 成功メッセージ
+			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		} else {
 			// 更新社宅登録
 			updateCnt = updateHoyuShatakuInfo(
@@ -214,10 +217,12 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
+			// 成功メッセージ
+			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1011);
 		}
 
 		// 成功メッセージ
-		ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
+		//ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		// DTO設定
 		registDto.setHdnShatakuKanriNo(mShataku.getShatakuKanriNo().toString());
 		registDto.setHdnShatakuName(mShataku.getShatakuName());
