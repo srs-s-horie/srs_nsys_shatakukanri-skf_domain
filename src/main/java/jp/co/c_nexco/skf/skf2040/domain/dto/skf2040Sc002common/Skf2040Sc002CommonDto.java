@@ -121,8 +121,6 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private String tenpViewFlg;
 	// 退居（自動車の保管場所変換）届表示フラグ
 	private String taikyoViewFlg;
-	// 社宅状態表示フラグ
-	private String shatakuJotaiViewFlg;
 	// 退居（自動車の保管場所変換）届PDF出力ボタン表示フラグ
 	private String taikyoPdfViewFlg;
 
@@ -133,6 +131,10 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 
 	// 返却情報表示フラグ true:あり false:なし
 	private String henkyakuInfoViewFlg;
+	// 社宅状態表示フラグ true:あり false:なし
+	private String shatakuJotaiViewFlg;
+	// 返却備品表示フラグ true:あり false:なし
+	private String bihinViewFlg;
 	// 返却備品なしフラグ true:あり false:なし
 	private String henkyakuBihinNothing;
 
