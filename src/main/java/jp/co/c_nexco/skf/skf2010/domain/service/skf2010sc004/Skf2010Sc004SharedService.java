@@ -443,13 +443,13 @@ public class Skf2010Sc004SharedService {
 		insertData.setNowAddress(nowAddress);
 		// 現社宅名(付加文字列)
 		insertData.setNowShatakuName(nowShatakuName);
-		// 登録ユーザー名
-		String insertUser = CodeConstant.NONE;
+		// 登録ユーザーID
+		String insertUserId = CodeConstant.NONE;
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		if (CheckUtils.isEmpty(insertUser)) {
-			insertUser = loginUserInfo.get("name");
-		}
-		insertData.setInsertUserId(insertUser);
+		insertUserId = loginUserInfo.get("userCd");
+		
+		insertData.setInsertUserId(insertUserId);
+		insertData.setInsertProgramId(FunctionIdConstant.SKF2010_SC004);
 		// 退居日変更フラグ
 		insertData.setTaikyoDateFlg(taikyoChangeFlag);
 		// 駐車場返還日変更フラグ
@@ -506,11 +506,16 @@ public class Skf2010Sc004SharedService {
 		int insertCount = 0;
 		String saveDate = skfDateFormatUtils.dateFormatFromDate(new Date(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
 		Skf2010Sc004InsertBihinHenkyakuInfoExp insertData = new Skf2010Sc004InsertBihinHenkyakuInfoExp();
+		//ログインセッションのユーザ情報
+		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		String userId = userInfoMap.get("userCd");
 		insertData.setCompanyCd(companyCd);
 		insertData.setApplNo(applNo);
-		insertData.setBhsApplNo(newApplNo);
+		insertData.setBhsApplNo(bihinHenkyakuShinseiApplNo);
 		insertData.setSaveDate(saveDate);
-		insertData.setTaikyoApplNo(bihinHenkyakuShinseiApplNo);
+		insertData.setTaikyoApplNo(newApplNo);
+		insertData.setInsertUserId(userId);
+		insertData.setInsertProgramId(FunctionIdConstant.SKF2010_SC004);
 		insertCount = skf2010Sc004InsertBihinHenkyakuInfoExpRepository.insertBihinHenkyakuInfo(insertData);
 		if (insertCount <= 0) {
 			return false;

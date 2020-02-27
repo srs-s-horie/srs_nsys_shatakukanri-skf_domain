@@ -28,6 +28,7 @@ import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001SendMailDto;
+import jp.co.intra_mart.foundation.BaseUrl;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -153,8 +154,7 @@ public class Skf3021Sc001SendMailService extends BaseServiceAbstract<Skf3021Sc00
 			
 			// 短縮URL作成
 			if (urlBase != null) {
-				Map<String, String> urlMap = new HashMap<String, String>();
-					String url = NfwSendMailUtils.createShotcutUrl(urlBase, urlMap, 2);
+				String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
 				replaceMap.put("【url】", url);
 			}
 			

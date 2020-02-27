@@ -227,6 +227,11 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			int indexTaikyo = taikyoChkValList.indexOf(Integer.toString(rowIndex));
 			int indexHenkou = henkouChkValList.indexOf(Integer.toString(rowIndex));
 
+			if(indexNyukyo == -1 && indexTaikyo == -1 && indexHenkou == -1 ){
+				//すべてチェック無しの場合、次の行へ
+				continue;
+			}
+			
 			/** 更新項目をセット **/
 			// - 入居フラグ
 			String nyukyoFlgStr = null;

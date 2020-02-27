@@ -122,11 +122,18 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 		List<Map<String, Object>> listAddTableData = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> manageCompanyKubunList = new ArrayList<Map<String, Object>>();
 		skf3090Sc003SharedService.getDoropDownManageCompanyList(addRegistDto.getHdnAddCompanyCd(), manageCompanyKubunList);		
+		
+		// 「管理会社」ドロップダウンリストの設定
+		List<Map<String, Object>> manageCompanyKubunListSearch = new ArrayList<Map<String, Object>>();
+		skf3090Sc003SharedService.getDoropDownManageCompanyList(addRegistDto.getSelectedManageCompanyCd(), manageCompanyKubunListSearch);
+		//skf3090Sc003SharedService.getDoropDownManageCompanyList(null, manageCompanyKubunList);
+		addRegistDto.setManageCompanyList(manageCompanyKubunListSearch);
+		
 		if(isValidateInput(addRegistDto, errorListAddTable) == false){
 			// 入力チェックエラーの場合、追加領域の項目を再設定して処理を終了する
 			listAddTableData = skf3090Sc003SharedService.getListAddTableDataViewColumn(addRegistDto.getHdnAddCompanyCd(), manageCompanyKubunList, addRegistDto.getHdnAddBusinessAreaCd(), addRegistDto.getHdnAddBusinessAreaName(), addRegistDto.getHdnAddAgencyCd(), errorListAddTable);
 			addRegistDto.setListAddTableData(listAddTableData);
-
+			
 			// セッション情報
 			addRegistDto.setErrorListAddTable(errorListAddTable);
 			addRegistDto.setHdnAddCompanyCd(addRegistDto.getHdnAddCompanyCd());

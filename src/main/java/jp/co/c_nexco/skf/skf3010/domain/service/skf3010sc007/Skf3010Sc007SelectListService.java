@@ -212,7 +212,12 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 					
 					
 					//契約形態
-					String contractType = map.get("parkingContractType").toString();
+					String contractType = Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1;
+					if(map.get("parkingContractType") != null){
+						//契約形態値ある場合（無しの場合は一括契約とみなす）
+						contractType = map.get("parkingContractType").toString();
+					}
+					//String contractType = map.get("parkingContractType").toString();
 					if(contractType.compareTo(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1) == 0){
 						//社宅と一括契約の場合
 						//リスト設定

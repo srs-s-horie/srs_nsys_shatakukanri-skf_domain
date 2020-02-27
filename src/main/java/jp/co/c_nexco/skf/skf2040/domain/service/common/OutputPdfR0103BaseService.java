@@ -23,10 +23,10 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2040OutputPdfBase
 	@Value("${skf.pdf.skf2040rp001.pdf_temp_folder_path}")
 	private String pdfTempFolderPath;
 	
-	private static final int AGENCY_BREAK_LENGTH = 13;
-	private static final int AFFILIATION1_BREAK_LENGTH = 13;
-	private static final int AFFILIAITON2_BREAK_LENGTH = 13;
-	private static final int ADDRESS_BREAK_LENGTH = 13;
+	private static final int AGENCY_BREAK_LENGTH = 26;
+	private static final int AFFILIATION1_BREAK_LENGTH = 26;
+	private static final int AFFILIAITON2_BREAK_LENGTH = 26;
+	private static final int ADDRESS_BREAK_LENGTH = 26;
 	private static final int TAIKYO_AREA_BREAK_LRNGTH = 64;
 	private static final int PARKING_AREA_BREAK_LENGTH = 64;
 	private static final int TAIKYOGO_RIYU_BREAK_LENGTH = 64;

@@ -44,7 +44,7 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc005.Skf3022Sc005SendMailDto;
-
+import jp.co.intra_mart.foundation.BaseUrl;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -85,13 +85,13 @@ public class Skf3022Sc005SendMailService extends BaseServiceAbstract<Skf3022Sc00
 	public static final String TEIJI_KBN_BIHIN = "2";
 	public static final String TEIJI_KBN_INOUT = "3";
 	//社宅提示データ本人確認督促通知
-	public static final String SHATAKU_TEIJI_DATA_KAKUNIN_TSUCHI = "31";
+	public static final String SHATAKU_TEIJI_DATA_KAKUNIN_TSUCHI = "41";
 	//備品申請の確認督促
-	public static final String BIHIN_SHINSEI_KAKUNIN_TSUCHI = "32";
+	public static final String BIHIN_SHINSEI_KAKUNIN_TSUCHI = "42";
 	//備品返却の確認督促
-	public static final String BIHIN_RETURN_KAKUNIN_TSUCHI = "33";
+	public static final String BIHIN_RETURN_KAKUNIN_TSUCHI = "43";
 	//備品搬入・搬出督促通知
-	public static final String BIHIN_HANRYU_HANSHUTSU_TSUCHI = "34";
+	public static final String BIHIN_HANRYU_HANSHUTSU_TSUCHI = "44";
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -329,8 +329,7 @@ public class Skf3022Sc005SendMailService extends BaseServiceAbstract<Skf3022Sc00
 			
 			// 短縮URL作成
 			if (urlBase != null) {
-				Map<String, String> urlMap = new HashMap<String, String>();
-					String url = NfwSendMailUtils.createShotcutUrl(urlBase, urlMap, 2);
+				String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
 				replaceMap.put("【url】", url);
 			}
 			
