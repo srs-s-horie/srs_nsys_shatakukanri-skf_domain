@@ -186,7 +186,8 @@ public class Skf3090Sc003DeleteService extends BaseServiceAbstract<Skf3090Sc003D
 		List<Skf3090Sc003GetShatakuInfoExp> resultShatakuList = new ArrayList<Skf3090Sc003GetShatakuInfoExp>();
 		Skf3090Sc003GetShatakuInfoExpParameter param = new Skf3090Sc003GetShatakuInfoExpParameter();
 		param.setManageCompanyCd(deleteDto.getHdnRowCompanyCd());
-		param.setBusinessAreaCd(deleteDto.getHdnRowAgencyCd());
+		//param.setBusinessAreaCd(deleteDto.getHdnRowAgencyCd());
+		param.setBusinessAreaCd(deleteDto.getHdnRowBusinessAreaCd());
 		resultShatakuList = skf3090Sc003GetShatakuInfoExpRepository.getShatakuInfo(param);
 		
 		if(resultShatakuList.size() > 0){
