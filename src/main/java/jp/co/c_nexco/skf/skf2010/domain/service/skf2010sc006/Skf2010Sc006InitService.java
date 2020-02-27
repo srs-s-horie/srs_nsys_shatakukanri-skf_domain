@@ -754,24 +754,26 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		initDto.setNewRental(newRental);
 		// 共益費
 		String newKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
-		// 個人負担共益費協議中フラグチェック
-		boolean kyogiFlg = skfTeijiDataInfoUtils.selectKyoekihiKyogi(initDto.getShainNo(), CodeConstant.SYS_NYUKYO_KBN,
-				initDto.getApplNo());
-		if (kyogiFlg) {
-			// trueの時は「協議中」を表示
-			newKyoekihi = KYOGICHU_TEXT;
+		initDto.setNewKyoekihi(newKyoekihi);
+		if (NfwStringUtils.isEmpty(newKyoekihi)) {
+			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
+				initDto.setNewKyoekihi(GOJITSU_TEXT);
+			}
 		} else {
-			// falseの時は共益費を表示
-			if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
-				newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
-			} else {
-				// 共益費が未登録の場合、「（後日お知らせ）」を表示する
-				newKyoekihi = GOJITSU_TEXT;
+			// 個人負担共益費協議中フラグチェック
+			if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getKyoekihiPersonKyogichuFlg(),
+					CodeConstant.KYOEKIHI_KYOGICHU)) {
+				initDto.setNewKyoekihi(KYOGICHU_TEXT);
 			}
 		}
-		// 共益費は部屋番号が登録されている場合のみ表示
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
-			initDto.setNewKyoekihi(newKyoekihi);
+
+		// 決定通知書用共益費設定
+		String ketteiKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
+		initDto.setKetteiKyoekihi(ketteiKyoekihi);
+		if (NfwStringUtils.isEmpty(newKyoekihi)) {
+			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
+				initDto.setNewKyoekihi(GOJITSU_TEXT);
+			}
 		}
 
 		// 入居日
