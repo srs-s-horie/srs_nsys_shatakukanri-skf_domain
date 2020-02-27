@@ -166,7 +166,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String nyukyobi = agreeDto.getNyukyobi();
 
 		// 初期入居日
-		String syokiNyukyobi = agreeDto.getNyukyoYoteiDate();
+		String syokiNyukyobi = agreeDto.getSyokiNyukyoDate();
 		// 入居日変更フラグ(0：変更なし)
 		String nyukyoChangeFlag = SkfCommonConstant.NOT_CHANGE;
 
@@ -194,8 +194,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String shiyobi2 = agreeDto.getShiyobi2();
 
 		// 初期駐車場使用開始日
-		String syokiShiyobi = agreeDto.getParkingUserDate();
-		String syokiShiyobi2 = agreeDto.getParkingUserDate2();
+		String syokiShiyobi = agreeDto.getSyokiParkingUseDate();
+		String syokiShiyobi2 = agreeDto.getSyokiParkingUseDate2();
 
 		String kaishiChangeFlg = SkfCommonConstant.NOT_CHANGE;
 
@@ -273,8 +273,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, newApplNo, afterApplStatus, applId,
-				FunctionIdConstant.SKF2010_SC004);
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, newApplNo,
+				afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(agreeDto, resultBatch);
@@ -309,6 +309,22 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		return agreeDto;
 	}
 
+	/**
+	 * 申請情報を更新する
+	 * 
+	 * @param newApplNo
+	 * @param dto
+	 * @param shainNo
+	 * @param nowAddress
+	 * @param commentUpdateDate
+	 * @param commentName
+	 * @param commentNote
+	 * @param nyukyoChangeFlag
+	 * @param kaishiChangeFlg
+	 * @param taikyoChangeFlag
+	 * @param henkanChangeFlag
+	 * @return
+	 */
 	private boolean updateApplHistoryAgree(String newApplNo, Skf2010Sc004AgreeAsyncDto dto, String shainNo,
 			String nowAddress, Date commentUpdateDate, String commentName, String commentNote, String nyukyoChangeFlag,
 			String kaishiChangeFlg, String taikyoChangeFlag, String henkanChangeFlag) {
@@ -349,7 +365,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 			// 入居可能日、駐車場利用可能日、入居日変更フラグ、退居日変更フラグ、保管場所利用開始日変更フラグ
 			// 入居希望等調書・入居決定通知テーブルの更新
 			boolean res = skf2010Sc004SharedService.updateTaikyobi(nyukyobi, taikyobi, shiyobi, shiyobi2, taikyoYotei,
-					nyukyoChangeFlag, kaishiChangeFlg, applNo);
+					nyukyoChangeFlag, taikyoChangeFlag, kaishiChangeFlg, henkanChangeFlag, applNo);
 			if (!res) {
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 				return false;

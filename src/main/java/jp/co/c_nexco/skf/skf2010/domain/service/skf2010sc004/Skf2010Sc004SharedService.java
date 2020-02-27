@@ -340,7 +340,8 @@ public class Skf2010Sc004SharedService {
 	 * @return
 	 */
 	public boolean updateTaikyobi(String nyukyobi, String taikyobi, String shiyobi, String shiyobi2, String taikyoYotei,
-			String nyukyoChangeFlag, String kaishiChangeFlg, String applNo) {
+			String nyukyoChangeFlag, String taikyoChangeFlg, String kaishiChangeFlg, String henkanChangeFlg,
+			String applNo) {
 		Skf2020TNyukyoChoshoTsuchi updData = new Skf2020TNyukyoChoshoTsuchi();
 		// 更新条件項目
 		updData.setCompanyCd(companyCd); // 会社コード
@@ -362,10 +363,12 @@ public class Skf2010Sc004SharedService {
 		// 駐車場使用開始日
 		if (!CheckUtils.isEmpty(shiyobi)) {
 			updData.setParkingUseDate(shiyobi);
+			updData.setParkingKanoDate(shiyobi);
 		}
 		// 駐車場使用開始日2
 		if (!CheckUtils.isEmpty(shiyobi2)) {
 			updData.setParkingUseDate2(shiyobi2);
+			updData.setParkingKanoDate2(shiyobi2);
 		}
 		// 退居予定
 		if (!CheckUtils.isEmpty(taikyoYotei)) {
@@ -375,9 +378,13 @@ public class Skf2010Sc004SharedService {
 		if (!CheckUtils.isEmpty(nyukyoChangeFlag)) {
 			updData.setNyukyoDateFlg(nyukyoChangeFlag);
 		}
-		// 退居日変更フラグ
+		// 駐車場使用開始日変更フラグ
 		if (!CheckUtils.isEmpty(kaishiChangeFlg)) {
-			updData.setTaikyoDateFlg(kaishiChangeFlg);
+			updData.setParkingSDateFlg(kaishiChangeFlg);
+		}
+		// 退居日変更フラグ
+		if (!CheckUtils.isEmpty(taikyoChangeFlg)) {
+			updData.setTaikyoDateFlg(taikyoChangeFlg);
 		}
 
 		int result = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKeySelective(updData);
@@ -447,7 +454,7 @@ public class Skf2010Sc004SharedService {
 		String insertUserId = CodeConstant.NONE;
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		insertUserId = loginUserInfo.get("userCd");
-		
+
 		insertData.setInsertUserId(insertUserId);
 		insertData.setInsertProgramId(FunctionIdConstant.SKF2010_SC004);
 		// 退居日変更フラグ
@@ -506,7 +513,7 @@ public class Skf2010Sc004SharedService {
 		int insertCount = 0;
 		String saveDate = skfDateFormatUtils.dateFormatFromDate(new Date(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
 		Skf2010Sc004InsertBihinHenkyakuInfoExp insertData = new Skf2010Sc004InsertBihinHenkyakuInfoExp();
-		//ログインセッションのユーザ情報
+		// ログインセッションのユーザ情報
 		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userId = userInfoMap.get("userCd");
 		insertData.setCompanyCd(companyCd);
@@ -840,8 +847,8 @@ public class Skf2010Sc004SharedService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String newApplNo, String applStatus,
-			String applId, String pageId) {
+	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String newApplNo,
+			String applStatus, String applId, String pageId) {
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userId = loginUserInfoMap.get("userCd");

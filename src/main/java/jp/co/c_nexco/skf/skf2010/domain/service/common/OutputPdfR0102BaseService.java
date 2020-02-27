@@ -4,10 +4,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
@@ -26,10 +24,10 @@ import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 
 public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBaseDto>
 		extends PdfBaseServiceAbstract<DTO> {
-	
+
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	
+
 	@Autowired
 	private Skf2020TNyukyoChoshoTsuchiRepository skf2020TNyukyoChoshoTsuchiRepository;
 
@@ -37,13 +35,12 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 	private String pdfFileName;
 	@Value("${skf.pdf.skf2020rp003.pdf_temp_folder_path}")
 	private String pdfTempFolderPath;
-	
+
 	private static final int KYOEKIHI = 7;
 	private static final int AGENCY_BREAK_LENGTH = 32;
 	private static final int AFFILIATION1_BREAK_LENGTH = 32;
 	private static final int AFFILIATION2_BREAK_LENGTH = 32;
 	private static final int CAR_NAME = 32;
-
 
 	@Override
 	protected String getPdfFileName() {
@@ -62,9 +59,9 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 			}
 		} else {
 			pdfInfoList.add(PDF_INFO.NYUKYO_KETTEI_TSUCHI_SHATAKU_KANRI_NO_ARI);
-				if (dto.getCarNoInputFlg2() != null) {
-					pdfInfoList.add(PDF_INFO.NYUKYO_KETTEI_TSUCHI_SHATAKU_KANRI_NO_ARI);
-				}
+			if (dto.getCarNoInputFlg2() != null) {
+				pdfInfoList.add(PDF_INFO.NYUKYO_KETTEI_TSUCHI_SHATAKU_KANRI_NO_ARI);
+			}
 		}
 		return pdfInfoList;
 	}
@@ -118,10 +115,10 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 		// 共益費
 		if (NfwStringUtils.defaultString(dto.getNewKyoekihi())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= KYOEKIHI) {
-			pdfData.setData("newKyoekihi", NfwStringUtils.defaultString(dto.getNewKyoekihi()));
+			pdfData.setData("newKyoekihi", NfwStringUtils.defaultString(dto.getKetteiKyoekihi()));
 		} else {
 			// 後日お知らせを表示する
-			pdfData.setData("newKyoekihi_long", NfwStringUtils.defaultString(dto.getNewKyoekihi()));
+			pdfData.setData("newKyoekihi_long", NfwStringUtils.defaultString(dto.getKetteiKyoekihi()));
 		}
 		pdfData.setData("dokyoRelation1", NfwStringUtils.defaultString(dto.getDokyoRelation1()));
 		pdfData.setData("dokyoName1", NfwStringUtils.defaultString(dto.getDokyoName1()));
@@ -141,28 +138,28 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 		pdfData.setData("dokyoRelation6", NfwStringUtils.defaultString(dto.getDokyoRelation6()));
 		pdfData.setData("dokyoName6", NfwStringUtils.defaultString(dto.getDokyoName6()));
 		pdfData.setData("dokyoAge6", NfwStringUtils.defaultString(dto.getDokyoAge6()));
-		
+
 		// 自動車1台目
 		if (i == 0) {
-		pdfData.setData("parkingArea", NfwStringUtils.defaultString(dto.getParkingArea()));
-		// 自動車の車名
-		if (NfwStringUtils.defaultString(dto.getCarName())
-				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= CAR_NAME) {
-			pdfData.setData("carName", NfwStringUtils.defaultString(dto.getCarName()));
-		} else {
-			// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
-			pdfData.setTextBoxStart("carName_long");
-			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarName()));
-			pdfData.setTextBoxEnd();
+			pdfData.setData("parkingArea", NfwStringUtils.defaultString(dto.getParkingArea()));
+			// 自動車の車名
+			if (NfwStringUtils.defaultString(dto.getCarName())
+					.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= CAR_NAME) {
+				pdfData.setData("carName", NfwStringUtils.defaultString(dto.getCarName()));
+			} else {
+				// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+				pdfData.setTextBoxStart("carName_long");
+				pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarName()));
+				pdfData.setTextBoxEnd();
+			}
+			pdfData.setData("carNo", NfwStringUtils.defaultString(dto.getCarNo()));
+			pdfData.setData("carUser", NfwStringUtils.defaultString(dto.getCarUser()));
+			pdfData.setData("carExpirationDate", NfwStringUtils.defaultString(dto.getCarExpirationDate()));
+			pdfData.setData("carIchiNo", NfwStringUtils.defaultString(dto.getCarIchiNo()));
+			pdfData.setData("parkingRental", NfwStringUtils.defaultString(dto.getParkingRental()));
+			pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
 		}
-		pdfData.setData("carNo", NfwStringUtils.defaultString(dto.getCarNo()));
-		pdfData.setData("carUser", NfwStringUtils.defaultString(dto.getCarUser()));
-		pdfData.setData("carExpirationDate", NfwStringUtils.defaultString(dto.getCarExpirationDate()));
-		pdfData.setData("carIchiNo", NfwStringUtils.defaultString(dto.getCarIchiNo()));
-		pdfData.setData("parkingRental", NfwStringUtils.defaultString(dto.getParkingRental()));
-		pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
-		}
-		
+
 		// 自動車2台目
 		if (i == 1) {
 			pdfData.setData("parkingArea2", NfwStringUtils.defaultString(dto.getParkingArea2()));
@@ -183,11 +180,9 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setData("parkingRental2", NfwStringUtils.defaultString(dto.getParkingRental2()));
 			pdfData.setData("parkingKanoDate2", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
 		}
-		
-		
+
 		pdfData.setData("nyukyoKanoDate", NfwStringUtils.defaultString(dto.getNyukyoKanoDate()));
-		
-		
+
 		// 社宅管理番号
 		String newShatakuKanriNo = "";
 		Skf2020TNyukyoChoshoTsuchi data = new Skf2020TNyukyoChoshoTsuchi();
@@ -203,10 +198,10 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 		if (!roleId.equals(CodeConstant.SHINSEISHA)) {
 			pdfData.setData("newShatakuKanriNo", NfwStringUtils.defaultString(newShatakuKanriNo));
 		}
-		
+
 		/** 誓約書 */
 		pdfData.setData("tsuchiDate", NfwStringUtils.defaultString(dto.getTsuchiDate()));
-		// 現所属　機関
+		// 現所属 機関
 		if (NfwStringUtils.defaultString(dto.getNowAgency())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGENCY_BREAK_LENGTH) {
 			pdfData.setData("nowAgencyS", NfwStringUtils.defaultString(dto.getNowAgency()));
@@ -216,7 +211,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAgency()));
 			pdfData.setTextBoxEnd();
 		}
-		// 現所属　部等
+		// 現所属 部等
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation1())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION1_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation1S", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
@@ -226,7 +221,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 			pdfData.setTextBoxEnd();
 		}
-		// 現所属　室、チーム又は課
+		// 現所属 室、チーム又は課
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation2())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION2_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation2S", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
@@ -238,8 +233,5 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 		}
 
 	}
-	
-	
-
 
 }

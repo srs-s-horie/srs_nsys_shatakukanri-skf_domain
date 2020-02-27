@@ -899,51 +899,49 @@ public class Skf2020Sc003SharedService {
 
 		// 駐車場が必要な場合のみ駐車場情報を表示する
 		String parkingUmu = dto.getParkingUmu();
-		if (CheckUtils.isEqual(parkingUmu, CodeConstant.CAR_PARK_HITUYO)) {
-			// 駐車場情報 １台目 自動車の保管場所
-			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress1())) {
-				dto.setParkingAddress1(wkPrefNameParking + teijiDataInfo.getParkingAddress1());
-			}
-			// 駐車場情報 １台目 位置番号等
-			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock1())) {
-				dto.setCarIchiNo1(teijiDataInfo.getParkingBlock1());
-			}
-			// 駐車場情報 １台目 自動車の保管場所に係わる使用料(月)
-			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental1())) {
-				Long parkingRental1 = Long.parseLong(teijiDataInfo.getParkingRental1());
-				dto.setParkingRental1(nfNum.format(parkingRental1) + SkfCommonConstant.FORMAT_EN);
-			}
-			// 駐車場情報 １台目 使用開始可能日
-			if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking1StartDate())) {
-				dto.setParking1StartDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getParking1StartDate(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
-			}
-
-			if (NfwStringUtils.isNotEmpty(dto.getCarNoInputFlg2())) {
-				// 駐車場情報 ２台目 自動車の保管場所
-				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress2())) {
-					dto.setParkingAddress2(wkPrefNameParking + teijiDataInfo.getParkingAddress2());
-					bCar2 = true;
-				}
-				// 駐車場情報 ２台目 位置番号等
-				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock2())) {
-					dto.setCarIchiNo2(teijiDataInfo.getParkingBlock2());
-					bCar2 = true;
-				}
-				// 駐車場情報 ２台目 自動車の保管場所に係わる使用料(月)
-				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental2())) {
-					Long parkingRental2 = Long.parseLong(teijiDataInfo.getParkingRental2());
-					dto.setParkingRental2(nfNum.format(parkingRental2) + SkfCommonConstant.FORMAT_EN);
-					bCar2 = true;
-				}
-				// 駐車場情報 ２台目 使用開始可能日
-				if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking2StartDate())) {
-					dto.setParking2StartDate(skfDateFormatUtils.dateFormatFromString(
-							teijiDataInfo.getParking2StartDate(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
-					bCar2 = true;
-				}
-			}
+		// if (CheckUtils.isEqual(parkingUmu, CodeConstant.CAR_PARK_HITUYO)) {
+		// 駐車場情報 １台目 自動車の保管場所
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress1())) {
+			dto.setParkingAddress1(wkPrefNameParking + teijiDataInfo.getParkingAddress1());
 		}
+		// 駐車場情報 １台目 位置番号等
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock1())) {
+			dto.setCarIchiNo1(teijiDataInfo.getParkingBlock1());
+		}
+		// 駐車場情報 １台目 自動車の保管場所に係わる使用料(月)
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental1())) {
+			Long parkingRental1 = Long.parseLong(teijiDataInfo.getParkingRental1());
+			dto.setParkingRental1(nfNum.format(parkingRental1) + SkfCommonConstant.FORMAT_EN);
+		}
+		// 駐車場情報 １台目 使用開始可能日
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking1StartDate())) {
+			dto.setParking1StartDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getParking1StartDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+		}
+
+		// 駐車場情報 ２台目 自動車の保管場所
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress2())) {
+			dto.setParkingAddress2(wkPrefNameParking + teijiDataInfo.getParkingAddress2());
+			bCar2 = true;
+		}
+		// 駐車場情報 ２台目 位置番号等
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingBlock2())) {
+			dto.setCarIchiNo2(teijiDataInfo.getParkingBlock2());
+			bCar2 = true;
+		}
+		// 駐車場情報 ２台目 自動車の保管場所に係わる使用料(月)
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingRental2())) {
+			Long parkingRental2 = Long.parseLong(teijiDataInfo.getParkingRental2());
+			dto.setParkingRental2(nfNum.format(parkingRental2) + SkfCommonConstant.FORMAT_EN);
+			bCar2 = true;
+		}
+		// 駐車場情報 ２台目 使用開始可能日
+		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParking2StartDate())) {
+			dto.setParking2StartDate(skfDateFormatUtils.dateFormatFromString(teijiDataInfo.getParking2StartDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
+			bCar2 = true;
+		}
+		// }
 
 		// 社宅管理番号
 		if (teijiDataInfo.getShatakuKanriNo() != CodeConstant.LONG_ZERO) {
@@ -961,8 +959,7 @@ public class Skf2020Sc003SharedService {
 		if (CodeConstant.ASKED_SHATAKU_PARKING_ONLY.equals(dto.getTaiyoHituyo()) && bCar2) {
 			// ２台目 自動車の車名、登録番号、使用者、保管場所使用開始日(予定日)が空白なら１台のみ申請
 			if (NfwStringUtils.isEmpty(dto.getCarName2()) && NfwStringUtils.isEmpty(dto.getCarNo2())
-					&& NfwStringUtils.isEmpty(dto.getCarUser2())
-					&& NfwStringUtils.isEmpty(dto.getParking2StartDate())) {
+					&& NfwStringUtils.isEmpty(dto.getCarUser2()) && NfwStringUtils.isEmpty(dto.getParkingUseDate2())) {
 				// 駐車場のみで1台のみ追加された場合は割当先を判定
 				if (teijiDataInfo.getShatakuKanriNo() != CodeConstant.LONG_ZERO
 						&& teijiDataInfo.getShatakuRoomKanriNo() != CodeConstant.LONG_ZERO) {
@@ -979,16 +976,16 @@ public class Skf2020Sc003SharedService {
 					if (parkingRirekiList != null && parkingRirekiList.size() > 0) {
 						Skf2020Sc003GetParkingRirekiDataExp parkingRirekiData = parkingRirekiList.get(0);
 						// 今回提示か判定、駐車場2が割当なら移動
-						if (parkingRirekiData.getParkingKanriNo1() == CodeConstant.LONG_ZERO
-								&& parkingRirekiData.getParkingKanriNo2() != CodeConstant.LONG_ZERO) {
-							dto.setParking1stPlace(dto.getParking2stPlace());
+						if (parkingRirekiData.getParkingKanriNo1() != CodeConstant.LONG_ZERO
+								&& parkingRirekiData.getParkingKanriNo2() == CodeConstant.LONG_ZERO) {
+							dto.setParkingAddress1(dto.getParkingAddress2());
 							dto.setCarIchiNo1(dto.getCarIchiNo2());
 							dto.setParkingRental1(dto.getParkingRental2());
 							dto.setParking1StartDate(dto.getParking2StartDate());
-							dto.setParking2stPlace(CodeConstant.NONE);
-							dto.setCarIchiNo2(CodeConstant.NONE);
-							dto.setParkingRental2(CodeConstant.NONE);
-							dto.setParking2StartDate(CodeConstant.NONE);
+							dto.setParkingAddress2(null);
+							dto.setCarIchiNo2(null);
+							dto.setParkingRental2(null);
+							dto.setParking2StartDate(null);
 						}
 					}
 				}
@@ -1310,6 +1307,8 @@ public class Skf2020Sc003SharedService {
 			String parkingUseDate1 = skfDateFormatUtils.dateFormatFromString(dto.getParking1StartDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
 			nyukyoChoshoTsuchiInfo.setParkingKanoDate(parkingUseDate1);
+		} else {
+			nyukyoChoshoTsuchiInfo.setParkingKanoDate(null);
 		}
 		// 自動車の保管場所2
 		nyukyoChoshoTsuchiInfo.setParkingArea2(dto.getParkingAddress2());
@@ -1331,6 +1330,8 @@ public class Skf2020Sc003SharedService {
 			String parkingUseDate2 = skfDateFormatUtils.dateFormatFromString(dto.getParking2StartDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
 			nyukyoChoshoTsuchiInfo.setParkingKanoDate2(parkingUseDate2);
+		} else {
+			nyukyoChoshoTsuchiInfo.setParkingKanoDate2(null);
 		}
 		// 社宅管理番号
 		String shatakuKanriNo = dto.getNewShatakuKanriNo();
