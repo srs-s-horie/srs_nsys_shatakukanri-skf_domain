@@ -282,6 +282,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			initDto.setLevel2Open("false");
 			initDto.setLevel3Open("false");
 			initDto.setLevel4Open("true");
+			initDto.setRevisionRemandBtnFlg(true);
 		}
 		return;
 	}
