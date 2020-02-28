@@ -6,10 +6,8 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc002;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
@@ -92,7 +90,7 @@ public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002Ag
 			applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_HANSYUTSU_MACHI);
 			applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, agreeDto.getShainNo());
 
-			String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC005 + "/init";
+			String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.SHONIN_KANRYO_TSUCHI, applInfo, agreeDto.getCommentNote(),
 					null, agreeDto.getShainNo(), null, baseUrl);
 		}
