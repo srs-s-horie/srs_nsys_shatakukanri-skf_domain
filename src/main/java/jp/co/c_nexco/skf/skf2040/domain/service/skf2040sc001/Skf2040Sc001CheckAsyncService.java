@@ -132,7 +132,7 @@ public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 				LogUtils.debugByMsg(msg + "返却立会希望日（時）" + checkDto.getSessionTime());
 				if (NfwStringUtils.isBlank(checkDto.getSessionTime())) {
 					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionTime" },
-							MessageIdConstant.E_SKF_1054, "返却立会希望日");
+							MessageIdConstant.E_SKF_1054, "返却立会希望日（時）");
 					isError = true;
 				}
 
