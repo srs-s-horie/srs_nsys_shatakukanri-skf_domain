@@ -5,7 +5,6 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -84,8 +83,8 @@ public class Skf2050Sc001CarryOutAsyncService extends AsyncBaseServiceAbstract<S
 		boolean result = true;
 		// 搬出完了日チェック（必須チェック）
 		String completionDay = coDto.getCompletionDay();
-		if (CheckUtils.isEmpty(completionDay)) {
-			ServiceHelper.addErrorResultMessage(coDto, new String[] { "completionDay" }, MessageIdConstant.E_SKF_1055,
+		if (completionDay == null || CheckUtils.isEmpty(completionDay)) {
+			ServiceHelper.addErrorResultMessage(coDto, new String[] { "completionDay" }, MessageIdConstant.E_SKF_1048,
 					COMPLETION_DAY_LABEL);
 			result = false;
 		}
