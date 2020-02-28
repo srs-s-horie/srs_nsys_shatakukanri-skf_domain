@@ -211,7 +211,9 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
-
+			
+			// 成功メッセージ
+			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		} else {
 			// 更新社宅登録
 			updateCnt = updateKariageShatakuInfo(
@@ -233,10 +235,13 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
+			
+			// 成功メッセージ
+			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1011);
 		}
 
 		// 成功メッセージ
-		ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
+		//ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		// DTO設定
 		registDto.setHdnShatakuKanriNo(mShataku.getShatakuKanriNo().toString());
 		registDto.setHdnShatakuName(mShataku.getShatakuName());

@@ -406,12 +406,14 @@ public class Skf3020Sc005SharedService {
 		tenninshaChoshoData.setTokyu(inDto.getTxtTokyu().trim());
 		tenninshaChoshoData.setAge(inDto.getTxtNenrei().trim());
 
-		String nowAffiliation = inDto.getTxtGenShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
-				Skf302010CommonSharedService.DB_LS);
+//		String nowAffiliation = inDto.getTxtGenShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+//				Skf302010CommonSharedService.DB_LS);
+		String nowAffiliation = inDto.getTxtGenShozoku();
 		tenninshaChoshoData.setNowAffiliation(nowAffiliation);
 
-		String newAffiliation = inDto.getTxtShinShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
-				Skf302010CommonSharedService.DB_LS);
+//		String newAffiliation = inDto.getTxtShinShozoku().replaceAll(Skf302010CommonSharedService.DISPLAY_LS,
+//				Skf302010CommonSharedService.DB_LS);
+		String newAffiliation = inDto.getTxtShinShozoku();
 		tenninshaChoshoData.setNewAffiliation(newAffiliation);
 
 		tenninshaChoshoData.setBiko(inDto.getTxtBiko().trim());
