@@ -469,13 +469,19 @@ public class Skf2040Sc002SharedService {
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 		}
 		// 退居（返還）理由
-		Map<String, String> taikyoRiyuMap = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_TAIKYO_HENKAN_RIYU);
-		String taikyoRiyu = CodeConstant.DOUBLE_QUOTATION;
-		if (taikyoRiyuMap != null) {
-			taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
+		if (!CheckUtils.isEqual(taikyoRepDt.getTaikyoRiyuKbn(), CodeConstant.TAIKYO_RIYU_OTHERS)) {
+			Map<String, String> taikyoRiyuMap = skfGenericCodeUtils
+					.getGenericCode(FunctionIdConstant.GENERIC_CODE_TAIKYO_HENKAN_RIYU);
+			String taikyoRiyu = CodeConstant.DOUBLE_QUOTATION;
+			if (taikyoRiyuMap != null) {
+				taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
+				dto.setTaikyoRiyu(taikyoRiyu);
+			}
+		} else {
+			// 退居理由区分が「その他」の時は退居理由を表示する
+			dto.setTaikyoRiyu(taikyoRepDt.getTaikyoRiyu());
 		}
-		dto.setTaikyoRiyu(taikyoRiyu);
+
 		// 退居後の連絡先
 		dto.setTaikyogoRenrakusaki(taikyoRepDt.getTaikyogoRenrakusaki());
 
