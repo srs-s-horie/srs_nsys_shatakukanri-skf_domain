@@ -4840,7 +4840,7 @@ public class Skf3022Sc006SharedService {
 	public Map<Skf3022Sc006CommonDto.RENTAL_PATTERN, String> setRentalPatternList(Skf3022Sc006CommonDto comDto) {
 
 		// 処理方式の判別
-		if (CheckUtils.isEmpty(comDto.getHdnShiyoryoKeisanPatternId())) {
+		if (CheckUtils.isEmpty(comDto.getHdnShiyoryoKeisanPatternId()) || Objects.equals(CodeConstant.STRING_ZERO, comDto.getHdnShiyoryoKeisanPatternId())) {
 			// 使用料パターンID（hidden項目）が空白の場合、登録項目設定を行う。
 			return setRentalPatternTorokuList(true, comDto);
 		} else {
@@ -6308,7 +6308,9 @@ public class Skf3022Sc006SharedService {
 				&& (!Objects.equals(shatakuKanriNo, shatakuKanriNoOld) || !Objects.equals(shatakuRoomKanriNo, shatakuRoomKanriNoOld))) {
 //					If Not String.IsNullOrEmpty(shatakuKanriNoOld) AndAlso _
 //					   Not String.IsNullOrEmpty(shatakuRoomKanriNoOld) Then
-			if (!CheckUtils.isEmpty(shatakuKanriNoOld) && !CheckUtils.isEmpty(shatakuRoomKanriNoOld)) {
+			if (!CheckUtils.isEmpty(shatakuKanriNoOld) && !CheckUtils.isEmpty(shatakuRoomKanriNoOld)
+				&& !CodeConstant.STRING_ZERO.equals(shatakuKanriNoOld) && !CodeConstant.STRING_ZERO.equals(shatakuRoomKanriNoOld)){
+
 //						'排他処理
 //						Using targetDt As TB_M_SHATAKU_ROOMDataTable = _
 //							ta.GetShatakuRoomForUpdate(shatakuKanriNoOld, _

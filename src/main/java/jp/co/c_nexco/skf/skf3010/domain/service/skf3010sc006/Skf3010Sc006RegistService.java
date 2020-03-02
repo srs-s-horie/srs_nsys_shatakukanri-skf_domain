@@ -1294,6 +1294,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		
 		//整数部の許容桁数チェック
 		BigDecimal mensekiValue = new BigDecimal(txtReq);
+		mensekiValue = mensekiValue.setScale(2,BigDecimal.ROUND_HALF_UP);
 		BigDecimal sen = new BigDecimal("1000");
 
 		if(mensekiValue.compareTo(sen) >= 0){

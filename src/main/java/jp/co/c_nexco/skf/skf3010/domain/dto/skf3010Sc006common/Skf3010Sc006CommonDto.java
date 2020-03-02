@@ -384,6 +384,14 @@ public class Skf3010Sc006CommonDto extends Skf301010CommonDto {
 	//更新日時（排他用）
 	private Date roomUpdateDate;
 	
+	//表示時値
+	private String startingLendMenseki;
+	private String startingOriginalAuse;
+	private String startingSunRoomMenseki;
+	private String startingStairsMenseki;
+	private String startingBarnMenseki;
+	private String startingColdExemptionKbn;
+	
 	/** 駐車場情報 */
 	//駐車場管理番号
 	private String parkingKanriNo;
