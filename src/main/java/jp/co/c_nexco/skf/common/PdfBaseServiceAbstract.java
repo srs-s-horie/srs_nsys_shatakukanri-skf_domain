@@ -173,7 +173,8 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		pdfDto.setUploadFileName(this.getPdfFileName());
 
 		// PublicStorageに作成したPDFファイルを削除する
-		this.deleteTempFile(pdfOutputPath);
+		LogUtils.errorByMsg("PDF動作確認用ログ出力:indexメソッド:PublicStorageに作成したPDFファイルを削除する…をコメントアウト");
+		// this.deleteTempFile(pdfOutputPath);
 
 		return pdfDto;
 	}
@@ -206,8 +207,10 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	protected void setPdfBaseSettings() throws PDFException {
 		// 中間処理ファイル文字エンコード
 		this.integratePdf.setCharset(PDF_PROCESS_ENCODE);
+
+		LogUtils.errorByMsg("PDF動作確認用ログ出力:setPdfBaseSettingsメソッド:PublicStorageに作成したIODファイルを削除しないようフラグを変更");
 		// 出力した一時IODを削除するか
-		this.integratePdf.setDelete(true);
+		this.integratePdf.setDelete(false);
 		// PDFタイトル設定
 		this.integratePdf.defineTitle(this.getPdfTitle());
 	}
@@ -268,6 +271,9 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 			outputPath = tempFolderPath + TEMP_FILE_PREFIX + sysDateMillisec + fileExtention;
 			ps = new PublicStorage(outputPath);
 		}
+
+		LogUtils.errorByMsg(
+				"PDF動作確認用ログ出力:getOutputPathメソッド:publicStorageのgetCanonicalPath()実行結果：" + ps.getCanonicalPath());
 		return outputPath;
 	}
 
