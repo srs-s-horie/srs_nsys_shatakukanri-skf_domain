@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,9 @@ public class Skf3010Sc006DelContractListService extends BaseServiceAbstract<Skf3
 	private SkfOperationLogUtils skfOperationLogUtils;
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
+	
+	// 日付フォーマット
+	public static final String DATE_FORMAT = "yyyyMMdd HH:mm:ss.SSS";
 
 	/**
 	 * 保有社宅登録の契約情報削除ボタン押下時処理を行う。　
@@ -187,6 +191,12 @@ public class Skf3010Sc006DelContractListService extends BaseServiceAbstract<Skf3
 		if (contractMap.get("biko") != null) {
 			biko = contractMap.get("biko").toString();
 		}
+		// 「更新日時」取得
+		if (contractMap.get("updateDate") != null && contractMap.get("updateDate").toString().length() > 0) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+			delDto.setContractUpdateDate(dateFormat.parse(contractMap.get("updateDate").toString()));
+		}
+		
 
 		// 戻り値設定
 		delDto.setContractNoList(contractNoList);
