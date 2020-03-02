@@ -897,9 +897,6 @@ public class Skf2020Sc003SharedService {
 		// 駐車場情報 ２台目存在チェック
 		boolean bCar2 = false;
 
-		// 駐車場が必要な場合のみ駐車場情報を表示する
-		String parkingUmu = dto.getParkingUmu();
-		// if (CheckUtils.isEqual(parkingUmu, CodeConstant.CAR_PARK_HITUYO)) {
 		// 駐車場情報 １台目 自動車の保管場所
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress1())) {
 			dto.setParkingAddress1(wkPrefNameParking + teijiDataInfo.getParkingAddress1());

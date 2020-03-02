@@ -63,6 +63,8 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 	private final String KYOGICHU_TEXT = "協議中";
 	private final String GOJITSU_TEXT = "（後日お知らせ）";
 
+	private final String CAR_YOTEI = "購入を予定している";
+
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -625,7 +627,17 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 自動車番号登録フラグ
 		initDto.setCarNoInputFlg(tNyukyoChoshoTsuchi.getCarNoInputFlg());
 		// 自動車の車名
-		initDto.setCarName(tNyukyoChoshoTsuchi.getCarName());
+		String carName = tNyukyoChoshoTsuchi.getCarName();
+		// 自動車の登録番号入力フラグが1(購入予定)だったら「購入を予定している」を表示
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNoInputFlg())) {
+			if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getCarNoInputFlg(), CodeConstant.CAR_YOTEI)) {
+				// 車名が入ってない場合のみ表示
+				if (NfwStringUtils.isEmpty(carName)) {
+					carName = CAR_YOTEI;
+				}
+			}
+		}
+		initDto.setCarName(carName);
 		// 自動車の登録番号
 		initDto.setCarNo(tNyukyoChoshoTsuchi.getCarNo());
 		// 自動車の使用者
@@ -639,7 +651,17 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 自動車番号登録フラグ2
 		initDto.setCarNoInputFlg2(tNyukyoChoshoTsuchi.getCarNoInputFlg2());
 		// 自動車の車名2
-		initDto.setCarName2(tNyukyoChoshoTsuchi.getCarName2());
+		String carName2 = tNyukyoChoshoTsuchi.getCarName2();
+		// 自動車の登録番号入力フラグ2が1(購入予定)だったら「購入を予定している」を表示
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNoInputFlg2())) {
+			if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getCarNoInputFlg2(), CodeConstant.CAR_YOTEI)) {
+				// 2台目の使用者が入力されていて、車名が入ってない場合のみ表示
+				if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2()) && NfwStringUtils.isEmpty(carName2)) {
+					carName2 = CAR_YOTEI;
+				}
+			}
+		}
+		initDto.setCarName2(carName2);
 		// 自動車の登録番号2
 		initDto.setCarNo2(tNyukyoChoshoTsuchi.getCarNo2());
 		// 自動車の使用者2
