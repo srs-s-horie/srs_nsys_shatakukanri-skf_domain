@@ -930,12 +930,17 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setParkingEDateFlg(SkfCommonConstant.NOT_CHANGE);
 		}
 		// 退居（返還）理由
-		Map<String, String> taikyoRiyuMap = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_TAIKYO_HENKAN_RIYU);
-		String taikyoRiyu = CodeConstant.DOUBLE_QUOTATION;
-		if (taikyoRiyuMap != null) {
-			taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
-			initDto.setTaikyoRiyu(taikyoRiyu);
+		if (!CheckUtils.isEqual(taikyoRepDt.getTaikyoRiyuKbn(), CodeConstant.TAIKYO_RIYU_OTHERS)) {
+			Map<String, String> taikyoRiyuMap = skfGenericCodeUtils
+					.getGenericCode(FunctionIdConstant.GENERIC_CODE_TAIKYO_HENKAN_RIYU);
+			String taikyoRiyu = CodeConstant.DOUBLE_QUOTATION;
+			if (taikyoRiyuMap != null) {
+				taikyoRiyu = taikyoRiyuMap.get(taikyoRepDt.getTaikyoRiyuKbn());
+				initDto.setTaikyoRiyu(taikyoRiyu);
+			}
+		} else {
+			// 退居理由区分が「その他」の時は退居理由を表示する
+			initDto.setTaikyoRiyu(taikyoRepDt.getTaikyoRiyu());
 		}
 		// 退居後の連絡先
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyogoRenrakusaki())) {
