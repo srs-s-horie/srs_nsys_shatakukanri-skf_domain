@@ -21,6 +21,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MSha
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuContract;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuManege;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuManegeKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlockKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingContract;
@@ -424,7 +425,21 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		for (Skf3010MShatakuManege manage : mShatakuManageList) {
 			// 社宅管理番号設定
 			manage.setShatakuKanriNo(shatakuKanriNo);
-			updateCnt = skf3010MShatakuManegeRepository.updateByPrimaryKeySelective(manage);
+			
+			//社宅管理者有無チェック
+			Skf3010MShatakuManegeKey manageKey = new Skf3010MShatakuManegeKey();
+			manageKey.setShatakuKanriNo(shatakuKanriNo);
+			manageKey.setManegeKbn(manage.getManegeKbn());
+			Skf3010MShatakuManege checkMange = null;
+			checkMange = skf3010MShatakuManegeRepository.selectByPrimaryKey(manageKey);
+			if(checkMange != null){
+				//データ有の場合更新
+				updateCnt = skf3010MShatakuManegeRepository.updateByPrimaryKeySelective(manage);
+			}else{
+				//データ無しの場合追加
+				updateCnt = skf3010MShatakuManegeRepository.insertSelective(manage);
+			}
+
 			// 更新カウント判定
 			if (updateCnt < 1) {
 				LogUtils.debugByMsg("社宅管理者更新失敗：" + manage.getManegeKbn());
