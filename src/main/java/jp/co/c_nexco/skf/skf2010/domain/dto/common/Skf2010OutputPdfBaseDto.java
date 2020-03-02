@@ -260,6 +260,10 @@ public class Skf2010OutputPdfBaseDto extends FileDownloadDto {
 	// 自動車保管場所（2台目）の使用開始予定日
 	private String parkingKanoDate2;
 
+	/** 決定通知書 **/
+	// 共益費（決定通知書用）
+	private String ketteiKyoekihi;
+
 	/** 退居（自動車の保管場所返還）届 **/
 	// 現住所
 	private String address;
@@ -288,7 +292,7 @@ public class Skf2010OutputPdfBaseDto extends FileDownloadDto {
 	private String attachedNo;
 
 	private String backUrl;
-	
+
 	/** 入居決定通知書 */
 	// 入居可能日付
 	private String NyukyoKanoDate;

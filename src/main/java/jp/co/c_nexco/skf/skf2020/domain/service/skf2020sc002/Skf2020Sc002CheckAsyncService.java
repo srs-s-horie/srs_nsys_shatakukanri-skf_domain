@@ -293,11 +293,11 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 								MessageIdConstant.E_SKF_1048, "自動車の使用者(１台目)");
 						result = false;
 					}
-					// 自動車の保管場所使用開始日(１台目)
-					LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(１台目)" + checkDto.getCarExpirationDate());
+					// 自動車の保管場所使用開始日（予定日）(１台目)
+					LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日（予定日）(１台目)" + checkDto.getCarExpirationDate());
 					if (NfwStringUtils.isBlank(checkDto.getParkingUseDate())) {
 						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate" },
-								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(１台目)");
+								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日（予定日）(１台目)");
 						result = false;
 					}
 
@@ -315,7 +315,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 					// 自動車の保管場所使用開始日
 					if (NfwStringUtils.isBlank(checkDto.getParkingUseDate())) {
 						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate" },
-								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(１台目)");
+								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日（予定日）(１台目)");
 						result = false;
 					}
 				} else {
@@ -356,11 +356,11 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 								MessageIdConstant.E_SKF_1048, "自動車の使用者(１台目)");
 						result = false;
 					}
-					// 自動車の保管場所使用開始日
-					LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(１台目)" + checkDto.getParkingUseDate());
+					// 自動車の保管場所使用開始日（予定日）
+					LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日（予定日）(１台目)" + checkDto.getParkingUseDate());
 					if (NfwStringUtils.isBlank(checkDto.getParkingUseDate())) {
 						ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate" },
-								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(１台目)");
+								MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日（予定日）(１台目)");
 						result = false;
 					}
 				}
@@ -408,11 +408,11 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 									MessageIdConstant.E_SKF_1048, "自動車の使用者(２台目)");
 							result = false;
 						}
-						// 自動車の保管場所使用開始日(2台目)
-						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(2台目)" + checkDto.getCarExpirationDate2());
+						// 自動車の保管場所使用開始日（予定日）(2台目)
+						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日（予定日）(2台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getParkingUseDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate2" },
-									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(２台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日（予定日）(２台目)");
 							result = false;
 						}
 
@@ -426,11 +426,11 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 									MessageIdConstant.E_SKF_1048, "自動車の使用者(２台目)");
 							result = false;
 						}
-						// 自動車の保管場所使用開始日(2台目)
-						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(２台目)" + checkDto.getCarExpirationDate2());
+						// 自動車の保管場所使用開始日（予定日）(2台目)
+						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日（予定日）(２台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getParkingUseDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate2" },
-									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(２台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日（予定日）(２台目)");
 							result = false;
 						}
 					} else {
@@ -471,11 +471,11 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 									MessageIdConstant.E_SKF_1048, "自動車の使用者(２台目)");
 							result = false;
 						}
-						// 自動車の保管場所使用開始日(2台目)
+						// 自動車の保管場所使用開始日（予定日）(2台目)
 						LogUtils.debugByMsg(msg + "自動車の保管場所使用開始日(２台目)" + checkDto.getCarExpirationDate2());
 						if (NfwStringUtils.isBlank(checkDto.getParkingUseDate2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "parkingUseDate2" },
-									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日(２台目)");
+									MessageIdConstant.E_SKF_1048, "自動車の保管場所使用開始日（予定日）(２台目)");
 							result = false;
 						}
 					}
@@ -525,8 +525,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 
 					// 社宅を「必要としない」以外の場合
 					LogUtils.debugByMsg(msg + "退居理由" + checkDto.getTaikyoRiyuKbn() + checkDto.getTaiyoHituyo());
-					if (NfwStringUtils.isNotBlank(checkDto.getTaiyoHituyo())
-							&& !(CodeConstant.ASKED_SHATAKU_FUYOU.equals(checkDto.getTaiyoHituyo()))) {
+					if (!(CodeConstant.ASKED_SHATAKU_FUYOU.equals(checkDto.getTaiyoHituyo()))) {
 						// 退居理由
 						if (NfwStringUtils.isBlank(checkDto.getTaikyoRiyuKbn())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "taikyoRiyuKbn" },
@@ -561,7 +560,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 							LogUtils.debugByMsg(msg + "返却立会希望日(日)" + checkDto.getSessionDay());
 							if (NfwStringUtils.isBlank(checkDto.getSessionDay())) {
 								ServiceHelper.addErrorResultMessage(checkDto, new String[] { "sessionDay" },
-										MessageIdConstant.E_SKF_1048, "返却立会希望日(日)");
+										MessageIdConstant.E_SKF_1048, "返却立会希望日");
 								result = false;
 							}
 							// 返却立会希望日(時)

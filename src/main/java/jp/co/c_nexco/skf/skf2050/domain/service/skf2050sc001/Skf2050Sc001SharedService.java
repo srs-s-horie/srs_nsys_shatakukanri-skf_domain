@@ -34,6 +34,7 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfShatakuInfoUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050Sc001common.Skf2050Sc001CommonDto;
 
@@ -67,6 +68,8 @@ public class Skf2050Sc001SharedService {
 	private SkfDropDownUtils skfDropDownUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfShatakuInfoUtils skfShatakuInfoUtils;
 
 	@Autowired
 	private Skf2050Sc001GetTaikyobiInfoExpRepository skf2050Sc001GetTaikyobiInfoExpRepository;
@@ -383,11 +386,16 @@ public class Skf2050Sc001SharedService {
 		}
 		// 規格（間取り）
 		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getNowShatakuKikaku())) {
-			dto.setShatakuKikaku(bihinHenkyaku.getNowShatakuKikaku());
+			String shatakuKikaku = getShatakuKikakuKBN(bihinHenkyaku.getNowShatakuKikaku());
+			dto.setShatakuKikaku(shatakuKikaku);
 		}
 		// 面積
 		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getNowShatakuMenseki())) {
 			dto.setShatakuMenseki(bihinHenkyaku.getNowShatakuMenseki() + SkfCommonConstant.SQUARE_MASTER);
+		}
+		// 連絡先
+		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getRenrakuSaki())) {
+			dto.setRenrakuSaki(bihinHenkyaku.getRenrakuSaki());
 		}
 		// 代理人（立会人）
 		// 代理人氏名
@@ -492,4 +500,18 @@ public class Skf2050Sc001SharedService {
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC001);
 		return resultBatch;
 	}
+	
+	/**
+	 * 社宅管理システム規格名称取得
+	 * 
+	 * @param kikakuCd
+	 * @return
+	 */
+	private String getShatakuKikakuKBN(String kikakuCd) {
+		String retKikakuName = CodeConstant.NONE;
+
+		retKikakuName = skfShatakuInfoUtils.getShatakuKikakuByCode(kikakuCd);
+		return retKikakuName;
+	}
+
 }

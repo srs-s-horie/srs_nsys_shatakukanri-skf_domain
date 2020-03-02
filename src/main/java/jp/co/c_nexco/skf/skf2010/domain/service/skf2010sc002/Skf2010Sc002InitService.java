@@ -501,6 +501,11 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 			initDto.setNyukyoYoteiDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoYoteiDate(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 		}
+		// 入居可能日
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNyukyoKanoDate())) {
+			initDto.setNyukyoKanoDate(skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getNyukyoKanoDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+		}
 
 		// 保管場所
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingUmu())) {

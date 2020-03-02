@@ -2667,6 +2667,14 @@ public class Skf3010Sc006SharedService {
 		initDto.setLendKbnList(lendKbnList);
 		initDto.setColdExemptionKbnList(coldExemptionKbnList);
 		
+		//表示時値
+		initDto.setStartingLendMenseki(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setStartingOriginalAuse(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setStartingSunRoomMenseki(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setStartingStairsMenseki(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setStartingBarnMenseki(CodeConstant.DOUBLE_QUOTATION);
+		initDto.setStartingColdExemptionKbn(CodeConstant.DOUBLE_QUOTATION);
+		
 	}
 	
 	/**
@@ -2912,6 +2920,14 @@ public class Skf3010Sc006SharedService {
 				initDto.setLendKbnList(lendKbnList);
 				initDto.setColdExemptionKbnList(coldExemptionKbnList);
 				initDto.setRoomUpdateDate(tmpData.getRoomUpdateDate());
+				
+				//表示時値
+				initDto.setStartingLendMenseki(tmpData.getLendMenseki().toPlainString());
+				initDto.setStartingOriginalAuse(tmpData.getOriginalAuse());
+				initDto.setStartingSunRoomMenseki(tmpData.getSunRoomMenseki().toPlainString());
+				initDto.setStartingStairsMenseki(tmpData.getStairsMenseki().toPlainString());
+				initDto.setStartingBarnMenseki(tmpData.getBarnMenseki().toPlainString());
+				initDto.setStartingColdExemptionKbn(tmpData.getColdExemptionKbn());
 			}else{
 				//複写の場合
 				//部屋情報は新規

@@ -7,11 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetApplInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc001.Skf2040Sc001GetBihinHenkyakuApplNoInfoExp;
@@ -927,7 +925,7 @@ public class Skf2040Sc001SharedService {
 		// 社宅名
 		setValue.setNowShatakuName(dto.getHdnSelectedNowShatakuName());
 		// 号室
-		setValue.setNowShatakuNo(dto.getNowShatakuNo());
+		setValue.setNowShatakuNo(dto.getHdnNowShatakuRoomNo());
 		// 本来規格
 		setValue.setNowShatakuKikaku(dto.getNowShatakuKikaku());
 		// 面積

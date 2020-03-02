@@ -211,7 +211,9 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
-
+			
+			// 成功メッセージ
+			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		} else {
 			// 更新社宅登録
 			updateCnt = updateKariageShatakuInfo(
@@ -233,10 +235,13 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 				// ロールバック
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
 			}
+			
+			// 成功メッセージ
+			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1011);
 		}
 
 		// 成功メッセージ
-		ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
+		//ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		// DTO設定
 		registDto.setHdnShatakuKanriNo(mShataku.getShatakuKanriNo().toString());
 		registDto.setHdnShatakuName(mShataku.getShatakuName());
@@ -1289,6 +1294,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		
 		//整数部の許容桁数チェック
 		BigDecimal mensekiValue = new BigDecimal(txtReq);
+		mensekiValue = mensekiValue.setScale(2,BigDecimal.ROUND_HALF_UP);
 		BigDecimal sen = new BigDecimal("1000");
 
 		if(mensekiValue.compareTo(sen) >= 0){

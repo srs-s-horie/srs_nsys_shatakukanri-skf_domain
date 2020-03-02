@@ -130,6 +130,15 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 			initDto.setHdnShatakuKbnCd(null);
 			initDto.setHdnShatakuName(null);
 			initDto.setHdnUseKbnCd(initDto.getUseKbnCd());
+			
+			//検索条件初期化
+			initDto.setSelectedCompanyCd(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setAgencyCd(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setShatakuKbnCd(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setEmptyRoomCd(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setEmptyParkingCd(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setShatakuName(CodeConstant.DOUBLE_QUOTATION);
+			initDto.setShatakuAddress(CodeConstant.DOUBLE_QUOTATION);
 		}
 
 		// ドロップダウンリストの値を設定
