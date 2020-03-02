@@ -208,7 +208,17 @@ public class Skf2010Sc002SharedService {
 
 		// コメント登録者名を設定
 		List<String> tmpNameList = new ArrayList<String>();
-		if (loginUserInfoMap.get("affiliation2Name") != null) {
+		// 承認者権限かチェック
+		boolean isApplyUser = false;
+		switch (loginUserInfoMap.get("roleId")) {
+		case CodeConstant.SKF_220:
+		case CodeConstant.SKF_230:
+		case CodeConstant.SKF_900:
+			isApplyUser = true;
+			break;
+		}
+		// 承認者権限の場合のみ「室、チーム又は課」名称を表示する
+		if (isApplyUser && loginUserInfoMap.get("affiliation2Name") != null) {
 			tmpNameList.add(loginUserInfoMap.get("affiliation2Name"));
 		}
 		tmpNameList.add(loginUserInfoMap.get("userName"));
