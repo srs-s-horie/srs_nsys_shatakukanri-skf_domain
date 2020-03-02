@@ -247,7 +247,7 @@ public class Skf2020Sc003SharedService {
 		// 提示情報の設定
 		dto.setMaskPattern(CodeConstant.NONE);
 		String shainNo = dto.getShainNo();
-		if (!setTeijiDataInfo(shainNo, applNo, dto)) {
+		if (!setTeijiDataInfo(shainNo, applNo, dto, CodeConstant.VIEW_MODE)) {
 			// 備品申請要否の非活性制御
 			// 備品非表示制御
 			bihinVisible = false;
@@ -737,8 +737,9 @@ public class Skf2020Sc003SharedService {
 	 * @param shainNo
 	 * @param applNo
 	 * @param dto
+	 * @param updateFlg 更新フラグ
 	 */
-	private boolean setTeijiDataInfo(String shainNo, String applNo, Skf2020Sc003CommonDto dto) {
+	private boolean setTeijiDataInfo(String shainNo, String applNo, Skf2020Sc003CommonDto dto, String updateFlg) {
 		List<Skf2020Sc003GetTeijiDataInfoExp> teijiDataInfoList = new ArrayList<Skf2020Sc003GetTeijiDataInfoExp>();
 		String nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_NYUKYO;
 		teijiDataInfoList = getTeijiDataInfo(shainNo, nyutaikyoKbn, applNo);
@@ -786,17 +787,32 @@ public class Skf2020Sc003SharedService {
 			dto.setNewShatakuNo(teijiDataInfo.getRoomNo());
 		}
 		// 社宅情報 規格(間取り)
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getKikaku())) {
-			// 貸与規格
-			String newShatakuKikaku = getShatakuKikakuKBN(teijiDataInfo.getKikaku());
-			dto.setNewShatakuKikaku(newShatakuKikaku);
-		} else {
-			// 本来規格
-			if (!NfwStringUtils.isEmpty(teijiDataInfo.getOriginalKikaku())) {
-				String newShatakuKikaku = getShatakuKikakuKBN(teijiDataInfo.getOriginalKikaku());
+		if (CodeConstant.VIEW_MODE.equals(updateFlg)) {
+			// 参照モード
+			if (!NfwStringUtils.isEmpty(teijiDataInfo.getKikaku())) {
+				// 貸与規格
+				String newShatakuKikaku = getShatakuKikakuKBN(teijiDataInfo.getKikaku());
 				dto.setNewShatakuKikaku(newShatakuKikaku);
+			} else {
+				// 本来規格
+				if (!NfwStringUtils.isEmpty(teijiDataInfo.getOriginalKikaku())) {
+					String newShatakuKikaku = getShatakuKikakuKBN(teijiDataInfo.getOriginalKikaku());
+					dto.setNewShatakuKikaku(newShatakuKikaku);
+				}
+			}
+		} else {
+			// 更新時
+			if (!NfwStringUtils.isEmpty(teijiDataInfo.getKikaku())) {
+				// 貸与規格
+				dto.setNewShatakuKikaku(teijiDataInfo.getKikaku());
+			} else {
+				// 本来規格
+				if (!NfwStringUtils.isEmpty(teijiDataInfo.getOriginalKikaku())) {
+					dto.setNewShatakuKikaku(teijiDataInfo.getOriginalKikaku());
+				}
 			}
 		}
+
 		// 社宅情報 面積
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getLendMenseki())) {
 			dto.setNewShatakuMenseki(teijiDataInfo.getLendMenseki() + SkfCommonConstant.SQUARE_MASTER);
@@ -1069,7 +1085,7 @@ public class Skf2020Sc003SharedService {
 
 		// 備品申請情報と提示データ情報を取得する
 		getSinseiInfo(applNo, dto);
-		setTeijiDataInfo(dto.getShainNo(), applNo, dto);
+		setTeijiDataInfo(dto.getShainNo(), applNo, dto, CodeConstant.APPROVAL_MODE);
 
 		Long shatakuKanriNo = CodeConstant.LONG_ZERO;
 		if (NfwStringUtils.isNotEmpty(dto.getNewShatakuKanriNo())) {
