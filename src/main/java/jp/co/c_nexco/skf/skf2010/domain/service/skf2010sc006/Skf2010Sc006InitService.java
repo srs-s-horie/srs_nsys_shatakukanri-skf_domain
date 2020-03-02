@@ -739,7 +739,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		initDto.setNewShatakuNo(tNyukyoChoshoTsuchi.getNewShatakuNo());
 
 		// 規格
-		initDto.setNewShatakuKikaku(tNyukyoChoshoTsuchi.getNewShatakuKikaku());
+		String newShatakuKikaku = skfShatakuInfoUtils.getShatakuKikakuByCode(tNyukyoChoshoTsuchi.getNewShatakuKikaku());
+		initDto.setNewShatakuKikaku(newShatakuKikaku);
+		// initDto.setNewShatakuKikaku(tNyukyoChoshoTsuchi.getNewShatakuKikaku());
 
 		// 面積
 		initDto.setNewShatakuMenseki(tNyukyoChoshoTsuchi.getNewShatakuMenseki());
