@@ -5,7 +5,6 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -77,8 +76,8 @@ public class Skf2050Sc001AgreeService extends BaseServiceAbstract<Skf2050Sc001Ag
 		boolean result = true;
 		// 立会日チェック（必須チェック）
 		String sessionDay = dto.getSessionDay();
-		if (CheckUtils.isEmpty(sessionDay)) {
-			ServiceHelper.addErrorResultMessage(dto, new String[] { "sessionDay" }, MessageIdConstant.E_SKF_1055,
+		if (sessionDay == null || CheckUtils.isEmpty(sessionDay)) {
+			ServiceHelper.addErrorResultMessage(dto, new String[] { "sessionDay" }, MessageIdConstant.E_SKF_1048,
 					SESSION_DAY_LABEL);
 			result = false;
 		}
