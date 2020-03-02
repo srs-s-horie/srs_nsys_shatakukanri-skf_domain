@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.PdfBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010OutputPdfBaseDto;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 
@@ -121,7 +122,7 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarName()));
 			pdfData.setTextBoxEnd();
 		}
-		pdfData.setData("carIchiNo", NfwStringUtils.defaultString(dto.getCarIchiNo()));
+		pdfData.setData("carIchiNo", CodeConstant.NONE);
 		pdfData.setData("carNo", NfwStringUtils.defaultString(dto.getCarNo()));
 		pdfData.setData("parkingRental", NfwStringUtils.defaultString(dto.getParkingRental()));
 		pdfData.setData("carUser", NfwStringUtils.defaultString(dto.getCarUser()));
@@ -137,7 +138,7 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarName2()));
 			pdfData.setTextBoxEnd();
 		}
-		pdfData.setData("carIchiNo2", NfwStringUtils.defaultString(dto.getCarIchiNo2()));
+		pdfData.setData("carIchiNo2", CodeConstant.NONE);
 		pdfData.setData("carNo2", NfwStringUtils.defaultString(dto.getCarNo2()));
 		pdfData.setData("parkingRental2", NfwStringUtils.defaultString(dto.getParkingRental2()));
 		pdfData.setData("carUser2", NfwStringUtils.defaultString(dto.getCarUser2()));
