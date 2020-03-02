@@ -521,7 +521,7 @@ public class Skf2040Sc002SharedService {
 
 		List<Map<String, Object>> bihinShinseiList = new ArrayList<Map<String, Object>>();
 		bihinStatusMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_EQUIPMENT_STATE); // 備品状態
-		bihinReturnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_LOAN_KBN); // 備品返却区分
+		bihinReturnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHIN_HENKYAKU_KBN); // 備品返却区分
 
 		/*
 		 * 備品情報
