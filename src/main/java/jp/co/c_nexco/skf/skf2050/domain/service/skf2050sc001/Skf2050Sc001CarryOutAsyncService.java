@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutAsy
 @Service
 public class Skf2050Sc001CarryOutAsyncService extends AsyncBaseServiceAbstract<Skf2050Sc001CarryOutAsyncDto> {
 
-	private final String COMPLETION_DAY_LABEL = "搬出完了日";
+	private final String COMPLETION_DAY_LABEL = "備品搬出完了日";
 	private final String COMMENT_LABEL = "承認者へのコメント";
 
 	@Autowired
