@@ -127,7 +127,8 @@ public class Skf3010Sc006SharedService {
 	// 社宅区分：借上2
 	private static final String SHATAKU_KUB_KARIAGE = "2";
 	// 契約情報：「：」
-	private static final String CONTRACT_NO_SEPARATOR = " ： ";
+	private static final String CONTRACT_NO_SEPARATOR = "： ";
+	private static final String CONTRACT_NO_SEPARATOR_KAISHI = "：契約開始日 ";
 	// 日付上限
 	private static final int DATE_MAX = 99940331;
 	// 管理者区分：鍵管理者
@@ -542,7 +543,7 @@ public class Skf3010Sc006SharedService {
 			// 表示・値を設定
 			contractMap = new HashMap<String, Object>();
 			contractMap.put("value", contractNo);
-			contractMap.put("label", contractNo + CONTRACT_NO_SEPARATOR + skfDateFormatUtils.dateFormatFromString(contractStartDate, "yyyy/MM/dd"));
+			contractMap.put("label", contractNo + CONTRACT_NO_SEPARATOR_KAISHI + skfDateFormatUtils.dateFormatFromString(contractStartDate, "yyyy/MM/dd"));
 			tmpMap.put("ownerName", ownerName);
 			tmpMap.put("ownerNo", ownerNo);
 			tmpMap.put("assetRegisterNo", assetRegisterNo);
@@ -734,7 +735,13 @@ public class Skf3010Sc006SharedService {
 			// 表示・値を設定
 			contractMap = new HashMap<String, Object>();
 			contractMap.put("value", contractNo);
-			contractMap.put("label", contractNo + CONTRACT_NO_SEPARATOR + skfDateFormatUtils.dateFormatFromString(contractStartDate, "yyyy/MM/dd"));
+			if(CONTRACT_TYPE_2.equals(parkingContractType)){
+				//契約契約が別契約
+				contractMap.put("label", contractNo + CONTRACT_NO_SEPARATOR_KAISHI + skfDateFormatUtils.dateFormatFromString(contractStartDate, "yyyy/MM/dd"));
+			}else{
+				//契約形態が一括契約
+				contractMap.put("label", contractNo + CONTRACT_NO_SEPARATOR + skfDateFormatUtils.dateFormatFromString(contractStartDate, "yyyy/MM/dd"));
+			}
 			tmpMap.put("parkingContractType", parkingContractType);
 			tmpMap.put("parkingOwnerName", ownerName);
 			tmpMap.put("parkingOwnerNo", ownerNo);
@@ -3276,6 +3283,7 @@ public class Skf3010Sc006SharedService {
 		initDto.setDefaultParkingLendStatus(defaultParkingLendStatus);
 		// 削除済み契約番号
 		initDto.setHdnDeleteContractSelectedValue(null);
+		initDto.setHdnDeleteParkingContractSelectedValue(null);
 
 		/** 駐車場契約情報への連携用 */
 		initDto.setHdnShatakuKanriNo(null);
@@ -3881,13 +3889,13 @@ public class Skf3010Sc006SharedService {
 
 		/** 社宅基本情報マスタの更新データを作成 */
 		// 郵便番号
-		String zipCd = ("".equals(comDto.getZipCd())) ? "" : comDto.getZipCd();
+		String zipCd = ("".equals(comDto.getZipCd())) ? null : comDto.getZipCd();
 		// 社宅構造補足
-		String structureSupplement = ("".equals(comDto.getShatakuStructureDetail())) ? "" : comDto.getShatakuStructureDetail();
+		String structureSupplement = ("".equals(comDto.getShatakuStructureDetail())) ? null : comDto.getShatakuStructureDetail();
 		// エレベーター区分
-		String elevatorKbn = ("".equals(comDto.getElevator()) ? "" : comDto.getElevator());
+		String elevatorKbn = ("".equals(comDto.getElevator()) ? null : comDto.getElevator());
 		// 備考
-		String biko = ("".equals(comDto.getBiko())) ? "" : comDto.getBiko();
+		String biko = ("".equals(comDto.getBiko())) ? null : comDto.getBiko();
 
 		// 社宅補足ファイル名
 		String shatakuSupplementName1 = ("".equals(comDto.getShatakuHosokuFileName1())) ? null : comDto.getShatakuHosokuFileName1();

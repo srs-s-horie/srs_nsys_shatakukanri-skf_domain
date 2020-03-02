@@ -547,7 +547,7 @@ public class Skf3010Sc002SharedService {
 			// 表示・値を設定
 			contractMap = new HashMap<String, Object>();
 			contractMap.put("value", contractNo);
-			contractMap.put("label", contractNo + Skf3010Sc002CommonDto.CONTRACT_NO_SEPARATOR + contractStartDate);
+			contractMap.put("label", contractNo + Skf3010Sc002CommonDto.CONTRACT_NO_SEPARATOR + skfDateFormatUtils.dateFormatFromString(contractStartDate, "yyyy/MM/dd"));
 			tmpMap.put("ownerName", ownerName);
 			tmpMap.put("ownerNo", ownerNo);
 			tmpMap.put("assetRegisterNo", assetRegisterNo);
