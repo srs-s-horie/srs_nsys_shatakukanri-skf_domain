@@ -722,7 +722,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		initDto.setNowShatakuName(tNyukyoChoshoTsuchi.getNowShatakuName());
 		// 保有社宅号室
 		initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
-		// 保有社宅企画
+		// 保有社宅規格
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuKikaku())) {
 			initDto.setNowShatakuKikaku(
 					skfShatakuInfoUtils.getShatakuKikakuByCode(tNyukyoChoshoTsuchi.getNowShatakuKikaku()));
@@ -797,7 +797,10 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		initDto.setNewShatakuNo(tNyukyoChoshoTsuchi.getNewShatakuNo());
 
 		// 規格
-		initDto.setNewShatakuKikaku(tNyukyoChoshoTsuchi.getNewShatakuKikaku());
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuKikaku())) {
+			initDto.setNewShatakuKikaku(
+					skfShatakuInfoUtils.getShatakuKikakuByCode(tNyukyoChoshoTsuchi.getNewShatakuKikaku()));
+		}
 
 		// 面積
 		initDto.setNewShatakuMenseki(tNyukyoChoshoTsuchi.getNewShatakuMenseki());
