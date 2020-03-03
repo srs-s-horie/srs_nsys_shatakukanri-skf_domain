@@ -207,7 +207,9 @@ public class Skf2030Sc002SharedService {
 		}
 		// 規格(間取り)
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getNowShatakuKikaku())) {
-			dto.setShatakuKikaku(bihinShinseiInfo.getNowShatakuKikaku());
+			String newShatakuKikaku = skfGenericCodeUtils.getGenericCodeNameReverse(
+					FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN, bihinShinseiInfo.getNowShatakuKikaku());
+			dto.setShatakuKikaku(newShatakuKikaku);
 		}
 		// 面積
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getNowShatakuMenseki())) {
