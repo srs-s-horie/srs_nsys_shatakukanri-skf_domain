@@ -1056,6 +1056,8 @@ public class Skf2020Sc002SharedService {
 			// 現保有社宅プルダウンの選択した社宅の社宅管理台帳IDを取得
 			if (NfwStringUtils.isNotBlank(dto.getNowShatakuName())) {
 				shatakuKanriId = Long.parseLong(dto.getNowShatakuName());
+			} else {
+				shatakuKanriId = dto.getShatakuKanriId();
 			}
 		}
 
@@ -1723,6 +1725,10 @@ public class Skf2020Sc002SharedService {
 
 			// 現居住宅
 			dto.setNowShataku(null);
+
+			// 保有社宅名
+			dto.setDdlNowShatakuNameList(null);
+			dto.setNowShatakuName(null);
 
 			// 特殊事情等
 			dto.setTokushuJijo(null);
