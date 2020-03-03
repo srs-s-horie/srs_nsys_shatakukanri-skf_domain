@@ -171,34 +171,17 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 				if (!CheckUtils.isEmpty(nyukyoInfo.getNewShatakuKikaku())) {
 					// 入居希望等調書・入居決定通知テーブルの値を設定
 					kikaakuSelectedValue = nyukyoInfo.getNewShatakuKikaku();
-				} else {
-					// 設定されていない場合、基本情報と同じ値を設定
-					kikaakuSelectedValue = initDto.getSc003KikakuSelect();
 				}
 				// ①用途2
 				if (!CheckUtils.isEmpty(nyukyoInfo.getHitsuyoShataku())) {
 					// 入居希望等調書・入居決定通知テーブルの値を設定
 					youtoSelectedValue = nyukyoInfo.getHitsuyoShataku();
-				} else {
-					// 設定されていない場合、基本情報と同じ値を設定
-					youtoSelectedValue = initDto.getSc003YoutoSelect();
 				}
 				// ②延べ面積2
 				if (!CheckUtils.isEmpty(nyukyoInfo.getNewShatakuMenseki())) {
 					// 入居希望等調書・入居決定通知テーブルの値を設定
 					rateShienNobeMenseki = nyukyoInfo.getNewShatakuMenseki();
-				} else {
-					// 設定されていない場合、基本情報と同じ値を設定
-					rateShienNobeMenseki = initDto.getSc003NobeMenseki();
 				}
-			} else {
-				// 設定されていない場合、基本情報と同じ値を設定
-				// 規格2
-				kikaakuSelectedValue = initDto.getSc003KikakuSelect();
-				// ①用途2
-				youtoSelectedValue = initDto.getSc003YoutoSelect();
-				// ②延べ面積2
-				rateShienNobeMenseki = initDto.getSc003NobeMenseki();
 			}
 			// ⑥基準使用料算定上延べ面積2
 			rateShienKijunMenseki = initDto.getSc003KijunMenseki1();
@@ -206,9 +189,28 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			rateShienShatakuMenseki = initDto.getSc003ShatakuMenseki1();
 		}
 		/** ドロップダウン選択値設定 */
-		// 規格
+		String kikakuDispStr = "";
+		String youtoDispStr = "";
+		// 規格2
+		if (!CheckUtils.isEmpty(kikaakuSelectedValue)) {
+			kikakuDispStr = codeCacheUtils.getGenericCodeName(
+				FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN, kikaakuSelectedValue);
+		}
+		if (CheckUtils.isEmpty(kikakuDispStr)) {
+			// 設定されていない場合、基本情報と同じ値を設定
+			kikaakuSelectedValue = initDto.getSc003KikakuSelect();
+		}
 		initDto.setSc003KikakuSelect(kikaakuSelectedValue);
-		// 用途
+
+		// ①用途2
+		if (!CheckUtils.isEmpty(youtoSelectedValue)) {
+			youtoDispStr = codeCacheUtils.getGenericCodeName(
+				FunctionIdConstant.GENERIC_CODE_AUSE_KBN, youtoSelectedValue);
+		}
+		if (CheckUtils.isEmpty(youtoDispStr)) {
+			// 設定されていない場合、基本情報と同じ値を設定
+			youtoSelectedValue = initDto.getSc003YoutoSelect();
+		}
 		initDto.setSc003YoutoSelect(youtoSelectedValue);
 
 		/** ドロップダウン作成 */
@@ -222,6 +224,11 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		youtoSelecteList.addAll(ddlUtils.getGenericForDoropDownList(
 				FunctionIdConstant.GENERIC_CODE_AUSE_KBN, youtoSelectedValue, true));
 		initDto.setSc003YoutoSelectList(youtoSelecteList);
+		// ②延べ面積2
+		if (CheckUtils.isEmpty(rateShienNobeMenseki)) {
+			// 設定されていない場合、基本情報と同じ値を設定
+			rateShienNobeMenseki = initDto.getSc003NobeMenseki();
+		}
 		// 延べ面積テキストボックス
 		initDto.setSc003InputNobeMenseki(rateShienNobeMenseki);
 		// 基準使用料算定上延べ面積2
