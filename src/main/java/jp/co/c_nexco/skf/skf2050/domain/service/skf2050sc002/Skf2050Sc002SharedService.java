@@ -134,7 +134,7 @@ public class Skf2050Sc002SharedService {
 		Map<String, String> bihinStatusMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHINSTATUS_KBN);
 		Map<String, String> bihinAdjustMap = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_IN_KBN);
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_OUT_KBN);
 
 		bihinShinseiList = skfBihinInfoUtils.getBihinInfo(companyCd, applNo);
 		List<Map<String, String>> bihinList = new ArrayList<Map<String, String>>();
