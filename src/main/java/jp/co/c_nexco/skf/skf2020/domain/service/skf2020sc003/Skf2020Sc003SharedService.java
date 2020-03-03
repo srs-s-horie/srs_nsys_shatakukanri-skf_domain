@@ -1126,6 +1126,10 @@ public class Skf2020Sc003SharedService {
 			return returnValue;
 		}
 
+		// 備品希望申請の登録が完了したら、前に戻るの表示用に再セットを行う
+		String newShatakuKikaku = getShatakuKikakuKBN(dto.getNewShatakuKikaku());
+		dto.setNewShatakuKikaku(newShatakuKikaku);
+
 		// 申請区分
 		String bihinKbn = CodeConstant.BIHIN_SHINSEI_KBN_HAIHUN;
 

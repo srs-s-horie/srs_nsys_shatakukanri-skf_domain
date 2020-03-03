@@ -706,13 +706,9 @@ public class Skf2010Sc006SharedService {
 				Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExp updateData = new Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExp();
 				updateData.setCompanyCd(companyCd);
 				updateData.setApplNo(applNo);
-				if (tTaijiData.getRentalAdjust() != CodeConstant.LONG_ZERO) {
-					updateData.setRentalAdjust(String.valueOf(tTaijiData.getRentalAdjust()));
-				}
+				updateData.setRentalAdjust(String.valueOf(tTaijiData.getRentalAdjust()));
 				updateData.setKyoekihiPersonKyogichuFlg(tTaijiData.getKyoekihiPersonKyogichuFlg());
-				if (tTaijiData.getKyoekihiPersonAdjust() != CodeConstant.LONG_ZERO) {
-					updateData.setNewKyoekihi(String.valueOf(tTaijiData.getKyoekihiPersonAdjust()));
-				}
+				updateData.setNewKyoekihi(String.valueOf(tTaijiData.getKyoekihiPersonAdjust()));
 				updateData.setParkingRental(tTaijiData.getParkingRental1());
 				updateData.setParkingRental2(tTaijiData.getParkingRental2());
 				int res = skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExpRepository
