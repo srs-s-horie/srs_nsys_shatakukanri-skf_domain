@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.PdfBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010OutputPdfBaseDto;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 
@@ -228,9 +230,10 @@ public abstract class OutputPdfR0100BaseService<DTO extends Skf2010OutputPdfBase
 		pdfData.setData("dokyoAge6", NfwStringUtils.defaultString(dto.getDokyoAge6()));
 
 		// 文字枠データの埋め込み
-		// 改行を要するデータの場合はこのように記述する
+		// 折り返しを要するデータの場合はこのように記述する(改行を削除して設定)
 		pdfData.setTextBoxStart("tokushuJijo");
-		pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getTokushuJijo()));
+		pdfData.setTextBoxData(NfwStringUtils.replace(NfwStringUtils.defaultString(dto.getTokushuJijo()),
+				FileOutput.LineSeparatorType.LINE_SEPARATOR_CRLF.toString(), CodeConstant.NONE));
 		pdfData.setTextBoxEnd();
 	}
 }
