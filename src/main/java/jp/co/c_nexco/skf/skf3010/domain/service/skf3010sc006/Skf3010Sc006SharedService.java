@@ -2007,12 +2007,28 @@ public class Skf3010Sc006SharedService {
 			}else{
 				//一括契約時は編集不可
 				initDto.setParkingContractInfoDisabled(TRUE);
+				//駐車場の住所を社宅住所に設定する
+				Map<String, String> genericCodeMapPref = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+				String pref ="";
+				if (initDto.getPref() != null) {
+					pref = genericCodeMapPref.get(initDto.getPref());
+				}
+				initDto.setParkingAddress(pref + initDto.getShatakuAddress());
 			}
 
 			// 更新日時
 			if (contractMap.get("updateDate") != null && contractMap.get("updateDate").toString().length() > 0) {
 				SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 				parkingContractUpdateDate = dateFormat.parse(contractMap.get("updateDate").toString());
+			}
+			
+			String parkingStructureKbn = initDto.getParkingStructure();
+			if(SkfCheckUtils.isNullOrEmpty(parkingStructureKbn) || PARKING_NASHI.equals(parkingStructureKbn)){
+				//駐車場構造区分が“なし”・“空白”の場合、契約情報は非活性とする
+				contractAddDisableFlg = true;
+				contractDelDisableFlg = true;
+				initDto.setParkingContractTypeDisabled(TRUE);
+				initDto.setParkingContractInfoDisabled(TRUE);
 			}
 			contractMap = null;
 		}
@@ -2821,6 +2837,7 @@ public class Skf3010Sc006SharedService {
 			}
 			initDto.setShatakuAddress(null);
 			initDto.setShatakuAddress(shatakuAddress);
+			initDto.setPref(prefCd);
 
 			// 構造補足
 			if (tmpData.getStructureSupplement() != null) {
@@ -3623,8 +3640,16 @@ public class Skf3010Sc006SharedService {
 				comDto.getLendKbn(), lendKbnList, 
 				comDto.getColdExemptionKbn(), coldExemptionKbnList);
 		// 「駐車場構造区分」
-		parkingStructureList.addAll(ddlUtils.getGenericForDoropDownList(
-				FunctionIdConstant.GENERIC_CODE_PARKING_STRUCTURE_KBN, comDto.getParkingStructure(), true));
+		if(SkfCheckUtils.isNullOrEmpty(comDto.getParkingStructure())){
+			//未選択の場合、先頭空行あり
+			parkingStructureList.addAll(ddlUtils.getGenericForDoropDownList(
+					FunctionIdConstant.GENERIC_CODE_PARKING_STRUCTURE_KBN, comDto.getParkingStructure(), true));
+		}else{
+			parkingStructureList.addAll(ddlUtils.getGenericForDoropDownList(
+					FunctionIdConstant.GENERIC_CODE_PARKING_STRUCTURE_KBN, comDto.getParkingStructure(), false));
+		}
+		
+
 		// 契約番号
 		List<Map<String, Object>> contractNoList = new ArrayList<Map<String, Object>>();
 		// 契約番号ドロップダウンリスト取得
@@ -3863,7 +3888,8 @@ public class Skf3010Sc006SharedService {
 		comDto.setParkingLandRent(parkingLandRent.replace(",", ""));
 		
 		
-		if(CONTRACT_TYPE_2.equals(comDto.getParkingContractType())){
+		if (!PARKING_NASHI.equals(comDto.getParkingStructure()) && 
+			CONTRACT_TYPE_2.equals(comDto.getParkingContractType())){
 			//入力可に設定する
 			comDto.setParkingContractInfoDisabled(FALSE);
 		}else{
