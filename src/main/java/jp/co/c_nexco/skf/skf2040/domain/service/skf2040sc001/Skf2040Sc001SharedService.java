@@ -804,7 +804,7 @@ public class Skf2040Sc001SharedService {
 		// 情報が取得できた場合は、退居（自動車の保管場所返還）届管理番号を設定
 		String bihinHenkaykuShinseiApplNo = null;
 		if (bihinHenkyakuInfo != null) {
-			bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getTaikyoApplNo();
+			bihinHenkaykuShinseiApplNo = bihinHenkyakuInfo.getApplNo();
 		}
 
 		// 備品返却申請書番号がなければ退居（自動車の保管場所返還）届管理番号を新規発行
@@ -816,7 +816,7 @@ public class Skf2040Sc001SharedService {
 			insertBihinHenkyakuInfo(bihinHenkaykuShinseiApplNo, dto);
 		} else {
 			// 更新処理
-			updateBihinHenkyakuInfo(dto, bihinHenkyakuInfo);
+			updateBihinHenkyakuInfo(dto, dto.getApplNo(), bihinHenkyakuInfo);
 		}
 	}
 
@@ -832,10 +832,13 @@ public class Skf2040Sc001SharedService {
 		Skf2040Sc001GetBihinHenkyakuApplNoInfoExpParameter param = new Skf2040Sc001GetBihinHenkyakuApplNoInfoExpParameter();
 		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(dto.getApplNo());
-		Skf2040Sc001GetBihinHenkyakuApplNoInfoExp bihinHenkyakuInfo = skf2040Sc001GetBihinHenkyakuApplNoInfoExpRepository
+		List<Skf2040Sc001GetBihinHenkyakuApplNoInfoExp> bihinHenkyakuInfoList = skf2040Sc001GetBihinHenkyakuApplNoInfoExpRepository
 				.getBihinHenkyakuApplNoInfo(param);
+		if (bihinHenkyakuInfoList == null || bihinHenkyakuInfoList.size() == 0) {
+			return null;
+		}
 
-		return bihinHenkyakuInfo;
+		return bihinHenkyakuInfoList.get(0);
 	}
 
 	/**
@@ -849,7 +852,7 @@ public class Skf2040Sc001SharedService {
 
 		// 備品返却申請テーブルの設定
 		Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
-		setValue = setColumnInfoBihinList(setValue, dto, true, bihinHenkaykuShinseiApplNo);
+		setValue = setColumnInfoBihinList(setValue, dto, true, bihinHenkaykuShinseiApplNo, dto.getApplNo());
 		// 登録
 		int registCount = 0;
 		registCount = skf2050TBihinHenkyakuShinseiRepository.insertSelective(setValue);
@@ -863,13 +866,13 @@ public class Skf2040Sc001SharedService {
 	 * @param applInfo
 	 * @param bihinHenkyakuInfo
 	 */
-	protected <DTO extends Skf2040Sc001CommonDto> void updateBihinHenkyakuInfo(DTO dto,
+	protected <DTO extends Skf2040Sc001CommonDto> void updateBihinHenkyakuInfo(DTO dto, String taikyoApplNo,
 			Skf2040Sc001GetBihinHenkyakuApplNoInfoExp bihinHenkyakuInfo) {
 
 		int updateCnt = 0;
 		// 備品返却申請テーブルの更新項目設定
 		Skf2050TBihinHenkyakuShinsei setValue = new Skf2050TBihinHenkyakuShinsei();
-		setValue = setColumnInfoBihinList(setValue, dto, false, bihinHenkyakuInfo.getTaikyoApplNo());
+		setValue = setColumnInfoBihinList(setValue, dto, false, bihinHenkyakuInfo.getApplNo(), taikyoApplNo);
 		// 更新
 		updateCnt = skf2050TBihinHenkyakuShinseiRepository.updateByPrimaryKeySelective(setValue);
 		LogUtils.debugByMsg("備品返却申請テーブル更新件数：" + updateCnt + "件");
@@ -882,10 +885,12 @@ public class Skf2040Sc001SharedService {
 	 * @param dto Skf2020Sc002CommonDto
 	 * @param isNewRecord 新規登録情報である場合true
 	 * @param bihinHenkaykuShinseiApplNo 備品返却申請の申請書類番号
+	 * @param taikyoApplNo 備品返却申請の退居届申請書類番号
 	 * @return 備品返却申請テーブルを更新する値
 	 */
 	protected <DTO extends Skf2040Sc001CommonDto> Skf2050TBihinHenkyakuShinsei setColumnInfoBihinList(
-			Skf2050TBihinHenkyakuShinsei setValue, DTO dto, boolean isNewRecord, String bihinHenkaykuShinseiApplNo) {
+			Skf2050TBihinHenkyakuShinsei setValue, DTO dto, boolean isNewRecord, String bihinHenkaykuShinseiApplNo,
+			String taikyoApplNo) {
 
 		String applDate = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
 
@@ -917,7 +922,7 @@ public class Skf2040Sc001SharedService {
 		// 申請年月日
 		setValue.setApplDate(applDate);
 		// 退居届書類管理番号
-		setValue.setTaikyoApplNo(dto.getApplNo());
+		setValue.setTaikyoApplNo(taikyoApplNo);
 		// 社宅管理番号
 		setValue.setShatakuNo(Long.parseLong(NfwStringUtils.defaultString(dto.getHdnNowShatakuKanriNo())));
 		// 部屋管理番号
