@@ -155,7 +155,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setData("carNo", NfwStringUtils.defaultString(dto.getCarNo()));
 			pdfData.setData("carUser", NfwStringUtils.defaultString(dto.getCarUser()));
 			pdfData.setData("carExpirationDate", NfwStringUtils.defaultString(dto.getCarExpirationDate()));
-			pdfData.setData("carIchiNo", NfwStringUtils.defaultString(dto.getCarIchiNo()));
+			pdfData.setData("carIchiNo", CodeConstant.NONE);
 			pdfData.setData("parkingRental", NfwStringUtils.defaultString(dto.getParkingRental()));
 			pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
 		}
@@ -176,7 +176,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setData("carNo2", NfwStringUtils.defaultString(dto.getCarNo2()));
 			pdfData.setData("carUser2", NfwStringUtils.defaultString(dto.getCarUser2()));
 			pdfData.setData("carExpirationDate2", NfwStringUtils.defaultString(dto.getCarExpirationDate2()));
-			pdfData.setData("carIchiNo2", NfwStringUtils.defaultString(dto.getCarIchiNo2()));
+			pdfData.setData("carIchiNo2", CodeConstant.NONE);
 			pdfData.setData("parkingRental2", NfwStringUtils.defaultString(dto.getParkingRental2()));
 			pdfData.setData("parkingKanoDate2", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
 		}
