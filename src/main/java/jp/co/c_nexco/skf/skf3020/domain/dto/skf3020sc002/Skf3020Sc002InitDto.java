@@ -7,7 +7,7 @@ import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020Sc002common.Skf3020Sc002Commo
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3020Sc002 画面のInitDto
+ * Skf3020Sc002InitDto 転任者調書取込画面のInitDto
  * 
  * @author NEXCOシステムズ
  */

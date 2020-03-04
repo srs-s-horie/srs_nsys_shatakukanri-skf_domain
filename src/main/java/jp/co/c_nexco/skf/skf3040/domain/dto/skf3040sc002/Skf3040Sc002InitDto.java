@@ -3,13 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf3040.domain.dto.skf3040sc002;
 
-import java.util.*;
 import jp.co.c_nexco.skf.skf3040.domain.dto.skf3040Sc002common.Skf3040Sc002CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3040_Sc001画面のInitDto。
+ * Skf3040Sc002InitDto 備品搬入・搬出確認リスト出力画面のInitDto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

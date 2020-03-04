@@ -11,7 +11,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3020Sc002 取り込み転任者調書情報DTO
+ * Skf3020Sc002ImportDto 取り込み転任者調書情報DTO
  *
  * @author NEXCOシステムズ
  */
