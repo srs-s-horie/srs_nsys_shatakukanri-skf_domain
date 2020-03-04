@@ -5,10 +5,8 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -83,7 +81,7 @@ public class Skf2050Sc001NotAgreeService extends BaseServiceAbstract<Skf2050Sc00
 		applInfo.put(CodeConstant.KEY_APPL_STATUS, newApplStatus);
 		applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, applShainNo);
 
-		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
+		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC005 + "/init?SKF2010_SC005&menuflg=1";
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, notAgreeDto.getCommentNote(), null,
 				null, null, baseUrl);
 

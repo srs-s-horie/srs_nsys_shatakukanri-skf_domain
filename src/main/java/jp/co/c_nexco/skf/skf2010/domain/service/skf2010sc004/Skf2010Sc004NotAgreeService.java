@@ -109,7 +109,7 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		applInfo.put("applNo", applNo);
 		applInfo.put("applId", applId);
 
-		String urlBase = "skf/Skf2010Sc005/init";
+		String urlBase = "skf/Skf2010Sc005/init?SKF2010_SC005&menuflg=1";
 
 		// 送信メールにコメントが表示されないようになっている（メール本文に表記箇所が無い）
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
