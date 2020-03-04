@@ -93,8 +93,13 @@ public class Skf3010Sc004SearchService extends BaseServiceAbstract<Skf3010Sc004S
 				lendList);
 
 		// 戻り値をセット
-		searchDto.setPageTitleKey(MessageIdConstant.SKF3010_SC004_TITLE);
-		// searchDto.setListTableMaxRowCount(listTableMaxRowCount);
+		// 社宅部屋総数を取得する(戻るボタンで戻った際更新されないので、検索時に更新する)
+		int roomCount = skf3010Sc004SharedService.getRoomCount(searchDto.getShatakuKanriNo());
+		// 空き社宅部屋総数を取得する
+		int emptyRoomCount = skf3010Sc004SharedService.getEmptyRoomCount(searchDto.getShatakuKanriNo());
+
+		String emptyRoomCountStr = emptyRoomCount + CodeConstant.SLASH + roomCount;
+		searchDto.setEmptyRoomCount(emptyRoomCountStr);
 
 		searchDto.setAuseList(auseList);
 		searchDto.setLendList(lendList);
