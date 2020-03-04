@@ -5272,15 +5272,15 @@ public class Skf3022Sc006SharedService {
 //												OracleType.Char))
 		columnInfoList.setRentalAdjust(Integer.parseInt(getKingakuText(comDto.getSc006SiyoroTyoseiPay())));
 //
-		// 個人負担共益費協議中フラグ				
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.KYOEKIHI_PERSON_KYOGICHU_FLG, _
 //												Me.GetKyoekihiKyogichuKbn(), _
 //												OracleType.Char, _
 //												ColumnInfoEntity.ConvertFunctionType.None))
-		columnInfoList.setKyoekihiPersonKyogichuFlg(comDto.getSc006KyoekihiKyogichuCheckState());
 		// 個人負担共益費協議中にチェックがある場合
 //		If Me.chkKyoekihiKyogichu.Checked Then
 		if ("1".equals(comDto.getSc006KyoekihiKyogichuCheckState())) {
+			// 個人負担共益費協議中フラグ				
+			columnInfoList.setKyoekihiPersonKyogichuFlg("1");
 //
 //			Me.txtKyoekihiMonthPay.Text = DATA_0
 			comDto.setSc006KyoekihiMonthPay(CodeConstant.STRING_ZERO);
@@ -5308,6 +5308,8 @@ public class Skf3022Sc006SharedService {
 			columnInfoList.setKyoekihiPayMonth(CodeConstant.DOUBLE_QUOTATION);
 //
 		} else {
+			// 個人負担共益費協議中フラグ				
+			columnInfoList.setKyoekihiPersonKyogichuFlg("0");
 			// 個人負担共益費
 //			columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.KYOEKIHI_PERSON, _
 //													HttpUtility.HtmlEncode(Me.GetPayText(Me.txtKyoekihiMonthPay.Text)), _

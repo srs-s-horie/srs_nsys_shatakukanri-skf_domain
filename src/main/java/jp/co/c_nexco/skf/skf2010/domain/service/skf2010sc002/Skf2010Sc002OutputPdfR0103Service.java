@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002OutputPdfR0101Dto;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002OutputPdfR0103Dto;
-import jp.co.c_nexco.skf.skf2010.domain.service.common.OutputPdfR0101BaseService;
 import jp.co.c_nexco.skf.skf2010.domain.service.common.OutputPdfR0103BaseService;
 
 /**

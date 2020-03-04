@@ -480,7 +480,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			mShatakuContract.setContractPropertyId(mShatakuContract.getContractPropertyId());
 			// 追加更新判定
 			if (drpDwnSelected.get("contractText") != null
-					&& drpDwnSelected.get("contractText").toString().contains(Skf3010Sc002CommonDto.CONTRACT_NO_SEPARATOR)) {
+					&& drpDwnSelected.get("contractText").toString().contains(Skf3010Sc002CommonDto.CONTRACT_NO_SEPARATOR.trim())) {
 				// 更新
 				updateCnt = skf3010MShatakuContractRepository.updateByPrimaryKeySelective(mShatakuContract);
 			} else {

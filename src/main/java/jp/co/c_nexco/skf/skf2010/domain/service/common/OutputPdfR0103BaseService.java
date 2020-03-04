@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.PdfBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010OutputPdfBaseDto;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 
@@ -22,7 +24,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 	private String pdfFileName;
 	@Value("${skf.pdf.skf2040rp001.pdf_temp_folder_path}")
 	private String pdfTempFolderPath;
-	
+
 	private static final int AGENCY_BREAK_LENGTH = 26;
 	private static final int AFFILIATION1_BREAK_LENGTH = 26;
 	private static final int AFFILIAITON2_BREAK_LENGTH = 26;
@@ -30,8 +32,8 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 	private static final int TAIKYO_AREA_BREAK_LRNGTH = 64;
 	private static final int PARKING_AREA_BREAK_LENGTH = 64;
 	private static final int TAIKYOGO_RIYU_BREAK_LENGTH = 64;
-	private static final int TAIKYOGO_RENRAKUSAKI_BREAK_LENGTH = 64;		
-	
+	private static final int TAIKYOGO_RENRAKUSAKI_BREAK_LENGTH = 64;
+
 	@Override
 	protected String getPdfFileName() {
 		return this.pdfFileName;
@@ -87,8 +89,8 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 	private void setTaikyoTodoke(CSVDoc pdfData, DTO dto) {
 		pdfData.setData("applNo", NfwStringUtils.defaultString(dto.getApplNo()));
 		pdfData.setData("applDate", NfwStringUtils.defaultString(dto.getApplDate()));
-		
-		// 現所属　機関
+
+		// 現所属 機関
 		if (NfwStringUtils.defaultString(dto.getNowAgency())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGENCY_BREAK_LENGTH) {
 			pdfData.setData("nowAgency", NfwStringUtils.defaultString(dto.getNowAgency()));
@@ -98,8 +100,8 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAgency()));
 			pdfData.setTextBoxEnd();
 		}
-		
-		// 現所属　部等
+
+		// 現所属 部等
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation1())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION1_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation1", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
@@ -109,8 +111,8 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 			pdfData.setTextBoxEnd();
 		}
-		
-		// 現所属　室、チーム又は課
+
+		// 現所属 室、チーム又は課
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation2())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIAITON2_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation2", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
@@ -120,7 +122,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 			pdfData.setTextBoxEnd();
 		}
-		
+
 		// 現住所
 		if (NfwStringUtils.defaultString(dto.getAddress())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= ADDRESS_BREAK_LENGTH) {
@@ -132,7 +134,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxEnd();
 		}
 		pdfData.setData("name", NfwStringUtils.defaultString(dto.getName()));
-		
+
 		// 社宅
 		if (NfwStringUtils.defaultString(dto.getTaikyoArea())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYO_AREA_BREAK_LRNGTH) {
@@ -143,7 +145,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getTaikyoArea()));
 			pdfData.setTextBoxEnd();
 		}
-		
+
 		// 駐車場1
 		if (NfwStringUtils.defaultString(dto.getParkingAddress1())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= PARKING_AREA_BREAK_LENGTH) {
@@ -154,7 +156,7 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getParkingAddress1()));
 			pdfData.setTextBoxEnd();
 		}
-		
+
 		// 駐車場2
 		if (NfwStringUtils.defaultString(dto.getParkingAddress2())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= PARKING_AREA_BREAK_LENGTH) {
@@ -167,30 +169,32 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2010OutputPdfBase
 		}
 		pdfData.setData("taikyoDate", NfwStringUtils.defaultString(dto.getTaikyoDate()));
 		pdfData.setData("parkingHenkanDate", NfwStringUtils.defaultString(dto.getParkingHenkanDate()));
-		
-		// 退居（返還）理由
-		if (NfwStringUtils.defaultString(dto.getTaikyoRiyu())
-				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYOGO_RIYU_BREAK_LENGTH) {
-			pdfData.setData("taikyoRiyu", NfwStringUtils.defaultString(dto.getTaikyoRiyu()));
+
+		// 退居（返還）理由(改行を削除して設定)
+		String taikyoRiyu = NfwStringUtils.replace(NfwStringUtils.defaultString(dto.getTaikyoRiyu()),
+				FileOutput.LineSeparatorType.LINE_SEPARATOR_CRLF.toString(), CodeConstant.NONE);
+		if (taikyoRiyu.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYOGO_RIYU_BREAK_LENGTH) {
+			pdfData.setData("taikyoRiyu", taikyoRiyu);
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("taikyoRiyu_long");
-			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getTaikyoRiyu()));
+			pdfData.setTextBoxData(taikyoRiyu);
 			pdfData.setTextBoxEnd();
 		}
-		
-		// 退居後連絡先
-		if (NfwStringUtils.defaultString(dto.getTaikyogoRenrakusaki())
+
+		// 退居後連絡先(改行を削除して設定)
+		String taikyogoRenrakusaki = NfwStringUtils.replace(NfwStringUtils.defaultString(dto.getTaikyogoRenrakusaki()),
+				FileOutput.LineSeparatorType.LINE_SEPARATOR_CRLF.toString(), CodeConstant.NONE);
+		if (taikyogoRenrakusaki
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYOGO_RENRAKUSAKI_BREAK_LENGTH) {
-			pdfData.setData("taikyogoRenrakusaki", NfwStringUtils.defaultString(dto.getTaikyogoRenrakusaki()));
+			pdfData.setData("taikyogoRenrakusaki", taikyogoRenrakusaki);
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("taikyogoRenrakusaki_long");
-			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getTaikyogoRenrakusaki()));
+			pdfData.setTextBoxData(taikyogoRenrakusaki);
 			pdfData.setTextBoxEnd();
 		}
-	
+
 	}
-	
-	
+
 }

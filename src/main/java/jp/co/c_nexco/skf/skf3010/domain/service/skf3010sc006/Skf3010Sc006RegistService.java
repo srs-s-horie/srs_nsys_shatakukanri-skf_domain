@@ -1168,99 +1168,102 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		
 		//駐車場契約
 		//駐車場契約情報
-		if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("parkingContractNo") != null) 
-				&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("parkingContractNo").toString())) {
-			//駐車場契約情報有かつ別契約の場合
-			if(PARKING_CONTRACT_TYPE2.equals(registDto.getParkingContractType())){
-				// 郵便番号
-				String parkingZipCode = (registDto.getParkingZipCd() != null) ? registDto.getParkingZipCd() : "";
-				if(!CheckUtils.isNumeric(parkingZipCode) && parkingZipCode.length() != 7){
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "郵便番号");
-					registDto.setParkingZipCdError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 形式チェック - 駐車場郵便番号";
-					// 選択タブインデックス設定：基本情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-//				// 経理連携用管理番号
-//				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getParkingAssetRegisterNo())) {
-//					isCheckOk = false;
-//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
-//					registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
-//					debugMessage += " 形式チェック - 駐車場経理連携用管理番号 - " +registDto.getAssetRegisterNo();
-//					// 選択タブインデックス設定：契約情報タブ
-//					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-//				}
-				// 経理連携用管理番号
-				if (!CheckUtils.isHalfWidth(registDto.getParkingAssetRegisterNo())) {
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
-					registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 形式チェック - 駐車場経理連携用管理番号 - " +registDto.getAssetRegisterNo();
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-				// 契約開始日
-				String parkingContractStartDate = registDto.getParkingContractStartDay().replace("/", "");
-				if (!SkfCheckUtils.isSkfDateFormat(parkingContractStartDate,CheckUtils.DateFormatType.YYYYMMDD)) {
-					isCheckOk = false;
-					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約開始日");
-					registDto.setParkingContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
-					debugMessage += " 形式チェック - 駐車場契約開始日 - " + parkingContractStartDate;
-					// 選択タブインデックス設定：契約情報タブ
-					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-				}
-				
-				// 契約終了日
-				String parkingContractEndDate = registDto.getParkingContractEndDay();
-				if (!SkfCheckUtils.isNullOrEmpty(parkingContractEndDate)) {
-					parkingContractEndDate = parkingContractEndDate.replace("/", "");
-					//形式
-					if (!SkfCheckUtils.isSkfDateFormat(parkingContractEndDate,CheckUtils.DateFormatType.YYYYMMDD)) {
+		if (!PARKING_STRUCTURE_NASHI.equals(registDto.getParkingStructure())) {
+			// 駐車場構造が「なし」以外
+			if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("parkingContractNo") != null) 
+					&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("parkingContractNo").toString())) {
+				//駐車場契約情報有かつ別契約の場合
+				if(PARKING_CONTRACT_TYPE2.equals(registDto.getParkingContractType())){
+					// 郵便番号
+					String parkingZipCode = (registDto.getParkingZipCd() != null) ? registDto.getParkingZipCd() : "";
+					if(!CheckUtils.isNumeric(parkingZipCode) && parkingZipCode.length() != 7){
 						isCheckOk = false;
-						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
-						registDto.setParkingContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
-						debugMessage += " 形式チェック - 駐車場契約終了日 - " + parkingContractEndDate;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "郵便番号");
+						registDto.setParkingZipCdError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 形式チェック - 駐車場郵便番号";
+						// 選択タブインデックス設定：基本情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+	//				// 経理連携用管理番号
+	//				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getParkingAssetRegisterNo())) {
+	//					isCheckOk = false;
+	//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
+	//					registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
+	//					debugMessage += " 形式チェック - 駐車場経理連携用管理番号 - " +registDto.getAssetRegisterNo();
+	//					// 選択タブインデックス設定：契約情報タブ
+	//					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+	//				}
+					// 経理連携用管理番号
+					if (!CheckUtils.isHalfWidth(registDto.getParkingAssetRegisterNo())) {
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
+						registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 形式チェック - 駐車場経理連携用管理番号 - " +registDto.getAssetRegisterNo();
+						// 選択タブインデックス設定：契約情報タブ
+						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+					}
+					// 契約開始日
+					String parkingContractStartDate = registDto.getParkingContractStartDay().replace("/", "");
+					if (!SkfCheckUtils.isSkfDateFormat(parkingContractStartDate,CheckUtils.DateFormatType.YYYYMMDD)) {
+						isCheckOk = false;
+						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約開始日");
+						registDto.setParkingContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
+						debugMessage += " 形式チェック - 駐車場契約開始日 - " + parkingContractStartDate;
 						// 選択タブインデックス設定：契約情報タブ
 						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
 					}
 					
-					if(isCheckOk){
-						//日付関係
-						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-						Date startDate = null;
-						Date endDate = null;
-						try{
-							startDate = dateFormat.parse(parkingContractStartDate);
-							endDate = dateFormat.parse(parkingContractEndDate);
-							
-							if(!startDate.before(endDate)){
-								//契約開始日＞契約終了日の場合(開始日が終了日より前で無い場合）
-								isCheckOk = false;
-								ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
-								registDto.setParkingContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
-								debugMessage += " 形式チェック - 駐車場契約終了日(開始日以前) - " +parkingContractEndDate;
-								// 選択タブインデックス設定：契約情報タブ
-								setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-							}
-							
-						}catch(ParseException ex){
+					// 契約終了日
+					String parkingContractEndDate = registDto.getParkingContractEndDay();
+					if (!SkfCheckUtils.isNullOrEmpty(parkingContractEndDate)) {
+						parkingContractEndDate = parkingContractEndDate.replace("/", "");
+						//形式
+						if (!SkfCheckUtils.isSkfDateFormat(parkingContractEndDate,CheckUtils.DateFormatType.YYYYMMDD)) {
 							isCheckOk = false;
-							if(startDate == null){
-								ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約開始日");
-								registDto.setParkingContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
-								debugMessage += " 形式チェック(変換) - 駐車場契約開始日 - " + parkingContractStartDate;
-							}
-							if(endDate == null){
-								ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
-								registDto.setParkingContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
-								debugMessage += " 形式チェック(変換) - 駐車場契約終了日 - " + parkingContractEndDate;
-							}
+							ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
+							registDto.setParkingContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
+							debugMessage += " 形式チェック - 駐車場契約終了日 - " + parkingContractEndDate;
 							// 選択タブインデックス設定：契約情報タブ
 							setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
 						}
+						
+						if(isCheckOk){
+							//日付関係
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+							Date startDate = null;
+							Date endDate = null;
+							try{
+								startDate = dateFormat.parse(parkingContractStartDate);
+								endDate = dateFormat.parse(parkingContractEndDate);
+								
+								if(!startDate.before(endDate)){
+									//契約開始日＞契約終了日の場合(開始日が終了日より前で無い場合）
+									isCheckOk = false;
+									ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
+									registDto.setParkingContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
+									debugMessage += " 形式チェック - 駐車場契約終了日(開始日以前) - " +parkingContractEndDate;
+									// 選択タブインデックス設定：契約情報タブ
+									setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+								}
+								
+							}catch(ParseException ex){
+								isCheckOk = false;
+								if(startDate == null){
+									ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約開始日");
+									registDto.setParkingContractStartDateError(CodeConstant.NFW_VALIDATION_ERROR);
+									debugMessage += " 形式チェック(変換) - 駐車場契約開始日 - " + parkingContractStartDate;
+								}
+								if(endDate == null){
+									ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1055, "契約終了日");
+									registDto.setParkingContractEndDateError(CodeConstant.NFW_VALIDATION_ERROR);
+									debugMessage += " 形式チェック(変換) - 駐車場契約終了日 - " + parkingContractEndDate;
+								}
+								// 選択タブインデックス設定：契約情報タブ
+								setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+							}
+						}
+						
 					}
-					
 				}
 			}
 		}
