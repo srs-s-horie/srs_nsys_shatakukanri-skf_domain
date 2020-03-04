@@ -836,6 +836,15 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			initDto.setNewKyoekihi(newKyoekihi);
 		}
 
+		// 決定通知書用共益費設定
+		String ketteiKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
+		initDto.setKetteiKyoekihi(ketteiKyoekihi);
+		if (NfwStringUtils.isEmpty(newKyoekihi)) {
+			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
+				initDto.setNewKyoekihi(GOJITSU_TEXT);
+			}
+		}
+
 		// 自動車１台目
 		// 自動車の保管場所
 		initDto.setParkingArea(tNyukyoChoshoTsuchi.getParkingArea());
