@@ -140,41 +140,28 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		// PDFの基本設定
 		this.setPdfBaseSettings();
 
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:PDFの基本設定");
-
 		// 出力ファイルパスの設定
 		String pdfOutputPath;
 		pdfOutputPath = this.getPdfOutputPath(this.getTempFolderPath());
 
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:indexメソッド:出力ファイルパスの設定:pdfOutputPath=" + pdfOutputPath);
-
 		// 出力するPDFデータを設定する
 		this.setPdfData(pdfDto);
-
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:indexメソッド:出力するPDFデータを設定する");
 
 		// PDFを結合する
 		this.pdfIntegration();
 
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:indexメソッド:PDFを結合する");
-
 		// PDFを出力する
 		this.outputPdf(pdfOutputPath);
 
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:indexメソッド:PDFを出力する");
-
 		// PDF処理後追加処理を実行する
 		this.afterIndexProc(pdfDto);
-
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:indexメソッド:PDF処理後追加処理を実行する");
 
 		// ファイル情報をDTOに設定する。
 		SkfFileOutputUtils.fileOutput(pdfDto, pdfOutputPath);
 		pdfDto.setUploadFileName(this.getPdfFileName());
 
 		// PublicStorageに作成したPDFファイルを削除する
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:indexメソッド:PublicStorageに作成したPDFファイルを削除する…をコメントアウト");
-		// this.deleteTempFile(pdfOutputPath);
+		this.deleteTempFile(pdfOutputPath);
 
 		return pdfDto;
 	}
@@ -207,10 +194,8 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	protected void setPdfBaseSettings() throws PDFException {
 		// 中間処理ファイル文字エンコード
 		this.integratePdf.setCharset(PDF_PROCESS_ENCODE);
-
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:setPdfBaseSettingsメソッド:PublicStorageに作成したIODファイルを削除しないようフラグを変更");
 		// 出力した一時IODを削除するか
-		this.integratePdf.setDelete(false);
+		this.integratePdf.setDelete(true);
 		// PDFタイトル設定
 		this.integratePdf.defineTitle(this.getPdfTitle());
 	}
@@ -263,17 +248,12 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 
 		PublicStorage ps = new PublicStorage(outputPath);
 
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:getOutputPathメソッド:outputPath=" + outputPath);
-
 		while (ps.exists()) {
 			// 同名ファイル名が既に存在する場合、重複しなくなるまでファイル名を取り直す
 			sysDateMillisec = DateUtils.getSysDateString(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
 			outputPath = tempFolderPath + TEMP_FILE_PREFIX + sysDateMillisec + fileExtention;
 			ps = new PublicStorage(outputPath);
 		}
-
-		LogUtils.errorByMsg(
-				"PDF動作確認用ログ出力:getOutputPathメソッド:publicStorageのgetCanonicalPath()実行結果：" + ps.getCanonicalPath());
 		return outputPath;
 	}
 
@@ -290,9 +270,6 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		for (CSVDoc pdfData : this.pdfDataList) {
 			String tempIodPath = this.getIodOutputPath(this.getTempFolderPath());
 			pdfData.makeIOD(tempIodPath);
-
-			LogUtils.errorByMsg("PDF動作確認用ログ出力:pdfIntegrationメソッド:tempIodPath=" + tempIodPath);
-
 			this.integratePdf.add(tempIodPath);
 		}
 	}
@@ -317,9 +294,6 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 			resultMessage = this.integratePdf.lastMessage();
 		}
 		LogUtils.debugByMsg(resultMessage);
-
-		LogUtils.errorByMsg("PDF動作確認用ログ出力:outputPdfメソッド:resultMessage=" + resultMessage);
-
 	}
 
 	/**
