@@ -3,12 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf3090.domain.dto.skf3090test03popupaddfile;
 
-import java.util.*;
-
 import lombok.EqualsAndHashCode;
-
-import jp.co.c_nexco.nfw.webcore.app.DownloadFile;
-import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090test03.Skf3090Test03CommonDto;
 
 

@@ -4,7 +4,6 @@
 package jp.co.c_nexco.skf.skf3050.domain.service.skf3050sc002;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;

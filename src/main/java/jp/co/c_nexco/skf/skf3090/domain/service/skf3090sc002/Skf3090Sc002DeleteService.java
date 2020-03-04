@@ -5,7 +5,6 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc002;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,6 @@ public class Skf3090Sc002DeleteService extends BaseServiceAbstract<Skf3090Sc002D
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3090Sc002DeleteDto index(Skf3090Sc002DeleteDto deleteDto) throws Exception {

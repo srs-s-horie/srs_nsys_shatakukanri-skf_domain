@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -444,7 +445,7 @@ public class Skf3050Sc002SharedService {
 		}
 
 		//プログラムIDの設定
-		if (!jikkoBatchId.equals(parameter.get(BATCH_PRG_ID_KEY))) {
+		if (!Objects.equals(jikkoBatchId, parameter.get(BATCH_PRG_ID_KEY))) {
 			//異常終了として、バッチ制御テーブルを登録
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(COMPANY_CD_KEY), programId,
 					parameter.get(USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
@@ -656,7 +657,7 @@ public class Skf3050Sc002SharedService {
 					if(SkfCheckUtils.isNullOrEmpty(shainNo)){
 						shainNo = genbutsuShori.getShainNo();
 					//社員番号が変更された場合
-					}else if(!shainNo.equals(genbutsuShori.getShainNo())){
+					}else if(!Objects.equals(shainNo, genbutsuShori.getShainNo())){
 						Skf3050Sc002PositiveRenkeiInfoExp setExp = shainRowMap.get(shainNo);
 						
 						if(genbutsuSum > 0){
@@ -1309,7 +1310,7 @@ public class Skf3050Sc002SharedService {
 		for (int i = 0; i < gridViewList.size(); i++) {
 			Map<String, Object> gridViewData = gridViewList.get(i);
 
-			if (sysDateYyyymm.equals(gridViewData.get(Skf3050Sc002SharedService.GRID_HDN_SHORINENGETSU))) {
+			if (Objects.equals(sysDateYyyymm, gridViewData.get(Skf3050Sc002SharedService.GRID_HDN_SHORINENGETSU))) {
 				inDto.setHdnJikkouShijiYoteiShoriIdx(String.valueOf(i));
 
 				if (!NENGETSU_LIST_SHIME_JIKKOUSUMI.equals(gridViewData.get(GRID_SHIME_SHORI))) {
@@ -1722,7 +1723,7 @@ public class Skf3050Sc002SharedService {
 		switch (parkingKukaku) {
 		case PARKING_KUKAKU_1:
 			if (!NfwStringUtils.isEmpty(parking1StartDate)) {
-				if (shoriNengetsu.equals(parking1StartDate.substring(0, 6))) {
+				if (Objects.equals(shoriNengetsu, parking1StartDate.substring(0, 6))) {
 					result = true;
 				}
 			}
@@ -1730,7 +1731,7 @@ public class Skf3050Sc002SharedService {
 
 		case PARKING_KUKAKU_2:
 			if (!NfwStringUtils.isEmpty(parking2StartDate)) {
-				if (shoriNengetsu.equals(parking2StartDate.substring(0, 6))) {
+				if (Objects.equals(shoriNengetsu, parking2StartDate.substring(0, 6))) {
 					result = true;
 				}
 			}
@@ -1741,9 +1742,9 @@ public class Skf3050Sc002SharedService {
 				break;
 			}
 
-			if (!NfwStringUtils.isEmpty(parking1StartDate) && (shoriNengetsu.equals(parking1StartDate.substring(0, 6)))
+			if (!NfwStringUtils.isEmpty(parking1StartDate) && (Objects.equals(shoriNengetsu, parking1StartDate.substring(0, 6)))
 					|| !NfwStringUtils.isEmpty(parking2StartDate)
-							&& (shoriNengetsu.equals(parking2StartDate.substring(0, 6)))) {
+							&& (Objects.equals(shoriNengetsu, parking2StartDate.substring(0, 6)))) {
 				result = true;
 			}
 			break;
@@ -1852,7 +1853,7 @@ public class Skf3050Sc002SharedService {
 			}
 		}
 
-		if (!closeBatchPrgId.equals(parameter.get(BATCH_PRG_ID_KEY))) {
+		if (!Objects.equals(closeBatchPrgId, parameter.get(BATCH_PRG_ID_KEY))) {
 
 			int retStat = insertBatchControl(parameter.get(COMPANY_CD_KEY), programId, parameter.get(USER_ID_KEY),
 					SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
@@ -2537,14 +2538,14 @@ public class Skf3050Sc002SharedService {
 
 		BigDecimal outDate = BigDecimal.ZERO;
 
-		if (nyuukyoDate.equals(shoriNengetsuShonichi) && shoriNengetsuMatsujitsu.equals(taikyoDate)) {
+		if (Objects.equals(nyuukyoDate, shoriNengetsuShonichi) && Objects.equals(shoriNengetsuMatsujitsu, taikyoDate)) {
 			outDate = shatakuRiyouryouGetsugaku;
 
 		} else if (decimalNextShoriNengetsu.compareTo(decimalNyuukyoYymm) <= 0
 				|| taikyoDateYymm.compareTo(decimalBeforeShoriNengetsu) <= 0) {
 			outDate = BigDecimal.ZERO;
 
-		} else if (!nyuukyoDate.equals(shoriNengetsuShonichi) || !taikyoDate.equals(shoriNengetsuMatsujitsu)) {
+		} else if (!Objects.equals(nyuukyoDate, shoriNengetsuShonichi) || !Objects.equals(taikyoDate, shoriNengetsuMatsujitsu)) {
 			BigDecimal taikyoDateDd = new BigDecimal(taikyoDate.substring(6, 8));
 			BigDecimal nyuukyoDateDd = new BigDecimal(nyuukyoDate.substring(6, 8));
 			BigDecimal shoriNengetsuMatsujitsuDd = new BigDecimal(shoriNengetsuMatsujitsu.substring(6, 8));
@@ -2718,14 +2719,14 @@ public class Skf3050Sc002SharedService {
 
 		BigDecimal outDate = BigDecimal.ZERO;
 
-		if (parkingStartDate.equals(shoriNengetsuShonichi) && shoriNengetsuMatsujitsu.equals(parkingEndDate)) {
+		if (Objects.equals(parkingStartDate, shoriNengetsuShonichi) && Objects.equals(shoriNengetsuMatsujitsu, parkingEndDate)) {
 			outDate = tyuushajouShiyouryouGetsugaku;
 
 		} else if (decimalNextShoriNengetsu.compareTo(parkingStartDateYymm) <= 0
 				|| parkingEndDateYymm.compareTo(decimalBeforeShoriNengetsu) <= 0) {
 			outDate = BigDecimal.ZERO;
 
-		} else if (!parkingStartDate.equals(shoriNengetsuShonichi) || !parkingEndDate.equals(shoriNengetsuMatsujitsu)) {
+		} else if (!Objects.equals(parkingStartDate, shoriNengetsuShonichi) || !Objects.equals(parkingEndDate, shoriNengetsuMatsujitsu)) {
 			BigDecimal parkingEndDateDd = new BigDecimal(parkingEndDate.substring(6, 8));
 			BigDecimal parkingStartDateDd = new BigDecimal(parkingStartDate.substring(6, 8));
 			BigDecimal shoriNengetsuMatsujitsuDd = new BigDecimal(shoriNengetsuMatsujitsu.substring(6, 8));
@@ -3303,7 +3304,7 @@ public class Skf3050Sc002SharedService {
 
 			} else {
 				if (CodeConstant.MUTUAL_USE_KBN_AVAILABLE.equals(sougoRiyouKbn)) {
-					if (!kariukeCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(kariukeCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_1;
@@ -3311,7 +3312,7 @@ public class Skf3050Sc002SharedService {
 					}
 
 				} else {
-					if (!manageCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(manageCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_1;
@@ -3338,7 +3339,7 @@ public class Skf3050Sc002SharedService {
 
 			} else {
 				if (CodeConstant.MUTUAL_USE_KBN_AVAILABLE.equals(sougoRiyouKbn)) {
-					if (!kariukeCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(kariukeCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_4;
@@ -3346,7 +3347,7 @@ public class Skf3050Sc002SharedService {
 					}
 
 				} else {
-					if (!manageCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(manageCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_4;

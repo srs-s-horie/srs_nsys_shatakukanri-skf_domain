@@ -68,7 +68,6 @@ public class Skf3090Sc003RegisteService extends BaseServiceAbstract<Skf3090Sc003
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3090Sc003RegisteDto index(Skf3090Sc003RegisteDto registDto) throws Exception {
@@ -329,7 +328,7 @@ public class Skf3090Sc003RegisteService extends BaseServiceAbstract<Skf3090Sc003
 				// 現行は空文字許可している
 				businessAreaName = hdnBusinessAreaName;
 			}else{
-				if(businessAreaName.equals(hdnBusinessAreaName) && Objects.equals(agencyCd, hdnAgencyCd)){
+				if(Objects.equals(businessAreaName, hdnBusinessAreaName) && Objects.equals(agencyCd, hdnAgencyCd)){
 					// 変更がないレコードがある場合、登録対象外です。
 					continue;
 				}

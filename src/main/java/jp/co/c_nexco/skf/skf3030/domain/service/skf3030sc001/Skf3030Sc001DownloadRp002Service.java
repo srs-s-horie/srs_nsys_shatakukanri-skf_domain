@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.apache.poi_v3_9.ss.usermodel.IndexedColors;
@@ -34,7 +35,6 @@ import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc001.Skf3030Sc001DownloadRp002Dto;
 
@@ -48,8 +48,6 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
@@ -232,7 +230,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 	private List<Skf3030Rp002GetShatakuDaichoInfoExp> getShatakuKanriDaichoData(String yearMonth, String sysNengetsu) {
 
 		boolean akishatakSearchFlg = false;
-		if (!yearMonth.equals(sysNengetsu)) {
+		if (!Objects.equals(yearMonth, sysNengetsu)) {
 			akishatakSearchFlg = true;
 		}
 
@@ -810,7 +808,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 			//社宅使用料会計処理_会社間送金_有無（○×）
 			String shatakKaishakanSokin = "";
-			if (shatakKojyoCompany.equals(shatakShunyuCompany)) {
+			if (Objects.equals(shatakKojyoCompany, shatakShunyuCompany)) {
 				shatakKaishakanSokin = Skf3030Sc001SharedService.KAISHAKAN_SOKIN_NASI;
 
 			} else {
@@ -848,7 +846,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			}
 
 			String kyoekihiKaishakanSokin = "";
-			if (kyoekiUkeireCompany.equals(kyoekiKojyoCompany)) {
+			if (Objects.equals(kyoekiUkeireCompany, kyoekiKojyoCompany)) {
 				kyoekihiKaishakanSokin = Skf3030Sc001SharedService.KAISHAKAN_SOKIN_NASI;
 
 			} else {
@@ -1010,7 +1008,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			Map<String, Object> fontParam = new HashMap<>();
 
 			String col = shatakKanriInfoArry[i].col;
-			if (!Rp002Info.FIRST_DAY.col.equals(col) && !Rp002Info.LAST_DAY.col.equals(col)) {
+			if (!Objects.equals(Rp002Info.FIRST_DAY.col, col) && !Objects.equals(Rp002Info.LAST_DAY.col, col)) {
 				fontParam.put(Skf3030Sc001SharedService.FONT_NAME_KEY, shatakKanriInfoArry[i].font);
 				fontParam.put(Skf3030Sc001SharedService.FONT_COLOR_KEY, IndexedColors.BLACK.getIndex());
 				fontParam.put(Skf3030Sc001SharedService.FONT_SIZE_KEY, Short.parseShort(shatakKanriInfoArry[i].size));
@@ -1043,7 +1041,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 		if (!NfwStringUtils.isEmpty(data.getNyukyoDate()) && NfwStringUtils.isEmpty(data.getTaikyoDate())) {
 			String nyukyoNengetsu = data.getNyukyoDate().substring(0, 6);
 
-			if (sysNengetsu.equals(nyukyoNengetsu)) {
+			if (Objects.equals(sysNengetsu, nyukyoNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.NYUKYO_DATE.col, targetIdx,
 						IndexedColors.RED.getIndex(), IndexedColors.YELLOW.getIndex());
 
@@ -1057,7 +1055,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 		if (!NfwStringUtils.isEmpty(data.getParkingStartDate()) && NfwStringUtils.isEmpty(data.getParkingEndDate())) {
 			String parkingStartNengetsu = data.getParkingStartDate().substring(0, 6);
 
-			if (sysNengetsu.equals(parkingStartNengetsu)) {
+			if (Objects.equals(sysNengetsu, parkingStartNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.PARKING_STARTDATE.col, targetIdx,
 						IndexedColors.RED.getIndex(), IndexedColors.YELLOW.getIndex());
 
@@ -1071,7 +1069,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 		if (!NfwStringUtils.isEmpty(data.getTaikyoDate())) {
 			String taikyoNengetsu = data.getTaikyoDate().substring(0, 6);
 
-			if (sysNengetsu.equals(taikyoNengetsu)) {
+			if (Objects.equals(sysNengetsu, taikyoNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.TAIKYO_DATE.col, targetIdx,
 						IndexedColors.RED.getIndex(), IndexedColors.LIME.getIndex());
 
@@ -1085,7 +1083,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 		if (!NfwStringUtils.isEmpty(data.getParkingEndDate())) {
 			String parkingEndNengetsu = data.getParkingEndDate().substring(0, 6);
 
-			if (sysNengetsu.equals(parkingEndNengetsu)) {
+			if (Objects.equals(sysNengetsu, parkingEndNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.PARKING_ENDDATE.col, targetIdx,
 						IndexedColors.RED.getIndex(), IndexedColors.LIME.getIndex());
 
@@ -1124,7 +1122,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			cellParam.put(Skf3030Sc001SharedService.FONT_BG_COLOR_KEY, bgColor);
 			cellParams.put(cellChgList.get(i) + targetIdx, cellParam);
 
-			if (fontColorChgCol.equals((cellChgList.get(i)))) {
+			if (Objects.equals(fontColorChgCol, cellChgList.get(i))) {
 				Map<String, Object> fontParam = (Map<String, Object>) cellParam
 						.get(Skf3030Sc001SharedService.FONT_PARAM_KEY);
 				fontParam.put(Skf3030Sc001SharedService.FONT_COLOR_KEY, fontColor);
@@ -1154,15 +1152,15 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 		for (int i = 0; i < shatakKanriInfoArry.length; i++) {
 			String col = shatakKanriInfoArry[i].col;
 
-			if (!Rp002Info.FIRST_DAY.col.equals(col) && !Rp002Info.LAST_DAY.col.equals(col)
-					&& !Rp002Info.SENTAKUKI.col.equals(col) && !Rp002Info.REIZOKO.col.equals(col)
-					&& !Rp002Info.DENSHIRENJI.col.equals(col) && !Rp002Info.SOJIKI.col.equals(col)
-					&& !Rp002Info.SUIHANKI.col.equals(col) && !Rp002Info.TV.col.equals(col)
-					&& !Rp002Info.TV_STAND.col.equals(col) && !Rp002Info.ZATAKU.col.equals(col)
-					&& !Rp002Info.CABINET.col.equals(col) && !Rp002Info.AIRCON.col.equals(col)
-					&& !Rp002Info.KATEN.col.equals(col) && !Rp002Info.SHOMEI.col.equals(col)
-					&& !Rp002Info.GAS.col.equals(col) && !Rp002Info.BIHIN_TAIYO_DATE.col.equals(col)
-					&& !Rp002Info.BIHIN_HENKYAKU_DATE.col.equals(col)) {
+			if (!Objects.equals(Rp002Info.FIRST_DAY.col, col) && !Objects.equals(Rp002Info.LAST_DAY.col, col)
+					&& !Objects.equals(Rp002Info.SENTAKUKI.col, col) && !Objects.equals(Rp002Info.REIZOKO.col, col)
+					&& !Objects.equals(Rp002Info.DENSHIRENJI.col, col) && !Objects.equals(Rp002Info.SOJIKI.col, col)
+					&& !Objects.equals(Rp002Info.SUIHANKI.col, col) && !Objects.equals(Rp002Info.TV.col, col)
+					&& !Objects.equals(Rp002Info.TV_STAND.col, col) && !Objects.equals(Rp002Info.ZATAKU.col, col)
+					&& !Objects.equals(Rp002Info.CABINET.col, col) && !Objects.equals(Rp002Info.AIRCON.col, col)
+					&& !Objects.equals(Rp002Info.KATEN.col, col) && !Objects.equals(Rp002Info.SHOMEI.col, col)
+					&& !Objects.equals(Rp002Info.GAS.col, col) && !Objects.equals(Rp002Info.BIHIN_TAIYO_DATE.col, col)
+					&& !Objects.equals(Rp002Info.BIHIN_HENKYAKU_DATE.col, col)) {
 
 				rtnArry.add(shatakKanriInfoArry[i].col);
 			}

@@ -93,7 +93,6 @@ public class Skf3090Sc002RegisteService extends BaseServiceAbstract<Skf3090Sc002
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3090Sc002RegisteDto index(Skf3090Sc002RegisteDto registDto) throws Exception {

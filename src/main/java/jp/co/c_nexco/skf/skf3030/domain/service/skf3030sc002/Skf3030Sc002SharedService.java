@@ -1870,7 +1870,7 @@ public class Skf3030Sc002SharedService {
 	 */
 	public void setBihinListPageLoadComplete(Skf3030Sc002CommonDto comDto){
 		//提示備品データを取得
-		if(comDto.getBihinItiranFlg().equals(0) && comDto.getBihinItiranReloadFlg().equals(false)){
+		if(Objects.equals(comDto.getBihinItiranFlg(), 0) && Objects.equals(comDto.getBihinItiranReloadFlg(), false)){
 			
 			if(Skf3030Sc002CommonDto.NO_SHATAKU_KANRI_ID.equals(comDto.getHdnShatakuKanriId())){
 				//「社宅管理台帳ID」が”0”の場合
@@ -2319,7 +2319,7 @@ public class Skf3030Sc002SharedService {
 		//区画１と区画２一致チェック
 		if(!SkfCheckUtils.isNullOrEmpty(comDto.getSc006KukakuNoOne()) && 
 				!SkfCheckUtils.isNullOrEmpty(comDto.getSc006KukakuNoTwo())){
-			if(comDto.getSc006KukakuNoOne().equals(comDto.getSc006KukakuNoTwo())){
+			if(Objects.equals(comDto.getSc006KukakuNoOne(), comDto.getSc006KukakuNoTwo())){
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_3047);
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
 				errMsg.append("整合性チェックエラー");

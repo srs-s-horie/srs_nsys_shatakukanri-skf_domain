@@ -73,7 +73,6 @@ import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfPageBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030Sc002common.Skf3030Sc002CommonDto;
-import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002InitDto;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002RegistDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 

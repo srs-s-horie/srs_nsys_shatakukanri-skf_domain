@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,6 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3090Sc003AddRegistDto index(Skf3090Sc003AddRegistDto addRegistDto) throws Exception {
@@ -316,7 +316,7 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 			errorListAddTable.set(3, true);
 		}else{
 			if(NfwStringUtils.isEmpty(addRegistDto.getHdnAddAgencyCd())
-					&& !addRegistDto.getHdnAddCompanyCd().equals(GAIBU_COMPANY_CD)){
+					&& !Objects.equals(addRegistDto.getHdnAddCompanyCd(), GAIBU_COMPANY_CD)){
 				
 				isCheckOk = false;
 				ServiceHelper.addErrorResultMessage(addRegistDto, null, MessageIdConstant.E_SKF_1054, "管理機関");

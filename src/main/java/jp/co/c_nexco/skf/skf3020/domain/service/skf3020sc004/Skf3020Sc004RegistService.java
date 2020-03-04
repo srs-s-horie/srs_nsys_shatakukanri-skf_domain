@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -159,7 +161,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 				String taikyoStr = taikyoChkValList.get(indexTaikyo);
 				String henkouStr = henkouChkValList.get(indexHenkou);
 				
-				if((nyukyoStr.equals(taikyoStr)) && (taikyoStr.equals(henkouStr)) && (nyukyoStr.equals(henkouStr))){
+				if((Objects.equals(nyukyoStr, taikyoStr)) && (Objects.equals(taikyoStr, henkouStr)) && (Objects.equals(nyukyoStr, henkouStr))){
 					chkFlg = true;
 					break;
 				}
@@ -269,9 +271,9 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 			
 			Map<String, Object> listTableData = dto.getListTableData().get(rowIndex);
 			
-			if(!nyukyoFlgStr.equals(listTableData.get("col17").toString()) ||
-				!taikyoFlgStr.equals(listTableData.get("col18").toString()) ||
-				!henkouFlgStr.equals(listTableData.get("col19").toString())){
+			if(!Objects.equals(nyukyoFlgStr, listTableData.get("col17")) ||
+				!Objects.equals(taikyoFlgStr, listTableData.get("col18")) ||
+				!Objects.equals(henkouFlgStr, listTableData.get("col19"))){
 				
 				// Mapからキーをもとに値をとる
 				// - 社員番号
@@ -358,7 +360,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 
 				// 入退居予定データ更新
 				// - 入居("1")
-				if(nyukyoFlgStr.equals("1")){
+				if(Objects.equals(nyukyoFlgStr, "1")){
 					int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "1", takingDateStr);
 					if(resultNyutaikyo > 0){
 						updateCount += resultNyutaikyo;
@@ -367,7 +369,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 					}
 				}
 				// - 退居("2")
-				if(taikyoFlgStr.equals("1")){
+				if(Objects.equals(taikyoFlgStr, "1")){
 					int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "2", takingDateStr);
 					if(resultNyutaikyo > 0){
 						updateCount += resultNyutaikyo;
@@ -376,7 +378,7 @@ public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004R
 					}
 				}
 				// - 変更("3")
-				if(henkouFlgStr.equals("1")){
+				if(Objects.equals(henkouFlgStr, "1")){
 					int resultNyutaikyo = updateNyutaikyoKbn(shaiNoStr, shaiNameStr, "3", takingDateStr);
 					if(resultNyutaikyo > 0){
 						updateCount += resultNyutaikyo;

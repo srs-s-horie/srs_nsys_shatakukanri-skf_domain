@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.joda.time.DateTime;
@@ -165,7 +166,6 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 	 * @throws Exception
 	 *             例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3040Sc001DownloadDto index(Skf3040Sc001DownloadDto downloadDto) throws Exception {
@@ -423,7 +423,7 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 					
 					// 更新対象カラムへ現在日時取得と設定
 			        String sysDate = getNowDateStrFormat("yyyyMMdd");
-					if(temp.get("key1").toString().equals(HANNYU)){
+					if(Objects.equals(temp.get("key1"), HANNYU)){
 						updateParam.setHannyuCarryinInstruction(sysDate);
 						updateParam.setHansyutuCarryinInstruction(strNullCheck(bihinData.getHansyutuCarryinInstruction()));
 					}else{
@@ -964,10 +964,10 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 	private String getBihinValueHannyu(String applKbn, String lentStatusKbn){
 	
 		String retValue = null;
-		if(NfwStringUtils.isNotEmpty(applKbn) && applKbn.equals(CodeConstant.BIHIN_SHINSEI_KBN_ARI)){
+		if(NfwStringUtils.isNotEmpty(applKbn) && Objects.equals(applKbn, CodeConstant.BIHIN_SHINSEI_KBN_ARI)){
 			retValue = BIHIN_OUTPUT_VALUE;
 		}
-		if(NfwStringUtils.isNotEmpty(lentStatusKbn) && lentStatusKbn.equals(CodeConstant.BIHIN_STATE_RENTAL)){
+		if(NfwStringUtils.isNotEmpty(lentStatusKbn) && Objects.equals(lentStatusKbn, CodeConstant.BIHIN_STATE_RENTAL)){
 			retValue = BIHIN_OUTPUT_VALUE;
 		}
 		return retValue;
@@ -980,7 +980,7 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 	private String getBihinValueHenkan(String returnKbn){
 	
 		String retValue = null;
-		if(NfwStringUtils.isNotEmpty(returnKbn) && returnKbn.equals(CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU)){
+		if(NfwStringUtils.isNotEmpty(returnKbn) && Objects.equals(returnKbn, CodeConstant.BIHIN_HENKYAKU_KBN_RENTAL_HENKYAKU)){
 			retValue = BIHIN_OUTPUT_VALUE;
 		}
 		return retValue;
@@ -993,7 +993,7 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 	private String getBihinValueShitadori(String returnKbn){
 	
 		String retValue = null;
-		if(NfwStringUtils.isNotEmpty(returnKbn) && returnKbn.equals(CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU)){
+		if(NfwStringUtils.isNotEmpty(returnKbn) && Objects.equals(returnKbn, CodeConstant.BIHIN_HENKYAKU_KBN_KAISHA_HOYU_HENKYAKU)){
 			retValue = BIHIN_OUTPUT_VALUE;
 		}
 		return retValue;
@@ -1025,8 +1025,8 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 			// 更新日時
 			tmpUpdateMap.put("key3", updateTime);
 			// 更新対象テーブル
-			if(gyoumu.equals(HANNYU)){
-				if(tableFlg.equals(UPDATE_SHATAKU_BIHIN)){
+			if(Objects.equals(gyoumu, HANNYU)){
+				if(Objects.equals(tableFlg, UPDATE_SHATAKU_BIHIN)){
 					tmpUpdateMap.put("key4", UPDATE_SHATAKU_BIHIN);
 				}else{
 					tmpUpdateMap.put("key4", UPDATE_TEIJI_DATA);
@@ -1046,7 +1046,6 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 	 * @return 出力用Excelワークシート
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	private SheetDataBean createWorkSheetRentalBihin(List<Map<String, Object>> setExcelDataList){
 		
 		// Excelワークシート

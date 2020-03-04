@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,7 +127,7 @@ public class Skf3020Sc005SharedService {
 			String chkShainNoHenkoKbn = ""; // 仮社員番号設定(社員番号の変更の要否)
 
 			if (NfwStringUtils.isEmpty(shainNoHenkoKbn)
-					|| shainNoHenkoKbn.equals(Skf302010CommonSharedService.MI_SAKUSEI)) {
+					|| Objects.equals(shainNoHenkoKbn, Skf302010CommonSharedService.MI_SAKUSEI)) {
 				chkShainNoHenkoKbn = "";
 			} else {
 				chkShainNoHenkoKbn = Skf302010CommonSharedService.CHECKED;

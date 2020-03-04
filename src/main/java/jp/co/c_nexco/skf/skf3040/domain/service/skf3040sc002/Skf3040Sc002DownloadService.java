@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.joda.time.DateTime;
@@ -143,7 +144,6 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 	 * @throws Exception
 	 *             例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3040Sc002DownloadDto index(Skf3040Sc002DownloadDto downloadDto) throws Exception {
@@ -406,7 +406,7 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 				
 				// 更新対象カラムへ現在日時取得と設定
 		        String sysDate = getNowDateStrFormat("yyyyMMdd");
-				if(temp.get("key1").toString().equals(HANNYU)){
+				if(Objects.equals(temp.get("key1"), HANNYU)){
 					updateParam.setHannyuChecklistDate(sysDate);
 					updateParam.setHansyutuChecklistDate(strNullCheck(bihinData.getHansyutuChecklistDate()));
 				}else{
@@ -614,7 +614,6 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 	 * @return 出力用Excelワークシート
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	private SheetDataBean createWorkSheetRentalBihin(List<Map<String, Object>> setExcelDataList){
 		
 		// Excelワークシート

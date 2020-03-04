@@ -4,11 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MAgency;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshiki;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MAgencyRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MSoshikiRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -40,9 +41,6 @@ public class Skf3090Sc007RegistService extends BaseServiceAbstract<Skf3090Sc007R
 
 	@Autowired
 	private Skf1010MSoshikiRepository skf1010MSoshikiRepository;
-
-	@Autowired
-	private Skf1010MAgencyRepository skf1010MAgencyRepository;
 
 	@Autowired
 	private Skf3090Sc007SharedService skf3090Sc007SharedService;
@@ -84,7 +82,7 @@ public class Skf3090Sc007RegistService extends BaseServiceAbstract<Skf3090Sc007R
 			return registDto;
 		}
 
-		if (registDto.getUpdateFlag().equals(Skf309040CommonSharedService.UPDATE_FLAG_NEW)) {
+		if (Objects.equals(registDto.getUpdateFlag(), Skf309040CommonSharedService.UPDATE_FLAG_NEW)) {
 			/** 登録処理 */
 			// 登録候補組織の存在のチェック
 			boolean existFlag = isExistSoshiki(registDto.getRegistCompanyCd(), registDto.getRegistAgencyCd(),
@@ -348,10 +346,7 @@ public class Skf3090Sc007RegistService extends BaseServiceAbstract<Skf3090Sc007R
 		setValue.setRegistFlg("1");
 
 		/** 登録 */
-		int registCount = 0;
-		if (true) {
-			registCount = skf1010MSoshikiRepository.insertSelective(setValue);
-		}
+		skf1010MSoshikiRepository.insertSelective(setValue);
 
 	}
 }

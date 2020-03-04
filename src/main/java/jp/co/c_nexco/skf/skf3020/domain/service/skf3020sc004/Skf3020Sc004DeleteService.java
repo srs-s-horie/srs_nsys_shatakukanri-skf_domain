@@ -49,7 +49,6 @@ public class Skf3020Sc004DeleteService extends BaseServiceAbstract<Skf3020Sc004D
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3020Sc004DeleteDto index(Skf3020Sc004DeleteDto deleteDto) throws Exception {

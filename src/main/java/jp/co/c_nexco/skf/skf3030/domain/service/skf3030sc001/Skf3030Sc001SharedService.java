@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.poi_v3_8.ss.usermodel.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -672,7 +673,7 @@ public class Skf3030Sc001SharedService {
 		for (int i = 0; i < dropDownList.size(); i++) {
 			Map<String, Object> targetMap = dropDownList.get(i);
 
-			if (val.equals(targetMap.get("value"))) {
+			if (Objects.equals(val, targetMap.get("value"))) {
 				rtn = (String) targetMap.get("label");
 				break;
 			}
@@ -826,7 +827,7 @@ public class Skf3030Sc001SharedService {
 		for (int i = 0; i < dropDownList.size(); i++) {
 			Map<String, Object> targetMap = dropDownList.get(i);
 
-			if (val.equals(targetMap.get("value"))) {
+			if (Objects.equals(val, targetMap.get("value"))) {
 				targetMap.put("selected", true);
 				dropDownList.set(i, targetMap);
 

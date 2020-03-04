@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -427,7 +428,7 @@ public class Skf3050Bt004SharedTask {
 		shoriNengetsuTsuki = shoriNengetsuTsuki.substring(4, 6);
 
 		//経年対象月日の月＝当月処理年月翌日の月の場合のみ「経年調整処理」を行う
-		if (keinenTaishouTsuki.equals(shoriNengetsuTsuki)) {
+		if (Objects.equals(keinenTaishouTsuki, shoriNengetsuTsuki)) {
 			//▼経年調整処理（今回の経年調整年月日を算出）▼
 			String keinenChouseiNengappi = paramShoriNengetsu.substring(0, 4) + xmlKeinenTaishouTsukihi;
 
@@ -2220,7 +2221,7 @@ public class Skf3050Bt004SharedTask {
 
 		BigDecimal rtnVal = BigDecimal.ZERO;
 
-		if (nyuukyoDate.equals(shoriNengetsuYokugetsuShonichi) && shoriNengetsuYokugetsuMatsujitsu.equals(taikyoDate)) {
+		if (Objects.equals(nyuukyoDate, shoriNengetsuYokugetsuShonichi) && Objects.equals(shoriNengetsuYokugetsuMatsujitsu, taikyoDate)) {
 			rtnVal = shatakuRiyouryouGetsugaku;
 
 		} else {
@@ -2235,8 +2236,8 @@ public class Skf3050Bt004SharedTask {
 					|| taikyoDateYymm.compareTo(decimalShoriNengetsu) <= 0) {
 				rtnVal = BigDecimal.ZERO;
 
-			} else if (!nyuukyoDate.equals(shoriNengetsuYokugetsuShonichi)
-					|| !taikyoDate.equals(shoriNengetsuYokugetsuMatsujitsu)) {
+			} else if (!Objects.equals(nyuukyoDate, shoriNengetsuYokugetsuShonichi)
+					|| !Objects.equals(taikyoDate, shoriNengetsuYokugetsuMatsujitsu)) {
 				BigDecimal taikyoDateDd = new BigDecimal(taikyoDate.substring(6, 8));
 				BigDecimal nyuukyoDateDd = new BigDecimal(nyuukyoDate.substring(6, 8));
 
@@ -2344,8 +2345,8 @@ public class Skf3050Bt004SharedTask {
 
 		BigDecimal rtnVal = BigDecimal.ZERO;
 
-		if (kaishiDate.equals(shoriNengetsuYokugetsuShonichi)
-				&& shoriNengetsuYokugetsuMatsujitsu.equals(henkyakuDate)) {
+		if (Objects.equals(kaishiDate, shoriNengetsuYokugetsuShonichi)
+				&& Objects.equals(shoriNengetsuYokugetsuMatsujitsu, henkyakuDate)) {
 			rtnVal = chushajouShiyouryouGetsugaku;
 
 		} else {
@@ -2360,8 +2361,8 @@ public class Skf3050Bt004SharedTask {
 					|| henkyakuDateYymm.compareTo(decimalShoriNengetsu) <= 0) {
 				rtnVal = BigDecimal.ZERO;
 
-			} else if (!kaishiDate.equals(shoriNengetsuYokugetsuShonichi)
-					|| !henkyakuDate.equals(shoriNengetsuYokugetsuMatsujitsu)) {
+			} else if (!Objects.equals(kaishiDate, shoriNengetsuYokugetsuShonichi)
+					|| !Objects.equals(henkyakuDate, shoriNengetsuYokugetsuMatsujitsu)) {
 				BigDecimal henkyakuDateDd = new BigDecimal(henkyakuDate.substring(6, 8));
 				BigDecimal kaishiDateDd = new BigDecimal(kaishiDate.substring(6, 8));
 

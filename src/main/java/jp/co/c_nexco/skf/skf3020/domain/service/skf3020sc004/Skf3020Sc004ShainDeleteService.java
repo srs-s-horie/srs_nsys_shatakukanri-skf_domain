@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,7 +53,6 @@ public class Skf3020Sc004ShainDeleteService extends BaseServiceAbstract<Skf3020S
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3020Sc004ShainDeleteDto index(Skf3020Sc004ShainDeleteDto shainDelete) throws Exception {
@@ -169,14 +169,14 @@ public class Skf3020Sc004ShainDeleteService extends BaseServiceAbstract<Skf3020S
 			// 入退居予定作成区分が"1"だったら次のループへ
 			String nyutaikyoYoteiKbnStr = listTableData.get("col12").toString();
 			if(StringUtils.isEmpty(nyutaikyoYoteiKbnStr) == false){
-				if(nyutaikyoYoteiKbnStr.equals("作成済")){
+				if(Objects.equals(nyutaikyoYoteiKbnStr, "作成済")){
 					continue;
 				}
 			}
 			
 			// 仮社員番号かチェック
 			String kariShaiNoStr = shaiNoStr.substring(0, 1);
-			if(kariShaiNoStr.equals("K")){
+			if(Objects.equals(kariShaiNoStr, "K")){
 				// 排他チェック
 				Skf3020TTenninshaChoshoData tenninshaInfo = skf3020TTenninshaChoshoDataRepository.selectByPrimaryKey(shaiNoStr);
 				if(tenninshaInfo == null){

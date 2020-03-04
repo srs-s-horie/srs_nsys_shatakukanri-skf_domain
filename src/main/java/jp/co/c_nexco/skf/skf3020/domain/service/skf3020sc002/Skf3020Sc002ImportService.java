@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,8 +47,6 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 	@Autowired
 	private Skf3020Sc002SharedService skf3020Sc002SharedService;
 	@Autowired
-	private SkfAttachedFileUtils skfAttachedFileUtils;
-	@Autowired
 	private ApplicationScopeBean bean;
 
 	/** メッセージ */
@@ -64,8 +63,6 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 	private final static String ERR_TARGET_ITEM = "fuTenninsha";
 	/** 取込ファイルの長さ（上限） */
 	private final static int TORIKOMI_FILE_LENGTH = 254;
-	/** 取込ファイルのシート数（上限） */
-	private final static int SHEET_COUNT = 1;
 	/** 社員氏名の検索回数 */
 	private final static int NAME_SERCH_CNT = 10;
 	/** 取込データ件数の上限 */
@@ -188,7 +185,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 		for(int i=0; i < sheetDataBeanList.size(); i++){
 			sheetDataBean = sheetDataBeanList.get(i);
 			//シート名が読込対象と一致するか
-			if(readSheetName.equals(sheetDataBean.getSheetName())){
+			if(Objects.equals(readSheetName, sheetDataBean.getSheetName())){
 				//一致でループ抜け
 				break;
 			}
@@ -241,14 +238,14 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 				for (int j = 0; j < existShainNoList.size(); j++) {
 					String listShainNo = existShainNoList.get(j);
 					// 社員番号重複チェック
-					if (shainNo.equals(listShainNo)) {
+					if (Objects.equals(shainNo, listShainNo)) {
 						exsistNoFlg = true;
 						duplicateShainNo = true;
 						
 						boolean errorFlg = true;
 						for (int k = 0; k < existShainNoErrorList.size(); k++) {
 							// エラー社員番号重複チェック
-							if (shainNo.equals(existShainNoErrorList.get(k))) {
+							if (Objects.equals(shainNo, existShainNoErrorList.get(k))) {
 								//エラー用リストに存在する
 								errorFlg = false;
 								break;
@@ -274,7 +271,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 					exsistNoFlg = true;
 					for (int j = 0; j < nonexistShainNoList.size(); j++) {
 						// 社員番号重複チェック
-						if (shainNo.equals(nonexistShainNoList.get(j))) {
+						if (Objects.equals(shainNo, nonexistShainNoList.get(j))) {
 							exsistNoFlg = false;
 							break;
 						}
@@ -350,7 +347,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 
 		MultipartFile tenninshaChoshoFile = importFile.getFuTenninsha(); // 取り込んだ転任者調書
 		String fileName = tenninshaChoshoFile.getOriginalFilename(); // ファイル名
-		String extension = skfAttachedFileUtils.getExtension(fileName); // 拡張子
+		String extension = SkfAttachedFileUtils.getExtension(fileName); // 拡張子
 		// 拡張子チェック
 		if (!CodeConstant.EXTENSION_XLSX.equals(extension)) {
 			ServiceHelper.addErrorResultMessage(importFile, new String[] { ERR_TARGET_ITEM },

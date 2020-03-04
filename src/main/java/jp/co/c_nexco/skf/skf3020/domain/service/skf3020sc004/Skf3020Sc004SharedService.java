@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,7 +212,7 @@ public class Skf3020Sc004SharedService {
 			// 社員番号
             //社員番号変更フラグが｢1｣の場合、社員番号の末尾に｢*｣を付与する。
 			String shaiNO = tmpData.getShainNo();
-			if(tmpData.getShainNoChangeFlg() != null && tmpData.getShainNoChangeFlg().equals("1")){
+			if(tmpData.getShainNoChangeFlg() != null && Objects.equals(tmpData.getShainNoChangeFlg(), "1")){
 				shaiNO = shaiNO + CodeConstant.ASTERISK;
 				// 変更フラグはチェックが付いた状態とする
 				tmpData.setHenkouFlg("1");
@@ -219,7 +220,7 @@ public class Skf3020Sc004SharedService {
 			tmpMap.put("col4", shaiNO);			
 			
             // 現社宅区分が無(0)、入退居予定作成区分が未作成(0)の場合
-			if(tmpData.getNowShatakuKbn().equals("0")  && tmpData.getNyutaikyoYoteiKbn().equals("0")){
+			if(Objects.equals(tmpData.getNowShatakuKbn(), "0")  && Objects.equals(tmpData.getNyutaikyoYoteiKbn(), "0")){
 	            //入居ﾁｪｯｸﾎﾞｯｸｽ活性
 				tmpMap.put("col1", nyukyoCheckBoxStr(tmpData.getNyukyoFlg(), false, i));
         		//退居ﾁｪｯｸﾎﾞｯｸｽ非活性
@@ -232,9 +233,9 @@ public class Skf3020Sc004SharedService {
 				tmpMap.put("col15", "");			
 				
                 //現社宅区分が無(0)、入退居予定作成区分が作成済(1)の場合
-			}else if(tmpData.getNowShatakuKbn().equals("0") && tmpData.getNyutaikyoYoteiKbn().equals("1")){
+			}else if(Objects.equals(tmpData.getNowShatakuKbn(), "0") && Objects.equals(tmpData.getNyutaikyoYoteiKbn(), "1")){
                 //入居フラグ=ON(1)の場合
-				if(tmpData.getNyukyoFlg().equals("1")){
+				if(Objects.equals(tmpData.getNyukyoFlg(), "1")){
                     // 入居ﾁｪｯｸﾎﾞｯｸｽ非活性
 					tmpMap.put("col1", nyukyoCheckBoxStr(tmpData.getNyukyoFlg(), true, i));
 				}else{
@@ -251,7 +252,7 @@ public class Skf3020Sc004SharedService {
 				//　-----
 
                 //現社宅区分が有(1、2)、入退居予定作成区分が未作成(0)の場合
-			}else if((tmpData.getNowShatakuKbn().equals("1") || tmpData.getNowShatakuKbn().equals("2")) && tmpData.getNyutaikyoYoteiKbn().equals("0")){
+			}else if((Objects.equals(tmpData.getNowShatakuKbn(), "1") || Objects.equals(tmpData.getNowShatakuKbn(), "2")) && Objects.equals(tmpData.getNyutaikyoYoteiKbn(), "0")){
 	            //入居ﾁｪｯｸﾎﾞｯｸｽ活性
 				tmpMap.put("col1", nyukyoCheckBoxStr(tmpData.getNyukyoFlg(), false, i));
         		//退居ﾁｪｯｸﾎﾞｯｸｽ活性
@@ -264,9 +265,9 @@ public class Skf3020Sc004SharedService {
 				tmpMap.put("col15", "");			
 				
                 //現社宅区分が有(1、2)、入退居予定作成区分が作成済(1)の場合
-			}else if((tmpData.getNowShatakuKbn().equals("1") || tmpData.getNowShatakuKbn().equals("2")) && tmpData.getNyutaikyoYoteiKbn().equals("1")){
+			}else if((Objects.equals(tmpData.getNowShatakuKbn(), "1") || Objects.equals(tmpData.getNowShatakuKbn(), "2")) && Objects.equals(tmpData.getNyutaikyoYoteiKbn(), "1")){
                 //入居フラグ=ON(1)の場合
-				if(tmpData.getNyukyoFlg().equals("1")){
+				if(Objects.equals(tmpData.getNyukyoFlg(), "1")){
                     // 入居ﾁｪｯｸﾎﾞｯｸｽ非活性
 					tmpMap.put("col1", nyukyoCheckBoxStr(tmpData.getNyukyoFlg(), true, i));
 				}else{
@@ -274,7 +275,7 @@ public class Skf3020Sc004SharedService {
 					tmpMap.put("col1", nyukyoCheckBoxStr(tmpData.getNyukyoFlg(), false, i));
 				}
                 //退居フラグ=ON(1)の場合
-				if(tmpData.getTaikyoFlg().equals("1")){
+				if(Objects.equals(tmpData.getTaikyoFlg(), "1")){
                     // 退居ﾁｪｯｸﾎﾞｯｸｽ非活性
 					tmpMap.put("col2", taikyoCheckBoxStr(tmpData.getTaikyoFlg(), true, i));
 				}else{
@@ -283,7 +284,7 @@ public class Skf3020Sc004SharedService {
 				}
 				
                 //変更フラグ=ON(1)の場合
-				if(tmpData.getHenkouFlg().equals("1")){
+				if(Objects.equals(tmpData.getHenkouFlg(), "1")){
                     // 変更ﾁｪｯｸﾎﾞｯｸｽ非活性
 					tmpMap.put("col3", henkouCheckBoxStr(tmpData.getHenkouFlg(), true, i));
 				}else{
@@ -318,7 +319,7 @@ public class Skf3020Sc004SharedService {
 	 */
 	private String nyukyoCheckBoxStr(String nyukyoFlg, Boolean enabled, int i){
 		String checkBoxStr;
-		if(nyukyoFlg.equals("1")){
+		if(Objects.equals(nyukyoFlg, "1")){
 			// チェックあり
 			if(enabled == true){
 				// 無効
@@ -350,7 +351,7 @@ public class Skf3020Sc004SharedService {
 	private String taikyoCheckBoxStr(String taikyoFlg, Boolean enabled, int i){
 		
 		String checkBoxStr;
-		if(taikyoFlg.equals("1")){
+		if(Objects.equals(taikyoFlg, "1")){
 			// チェックあり
 			if(enabled == true){
 				// 無効
@@ -382,7 +383,7 @@ public class Skf3020Sc004SharedService {
 	private String henkouCheckBoxStr(String henkouFlg, Boolean enabled, int i){
 		
 		String checkBoxStr;
-		if(henkouFlg.equals("1")){
+		if(Objects.equals(henkouFlg, "1")){
 			// チェックあり
 			if(enabled == true){
 				// 無効

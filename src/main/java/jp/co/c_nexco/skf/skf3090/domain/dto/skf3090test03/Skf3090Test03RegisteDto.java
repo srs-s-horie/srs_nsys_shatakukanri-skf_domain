@@ -3,9 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3090.domain.dto.skf3090test03;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import lombok.EqualsAndHashCode;
 

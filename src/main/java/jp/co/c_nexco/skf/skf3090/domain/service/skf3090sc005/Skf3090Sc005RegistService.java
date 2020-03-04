@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
@@ -110,7 +112,7 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 			return registDto;
 		}
 
-		if (registDto.getUpdateFlag().equals(Skf309030CommonSharedService.UPDATE_FLAG_NEW)) {
+		if (Objects.equals(registDto.getUpdateFlag(), Skf309030CommonSharedService.UPDATE_FLAG_NEW)) {
 			/** 登録処理 */
 			// 登録候補社員の存在チェック
 			boolean existFlag = isExistShain(CodeConstant.C001, registDto.getShainNo());

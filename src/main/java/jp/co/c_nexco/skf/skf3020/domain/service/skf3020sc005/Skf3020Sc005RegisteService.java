@@ -5,14 +5,12 @@ package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc005;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.google.common.base.Objects;
 import com.ibm.icu.text.SimpleDateFormat;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc005.Skf3020Sc005UpdateTenninshaInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
@@ -208,7 +206,7 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 			// 変更先転任者調書データを取得
 			Skf3020TTenninshaChoshoData newTenninshaInfo = skf3020TTenninshaChoshoDataRepository
 					.selectByPrimaryKey(newShainNo);
-			if(newTenninshaInfo != null && !Objects.equal(oldShainNo, newShainNo)){
+			if(newTenninshaInfo != null && !Objects.equals(oldShainNo, newShainNo)){
 				//変更先（同一社員番号が既にある）
 				return MessageIdConstant.E_SKF_1020;
 			}
@@ -233,7 +231,7 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 							shatakuShainData.getUpdateDate());
 				}
 				
-				if (oldShainNo.equals(newShainNo)) {
+				if (Objects.equals(oldShainNo, newShainNo)) {
 					//社員番号が未変更
 					rtn = skf3020Sc005SharedService.updateShatakuShain(oldShainNo,  chkShainNoHenkoKbn);
 
@@ -252,7 +250,7 @@ public class Skf3020Sc005RegisteService extends BaseServiceAbstract<Skf3020Sc005
 
 				
 			}else {//仮社員番号の場合、
-				if (!oldShainNo.equals(newShainNo)) {
+				if (!Objects.equals(oldShainNo, newShainNo)) {
 					rtn = skf3020Sc005SharedService.updateShatakuShain(newShainNo, chkShainNoHenkoKbn);
 				}
 			}

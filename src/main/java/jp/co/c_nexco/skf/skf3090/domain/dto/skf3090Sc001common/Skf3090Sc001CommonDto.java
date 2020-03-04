@@ -4,11 +4,6 @@
 package jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc001common;
 
 import java.util.*;
-
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jp.co.c_nexco.skf.skf3090.domain.dto.common.Skf309010CommonDto;
 import lombok.EqualsAndHashCode;
 

@@ -3,25 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc001;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3060Sc001.Skf3060Sc001GetAgeKasanTargetCountExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3060Sc001.Skf3060Sc001GetAgeKasanTargetCountExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3060Sc001.Skf3060Sc001GetAgeKasanTargetDataInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuDataInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuDataInfoExpParameter;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuDataInfoExpRepository;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;

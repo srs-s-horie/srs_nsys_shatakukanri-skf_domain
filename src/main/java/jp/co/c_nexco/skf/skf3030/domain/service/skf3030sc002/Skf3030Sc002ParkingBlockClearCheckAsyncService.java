@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf3030.domain.service.skf3030sc002;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,8 +77,8 @@ public class Skf3030Sc002ParkingBlockClearCheckAsyncService
 		Skf3030Sc002GetParkingInfoExp zengetuParkingDt = null;
 		if(paringDt.size() > 0){
 			for(Skf3030Sc002GetParkingInfoExp dr : paringDt){
-				if(dr.getParkingLendNo().equals(Long.parseLong(asyncDto.getParkingLendNo())) && 
-						dr.getParkingKanriNo().equals(Long.parseLong(asyncDto.getHdnChushajoKanriNo()))){
+				if(Objects.equals(dr.getParkingLendNo(), Long.parseLong(asyncDto.getParkingLendNo())) && 
+						Objects.equals(dr.getParkingKanriNo(), Long.parseLong(asyncDto.getHdnChushajoKanriNo()))){
 					zengetuParkingDt = dr;
 					break;
 				}

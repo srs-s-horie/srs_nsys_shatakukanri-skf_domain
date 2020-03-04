@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc003;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 	private final static int MAX_LEN_255 = 255;
 	private final static int MAX_LEN_1600 = 1600;
 
-	private final static String TENNIN_CHOSHO_DATA_UPDATE_KEY = "Skf3020TTenninshaChoshoDataUpdateDate";
+//	private final static String TENNIN_CHOSHO_DATA_UPDATE_KEY = "Skf3020TTenninshaChoshoDataUpdateDate";
 
 	public BaseDto index(Skf3020Sc003ImportDto importDto) throws Exception {
 		skfOperationLogUtils.setAccessLog("転任者情報の取込開始", companyCd, importDto.getPageId());
@@ -254,11 +253,11 @@ public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003I
 		List<Map<String, Object>> infoList = importDto.getTenninshaChoshoDataTable();
 		String errResult = "";
 		
-		String firstShainNo = (String) infoList.get(0).get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
+//		String firstShainNo = (String) infoList.get(0).get(Skf3020Sc003SharedService.SHAIN_NO_COL); // 社員番号
 		
 //		// 最新更新日を取得
 //		String update_data_1 = skf3020Sc003SharedService.getTenninshaInfoForUpdate(firstShainNo);
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+//		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 //		
 //		if (!NfwStringUtils.isEmpty(update_data_1)) {
 //			Date lastUpdateData = sdFormat.parse(update_data_1);

@@ -5,46 +5,32 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc001;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc001.Skf3010Sc001GetShatakuContractInfoDataExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExpParameter;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
-import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
-import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001ContractDownLoadDto;
-import jp.co.c_nexco.skf.skf3060.domain.service.skf3060sc001.Skf3060Sc001SharedService;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc001.Skf3090Sc001DownloadDto;
 
 /**
@@ -59,9 +45,6 @@ public class Skf3090Sc001DownloadService extends BaseServiceAbstract<Skf3090Sc00
 	
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
-	
-	@Autowired
-	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
     
 	@Autowired
 	private Skf3090Sc001SharedService skf3090Sc001SharedService;
@@ -129,7 +112,6 @@ public class Skf3090Sc001DownloadService extends BaseServiceAbstract<Skf3090Sc00
 	 * @return 出力用Excelワークシート
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	private SheetDataBean createWorkSheetShikyuKagakuContract(List<Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExp> reportData) throws Exception {
 		
 		// Excelワークシート
@@ -154,7 +136,7 @@ public class Skf3090Sc001DownloadService extends BaseServiceAbstract<Skf3090Sc00
 			// 行データ
 			RowDataBean rdb = new RowDataBean();
 			Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExp getRowData = reportData.get(i); // DB取得1行
-			Map<String, Object> listRowData = null; // リスト1行
+//			Map<String, Object> listRowData = null; // リスト1行
 
 			//// 都道府県コードが一致しない場合はスキップ
 			//int targetPrefCd = i + 1;

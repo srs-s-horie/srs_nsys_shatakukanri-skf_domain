@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -113,7 +114,7 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 				String txtShainNo1 = row1.get("txtShainNo").toString();
 				//対象のテキストボックス名
 				String boxName1 = row1.get("boxName").toString();
-				if(txtShainNo.equals(txtShainNo1) && !boxName.equals(boxName1)){
+				if(Objects.equals(txtShainNo, txtShainNo1) && !Objects.equals(boxName, boxName1)){
 					shainNoCheckFlg = true;
 					break;
 				}
@@ -247,7 +248,7 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 			
 			//値セット
 			for(Map<String,Object> shainData : shainListData){
-				if(shainData.get("shainNo").equals(tmpData.get("colShainNo"))){
+				if(Objects.equals(shainData.get("shainNo"), tmpData.get("colShainNo"))){
 					//従業員マスタ:社員氏名
 					tmpData.put("colShainNameJugyoin", shainData.get("shainNameJugyoin"));
 					//従業員マスタ:所属

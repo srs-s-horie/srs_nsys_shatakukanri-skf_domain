@@ -18,7 +18,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002InitDto;
 
@@ -36,8 +35,6 @@ public class Skf3050Sc002InitService extends BaseServiceAbstract<Skf3050Sc002Ini
 	private Skf3050Sc002SharedService skf3050Sc002SharedService;
 	@Autowired
 	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
-	@Autowired
-	private SkfDateFormatUtils skfDateFormatUtils;
 
 	private static final String TAISHOUNENDO_NENDO = "年度　";
 	private static final String LIST_CNT_KEY = "skf3050.skf3050sc002.list_max_cnt";

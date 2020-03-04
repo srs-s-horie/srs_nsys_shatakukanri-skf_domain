@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc001.Skf3020Sc001GetNowShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3020Sc001.Skf3020Sc001GetNowShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc001.Skf3020Sc001GetNowShatakuInfoExpRepository;
@@ -187,7 +187,7 @@ public class Skf3020Sc001InitService extends BaseServiceAbstract<Skf3020Sc001Ini
 				// 都道府県名を取得
 				String prefName = prefCdList.get(nowShatakuInfoRowData.getPrefCd());
 				String addressStr = "";
-				if(!NfwStringUtils.isNotEmpty(prefName) || !prefName.equals(CD_PREF_OTHER)){
+				if(!NfwStringUtils.isNotEmpty(prefName) || !Objects.equals(prefName, CD_PREF_OTHER)){
 					addressStr = prefName + nowShatakuInfoRowData.getAddress();
 				}else{
 					addressStr = nowShatakuInfoRowData.getAddress();

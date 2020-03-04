@@ -6,6 +6,8 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc004;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,7 @@ public class Skf3090Sc004InitService extends BaseServiceAbstract<Skf3090Sc004Ini
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-				&& initDto.getPrePageId().equals(FunctionIdConstant.SKF3090_SC005)) {
+				&& Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3090_SC005)) {
 			/** 従業員マスタ登録画面からの遷移が、元々リストテーブルからの遷移での復帰だった場合、リストテーブルの情報を取得する */
 			// 登録画面のhidden項目をinitDtoに詰めなおす
 			initDto.setShainNo(initDto.getHdnShainNo());

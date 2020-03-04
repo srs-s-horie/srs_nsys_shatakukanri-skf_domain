@@ -11,12 +11,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3060TAgeKasanSendmail;
@@ -98,7 +98,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
 			if(true == originalCompany.containsKey("selected")){
 				originalCompanyList.get(i).remove("selected");
 			}
-			if(sendMailDto.getSelectedOriginalCompanyCd().equals(originalCompany.get("value").toString())){
+			if(Objects.equals(sendMailDto.getSelectedOriginalCompanyCd(), originalCompany.get("value").toString())){
 				 originalCompanyList.get(i).put("selected", true);
 			}
 		}
@@ -108,7 +108,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
 			if(true == salaryCompany.containsKey("selected")){
 				salaryCompanyList.get(i).remove("selected");
 			}
-			if(sendMailDto.getSelectedSalaryCompanyCd().equals(salaryCompany.get("value").toString())){
+			if(Objects.equals(sendMailDto.getSelectedSalaryCompanyCd(), salaryCompany.get("value").toString())){
 				salaryCompanyList.get(i).put("selected", true);
 			}
 		}
@@ -118,7 +118,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
 			if(true == sendMailStatus.containsKey("selected")){
 				sendMailStatusList.get(i).remove("selected");
 			}
-			if(sendMailDto.getSelectedSendMailStatus().equals(sendMailStatus.get("value").toString())){
+			if(Objects.equals(sendMailDto.getSelectedSendMailStatus(), sendMailStatus.get("value").toString())){
 				sendMailStatusList.get(i).put("selected", true);
 			}
 		}

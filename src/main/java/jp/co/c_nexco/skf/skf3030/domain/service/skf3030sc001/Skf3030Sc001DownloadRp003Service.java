@@ -37,7 +37,6 @@ import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc001.Skf3030Sc001DownloadRp003Dto;
 
@@ -51,8 +50,6 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
@@ -290,9 +287,9 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			//判定データ抽出
 			Skf3030Rp003GetShatakuDaichoDiffDataInfoExp targetNowDiffData = null;
 			for (Skf3030Rp003GetShatakuDaichoDiffDataInfoExp diffData : diffDataList) {
-				if (shatakuKanriNo.equals(diffData.getShatakuKanriNo())
-						&& roomKanriNo.equals(diffData.getShatakuRoomKanriNo())
-						&& kanriId.equals(diffData.getShatakuKanriId())) {
+				if (Objects.equals(shatakuKanriNo, diffData.getShatakuKanriNo())
+						&& Objects.equals(roomKanriNo, diffData.getShatakuRoomKanriNo())
+						&& Objects.equals(kanriId, diffData.getShatakuKanriId())) {
 					targetNowDiffData = diffData;
 					break;
 				}
@@ -300,9 +297,9 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 
 			Skf3030Rp003GetShatakuDaichoDiffDataInfoExp targetPreDiffData = null;
 			for (Skf3030Rp003GetShatakuDaichoDiffDataInfoExp preDiffData : preDiffDataList) {
-				if (shatakuKanriNo.equals(preDiffData.getShatakuKanriNo())
-						&& roomKanriNo.equals(preDiffData.getShatakuRoomKanriNo())
-						&& kanriId.equals(preDiffData.getShatakuKanriId())) {
+				if (Objects.equals(shatakuKanriNo, preDiffData.getShatakuKanriNo())
+						&& Objects.equals(roomKanriNo, preDiffData.getShatakuRoomKanriNo())
+						&& Objects.equals(kanriId, preDiffData.getShatakuKanriId())) {
 					targetPreDiffData = preDiffData;
 					break;
 				}
@@ -320,7 +317,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 
 			Skf3030Rp003GetShatakuDaichoInfoExp tagetKanriIdPreData = null;
 			for (Skf3030Rp003GetShatakuDaichoInfoExp preMonthDaichoData : preMonthDaichoDataList) {
-				if (kanriId.equals(preMonthDaichoData.getShatakuKanriId())) {
+				if (Objects.equals(kanriId, preMonthDaichoData.getShatakuKanriId())) {
 					tagetKanriIdPreData = preMonthDaichoData;
 					break;
 				}
@@ -1006,7 +1003,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		} else {
 
 			if (val_1 instanceof String && val_2 instanceof String) {
-				if (val_1.equals(val_2)) {
+				if (Objects.equals(val_1, val_2)) {
 					rtn = false;
 				} else {
 					rtn = true;
@@ -1428,7 +1425,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		String payCompCd = data.getPayCompanyCd();
 		String shatakCompTrans = "";
 
-		if (shatakuShunyuCompany.equals(shatakKojyoCompany)) {
+		if (Objects.equals(shatakuShunyuCompany, shatakKojyoCompany)) {
 			shatakCompTrans = Skf3030Sc001SharedService.KAISHAKAN_SOKIN_NASI;
 
 		} else {
@@ -1621,7 +1618,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 			Map<String, Object> fontParam = new HashMap<>();
 
 			String col = shatakKanriInfoArry[i].col;
-			if (!Rp003Info.FIRST_DAY.col.equals(col) && !Rp003Info.LAST_DAY.col.equals(col)) {
+			if (!Objects.equals(Rp003Info.FIRST_DAY.col, col) && !Objects.equals(Rp003Info.LAST_DAY.col, col)) {
 				fontParam.put(Skf3030Sc001SharedService.FONT_NAME_KEY, shatakKanriInfoArry[i].font);
 				fontParam.put(Skf3030Sc001SharedService.FONT_COLOR_KEY, IndexedColors.BLACK.getIndex());
 				fontParam.put(Skf3030Sc001SharedService.FONT_SIZE_KEY, Short.parseShort(shatakKanriInfoArry[i].size));

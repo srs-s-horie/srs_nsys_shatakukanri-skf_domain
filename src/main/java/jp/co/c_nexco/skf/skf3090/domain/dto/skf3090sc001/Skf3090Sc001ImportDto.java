@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090Sc001common.Skf3090Sc001CommonDto;
-import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import lombok.EqualsAndHashCode;
 
 /**

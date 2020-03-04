@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -421,7 +422,7 @@ public class Skf3021Sc001SharedService {
 				}
 				//入居と退居がある社員の場合は、退居のチェックボックスを非活性にしてメールを2通送れない様に制御
 				if(CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(nyutaikyoKbn)){
-					if(colShainNo.equals(tmpData.getPreShainNo())){
+					if(Objects.equals(colShainNo, tmpData.getPreShainNo())){
 						chkSlMail = false;
 					}
 				}

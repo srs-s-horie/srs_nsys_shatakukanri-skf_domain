@@ -25,11 +25,9 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MAgencyRepositor
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MBusinessAreaRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc003.Skf3090Sc003DeleteDto;
@@ -73,7 +71,6 @@ public class Skf3090Sc003DeleteService extends BaseServiceAbstract<Skf3090Sc003D
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3090Sc003DeleteDto index(Skf3090Sc003DeleteDto deleteDto) throws Exception {

@@ -19,7 +19,6 @@ import java.io.UnsupportedEncodingException;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MPayInKind;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MPayInKindKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MPayInKindRepository;
-import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -61,12 +60,6 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
-
-	@Autowired
-	private SkfAttachedFileUtils skfAttachedFileUtils;
-
-	@Autowired
-	private ApplicationScopeBean bean;
 
 	/** メッセージ */
 	private final static String JOGAI_MOJI = "都道府県名";
@@ -116,7 +109,6 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 	 * @throws Exception
 	 *             例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public BaseDto index(Skf3090Sc001ImportDto importDto) throws Exception {
@@ -272,7 +264,7 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 			// - 都道府県コード
 			String prefCd = rowDataList.get(0);
 			// - 都道府県
-			String prefName = rowDataList.get(1);
+//			String prefName = rowDataList.get(1);
 			// - 現物支給価額
 			String money = rowDataList.get(2);
 			// - 改定日
@@ -307,7 +299,7 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 				Skf3050MPayInKindKey key = new Skf3050MPayInKindKey();
 				key.setEffectiveDate(effectiveDate);
 				key.setPrefCd(paddingPrefCd);
-				int deleteResult = skf3050MPayInKindRepository.deleteByPrimaryKey(key);
+				skf3050MPayInKindRepository.deleteByPrimaryKey(key);
 
 				// 新規登録
 				Skf3050MPayInKind record = new Skf3050MPayInKind();
@@ -370,7 +362,7 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 
 		MultipartFile genbutsuShikyuKagakuFile = importFile.getListGenbutsuShikyuKagaku(); // 取り込んだファイル
 		String fileName = genbutsuShikyuKagakuFile.getOriginalFilename(); // ファイル名
-		String extension = skfAttachedFileUtils.getExtension(fileName); // 拡張子
+		String extension = SkfAttachedFileUtils.getExtension(fileName); // 拡張子
 		// 拡張子チェック
 		if (!CodeConstant.EXTENSION_XLSX.equals(extension)) {
 			ServiceHelper.addErrorResultMessage(importFile, null, MessageIdConstant.E_SKF_1056);

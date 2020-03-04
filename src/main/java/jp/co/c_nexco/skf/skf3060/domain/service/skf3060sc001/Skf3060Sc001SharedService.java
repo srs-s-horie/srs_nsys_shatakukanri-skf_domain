@@ -13,12 +13,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3060Sc001.Skf3060Sc001GetAgeKasanTargetCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3060Sc001.Skf3060Sc001GetAgeKasanTargetCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3060Sc001.Skf3060Sc001GetAgeKasanTargetDataInfoExp;
@@ -206,7 +205,7 @@ public class Skf3060Sc001SharedService {
 		mailStatusMap = new HashMap<String, Object>();
 		mailStatusMap.put("value", SEND_STATUS_NOT_SEND_CD);
 		mailStatusMap.put("label", SEND_STATUS_NOT_SEND);
-		if(sendMailStatus.equals(SEND_STATUS_NOT_SEND_CD)){
+		if(Objects.equals(sendMailStatus, SEND_STATUS_NOT_SEND_CD)){
 			mailStatusMap.put("selected", true);
 		}
 		sendMailStatusList.add(mailStatusMap);		
@@ -215,7 +214,7 @@ public class Skf3060Sc001SharedService {
 		mailStatusMap = new HashMap<String, Object>();
 		mailStatusMap.put("value", SEND_STATUS_SENDED_CD);
 		mailStatusMap.put("label", SEND_STATUS_SENDED);
-		if(sendMailStatus.equals(SEND_STATUS_SENDED_CD)){
+		if(Objects.equals(sendMailStatus, SEND_STATUS_SENDED_CD)){
 			mailStatusMap.put("selected", true);
 		}
 		sendMailStatusList.add(mailStatusMap);		
@@ -448,7 +447,7 @@ public class Skf3060Sc001SharedService {
 	
 		int resultCount = 0;
 		
-		if(searchFlag.equals(SEARCH_PATTERN_COUNT)){
+		if(Objects.equals(searchFlag, SEARCH_PATTERN_COUNT)){
 			// データ件数取得
 			List<Skf3060Sc001GetAgeKasanTargetCountExp> dataCount = new ArrayList<Skf3060Sc001GetAgeKasanTargetCountExp>();
 			Skf3060Sc001GetAgeKasanTargetCountExpParameter param = new Skf3060Sc001GetAgeKasanTargetCountExpParameter();	
@@ -600,7 +599,7 @@ public class Skf3060Sc001SharedService {
 			// 役員区分（col16）
 			String yakuinKbn = null;
 			if(StringUtils.isNotEmpty(tmpData.getYakuinSannteiKbn())){
-				if(!tmpData.getYakuinSannteiKbn().equals("0")){
+				if(!Objects.equals(tmpData.getYakuinSannteiKbn(), "0")){
 					yakuinKbn = yakuinKbnList.get(tmpData.getYakuinSannteiKbn());
 				}
 			}
@@ -707,7 +706,7 @@ public class Skf3060Sc001SharedService {
             if (diff > 0) {
 				isCheckOk = false;
                 ServiceHelper.addErrorResultMessage(commonDto, null, MessageIdConstant.E_SKF_1133, "基準期間");
-                commonDto.setBaseTermFromErr(validationErrorCode);
+//                commonDto.setBaseTermFromErr(validationErrorCode);
                 commonDto.setBaseTermToErr(validationErrorCode);
             }
         }

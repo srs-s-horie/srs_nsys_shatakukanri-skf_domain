@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -1016,14 +1017,14 @@ public class Skf3050Bt001SharedTask {
 
 		BigDecimal outDate = BigDecimal.ZERO;
 
-		if (nyuukyoDate.equals(shoriNengetsuShonichi) && shoriNengetsuMatsujitsu.equals(taikyoDate)) {
+		if (Objects.equals(nyuukyoDate, shoriNengetsuShonichi) && Objects.equals(shoriNengetsuMatsujitsu, taikyoDate)) {
 			outDate = shatakuRiyouryouGetsugaku;
 
 		} else if (decimalNextShoriNengetsu.compareTo(decimalNyuukyoYymm) <= 0
 				|| taikyoDateYymm.compareTo(decimalBeforeShoriNengetsu) <= 0) {
 			outDate = BigDecimal.ZERO;
 
-		} else if (!nyuukyoDate.equals(shoriNengetsuShonichi) || !taikyoDate.equals(shoriNengetsuMatsujitsu)) {
+		} else if (!Objects.equals(nyuukyoDate, shoriNengetsuShonichi) || !Objects.equals(taikyoDate, shoriNengetsuMatsujitsu)) {
 			BigDecimal taikyoDateDd = new BigDecimal(taikyoDate.substring(6, 8));
 			BigDecimal nyuukyoDateDd = new BigDecimal(nyuukyoDate.substring(6, 8));
 			BigDecimal shoriNengetsuMatsujitsuDd = new BigDecimal(shoriNengetsuMatsujitsu.substring(6, 8));
@@ -1169,14 +1170,14 @@ public class Skf3050Bt001SharedTask {
 
 		BigDecimal outDate = BigDecimal.ZERO;
 
-		if (parkingStartDate.equals(shoriNengetsuShonichi) && shoriNengetsuMatsujitsu.equals(parkingEndDate)) {
+		if (Objects.equals(parkingStartDate, shoriNengetsuShonichi) && Objects.equals(shoriNengetsuMatsujitsu, parkingEndDate)) {
 			outDate = tyuushajouShiyouryouGetsugaku;
 
 		} else if (decimalNextShoriNengetsu.compareTo(parkingStartDateYymm) <= 0
 				|| parkingEndDateYymm.compareTo(decimalBeforeShoriNengetsu) <= 0) {
 			outDate = BigDecimal.ZERO;
 
-		} else if (!parkingStartDate.equals(shoriNengetsuShonichi) || !parkingEndDate.equals(shoriNengetsuMatsujitsu)) {
+		} else if (!Objects.equals(parkingStartDate, shoriNengetsuShonichi) || !Objects.equals(parkingEndDate, shoriNengetsuMatsujitsu)) {
 			BigDecimal parkingEndDateDd = new BigDecimal(parkingEndDate.substring(6, 8));
 			BigDecimal parkingStartDateDd = new BigDecimal(parkingStartDate.substring(6, 8));
 			BigDecimal shoriNengetsuMatsujitsuDd = new BigDecimal(shoriNengetsuMatsujitsu.substring(6, 8));
@@ -1755,7 +1756,7 @@ public class Skf3050Bt001SharedTask {
 
 			} else {
 				if (CodeConstant.MUTUAL_USE_KBN_AVAILABLE.equals(sougoRiyouKbn)) {
-					if (!kariukeCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(kariukeCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_1;
@@ -1763,7 +1764,7 @@ public class Skf3050Bt001SharedTask {
 					}
 
 				} else {
-					if (!manageCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(manageCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_1;
@@ -1790,7 +1791,7 @@ public class Skf3050Bt001SharedTask {
 
 			} else {
 				if (CodeConstant.MUTUAL_USE_KBN_AVAILABLE.equals(sougoRiyouKbn)) {
-					if (!kariukeCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(kariukeCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_4;
@@ -1798,7 +1799,7 @@ public class Skf3050Bt001SharedTask {
 					}
 
 				} else {
-					if (!manageCompanyCd.equals(kyuyoCompanyCd)) {
+					if (!Objects.equals(manageCompanyCd, kyuyoCompanyCd)) {
 						Skf1010MCompany compDt = skf1010MCompanyRepository.selectByPrimaryKey(kyuyoCompanyCd);
 						if (compDt != null) {
 							accountId = ACCOUNT_ID_4;

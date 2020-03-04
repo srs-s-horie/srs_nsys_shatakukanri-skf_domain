@@ -6,7 +6,6 @@ package jp.co.c_nexco.skf.skf3060.domain.dto.skf3060sc001;
 import java.util.*;
 
 import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
-import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060Sc001common.Skf3060Sc001CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**

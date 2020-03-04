@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -184,7 +185,7 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 			String month = String.format("%02d", i + 1);
 			monthMap.put("value", month);
 			monthMap.put("label", month);
-			if(month.equals(selectMonth)){
+			if(Objects.equals(month, selectMonth)){
 				monthMap.put("selected", true);
 			}
 

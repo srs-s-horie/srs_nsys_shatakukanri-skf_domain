@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -832,7 +833,7 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 				if(parkingRirekiDt.size() > 1){
 					//駐車場区画１使用実績フラグ（hidden）
 					Integer flgKukaku1 = parkingRirekiDt.get(0).getCount();
-					if(flgKukaku1.equals(0)){
+					if(Objects.equals(flgKukaku1, 0)){
 						initDto.setHdnShatakuKanriFlg1("0");
 					}else{
 						initDto.setHdnShatakuKanriFlg1("1");
@@ -840,7 +841,7 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 					
 					//駐車場区画２使用実績フラグ（hidden）
 					Integer flgKukaku2 = parkingRirekiDt.get(1).getCount();
-					if(flgKukaku2.equals(0)){
+					if(Objects.equals(flgKukaku2, 0)){
 						initDto.setHdnShatakuKanriFlg2("0");
 					}else{
 						initDto.setHdnShatakuKanriFlg2("1");
