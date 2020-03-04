@@ -109,25 +109,26 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		applInfo.put("applNo", applNo);
 		applInfo.put("applId", applId);
 
-		String urlBase = "skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+		String urlBase = "skf/Skf2010Sc005/init";
 
 		// 送信メールにコメントが表示されないようになっている（メール本文に表記箇所が無い）
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-				shainNo, CodeConstant.NONE, urlBase);
+				null, CodeConstant.NONE, urlBase);
 
 		// 社宅管理データ連携処理実行
 		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
-		if(tApplHistoryData == null){
+		if (tApplHistoryData == null) {
 			ServiceHelper.addErrorResultMessage(notAgreeDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
 			return notAgreeDto;
 		}
 		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, CodeConstant.NONE, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, CodeConstant.NONE,
+				afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
-		if(resultBatch != null){
+		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(notAgreeDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
 		}
@@ -211,12 +212,14 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	private boolean validateReason(Skf2010Sc004NotAgreeDto agreeDto) {
 		String reasonText = agreeDto.getCommentNote();
 		if (reasonText == null || CheckUtils.isEmpty(reasonText)) {
-			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1048, "承認者へのコメント");
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1048,
+					"承認者へのコメント");
 			return false;
 		}
 		int byteCnt = reasonText.getBytes(Charset.forName("UTF-8")).length;
 		if (byteCnt >= 4000) {
-			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1049, "承認者へのコメント", "2000");
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] { "commentNote" }, MessageIdConstant.E_SKF_1049,
+					"承認者へのコメント", "2000");
 			return false;
 		}
 		return true;
