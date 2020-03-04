@@ -19,8 +19,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3040.domain.dto.skf3040sc002.Skf3040Sc002InitDto;
 
 /**
- * 備品搬入・搬出確認リスト出力画面のInitサービス処理クラス。　 
+ * Skf3040Sc002InitService 備品搬入・搬出確認リスト出力画面のInitサービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3040Sc002InitService extends BaseServiceAbstract<Skf3040Sc002InitDto> {

@@ -4,7 +4,6 @@
 package jp.co.c_nexco.skf.skf3020.domain.service.skf3020sc003;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;

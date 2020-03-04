@@ -3,14 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf3040.domain.dto.skf3040Sc001common;
 
-import java.util.*;
-
 import jp.co.c_nexco.skf.skf3040.domain.dto.common.Skf304010CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * レンタル備品指示書出力画面のInitDto。
+ * Skf3040Sc001CommonDto レンタル備品指示書出力画面の共通Dto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

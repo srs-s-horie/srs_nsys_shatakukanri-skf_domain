@@ -19,8 +19,9 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3040.domain.dto.skf3040sc001.Skf3040Sc001InitDto;
 
 /**
- * レンタル備品指示書出力画面のInitサービス処理クラス。　 
+ * Skf3040Sc001InitService レンタル備品指示書出力画面のInitサービス処理クラス。　 
  * 
+ * @author NEXCOシステムズ
  */
 @Service
 public class Skf3040Sc001InitService extends BaseServiceAbstract<Skf3040Sc001InitDto> {

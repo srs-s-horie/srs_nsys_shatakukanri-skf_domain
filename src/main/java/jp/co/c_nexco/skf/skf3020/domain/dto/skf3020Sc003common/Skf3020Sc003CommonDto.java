@@ -3,14 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf3020.domain.dto.skf3020Sc003common;
 
-import java.util.*;
-
 import jp.co.c_nexco.skf.skf3020.domain.dto.common.Skf302010CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * TestPrjTop画面のInitDto。
+ * Skf3020Sc003CommonDto 転任者調書確認画面の共通Dto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)

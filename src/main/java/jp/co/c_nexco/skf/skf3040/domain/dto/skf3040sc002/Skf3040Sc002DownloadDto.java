@@ -3,15 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf3040.domain.dto.skf3040sc002;
 
-import java.util.*;
-
 import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
-import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060Sc001common.Skf3060Sc001CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3040_Sc002画面のDownloadDto。
+ * Skf3040Sc002DownloadDto 備品搬入・搬出確認リスト出力画面のDownloadDto。
  * 
+ * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
