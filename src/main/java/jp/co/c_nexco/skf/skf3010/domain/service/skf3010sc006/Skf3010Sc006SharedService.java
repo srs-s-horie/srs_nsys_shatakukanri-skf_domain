@@ -2336,10 +2336,11 @@ public class Skf3010Sc006SharedService {
 			initDto.setParkingRent(null);
 			initDto.setParkingRent(String.format("%,d", parkingRentalValue));
 			
-			//駐車場所在地
-			initDto.setParkingAddress(tmpData.getParkingAddress());
 
 			if(!TRUE.equals(initDto.getCopyFlg())){
+				//駐車場所在地(契約情報から取得するため)
+				initDto.setParkingAddress(tmpData.getParkingAddress());
+				
 				//複写で無い場合設定する
 				// 駐車場補足1
 				parkingSupplementSize1 = (tmpData.getParkingSupplementSize1() != null) ?
