@@ -143,7 +143,7 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 		pdfData.setData("parkingRental2", NfwStringUtils.defaultString(dto.getParkingRental2()));
 		pdfData.setData("carUser2", NfwStringUtils.defaultString(dto.getCarUser2()));
 		pdfData.setData("carExpirationDate2", NfwStringUtils.defaultString(dto.getCarExpirationDate2()));
-		pdfData.setData("nyukyoYoteiDate", NfwStringUtils.defaultString(dto.getNyukyoYoteiDate()));
+		pdfData.setData("nyukyoKanoDate", NfwStringUtils.defaultString(dto.getNyukyoKanoDate()));
 		pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
 		pdfData.setData("parkingKanoDate2", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
 
