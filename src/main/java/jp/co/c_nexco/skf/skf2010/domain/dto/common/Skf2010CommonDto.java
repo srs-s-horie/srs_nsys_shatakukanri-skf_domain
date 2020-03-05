@@ -38,6 +38,8 @@ public class Skf2010CommonDto extends BaseDto {
 
 	// コメント欄表示フラグ
 	private boolean commentAreaVisibled = true;
+	// 承認ボタン非活性フラグ
+	private boolean confirmBtnDisabled = false;
 
 	// 差戻し、修正依頼ボタン表示フラグ
 	private boolean revisionRemandBtnFlg = false;
