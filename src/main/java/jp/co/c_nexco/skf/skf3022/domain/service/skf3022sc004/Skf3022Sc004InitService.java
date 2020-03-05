@@ -22,7 +22,6 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
-import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc004.Skf3022Sc004InitDto;
 
@@ -39,11 +38,6 @@ public class Skf3022Sc004InitService extends BaseServiceAbstract<Skf3022Sc004Ini
 	
 	@Autowired
 	private Skf3022Sc004GetShatakuYoyakuInfoExpRepository skf3022Sc004GetShatakuYoyakuInfoExpRepository;
-	
-	/**
-	 * ゼロ：0
-	 */
-	private String ZERO = "0";
 	
 	/**
 	 * 提示データ登録

@@ -81,7 +81,6 @@ public class Skf3022Sc004RegisteService extends BaseServiceAbstract<Skf3022Sc004
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public Skf3022Sc004RegisteDto index(Skf3022Sc004RegisteDto registeDto) throws Exception {
@@ -386,6 +385,7 @@ public class Skf3022Sc004RegisteService extends BaseServiceAbstract<Skf3022Sc004
         		param.setShatakuKanriId(Long.parseLong(registeDto.getHdnJigetuYoyakuShatakuKanriId()));
         		delCount = skf3022Sc004DeleteShatakuYoyakuExpRepository.deleteShatakuYoyaku(param);
         	}
+			LogUtils.debugByMsg("削除件数:" + Integer.toString(delCount));
         }catch(Exception ex){
 			LogUtils.debugByMsg("社宅使用料予約データ削除中にエラー:" + ex.toString());
         	return -1;

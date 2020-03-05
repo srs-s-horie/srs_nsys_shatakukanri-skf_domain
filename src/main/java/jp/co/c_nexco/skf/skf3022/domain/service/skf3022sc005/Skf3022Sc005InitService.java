@@ -6,6 +6,7 @@ package jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc005;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,8 +84,8 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 		Skf3022Sc005GetTeijiDataInfoExpParameter param = new Skf3022Sc005GetTeijiDataInfoExpParameter();
 		
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-				&& (initDto.getPrePageId().equals(FunctionIdConstant.SKF3022_SC005)
-						|| initDto.getPrePageId().equals(FunctionIdConstant.SKF3022_SC006))) {
+				&& (Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3022_SC005)
+						|| Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3022_SC006))) {
 //	        '登録画面から、検索条件の取得
 			//パラメータ設定
 			param.setShainNo(initDto.getSearchInfoShainNo());
