@@ -914,32 +914,40 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 社宅
-		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoArea())) {
-			initDto.setTaikyoArea(taikyoRepDt.getTaikyoArea());
-		}
+		if ("1".equals(taikyoRepDt.getTaikyoShataku())) {
+			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoArea())) {
+				initDto.setTaikyoArea(taikyoRepDt.getTaikyoArea());
+			}
+		}	
 		// 駐車場1
-		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress1())) {
-			initDto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
+		if ("1".equals(taikyoRepDt.getTaikyoParking1())) {
+			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress1())) {
+				initDto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
+			}
 		}
 		// 駐車場2
-		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress2())) {
-			initDto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
-		}
+		if ("1".equals(taikyoRepDt.getTaikyoParking2())) {
+			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingAddress2())) {
+				initDto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
+			}
+		}	
 		// 退居日 社宅等
 		// 退居日
-		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
-			// 退居日 年月日形式で設定、日付変更フラグを0にする
-			initDto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
-			initDto.setTaikyoDateFlg(SkfCommonConstant.NOT_CHANGE);
-
-			// 日付変更フラグが1:変更ありなら赤文字にする
-			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
-					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
-				initDto.setTaikyoDateFlg(taikyoRepDt.getTaikyoDateFlg());
+		if ("1".equals(taikyoRepDt.getTaikyoShataku())) {
+			if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
+				// 退居日 年月日形式で設定、日付変更フラグを0にする
+				initDto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+				initDto.setTaikyoDateFlg(SkfCommonConstant.NOT_CHANGE);
+	
+				// 日付変更フラグが1:変更ありなら赤文字にする
+				if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
+						&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
+					initDto.setTaikyoDateFlg(taikyoRepDt.getTaikyoDateFlg());
+				}
+			} else {
+				initDto.setTaikyoDateFlg(SkfCommonConstant.NOT_CHANGE);
 			}
-		} else {
-			initDto.setTaikyoDateFlg(SkfCommonConstant.NOT_CHANGE);
 		}
 
 		// 駐車場返還日
