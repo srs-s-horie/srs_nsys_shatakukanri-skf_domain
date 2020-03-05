@@ -699,9 +699,9 @@ public class Skf3060Sc001SharedService {
         int diff = 0;
         if (true == isCheckOk) {
         	// isCheckOkがTrue（エラーがない）の時のみ実施
-            SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-            fromDate = sdf.parse(commonDto.getBaseTermFrom());
-            toDate = sdf.parse(commonDto.getBaseTermTo());
+            SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+            fromDate = sdf.parse(commonDto.getBaseTermFrom().replace("/", ""));
+            toDate = sdf.parse(commonDto.getBaseTermTo().replace("/", ""));
             diff = fromDate.compareTo(toDate);
             if (diff > 0) {
 				isCheckOk = false;

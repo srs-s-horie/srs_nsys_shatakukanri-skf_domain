@@ -21,6 +21,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
+import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.FileEncode;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
@@ -220,7 +221,8 @@ public class Skf3060Sc001DownloadService extends BaseServiceAbstract<Skf3060Sc00
 				}
 				
 				//CSV出力を行う
-				FileOutput.fileOutputCsv(rowdatas, fileName, "skf3060fl001", 1, null, downloadDto);
+				FileOutput.fileOutputCsv(rowdatas, fileName, "skf3060fl001", 1, null, downloadDto,
+						new FileOutput().new OutputFileCsvProperties(null, FileEncode.BOM_UTF8, null, null));
 				String uploadFileName = DateTime.now().toString("YYYYMMdd") + "_" + csvFileName + ".csv";
 				downloadDto.setUploadFileName(uploadFileName);
 			}
