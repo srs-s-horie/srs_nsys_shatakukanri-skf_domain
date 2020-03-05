@@ -137,8 +137,8 @@ public class Skf3010Sc007SharedService {
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 
 			for(String blockNo : dispedBlockList){
-				//表示済み区画番号かチェック
-				if(blockNo.compareTo(tmpData.getParkingBlock()) == 0){
+				//表示済み管理番号かチェック
+				if(blockNo.compareTo(tmpData.getParkingKanriNo().toString()) == 0){
 					//表示済みの場合、フラグTrue
 					dispCheck=true;
 					break;
@@ -149,7 +149,7 @@ public class Skf3010Sc007SharedService {
 				continue;
 			}
 			//表示済みリストに区画番号を追加
-			dispedBlockList.add(tmpData.getParkingBlock());
+			dispedBlockList.add(tmpData.getParkingKanriNo().toString());
 			
 			tmpMap.put("colParkingBlock", tmpData.getParkingBlock());
 			// 「契約形態」の設定

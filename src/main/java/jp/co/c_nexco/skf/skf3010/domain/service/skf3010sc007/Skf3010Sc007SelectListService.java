@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 		
 		//選択された区画番号
 		String selectParkingBlock = selectDto.getHdnParkingBlock();
+		String selectParkingKanriNo = selectDto.getParkingKanriNo();
 		//選択された契約番号
 		Long selectContractPropertyId;
 		
@@ -90,7 +92,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 		
 		
 		//追加ボタンからの遷移かチェック
-		if(BUTTON_ADD.compareTo(selectDto.getSelectMode()) == 0){
+		if(BUTTON_ADD.equals(selectDto.getSelectMode())){
 			//契約番号最大値取得
 			selectContractPropertyId = Long.parseLong(selectDto.getHdnBackupMaxContractPropertyId());
 			//契約番号最大値に1加算
@@ -117,7 +119,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 			restInput(selectDto);
 		}
 		
-		if(BUTTON_DELETE.compareTo(selectDto.getSelectMode()) == 0){
+		if(BUTTON_DELETE.equals(selectDto.getSelectMode())){
 			Long maxContractPropertyId = Long.parseLong(selectDto.getHdnBackupMaxContractPropertyId());
 			if(selectContractPropertyId != maxContractPropertyId){
 				//最大の契約番号でない場合、エラー終了
@@ -130,7 +132,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 			selectContractPropertyId = selectContractPropertyId - 1;
 			selectDto.setHdnDelInfoFlg("1");
 			LogUtils.debugByMsg("駐車場契約情報削除-契約番号：" + deleteContractPropertyId);
-		}else if(BUTTON_DELETEADD.compareTo(selectDto.getSelectMode()) == 0 && selectContractPropertyId == 0){
+		}else if(BUTTON_DELETEADD.equals(selectDto.getSelectMode()) && selectContractPropertyId == 0){
 			//チェック用契約番号
 			selectDto.setHdnBackupContractPropertyId(selectContractPropertyId.toString());
 			//区画番号
@@ -150,8 +152,8 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 
 		
 		for(Map<String, Object> map : selectDto.getHdnListData()){
-			//区画番号の一致確認
-			if(selectParkingBlock.compareTo(map.get("parkingBlock").toString()) == 0 ){
+			//管理番号の一致確認
+			if(Objects.equals(selectParkingKanriNo, map.get("parkingKanriNo").toString())){
 				
 				Long mapContractPropertyId = Long.parseLong(map.get("contractPropertyId").toString());
 				//契約番号リスト
@@ -179,7 +181,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 				//契約番号の一致確認
 				if(selectContractPropertyId == mapContractPropertyId || 
 						(selectContractPropertyId == 0 && deleteContractPropertyId > 0)){
-					LogUtils.debugByMsg("駐車場契約情報-一致：" + selectParkingBlock +  ",契約番号:"+ selectContractPropertyId);
+					LogUtils.debugByMsg("駐車場契約情報-一致：" + selectParkingKanriNo +  ",契約番号:"+ selectContractPropertyId);
 					//チェック用契約番号
 					selectDto.setHdnBackupContractPropertyId(selectContractPropertyId.toString());
 					//区画番号
@@ -218,7 +220,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 						contractType = map.get("parkingContractType").toString();
 					}
 					//String contractType = map.get("parkingContractType").toString();
-					if(contractType.compareTo(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1) == 0){
+					if(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1.equals(contractType)){
 						//社宅と一括契約の場合
 						//リスト設定
 						skf3010Sc007SharedService.getDoropDownList(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1, parkingContractTypeList, "", parkinglendKbnList);
@@ -299,8 +301,8 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 				//契約開始日の取得
 				for(Map<String, Object> map : selectDto.getHdnListData()){
 					//区画番号の一致かつ削除フラグが1以外か確認
-					if(selectParkingBlock.compareTo(map.get("parkingBlock").toString()) == 0 
-						&& (map.get("deleteFlag").toString().compareTo("1") != 0)){
+					if(Objects.equals(selectParkingKanriNo, map.get("parkingKanriNo").toString()) 
+						&& (!"1".equals(map.get("deleteFlag").toString()))){
 						
 						Long mapContractPropertyId = Long.parseLong(map.get("contractPropertyId").toString());
 						if(mapContractPropertyId == id){
@@ -322,7 +324,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 		selectDto.setContractPropertyIdListData(contractPropertyIdListData);
 		
 		selectDto.setHdnBackupMaxContractPropertyId(String.valueOf(propertyIdList.size()));
-		if(selectDto.getSelectMode().compareTo(BUTTON_LIST) == 0){
+		if(BUTTON_LIST.equals(selectDto.getSelectMode())){
 			//リスト選択から遷移時、削除情報は無し（破棄）
 			selectDto.setHdnDelInfoFlg("0");
 			//登録済みの契約番号最大値を設定
