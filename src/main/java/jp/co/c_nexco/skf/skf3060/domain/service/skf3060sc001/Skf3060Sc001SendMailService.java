@@ -279,6 +279,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
             	}
         	}catch(Exception ex){
         		errorList.add(0,-9);
+				LogUtils.debugByMsg(ex.getMessage());
         		return null;
         	}
         	
