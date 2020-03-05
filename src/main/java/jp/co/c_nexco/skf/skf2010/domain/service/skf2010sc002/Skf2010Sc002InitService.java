@@ -34,6 +34,7 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShatakuInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
 
@@ -47,6 +48,8 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 	@Autowired
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;
+	@Autowired
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
@@ -62,6 +65,10 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 
 	private String sTrue = "true";
 	private String sFalse = "false";
+
+	private static final String KYOGICHU_TEXT = "協議中";
+	private static final String GOJITSU_TEXT = "（後日お知らせ）";
+
 	private static final String PLAN_TO_BUY_CAR = "購入を予定している";
 	private static final String YOTEI_DATE = "(予定)";
 
@@ -778,11 +785,34 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 		// 共益費
 		String newKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
-		if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
-			newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
+		// 個人負担共益費協議中フラグチェック
+		boolean kyogiFlg = skfTeijiDataInfoUtils.selectKyoekihiKyogi(initDto.getShainNo(), CodeConstant.SYS_NYUKYO_KBN,
+				initDto.getApplNo());
+		if (kyogiFlg) {
+			// trueの時は「協議中」を表示
+			newKyoekihi = KYOGICHU_TEXT;
+		} else {
+			// falseの時は共益費を表示
+			if (NfwStringUtils.isNotEmpty(newKyoekihi)) {
+				newKyoekihi = nfNum.format(Long.parseLong(newKyoekihi));
+			} else {
+				// 共益費が未登録の場合、「（後日お知らせ）」を表示する
+				newKyoekihi = GOJITSU_TEXT;
+			}
+		}
+		// 共益費は部屋番号が登録されている場合のみ表示
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
 			initDto.setNewKyoekihi(newKyoekihi);
 		}
 
+		// 決定通知書用共益費設定
+		String ketteiKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
+		initDto.setKetteiKyoekihi(ketteiKyoekihi);
+		if (NfwStringUtils.isEmpty(newKyoekihi)) {
+			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
+				initDto.setNewKyoekihi(GOJITSU_TEXT);
+			}
+		}
 		// 自動車１台目
 		// 自動車の保管場所
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea())) {
@@ -800,19 +830,21 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 自動車２台目
-		// 自動車の保管場所
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())) {
-			initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
-		}
-		// 自動車の位置番号
-		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarIchiNo2())) {
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())
+				|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
+			// 自動車の保管場所
+			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())) {
+				initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
+			}
+			// 自動車の位置番号
 			initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getCarIchiNo2());
-		}
-		// 保管場所使用料
-		String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
-		if (NfwStringUtils.isNotEmpty(parkingRental2)) {
-			parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
-			initDto.setParkingRental2(parkingRental2);
+
+			// 保管場所使用料
+			String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
+			if (NfwStringUtils.isNotEmpty(parkingRental2)) {
+				parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
+				initDto.setParkingRental2(parkingRental2);
+			}
 		}
 
 		// 自動車保管場所（１台目）の使用開始予定日

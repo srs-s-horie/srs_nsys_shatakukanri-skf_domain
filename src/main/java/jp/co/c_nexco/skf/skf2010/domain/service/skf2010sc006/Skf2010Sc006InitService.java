@@ -19,6 +19,7 @@ import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -291,6 +292,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		String applNo = initDto.getApplNo();
 		String applStatus = initDto.getApplStatus();
 		String applId = CodeConstant.NONE;
+		String applShainNo = CodeConstant.NONE;
 
 		// 申請情報履歴を取得
 		Skf2010Sc006GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc006GetApplHistoryInfoByParameterExp();
@@ -299,9 +301,25 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			initDto.setApplId(tApplHistoryData.getApplId());
 			applId = tApplHistoryData.getApplId();
 			initDto.setShonin1Name(tApplHistoryData.getAgreName1());
+			applShainNo = tApplHistoryData.getShainNo();
 		}
 
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)) {
+
+			switch (applStatus) {
+			case CodeConstant.STATUS_DOI_ZUMI:
+			case CodeConstant.STATUS_SHONIN1:
+			case CodeConstant.STATUS_SHONIN_ZUMI:
+				// 入居希望等調書テーブルから個人負担金共益費フラグを取得
+				boolean result = skfTeijiDataInfoUtils.selectKyoekihiKyogi(applShainNo,
+						CodeConstant.NYUTAIKYO_KBN_NYUKYO, applNo);
+				if (result) {
+					// 協議中だった場合、承認ボタンが非活性かつエラーメッセージを出す
+					initDto.setConfirmBtnDisabled(true);
+					ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_2018);
+				}
+			}
+
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
 			tNyukyoChoshoTsuchi = skf2010Sc006SharedService.getNyukyoChoshoTsuchiInfo(companyCd, applNo);
 			if (tNyukyoChoshoTsuchi != null) {
@@ -797,12 +815,8 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			initDto.setParkingRental(parkingRental);
 
 			// 自動車２台目
-			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingArea2())
-					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarName2())
-					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())
-					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())
-					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarIchiNo2())
-					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getParkingRental2())) {
+			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())
+					|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
 				// 自動車の保管場所
 				initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
 				// 自動車の位置番号

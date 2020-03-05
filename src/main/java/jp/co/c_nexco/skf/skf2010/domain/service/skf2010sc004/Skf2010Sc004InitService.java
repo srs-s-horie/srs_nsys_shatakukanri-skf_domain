@@ -858,16 +858,19 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		initDto.setParkingRental(parkingRental);
 
 		// 自動車２台目
-		// 自動車の保管場所
-		initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
-		// 自動車の位置番号
-		initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getCarIchiNo2());
-		// 保管場所使用料
-		String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
-		if (parkingRental2 != null && NfwStringUtils.isNotEmpty(parkingRental2)) {
-			parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
+		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())
+				|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
+			// 自動車の保管場所
+			initDto.setParkingArea2(tNyukyoChoshoTsuchi.getParkingArea2());
+			// 自動車の位置番号
+			initDto.setCarIchiNo2(tNyukyoChoshoTsuchi.getCarIchiNo2());
+			// 保管場所使用料
+			String parkingRental2 = tNyukyoChoshoTsuchi.getParkingRental2();
+			if (parkingRental2 != null && NfwStringUtils.isNotEmpty(parkingRental2)) {
+				parkingRental2 = nfNum.format(Long.parseLong(parkingRental2));
+			}
+			initDto.setParkingRental2(parkingRental2);
 		}
-		initDto.setParkingRental2(parkingRental2);
 
 		String parkingUmu = tNyukyoChoshoTsuchi.getParkingUmu();
 		if (CheckUtils.isEqual(parkingUmu, CodeConstant.CAR_PARK_FUYO)) {
