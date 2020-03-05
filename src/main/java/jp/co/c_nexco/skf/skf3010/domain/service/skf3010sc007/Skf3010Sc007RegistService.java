@@ -86,9 +86,11 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		// Debugログで出力
 		LogUtils.debugByMsg("駐車場契約情報-区画番号：" + registDto.getHdnParkingBlock());
 		LogUtils.debugByMsg("駐車場契約情報-契約番号：" + registDto.getContractPropertyId());
+		LogUtils.debugByMsg("駐車場契約情報-駐車場管理番号：" + registDto.getParkingKanriNo());
 		
 		//選択中区画番号
 		String selectParkingBlock = registDto.getHdnParkingBlock();
+		String selectParkingKanriNo = registDto.getParkingKanriNo();
 		//選択中契約番号
 		Long selectContractPropertyId;
 		//登録、更新
@@ -144,7 +146,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		if(CodeConstant.STRING_ZERO.compareTo(registDto.getHdnDelInfoFlg()) != 0){
 			for(Map<String, Object> map : registDto.getHdnListData()){
 				//区画番号の一致確認
-				if(selectParkingBlock.compareTo(map.get("parkingBlock").toString()) == 0 ){
+				if(selectParkingKanriNo.compareTo(map.get("parkingKanriNo").toString()) == 0 ){
 					//削除フラグチェック
 					String deleteFlag = map.get("deleteFlag").toString();
 					if(deleteFlag.compareTo(Skf3010Sc007CommonSharedService.DELETE_FLAG_ON) == 0){
@@ -190,7 +192,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		//登録・更新
 		for(Map<String, Object> map : registDto.getHdnListData()){
 			//区画番号の一致確認
-			if(selectParkingBlock.compareTo(map.get("parkingBlock").toString()) == 0 ){
+			if(selectParkingKanriNo.compareTo(map.get("parkingKanriNo").toString()) == 0 ){
 				//契約番号
 				Long mapContractPropertyId = Long.parseLong(map.get("contractPropertyId").toString());
 				
@@ -723,6 +725,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		
 		LogUtils.debugByMsg("駐車場契約情報(再表示)-区画番号：" + dto.getHdnParkingBlock());
 		LogUtils.debugByMsg("駐車場契約情報(再表示)-契約番号：" + dto.getContractPropertyId());
+		LogUtils.debugByMsg("駐車場契約情報(再表示)-駐車場管理番号：" + dto.getParkingKanriNo());
 		
 		//契約番号リスト
 		List<Map<String, Object>> contractPropertyIdList = new ArrayList<Map<String, Object>>();
@@ -735,6 +738,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		
 		//選択された区画番号
 		String selectParkingBlock = dto.getHdnParkingBlock();
+		String selectParkingKanriNo = dto.getParkingKanriNo();
 		//選択された契約番号
 		Long selectContractPropertyId;
 		
@@ -746,7 +750,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				
 		for(Map<String, Object> map : dto.getHdnListData()){
 			//区画番号の一致確認
-			if(selectParkingBlock.compareTo(map.get("parkingBlock").toString()) == 0 ){
+			if(selectParkingKanriNo.compareTo(map.get("parkingKanriNo").toString()) == 0 ){
 				
 				Long mapContractPropertyId = Long.parseLong(map.get("contractPropertyId").toString());
 				//契約番号リスト
@@ -777,7 +781,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 					
 					//契約形態
 					String contractType = map.get("parkingContractType").toString();
-					if(contractType.compareTo(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1) == 0){
+					if(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1.equals(contractType)){
 						//社宅と一括契約の場合
 						//リスト設定
 						skf3010Sc007SharedService.getDoropDownList(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1, parkingContractTypeList, "", parkinglendKbnList);
@@ -855,8 +859,8 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				//契約開始日の取得
 				for(Map<String, Object> map : dto.getHdnListData()){
 					//区画番号の一致かつ削除フラグが1以外か確認
-					if(selectParkingBlock.compareTo(map.get("parkingBlock").toString()) == 0 
-						&& (map.get("deleteFlag").toString().compareTo("1") != 0)){
+					if(selectParkingKanriNo.compareTo(map.get("parkingKanriNo").toString()) == 0 
+						&& (!"1".equals(map.get("deleteFlag").toString()))){
 						
 						Long mapContractPropertyId = Long.parseLong(map.get("contractPropertyId").toString());
 						if(mapContractPropertyId == id){
