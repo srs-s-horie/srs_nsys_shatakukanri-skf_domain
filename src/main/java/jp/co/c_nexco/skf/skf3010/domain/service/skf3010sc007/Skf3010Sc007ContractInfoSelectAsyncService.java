@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -16,7 +15,6 @@ import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007ContractInfoSelectAsyncDto;
 
 

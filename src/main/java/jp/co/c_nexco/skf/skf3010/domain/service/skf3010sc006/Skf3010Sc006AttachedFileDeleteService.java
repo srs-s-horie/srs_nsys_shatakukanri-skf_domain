@@ -35,7 +35,6 @@ public class Skf3010Sc006AttachedFileDeleteService extends BaseServiceAbstract<S
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Skf3010Sc006AttachedFileDeleteDto index(Skf3010Sc006AttachedFileDeleteDto deleteDto) throws Exception {
 

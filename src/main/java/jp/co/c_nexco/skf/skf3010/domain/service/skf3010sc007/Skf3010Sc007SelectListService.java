@@ -314,7 +314,7 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 				//表示内容設定(契約番号：契約開始日)
 				forListMap.put("label", id.toString() + "：" + contractStartDate);
 				contractPropertyIdListData += id.toString() + "：" + contractStartDate +",";
-				if (id.equals(selectContractPropertyId)) {
+				if (Objects.equals(id, selectContractPropertyId)) {
 					//選択契約番号を選択中にする
 					forListMap.put("selected", true);
 				}

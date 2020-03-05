@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,9 +49,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc006common.Skf3010Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006RegistDto;
 import jp.co.intra_mart.common.platform.log.Logger;
@@ -94,14 +93,12 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 	private Skf3010Sc006UpdateMShatakuExpRepository skf3010Sc006UpdateMShatakuExpRepository;
 	@Autowired
 	private Skf3010Sc006UpdateMShatakuParkingExpRepository skf3010Sc006UpdateMShatakuParkingExpRepository;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
 	/** 定数 */
-	// 駐車場契約形態：社宅と一括
-	private static final String PARKING_CONTRACT_TYPE = "1";
+//	// 駐車場契約形態：社宅と一括
+//	private static final String PARKING_CONTRACT_TYPE = "1";
 	// 駐車場契約形態：社宅と別契約
 	private static final String PARKING_CONTRACT_TYPE2 = "2";
 	// 駐車場構造区分：なし
@@ -197,7 +194,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		// 更新カウンタ
 		int updateCnt = 0;
 
-		Map <String, Object> labelMap = (labelList.size() > 0) ? labelList.get(0) : null;
+//		Map <String, Object> labelMap = (labelList.size() > 0) ? labelList.get(0) : null;
 
 		// 新規登録判定:社宅管理番号なし
 		if (SkfCheckUtils.isNullOrEmpty(registDto.getHdnShatakuKanriNo())) {
@@ -294,7 +291,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			String pageId,
 			Skf3010Sc006RegistDto registDto) {
 
-		Map <String, Object> drpDwnSelected = (drpDwnSelectedList.size() > 0) ? drpDwnSelectedList.get(0) : null;
+//		Map <String, Object> drpDwnSelected = (drpDwnSelectedList.size() > 0) ? drpDwnSelectedList.get(0) : null;
 
 		// 更新カウント
 		int updateCnt = 0;
@@ -433,7 +430,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			mShatakuContract.setContractPropertyId(mShatakuContract.getContractPropertyId());
 			// 追加更新判定
 			if ( mShatakuContract.getContractPropertyId() > dbContractList.size() ||
-					mShatakuContract.getContractPropertyId().equals(delNo) ) {
+					Objects.equals(mShatakuContract.getContractPropertyId(), delNo) ) {
 				// 追加
 				updateCnt = skf3010MShatakuContractRepository.insertSelective(mShatakuContract);
 			} else {
@@ -489,7 +486,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			mShatakuParkingContract.setContractPropertyId(mShatakuParkingContract.getContractPropertyId());
 			// 追加更新判定
 			if ( mShatakuParkingContract.getContractPropertyId() > dbParkingContractList.size() ||
-					mShatakuParkingContract.getContractPropertyId().equals(parkingDelNo) ) {
+					Objects.equals(mShatakuParkingContract.getContractPropertyId(), parkingDelNo) ) {
 				// 追加(契約情報リストより大きい、または削除番号と一致
 				if(!PARKING_STRUCTURE_NASHI.equals(mShatakuParking.getParkingStructureKbn())){
 					//駐車場構造が"なし"でない場合のみ登録する

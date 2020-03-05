@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -59,7 +61,7 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-				&& initDto.getPrePageId().equals(FunctionIdConstant.SKF3010_SC005)) {
+				&& Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3010_SC005)) {
 			/** 保有社宅部屋登録画面からの遷移 */
 			LogUtils.debugByMsg("保有社宅部屋登録画面からの遷移");
 			// 登録画面のhidden項目をinitDtoに詰めなおす

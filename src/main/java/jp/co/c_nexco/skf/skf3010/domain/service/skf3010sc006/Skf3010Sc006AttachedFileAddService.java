@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +62,6 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Skf3010Sc006AttachedFileAddDto index(Skf3010Sc006AttachedFileAddDto addDto) throws Exception {
 
@@ -237,17 +237,17 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 			//社宅
 			switch (fileNo){
 			case "1":
-				if(fileName2.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName2, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "2":
-				if(fileName1.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "3":
-				if(fileName1.equals(fileName) || fileName2.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName2, fileName)){
 					sameName = true;
 				}
 				break;
@@ -260,17 +260,17 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 			//社宅
 			switch (fileNo){
 			case "1":
-				if(fileName2.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName2, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "2":
-				if(fileName1.equals(fileName) || fileName3.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName3, fileName)){
 					sameName = true;
 				}
 				break;
 			case "3":
-				if(fileName1.equals(fileName) || fileName2.equals(fileName)){
+				if(Objects.equals(fileName1, fileName) || Objects.equals(fileName2, fileName)){
 					sameName = true;
 				}
 				break;
@@ -286,7 +286,7 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 
 		
 		// 拡張子チェック
-		String extension = skfAttachedFileUtiles.getExtension(fileName);
+		String extension = SkfAttachedFileUtils.getExtension(fileName);
 		if (CheckUtils.isEmpty(extension)) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1042,"添付資料");
 			return false;
@@ -322,7 +322,7 @@ public class Skf3010Sc006AttachedFileAddService extends BaseServiceAbstract<Skf3
 		boolean findFlg = false;
 		if (shatakuAttachedFileList != null) {
 			for (Map<String, Object> attachedFileMap : shatakuAttachedFileList) {
-				if (fileName.equals(attachedFileMap.get("attachedName"))) {
+				if (Objects.equals(fileName, attachedFileMap.get("attachedName"))) {
 					findFlg = true;
 					break;
 				}

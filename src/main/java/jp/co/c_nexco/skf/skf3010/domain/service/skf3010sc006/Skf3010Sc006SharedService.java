@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -75,7 +76,6 @@ import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc006common.Skf3010Sc006CommonDto;
 import jp.co.intra_mart.common.platform.log.Logger;
 
@@ -975,7 +975,7 @@ public class Skf3010Sc006SharedService {
 			Skf3010Sc006GetBihinInfoExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 
-			if(!tmpData.getDispFlg().equals("0")){
+			if(!Objects.equals(tmpData.getDispFlg(), "0")){
 				// 備品コード
 				if (tmpData.getBihinCd() != null) {
 					bihinCode = HtmlUtils.htmlEscape(tmpData.getBihinCd());
@@ -1035,7 +1035,7 @@ public class Skf3010Sc006SharedService {
 			Skf3010Sc006GetBihinInfoExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 			// 表示/非表示判定
-			if(tmpData.getDispFlg().equals("0")){
+			if(Objects.equals(tmpData.getDispFlg(), "0")){
 				//DispFlgが0（非表示）
 				// 備品コード
 				if (tmpData.getBihinCd() != null) {
@@ -1758,7 +1758,7 @@ public class Skf3010Sc006SharedService {
 		// 選択契約情報取得
 		if (contractNoList.size() > 0) {
 			for (Map<String, Object> contractDataMap : listTableData) {
-				if (contractDataMap.get("contractNo").equals(selectIndex)) {
+				if (Objects.equals(contractDataMap.get("contractNo"), selectIndex)) {
 					contractMap = contractDataMap;
 					break;
 				}
@@ -1948,7 +1948,7 @@ public class Skf3010Sc006SharedService {
 			}
 			// 選択契約情報取得
 			for (Map<String, Object> contractDataMap : listTableData) {
-				if (contractDataMap.get("contractNo").equals(selectIndex)) {
+				if (Objects.equals(contractDataMap.get("contractNo"), selectIndex)) {
 					contractMap = contractDataMap;
 					break;
 				}
@@ -3662,7 +3662,7 @@ public class Skf3010Sc006SharedService {
 			// 契約番号ループ
 			for (Map<String, Object> contractMap : contractNoList) {
 				// 選択値判定
-				if (contractNo.equals(contractMap.get("value").toString())) {
+				if (Objects.equals(contractNo, contractMap.get("value"))) {
 					// ドロップダウン選択値設定
 					contractMap.put("selected", "true");
 				} else {
@@ -3698,7 +3698,7 @@ public class Skf3010Sc006SharedService {
 				// 契約番号ループ
 				for (Map<String, Object> contractMap : parkingContractNoList) {
 					// 選択値判定
-					if (parkingContractNo.equals(contractMap.get("value").toString())) {
+					if (Objects.equals(parkingContractNo, contractMap.get("value"))) {
 						// ドロップダウン選択値設定
 						contractMap.put("selected", "true");
 					} else {

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006ChangeContractDrpDwnDto;
 import jp.co.intra_mart.common.platform.log.Logger;
 
@@ -131,7 +131,7 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends BaseServiceAbstract
 			// 削除ボタン活性
 			contractDelDisableFlg = false;
 			for (Map<String, Object> contractDataMap : contractList) {
-				if (contractDataMap.get("contractNo").equals(selectedContraceNo)) {
+				if (Objects.equals(contractDataMap.get("contractNo"), selectedContraceNo)) {
 					contractMap = contractDataMap;
 					break;
 				}

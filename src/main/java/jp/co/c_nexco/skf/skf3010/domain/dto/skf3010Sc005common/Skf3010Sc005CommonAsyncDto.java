@@ -3,8 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc005common;
 
-import java.util.List;
-import java.util.Map;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import lombok.EqualsAndHashCode;
 

@@ -11,7 +11,6 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc006common.Skf3010Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006InitDto;
 import jp.co.intra_mart.common.platform.log.Logger;
@@ -61,7 +60,7 @@ public class Skf3010Sc006InitService extends BaseServiceAbstract<Skf3010Sc006Ini
 		skf3010Sc006SharedService.setShatakuInfo("", "",initDto);
 
 		// 選択タブインデックス設定：基本情報タブ
-		initDto.setHdnNowSelectTabIndex(Skf3010Sc002CommonDto.SELECT_TAB_INDEX_KIHON);
+		initDto.setHdnNowSelectTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_KIHON);
 		initDto.setShatakuKbn("借上");
 
 		return initDto;

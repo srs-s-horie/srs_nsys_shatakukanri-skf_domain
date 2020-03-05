@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +34,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007RegistDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
@@ -64,8 +64,6 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	
 	private final static String TRUE = "true";
 	private final static String FALSE = "false";
@@ -73,7 +71,6 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 	/**
 	 * 登録処理メインメソッド.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	protected BaseDto index(Skf3010Sc007RegistDto registDto) throws Exception {
@@ -201,7 +198,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				//削除フラグチェック
 				String deleteFlag = map.get("deleteFlag").toString();
 				//契約番号の一致確認
-				if(selectContractPropertyId.equals(mapContractPropertyId)){
+				if(Objects.equals(selectContractPropertyId, mapContractPropertyId)){
 					if(deleteFlag.compareTo(Skf3010Sc007CommonSharedService.DELETE_FLAG_ON) != 0){
 						//契約情報有かつ削除フラグ1以外で、更新フラグON
 						modeUpdate=true;
@@ -872,7 +869,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				//表示内容設定
 				forListMap.put("label", id.toString() + "：" + contractStartDate);
 				
-				if (id.equals(selectContractPropertyId)) {
+				if (Objects.equals(id, selectContractPropertyId)) {
 					//選択契約番号を選択中にする
 					forListMap.put("selected", true);
 				}

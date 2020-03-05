@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,7 +126,7 @@ public class Skf3010Sc006DelContractListService extends BaseServiceAbstract<Skf3
 					contractNoMap.remove("selected");
 				}
 				// 削除契約番号判定
-				if (deletedConstractNo.equals(contractNoMap.get("value"))) {
+				if (Objects.equals(deletedConstractNo, contractNoMap.get("value"))) {
 					// 削除インデックス取得
 					delContractIndex = i;
 				}

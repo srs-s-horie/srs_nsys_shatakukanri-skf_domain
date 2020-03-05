@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc006common.Skf3010Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006ChangeParkingContractListDto;
 import jp.co.intra_mart.common.platform.log.Logger;
@@ -192,7 +192,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 					// 削除ボタン活性
 					contractDelDisableFlg = false;
 					for (Map<String, Object> contractDataMap : contractList) {
-						if (contractDataMap.get("contractNo").equals(selectedContraceNo)) {
+						if (Objects.equals(contractDataMap.get("contractNo"), selectedContraceNo)) {
 							contractMap = contractDataMap;
 							break;
 						}
@@ -219,7 +219,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 							contractNoMap.remove("selected");
 						}
 						// 削除契約番号判定
-						if (deletedConstractNo.equals(contractNoMap.get("value").toString())) {
+						if (Objects.equals(deletedConstractNo, contractNoMap.get("value"))) {
 							// 削除インデックス取得
 							delContractIndex = i;
 						}
@@ -237,7 +237,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends BaseServiceAbs
 					// 契約情報リストから最大契約番号の契約情報を取得
 					String maxContractNo = contractNoList.get(contractNoList.size() - 1).get("value").toString();
 					for (Map<String, Object> contractDataMap : contractList) {
-						if (contractDataMap.get("contractNo").equals(maxContractNo)) {
+						if (Objects.equals(contractDataMap.get("contractNo"), maxContractNo)) {
 							contractMap = contractDataMap;
 							break;
 						}

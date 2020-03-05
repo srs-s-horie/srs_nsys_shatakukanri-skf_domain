@@ -42,8 +42,6 @@ public class Skf3010Sc007AddressSearchAsyncService
 	private Skf3010Sc007GetZipToAddressExpRepository skf3010Sc007GetZipToAddressExpRepository;
 	
 	
-	private final static String TRUE = "true";
-	private final static String FALSE = "false";
 	/**
 	 * 駐車場契約情報の編集有無チェック
 	 */

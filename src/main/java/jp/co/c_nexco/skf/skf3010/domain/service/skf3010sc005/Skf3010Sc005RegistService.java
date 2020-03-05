@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +65,6 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 	/**
 	 * 登録処理メインメソッド.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	protected BaseDto index(Skf3010Sc005RegistDto registDto) throws Exception {
@@ -115,7 +116,7 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 			return registDto;
 		}
 
-		if (registDto.getHdnRegistFlg().equals(Skf3010Sc005CommonSharedService.DATA_INSERT)) {
+		if (Objects.equals(registDto.getHdnRegistFlg(), Skf3010Sc005CommonSharedService.DATA_INSERT)) {
 			/** 登録処理 */
 			LogUtils.debugByMsg("社宅部屋登録");
 			

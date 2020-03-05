@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
@@ -213,7 +215,7 @@ public class Skf3010Sc005SharedService {
 			Skf3010Sc005GetBihinInfoExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 
-			if(!tmpData.getDispFlg().equals("0")){
+			if(!Objects.equals(tmpData.getDispFlg(), "0")){
 				tmpMap.put("bihinCode", HtmlUtils.htmlEscape(tmpData.getBihinCd()));
 				tmpMap.put("bihinName", HtmlUtils.htmlEscape(tmpData.getBihinName()));
 				// 「備付状況」の設定
@@ -259,7 +261,7 @@ public class Skf3010Sc005SharedService {
 			Skf3010Sc005GetBihinInfoExp tmpData = originList.get(i);
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 
-			if(tmpData.getDispFlg().equals("0")){
+			if(Objects.equals(tmpData.getDispFlg(), "0")){
 				//DispFlgが0（非表示）
 				tmpMap.put("bihinCode", tmpData.getBihinCd());
 				tmpMap.put("bihinName", tmpData.getBihinName());
