@@ -627,6 +627,12 @@ public class Skf2040Sc001SharedService {
 			// 駐車場返還を行う場合のみ退居返還日を設定する
 			param.setParkingHenkanDate(dto.getTaikyoHenkanDate());
 		}
+		
+		// 社宅名＋部屋番号
+		param.setTaikyoArea(dto.getHdnSelectedNowShatakuName() + dto.getHdnNowShatakuRoomNo());
+		
+		// 退居（返還）日
+		param.setTaikyoDate(dto.getTaikyoHenkanDate());
 
 		// 退居理由区分
 		param.setTaikyoRiyuKbn(dto.getTaikyoRiyuKbn());
@@ -672,28 +678,10 @@ public class Skf2040Sc001SharedService {
 		param.setSessionTime(dto.getSessionTime());
 		// 連絡先
 		param.setRenrakuSaki(dto.getRenrakuSaki());
-		// 退居場所
-		// 社宅名＋部屋番号
-		// 退居返還日
-		if (isShatakuTaikyoChecked) {
-			param.setTaikyoArea(dto.getHdnSelectedNowShatakuName() + dto.getHdnNowShatakuRoomNo());
-			param.setTaikyoDate(dto.getTaikyoHenkanDate());
-		} else {
-			param.setTaikyoArea(CommonConstant.C_EMPTY);
-			param.setTaikyoDate(CommonConstant.C_EMPTY);
-		}
 		// 駐車場保管場所１
-		if (isParking1stHenkanChecked) {
-			param.setParkingAddress1(dto.getParking1stPlace());
-		} else {
-			param.setParkingAddress1(CommonConstant.C_EMPTY);
-		}
+		param.setParkingAddress1(dto.getParking1stPlace());
 		// 駐車場保管場所２
-		if (isParking2ndHenkanChecked) {
-			param.setParkingAddress2(dto.getParking2ndPlace());
-		} else {
-			param.setParkingAddress2(CommonConstant.C_EMPTY);
-		}
+		param.setParkingAddress2(dto.getParking2ndPlace());
 
 		return param;
 	}
