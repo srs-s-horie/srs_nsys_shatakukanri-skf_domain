@@ -791,9 +791,15 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 決定通知書用共益費設定
 		String ketteiKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
 		initDto.setKetteiKyoekihi(ketteiKyoekihi);
-		if (NfwStringUtils.isEmpty(newKyoekihi)) {
+		if (NfwStringUtils.isEmpty(ketteiKyoekihi)) {
 			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
-				initDto.setNewKyoekihi(GOJITSU_TEXT);
+				initDto.setKetteiKyoekihi(GOJITSU_TEXT);
+			}
+		} else {
+			// 個人負担共益費協議中フラグチェック
+			if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getKyoekihiPersonKyogichuFlg(),
+					CodeConstant.KYOEKIHI_KYOGICHU)) {
+				initDto.setKetteiKyoekihi(KYOGICHU_TEXT);
 			}
 		}
 
