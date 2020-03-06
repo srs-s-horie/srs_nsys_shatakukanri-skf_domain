@@ -41,6 +41,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 	private static final int AFFILIATION1_BREAK_LENGTH = 32;
 	private static final int AFFILIATION2_BREAK_LENGTH = 32;
 	private static final int CAR_NAME = 32;
+	private static final int CAR_USER = 32;
 
 	@Override
 	protected String getPdfFileName() {
@@ -153,7 +154,16 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 				pdfData.setTextBoxEnd();
 			}
 			pdfData.setData("carNo", NfwStringUtils.defaultString(dto.getCarNo()));
-			pdfData.setData("carUser", NfwStringUtils.defaultString(dto.getCarUser()));
+			// 自動車の使用者
+			if (NfwStringUtils.defaultString(dto.getCarUser())
+					.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= CAR_USER) {
+				pdfData.setData("carUser", NfwStringUtils.defaultString(dto.getCarUser()));
+			} else {
+				// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+				pdfData.setTextBoxStart("carUser_long");
+				pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarUser()));
+				pdfData.setTextBoxEnd();
+			}
 			pdfData.setData("carExpirationDate", NfwStringUtils.defaultString(dto.getCarExpirationDate()));
 			pdfData.setData("carIchiNo", CodeConstant.NONE);
 			pdfData.setData("parkingRental", NfwStringUtils.defaultString(dto.getParkingRental()));
@@ -169,12 +179,21 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 				pdfData.setData("carName2", NfwStringUtils.defaultString(dto.getCarName2()));
 			} else {
 				// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
-				pdfData.setTextBoxStart("carName_long2");
+				pdfData.setTextBoxStart("carName2_long");
 				pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarName2()));
 				pdfData.setTextBoxEnd();
 			}
 			pdfData.setData("carNo2", NfwStringUtils.defaultString(dto.getCarNo2()));
-			pdfData.setData("carUser2", NfwStringUtils.defaultString(dto.getCarUser2()));
+			// 自動車の使用者2
+			if (NfwStringUtils.defaultString(dto.getCarUser2())
+					.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= CAR_USER) {
+				pdfData.setData("carUser2", NfwStringUtils.defaultString(dto.getCarUser2()));
+			} else {
+				// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+				pdfData.setTextBoxStart("carUser2_long");
+				pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarUser2()));
+				pdfData.setTextBoxEnd();
+			}
 			pdfData.setData("carExpirationDate2", NfwStringUtils.defaultString(dto.getCarExpirationDate2()));
 			pdfData.setData("carIchiNo2", CodeConstant.NONE);
 			pdfData.setData("parkingRental2", NfwStringUtils.defaultString(dto.getParkingRental2()));
