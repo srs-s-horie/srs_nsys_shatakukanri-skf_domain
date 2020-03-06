@@ -951,23 +951,25 @@ public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002Ini
 		}
 
 		// 駐車場返還日
-		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
-
-			// 駐車場返還日 年月日形式で設定、日付変更フラグを0にする
-			initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
-			initDto.setParkingEDateFlg(SkfCommonConstant.NOT_CHANGE);
-
-			// 日付変更フラグが1:変更ありなら赤文字にする
-			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
-					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
-				initDto.setParkingEDateFlg(taikyoRepDt.getParkingEDateFlg());
+		if ("1".equals(taikyoRepDt.getTaikyoParking1()) || "1".equals(taikyoRepDt.getTaikyoParking2())) {
+			if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
+	
+				// 駐車場返還日 年月日形式で設定、日付変更フラグを0にする
+				initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+				initDto.setParkingEDateFlg(SkfCommonConstant.NOT_CHANGE);
+	
+				// 日付変更フラグが1:変更ありなら赤文字にする
+				if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
+						&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
+					initDto.setParkingEDateFlg(taikyoRepDt.getParkingEDateFlg());
+				}
+			} else {
+				// 駐車場返還日がない場合は、退居日を設定
+				initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+				initDto.setParkingEDateFlg(SkfCommonConstant.NOT_CHANGE);
 			}
-		} else {
-			// 駐車場返還日がない場合は、退居日を設定
-			initDto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
-			initDto.setParkingEDateFlg(SkfCommonConstant.NOT_CHANGE);
 		}
 		// 退居（返還）理由
 		if (!CheckUtils.isEqual(taikyoRepDt.getTaikyoRiyuKbn(), CodeConstant.TAIKYO_RIYU_OTHERS)) {
