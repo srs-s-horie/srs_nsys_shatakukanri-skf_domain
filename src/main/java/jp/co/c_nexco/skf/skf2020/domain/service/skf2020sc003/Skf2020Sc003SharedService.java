@@ -25,10 +25,9 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNameListExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
@@ -70,6 +69,7 @@ import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShatakuInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc003common.Skf2020Sc003CommonDto;
@@ -158,6 +158,8 @@ public class Skf2020Sc003SharedService {
 	private SkfShatakuInfoUtils skfShatakuInfoUtils;
 	@Autowired
 	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
+	@Autowired
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
 
 	public void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
 		menuScopeSessionBean = bean;
@@ -740,9 +742,9 @@ public class Skf2020Sc003SharedService {
 	 * @param updateFlg 更新フラグ
 	 */
 	private boolean setTeijiDataInfo(String shainNo, String applNo, Skf2020Sc003CommonDto dto, String updateFlg) {
-		List<Skf2020Sc003GetTeijiDataInfoExp> teijiDataInfoList = new ArrayList<Skf2020Sc003GetTeijiDataInfoExp>();
-		String nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_NYUKYO;
-		teijiDataInfoList = getTeijiDataInfo(shainNo, nyutaikyoKbn, applNo);
+		List<SkfTeijiDataInfoUtilsGetTeijiDataInfoExp> teijiDataInfoList = new ArrayList<SkfTeijiDataInfoUtilsGetTeijiDataInfoExp>();
+		// 提示データを取得する
+		teijiDataInfoList = skfTeijiDataInfoUtils.getTeijiDataInfo(shainNo, CodeConstant.NYUTAIKYO_KBN_NYUKYO, applNo);
 		if (teijiDataInfoList == null || teijiDataInfoList.size() <= 0) {
 			// 社宅提示データが取得できなかった場合
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1001, SHATAKU_TEIJI_MSG,
@@ -751,7 +753,7 @@ public class Skf2020Sc003SharedService {
 			return false;
 		}
 
-		Skf2020Sc003GetTeijiDataInfoExp teijiDataInfo = new Skf2020Sc003GetTeijiDataInfoExp();
+		SkfTeijiDataInfoUtilsGetTeijiDataInfoExp teijiDataInfo = new SkfTeijiDataInfoUtilsGetTeijiDataInfoExp();
 		teijiDataInfo = teijiDataInfoList.get(0);
 
 		String createCompKbn = teijiDataInfo.getCreateCompleteKbn();
@@ -932,6 +934,7 @@ public class Skf2020Sc003SharedService {
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 		}
 
+		// if (NfwStringUtils.isNotEmpty(teijiDataInfo.getParkingBlock2())) {
 		// 駐車場情報 ２台目 自動車の保管場所
 		if (!NfwStringUtils.isEmpty(teijiDataInfo.getParkingAddress2())) {
 			dto.setParkingAddress2(wkPrefNameParking + teijiDataInfo.getParkingAddress2());
@@ -1800,24 +1803,6 @@ public class Skf2020Sc003SharedService {
 		bihinInfo = skf2020Sc003GetBihinInfoOutExpRepository.getBihinInfoOut(param);
 
 		return bihinInfo;
-	}
-
-	/**
-	 * 条件を指定して提示データ情報を取得します
-	 * 
-	 * @param shainNo
-	 * @param nyutaikyoKbn
-	 * @param applNo
-	 * @return
-	 */
-	private List<Skf2020Sc003GetTeijiDataInfoExp> getTeijiDataInfo(String shainNo, String nyutaikyoKbn, String applNo) {
-		List<Skf2020Sc003GetTeijiDataInfoExp> teijiDataList = new ArrayList<Skf2020Sc003GetTeijiDataInfoExp>();
-		Skf2020Sc003GetTeijiDataInfoExpParameter param = new Skf2020Sc003GetTeijiDataInfoExpParameter();
-		param.setShainNo(shainNo);
-		param.setNyutaikyoKbn(nyutaikyoKbn);
-		param.setApplNo(applNo);
-		teijiDataList = skf2020Sc003GetTeijiDataInfoExpRepository.getTeijiDataInfo(param);
-		return teijiDataList;
 	}
 
 	/**

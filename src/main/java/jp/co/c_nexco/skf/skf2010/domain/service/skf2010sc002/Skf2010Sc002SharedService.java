@@ -218,7 +218,7 @@ public class Skf2010Sc002SharedService {
 			break;
 		}
 		// 承認者権限の場合のみ「室、チーム又は課」名称を表示する
-		if (isApplyUser && loginUserInfoMap.get("affiliation2Name") != null) {
+		if (isApplyUser && NfwStringUtils.isNotEmpty(loginUserInfoMap.get("affiliation2Name"))) {
 			tmpNameList.add(loginUserInfoMap.get("affiliation2Name"));
 		}
 		tmpNameList.add(loginUserInfoMap.get("userName"));
