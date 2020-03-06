@@ -795,12 +795,6 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
 				initDto.setKetteiKyoekihi(GOJITSU_TEXT);
 			}
-		} else {
-			// 個人負担共益費協議中フラグチェック
-			if (CheckUtils.isEqual(tNyukyoChoshoTsuchi.getKyoekihiPersonKyogichuFlg(),
-					CodeConstant.KYOEKIHI_KYOGICHU)) {
-				initDto.setKetteiKyoekihi(KYOGICHU_TEXT);
-			}
 		}
 
 		// 入居日
