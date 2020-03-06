@@ -438,35 +438,45 @@ public class Skf2040Sc002SharedService {
 		// 社宅退居区分
 		taikyoRepDt.getShatakuTaikyoKbn();
 		// 社宅
-		dto.setTaikyoArea(taikyoRepDt.getTaikyoArea());
+		if ("1".equals(taikyoRepDt.getTaikyoShataku())) {
+			dto.setTaikyoArea(taikyoRepDt.getTaikyoArea());
+		}
 		// 駐車場1
-		dto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
+		if ("1".equals(taikyoRepDt.getTaikyoParking1())) {
+			dto.setParkingAddress1(taikyoRepDt.getParkingAddress1());
+		}
 		// 駐車場2
-		dto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
+		if ("1".equals(taikyoRepDt.getTaikyoParking2())) {
+			dto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
+		}
 		// 退居日 社宅等
 		// 退居日
-		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
-			dto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
-			// 日付変更フラグが1:変更ありなら赤文字にする
-			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
-					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
-				dto.setTaikyoDateFlg(taikyoRepDt.getTaikyoDateFlg());
+		if ("1".equals(taikyoRepDt.getTaikyoShataku())) {
+			if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
+				dto.setTaikyoDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+				// 日付変更フラグが1:変更ありなら赤文字にする
+				if (NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDateFlg())
+						&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getTaikyoDateFlg())) {
+					dto.setTaikyoDateFlg(taikyoRepDt.getTaikyoDateFlg());
+				}
 			}
 		}
 		// 駐車場返還日
-		if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
-			dto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
-			// 日付変更フラグが1:変更ありなら赤文字にする
-			if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
-					&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
-				dto.setParkingEDateFlg(taikyoRepDt.getParkingEDateFlg());
+		if ("1".equals(taikyoRepDt.getTaikyoParking1()) || "1".equals(taikyoRepDt.getTaikyoParking2())) {
+			if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
+				dto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getParkingHenkanDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
+				// 日付変更フラグが1:変更ありなら赤文字にする
+				if (NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingEDateFlg())
+						&& SkfCommonConstant.DATE_CHANGE.equals(taikyoRepDt.getParkingEDateFlg())) {
+					dto.setParkingEDateFlg(taikyoRepDt.getParkingEDateFlg());
+				}
+			} else {
+				// 駐車場返還日がない場合は、退居日を設定
+				dto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 			}
-		} else {
-			// 駐車場返還日がない場合は、退居日を設定
-			dto.setParkingHenkanDate(skfDateFormatUtils.dateFormatFromString(taikyoRepDt.getTaikyoDate(),
-					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR));
 		}
 		// 退居（返還）理由
 		if (!CheckUtils.isEqual(taikyoRepDt.getTaikyoRiyuKbn(), CodeConstant.TAIKYO_RIYU_OTHERS)) {

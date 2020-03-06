@@ -867,25 +867,35 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 
 		// 社宅情報
 		// 社宅名
-		initDto.setTaikyoArea(taikyoReport.getTaikyoArea());
-
+		if ("1".equals(taikyoReport.getTaikyoShataku())) {
+			initDto.setTaikyoArea(taikyoReport.getTaikyoArea());
+		}
+		
 		// 自動車１台目
 		// 自動車の保管場所
-		initDto.setParkingAddress1(taikyoReport.getParkingAddress1());
+		if ("1".equals(taikyoReport.getTaikyoParking1())) {
+			initDto.setParkingAddress1(taikyoReport.getParkingAddress1());
+		}
 		// 自動車２台目
 		// 自動車の保管場所
-		initDto.setParkingAddress2(taikyoReport.getParkingAddress2());
+		if ("1".equals(taikyoReport.getTaikyoParking2())) {
+			initDto.setParkingAddress2(taikyoReport.getParkingAddress2());
+		}
 
 		// 退居日変更フラグ
 		initDto.setTaikyoDateFlg(taikyoReport.getTaikyoDateFlg());
 		// 退居日
-		String taikyoDate = taikyoReport.getTaikyoDate();
-		String taikyoDateText = skfDateFormatUtils.dateFormatFromString(taikyoDate, "yyyy年MM月dd日");
-		initDto.setTaikyoDate(taikyoDateText);
+		if ("1".equals(taikyoReport.getTaikyoShataku())) {
+			String taikyoDate = taikyoReport.getTaikyoDate();
+			String taikyoDateText = skfDateFormatUtils.dateFormatFromString(taikyoDate, "yyyy年MM月dd日");
+			initDto.setTaikyoDate(taikyoDateText);
+		}
 		// 駐車場返還日
-		String parkingHenkanDate = taikyoReport.getParkingHenkanDate();
-		String parkingHenkanDateText = skfDateFormatUtils.dateFormatFromString(parkingHenkanDate, "yyyy年MM月dd日");
-		initDto.setParkingHenkanDate(parkingHenkanDateText);
+		if ("1".equals(taikyoReport.getTaikyoParking1()) || "1".equals(taikyoReport.getTaikyoParking2())) {
+			String parkingHenkanDate = taikyoReport.getParkingHenkanDate();
+			String parkingHenkanDateText = skfDateFormatUtils.dateFormatFromString(parkingHenkanDate, "yyyy年MM月dd日");
+			initDto.setParkingHenkanDate(parkingHenkanDateText);
+		}
 
 		// 退居理由
 		initDto.setTaikyoRiyu(taikyoReport.getTaikyoRiyu());
