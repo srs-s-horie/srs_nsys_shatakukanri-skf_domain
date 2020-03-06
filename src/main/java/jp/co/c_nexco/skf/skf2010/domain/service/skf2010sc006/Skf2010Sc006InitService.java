@@ -791,9 +791,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		// 決定通知書用共益費設定
 		String ketteiKyoekihi = tNyukyoChoshoTsuchi.getNewKyoekihi();
 		initDto.setKetteiKyoekihi(ketteiKyoekihi);
-		if (NfwStringUtils.isEmpty(newKyoekihi)) {
+		if (NfwStringUtils.isEmpty(ketteiKyoekihi)) {
 			if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewShatakuNo())) {
-				initDto.setNewKyoekihi(GOJITSU_TEXT);
+				initDto.setKetteiKyoekihi(GOJITSU_TEXT);
 			}
 		}
 
@@ -882,6 +882,10 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		String taikyoDate = taikyoReport.getTaikyoDate();
 		String taikyoDateText = skfDateFormatUtils.dateFormatFromString(taikyoDate, "yyyy年MM月dd日");
 		initDto.setTaikyoDate(taikyoDateText);
+		// 駐車場返還日
+		String parkingHenkanDate = taikyoReport.getParkingHenkanDate();
+		String parkingHenkanDateText = skfDateFormatUtils.dateFormatFromString(parkingHenkanDate, "yyyy年MM月dd日");
+		initDto.setParkingHenkanDate(parkingHenkanDateText);
 
 		// 退居理由
 		initDto.setTaikyoRiyu(taikyoReport.getTaikyoRiyu());
