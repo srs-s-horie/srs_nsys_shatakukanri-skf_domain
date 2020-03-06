@@ -86,8 +86,7 @@ public class Skf206010CommonSendMailService {
 		String comment = this.getApproveCommentStr(applInfoExp.getApplNo());
 
 		// メールに記載するURLを生成
-		String url = SKF2060SC002_URL_BASE + this.makeUrlParamsStr(applInfoExp.getShainNo(), applNo,
-				applInfoExp.getApplStatus(), SKF2060SC002_BACK_URL);
+		String url = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 
 		// URLを設定
 		this.sendKariageTeijiMail(applInfoExp.getApplNo(), applInfoExp.getApplDate(), shainInfoExp.getName(), comment,
@@ -193,11 +192,7 @@ public class Skf206010CommonSendMailService {
 		replaceMap.put("【appl_date】", StringUtils.defaultString(applDateStr)); // 申請日
 
 		// 短縮URL作成
-		if (urlBase != null) {
-			Map<String, String> urlMap = new HashMap<String, String>();
-			String url = NfwSendMailUtils.createShotcutUrl(urlBase, urlMap, 2);
-			replaceMap.put("【url】", StringUtils.defaultString(url));
-		}
+		replaceMap.put("【url】", StringUtils.defaultString(urlBase));
 
 		// メール送信
 		NfwSendMailUtils.sendMail(this.REMINDER_MAIL_TEMPLATE_ID, replaceMap);
