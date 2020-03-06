@@ -47,8 +47,13 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TShatakuRentalRireki
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006UpdateRentalPatternExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002GetRentalPatternInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002GetShatakuUpdateTaikyoCheckExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002UpdateShatakuKanriDaichoBihinExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002UpdateShatakuKanriDaichoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002UpdateShatakuKanriDaichoSogoRiyoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002UpdateTeijiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002UpdateTsukibetsuChushajoRirekiExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002UpdateTsukibetsuShiyoryoRirekiExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002UpdateTsukibetsuSogoRiyoRirekiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingBlockRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiBihinDataRepository;
@@ -127,8 +132,16 @@ public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002R
 	private Skf3030Sc002GetShatakuUpdateTaikyoCheckExpRepository skf3030Sc002GetShatakuUpdateTaikyoCheckExpRepository;
 	@Autowired
 	private Skf3030Sc002UpdateTsukibetsuChushajoRirekiExpRepository skf3030Sc002UpdateTsukibetsuChushajoRirekiExpRepository;
-	
-	
+	@Autowired
+	private Skf3030Sc002UpdateShatakuKanriDaichoExpRepository skf3030Sc002UpdateShatakuKanriDaichoExpRepository;
+	@Autowired
+	private Skf3030Sc002UpdateShatakuKanriDaichoBihinExpRepository skf3030Sc002UpdateShatakuKanriDaichoBihinExpRepository;
+	@Autowired
+	private Skf3030Sc002UpdateShatakuKanriDaichoSogoRiyoExpRepository skf3030Sc002UpdateShatakuKanriDaichoSogoRiyoExpRepository;
+	@Autowired
+	private Skf3030Sc002UpdateTsukibetsuShiyoryoRirekiExpRepository skf3030Sc002UpdateTsukibetsuShiyoryoRirekiExpRepository;
+	@Autowired
+	private Skf3030Sc002UpdateTsukibetsuSogoRiyoRirekiExpRepository skf3030Sc002UpdateTsukibetsuSogoRiyoRirekiExpRepository;
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -1055,8 +1068,8 @@ public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002R
 		//「社宅管理台帳基本テーブル」のデータ更新
 		Skf3030TShatakuLedger selectSL = skf3030TShatakuLedgerRepository.selectByPrimaryKey(shatakuLedgercolumnInfoList.getShatakuKanriId());
 		if(selectSL != null){
-			updateCount = skf3030TShatakuLedgerRepository.updateByPrimaryKeySelective(shatakuLedgercolumnInfoList);
-			if(updateCount == 0){
+			updateCount = skf3030Sc002UpdateShatakuKanriDaichoExpRepository.updateShatakuKanriDaicho(shatakuLedgercolumnInfoList);
+			if(updateCount <= 0){
 				resultMap.put("returnCount", 0);
 				resultMap.put("shatakuKanriId",shatakuKanriId);
 				return resultMap;
@@ -1348,7 +1361,7 @@ public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002R
 		//「社宅管理台帳基本テーブル」のデータ更新
 		Skf3030TShatakuLedger selectSL = skf3030TShatakuLedgerRepository.selectByPrimaryKey(shatakuLedgerDataColumnInfoList.getShatakuKanriId());
 		if(selectSL != null){
-			updateCount = skf3030TShatakuLedgerRepository.updateByPrimaryKeySelective(shatakuLedgerDataColumnInfoList);
+			updateCount = skf3030Sc002UpdateShatakuKanriDaichoExpRepository.updateShatakuKanriDaicho(shatakuLedgerDataColumnInfoList);
 			if(updateCount == 0){
 				return 0;
 			}else{
@@ -1359,7 +1372,8 @@ public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002R
 		//「社宅管理台帳備品基本テーブル」のデータ更新
 		Skf3030TShatakuBihin selectShatakuBihin = skf3030TShatakuBihinRepository.selectByPrimaryKey(shatakuBihinDataColumnInfoList.getShatakuKanriId());
 		if(selectShatakuBihin != null){
-			updateCount = skf3030TShatakuBihinRepository.updateByPrimaryKeySelective(shatakuBihinDataColumnInfoList);
+			updateCount = 
+					skf3030Sc002UpdateShatakuKanriDaichoBihinExpRepository.updateShatakuKanriDaichoBihin(shatakuBihinDataColumnInfoList);
 			if(updateCount == 0){
 				return 0;
 			}else{
@@ -1370,7 +1384,7 @@ public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002R
 		//「社宅管理台帳相互利用基本テーブル」のデータ更新
 		Skf3030TShatakuMutual selectShatakuMutual = skf3030TShatakuMutualRepository.selectByPrimaryKey(shatakuMutualDataColumnInfoList.getShatakuKanriId());
 		if(selectShatakuMutual != null){
-			updateCount = skf3030TShatakuMutualRepository.updateByPrimaryKeySelective(shatakuMutualDataColumnInfoList);
+			updateCount = skf3030Sc002UpdateShatakuKanriDaichoSogoRiyoExpRepository.updateShatakuKanriDaichoSogoRiyo(shatakuMutualDataColumnInfoList);
 			if(updateCount == 0){
 				return 0;
 			}else{
@@ -1384,7 +1398,7 @@ public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002R
 		rirekiKey.setYearMonth(shatakuRentalRirekiDataColumnInfoList.getYearMonth());
 		Skf3030TShatakuRentalRireki selectRireki = skf3030TShatakuRentalRirekiRepository.selectByPrimaryKey(rirekiKey);
 		if(selectRireki != null){
-			updateCount = skf3030TShatakuRentalRirekiRepository.updateByPrimaryKeySelective(shatakuRentalRirekiDataColumnInfoList);
+			updateCount = skf3030Sc002UpdateTsukibetsuShiyoryoRirekiExpRepository.updateTsukibetsuShiyoryoRireki(shatakuRentalRirekiDataColumnInfoList);
 			if(updateCount == 0){
 				return 0;
 			}else{
@@ -1534,7 +1548,7 @@ public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002R
 		smRirekiKey.setYearMonth(shatakuMutualRirekiDataColumnInfoList.getYearMonth());
 		Skf3030TShatakuMutualRireki selectSMRireki = skf3030TShatakuMutualRirekiRepository.selectByPrimaryKey(smRirekiKey);
 		if(selectSMRireki != null){
-			updateCount = skf3030TShatakuMutualRirekiRepository.updateByPrimaryKeySelective(shatakuMutualRirekiDataColumnInfoList);
+			updateCount = skf3030Sc002UpdateTsukibetsuSogoRiyoRirekiExpRepository.updateTsukibetsuSogoRiyoRireki(shatakuMutualRirekiDataColumnInfoList);
 			if(updateCount == 0){
 				return 0;
 			}else{

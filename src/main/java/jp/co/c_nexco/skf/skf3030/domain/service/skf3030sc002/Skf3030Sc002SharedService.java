@@ -788,6 +788,30 @@ public class Skf3030Sc002SharedService {
 		
 	}
 	
+	
+	/**
+	 * 使用料入力値の形式チェック
+	 * @param payStr
+	 * @return
+	 */
+	private boolean checkPayInput(String payStr,int size) throws Exception{
+		boolean isResult = false;
+	
+		//空文字はスルー
+		if(SkfCheckUtils.isNullOrEmpty(payStr)){
+			return true;
+		}
+		
+		if(CheckUtils.isMoreThanByteSize(payStr, size)){
+			//指定桁オーバー
+			return false;
+		}
+		//形式チェック
+		isResult = payStr.matches("^(0)$|^(-?[1-9]+[0-9]*)$");
+			
+		return isResult;
+	}
+	
 	/**
 	 * 使用料の計算(同期)
 	 * @param comDto
@@ -798,44 +822,37 @@ public class Skf3030Sc002SharedService {
 		Boolean errorFlg = false;
 		
 		//社宅使用料調整金額の入力チェック
-		if(CheckUtils.isMoreThanByteSize(comDto.getSc006SiyoroTyoseiPay(), 6) ||
-			!SkfCheckUtils.isSkfPhoneFormat(comDto.getSc006SiyoroTyoseiPay()) ){
+		if(!checkPayInput(comDto.getSc006SiyoroTyoseiPay(), 6)){
 			comDto.setSc006SiyoroTyoseiPayErr(CodeConstant.NFW_VALIDATION_ERROR);
 			errorFlg = true;
 		}
 		//駐車場使用料調整金額の入力チェック
-		if(CheckUtils.isMoreThanByteSize(comDto.getSc006TyusyaTyoseiPay(), 6) ||
-			!SkfCheckUtils.isSkfPhoneFormat(comDto.getSc006TyusyaTyoseiPay()) ){
+		if(!checkPayInput(comDto.getSc006TyusyaTyoseiPay(), 6)){
 			comDto.setSc006TyusyaTyoseiPayErr(CodeConstant.NFW_VALIDATION_ERROR);
 			errorFlg = true;
 		}
 		//社宅賃貸料の入力チェック
-		if(CheckUtils.isMoreThanByteSize(comDto.getSc006ChintaiRyo(), 6) ||
-			!SkfCheckUtils.isSkfPhoneFormat(comDto.getSc006ChintaiRyo()) ){
+		if(!checkPayInput(comDto.getSc006ChintaiRyo(), 6)){
 			comDto.setSc006ChintaiRyoErr(CodeConstant.NFW_VALIDATION_ERROR);
 			errorFlg = true;
 		}
 		//駐車場賃貸料の入力チェック
-		if(CheckUtils.isMoreThanByteSize(comDto.getSc006TyusyajoRyokin(), 6) ||
-			!SkfCheckUtils.isSkfPhoneFormat(comDto.getSc006TyusyajoRyokin()) ){
+		if(!checkPayInput(comDto.getSc006TyusyajoRyokin(), 6)){
 			comDto.setSc006TyusyajoRyokinErr(CodeConstant.NFW_VALIDATION_ERROR);
 			errorFlg = true;
 		}
 		//個人負担共益費月額の入力チェック
-		if(CheckUtils.isMoreThanByteSize(comDto.getSc006KyoekihiMonthPay(), 6) ||
-				!SkfCheckUtils.isSkfPhoneFormat(comDto.getSc006KyoekihiMonthPay()) ){
+		if(!checkPayInput(comDto.getSc006KyoekihiMonthPay(), 6)){
 				comDto.setSc006KyoekihiMonthPayErr(CodeConstant.NFW_VALIDATION_ERROR);
 				errorFlg = true;
 		}
 		//個人負担共益費調整金額の入力チェック
-		if(CheckUtils.isMoreThanByteSize(comDto.getSc006KyoekihiTyoseiPay(), 6) ||
-				!SkfCheckUtils.isSkfPhoneFormat(comDto.getSc006KyoekihiTyoseiPay()) ){
+		if(!checkPayInput(comDto.getSc006KyoekihiTyoseiPay(), 6)){
 				comDto.setSc006KyoekihiTyoseiPayErr(CodeConstant.NFW_VALIDATION_ERROR);
 				errorFlg = true;
 		}
 		//共益費（事業者負担）の入力チェック（2016.06.10 提示テータ画面と動作を合わせる）
-		if(CheckUtils.isMoreThanByteSize(comDto.getSc006Kyoekihi(), 6) ||
-				!SkfCheckUtils.isSkfPhoneFormat(comDto.getSc006Kyoekihi()) ){
+		if(!checkPayInput(comDto.getSc006Kyoekihi(), 6)){
 				comDto.setSc006KyoekihiErr(CodeConstant.NFW_VALIDATION_ERROR);
 				errorFlg = true;
 		}
@@ -1306,6 +1323,33 @@ public class Skf3030Sc002SharedService {
 		// 変換
 		changeString = changeString.replace(SkfCommonConstant.SQUARE_MASTER, "").replace(",", "").trim();
 		return changeString;
+	}
+	
+	/**
+	 * 登録用文字列の取得
+	 * 空の場合NULLを返却する
+	 * @param ob
+	 * @return
+	 */
+	public String getToRegistString(String str){
+		if(SkfCheckUtils.isNullOrEmpty(str)){
+			return null;
+		}else{
+			return str;
+		}
+	}
+	
+	/**
+	 * 日付文字列
+	 * @param sDay
+	 * @return
+	 */
+	public String getRegistDateText(String sDay){
+		if(SkfCheckUtils.isNullOrEmpty(sDay)){
+			return null;
+		}
+		
+		return sDay.replace(CodeConstant.SLASH, CodeConstant.DOUBLE_QUOTATION).replace(CodeConstant.UNDER_SCORE, CodeConstant.DOUBLE_QUOTATION).trim();
 	}
 	
 	/**
@@ -2488,7 +2532,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.PATTERN_NAME,
-													CodeConstant.DOUBLE_QUOTATION);
+													null);
 //		End If
 		}
 		// 規格
@@ -2501,13 +2545,13 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.KIKAKU,
-													CodeConstant.DOUBLE_QUOTATION);
+													null);
 //		End If
 		}
 		// 規格（補足）（登録値無し）
 //		list.Add(String.Empty)
 		rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.KIKAKU_HOSOKU,
-													CodeConstant.DOUBLE_QUOTATION);
+													null);
 		// 基準使用料算定上延べ面積
 //		If Not sessionInfo Is Nothing Then
 		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKijunMenseki())) {
@@ -2518,7 +2562,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.KIJUN_MENSEKI,
-														CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 社宅使用料算定上延べ面積
@@ -2531,7 +2575,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.SHATAKU_MENSEKI,
-													CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 経年残価率
@@ -2544,7 +2588,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.KEINEN_ZANKARITSU,
-														CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 用途
@@ -2557,17 +2601,17 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(
-					Skf3030Sc002CommonDto.RENTAL_PATTERN.YOTO, CodeConstant.DOUBLE_QUOTATION);
+					Skf3030Sc002CommonDto.RENTAL_PATTERN.YOTO, null);
 //		End If
 		}
 		// 寒冷地調整フラグ（登録値無し）
 //		list.Add(String.Empty)
 		rentalPtMap.put(
-				Skf3030Sc002CommonDto.RENTAL_PATTERN.KANREICHI, CodeConstant.DOUBLE_QUOTATION);
+				Skf3030Sc002CommonDto.RENTAL_PATTERN.KANREICHI, null);
 		// 狭小調整フラグ（登録値無し）
 //		list.Add(String.Empty)
 		rentalPtMap.put(
-				Skf3030Sc002CommonDto.RENTAL_PATTERN.KYOUSYOU, CodeConstant.DOUBLE_QUOTATION);
+				Skf3030Sc002CommonDto.RENTAL_PATTERN.KYOUSYOU, null);
 		// 経年
 //		If Not sessionInfo Is Nothing Then
 		if (!CheckUtils.isEmpty(comDto.getHdnRateShienKeinen())) {
@@ -2578,7 +2622,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(
-					Skf3030Sc002CommonDto.RENTAL_PATTERN.KEINEN, CodeConstant.DOUBLE_QUOTATION);
+					Skf3030Sc002CommonDto.RENTAL_PATTERN.KEINEN, CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 基本使用料
@@ -2591,7 +2635,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.KIHON_SHIYORYO,
-													CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 単価
@@ -2604,7 +2648,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(
-					Skf3030Sc002CommonDto.RENTAL_PATTERN.TANKA, CodeConstant.DOUBLE_QUOTATION);
+					Skf3030Sc002CommonDto.RENTAL_PATTERN.TANKA, CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 社宅使用料月額
@@ -2618,24 +2662,24 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.SHATAKU_GETSUGAKU,
-															CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 備考（登録値無し）
 //		list.Add(String.Empty)
-		rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.BIKO, CodeConstant.DOUBLE_QUOTATION);
+		rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.BIKO, null);
 		// 補足資料名（登録値無し）
 //		list.Add(String.Empty)
 		rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.HOSOKU_SHIRYO_NAME,
-														CodeConstant.DOUBLE_QUOTATION);
+														null);
 		// 補足資料サイズ（登録値無し）
 //		list.Add(String.Empty)
 		rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.HOSOKU_SHIRYO_SIZE,
-														CodeConstant.DOUBLE_QUOTATION);
+														null);
 		// 補足資料ファイル（登録値無し）
 //		list.Add(String.Empty)
 		rentalPtMap.put(
-				Skf3030Sc002CommonDto.RENTAL_PATTERN.HOSOKU_FILE, CodeConstant.DOUBLE_QUOTATION);
+				Skf3030Sc002CommonDto.RENTAL_PATTERN.HOSOKU_FILE, null);
 		// 削除フラグ（登録：”0”、更新：登録値無し）
 //		If torokuFlg Then
 		if (torokuFlg) {
@@ -2647,7 +2691,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.DELETE_FLAG,
-													CodeConstant.DOUBLE_QUOTATION);
+													null);
 //		End If
 		}
 		// 作成日（システムから設定するため登録値無し）
@@ -2692,7 +2736,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.NOBE_MENSEKI,
-													CodeConstant.DOUBLE_QUOTATION);
+													CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// サンルーム面積
@@ -2705,7 +2749,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.SUNROOM_MENSEKI,
-														CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 階段面積
@@ -2718,7 +2762,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.KAIDAN_MENSEKI,
-													CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 物置面積
@@ -2731,7 +2775,7 @@ public class Skf3030Sc002SharedService {
 		} else {
 //			list.Add(String.Empty)
 			rentalPtMap.put(Skf3030Sc002CommonDto.RENTAL_PATTERN.MONOOKI_MENSEKI,
-														CodeConstant.DOUBLE_QUOTATION);
+					CodeConstant.STRING_ZERO);
 //		End If
 		}
 		// 登録・更新判断用（登録：0、更新：1）
@@ -2767,7 +2811,7 @@ public class Skf3030Sc002SharedService {
 		//入退居区分
 		columnInfoList.setNyutaikyoKbn(STR_ONE);
 		//社員名
-		columnInfoList.setName(comDto.getSc006ShainName());
+		columnInfoList.setName(getToRegistString(comDto.getSc006ShainName()));
 		//申請区分
 		columnInfoList.setApplKbn(STR_ONE);
 		//社宅管理番号
@@ -2783,9 +2827,9 @@ public class Skf3030Sc002SharedService {
 			columnInfoList.setRentalPatternId(Long.parseLong(comDto.getHdnRentalPatternId()));
 		}
 		//居住者区分
-		columnInfoList.setKyojushaKbn(comDto.getSc006KyojyusyaKbnSelect());
+		columnInfoList.setKyojushaKbn(getToRegistString(comDto.getSc006KyojyusyaKbnSelect()));
 		//役員算定
-		columnInfoList.setYakuinSannteiKbn(comDto.getSc006YakuinSanteiSelect());
+		columnInfoList.setYakuinSannteiKbn(getToRegistString(comDto.getSc006YakuinSanteiSelect()));
 		//社宅使用料日割金額
 		columnInfoList.setRentalDay(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterShatakuShiyoryoHiwariKingaku())));
 		//社宅使用料調整金額
@@ -2796,27 +2840,27 @@ public class Skf3030Sc002SharedService {
 		columnInfoList.setKyoekihiPersonAdjust(
 				Integer.parseInt(getPayText(comDto.getSc006KyoekihiTyoseiPay())));
 		//共益金支払月
-		columnInfoList.setKyoekihiPayMonth(comDto.getSc006KyoekihiPayMonthSelect());
+		columnInfoList.setKyoekihiPayMonth(getToRegistString(comDto.getSc006KyoekihiPayMonthSelect()));
 		//区画１駐車場管理番号
 		if (!CheckUtils.isEmpty(comDto.getHdnChushajoKanriNo1())) {
 			columnInfoList.setParkingKanriNo1(Long.parseLong(comDto.getHdnChushajoKanriNo1()));
 		}
 		//駐車場区画１番号
-		columnInfoList.setParkingBlock1(comDto.getSc006KukakuNoOne());
+		columnInfoList.setParkingBlock1(getToRegistString(comDto.getSc006KukakuNoOne()));
 		//駐車場区画１開始日
-		columnInfoList.setParking1StartDate(getDateText(comDto.getSc006RiyouStartDayOne()));
+		columnInfoList.setParking1StartDate(getRegistDateText(comDto.getSc006RiyouStartDayOne()));
 		//駐車場区画１終了日
-		columnInfoList.setParking1EndDate(getDateText(comDto.getSc006RiyouEndDayOne()));
+		columnInfoList.setParking1EndDate(getRegistDateText(comDto.getSc006RiyouEndDayOne()));
 		//区画２駐車場管理番号
 		if (!CheckUtils.isEmpty(comDto.getHdnChushajoKanriNo2())) {
 			columnInfoList.setParkingKanriNo2(Long.parseLong(comDto.getHdnChushajoKanriNo2()));
 		}
 		//駐車場区画２番号
-		columnInfoList.setParkingBlock2(comDto.getSc006KukakuNoTwo());
+		columnInfoList.setParkingBlock2(getToRegistString(comDto.getSc006KukakuNoTwo()));
 		//駐車場区画２開始日
-		columnInfoList.setParking2StartDate(getDateText(comDto.getSc006RiyouStartDayTwo()));
+		columnInfoList.setParking2StartDate(getRegistDateText(comDto.getSc006RiyouStartDayTwo()));
 		//駐車場区画２終了日
-		columnInfoList.setParking2EndDate(getDateText(comDto.getSc006RiyouEndDayTwo()));
+		columnInfoList.setParking2EndDate(getRegistDateText(comDto.getSc006RiyouEndDayTwo()));
 		//駐車場使用料調整金額
 		columnInfoList.setParkingRentalAdjust(
 				Integer.parseInt(getPayText(comDto.getSc006TyusyaTyoseiPay())));
@@ -2827,43 +2871,43 @@ public class Skf3030Sc002SharedService {
 		columnInfoList.setParking2RentalDay(
 				Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku())));
 		//備考
-		columnInfoList.setBiko(comDto.getSc006Bicou());
+		columnInfoList.setBiko(getToRegistString(comDto.getSc006Bicou()));
 		//備品貸与日
-		columnInfoList.setEquipmentStartDate(getDateText(comDto.getSc006TaiyoDay()));
+		columnInfoList.setEquipmentStartDate(getRegistDateText(comDto.getSc006TaiyoDay()));
 		//備品返却日
-		columnInfoList.setEquipmentEndDate(getDateText(comDto.getSc006HenkyakuDay()));
+		columnInfoList.setEquipmentEndDate(getRegistDateText(comDto.getSc006HenkyakuDay()));
 		//搬入希望日
-		columnInfoList.setCarryinRequestDay(getDateText(comDto.getSc006KibouDayIn()));
+		columnInfoList.setCarryinRequestDay(getRegistDateText(comDto.getSc006KibouDayIn()));
 		//搬入希望時間区分
-		columnInfoList.setCarryinRequestKbn(comDto.getSc006KibouTimeInSelect());
+		columnInfoList.setCarryinRequestKbn(getToRegistString(comDto.getSc006KibouTimeInSelect()));
 		//受入本人連絡先
-		columnInfoList.setUkeireMyApoint(comDto.getSc006HonninAddrIn());
+		columnInfoList.setUkeireMyApoint(getToRegistString(comDto.getSc006HonninAddrIn()));
 		//受入代理人氏名
-		columnInfoList.setUkeireDairiName(comDto.getSc006UketoriDairiInName());
+		columnInfoList.setUkeireDairiName(getToRegistString(comDto.getSc006UketoriDairiInName()));
 		//受入代理人連絡先
-		columnInfoList.setUkeireDairiApoint(comDto.getSc006UketoriDairiAddr());
+		columnInfoList.setUkeireDairiApoint(getToRegistString(comDto.getSc006UketoriDairiAddr()));
 		//搬出希望日
-		columnInfoList.setCarryoutRequestDay(getDateText(comDto.getSc006KibouDayOut()));
+		columnInfoList.setCarryoutRequestDay(getRegistDateText(comDto.getSc006KibouDayOut()));
 		//搬出希望時間区分
-		columnInfoList.setCarryoutRequestKbn(comDto.getSc006KibouTimeOutSelect());
+		columnInfoList.setCarryoutRequestKbn(getToRegistString(comDto.getSc006KibouTimeOutSelect()));
 		//立会本人連絡先
-		columnInfoList.setTatiaiMyApoint(comDto.getSc006HonninAddrOut());
+		columnInfoList.setTatiaiMyApoint(getToRegistString(comDto.getSc006HonninAddrOut()));
 		//立会代理人氏名
-		columnInfoList.setTatiaiDairiName(comDto.getSc006TachiaiDairi());
+		columnInfoList.setTatiaiDairiName(getToRegistString(comDto.getSc006TachiaiDairi()));
 		//立会代理人連絡先
-		columnInfoList.setTatiaiDairiApoint(comDto.getSc006TachiaiDairiAddr());
+		columnInfoList.setTatiaiDairiApoint(getToRegistString(comDto.getSc006TachiaiDairiAddr()));
 		//代理人備考
-		columnInfoList.setDairiKiko(comDto.getSc006DairiBiko());
+		columnInfoList.setDairiKiko(getToRegistString(comDto.getSc006DairiBiko()));
 		//備品備考
-		columnInfoList.setBihinBiko(comDto.getSc006BihinBiko());
+		columnInfoList.setBihinBiko(getToRegistString(comDto.getSc006BihinBiko()));
 		//相互利用状況
-		columnInfoList.setMutualJokyo(comDto.getSc006SogoRyojokyoSelect());
+		columnInfoList.setMutualJokyo(getToRegistString(comDto.getSc006SogoRyojokyoSelect()));
 		//貸付会社コード
-		columnInfoList.setKashitukeCompanyCd(comDto.getSc006TaiyoKaisyaSelect());
+		columnInfoList.setKashitukeCompanyCd(getToRegistString(comDto.getSc006TaiyoKaisyaSelect()));
 		//借受会社コード
-		columnInfoList.setKariukeCompanyCd(comDto.getSc006KariukeKaisyaSelect());
+		columnInfoList.setKariukeCompanyCd(getToRegistString(comDto.getSc006KariukeKaisyaSelect()));
 		//相互利用判定区分
-		columnInfoList.setMutualUseKbn(comDto.getSc006SogoHanteiKbnSelect());
+		columnInfoList.setMutualUseKbn(getToRegistString(comDto.getSc006SogoHanteiKbnSelect()));
 		//社宅賃貸料
 		columnInfoList.setRent(Integer.parseInt(getPayText(comDto.getSc006ChintaiRyo())));
 		//駐車場料金
@@ -2871,27 +2915,27 @@ public class Skf3030Sc002SharedService {
 		//共益費（事業者負担）
 		columnInfoList.setKyoekihiBusiness(Integer.parseInt(getPayText(comDto.getSc006Kyoekihi())));
 		//相互利用開始日
-		columnInfoList.setMutualUseStartDay(getDateText(comDto.getSc006StartDay()));
+		columnInfoList.setMutualUseStartDay(getRegistDateText(comDto.getSc006StartDay()));
 		//相互利用終了日
-		columnInfoList.setMutualUseEndDay(getDateText(comDto.getSc006EndDay()));
+		columnInfoList.setMutualUseEndDay(getRegistDateText(comDto.getSc006EndDay()));
 		//配属会社コード
-		columnInfoList.setAssignCompanyCd(comDto.getSc006HaizokuKaisyaSelect());
+		columnInfoList.setAssignCompanyCd(getToRegistString(comDto.getSc006HaizokuKaisyaSelect()));
 		//所属機関
-		columnInfoList.setAgency(comDto.getSc006SyozokuKikan());
+		columnInfoList.setAgency(getToRegistString(comDto.getSc006SyozokuKikan()));
 		//室・部名
-		columnInfoList.setAffiliation1(comDto.getSc006SituBuName());
+		columnInfoList.setAffiliation1(getToRegistString(comDto.getSc006SituBuName()));
 		//課等名
-		columnInfoList.setAffiliation2(comDto.getSc006KanadoMei());
+		columnInfoList.setAffiliation2(getToRegistString(comDto.getSc006KanadoMei()));
 		//配属データコード番号
-		columnInfoList.setAssignCd(comDto.getSc006HaizokuNo());
+		columnInfoList.setAssignCd(getToRegistString(comDto.getSc006HaizokuNo()));
 		//原籍会社コード
-		columnInfoList.setOriginalCompanyCd(comDto.getSc006OldKaisyaNameSelect());
+		columnInfoList.setOriginalCompanyCd(getToRegistString(comDto.getSc006OldKaisyaNameSelect()));
 		//給与支給会社区分
-		columnInfoList.setPayCompanyCd(comDto.getSc006KyuyoKaisyaSelect());
+		columnInfoList.setPayCompanyCd(getToRegistString(comDto.getSc006KyuyoKaisyaSelect()));
 		//社宅使用料会社間送金区分
-		columnInfoList.setShatakuCompanyTransferKbn(comDto.getSc006SokinShatakuSelect());
+		columnInfoList.setShatakuCompanyTransferKbn(getToRegistString(comDto.getSc006SokinShatakuSelect()));
 		//共益費会社間送金区分
-		columnInfoList.setKyoekihiCompanyTransferKbn(comDto.getSc006SokinKyoekihiSelect());
+		columnInfoList.setKyoekihiCompanyTransferKbn(getToRegistString(comDto.getSc006SokinKyoekihiSelect()));
 		//社宅提示ステータス（承認済み）
 		columnInfoList.setShatakuTeijiStatus(CodeConstant.PRESENTATION_SITUATION_SHONIN);
 
@@ -2951,14 +2995,14 @@ public class Skf3030Sc002SharedService {
 		//社宅管理台帳ID
 		columnInfoList.setShatakuKanriId(Long.parseLong(comDto.getHdnShatakuKanriId()));
 		//入居予定日
-		columnInfoList.setNyukyoDate(getDateText(comDto.getSc006NyukyoYoteiDay()));
+		columnInfoList.setNyukyoDate(getRegistDateText(comDto.getSc006NyukyoYoteiDay()));
 		//退居予定日
-		columnInfoList.setTaikyoDate(getDateText(comDto.getSc006TaikyoYoteiDay()));
+		columnInfoList.setTaikyoDate(getRegistDateText(comDto.getSc006TaikyoYoteiDay()));
 		//居住者区分
-		columnInfoList.setKyojushaKbn(comDto.getSc006KyojyusyaKbnSelect());
+		columnInfoList.setKyojushaKbn(getToRegistString(comDto.getSc006KyojyusyaKbnSelect()));
 
 		//備考
-		columnInfoList.setBiko(comDto.getSc006Bicou());
+		columnInfoList.setBiko(getToRegistString(comDto.getSc006Bicou()));
 
 		//更新日時
 		columnInfoList.setUpdateDate(skfBaseBusinessLogicUtils.getSystemDateTime());
@@ -2968,9 +3012,9 @@ public class Skf3030Sc002SharedService {
 		columnInfoList.setUpdateProgramId(comDto.getPageId());
 		
 		//原籍会社コード
-		columnInfoList.setOriginalCompanyCd(comDto.getSc006OldKaisyaNameSelect());
+		columnInfoList.setOriginalCompanyCd(getToRegistString(comDto.getSc006OldKaisyaNameSelect()));
 		//給与支給会社コード
-		columnInfoList.setPayCompanyCd(comDto.getSc006KyuyoKaisyaSelect());
+		columnInfoList.setPayCompanyCd(getToRegistString(comDto.getSc006KyuyoKaisyaSelect()));
 		
 		
 		return columnInfoList;
@@ -2988,34 +3032,34 @@ public class Skf3030Sc002SharedService {
 		columnInfoList.setShatakuKanriId(Long.parseLong(comDto.getHdnShatakuKanriId()));
 
 		//備品貸与日
-		columnInfoList.setTaiyoDate(getDateText(comDto.getSc006TaiyoDay()));
+		columnInfoList.setTaiyoDate(getRegistDateText(comDto.getSc006TaiyoDay()));
 		//搬入希望日
-		columnInfoList.setHannyuRequestDay(getDateText(comDto.getSc006KibouDayIn()));
+		columnInfoList.setHannyuRequestDay(getRegistDateText(comDto.getSc006KibouDayIn()));
 		//搬入希望時間帯
-		columnInfoList.setHannyuRequestKbn(comDto.getSc006KibouTimeInSelect());
+		columnInfoList.setHannyuRequestKbn(getToRegistString(comDto.getSc006KibouTimeInSelect()));
 		//受入本人連絡先
-		columnInfoList.setUkeireMyApoint(comDto.getSc006HonninAddrIn());
+		columnInfoList.setUkeireMyApoint(getToRegistString(comDto.getSc006HonninAddrIn()));
 		//受取代理人
-		columnInfoList.setUkeireDairiName(comDto.getSc006UketoriDairiInName());
+		columnInfoList.setUkeireDairiName(getToRegistString(comDto.getSc006UketoriDairiInName()));
 		//受取代理人連絡先
-		columnInfoList.setUkeireDairiApoint(comDto.getSc006UketoriDairiAddr());
+		columnInfoList.setUkeireDairiApoint(getToRegistString(comDto.getSc006UketoriDairiAddr()));
 		
 		//備品返却日
-		columnInfoList.setHenkyakuDate(getDateText(comDto.getSc006HenkyakuDay()));
+		columnInfoList.setHenkyakuDate(getRegistDateText(comDto.getSc006HenkyakuDay()));
 		//搬出希望日
-		columnInfoList.setHansyutuRequestDay(getDateText(comDto.getSc006KibouDayOut()));
+		columnInfoList.setHansyutuRequestDay(getRegistDateText(comDto.getSc006KibouDayOut()));
 		//搬出希望時間帯
-		columnInfoList.setHansyutuRequestKbn(comDto.getSc006KibouTimeOutSelect());
+		columnInfoList.setHansyutuRequestKbn(getToRegistString(comDto.getSc006KibouTimeOutSelect()));
 		//立会本人連絡先
-		columnInfoList.setTatiaiMyApoint(comDto.getSc006HonninAddrOut());
+		columnInfoList.setTatiaiMyApoint(getToRegistString(comDto.getSc006HonninAddrOut()));
 		//立会代理人
-		columnInfoList.setTatiaiDairiName(comDto.getSc006TachiaiDairi());
+		columnInfoList.setTatiaiDairiName(getToRegistString(comDto.getSc006TachiaiDairi()));
 		//立会代理人連絡先
-		columnInfoList.setTatiaiDairiApoint(comDto.getSc006TachiaiDairiAddr());
+		columnInfoList.setTatiaiDairiApoint(getToRegistString(comDto.getSc006TachiaiDairiAddr()));
 		//代理人備考
-		columnInfoList.setDairiBiko(comDto.getSc006DairiBiko());
+		columnInfoList.setDairiBiko(getToRegistString(comDto.getSc006DairiBiko()));
 		//備品情報備考
-		columnInfoList.setBihinBiko(comDto.getSc006BihinBiko());
+		columnInfoList.setBihinBiko(getToRegistString(comDto.getSc006BihinBiko()));
 
 		//更新日時
 		columnInfoList.setUpdateDate(skfBaseBusinessLogicUtils.getSystemDateTime());
@@ -3038,13 +3082,13 @@ public class Skf3030Sc002SharedService {
 		//社宅管理台帳ID
 		columnInfoList.setShatakuKanriId(Long.parseLong(comDto.getHdnShatakuKanriId()));
 		//相互利用状況
-		columnInfoList.setMutualJokyo(comDto.getSc006SogoRyojokyoSelect());
+		columnInfoList.setMutualJokyo(getToRegistString(comDto.getSc006SogoRyojokyoSelect()));
 		//貸付会社コード
-		columnInfoList.setKashitukeCompanyCd(comDto.getSc006TaiyoKaisyaSelect());
+		columnInfoList.setKashitukeCompanyCd(getToRegistString(comDto.getSc006TaiyoKaisyaSelect()));
 		//借受会社コード
-		columnInfoList.setKariukeCompanyCd(comDto.getSc006KariukeKaisyaSelect());
+		columnInfoList.setKariukeCompanyCd(getToRegistString(comDto.getSc006KariukeKaisyaSelect()));
 		//相互利用判定区分
-		columnInfoList.setMutualUseKbn(comDto.getSc006SogoHanteiKbnSelect());
+		columnInfoList.setMutualUseKbn(getToRegistString(comDto.getSc006SogoHanteiKbnSelect()));
 		//社宅賃貸料
 		columnInfoList.setRent(Integer.parseInt(getPayText(comDto.getSc006ChintaiRyo())));
 		//駐車場料金
@@ -3052,13 +3096,13 @@ public class Skf3030Sc002SharedService {
 		//共益費（事業者負担）
 		columnInfoList.setKyoekihiBusiness(Integer.parseInt(getPayText(comDto.getSc006Kyoekihi())));
 		//開始日
-		columnInfoList.setMutualUseStartDay(getDateText(comDto.getSc006StartDay()));
+		columnInfoList.setMutualUseStartDay(getRegistDateText(comDto.getSc006StartDay()));
 		//終了日
-		columnInfoList.setMutualUseEndDay(getDateText(comDto.getSc006EndDay()));
+		columnInfoList.setMutualUseEndDay(getRegistDateText(comDto.getSc006EndDay()));
 		//社宅使用料会社間送金区分
-		columnInfoList.setShatakuCompanyTransferKbn(comDto.getSc006SokinShatakuSelect());
+		columnInfoList.setShatakuCompanyTransferKbn(getToRegistString(comDto.getSc006SokinShatakuSelect()));
 		//共益費会社間送金区分
-		columnInfoList.setKyoekihiCompanyTransferKbn(comDto.getSc006SokinKyoekihiSelect());
+		columnInfoList.setKyoekihiCompanyTransferKbn(getToRegistString(comDto.getSc006SokinKyoekihiSelect()));
 		
 		//更新日時
 		columnInfoList.setUpdateDate(skfBaseBusinessLogicUtils.getSystemDateTime());
@@ -3084,7 +3128,7 @@ public class Skf3030Sc002SharedService {
 		//使用料パターンID
 		columnInfoList.setRentalPatternId(Long.parseLong(comDto.getHdnRentalPatternId()));
 		//役員算定
-		columnInfoList.setYakuinSannteiKbn(comDto.getSc006YakuinSanteiSelect());
+		columnInfoList.setYakuinSannteiKbn(getToRegistString(comDto.getSc006YakuinSanteiSelect()));
 		//社宅使用料月額 
 		columnInfoList.setRentalMonth(Integer.parseInt(comDto.getHdnKaiSanAfterShatakuShiyoryoGetsugaku()));
 		//社宅使用料日割金額
@@ -3100,7 +3144,7 @@ public class Skf3030Sc002SharedService {
 		//個人負担共益費月額（調整後）
 		columnInfoList.setKyoekihiPersonTotal(Integer.parseInt(comDto.getHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo()));
 		//共益費支払月
-		columnInfoList.setKyoekihiPayMonth(comDto.getSc006KyoekihiPayMonthSelect());
+		columnInfoList.setKyoekihiPayMonth(getToRegistString(comDto.getSc006KyoekihiPayMonthSelect()));
 		//区画１駐車場使用料月額
 		columnInfoList.setParking1RentalMonth(Integer.parseInt(comDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroGetsugaku()));
 		//区画１駐車場使用料日割金額 
@@ -3144,18 +3188,18 @@ public class Skf3030Sc002SharedService {
 			//駐車場管理番号
 			columnInfoList.setParkingKanriNo(stringParseToLong(comDto.getHdnChushajoKanriNo1()));
 			//利用開始日
-			columnInfoList.setParkingStartDate(getDateText(comDto.getSc006RiyouStartDayOne()));
+			columnInfoList.setParkingStartDate(getRegistDateText(comDto.getSc006RiyouStartDayOne()));
 			//利用終了日
-			columnInfoList.setParkingEndDate(getDateText(comDto.getSc006RiyouEndDayOne()));
+			columnInfoList.setParkingEndDate(getRegistDateText(comDto.getSc006RiyouEndDayOne()));
 		}else if( kugakuFlg == 2 ){
 			//貸与番号
 			columnInfoList.setParkingLendNo(2L);
 			//駐車場管理番号
 			columnInfoList.setParkingKanriNo(stringParseToLong(comDto.getHdnChushajoKanriNo2()));
 			//利用開始日
-			columnInfoList.setParkingStartDate(getDateText(comDto.getSc006RiyouStartDayTwo()));
+			columnInfoList.setParkingStartDate(getRegistDateText(comDto.getSc006RiyouStartDayTwo()));
 			//利用終了日
-			columnInfoList.setParkingEndDate(getDateText(comDto.getSc006RiyouEndDayTwo()));
+			columnInfoList.setParkingEndDate(getRegistDateText(comDto.getSc006RiyouEndDayTwo()));
 		}
 
 		//更新SQLでは不要
@@ -3315,15 +3359,15 @@ public class Skf3030Sc002SharedService {
 		columnInfoList.setYearMonth(comDto.getHdnNengetsu());
 
 		//配属会社コード
-		columnInfoList.setAssignCompanyCd(comDto.getSc006HaizokuKaisyaSelect());
+		columnInfoList.setAssignCompanyCd(getToRegistString(comDto.getSc006HaizokuKaisyaSelect()));
 		//所属機関
-		columnInfoList.setAssignAgencyName(comDto.getSc006SyozokuKikan());
+		columnInfoList.setAssignAgencyName(getToRegistString(comDto.getSc006SyozokuKikan()));
 		//室・部名
-		columnInfoList.setAssignAffiliation1(comDto.getSc006SituBuName());
+		columnInfoList.setAssignAffiliation1(getToRegistString(comDto.getSc006SituBuName()));
 		//課等名
-		columnInfoList.setAssignAffiliation2(comDto.getSc006KanadoMei());
+		columnInfoList.setAssignAffiliation2(getToRegistString(comDto.getSc006KanadoMei()));
 		//配属データコード番号
-		columnInfoList.setAssignCd(comDto.getSc006HaizokuNo());
+		columnInfoList.setAssignCd(getToRegistString(comDto.getSc006HaizokuNo()));
 		
 		//更新日時
 		columnInfoList.setUpdateDate(skfBaseBusinessLogicUtils.getSystemDateTime());
