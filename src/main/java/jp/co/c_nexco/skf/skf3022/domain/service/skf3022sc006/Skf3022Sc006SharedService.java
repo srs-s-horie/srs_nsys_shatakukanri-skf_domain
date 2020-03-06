@@ -5305,7 +5305,7 @@ public class Skf3022Sc006SharedService {
 //			columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.KYOEKIHI_PAY_MONTH, _
 //													String.Empty, _
 //													OracleType.Char))
-			columnInfoList.setKyoekihiPayMonth(CodeConstant.DOUBLE_QUOTATION);
+			columnInfoList.setKyoekihiPayMonth(null);
 //
 		} else {
 			// 個人負担共益費協議中フラグ				
@@ -5326,7 +5326,7 @@ public class Skf3022Sc006SharedService {
 //			columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.KYOEKIHI_PAY_MONTH, _
 //													HttpUtility.HtmlEncode(Me.ddlKyoekihiPayMonth.SelectedValue), _
 //													OracleType.Char))
-			columnInfoList.setKyoekihiPayMonth(comDto.getSc006KyoekihiPayMonthSelect());
+			columnInfoList.setKyoekihiPayMonth(getTextOrNull(comDto.getSc006KyoekihiPayMonthSelect()));
 //
 		}
 		// 駐車場管理番号１
@@ -5342,7 +5342,7 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.PARKING_BLOCK_1, _
 //												HttpUtility.HtmlEncode(Me.lblKukakuNoOne.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setParkingBlock1(comDto.getSc006KukakuNoOne());
+		columnInfoList.setParkingBlock1(getTextOrNull(comDto.getSc006KukakuNoOne()));
 		// 駐車場区画１開始日
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.PARKING_1_START_DATE, _
 //												HttpUtility.HtmlEncode(Me.GetDateText(Me.txtRiyouStartDayOne.Text)), _
@@ -5366,7 +5366,7 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.PARKING_BLOCK_2, _
 //												HttpUtility.HtmlEncode(Me.lblKukakuNoTwo.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setParkingBlock2(comDto.getSc006KukakuNoTwo());
+		columnInfoList.setParkingBlock2(getTextOrNull(comDto.getSc006KukakuNoTwo()));
 //		'駐車場区画２開始日
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.PARKING_2_START_DATE, _
 //												HttpUtility.HtmlEncode(Me.GetDateText(Me.txtRiyouStartDayTwo.Text)), _
@@ -5399,7 +5399,7 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIKO, _
 //												HttpUtility.HtmlEncode(Me.txtBicou.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setBiko(comDto.getSc006Bicou());
+		columnInfoList.setBiko(getTextOrNull(comDto.getSc006Bicou()));
 		// 備品貸与日
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.EQUIPMENT_START_DATE, _
 //												HttpUtility.HtmlEncode(Me.GetDateText(Me.txtTaiyoDay.Text)), _
@@ -5419,22 +5419,22 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CARRYIN_REQUEST_KBN, _
 //												HttpUtility.HtmlEncode(Me.ddlKibouTimeIn.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setCarryinRequestKbn(comDto.getSc006KibouTimeInSelect());
+		columnInfoList.setCarryinRequestKbn(getTextOrNull(comDto.getSc006KibouTimeInSelect()));
 		// 受入本人連絡先
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.UKEIRE_MY_APOINT, _
 //												HttpUtility.HtmlEncode(Me.txtHonNinAddrIn.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setUkeireMyApoint(comDto.getSc006HonninAddrIn());
+		columnInfoList.setUkeireMyApoint(getTextOrNull(comDto.getSc006HonninAddrIn()));
 		// 受入代理人氏名
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.UKEIRE_DAIRI_NAME, _
 //												HttpUtility.HtmlEncode(Me.txtUketoriDairiIn.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setUkeireDairiName(comDto.getSc006UketoriDairiInName());
+		columnInfoList.setUkeireDairiName(getTextOrNull(comDto.getSc006UketoriDairiInName()));
 		// 受入代理人連絡先
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.UKEIRE_DAIRI_APOINT, _
 //												HttpUtility.HtmlEncode(Me.txtUketoriDairiAddr.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setUkeireDairiApoint(comDto.getSc006UketoriDairiAddr());
+		columnInfoList.setUkeireDairiApoint(getTextOrNull(comDto.getSc006UketoriDairiAddr()));
 		// 搬出希望日
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CARRYOUT_REQUEST_DAY, _
 //												HttpUtility.HtmlEncode(Me.GetDateText(Me.txtKibouDayOut.Text)), _
@@ -5444,42 +5444,42 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CARRYOUT_REQUEST_KBN, _
 //												HttpUtility.HtmlEncode(Me.ddlKibouTimeOut.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setCarryoutRequestKbn(comDto.getSc006KibouTimeOutSelect());
+		columnInfoList.setCarryoutRequestKbn(getTextOrNull(comDto.getSc006KibouTimeOutSelect()));
 		// 立会本人連絡先
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.TATIAI_MY_APOINT, _
 //												HttpUtility.HtmlEncode(Me.txtHonNinAddrOut.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setTatiaiMyApoint(comDto.getSc006HonninAddrOut());
+		columnInfoList.setTatiaiMyApoint(getTextOrNull(comDto.getSc006HonninAddrOut()));
 		// 立会代理人氏名
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.TATIAI_DAIRI_NAME, _
 //												HttpUtility.HtmlEncode(Me.txtTachiaiDairi.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setTatiaiDairiName(comDto.getSc006TachiaiDairi());
+		columnInfoList.setTatiaiDairiName(getTextOrNull(comDto.getSc006TachiaiDairi()));
 		// 立会代理人連絡先
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.TATIAI_DAIRI_APOINT, _
 //												HttpUtility.HtmlEncode(Me.txtTachiaiDairiAddr.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setTatiaiDairiApoint(comDto.getSc006TachiaiDairiAddr());
+		columnInfoList.setTatiaiDairiApoint(getTextOrNull(comDto.getSc006TachiaiDairiAddr()));
 		// 代理人備考
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.DAIRI_KIKO, _
 //												HttpUtility.HtmlEncode(Me.txtDairiBicou.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setDairiKiko(comDto.getSc006DairiBiko());
+		columnInfoList.setDairiKiko(getTextOrNull(comDto.getSc006DairiBiko()));
 		// 備品備考
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_BIKO, _
 //												HttpUtility.HtmlEncode(Me.txtBihinBicou.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setBihinBiko(comDto.getSc006BihinBiko());
+		columnInfoList.setBihinBiko(getTextOrNull(comDto.getSc006BihinBiko()));
 		// 貸付会社コード
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.KASHITUKE_COMPANY_CD, _
 //												HttpUtility.HtmlEncode(Me.ddlTaiyoKaisya.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setKashitukeCompanyCd(comDto.getSc006TaiyoKaisyaSelect());
+		columnInfoList.setKashitukeCompanyCd(getTextOrNull(comDto.getSc006TaiyoKaisyaSelect()));
 		// 借受会社コード
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.KARIUKE_COMPANY_CD, _
 //												HttpUtility.HtmlEncode(Me.ddlKariukeKaisya.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setKariukeCompanyCd(comDto.getSc006KariukeKaisyaSelect());
+		columnInfoList.setKariukeCompanyCd(getTextOrNull(comDto.getSc006KariukeKaisyaSelect()));
 		// 相互利用状況
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.MUTUAL_JOKYO, _
 //										HttpUtility.HtmlEncode(Me.ddlSogorRyoJokyo.SelectedValue), _
@@ -5489,7 +5489,7 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.MUTUAL_USE_KBN, _
 //												HttpUtility.HtmlEncode(Me.ddlSogoHanteiKbn.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setMutualUseKbn(comDto.getSc006SogoHanteiKbnSelect());
+		columnInfoList.setMutualUseKbn(getTextOrNull(comDto.getSc006SogoHanteiKbnSelect()));
 		// 社宅賃貸料
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.RENT, _
 //												HttpUtility.HtmlEncode(Me.GetPayText(Me.txtChintaiRyo.Text)), _
@@ -5519,47 +5519,47 @@ public class Skf3022Sc006SharedService {
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.ASSIGN_COMPANY_CD, _
 //												HttpUtility.HtmlEncode(Me.ddlHaizokuKaisya.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setAssignCompanyCd(comDto.getSc006HaizokuKaisyaSelect());
+		columnInfoList.setAssignCompanyCd(getTextOrNull(comDto.getSc006HaizokuKaisyaSelect()));
 		// 所属機関
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.AGENCY, _
 //												HttpUtility.HtmlEncode(Me.txtSyozokuKikan.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setAgency(comDto.getSc006SyozokuKikan());
+		columnInfoList.setAgency(getTextOrNull(comDto.getSc006SyozokuKikan()));
 		// 室・部名
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.AFFILIATION1, _
 //												HttpUtility.HtmlEncode(Me.txtSituBuName.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setAffiliation1(comDto.getSc006SituBuName());
+		columnInfoList.setAffiliation1(getTextOrNull(comDto.getSc006SituBuName()));
 		// 課等名
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.AFFILIATION2, _
 //												HttpUtility.HtmlEncode(Me.txtKaName.Text), _
 //												OracleType.VarChar))
-		columnInfoList.setAffiliation2(comDto.getSc006KanadoMei());
+		columnInfoList.setAffiliation2(getTextOrNull(comDto.getSc006KanadoMei()));
 		// 配属データコード番号
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.ASSIGN_CD, _
 //												HttpUtility.HtmlEncode(Me.txtHaizokuNo.Text), _
 //												OracleType.Char))
-		columnInfoList.setAssignCd(comDto.getSc006HaizokuNo());
+		columnInfoList.setAssignCd(getTextOrNull(comDto.getSc006HaizokuNo()));
 		// 原籍会社コード
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.ORIGINAL_COMPANY_CD, _
 //												HttpUtility.HtmlEncode(Me.ddlOldKaisya.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setOriginalCompanyCd(comDto.getSc006OldKaisyaNameSelect());
+		columnInfoList.setOriginalCompanyCd(getTextOrNull(comDto.getSc006OldKaisyaNameSelect()));
 		// 給与支給会社区分
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.PAY_COMPANY_CD, _
 //												HttpUtility.HtmlEncode(Me.ddlKyuyoKaisya.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setPayCompanyCd(comDto.getSc006KyuyoKaisyaSelect());
+		columnInfoList.setPayCompanyCd(getTextOrNull(comDto.getSc006KyuyoKaisyaSelect()));
 		// 社宅使用料会社間送金区分()
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.SHATAKU_COMPANY_TRANSFER_KBN, _
 //												HttpUtility.HtmlEncode(Me.ddlSokinShataku.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setShatakuCompanyTransferKbn(comDto.getSc006SokinShatakuSelect());
+		columnInfoList.setShatakuCompanyTransferKbn(getTextOrNull(comDto.getSc006SokinShatakuSelect()));
 		// 共益費会社間送金区分()
 //		columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.KYOEKIHI_COMPANY_TRANSFER_KBN, _
 //												HttpUtility.HtmlEncode(Me.ddlSokinKyoekihi.SelectedValue), _
 //												OracleType.Char))
-		columnInfoList.setKyoekihiCompanyTransferKbn(comDto.getSc006SokinKyoekihiSelect());
+		columnInfoList.setKyoekihiCompanyTransferKbn(getTextOrNull(comDto.getSc006SokinKyoekihiSelect()));
 //		If TMP_SAVE.Equals(syoriMode) Or _
 //		   KEIZOKU_LOGIN.Equals(syoriMode) Then
 		if (Skf3022Sc006CommonDto.TMP_SAVE.equals(syoriMode)
@@ -7425,11 +7425,11 @@ public class Skf3022Sc006SharedService {
 	}
 
 	/**
-	 * 日付項目より"/"を削除した文字列を取得
+	 * パラメータ文字列の"/"を削除した文字列を取得
 	 * null、空文字はnullを返却する
 	 * 
-	 * @param str	日付文字列
-	 * @return		日付文字列の数値のみ
+	 * @param str	置換対象文字列
+	 * @return		"/"削除後文字列
 	 */
 	public String getDateText(String str) {
 
@@ -7440,6 +7440,22 @@ public class Skf3022Sc006SharedService {
 		// 変換
 		changeString = changeString.replace("/", "").trim();
 		return changeString;
+	}
+
+	/**
+	 * パラメータ文字列が null、空文字はnullを返却する
+	 * null、空文字以外はパラメータ文字列を返却する
+	 * 
+	 * @param str	文字列
+	 * @return		文字列(null、空文字はnull)
+	 */
+	public String getTextOrNull(String str) {
+
+		if (CheckUtils.isEmpty(str)) {
+			return null;
+		} else {
+			return str;
+		}
 	}
 
 	/**
