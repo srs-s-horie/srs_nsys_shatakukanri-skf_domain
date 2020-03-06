@@ -42,7 +42,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetParkingRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNameListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
@@ -111,8 +110,6 @@ public class Skf2020Sc003SharedService {
 	private Skf2020Sc003GetBihinInfoOutExpRepository skf2020Sc003GetBihinInfoOutExpRepository;
 	@Autowired
 	private Skf2020Sc003GetBihinShinseiInfoExpRepository skf2020Sc003GetBihinShinseiInfoExpRepository;
-	@Autowired
-	private Skf2020Sc003GetTeijiDataInfoExpRepository skf2020Sc003GetTeijiDataInfoExpRepository;
 	@Autowired
 	private Skf2020Sc003GetMaxCycleBillingYYMMExpRepository skf2020Sc003GetMaxCycleBillingYYMMExpRepository;
 	@Autowired
@@ -820,8 +817,8 @@ public class Skf2020Sc003SharedService {
 			dto.setNewShatakuMenseki(teijiDataInfo.getLendMenseki() + SkfCommonConstant.SQUARE_MASTER);
 		}
 		// 社宅情報 使用料(月)
-		if (!NfwStringUtils.isEmpty(teijiDataInfo.getRentalAdjust())) {
-			Long rentalAdjust = Long.parseLong(teijiDataInfo.getRentalAdjust());
+		if (teijiDataInfo.getRentalAdjust() != CodeConstant.LONG_ZERO) {
+			Long rentalAdjust = teijiDataInfo.getRentalAdjust();
 			dto.setNewRental(nfNum.format(rentalAdjust) + SkfCommonConstant.FORMAT_EN);
 		}
 		// 個人負担金共益費協議中フラグ
