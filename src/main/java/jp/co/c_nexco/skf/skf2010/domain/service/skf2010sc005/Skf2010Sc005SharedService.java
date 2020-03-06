@@ -1464,9 +1464,7 @@ public class Skf2010Sc005SharedService {
 
 		// 短縮URL作成
 		if (urlBase != null) {
-			Map<String, String> urlMap = new HashMap<String, String>();
-			String url = NfwSendMailUtils.createShotcutUrl(urlBase, urlMap, 2);
-			replaceMap.put("【url】", url);
+			replaceMap.put("【url】", urlBase);
 		}
 
 		// メール送信
