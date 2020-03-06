@@ -48,10 +48,6 @@ public class Skf206010CommonSendMailService {
 
 	/** 借上候補物件提示通知メールテンプレートID */
 	private final String REMINDER_MAIL_TEMPLATE_ID = "SKF_ML32";
-	/** 借上候補物件確認画面へのURL */
-	private final String SKF2060SC002_URL_BASE = "/skf/Skf2060Sc002/init?SKF2060_SC002&menuflg=1&tokenCheck=0";
-	/** 借上げ候補物件確認画面からの戻り先URL */
-	private final String SKF2060SC002_BACK_URL = "/skf/Skf2060Sc004/init";
 
 	/**
 	 * 借上候補物件提示通知メールを送付する。
@@ -199,16 +195,4 @@ public class Skf206010CommonSendMailService {
 		return;
 	}
 
-	/**
-	 * メールに記載するURLに必要なパラメータ文字列を作成する。
-	 * 
-	 * @param shainNo 社員バン後う
-	 * @param applNo 申請書類管理番号
-	 * @param applStatus 申請状況
-	 * @param backUrl 戻りURL
-	 * @return パラメータ文字列
-	 */
-	private String makeUrlParamsStr(String shainNo, String applNo, String applStatus, String backUrl) {
-		return "&shainNo=" + shainNo + "&applNo=" + applNo + "&applStatus=" + applStatus + "&backUrl=" + backUrl;
-	}
 }
