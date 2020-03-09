@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGe
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsUpdateBihinHenkyakuShinseiExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetSKSDairininInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinsei;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
@@ -123,9 +124,6 @@ public class Skf2050Sc002SharedService {
 			setDispItem(applStatus, bihinHenkyaku, dto, viewMode);
 			setShinseiInfo(bihinHenkyaku, dto);
 		}
-		// 排他処理用に最終更新日付を保持する
-		// dto.addLastUpdateDate(BIHIN_HENKYAKU_SHINSEI_KEY_LAST_UPDATE_DATE,
-		// bihinHenkyaku.getUpdateDate());
 
 		// 画面の搬出予定備品の項目を取得する
 		List<SkfBihinInfoUtilsGetBihinInfoExp> bihinShinseiList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();
@@ -157,10 +155,22 @@ public class Skf2050Sc002SharedService {
 		}
 
 		// コメント一覧取得
-		List<SkfCommentUtilsGetCommentInfoExp> commentList = skfCommentUtils.getCommentInfo(companyCd, applNo, null);
+		boolean commentBtnFlg = true;
+		List<SkfCommentUtilsGetCommentListExp> commentList = skfCommentUtils.getCommentList(companyCd, applNo,
+				CodeConstant.STATUS_SHONIN1);
 		if (commentList == null || commentList.size() <= 0) {
 			// コメントがなければコメント表示ボタンを非表示にする
-			dto.setCommentBtnVisibled(false);
+			commentBtnFlg = false;
+		}
+		dto.setCommentBtnVisibled(commentBtnFlg);
+		// ステータスが「31：承認１」の時、承認1のコメントをコメント欄に表示する
+		if (CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)) {
+			List<SkfCommentUtilsGetCommentInfoExp> commentInfo = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+			commentInfo = skfCommentUtils.getCommentInfo(companyCd, applNo, applStatus);
+			if (commentInfo != null && commentInfo.size() > 0) {
+				String commentNote = commentInfo.get(0).getCommentNote();
+				dto.setCommentNote(commentNote);
+			}
 		}
 
 		return true;
@@ -217,6 +227,7 @@ public class Skf2050Sc002SharedService {
 		// コメント情報の登録
 		String commentNote = dto.getCommentNote();
 		String commentName = loginUserInfo.get("userName");
+		skfCommentUtils.deleteComment(companyCd, applNo, dto.getApplStatus(), errorMsg);
 		if (!skfCommentUtils.insertComment(companyCd, applNo, applStatus, commentName, commentNote, errorMsg)) {
 			ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
 			return false;
@@ -483,7 +494,7 @@ public class Skf2050Sc002SharedService {
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC002);
 		return resultBatch;
 	}
-	
+
 	/**
 	 * 社宅管理システム規格名称取得
 	 * 
