@@ -285,9 +285,14 @@ public class Skf2040Sc001SharedService {
 		}
 
 		// 社宅住所
+		// 都道府県名取得
+		String prefName = CodeConstant.NONE;
+		if(NfwStringUtils.isNotEmpty(shatakuInfo.getPrefCd())){
+			prefName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_PREFCD, shatakuInfo.getPrefCd());
+		}
 		if (NfwStringUtils.isNotEmpty(shatakuInfo.getAddress())) {
-			dto.setNowAddress(shatakuInfo.getAddress());
-			LogUtils.debugByMsg("社宅住所" + shatakuInfo.getAddress());
+			dto.setNowAddress(prefName + shatakuInfo.getAddress());
+			LogUtils.debugByMsg("社宅住所" + prefName + shatakuInfo.getAddress());
 		}
 
 		// 室番号
