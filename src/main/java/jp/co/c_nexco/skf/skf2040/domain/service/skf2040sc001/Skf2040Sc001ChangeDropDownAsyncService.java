@@ -86,8 +86,13 @@ public class Skf2040Sc001ChangeDropDownAsyncService
 		LogUtils.debugByMsg("社宅名" + dto.getHdnSelectedNowShatakuName());
 
 		// 社宅住所
-		dto.setNowAddress(ObjectUtils.defaultIfNull(shatakuInfo.getAddress(), ""));
-		LogUtils.debugByMsg("社宅住所" + dto.getNowAddress());
+		// 都道府県名取得
+		String prefName = CodeConstant.NONE;
+		if(NfwStringUtils.isNotEmpty(shatakuInfo.getPrefCd())){
+			prefName = codeCacheUtils.getElementCodeName(FunctionIdConstant.GENERIC_CODE_PREFCD, shatakuInfo.getPrefCd());
+		}
+		dto.setNowAddress(prefName + ObjectUtils.defaultIfNull(shatakuInfo.getAddress(), ""));
+		LogUtils.debugByMsg("社宅住所" + prefName + dto.getNowAddress());
 
 		// 室番号
 		dto.setHdnNowShatakuRoomNo(ObjectUtils.defaultIfNull(shatakuInfo.getRoomNo(), ""));
