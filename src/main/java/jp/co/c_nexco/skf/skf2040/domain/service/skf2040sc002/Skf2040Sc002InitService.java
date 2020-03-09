@@ -18,6 +18,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetH
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinsei;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoExpRepository;
@@ -194,6 +195,15 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 		String commetFlg = setInputComment(initDto.getApplNo());
 		if (NfwStringUtils.isNotEmpty(commetFlg)) {
 			initDto.setCommentViewFlg(commetFlg);
+		}
+		if (CheckUtils.isEqual(initDto.getApplStatus(), CodeConstant.STATUS_SHONIN1)) {
+			List<SkfCommentUtilsGetCommentInfoExp> commentInfo = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+			commentInfo = skfCommentUtils.getCommentInfo(CodeConstant.C001, initDto.getApplNo(),
+					initDto.getApplStatus());
+			if (commentInfo != null && commentInfo.size() > 0) {
+				String commentNote = commentInfo.get(0).getCommentNote();
+				initDto.setCommentNote(commentNote);
+			}
 		}
 
 		// コントロール制御
@@ -734,7 +744,7 @@ public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002Ini
 	 */
 	private String setInputComment(String applNo) {
 		// コメント一覧取得
-		List<SkfCommentUtilsGetCommentInfoExp> commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applNo,
+		List<SkfCommentUtilsGetCommentListExp> commentList = skfCommentUtils.getCommentList(CodeConstant.C001, applNo,
 				null);
 		// コメントがあれば「コメント表示」ボタンを表示
 		String commentViewFlag = CodeConstant.NONE;

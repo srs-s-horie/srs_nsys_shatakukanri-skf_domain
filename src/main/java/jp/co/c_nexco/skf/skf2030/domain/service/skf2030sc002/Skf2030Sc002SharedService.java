@@ -18,6 +18,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGe
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetSKSDairininInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
@@ -358,13 +359,21 @@ public class Skf2030Sc002SharedService {
 		dto.setBihinList(bihinList);
 
 		// コメント一覧取得
-		List<SkfCommentUtilsGetCommentInfoExp> commentList = skfCommentUtils.getCommentInfo(companyCd,
-				applInfo.get("applNo"), null);
+		List<SkfCommentUtilsGetCommentListExp> commentList = skfCommentUtils.getCommentList(companyCd,
+				applInfo.get("applNo"), CodeConstant.STATUS_SHONIN1);
 		// コメントがあれば「コメント表示」ボタンを表示
 		if (commentList != null && commentList.size() > 0) {
 			dto.setCommentBtnVisibled(true);
 		} else {
 			dto.setCommentBtnVisibled(false);
+		}
+		if (CheckUtils.isEqual(dto.getApplStatus(), CodeConstant.STATUS_SHONIN1)) {
+			List<SkfCommentUtilsGetCommentInfoExp> commentInfo = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+			commentInfo = skfCommentUtils.getCommentInfo(companyCd, dto.getApplNo(), dto.getApplStatus());
+			if (commentInfo != null && commentInfo.size() > 0) {
+				String commentNote = commentInfo.get(0).getCommentNote();
+				dto.setCommentNote(commentNote);
+			}
 		}
 
 		// 承認可能ロールのみの処理
@@ -695,6 +704,7 @@ public class Skf2030Sc002SharedService {
 		String commentNote = skfHtmlCreateUtils.htmlEscapeEncode(dto.getCommentNote());
 
 		if (NfwStringUtils.isNotEmpty(commentNote.trim())) {
+			skfCommentUtils.deleteComment(companyCd, applInfo.get("applNo"), applStatus, errorMsg);
 			if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName,
 					commentNote, errorMsg)) {
 				return false;

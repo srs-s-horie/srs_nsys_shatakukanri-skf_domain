@@ -74,6 +74,8 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		} else {
 			applTacFlg = CodeConstant.NO;
 		}
+		String applStatus = applInfo.getApplStatus();
+		String applNo = applInfo.getApplNo();
 
 		// コメント入力欄のチェック
 		if (!skf2040Sc002SharedService.checkValidation(appDto, sFalse)) {
@@ -133,6 +135,7 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		// コメント更新
 		String comment = appDto.getCommentNote();
 		if (NfwStringUtils.isNotEmpty(comment)) {
+			skf2040Sc002SharedService.deleteComment(applNo, applStatus, errorMsg);
 			if (!skf2040Sc002SharedService.insertCommentTable(userInfo, appDto.getApplNo(), nextStatus, errorMsg,
 					comment)) {
 				ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);

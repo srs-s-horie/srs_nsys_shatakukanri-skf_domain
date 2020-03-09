@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
@@ -149,7 +150,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 	 * @throws IllegalAccessException
 	 */
 	private void setCommentBtnDisabled(Skf2010Sc006InitDto initDto) throws IllegalAccessException, Exception {
-		List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+		List<SkfCommentUtilsGetCommentListExp> commentList = new ArrayList<SkfCommentUtilsGetCommentListExp>();
 		String applStatus = "";
 		// 権限チェック
 		Map<String, String> loginUserInfo = new HashMap<String, String>();
@@ -180,6 +181,16 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		} else {
 			// コメントがあれば表示
 			initDto.setCommentViewFlag("true");
+
+		}
+		// ステータスが承認１の時はコメントを取得
+		if (CheckUtils.isEqual(initDto.getApplStatus(), CodeConstant.STATUS_SHONIN1)) {
+			List<SkfCommentUtilsGetCommentInfoExp> commentInfo = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+			commentInfo = skf2010Sc006SharedService.getApplCommentInfo(initDto.getApplNo(), initDto.getApplStatus());
+			if (commentInfo != null && commentInfo.size() > 0) {
+				String commentNote = commentInfo.get(0).getCommentNote();
+				initDto.setCommentNote(commentNote);
+			}
 		}
 		return;
 	}
@@ -870,7 +881,7 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		if ("1".equals(taikyoReport.getTaikyoShataku())) {
 			initDto.setTaikyoArea(taikyoReport.getTaikyoArea());
 		}
-		
+
 		// 自動車１台目
 		// 自動車の保管場所
 		if ("1".equals(taikyoReport.getTaikyoParking1())) {

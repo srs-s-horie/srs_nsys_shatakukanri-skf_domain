@@ -25,6 +25,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfAp
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
@@ -257,6 +258,7 @@ public class Skf2010Sc006SharedService {
 		// 申請情報設定
 		applInfo.put("applId", tApplHistoryData.getApplId());
 		applInfo.put("applNo", applNo);
+		applInfo.put("applStatus", tApplHistoryData.getApplStatus());
 		applInfo.put("applShainNo", tApplHistoryData.getShainNo());
 
 		String nowApplStatus = tApplHistoryData.getApplStatus();
@@ -334,6 +336,10 @@ public class Skf2010Sc006SharedService {
 		String commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
 		// コメントを更新する
 		if (comment != null && !CheckUtils.isEmpty(comment)) {
+			boolean delRes = skfCommentUtils.deleteComment(companyCd, applNo, applInfo.get("applStatus"), errMap);
+			if (!delRes) {
+				// 特に何もしない
+			}
 			boolean commentRes = skfCommentUtils.insertComment(companyCd, applNo, nextStatus, commentName, comment,
 					errMap);
 			if (!commentRes) {
@@ -574,6 +580,23 @@ public class Skf2010Sc006SharedService {
 	}
 
 	/**
+	 * 申請コメント情報を取得します
+	 * 
+	 * @param applNo
+	 * @param applStatus
+	 * @return
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 */
+	public List<SkfCommentUtilsGetCommentInfoExp> getApplCommentInfo(String applNo, String applStatus)
+			throws IllegalAccessException, InvocationTargetException {
+		List<SkfCommentUtilsGetCommentInfoExp> returnList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+		returnList = skfCommentUtils.getCommentInfo(companyCd, applNo, applStatus);
+
+		return returnList;
+	}
+
+	/**
 	 * 申請コメントの一覧を取得します
 	 * 
 	 * @param applNo
@@ -582,10 +605,10 @@ public class Skf2010Sc006SharedService {
 	 * @throws InvocationTargetException
 	 * @throws IllegalAccessException
 	 */
-	public List<SkfCommentUtilsGetCommentInfoExp> getApplCommentList(String applNo, String applStatus)
+	public List<SkfCommentUtilsGetCommentListExp> getApplCommentList(String applNo, String applStatus)
 			throws IllegalAccessException, InvocationTargetException {
-		List<SkfCommentUtilsGetCommentInfoExp> returnList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-		returnList = skfCommentUtils.getCommentInfo(companyCd, applNo, applStatus);
+		List<SkfCommentUtilsGetCommentListExp> returnList = new ArrayList<SkfCommentUtilsGetCommentListExp>();
+		returnList = skfCommentUtils.getCommentList(companyCd, applNo, applStatus);
 
 		return returnList;
 	}

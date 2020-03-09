@@ -776,6 +776,10 @@ public class Skf2040Sc002SharedService {
 		return true;
 	}
 
+	public void deleteComment(String applNo, String deleteApplStatus, Map<String, String> errorMsg) {
+		skfCommentUtils.deleteComment(CodeConstant.C001, applNo, deleteApplStatus, errorMsg);
+	}
+
 	/**
 	 * 申請履歴の承認者と申請状況を更新
 	 * 

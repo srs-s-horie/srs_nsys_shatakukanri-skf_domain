@@ -8,10 +8,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc010.Skf2010Sc010GetCommentListExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc010.Skf2010Sc010GetCommentListExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc010.Skf2010Sc010GetCommentListExpRepository;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -21,6 +21,8 @@ public class Skf2010Sc010SharedService {
 
 	@Autowired
 	private Skf2010Sc010GetCommentListExpRepository skf2010Sc010GetCommentListExpRepository;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
@@ -34,32 +36,15 @@ public class Skf2010Sc010SharedService {
 	public List<Map<String, String>> getCommentList(String applNo) {
 		List<Map<String, String>> commentList = new ArrayList<Map<String, String>>();
 
-		List<Skf2010Sc010GetCommentListExp> resultList = new ArrayList<Skf2010Sc010GetCommentListExp>();
-		Skf2010Sc010GetCommentListExpParameter param = new Skf2010Sc010GetCommentListExpParameter();
-		param.setCompanyCd(companyCd);
-		param.setApplNo(applNo);
-		String applStatus = "";
-
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		String roleId = loginUserInfoMap.get("roleId");
-		switch (roleId) {
-		case CodeConstant.NAKASA_SHATAKU_TANTO:
-		case CodeConstant.NAKASA_SHATAKU_KANRI:
-		case CodeConstant.SYSTEM_KANRI:
-			applStatus = "";
-			break;
-		default:
-			applStatus = CodeConstant.STATUS_SHONIN1;
-			break;
-		}
-		param.setApplStatus(applStatus);
+		List<SkfCommentUtilsGetCommentListExp> resultList = new ArrayList<SkfCommentUtilsGetCommentListExp>();
 
 		Map<String, String> genericCodeMap = skfGenericCodeUtils.getGenericCode("SKF1001");
 
-		resultList = skf2010Sc010GetCommentListExpRepository.getCommentList(param);
+		// コメント一覧を取得する
+		resultList = skfCommentUtils.getCommentList(companyCd, applNo, CodeConstant.STATUS_SHONIN1);
 		if (resultList != null && resultList.size() > 0) {
 			Map<String, String> commentMap = null;
-			for (Skf2010Sc010GetCommentListExp result : resultList) {
+			for (SkfCommentUtilsGetCommentListExp result : resultList) {
 
 				commentMap = new HashMap<String, String>();
 
