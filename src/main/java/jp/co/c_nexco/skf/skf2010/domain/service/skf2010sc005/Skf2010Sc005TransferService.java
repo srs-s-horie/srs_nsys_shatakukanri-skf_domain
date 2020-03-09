@@ -3,11 +3,9 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -76,8 +74,7 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 		if (CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)) {
 			// 「承認者名1」「承認者名2」いずれかが、セッションのログインユーザ名と同じ場合（システム管理者は除く）
 			if ((CheckUtils.isEqual(loginUserInfo.get("userName"), shonin1)
-					|| CheckUtils.isEqual(loginUserInfo.get("userName"), shonin2))
-					&& !checkAdminRole(loginUserInfo.get("roleId"))) {
+					|| CheckUtils.isEqual(loginUserInfo.get("userName"), shonin2))) {
 				switch (applId) {
 				case FunctionIdConstant.R0104:
 					// ページ遷移先は「備品希望申請（アウトソース用）」
