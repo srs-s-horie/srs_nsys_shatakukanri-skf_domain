@@ -56,6 +56,10 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 	@Value("${skf.common.settings.shiyouryou_keisan_kbn}")
 	private String shiyouryouKbn;
 
+	/** 定数 */
+	// 残価率文字数
+	public static final int ZANKARITSU_LENGTH = 6;
+
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -411,7 +415,13 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			// ⑩経年
 			initDto.setSc003Keinen(getNenEdit(calcResult.getSanteiKeinen()));
 			// ⑪経年調整　残価率
-			initDto.setSc003KeinenZankaritsu(calcResult.getKeinenZankaristu().toPlainString());
+			BigDecimal b = calcResult.getKeinenZankaristu().stripTrailingZeros();
+			String zankaritsu = b.toPlainString();
+			if (zankaritsu.contains(".") && zankaritsu.length() < ZANKARITSU_LENGTH) {
+				zankaritsu += "0";
+			}
+//			initDto.setSc003KeinenZankaritsu(calcResult.getKeinenZankaristu().toPlainString());
+			initDto.setSc003KeinenZankaritsu(zankaritsu);
 			// ⑫使用料月額
 			initDto.setSc003PatternShiyoryo1(
 					skf3022Sc003SharedService.getKingakuEdit(calcResult.getPatternShiyoryouGetsugaku().stripTrailingZeros().toPlainString()));
@@ -549,7 +559,7 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 		// 使用料区分判定
 		if (CodeConstant.SHIYOURYOU_KEISAN_KBN_SHIN.equals(shiyouryouKbn)) {
 			// 貸与面積 + 物置面積(小数切捨て)
-			initDto.setSc003ShatakuMenseki1(skf3022Sc003SharedService.getShatakuMensekiEdit(roomInfo.getLendMenseki().add(roomInfo.getStairsMenseki())));
+			initDto.setSc003ShatakuMenseki1(skf3022Sc003SharedService.getShatakuMensekiEdit(roomInfo.getLendMenseki().add(roomInfo.getBarnMenseki())));
 		} else {
 			// 貸与面積 - サンルーム面積 / 2 - 物置調整面積(小数切捨て)
 			initDto.setSc003ShatakuMenseki1(
