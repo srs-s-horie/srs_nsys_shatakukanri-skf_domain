@@ -50,7 +50,7 @@ public class Skf2010Sc010InitService extends BaseServiceAbstract<Skf2010Sc010Ini
 
 		// 申請コメント一覧を取得
 		List<Map<String, String>> commentList = new ArrayList<Map<String, String>>();
-		commentList = skf2010Sc010SharedService.getCommentList(applNo);
+		commentList = skf2010Sc010SharedService.getCommentList(applNo, menuScopeSessionBean);
 
 		initDto.setCommentList(commentList);
 
