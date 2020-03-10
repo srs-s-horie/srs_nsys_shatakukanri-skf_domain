@@ -93,6 +93,7 @@ import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImp
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc005common.Skf2010Sc005CommonDto;
+import jp.co.intra_mart.foundation.BaseUrl;
 
 /**
  * Skf2010Sc005 承認一覧内部処理クラス
@@ -1464,7 +1465,8 @@ public class Skf2010Sc005SharedService {
 
 		// 短縮URL作成
 		if (urlBase != null) {
-			replaceMap.put("【url】", urlBase);
+			String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
+			replaceMap.put("【url】", url);
 		}
 
 		// メール送信
