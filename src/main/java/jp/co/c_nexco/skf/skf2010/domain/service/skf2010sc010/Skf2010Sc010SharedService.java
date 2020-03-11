@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc010.Skf2010Sc010GetCommentListExpRepository;
+import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -33,12 +36,27 @@ public class Skf2010Sc010SharedService {
 	@Value("${skf.common.company_cd}")
 	private String companyCd;
 
-	public List<Map<String, String>> getCommentList(String applNo) {
+	public List<Map<String, String>> getCommentList(String applNo, MenuScopeSessionBean bean) {
 		List<Map<String, String>> commentList = new ArrayList<Map<String, String>>();
 
 		List<SkfCommentUtilsGetCommentListExp> resultList = new ArrayList<SkfCommentUtilsGetCommentListExp>();
 
-		Map<String, String> genericCodeMap = skfGenericCodeUtils.getGenericCode("SKF1001");
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAlterLogin(bean);
+
+		Map<String, String> genericCodeMap = new HashMap<String, String>();
+
+		switch (loginUserInfo.get("roleId")) {
+		case SkfCommonConstant.ADMIN_ROLE1:
+		case SkfCommonConstant.ADMIN_ROLE2:
+		case SkfCommonConstant.ADMIN_ROLE3:
+			genericCodeMap = skfGenericCodeUtils
+					.getGenericCode(FunctionIdConstant.GENERIC_CODE_COMMENT_APPL_STATUS_ADMIN);
+			break;
+		default:
+			genericCodeMap = skfGenericCodeUtils
+					.getGenericCode(FunctionIdConstant.GENERIC_CODE_COMMENT_APPL_STATUS_USER);
+			break;
+		}
 
 		// コメント一覧を取得する
 		resultList = skfCommentUtils.getCommentList(companyCd, applNo, CodeConstant.STATUS_SHONIN1);
