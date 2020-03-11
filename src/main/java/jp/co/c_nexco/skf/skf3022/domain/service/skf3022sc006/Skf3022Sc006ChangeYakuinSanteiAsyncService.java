@@ -44,9 +44,10 @@ public class Skf3022Sc006ChangeYakuinSanteiAsyncService
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("役員算定変更", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 		// 使用料計算
-		if (!skf3022Sc006SharedService.threeShiyouryoCalcAsync(asyncDto)) {
-			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
-		}
+//		if (!skf3022Sc006SharedService.threeShiyouryoCalcAsync(asyncDto)) {
+//			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
+//		}
+		skf3022Sc006SharedService.threeShiyouryoCalcAsync(asyncDto, true);
 		return asyncDto;
 	}
 }

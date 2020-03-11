@@ -18,10 +18,8 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
-import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
-import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ParkingSupportCallBackAsyncDto;
@@ -71,8 +69,8 @@ public class Skf3022Sc006ParkingSupportCallBackAsyncService
 		if (skf3022Sc006SharedService.siyoryoKeiSan(asyncDto.getSc006ChushajoKanriNo(),
 				asyncDto.getSc006ParkBlockKind(), paramMap, resultMap, errMsg)) {
 			// 使用料計算でエラー
-			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
+//			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
+//			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
 		} else {
 			// 使用料計算戻り値設定
 			skf3022Sc006SharedService.setSiyoryoKeiSanParamAsync(resultMap, asyncDto);

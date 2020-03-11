@@ -3939,10 +3939,11 @@ public class Skf3022Sc006SharedService {
 	 * 「※」項目はアドレスとして戻り値になる。
 	 * 
 	 * @param asyncDto		*DTO
+	 * @param zokkoFlg		社宅使用料計算エラー検知時後続処理続行フラグ(true:続行、false:処理終了)
 	 * @return
 	 * @throws Exception
 	 */
-	public Boolean threeShiyouryoCalcAsync(Skf3022Sc006CommonAsyncDto asyncDto) throws Exception {
+	public Boolean threeShiyouryoCalcAsync(Skf3022Sc006CommonAsyncDto asyncDto, Boolean zokkoFlg) throws Exception {
 
 		/** パラメータ取得 */
 		// 使用料計算用Map
@@ -3954,9 +3955,12 @@ public class Skf3022Sc006SharedService {
 		StringBuffer errMsg = new StringBuffer();						// エラーメッセージ
 		if (siyoryoKeiSan("", "", paramMap, resultMap, errMsg)) {
 			// 使用料計算でエラー
-			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-			LogUtils.debugByMsg("社宅使用料計算で異常:" + errMsg);
-			return false;
+//			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
+			if (!zokkoFlg) {
+				LogUtils.debugByMsg("社宅使用料計算異常で処理終了:" + errMsg);
+				return false;
+			}
+			LogUtils.debugByMsg("社宅使用料計算異常だが処理続行:" + errMsg);
 		} else {
 			// 使用料計算戻り値設定
 			setSiyoryoKeiSanParamAsync(resultMap, asyncDto);
@@ -3967,7 +3971,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("駐車場１(old)の使用料計算");
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoOneOld(), "1", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
-					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
+//					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
 					LogUtils.debugByMsg("駐車場１(old)の使用料計算で異常:" + errMsg);
 					return false;
 				}
@@ -3975,7 +3979,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("駐車場１の使用料計算");
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoOne(), "1", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
-					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
+//					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
 					LogUtils.debugByMsg("駐車場１の使用料計算で異常:" + errMsg);
 					return false;
 				}
@@ -3993,7 +3997,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("駐車場2(old)の使用料計算");
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoTwoOld(), "2", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
-					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
+//					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
 					LogUtils.debugByMsg("駐車場2(old)の使用料計算で異常:" + errMsg);
 					return false;
 				}
@@ -4001,7 +4005,7 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("駐車場2の使用料計算");
 				if (siyoryoKeiSan(asyncDto.getHdnChushajoNoTwo(), "2", paramMap, resultMap, errMsg)) {
 					// 使用料計算でエラー
-					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
+//					ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
 					LogUtils.debugByMsg("駐車場2の使用料計算で異常:" + errMsg);
 					return false;
 				}
