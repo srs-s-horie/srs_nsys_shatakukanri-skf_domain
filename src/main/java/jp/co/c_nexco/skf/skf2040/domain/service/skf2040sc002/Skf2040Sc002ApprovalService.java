@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -23,6 +26,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
@@ -48,6 +52,10 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 	private Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
 	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
+	@Autowired
+	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils; 
 
 	private String sFalse = "false";
 	Map<String, String> errorMsg = new HashMap<String, String>();
@@ -135,15 +143,22 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		// コメント更新
 		String comment = appDto.getCommentNote();
 		if (NfwStringUtils.isNotEmpty(comment)) {
+			List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
+			commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applNo, applStatus);
+			if (commentList != null && commentList.size() > 0) {
+	 			String hdnCommentUser1 = commentList.get(0).getCommentName();
+				userInfo.put("userName", hdnCommentUser1);
+				userInfo.put("affiliation2Name", null);
+			}	
 			skf2040Sc002SharedService.deleteComment(applNo, applStatus, errorMsg);
-			if (!skf2040Sc002SharedService.insertCommentTable(userInfo, appDto.getApplNo(), nextStatus, errorMsg,
-					comment)) {
-				ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
-				return appDto;
+				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, appDto.getApplNo(), nextStatus, errorMsg,
+						comment)) {
+					ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
+					return appDto;
+				}
+			} else {
+				comment = CodeConstant.NONE;
 			}
-		} else {
-			comment = CodeConstant.NONE;
-		}
 
 		// 申請履歴の更新後データを取り直す
 		applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
