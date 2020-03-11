@@ -25,6 +25,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.intra_mart.foundation.BaseUrl;
 
 /**
  * Skf206010 借上候補登録・確認・一覧画面 共通メール送信処理クラス
@@ -188,7 +189,10 @@ public class Skf206010CommonSendMailService {
 		replaceMap.put("【appl_date】", StringUtils.defaultString(applDateStr)); // 申請日
 
 		// 短縮URL作成
-		replaceMap.put("【url】", StringUtils.defaultString(urlBase));
+		if (urlBase != null) {
+			String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
+			replaceMap.put("【url】", url);
+		}
 
 		// メール送信
 		NfwSendMailUtils.sendMail(this.REMINDER_MAIL_TEMPLATE_ID, replaceMap);
