@@ -381,7 +381,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 							&& CodeConstant.CAR_HOYU.equals(checkDto.getCarNoInputFlg2())) {
 
 						// 自動車の車名(2台目)
-						LogUtils.debugByMsg(msg + "自動車の車名(2台目)" + checkDto.getCarName());
+						LogUtils.debugByMsg(msg + "自動車の車名(2台目)" + checkDto.getCarName2());
 						if (NfwStringUtils.isBlank(checkDto.getCarName2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carName2" },
 									MessageIdConstant.E_SKF_1048, "自動車の車名(２台目)");
@@ -444,7 +444,7 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 							result = false;
 						}
 						// 自動車の車名(2台目)
-						LogUtils.debugByMsg(msg + "自動車の車名(２台目)" + checkDto.getCarName());
+						LogUtils.debugByMsg(msg + "自動車の車名(２台目)" + checkDto.getCarName2());
 						if (NfwStringUtils.isBlank(checkDto.getCarName2())) {
 							ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carName2" },
 									MessageIdConstant.E_SKF_1048, "自動車の車名(２台目)");
@@ -918,9 +918,9 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 			// 自動車の登録番号
 			LogUtils.debugByMsg("桁数チェック " + "自動車の登録番号　- " + checkDto.getCarNo());
 			if (NfwStringUtils.isNotBlank(checkDto.getCarNo())
-					&& CheckUtils.isMoreThanByteSize(checkDto.getCarNo().trim(), 66)) {
+					&& CheckUtils.isMoreThanByteSize(checkDto.getCarNo().trim(), 20)) {
 				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carNo" }, MessageIdConstant.E_SKF_1071,
-						"自動車の登録番号", "33");
+						"自動車の登録番号", "10");
 				result = false;
 			}
 			// 自動車の使用者
@@ -933,23 +933,23 @@ public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2
 			}
 
 			// 自動車の車名(２台目)
-			LogUtils.debugByMsg("桁数チェック " + "自動車の車名(２台目)　- " + checkDto.getCarName());
-			if (NfwStringUtils.isNotBlank(checkDto.getCarName())
-					&& CheckUtils.isMoreThanByteSize(checkDto.getCarName().trim(), 66)) {
+			LogUtils.debugByMsg("桁数チェック " + "自動車の車名(２台目)　- " + checkDto.getCarName2());
+			if (NfwStringUtils.isNotBlank(checkDto.getCarName2())
+					&& CheckUtils.isMoreThanByteSize(checkDto.getCarName2().trim(), 66)) {
 				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carName2" }, MessageIdConstant.E_SKF_1071,
 						"自動車の車名(２台目)", "33");
 				result = false;
 			}
 			// 自動車の登録番号(２台目)
-			LogUtils.debugByMsg("桁数チェック " + "自動車の登録番号(２台目)- " + checkDto.getCarNo());
+			LogUtils.debugByMsg("桁数チェック " + "自動車の登録番号(２台目)- " + checkDto.getCarNo2());
 			if (NfwStringUtils.isNotBlank(checkDto.getCarNo2())
-					&& CheckUtils.isMoreThanByteSize(checkDto.getCarNo2().trim(), 66)) {
+					&& CheckUtils.isMoreThanByteSize(checkDto.getCarNo2().trim(), 20)) {
 				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carNo2" }, MessageIdConstant.E_SKF_1071,
-						"自動車の登録番号(２台目)", "33");
+						"自動車の登録番号(２台目)", "10");
 				result = false;
 			}
 			// 自動車の使用者2
-			LogUtils.debugByMsg("桁数チェック " + "自動車の使用者(２台目)　- " + checkDto.getCarUser());
+			LogUtils.debugByMsg("桁数チェック " + "自動車の使用者(２台目)　- " + checkDto.getCarUser2());
 			if (NfwStringUtils.isNotBlank(checkDto.getCarUser2())
 					&& CheckUtils.isMoreThanByteSize(checkDto.getCarUser2().trim(), 66)) {
 				ServiceHelper.addErrorResultMessage(checkDto, new String[] { "carUser2" }, MessageIdConstant.E_SKF_1071,
