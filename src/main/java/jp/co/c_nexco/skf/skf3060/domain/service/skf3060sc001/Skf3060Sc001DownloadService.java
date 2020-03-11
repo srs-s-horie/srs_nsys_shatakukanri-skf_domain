@@ -56,6 +56,10 @@ public class Skf3060Sc001DownloadService extends BaseServiceAbstract<Skf3060Sc00
 	@Value("${skf3060.skf3060_sc001.csvFileName}")
 	private String csvFileName;	
 
+	// CSVファイルエンコード
+	@Value("${skf3060.skf3060_sc001.csvFileEncode}")
+	private String csvEncode;
+
 	@Value("${skf.common.validate_error}")
     private String validationErrorCode;	
     
@@ -65,7 +69,12 @@ public class Skf3060Sc001DownloadService extends BaseServiceAbstract<Skf3060Sc00
 	 * CSV出力用カンマ
 	 */
 	public String COMMA = ",";
-	
+	/**
+	 * CSV文字コード
+	 */
+	private final String UTF8 = "0";
+	private final String BOM_UTF8 = "1";
+	private final String SHIFTJIS = "2";
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -221,14 +230,34 @@ public class Skf3060Sc001DownloadService extends BaseServiceAbstract<Skf3060Sc00
 				}
 				
 				//CSV出力を行う
-				FileOutput.fileOutputCsv(rowdatas, fileName, "skf3060fl001", 1, null, downloadDto,
-						new FileOutput().new OutputFileCsvProperties(null, FileEncode.BOM_UTF8, null, null));
+				FileEncode encode = null;	// 文字コード
+				// プロパティファイル文字コード指定判定
+				if (!CheckUtils.isEmpty(csvEncode)) {
+					switch (csvEncode) {
+					case UTF8:
+						encode = FileEncode.UTF8;
+						break;
+					case BOM_UTF8:
+						encode = FileEncode.BOM_UTF8;
+						break;
+					case SHIFTJIS:
+						encode = FileEncode.SHIFTJIS;
+						break;
+					}
+				}
+				// 文字コード指定判定
+				if (encode != null) {
+					FileOutput.fileOutputCsv(rowdatas, fileName, "skf3060fl001", 1, null, downloadDto,
+							new FileOutput().new OutputFileCsvProperties(null, encode, null, null));
+				} else {
+					FileOutput.fileOutputCsv(rowdatas, fileName, "skf3060fl001", 1, null, downloadDto);
+				}
 				String uploadFileName = DateTime.now().toString("YYYYMMdd") + "_" + csvFileName + ".csv";
 				downloadDto.setUploadFileName(uploadFileName);
 			}
-        }else{
-        	downloadDto.setErrorFlag(true);
-        }
+		}else{
+			downloadDto.setErrorFlag(true);
+		}
 		
 		return downloadDto;
 	}	
