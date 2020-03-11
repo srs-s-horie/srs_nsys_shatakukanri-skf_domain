@@ -122,7 +122,6 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 		if (userName.equals(initDto.getShonin1Name())
 				&& !CheckUtils.isEqual(initDto.getApplStatus(), CodeConstant.STATUS_SHINSACHU)) {
 			initDto.setShoninBtnViewFlag("false");
-			initDto.setCommentViewFlag("false");
 			initDto.setCommentAreaVisibled(false);
 		} else {
 			initDto.setShoninBtnViewFlag("true");

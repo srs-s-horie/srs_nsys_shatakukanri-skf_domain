@@ -761,7 +761,7 @@ public class Skf2040Sc002SharedService {
 		String commentName = CodeConstant.NONE;
 		// 室、チームまたは課名を追記
 		List<String> tmpNameList = new ArrayList<String>();
-		if (userInfo.get("affiliation2Name") != null) {
+		if (userInfo.get("affiliation2Name") != null || NfwStringUtils.isNotEmpty(userInfo.get("affiliation2Name"))) {
 			tmpNameList.add(userInfo.get("affiliation2Name"));
 		}
 		tmpNameList.add(StringUtils.trim(userInfo.get("userName")));
