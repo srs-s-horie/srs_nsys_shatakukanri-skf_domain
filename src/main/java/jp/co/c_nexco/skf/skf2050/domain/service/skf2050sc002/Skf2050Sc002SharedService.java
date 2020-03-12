@@ -224,12 +224,11 @@ public class Skf2050Sc002SharedService {
 			return false;
 		}
 
-		// コメント情報の登録
-		String commentNote = dto.getCommentNote();
-		String commentName = loginUserInfo.get("userName");
-		skfCommentUtils.deleteComment(companyCd, applNo, dto.getApplStatus(), errorMsg);
-		if (!skfCommentUtils.insertComment(companyCd, applNo, applStatus, commentName, commentNote, errorMsg)) {
-			ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
+		// コメント更新
+		String commentNote = dto.getCommentNote();		
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
+				commentNote, errorMsg);
+		if (!commentErrorMessage) {
 			return false;
 		}
 
