@@ -24,6 +24,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -51,6 +52,8 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -159,10 +162,9 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		}
 
 		// コメントの更新
-		boolean commentRes = skf2010Sc004SharedService.updateCommentInfo(applNo, applStatus, commentName, commentNote,
-				errorMsg);
-		if (!commentRes) {
-			ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
+				commentNote, errorMsg);
+		if (!commentErrorMessage) {
 			return false;
 		}
 

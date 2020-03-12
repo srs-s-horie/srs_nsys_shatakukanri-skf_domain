@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf2040.domain.service.skf2040sc002;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +12,8 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -141,24 +138,13 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		}
 
 		// コメント更新
-		String comment = appDto.getCommentNote();
-		if (NfwStringUtils.isNotEmpty(comment)) {
-			List<SkfCommentUtilsGetCommentInfoExp> commentList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-			commentList = skfCommentUtils.getCommentInfo(CodeConstant.C001, applNo, applStatus);
-			if (commentList != null && commentList.size() > 0) {
-	 			String hdnCommentUser1 = commentList.get(0).getCommentName();
-				userInfo.put("userName", hdnCommentUser1);
-				userInfo.put("affiliation2Name", null);
-			}	
-			skf2040Sc002SharedService.deleteComment(applNo, applStatus, errorMsg);
-				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, appDto.getApplNo(), nextStatus, errorMsg,
-						comment)) {
-					ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
-					return appDto;
-				}
-			} else {
-				comment = CodeConstant.NONE;
-			}
+		String commentNote = appDto.getCommentNote();		
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, nextStatus, 
+				commentNote, errorMsg);
+		if (!commentErrorMessage) {
+			ServiceHelper.addErrorResultMessage(appDto, null, errorMsg.get("error"));
+			throwBusinessExceptionIfErrors(appDto.getResultMessages());
+		}
 
 		// 申請履歴の更新後データを取り直す
 		applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
@@ -178,7 +164,7 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		}
 
 		// メール送信処理
-		skf2040Sc002SharedService.sendMail(appDto.getApplNo(), appDto.getApplId(), appDto.getShainNo(), comment,
+		skf2040Sc002SharedService.sendMail(appDto.getApplNo(), appDto.getApplId(), appDto.getShainNo(), commentNote,
 				appDto.getMailKbn(), false);
 
 		// 退居届データ連携

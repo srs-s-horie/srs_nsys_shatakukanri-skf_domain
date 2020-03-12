@@ -37,7 +37,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004Inse
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004InsertTaikyoReportInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004UpdateApplHistoryAgreeStatusExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
@@ -605,51 +604,6 @@ public class Skf2010Sc004SharedService {
 			return false;
 		}
 		return result;
-	}
-
-	/**
-	 * 申請書類コメントを更新します
-	 * 
-	 * @param applNo
-	 * @param applStatus
-	 * @param commentName
-	 * @param commentNote
-	 * @param errorMsg
-	 * @return
-	 */
-	public boolean updateCommentInfo(String applNo, String applStatus, String commentName, String commentNote,
-			Map<String, String> errorMsg) {
-		// 承認2済から承認4済は、承認1済にする
-		if (applStatus.equals(CodeConstant.STATUS_SHONIN2) || applStatus.equals(CodeConstant.STATUS_SHONIN_ZUMI)) {
-			applStatus = CodeConstant.STATUS_SHONIN1;
-		}
-
-		// 現存のコメントを取得
-		Date commentUpdateDate = null;
-		List<SkfCommentUtilsGetCommentInfoExp> commentInfoList = new ArrayList<SkfCommentUtilsGetCommentInfoExp>();
-		commentInfoList = skfCommentUtils.getCommentInfo(companyCd, applNo, applStatus);
-		if (commentInfoList != null && commentInfoList.size() > 0) {
-			commentUpdateDate = commentInfoList.get(0).getCommentDate();
-		}
-		// コメントが登録されている、かつ、承認1済～承認済の場合、削除処理をする（承認のコメントを上書きのため）
-		if (commentUpdateDate != null && (applStatus.equals(CodeConstant.STATUS_SHONIN1)
-				|| applStatus.equals(CodeConstant.STATUS_SHONIN_ZUMI))) {
-			boolean delRes = skfCommentUtils.deleteComment(companyCd, applNo, applStatus, errorMsg);
-			if (!delRes) {
-				return false;
-			}
-		}
-		// コメントが入力されていない場合、処理を終了する
-		if (CheckUtils.isEmpty(commentNote)) {
-			return true;
-		}
-
-		// コメントを登録する
-		boolean commentResult = true;
-		commentResult = skfCommentUtils.insertComment(companyCd, applNo, applStatus, commentName, commentNote,
-				errorMsg);
-
-		return commentResult;
 	}
 
 	/**

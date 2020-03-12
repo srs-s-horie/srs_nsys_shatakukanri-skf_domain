@@ -340,22 +340,13 @@ public class Skf2020Sc003SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			String commentName = CodeConstant.NONE;
-			// 室、チームまたは課名を追記
-			List<String> tmpNameList = new ArrayList<String>();
-			if (userInfo.get("affiliation2Name") != null) {
-				tmpNameList.add(userInfo.get("affiliation2Name"));
-			}
-			tmpNameList.add(StringUtils.trim(userInfo.get("userName")));
-			commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
-			String commentNote = StringUtils.trim(dto.getCommentNote());
-
-			boolean commentErrorMessage = skfCommentUtils.insertComment(companyCd, applNo, newStatus, commentName,
+			String commentNote = dto.getCommentNote();		
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus, 
 					commentNote, errorMsg);
 			if (!commentErrorMessage) {
 				return false;
 			}
-		}
+		}	
 
 		// 添付ファイル管理テーブル更新処理
 		boolean resultUpdateFile = updateAttachedFileInfo(newStatus, applNo, shainNo, attachedFileList, applTacFlg,

@@ -699,18 +699,14 @@ public class Skf2030Sc002SharedService {
 			break;
 		}
 
-		// コメント登録者名を設定
-		String commentName = loginUserInfo.get("userName");
-		String commentNote = skfHtmlCreateUtils.htmlEscapeEncode(dto.getCommentNote());
-
-		if (NfwStringUtils.isNotEmpty(commentNote.trim())) {
-			skfCommentUtils.deleteComment(companyCd, applInfo.get("applNo"), applStatus, errorMsg);
-			if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName,
-					commentNote, errorMsg)) {
-				return false;
-			}
+		// コメント更新
+		String commentNote = dto.getCommentNote();		
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"), updateStatus, 
+				commentNote, errorMsg);
+		if (!commentErrorMessage) {
+			return false;
 		}
-
+		
 		// 承認完了通知・修正依頼完了通知の場合のみ
 		if (mailKbn != null) {
 			switch (mailKbn) {
@@ -933,5 +929,5 @@ public class Skf2030Sc002SharedService {
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC002);
 		return resultBatch;
 	}
-
+	
 }
