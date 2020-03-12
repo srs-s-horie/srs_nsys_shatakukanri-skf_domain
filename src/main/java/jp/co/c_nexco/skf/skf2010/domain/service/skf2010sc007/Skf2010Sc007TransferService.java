@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetShainInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetShainInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetShainInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -51,6 +52,8 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfGetInfoUtilsGetShainInfoExpRepository skfGetInfoUtilsGetShainInfoExpRepository;
 	@Autowired
 	private Skf2010Sc007GetApplHistoryInfoExpRepository skf2010Sc007GetApplHistoryInfoExpRepository;
 
@@ -103,22 +106,21 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 
 		// 社員番号の設定
 		if (SkfCommonConstant.NOT_USE.equals(transferDto.getAlterLoginFlg())) {
-			// 代行ログインでない場合
-			applHistoryList = getApplHistoryList(transferDto.getUserId(), applID);
-			// 値が取得できた場合は、社員番号を設定
-			if (applHistoryList.size() > 0) {
-				transferDto.setShainNo(applHistoryList.get(0).get("shainNo"));
+			// 社員番号を設定
+			SkfGetInfoUtilsGetShainInfoExp shainInfo = new SkfGetInfoUtilsGetShainInfoExp();
+			SkfGetInfoUtilsGetShainInfoExpParameter shainParam = new SkfGetInfoUtilsGetShainInfoExpParameter();
+			shainParam.setUserId(transferDto.getUserId());
+			shainInfo = skfGetInfoUtilsGetShainInfoExpRepository.getShainInfo(shainParam);
+			if (shainInfo != null) {
+				// 社員番号
+				transferDto.setShainNo(shainInfo.getShainNo());
 			}
 		} else {
 			// 代行ログインの場合
 			if (NfwStringUtils.isNotEmpty(resultAlterLoginList.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO))) {
 				// 社員番号の設定
 				transferDto.setShainNo(resultAlterLoginList.get(CodeConstant.ALTER_LOGIN_USER_SHAIN_NO));
-				applHistoryList = skfLoginUserInfoUtils.getAlterLoginUserApplHistoryList(transferDto.getShainNo(),
-						applID);
-
 			}
-
 		}
 
 		// 入退居については、申請前に申請可能か判定を行う。
@@ -127,13 +129,11 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 			// 社宅入居希望等調書
 			boolean resultN = true;
 			int cntN = 0;
-			// 取得した申請書履歴リストの件数分チェック
-			for (int i = 0; i < applHistoryList.size(); i++) {
-				resultN = skfShinseiUtils.checkSKSTeijiStatus(transferDto.getShainNo(), applID,
-						applHistoryList.get(i).get("applNo"));
-				if (resultN == false) {
-					cntN += 1;
-				}
+			// 申請可能かのチェック
+			resultN = skfShinseiUtils.checkSKSTeijiStatus(transferDto.getShainNo(), applID, null);
+			if (resultN == false) {
+				// チェックがNGの場合カウントアップ
+				cntN += 1;
 			}
 
 			if (cntN == 0) {
@@ -154,13 +154,10 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 			// 退居（自動車の保管場所返還）届
 			boolean resultT = true;
 			int cntT = 0;
-			// 取得した申請書履歴リストの件数分チェック
-			for (int i = 0; i < applHistoryList.size(); i++) {
-				resultT = skfShinseiUtils.checkSKSTeijiStatus(transferDto.getShainNo(), applID,
-						applHistoryList.get(i).get("applNo"));
-				if (resultT == false) {
-					cntT += 1;
-				}
+			// 申請可能かのチェック
+			resultT = skfShinseiUtils.checkSKSTeijiStatus(transferDto.getShainNo(), applID, null);
+			if (resultT == false) {
+				cntT += 1;
 			}
 			if (cntT == 0) {
 				// 申請可能な場合は次の処理へ

@@ -1463,7 +1463,7 @@ public class Skf2010Sc005SharedService {
 		replaceMap.put("【appldate】", applDate); // 申請日
 		replaceMap.put("【reason】", comment); // 承認者からのコメント
 
-		// 短縮URL作成
+		// URL作成
 		if (urlBase != null) {
 			String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
 			replaceMap.put("【url】", url);
