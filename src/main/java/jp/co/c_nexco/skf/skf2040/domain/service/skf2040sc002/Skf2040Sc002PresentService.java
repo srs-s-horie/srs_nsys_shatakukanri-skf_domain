@@ -24,6 +24,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
@@ -55,6 +56,8 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
 	@Autowired
 	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils;
 
 	private String sTrue = "true";
 	private String sFalse = "false";
@@ -151,15 +154,13 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 			// コメントがある場合は更新
 			if (NfwStringUtils.isNotEmpty(comment)) {
-				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　コメントあり");
-				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(), nextStatus, errorMsg,
-						comment)) {
-					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
-					return preDto;
-				}
-			} else {
-				LogUtils.debugByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下 　コメント不要");
-				comment = CodeConstant.NONE;
+				String commentNote = preDto.getCommentNote();		
+				boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, preDto.getApplNo(), nextStatus, 
+						commentNote, errorMsg);
+				if (!commentErrorMessage) {
+					ServiceHelper.addErrorResultMessage(preDto, null, errorMsg.get("error"));
+					throwBusinessExceptionIfErrors(preDto.getResultMessages());
+				}	
 			}
 
 			// 添付ファイル管理テーブル更新処理
@@ -253,14 +254,12 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			}
 
 			// コメント更新
-			if (NfwStringUtils.isNotEmpty(comment)) {
-				if (!skf2040Sc002SharedService.insertCommentTable(userInfo, preDto.getApplNo(),
-						CodeConstant.STATUS_KAKUNIN_IRAI, errorMsg, preDto.getCommentNote())) {
-					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
-					return preDto;
-				}
-			} else {
-				comment = CodeConstant.NONE;
+			String commentNote = preDto.getCommentNote();		
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, preDto.getApplNo(), nextStatus, 
+					commentNote, errorMsg);
+			if (!commentErrorMessage) {
+				ServiceHelper.addErrorResultMessage(preDto, null, errorMsg.get("error"));
+				throwBusinessExceptionIfErrors(preDto.getResultMessages());
 			}
 
 			// メール送信処理

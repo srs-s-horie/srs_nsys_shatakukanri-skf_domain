@@ -29,6 +29,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
@@ -62,6 +63,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
+	@Autowired
+	private  SkfCommentUtils skfCommentUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -454,10 +457,9 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 
 		// コメントの更新
-		boolean commentRes = skf2010Sc004SharedService.updateCommentInfo(applNo, applStatus, commentName, commentNote,
-				errorMsg);
-		if (!commentRes) {
-			ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
+				commentNote, errorMsg);
+		if (!commentErrorMessage) {
 			return false;
 		}
 

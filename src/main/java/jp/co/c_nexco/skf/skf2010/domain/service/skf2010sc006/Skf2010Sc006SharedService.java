@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -327,24 +326,12 @@ public class Skf2010Sc006SharedService {
 
 		}
 
-		// コメント登録者名を設定
-		List<String> tmpNameList = new ArrayList<String>();
-		if (loginUserInfoMap.get("affiliation2Name") != null) {
-			tmpNameList.add(loginUserInfoMap.get("affiliation2Name"));
-		}
-		tmpNameList.add(loginUserInfoMap.get("userName"));
-		String commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
-		// コメントを更新する
-		if (comment != null && !CheckUtils.isEmpty(comment)) {
-			boolean delRes = skfCommentUtils.deleteComment(companyCd, applNo, applInfo.get("applStatus"), errMap);
-			if (!delRes) {
-				// 特に何もしない
-			}
-			boolean commentRes = skfCommentUtils.insertComment(companyCd, applNo, nextStatus, commentName, comment,
-					errMap);
-			if (!commentRes) {
-				return false;
-			}
+		// コメント更新
+		String commentNote = comment;		
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"), nextStatus, 
+				commentNote, errMap);
+		if (!commentErrorMessage) {
+			return false;
 		}
 
 		// 添付ファイル管理テーブル更新処理
@@ -457,20 +444,12 @@ public class Skf2010Sc006SharedService {
 			return false;
 		}
 
-		// コメント登録者名を設定
-		List<String> tmpNameList = new ArrayList<String>();
-		if (loginUserInfoMap.get("affiliation2Name") != null) {
-			tmpNameList.add(loginUserInfoMap.get("affiliation2Name"));
-		}
-		tmpNameList.add(loginUserInfoMap.get("userName"));
-		String commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
-		// コメントを更新する
-		if (comment != null && !CheckUtils.isEmpty(comment)) {
-			boolean commentRes = skfCommentUtils.insertComment(companyCd, applNo, CodeConstant.STATUS_SHINSACHU,
-					commentName, comment, errMap);
-			if (!commentRes) {
-				return false;
-			}
+		// コメント更新
+		String commentNote = comment;		
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
+				commentNote, errMap);
+		if (!commentErrorMessage) {
+			return false;
 		}
 		return true;
 	}
@@ -539,17 +518,8 @@ public class Skf2010Sc006SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			String commentName = CodeConstant.NONE;
-			// 室、チームまたは課名を追記
-			List<String> tmpNameList = new ArrayList<String>();
-			if (userInfo.get("affiliation2Name") != null) {
-				tmpNameList.add(userInfo.get("affiliation2Name"));
-			}
-			tmpNameList.add(StringUtils.trim(userInfo.get("userName")));
-			commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
-			String commentNote = StringUtils.trim(dto.getCommentNote());
-
-			boolean commentErrorMessage = skfCommentUtils.insertComment(companyCd, applNo, newStatus, commentName,
+			String commentNote = dto.getCommentNote();		
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus, 
 					commentNote, errorMsg);
 			if (!commentErrorMessage) {
 				return false;

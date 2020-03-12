@@ -443,14 +443,12 @@ public class Skf2030Sc001SharedService {
 			return false;
 		}
 
-		// コメント
-		String commentName = loginUserInfo.get("userName");
-		String commentNote = skfHtmlCreateUtils.htmlEscapeEncode(dto.getCommentNote());
-		if (NfwStringUtils.isNotEmpty(commentNote.trim())) {
-			if (!skfCommentUtils.insertComment(companyCd, applInfo.get("applNo"), updateStatus, commentName,
-					commentNote, errorMsg)) {
-				return false;
-			}
+		// コメント更新
+		String commentNote = dto.getCommentNote();		
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"), updateStatus, 
+				commentNote, errorMsg);
+		if (!commentErrorMessage) {
+			return false;
 		}
 
 		// 備品希望申請テーブルを更新

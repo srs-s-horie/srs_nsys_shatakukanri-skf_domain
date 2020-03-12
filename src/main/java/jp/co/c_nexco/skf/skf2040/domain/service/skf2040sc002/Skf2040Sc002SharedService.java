@@ -677,7 +677,11 @@ public class Skf2040Sc002SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルの登録
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			if (!insertCommentTable(userInfo, applNo, newStatus, errorMsg, dto.getCommentNote())) {
+			// コメント更新
+			String commentNote = dto.getCommentNote();		
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus, 
+					commentNote, errorMsg);
+			if (!commentErrorMessage) {
 				return false;
 			}
 		}
@@ -743,41 +747,6 @@ public class Skf2040Sc002SharedService {
 		}
 
 		return true;
-	}
-
-	/**
-	 * 申請コメントテーブル更新
-	 * 
-	 * @param userInfo
-	 * @param applNo
-	 * @param newStatus
-	 * @param errorMsg
-	 * @param comment
-	 * @return
-	 */
-	protected boolean insertCommentTable(Map<String, String> userInfo, String applNo, String newStatus,
-			Map<String, String> errorMsg, String comment) {
-
-		String commentName = CodeConstant.NONE;
-		// 室、チームまたは課名を追記
-		List<String> tmpNameList = new ArrayList<String>();
-		if (userInfo.get("affiliation2Name") != null || NfwStringUtils.isNotEmpty(userInfo.get("affiliation2Name"))) {
-			tmpNameList.add(userInfo.get("affiliation2Name"));
-		}
-		tmpNameList.add(StringUtils.trim(userInfo.get("userName")));
-		commentName = String.join("\r\n", tmpNameList); // ログインユーザーの名前を取得
-		String commentNote = StringUtils.trim(comment);
-
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus, commentName,
-				commentNote, errorMsg);
-		if (!commentErrorMessage) {
-			return false;
-		}
-		return true;
-	}
-
-	public void deleteComment(String applNo, String deleteApplStatus, Map<String, String> errorMsg) {
-		skfCommentUtils.deleteComment(CodeConstant.C001, applNo, deleteApplStatus, errorMsg);
 	}
 
 	/**
