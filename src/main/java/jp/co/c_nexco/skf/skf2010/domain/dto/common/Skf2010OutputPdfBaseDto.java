@@ -296,4 +296,9 @@ public class Skf2010OutputPdfBaseDto extends FileDownloadDto {
 	/** 入居決定通知書 */
 	// 入居可能日付
 	private String NyukyoKanoDate;
+
+	// 入居日変更フラグ
+	private String nyukyoDateFlg;
+	// 駐車場使用開始日変更フラグ
+	private String parkingSDateFlg;
 }
