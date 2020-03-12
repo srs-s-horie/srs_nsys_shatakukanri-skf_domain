@@ -188,7 +188,7 @@ public class Skf206010CommonSendMailService {
 				SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 		replaceMap.put("【appl_date】", StringUtils.defaultString(applDateStr)); // 申請日
 
-		// 短縮URL作成
+		// URL作成
 		if (urlBase != null) {
 			String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
 			replaceMap.put("【url】", url);
