@@ -23,8 +23,8 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 	private String pdfFileName;
 	@Value("${skf.pdf.skf2020rp002.pdf_temp_folder_path}")
 	private String pdfTempFolderPath;
-	
-	private static final int AGECNY_BREAK_LENGTH = 32;
+
+	private static final int AGECNY_BREAK_LENGTH = 26;
 	private static final int CAR_NAME = 32;
 	private static final int CAR_USER = 32;
 	private static final int KYOEKIHI = 7;
@@ -167,35 +167,35 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 		pdfData.setData("parkingKanoDate2", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
 
 	}
-	
+
 	private void setSeiyakusho(CSVDoc pdfData, DTO dto) {
 		pdfData.setData("tsuchiDate", NfwStringUtils.defaultString(dto.getTsuchiDate()));
-		// 現所属　「機関」
+		// 現所属 「機関」
 		if (NfwStringUtils.defaultString(dto.getNowAgency())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGECNY_BREAK_LENGTH) {
 			pdfData.setData("nowAgencyS", NfwStringUtils.defaultString(dto.getNowAgency()));
 		} else {
-			// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("nowAgency_long");
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAgency()));
 			pdfData.setTextBoxEnd();
 		}
-		// 現所属　「部等」
+		// 現所属 「部等」
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation1())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGECNY_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation1S", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 		} else {
-			// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("nowAffiliation1_long");
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 			pdfData.setTextBoxEnd();
 		}
-		// 現所属　「室、チーム又は課」
+		// 現所属 「室、チーム又は課」
 		if (NfwStringUtils.defaultString(dto.getNowAffiliation2())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGECNY_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation2S", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 		} else {
-			// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("nowAffiliation2_long");
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 			pdfData.setTextBoxEnd();

@@ -12,6 +12,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsu
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.PdfBaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.common.Skf2010OutputPdfBaseDto;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
@@ -37,9 +38,9 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 	private String pdfTempFolderPath;
 
 	private static final int KYOEKIHI = 7;
-	private static final int AGENCY_BREAK_LENGTH = 32;
-	private static final int AFFILIATION1_BREAK_LENGTH = 32;
-	private static final int AFFILIATION2_BREAK_LENGTH = 32;
+	private static final int AGENCY_BREAK_LENGTH = 26;
+	private static final int AFFILIATION1_BREAK_LENGTH = 26;
+	private static final int AFFILIATION2_BREAK_LENGTH = 26;
 	private static final int CAR_NAME = 32;
 	private static final int CAR_USER = 32;
 
@@ -167,40 +168,60 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 			pdfData.setData("carExpirationDate", NfwStringUtils.defaultString(dto.getCarExpirationDate()));
 			pdfData.setData("carIchiNo", CodeConstant.NONE);
 			pdfData.setData("parkingRental", NfwStringUtils.defaultString(dto.getParkingRental()));
-			pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
+			if (NfwStringUtils.isNotEmpty(dto.getParkingSDateFlg())
+					&& (SkfCommonConstant.DATE_CHANGE.equals(dto.getParkingSDateFlg())
+							|| SkfCommonConstant.DATE_CHANGE_COM.equals(dto.getParkingSDateFlg()))) {
+				// 駐車場使用開始日変更フラグが設定されており、かつ2台目に変更あり、または両方変更ありの場合は赤文字で表示
+				pdfData.setData("parkingKanoDateRed", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
+			} else {
+				pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate()));
+			}
 		}
 
 		// 自動車2台目
 		if (i == 1) {
-			pdfData.setData("parkingArea2", NfwStringUtils.defaultString(dto.getParkingArea2()));
+			pdfData.setData("parkingArea", NfwStringUtils.defaultString(dto.getParkingArea2()));
 			// 自動車の車名2
 			if (NfwStringUtils.defaultString(dto.getCarName2())
 					.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= CAR_NAME) {
-				pdfData.setData("carName2", NfwStringUtils.defaultString(dto.getCarName2()));
+				pdfData.setData("carName", NfwStringUtils.defaultString(dto.getCarName2()));
 			} else {
 				// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
-				pdfData.setTextBoxStart("carName2_long");
+				pdfData.setTextBoxStart("carName_long");
 				pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarName2()));
 				pdfData.setTextBoxEnd();
 			}
-			pdfData.setData("carNo2", NfwStringUtils.defaultString(dto.getCarNo2()));
+			pdfData.setData("carNo", NfwStringUtils.defaultString(dto.getCarNo2()));
 			// 自動車の使用者2
 			if (NfwStringUtils.defaultString(dto.getCarUser2())
 					.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= CAR_USER) {
-				pdfData.setData("carUser2", NfwStringUtils.defaultString(dto.getCarUser2()));
+				pdfData.setData("carUser", NfwStringUtils.defaultString(dto.getCarUser2()));
 			} else {
 				// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
-				pdfData.setTextBoxStart("carUser2_long");
+				pdfData.setTextBoxStart("carUser_long");
 				pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getCarUser2()));
 				pdfData.setTextBoxEnd();
 			}
-			pdfData.setData("carExpirationDate2", NfwStringUtils.defaultString(dto.getCarExpirationDate2()));
-			pdfData.setData("carIchiNo2", CodeConstant.NONE);
-			pdfData.setData("parkingRental2", NfwStringUtils.defaultString(dto.getParkingRental2()));
-			pdfData.setData("parkingKanoDate2", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
+			pdfData.setData("carExpirationDate", NfwStringUtils.defaultString(dto.getCarExpirationDate2()));
+			pdfData.setData("carIchiNo", CodeConstant.NONE);
+			pdfData.setData("parkingRental", NfwStringUtils.defaultString(dto.getParkingRental2()));
+			if (NfwStringUtils.isNotEmpty(dto.getParkingSDateFlg())
+					&& (SkfCommonConstant.DATE_CHANGE2.equals(dto.getParkingSDateFlg())
+							|| SkfCommonConstant.DATE_CHANGE_COM.equals(dto.getParkingSDateFlg()))) {
+				// 駐車場使用開始日変更フラグが設定されており、かつ2台目に変更あり、または両方変更ありの場合は赤文字で表示
+				pdfData.setData("parkingKanoDateRed", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
+			} else {
+				pdfData.setData("parkingKanoDate", NfwStringUtils.defaultString(dto.getParkingKanoDate2()));
+			}
 		}
 
-		pdfData.setData("nyukyoKanoDate", NfwStringUtils.defaultString(dto.getNyukyoKanoDate()));
+		if (NfwStringUtils.isNotEmpty(dto.getNyukyoDateFlg())
+				&& SkfCommonConstant.DATE_CHANGE.equals(dto.getNyukyoDateFlg())) {
+			// 入居日変更フラグが設定されていた場合は赤文字で表示
+			pdfData.setData("nyukyoKanoDateRed", NfwStringUtils.defaultString(dto.getNyukyoKanoDate()));
+		} else {
+			pdfData.setData("nyukyoKanoDate", NfwStringUtils.defaultString(dto.getNyukyoKanoDate()));
+		}
 
 		// 社宅管理番号
 		String newShatakuKanriNo = "";
@@ -225,7 +246,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGENCY_BREAK_LENGTH) {
 			pdfData.setData("nowAgencyS", NfwStringUtils.defaultString(dto.getNowAgency()));
 		} else {
-			// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("nowAgency_long");
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAgency()));
 			pdfData.setTextBoxEnd();
@@ -235,7 +256,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION1_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation1S", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 		} else {
-			// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("nowAffiliation1_long");
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 			pdfData.setTextBoxEnd();
@@ -245,7 +266,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AFFILIATION2_BREAK_LENGTH) {
 			pdfData.setData("nowAffiliation2S", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 		} else {
-			// 32バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
+			// 26バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("nowAffiliation2_long");
 			pdfData.setTextBoxData(NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 			pdfData.setTextBoxEnd();
