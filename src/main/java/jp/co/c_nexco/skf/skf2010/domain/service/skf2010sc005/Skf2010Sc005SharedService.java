@@ -1376,7 +1376,7 @@ public class Skf2010Sc005SharedService {
 			String mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
 
 			// URLを設定
-			String urlBase = "/skf/Skf2010Sc005/init?SKF2010_SC005&menuflg=1&tokenCheck=0";
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 			sendApplTsuchiMailExist(companyCd, sendMailKbn, applInfo.get("applNo"), applDate, applShainName, comment,
 					annai, furikomiStartDate, urlBase, sendUser, mailAddress, null, applName);
 		} else {
