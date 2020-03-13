@@ -3,19 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc007;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetShainInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetShainInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc007.Skf2010Sc007GetApplHistoryInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetShainInfoExpRepository;
-import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -26,7 +20,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007TransferDto;
@@ -50,8 +43,6 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfGetInfoUtilsGetShainInfoExpRepository skfGetInfoUtilsGetShainInfoExpRepository;
 	@Autowired
@@ -101,8 +92,6 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 		} else {
 			transferDto.setAlterLoginFlg(SkfCommonConstant.NOT_USE);
 		}
-
-		List<Map<String, String>> applHistoryList = null;
 
 		// 社員番号の設定
 		if (SkfCommonConstant.NOT_USE.equals(transferDto.getAlterLoginFlg())) {
@@ -174,48 +163,5 @@ public class Skf2010Sc007TransferService extends BaseServiceAbstract<Skf2010Sc00
 			}
 
 		}
-	}
-
-	/**
-	 * 申請書履歴から社員番号を取得
-	 * 
-	 * @param userId ユーザーID
-	 * @param applId 申請書類番号
-	 * @param applHistoryReusltList リスト
-	 * @return 取得結果
-	 */
-	private List<Map<String, String>> getApplHistoryList(String userId, String applId) {
-
-		// 戻り値
-		List<Map<String, String>> shainList = new ArrayList<Map<String, String>>();
-
-		// DB検索処理
-		List<Skf2010Sc007GetApplHistoryInfoExp> applHistoryList = new ArrayList<Skf2010Sc007GetApplHistoryInfoExp>();
-		Skf2010Sc007GetApplHistoryInfoExpParameter param = new Skf2010Sc007GetApplHistoryInfoExpParameter();
-		param.setCompanyCd(CodeConstant.C001);
-		param.setUserId(userId);
-		param.setApplId(applId);
-		applHistoryList = skf2010Sc007GetApplHistoryInfoExpRepository.getApplHistoryInfo(param);
-
-		// 取得できなかった場合
-		if (applHistoryList == null) {
-			return shainList;
-		}
-
-		// mapに取得情報を格納
-		Map<String, String> shainMap = new HashMap<String, String>();
-
-		for (Skf2010Sc007GetApplHistoryInfoExp dt : applHistoryList) {
-			// 表示・値を設定
-			shainMap = new HashMap<String, String>();
-			shainMap.put("shainNo", dt.getShainNo());
-			shainMap.put("applNo", dt.getApplNo());
-			shainList.add(shainMap);
-		}
-
-		// 返却するリストをDebugログで出力
-		LogUtils.debugByMsg("社員情報情報のリスト：" + shainList.toString());
-
-		return shainList;
 	}
 }
