@@ -318,6 +318,8 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 	private void registShainInfo(Skf3090Sc005RegistDto dto) {
 
 		Skf1010MShain setValue = new Skf1010MShain();
+		
+		
 
 		/** 登録項目をセット */
 		// 会社コード（中日本固定）
@@ -332,23 +334,50 @@ public class Skf3090Sc005RegistService extends BaseServiceAbstract<Skf3090Sc005R
 		setValue.setMailAddress(dto.getMailAddress().trim());
 		// 原籍会社コード
 		setValue.setOriginalCompanyCd(dto.getOriginalCompanyCd());
-		// 機関コード
-		if (NfwStringUtils.isNotEmpty(dto.getAgencyCd())) {
-			setValue.setAgencyCd(dto.getAgencyCd());
-		}
+		
 		// 機関コード設定分岐
 		if (NfwStringUtils.isNotEmpty(dto.getAgencyCd())) {
 			/** 機関コード入力ありの場合以下選択値 */
-			// 部等コード
-			setValue.setAffiliation1Cd(dto.getAffiliation1Cd());
-			// 室コード
-			setValue.setAffiliation2Cd(dto.getAffiliation2Cd());
+			LogUtils.debugByMsg("機関コード入力ありの場合");
+			setValue.setAgencyCd(dto.getAgencyCd());
+			
+			// 部等コード設定分岐
+			if (NfwStringUtils.isNotEmpty(dto.getAffiliation1Cd())) {
+				/** 部等コード入力ありの場合以下選択値 */
+				LogUtils.debugByMsg("部等コード入力ありの場合");
+				// 部等コード
+				setValue.setAffiliation1Cd(dto.getAffiliation1Cd());
+				
+				// 室コード設定分岐
+				if (NfwStringUtils.isNotEmpty(dto.getAffiliation2Cd())) {
+					/** 室コード入力ありの場合以下選択値 */
+					LogUtils.debugByMsg("室コード入力ありの場合");
+					// 室コード
+					setValue.setAffiliation2Cd(dto.getAffiliation2Cd());
+				}else{
+					/** 室コード入力なしの場合以下選択値 */
+					LogUtils.debugByMsg("室コード入力なしの場合");
+					setValue.setAffiliation2Cd(AFFILIATION2_000);
+				}
+				
+			}else{
+				/** 部等コード入力なしの場合以下選択値 */
+				LogUtils.debugByMsg("部等コード入力なしの場合");
+				// 部等コード
+				setValue.setAffiliation1Cd(AFFILIATION1_00);
+				// 室コード
+				setValue.setAffiliation2Cd(AFFILIATION2_000);
+				
+			}
 		} else {
 			/** 機関コード入力なしの場合以下固定値 */
+			LogUtils.debugByMsg("機関コード入力なしの場合");
+			// 機関コード
+			setValue.setAgencyCd(null);
 			// 部等コード
-			setValue.setAffiliation1Cd(AFFILIATION1_00);
+			setValue.setAffiliation1Cd(null);
 			// 室コード
-			setValue.setAffiliation2Cd(AFFILIATION2_000);
+			setValue.setAffiliation2Cd(null);
 		}
 		// 事業領域コード
 		if (NfwStringUtils.isNotEmpty(dto.getBusinessAreaCd())) {

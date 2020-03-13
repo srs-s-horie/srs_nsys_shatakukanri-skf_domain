@@ -89,6 +89,17 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 		initDto.setMailAddressError(CodeConstant.DOUBLE_QUOTATION);
 		initDto.setRetireDateError(CodeConstant.DOUBLE_QUOTATION);
 		initDto.setOriginalCompanyCdError(CodeConstant.DOUBLE_QUOTATION);
+		
+		// テキスト系の文言を初期化する
+		initDto.setShainNo(CodeConstant.NONE);
+		initDto.setName(CodeConstant.NONE);
+		initDto.setNameKk(CodeConstant.NONE);
+		initDto.setMailAddress(CodeConstant.NONE);
+		initDto.setOriginalCompanyCd(CodeConstant.NONE);
+		initDto.setAgencyCd(CodeConstant.NONE);
+		initDto.setAffiliation1Cd(CodeConstant.NONE);
+		initDto.setAffiliation2Cd(CodeConstant.NONE);
+		initDto.setBusinessAreaCd(CodeConstant.NONE);
 
 		// ドロップダウンリスト用リストのインスタンス生成
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();
@@ -123,16 +134,6 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 			shainNoDisabled = "false";
 			// 削除ボタン表示設定（非表示）
 			deleteRemoveFlag = "true";
-			// テキスト系の文言を初期化する
-			initDto.setShainNo(CodeConstant.NONE);
-			initDto.setName(CodeConstant.NONE);
-			initDto.setNameKk(CodeConstant.NONE);
-			initDto.setMailAddress(CodeConstant.NONE);
-			initDto.setOriginalCompanyCd(CodeConstant.NONE);
-			initDto.setAgencyCd(CodeConstant.NONE);
-			initDto.setAffiliation1Cd(CodeConstant.NONE);
-			initDto.setAffiliation2Cd(CodeConstant.NONE);
-			initDto.setBusinessAreaCd(CodeConstant.NONE);
 
 		} else {
 			/** リストテーブルから遷移 */
