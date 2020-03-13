@@ -142,15 +142,17 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 		initDto.setTel(shainInfo.getTel());
 		initDto.setTokyuName(shainInfo.getTokyuName());
 
-		switch (shainInfo.getGender()) {
-		case CodeConstant.MALE:
-			initDto.setGenderName(CodeConstant.OUTPUT_MALE);
-			break;
-		case CodeConstant.FEMALE:
-			initDto.setGenderName(CodeConstant.OUTPUT_FEMALE);
-			break;
-		default:
-			break;
+		if(shainInfo.getGender() != null){
+			switch (shainInfo.getGender()) {
+			case CodeConstant.MALE:
+				initDto.setGenderName(CodeConstant.OUTPUT_MALE);
+				break;
+			case CodeConstant.FEMALE:
+				initDto.setGenderName(CodeConstant.OUTPUT_FEMALE);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

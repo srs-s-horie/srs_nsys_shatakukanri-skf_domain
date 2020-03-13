@@ -159,15 +159,17 @@ public class Skf2040Sc001SharedService {
 
 		// 性別
 		dto.setGender(taikyoInfo.getGender());
-		switch (taikyoInfo.getGender()) {
-		case CodeConstant.MALE:
-			dto.setGenderName(CodeConstant.OUTPUT_MALE);
-			break;
-		case CodeConstant.FEMALE:
-			dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
-			break;
-		default:
-			break;
+		if(taikyoInfo.getGender() != null){
+			switch (taikyoInfo.getGender()) {
+			case CodeConstant.MALE:
+				dto.setGenderName(CodeConstant.OUTPUT_MALE);
+				break;
+			case CodeConstant.FEMALE:
+				dto.setGenderName(CodeConstant.OUTPUT_FEMALE);
+				break;
+			default:
+				break;
+			}
 		}
 
 		dto.setParking1stPlace(taikyoInfo.getParkingAddress1());
