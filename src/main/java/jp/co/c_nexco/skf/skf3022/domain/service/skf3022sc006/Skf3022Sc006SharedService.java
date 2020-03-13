@@ -3359,7 +3359,7 @@ public class Skf3022Sc006SharedService {
 	 * ヘッダーの備品提示のフォントらかーを設定する。
 	 * パラメータのステータス区分別のフォントカラー文字列を返却する
 	 * 
-	 * @param bihinTeijiStatusKbn	b品提示ステータス
+	 * @param bihinTeijiStatusKbn	備品品提示ステータス
 	 * @return	フォントカラー文字列
 	 */
 	public String setBihinTeijiStatusCss(String bihinTeijiStatusKbn) {
@@ -5631,58 +5631,62 @@ public class Skf3022Sc006SharedService {
 				} else if (CodeConstant.PRESENTATION_SITUATION_DOI_SUMI.equals(
 												comDto.getHdnShatakuTeijiStatus())) {
 //					Select Case Me.hdnBihinTeijiStatus.Value
-					switch (comDto.getHdnBihinTeijiStatus()) {
-						// 貸与不要			
-//						Case String.Empty
-						case CodeConstant.DOUBLE_QUOTATION:
-							// 備品提示ステータス
-//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
-//																	String.Empty, _
-//																	OracleType.Char))
-							columnInfoList.setBihinTeijiStatus(CodeConstant.DOUBLE_QUOTATION);
-							break;
-						// 未作成
-//						Case Constant.BihinTeijiStatusKbn.MI_SAKUSEI
-						case CodeConstant.BIHIN_STATUS_MI_SAKUSEI:
-							// 備品提示ステータス
-//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
-//																	Constant.BihinTeijiStatusKbn.MI_SAKUSEI, _
-//																	OracleType.Char))
-							columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_MI_SAKUSEI);
-							break;
-						// 搬入待ち
-//						Case Constant.BihinTeijiStatusKbn.HANNYU_MACHI
-						case CodeConstant.BIHIN_STATUS_HANNYU_MACHI:
-							// 備品提示ステータス
-//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
-//																	Constant.BihinTeijiStatusKbn.HANNYU_MACHI, _
-//																	OracleType.Char))
-							columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_HANNYU_MACHI);
-							break;
-						// 搬入済み
-//						Case Constant.BihinTeijiStatusKbn.HANNYU_SUMI
-						case CodeConstant.BIHIN_STATUS_HANNYU_SUMI:
-							// 備品提示ステータス
-//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
-//																	Constant.BihinTeijiStatusKbn.HANNYU_SUMI, _
-//																	OracleType.Char))
-							columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_HANNYU_SUMI);
-							break;
-						// 作成中もしくは作成済
-//						Case Else
-						default:
-							// 備品提示ステータス（作成済）
-//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
-//																	Constant.BihinTeijiStatusKbn.SAKUSEI_SUMI, _
-//																	OracleType.Char))
-							columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI);
-							// 作成完了区分（備品作成済）
-//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CREATE_COMPLETE_KBN, _
-//																	Constant.CreateCompleteKbn.BIHIN_SAKUSEI_SUMI, _
-//																	OracleType.Char))
-							columnInfoList.setCreateCompleteKbn(CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI);
-							break;
-					};
+					if (!CheckUtils.isEmpty(comDto.getHdnBihinTeijiStatus())) {
+						switch (comDto.getHdnBihinTeijiStatus()) {
+							// 貸与不要			
+	//						Case String.Empty
+							case CodeConstant.DOUBLE_QUOTATION:
+								// 備品提示ステータス
+	//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
+	//																	String.Empty, _
+	//																	OracleType.Char))
+								columnInfoList.setBihinTeijiStatus(null);
+								break;
+							// 未作成
+	//						Case Constant.BihinTeijiStatusKbn.MI_SAKUSEI
+							case CodeConstant.BIHIN_STATUS_MI_SAKUSEI:
+								// 備品提示ステータス
+	//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
+	//																	Constant.BihinTeijiStatusKbn.MI_SAKUSEI, _
+	//																	OracleType.Char))
+								columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_MI_SAKUSEI);
+								break;
+							// 搬入待ち
+	//						Case Constant.BihinTeijiStatusKbn.HANNYU_MACHI
+							case CodeConstant.BIHIN_STATUS_HANNYU_MACHI:
+								// 備品提示ステータス
+	//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
+	//																	Constant.BihinTeijiStatusKbn.HANNYU_MACHI, _
+	//																	OracleType.Char))
+								columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_HANNYU_MACHI);
+								break;
+							// 搬入済み
+	//						Case Constant.BihinTeijiStatusKbn.HANNYU_SUMI
+							case CodeConstant.BIHIN_STATUS_HANNYU_SUMI:
+								// 備品提示ステータス
+	//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
+	//																	Constant.BihinTeijiStatusKbn.HANNYU_SUMI, _
+	//																	OracleType.Char))
+								columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_HANNYU_SUMI);
+								break;
+							// 作成中もしくは作成済
+	//						Case Else
+							default:
+								// 備品提示ステータス（作成済）
+	//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
+	//																	Constant.BihinTeijiStatusKbn.SAKUSEI_SUMI, _
+	//																	OracleType.Char))
+								columnInfoList.setBihinTeijiStatus(CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI);
+								// 作成完了区分（備品作成済）
+	//							columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.CREATE_COMPLETE_KBN, _
+	//																	Constant.CreateCompleteKbn.BIHIN_SAKUSEI_SUMI, _
+	//																	OracleType.Char))
+								columnInfoList.setCreateCompleteKbn(CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI);
+								break;
+						};
+					} else {
+						columnInfoList.setBihinTeijiStatus(null);
+					}
 				// 社宅提示区分が承認済
 				} else if (CodeConstant.PRESENTATION_SITUATION_SHONIN.equals(
 											comDto.getHdnShatakuTeijiStatus())) {
@@ -5734,7 +5738,7 @@ public class Skf3022Sc006SharedService {
 //				columnInfoList.Add(New ColumnInfoEntity(ConstantTableInfo.TbtTeijiData.BIHIN_TEIJI_STATUS, _
 //														String.Empty, _
 //														OracleType.Char))
-				columnInfoList.setBihinTeijiStatus(CodeConstant.DOUBLE_QUOTATION);
+				columnInfoList.setBihinTeijiStatus(null);
 			// 仮者番号ではない、且つ、備品貸与区分（hidden変数）が"1"（必要）の場合
 			} else {
 				// 備品提示ステータス
