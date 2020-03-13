@@ -18,6 +18,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 
@@ -166,7 +167,8 @@ public class Skf2010Sc009SharedService {
 		// ファイルサイズ
 		attachedFileMap.put("fileSize", fileSize);
 		// 更新日
-		String applDate = skfDateFormatUtils.dateFormatFromDate(new Date(), "yyyy/MM/dd HH:mm:ss.SS");
+		String applDate = skfDateFormatUtils.dateFormatFromDate(new Date(),
+				SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SLASH);
 		attachedFileMap.put("applDate", applDate);
 		// 添付資料
 		attachedFileMap.put("fileStream", fileStream);
@@ -188,6 +190,10 @@ public class Skf2010Sc009SharedService {
 		// 添付資料名
 		fileInfoMap.put("attachedName", fileName);
 		// ファイルサイズ
+		if (NfwStringUtils.isNotEmpty(fileSize)) {
+			double fileSizeD = Math.floor(Double.parseDouble(fileSize));
+			fileSize = String.valueOf(fileSizeD);
+		}
 		fileInfoMap.put("fileSize", fileSize);
 		// 更新日
 		String applDate = skfDateFormatUtils.dateFormatFromDate(updateDate, "yyyy/MM/dd HH:mm:ss.SS");
@@ -215,7 +221,7 @@ public class Skf2010Sc009SharedService {
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			resultMap.put("attachedNo", attachedFileMap.get("attachedNo"));
 			resultMap.put("attachedName", attachedFileMap.get("attachedName"));
-			resultMap.put("fileSize", attachedFileMap.get("fileSize"));
+			resultMap.put("fileSize", attachedFileMap.get("fileSize") + "B");
 			resultMap.put("applDate", attachedFileMap.get("applDate"));
 			resultMap.put("view", "");
 			resultMap.put("delete", "");
