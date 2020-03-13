@@ -176,17 +176,17 @@ public class Skf206010CommonSendMailService {
 
 		// メール件名
 		replaceMap.put("【to】", StringUtils.defaultString(mailAddress)); // 送信先メールアドレス
-		replaceMap.put("【appl_no】", StringUtils.defaultString(applNo)); // 申請書類番号
-		replaceMap.put("【appl_name】", StringUtils.defaultString(applName)); // 申請書類名
+		replaceMap.put("【applno】", StringUtils.defaultString(applNo)); // 申請書類番号
+		replaceMap.put("【shinseishorui】", StringUtils.defaultString(applName)); // 申請書類名
 
 		// メール本文
-		replaceMap.put("【appl_user_name】", StringUtils.defaultString(applShainName)); // 申請社員名
+		replaceMap.put("【shainname】", StringUtils.defaultString(applShainName)); // 申請社員名
 		replaceMap.put("【reason】", StringUtils.defaultString(comment)); // コメント
 
 		// 申請日のフォーマット(yyyy/MM/dd)
 		String applDateStr = skfDateFormatUtils.dateFormatFromDate(applDate,
 				SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-		replaceMap.put("【appl_date】", StringUtils.defaultString(applDateStr)); // 申請日
+		replaceMap.put("【appldate】", StringUtils.defaultString(applDateStr)); // 申請日
 
 		// URL作成
 		if (urlBase != null) {
