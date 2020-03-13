@@ -143,15 +143,17 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 					// 社宅提示ステータス：同意済/承認済み
 					case CodeConstant.PRESENTATION_SITUATION_DOI_SUMI:
 					case CodeConstant.PRESENTATION_SITUATION_SHONIN:
-						// 備品提示ステータス判定
-						switch (initDto.getHdnBihinTeijiStatus()) {
-							// 備品提示ステータスが作成中／作成済み
-							case CodeConstant.BIHIN_STATUS_SAKUSEI_CHU:
-							case CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI:
-								// 備品ステータスチェック
-								appBihinFlg = skf3022Sc006SharedService.checkBihinTaiyoStts(initDto);
-								break;
-						};
+						if (!CheckUtils.isEmpty(initDto.getHdnBihinTeijiStatus())) {
+							// 備品提示ステータス判定
+							switch (initDto.getHdnBihinTeijiStatus()) {
+								// 備品提示ステータスが作成中／作成済み
+								case CodeConstant.BIHIN_STATUS_SAKUSEI_CHU:
+								case CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI:
+									// 備品ステータスチェック
+									appBihinFlg = skf3022Sc006SharedService.checkBihinTaiyoStts(initDto);
+									break;
+							};
+						}
 						break;
 				};
 			}
