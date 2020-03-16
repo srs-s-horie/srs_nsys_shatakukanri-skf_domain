@@ -80,6 +80,8 @@ public class Skf3030Sc001SharedService {
 	@Autowired
 	private Skf3030Rp003GetShatakuDaichoDiffDataInfoExpRepository skf3030Rp003GetShatakuDaichoDiffDataInfoExpRepository;
 
+	private static final String HYPHEN = "―";
+
 	public static final String BILLING_ACT_KBN_0 = "0";
 	public static final String BILLING_ACT_KBN_1 = "1";
 	public static final String BILLING_ACT_KBN_2 = "2";
@@ -564,11 +566,11 @@ public class Skf3030Sc001SharedService {
 
 			String teijiSts = "";
 			if (NfwStringUtils.isEmpty(entityTeijiSts)) {
-				teijiSts = CodeConstant.HYPHEN;
+				teijiSts = HYPHEN;
 
 			} else {
 				if (Integer.parseInt(nengetsu) < Integer.parseInt(sysNengetsu)) {
-					teijiSts = CodeConstant.HYPHEN;
+					teijiSts = HYPHEN;
 				} else {
 					teijiSts = getTeijiStsLabel(entityTeijiSts);
 				}
@@ -578,11 +580,11 @@ public class Skf3030Sc001SharedService {
 			String entityBihinTeijiSts = shatakuDaichoInfo.getBihinTeijiStatus();
 			String bihinTeijiSts = "";
 			if (NfwStringUtils.isEmpty(entityBihinTeijiSts)) {
-				bihinTeijiSts = CodeConstant.HYPHEN;
+				bihinTeijiSts = HYPHEN;
 
 			} else {
 				if (Integer.parseInt(nengetsu) < Integer.parseInt(sysNengetsu)) {
-					bihinTeijiSts = CodeConstant.HYPHEN;
+					bihinTeijiSts = HYPHEN;
 				} else {
 					bihinTeijiSts = getBihinTeijiStsLabel(entityBihinTeijiSts);
 				}
