@@ -3,6 +3,7 @@
  */
 package jp.co.c_nexco.webservice.skf.skf1010.skf1010bt002;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,16 +15,17 @@ import org.terasoluna.gfw.common.message.ResultMessage;
 import org.terasoluna.gfw.common.message.ResultMessageUtils;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetNijuuKidouCheckCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetNijuuKidouCheckCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2ExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShainMstExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShainMstRetiredExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsUpdateBatchControlExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShatakuShainRireki;
@@ -31,14 +33,16 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TBatchControl;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainMasterInfoWkExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteShatakuShainRirekiInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsDeleteSkfIamPreUserMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetNijuuKidouCheckCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetShatakuShainRirekiCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2ExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShainMstExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShainMstRetiredExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertShatakuShainMasterInfoWkExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsInsertWkShainExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsUpdateBatchControlExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
@@ -46,6 +50,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShatakuShainRir
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010TBatchControlRepository;
 import jp.co.c_nexco.nfw.common.bean.SpringContext;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -55,6 +60,8 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.shared.ftm.entity.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetShainListBySharedTableExp;
+import jp.co.c_nexco.skf.shared.ftm.repository.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetShainListBySharedTableExpRepository;
 import jp.co.c_nexco.skf.skf1010.domain.dto.common.SkfPersonnalBatchCommonDto;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.BasicAuthentication;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.GET;
@@ -148,6 +155,20 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
 					return dto;
 				}
+				// プレユーザーマスターにデータを投入する
+				boolean insPreUserMstRes = insertPreUserMaster();
+				if (!insPreUserMstRes) {
+					// エラーログ出力
+					batchResult = SkfCommonConstant.ABNORMAL;
+					// 処理結果：プレユーザーマスタへのデータ投入エラー
+					setLog(ERROR, MessageIdConstant.E_SKF_1066, "プレユーザーマスタへのデータの投入");
+					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+							batchResult);
+					dto.setStatus(batchResult);
+					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
+					return dto;
+				}
+
 				boolean kyuyoKouseiRes = updateKyuyoKousei();
 				if (!kyuyoKouseiRes) {
 					// エラーログ出力
@@ -200,6 +221,39 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		// 処理結果返却
 		// return skfPersonnalBatchCommonDto;
 		return dto;
+	}
+
+	/**
+	 * シェアードDBから従業員データをプレユーザーマスタに投入する
+	 * 
+	 * @return
+	 * @throws Exception
+	 * @throws InvocationTargetException
+	 */
+	private boolean insertPreUserMaster() throws Exception, InvocationTargetException {
+		// プレユーザーマスタ初期化
+		deleteSkfIamPreUserMaster();
+		// 従業員データリストをシェアードDBから取得する
+		List<SkfPerssonalBatchUtilsGetShainListBySharedTableExp> shainList = new ArrayList<SkfPerssonalBatchUtilsGetShainListBySharedTableExp>();
+		SkfPerssonalBatchUtilsGetShainListBySharedTableExpRepository repository = (SkfPerssonalBatchUtilsGetShainListBySharedTableExpRepository) SpringContext
+				.getBean("skfPerssonalBatchUtilsGetShainListBySharedTableExpRepository");
+		shainList = repository.getShainListBySharedTable();
+		if (shainList == null || shainList.size() <= 0) {
+			return false;
+		}
+		// 対象データを書き込む
+		SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExpRepository insertRepository = (SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExpRepository) SpringContext
+				.getBean("skfPerssonalBatchUtilsInsertSkfIamPreUserMasterExpRepository");
+		for (SkfPerssonalBatchUtilsGetShainListBySharedTableExp shainInfo : shainList) {
+			SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExp insertShainInfo = new SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExp();
+			CopyUtils.copyProperties(insertShainInfo, shainInfo);
+			int res = insertRepository.insertSkfIamPreUserMaster(insertShainInfo);
+			if (res <= 0) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -423,13 +477,13 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	 * @return
 	 */
 	private boolean createShatakuShainRireki(String beginningEndKbn) {
-		List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExp> preUserMasterList = new ArrayList<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExp>();
-		SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExpRepository getBaseShainInfoRepository = (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExpRepository) SpringContext
-				.getBean("skfPerssonalBatchUtilsGetIdmPreUserMasterInfoExpRepository");
+		List<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp> preUserMasterList = new ArrayList<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp>();
+		SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExpRepository getBaseShainInfoRepository = (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExpRepository) SpringContext
+				.getBean("skfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExpRepository");
 		// 人事連携用従業員データの取得
-		preUserMasterList = getBaseShainInfoRepository.getIdmPreUserMasterInfo();
+		preUserMasterList = getBaseShainInfoRepository.getSkfIamPreUserMasterInfo();
 		if (preUserMasterList != null && preUserMasterList.size() > 0) {
-			for (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExp preUserMasterInfo : preUserMasterList) {
+			for (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp preUserMasterInfo : preUserMasterList) {
 				// 年月を取得
 				Date inputDate = preUserMasterInfo.getInputDate();
 				String yearMonth = DateUtils.format(inputDate, SkfCommonConstant.YMD_STYLE_YYYYMM_FLAT);
@@ -474,16 +528,16 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		}
 
 		// ３．IdM_プレユーザマスタより、社宅社員マスタデータを準備する。
-		List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> baseShainInfoList = new ArrayList<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp>();
+		List<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp> baseShainInfoList = new ArrayList<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp>();
 		// 人事連携用従業員データの取得
-		baseShainInfoList = getIdmPreUserMasterInfo();
+		baseShainInfoList = getSkfIamPreUserMasterInfo();
 
 		// ４．社宅社員マスタ(SKF1010_M_SHAIN)から、３で取得した社員を物理削除する。
 		if (baseShainInfoList != null && baseShainInfoList.size() > 0) {
 			Skf1010MShainRepository shainRepository = (Skf1010MShainRepository) SpringContext
 					.getBean("skf1010MShainRepository");
 			// ５．（３）で取得した社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)に登録する。
-			for (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp idmShain : baseShainInfoList) {
+			for (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp idmShain : baseShainInfoList) {
 				// 社員番号で社員情報を削除する
 				if (0 > deleteShatakuShainMasterInfo(idmShain.getShainNo(), false)) {
 					return false;
@@ -528,7 +582,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 			}
 
 			if (CheckUtils.isEqual(updateKbn, INSERT_KBN)) {
-				SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp idmShain = (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp) dataEntity;
+				SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp idmShain = (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp) dataEntity;
 				// 会社コード
 				shainInfo.setCompanyCd(idmShain.getCompanyCd());
 				// 社員番号
@@ -608,16 +662,16 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	 * 
 	 * @return
 	 */
-	private List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> getIdmPreUserMasterInfo() {
-		List<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp> result = new ArrayList<SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2Exp>();
-		SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository repository = (SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository) SpringContext
-				.getBean("skfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpRepository");
-		SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpParameter param = new SkfPerssonalBatchUtilsGetIdmPreUserMasterInfo2ExpParameter();
+	private List<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp> getSkfIamPreUserMasterInfo() {
+		List<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp> result = new ArrayList<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp>();
+		SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2ExpRepository repository = (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2ExpRepository) SpringContext
+				.getBean("skfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2ExpRepository");
+		SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2ExpParameter param = new SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2ExpParameter();
 		param.setCompanyCd(companyCd);
 		param.setHiragana(TL_HIRAGANA);
 		param.setKatakana(TL_KATAKANA);
 		// 人事連携用従業員データの取得
-		result = repository.getIdmPreUserMasterInfo2(param);
+		result = repository.getSkfIamPreUserMasterInfo2(param);
 
 		return result;
 	}
@@ -689,7 +743,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	 * @param beginningEndKbn
 	 */
 	private void setInsertShatakuShainRireki(Skf1010MShatakuShainRireki insertRireki,
-			SkfPerssonalBatchUtilsGetIdmPreUserMasterInfoExp preUserMasterInfo, String beginningEndKbn) {
+			SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp preUserMasterInfo, String beginningEndKbn) {
 		// 会社コード
 		insertRireki.setCompanyCd(companyCd);
 		// 社員番号
@@ -737,6 +791,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 
 	///////////////////////// 共通処理
 	///////////////////////// //////////////////////////////////////////////
+
+	private void deleteSkfIamPreUserMaster() {
+		SkfPerssonalBatchUtilsDeleteSkfIamPreUserMasterExpRepository repository = (SkfPerssonalBatchUtilsDeleteSkfIamPreUserMasterExpRepository) SpringContext
+				.getBean("skfPerssonalBatchUtilsDeleteSkfIamPreUserMasterExpRepository");
+		repository.deleteSkfIamPreUserMaster();
+		return;
+	}
+
 	/**
 	 * ワーク社宅社員マスタデータ削除
 	 * 
