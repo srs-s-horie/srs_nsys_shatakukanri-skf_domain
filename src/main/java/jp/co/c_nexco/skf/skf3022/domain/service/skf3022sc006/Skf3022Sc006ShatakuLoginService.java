@@ -135,11 +135,12 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 		initDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		initDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 
+		// 選択タブインデックス初期値
+		initDto.setHdnTabIndex("999");
 		// 処理状態クリア
 		initDto.setSc006Status("");
 		Boolean appBihinFlg = false;
 		Boolean bihinErrFlg = false;
-		
 		// 備品ステータスのチェック処理
 		appBihinFlg = skf3022Sc006SharedService.checkBihinTaiyoStts(initDto);
 		// 備品エラー判定
