@@ -30,6 +30,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshi
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiMasterBackUpExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiMasterChangedCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiMasterChangedCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertSharedTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertShinseiSoshikiMasterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertSoshikiMasterBackUpExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertTokyuMasterExp;
@@ -38,6 +39,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfSoshikiBatchUtils.SkfSoshi
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TBatchControl;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsGetNijuuKidouCheckCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfPerssonalBatchUtils.SkfPerssonalBatchUtilsUpdateBatchControlExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteInSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteShinjoDataFromSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteShinseiDataFromSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsDeleteSoshikiMasterBackUpExpRepository;
@@ -49,6 +51,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfS
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetShainHasDeletedSoshikiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiMasterBackUpExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiMasterChangedCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertSharedTableDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertShinseiSoshikiMasterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertSoshikiMasterBackUpExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository;
@@ -57,6 +60,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfSoshikiBatchUtils.SkfS
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010TBatchControlRepository;
 import jp.co.c_nexco.nfw.common.bean.SpringContext;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webservice.BaseWebServiceAbstract;
@@ -65,6 +69,11 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.shared.ftm.entity.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp;
+import jp.co.c_nexco.skf.shared.ftm.entity.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetTokyuListBySharedTableExp;
+import jp.co.c_nexco.skf.shared.ftm.entity.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetTokyuListBySharedTableExpParameter;
+import jp.co.c_nexco.skf.shared.ftm.repository.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExpRepository;
+import jp.co.c_nexco.skf.shared.ftm.repository.exp.SkfSoshikiBatchUtils.SkfSoshikiBatchUtilsGetTokyuListBySharedTableExpRepository;
 import jp.co.c_nexco.skf.skf1010.domain.dto.common.SkfPersonnalBatchCommonDto;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.BasicAuthentication;
 import jp.co.intra_mart.foundation.web_api_maker.annotation.GET;
@@ -170,6 +179,21 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
 					return dto;
 				}
+
+				// シェアードDBから取込組織マスタへデータを投入する
+				boolean mInSoshikiRes = insertMInSoshiki();
+				if (!mInSoshikiRes) {
+					// エラーログ出力
+					batchResult = SkfCommonConstant.ABNORMAL;
+					// 処理結果：取込組織マスタへのデータ投入エラー
+					setLog(ERROR, MessageIdConstant.E_SKF_1066, "取込組織マスタへのデータの投入");
+					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+							batchResult);
+					dto.setStatus(batchResult);
+					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
+					return dto;
+				}
+
 				boolean soshikiRes = updateSoshikiMaster();
 				if (!soshikiRes) {
 					// エラーログ出力
@@ -224,6 +248,46 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 		dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
 		// 処理結果返却
 		return dto;
+	}
+
+	private boolean insertMInSoshiki() throws Exception {
+		// 取込組織マスタデータの削除
+		deleteMInSoshiki();
+		// シェアードDBから取込組織マスタデータを取得する
+		List<SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp> insDataList = new ArrayList<SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp>();
+		insDataList = getSharedDataList();
+
+		if (insDataList == null || insDataList.size() <= 0) {
+			return false;
+		}
+
+		SkfSoshikiBatchUtilsInsertSharedTableDataExpRepository insRepository = (SkfSoshikiBatchUtilsInsertSharedTableDataExpRepository) SpringContext
+				.getBean("skfSoshikiBatchUtilsInsertSharedTableDataExpRepository");
+		for (SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp insData : insDataList) {
+			SkfSoshikiBatchUtilsInsertSharedTableDataExp inSoshikiData = new SkfSoshikiBatchUtilsInsertSharedTableDataExp();
+			CopyUtils.copyProperties(inSoshikiData, insData);
+			int insRes = insRepository.insertSharedTableData(inSoshikiData);
+			if (insRes <= 0) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private List<SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp> getSharedDataList() {
+		List<SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp> dataList = new ArrayList<SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp>();
+		SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExpRepository repository = (SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExpRepository) SpringContext
+				.getBean("skfSoshikiBatchUtilsGetSoshikiListBySharedTableExpRepository");
+		dataList = repository.getSoshikiListBySharedTable();
+		return dataList;
+	}
+
+	private void deleteMInSoshiki() {
+		SkfSoshikiBatchUtilsDeleteInSoshikiMasterExpRepository repository = (SkfSoshikiBatchUtilsDeleteInSoshikiMasterExpRepository) SpringContext
+				.getBean("skfSoshikiBatchUtilsDeleteInSoshikiMasterExpRepository");
+		repository.deleteInSoshikiMaster();
+		return;
 	}
 
 	/**
@@ -452,20 +516,42 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 			return false;
 		}
 
-		// 等級マスタを登録します
-		SkfSoshikiBatchUtilsInsertTokyuMasterExp insRecord = new SkfSoshikiBatchUtilsInsertTokyuMasterExp();
-		insRecord.setCompanyCd(companyCd);
-		insRecord.setUserName(SkfCommonConstant.FIXED_NAME_BATCH);
-		SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository insRepository = (SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository) SpringContext
-				.getBean("skfSoshikiBatchUtilsInsertTokyuMasterExpRepository");
-		int insRes = insRepository.insertTokyuMaster(insRecord);
-		if (insRes < 0) {
+		// シェアードDBから等級マスタを取得します
+		List<SkfSoshikiBatchUtilsGetTokyuListBySharedTableExp> tokyuList = new ArrayList<SkfSoshikiBatchUtilsGetTokyuListBySharedTableExp>();
+		tokyuList = getTokyuListFromSharedTable();
+		if (tokyuList == null || tokyuList.size() <= 0) {
 			return false;
 		}
+
+		// 等級マスタを登録します
+		int insertTotal = 0;
+		for (SkfSoshikiBatchUtilsGetTokyuListBySharedTableExp tokyuInfo : tokyuList) {
+			SkfSoshikiBatchUtilsInsertTokyuMasterExp insRecord = new SkfSoshikiBatchUtilsInsertTokyuMasterExp();
+			CopyUtils.copyProperties(insRecord, tokyuInfo);
+			insRecord.setUserName(SkfCommonConstant.FIXED_NAME_BATCH);
+			SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository insRepository = (SkfSoshikiBatchUtilsInsertTokyuMasterExpRepository) SpringContext
+					.getBean("skfSoshikiBatchUtilsInsertTokyuMasterExpRepository");
+			int insRes = insRepository.insertTokyuMaster(insRecord);
+			if (insRes < 0) {
+				return false;
+			}
+			insertTotal += insRes;
+		}
 		// (メッセージID：I00003、{0}：テーブル名、{1}：登録件数)を取得
-		setLog("INFO", MessageIdConstant.I_SKF_1017, TABLE_NAME_TOKYU, insRes);
+		setLog("INFO", MessageIdConstant.I_SKF_1017, TABLE_NAME_TOKYU, insertTotal);
 
 		return true;
+	}
+
+	private List<SkfSoshikiBatchUtilsGetTokyuListBySharedTableExp> getTokyuListFromSharedTable() {
+		List<SkfSoshikiBatchUtilsGetTokyuListBySharedTableExp> tokyuList = new ArrayList<SkfSoshikiBatchUtilsGetTokyuListBySharedTableExp>();
+		SkfSoshikiBatchUtilsGetTokyuListBySharedTableExpParameter param = new SkfSoshikiBatchUtilsGetTokyuListBySharedTableExpParameter();
+		param.setCompanyCd(companyCd);
+		SkfSoshikiBatchUtilsGetTokyuListBySharedTableExpRepository repository = (SkfSoshikiBatchUtilsGetTokyuListBySharedTableExpRepository) SpringContext
+				.getBean("skfSoshikiBatchUtilsGetTokyuListBySharedTableExpRepository");
+		tokyuList = repository.getTokyuListBySharedTable(param);
+
+		return tokyuList;
 	}
 
 	/**
