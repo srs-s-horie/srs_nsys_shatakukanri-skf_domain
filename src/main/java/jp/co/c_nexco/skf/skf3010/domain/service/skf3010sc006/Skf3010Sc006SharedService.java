@@ -4191,7 +4191,7 @@ public class Skf3010Sc006SharedService {
 		// 調整金額
 		mShatakuParkingBlock.setParkingRentalAdjust(Integer.parseInt(labelMap.get("parkingRentalAdjust").toString().replace(",", "")));
 		// 備考
-		String biko = ("".equals(comDto.getParkingBiko())) ? null: comDto.getParkingBiko();
+		String biko = ("".equals(comDto.getParkingBiko())) ? "": comDto.getParkingBiko();
 		mShatakuParkingBlock.setParkingBiko(biko);
 		// 更新日時
 		mShatakuParkingBlock.setLastUpdateDate(comDto.getBlockUpdateDate());
@@ -4378,19 +4378,19 @@ public class Skf3010Sc006SharedService {
 		// 賃貸人番号
 		Long ownerNo = null;
 		// 経理連携用管理番号
-		String parkingAssetRegisterNo = CodeConstant.DOUBLE_QUOTATION;
+		String parkingAssetRegisterNo = null;
 		// 契約開始日
-		String contractStartDate = CodeConstant.DOUBLE_QUOTATION;
+		String contractStartDate = null;
 		// 契約終了日
-		String contractEndDate = CodeConstant.DOUBLE_QUOTATION;
+		String contractEndDate = null;
 		// 駐車場名
-		String parkingName = CodeConstant.DOUBLE_QUOTATION;
+		String parkingName = null;
 		// 駐車場郵便番号
-		String parkingZipCd = CodeConstant.DOUBLE_QUOTATION;
+		String parkingZipCd = null;
 		// 駐車場所在地
-		String parkingAddress = CodeConstant.DOUBLE_QUOTATION;
+		String parkingAddress = null;
 		// 備考
-		String biko = CodeConstant.DOUBLE_QUOTATION;
+		String biko = null;
 		//　契約形態
 		mShatakuParkingContract.setParkingContractType(comDto.getParkingContractType());
 		// 駐車場所在地区分
@@ -4399,6 +4399,14 @@ public class Skf3010Sc006SharedService {
 			mShatakuParkingContract.setParkingAddressKbn(CONTRACT_TYPE_1);
 			// 駐車場料(地代)
 			mShatakuParkingContract.setLandRent(null);
+			//駐車場の住所を社宅住所から設定する
+			Map<String, String> genericCodeMapPref = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+			String pref ="";
+			if (comDto.getPref() != null) {
+				pref = genericCodeMapPref.get(comDto.getPref());
+			}
+			// 住所
+			parkingAddress = pref + comDto.getShatakuAddress();
 		}else{
 			//社宅と別契約のみ値設定する
 			mShatakuParkingContract.setParkingAddressKbn(CONTRACT_TYPE_2);
