@@ -1,11 +1,15 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -117,6 +121,15 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 			applStatus = statusMap.get("applStatus");
 		}
 
+		// 承認一覧を条件から取得
+		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
+		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
+		param = skf2010Sc005SharedService.setParam(transDto);
+		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
+		// グリッド表示（リストテーブル）作成
+		List<Map<String, Object>> dispList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
+		transDto.setLtResultList(dispList);
+		
 		if (!CheckUtils.isEqual(applStatus, defaultApplStatus)) {
 			// 更新前と更新後の申請状況が違っていた場合
 			// 社宅管理データ連携処理実行
@@ -184,7 +197,7 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 		attribute.put("applId", applId);
 		attribute.put("applStatus", applStatus);
 		tpi.setTransferAttributes(attribute);
-		transDto.setTransferPageInfo(tpi);
+		transDto.setTransferPageInfo(tpi, true);
 
 		return transDto;
 	}
