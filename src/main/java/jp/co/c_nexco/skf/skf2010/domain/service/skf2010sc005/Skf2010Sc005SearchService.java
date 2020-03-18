@@ -16,6 +16,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005SearchDto;
@@ -143,6 +144,8 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1002, "1000", "条件を変更してください。");
 			return rtnList;
 		}
+		// 検索結果をセッションに保存
+		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
 
 		// グリッド表示（リストテーブル）作成
 		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
