@@ -227,6 +227,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				dto.setMaskPattern("PTN_A");
 				dto.setLevel1Open("true");
 				dto.setRepresentBtnFlg("false");
+				dto.setCommentAreaVisible(false);
 				break;
 			}
 		} else if (applId.equals(FunctionIdConstant.R0103)) {
