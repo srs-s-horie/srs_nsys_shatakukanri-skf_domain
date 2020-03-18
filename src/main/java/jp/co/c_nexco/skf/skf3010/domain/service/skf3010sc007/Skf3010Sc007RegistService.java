@@ -17,13 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.emory.mathcs.backport.java.util.Collections;
-
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShataku;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingContract;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingContractKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc007.Skf3010Sc007UpdateParkingContractExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingBlockRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingContractRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
@@ -31,9 +32,11 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007RegistDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
@@ -64,6 +67,10 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private Skf3010MShatakuRepository skf3010MShatakuRepository;
 	
 	private final static String TRUE = "true";
 	private final static String FALSE = "false";
@@ -422,14 +429,6 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 					
 				}
 				
-//				// 経理連携用管理番号
-//				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getAssetRegisterNo())) {
-//					isCheckOk = false;
-//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1052, "経理連携用管理番号");
-//					registDto.setAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
-//					debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
-//				}
-
 				// 経理連携用管理番号
 				if (!CheckUtils.isHalfWidth(registDto.getAssetRegisterNo())) {
 					isCheckOk = false;
@@ -478,7 +477,6 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		Long parkingKanriNo =  Long.parseLong(dto.getParkingKanriNo());
 		setValue.setParkingKanriNo(parkingKanriNo);
 		blockSetValue.setParkingKanriNo(parkingKanriNo);
-
 		
 		//賃貸人（代理人）番号
 		if(!SkfCheckUtils.isNullOrEmpty(dto.getOwnerNo())){
@@ -504,9 +502,6 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 		}
 		
 		//駐車場代（地代） 
-//		if(dto.getLandRent() != null){
-//			setValue.setLandRent(dto.getLandRent().intValue());
-//		}
 		String landRentNum = dto.getLandRentNum();
 		if(!SkfCheckUtils.isNullOrEmpty(landRentNum)){
 			String tempLandRent = landRentNum.replace(",", "");
@@ -535,8 +530,25 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 			setValue.setParkingZipCd(dto.getParkingZipCd());
 		}
 		//駐車場所在地
-		if(dto.getParkingAddress() != null){
-			setValue.setParkingAddress(dto.getParkingAddress());
+		if(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1.equals(contractType)){
+			//一括契約の場合、社宅の住所を設定
+			String prefCode = CodeConstant.DOUBLE_QUOTATION;
+			String address = CodeConstant.DOUBLE_QUOTATION;
+			Skf3010MShataku shatakuInfo = skf3010MShatakuRepository.selectByPrimaryKey(shatakuKanriNo);
+			if(shatakuInfo != null){
+				prefCode = shatakuInfo.getPrefCd();
+				address = shatakuInfo.getAddress();
+				Map<String, String> genericCodeMapPref = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+				String pref ="";
+				if (!SkfCheckUtils.isNullOrEmpty(prefCode)) {
+					pref = genericCodeMapPref.get(prefCode);
+				}
+				setValue.setParkingAddress(pref + address);
+			}
+		}else{
+			if(dto.getParkingAddress() != null){
+				setValue.setParkingAddress(dto.getParkingAddress());
+			}
 		}
 		
 		//区画情報
@@ -775,7 +787,16 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 					dto.setRegistButtonDisabled(FALSE);
 					dto.setCancelButtonDisabled(FALSE);
 					
-					
+					String ownerName = CodeConstant.DOUBLE_QUOTATION;
+					String ownerNo = CodeConstant.DOUBLE_QUOTATION;
+					String parkingZipCd = CodeConstant.DOUBLE_QUOTATION;
+					String parkingAddress = CodeConstant.DOUBLE_QUOTATION;
+					String parkingName = CodeConstant.DOUBLE_QUOTATION;
+					String assetRegisterNo = CodeConstant.DOUBLE_QUOTATION;
+					String contractStartDate = CodeConstant.DOUBLE_QUOTATION;
+					String contractEndDate = CodeConstant.DOUBLE_QUOTATION;
+					String landRent = CodeConstant.DOUBLE_QUOTATION;
+					String biko = CodeConstant.DOUBLE_QUOTATION;
 					//契約形態
 					String contractType = map.get("parkingContractType").toString();
 					if(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1.equals(contractType)){
@@ -797,19 +818,20 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 						dto.setContractInfoDisabled(FALSE);
 						dto.setHdnBackupParkingContractType(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_2);
 						dto.setHdnBackupParkinglendKbn(lendKbn);
+						
+						//入力項目設定(取得値を入れる)
+						ownerName = skf3010Sc007SharedService.createObjToString(map.get("ownerName"));
+						ownerNo = skf3010Sc007SharedService.createObjToString(map.get("ownerNo"));
+						parkingZipCd = skf3010Sc007SharedService.createObjToString(map.get("parkingZipCd"));
+						parkingAddress = skf3010Sc007SharedService.createObjToString(map.get("parkingAddress"));
+						parkingName = skf3010Sc007SharedService.createObjToString(map.get("parkingName"));
+						assetRegisterNo = skf3010Sc007SharedService.createObjToString(map.get("assetRegisterNo"));
+						contractStartDate = skf3010Sc007SharedService.createObjToString(map.get("contractStartDate"));
+						contractEndDate = skf3010Sc007SharedService.createObjToString(map.get("contractEndDate"));
+						landRent = skf3010Sc007SharedService.createObjToString(map.get("landRent"));
+						biko = skf3010Sc007SharedService.createObjToString(map.get("biko"));
 					}
 					
-					//入力項目設定(一括は空のはずだが、取得値を入れる)
-					String ownerName = skf3010Sc007SharedService.createObjToString(map.get("ownerName"));
-					String ownerNo = skf3010Sc007SharedService.createObjToString(map.get("ownerNo"));
-					String parkingZipCd = skf3010Sc007SharedService.createObjToString(map.get("parkingZipCd"));
-					String parkingAddress = skf3010Sc007SharedService.createObjToString(map.get("parkingAddress"));
-					String parkingName = skf3010Sc007SharedService.createObjToString(map.get("parkingName"));
-					String assetRegisterNo = skf3010Sc007SharedService.createObjToString(map.get("assetRegisterNo"));
-					String contractStartDate = skf3010Sc007SharedService.createObjToString(map.get("contractStartDate"));
-					String contractEndDate = skf3010Sc007SharedService.createObjToString(map.get("contractEndDate"));
-					String landRent = skf3010Sc007SharedService.createObjToString(map.get("landRent"));
-					String biko = skf3010Sc007SharedService.createObjToString(map.get("biko"));
 					dto.setOwnerName(ownerName);
 					dto.setOwnerNo(ownerNo);
 					dto.setParkingZipCd(parkingZipCd);
@@ -819,9 +841,6 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 					dto.setContractStartDate(contractStartDate);
 					dto.setContractEndDate(contractEndDate);
 					dto.setLandRent(landRent);
-//					if(!landRent.isEmpty()){
-//						dto.setLandRent(Long.parseLong(landRent));
-//					}
 					dto.setBiko(biko);
 					
 					//入力チェック用

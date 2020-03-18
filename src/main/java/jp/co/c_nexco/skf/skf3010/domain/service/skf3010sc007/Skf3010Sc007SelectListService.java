@@ -212,7 +212,16 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 					selectDto.setRegistButtonDisabled(FALSE);
 					selectDto.setCancelButtonDisabled(FALSE);
 					
-					
+					String ownerName = CodeConstant.DOUBLE_QUOTATION;
+					String ownerNo = CodeConstant.DOUBLE_QUOTATION;
+					String parkingZipCd = CodeConstant.DOUBLE_QUOTATION;
+					String parkingAddress = CodeConstant.DOUBLE_QUOTATION;
+					String parkingName = CodeConstant.DOUBLE_QUOTATION;
+					String assetRegisterNo = CodeConstant.DOUBLE_QUOTATION;
+					String contractStartDate = CodeConstant.DOUBLE_QUOTATION;
+					String contractEndDate = CodeConstant.DOUBLE_QUOTATION;
+					String landRent = CodeConstant.DOUBLE_QUOTATION;
+					String biko = CodeConstant.DOUBLE_QUOTATION;
 					//契約形態
 					String contractType = Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1;
 					if(map.get("parkingContractType") != null){
@@ -239,21 +248,20 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 						selectDto.setContractInfoDisabled(FALSE);
 						selectDto.setHdnBackupParkingContractType(Skf3010Sc007CommonSharedService.CONTRACT_TYPE_2);
 						selectDto.setHdnBackupParkinglendKbn(lendKbn);
+						
+						//入力項目設定(取得値を入れる)
+						ownerName = skf3010Sc007SharedService.createObjToString(map.get("ownerName"));
+						ownerNo = skf3010Sc007SharedService.createObjToString(map.get("ownerNo"));
+						parkingZipCd = skf3010Sc007SharedService.createObjToString(map.get("parkingZipCd"));
+						parkingAddress = skf3010Sc007SharedService.createObjToString(map.get("parkingAddress"));
+						parkingName = skf3010Sc007SharedService.createObjToString(map.get("parkingName"));
+						assetRegisterNo = skf3010Sc007SharedService.createObjToString(map.get("assetRegisterNo"));
+						contractStartDate = skf3010Sc007SharedService.createObjToString(map.get("contractStartDate"));
+						contractEndDate = skf3010Sc007SharedService.createObjToString(map.get("contractEndDate"));
+						landRent = skf3010Sc007SharedService.createObjToString(map.get("landRent"));
+						biko = skf3010Sc007SharedService.createObjToString(map.get("biko"));
 					}
 					
-					//入力項目設定(一括は空のはずだが、取得値を入れる)
-					String ownerName = skf3010Sc007SharedService.createObjToString(map.get("ownerName"));
-					String ownerNo = skf3010Sc007SharedService.createObjToString(map.get("ownerNo"));
-					String parkingZipCd = skf3010Sc007SharedService.createObjToString(map.get("parkingZipCd"));
-					String parkingAddress = skf3010Sc007SharedService.createObjToString(map.get("parkingAddress"));
-					String parkingName = skf3010Sc007SharedService.createObjToString(map.get("parkingName"));
-					String assetRegisterNo = skf3010Sc007SharedService.createObjToString(map.get("assetRegisterNo"));
-					String contractStartDate = skf3010Sc007SharedService.createObjToString(map.get("contractStartDate"));
-					String contractEndDate = skf3010Sc007SharedService.createObjToString(map.get("contractEndDate"));
-					String landRent = skf3010Sc007SharedService.createObjToString(map.get("landRent"));
-					String biko = skf3010Sc007SharedService.createObjToString(map.get("biko"));
-//					contractStartDate = contractStartDate.replace("/", "");
-//					contractEndDate = contractEndDate.replace("/", "");
 					selectDto.setOwnerName(ownerName);
 					selectDto.setOwnerNo(ownerNo);
 					selectDto.setParkingZipCd(parkingZipCd);
@@ -263,9 +271,6 @@ public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc
 					selectDto.setContractStartDate(contractStartDate);
 					selectDto.setContractEndDate(contractEndDate);
 					selectDto.setLandRent(landRent);
-//					if(!landRent.isEmpty()){
-//						selectDto.setLandRent(Long.parseLong(landRent));
-//					}
 					selectDto.setBiko(biko);
 					
 					//入力チェック用
