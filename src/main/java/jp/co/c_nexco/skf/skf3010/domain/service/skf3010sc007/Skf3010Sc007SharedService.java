@@ -160,9 +160,14 @@ public class Skf3010Sc007SharedService {
 			tmpMap.put("colParkingContractType", contractType);
 
 			tmpMap.put("colContractPropertyId", tmpData.getContractPropertyId());
-			//賃貸人（代理人）名前変換（取得）
+
+			//賃貸人（代理人）名前変換（取得）	
 			tmpMap.put("colOwnerName", tmpData.getOwnerName());
-			tmpMap.put("colParkingAddress", tmpData.getParkingAddress());
+			String colParkingAddress = CodeConstant.DOUBLE_QUOTATION;
+			if(!Skf3010Sc007CommonSharedService.CONTRACT_TYPE_1.equals(tmpData.getParkingContractType())){
+				colParkingAddress = tmpData.getParkingAddress();
+			}
+			tmpMap.put("colParkingAddress", colParkingAddress);
 			tmpMap.put("colParkingName", tmpData.getParkingName());
 			tmpMap.put("colAssetRegisterNo", tmpData.getAssetRegisterNo());
 			

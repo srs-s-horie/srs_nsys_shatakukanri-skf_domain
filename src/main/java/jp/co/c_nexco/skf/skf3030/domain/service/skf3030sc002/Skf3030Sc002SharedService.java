@@ -3130,33 +3130,33 @@ public class Skf3030Sc002SharedService {
 		//役員算定
 		columnInfoList.setYakuinSannteiKbn(getToRegistString(comDto.getSc006YakuinSanteiSelect()));
 		//社宅使用料月額 
-		columnInfoList.setRentalMonth(Integer.parseInt(comDto.getHdnKaiSanAfterShatakuShiyoryoGetsugaku()));
+		columnInfoList.setRentalMonth(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterShatakuShiyoryoGetsugaku())));
 		//社宅使用料日割金額
-		columnInfoList.setRentalDay(Integer.parseInt(comDto.getHdnKaiSanAfterShatakuShiyoryoHiwariKingaku()));
+		columnInfoList.setRentalDay(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterShatakuShiyoryoHiwariKingaku())));
 		//社宅使用料調整金額
-		columnInfoList.setRentalAdjust(Integer.parseInt(comDto.getSc006SiyoroTyoseiPay()));
+		columnInfoList.setRentalAdjust(Integer.parseInt(getPayText(comDto.getSc006SiyoroTyoseiPay())));
 		//社宅使用料月額（調整後）
-		columnInfoList.setRentalTotal(Integer.parseInt(comDto.getHdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo()));
+		columnInfoList.setRentalTotal(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo())));
 		//個人負担共益費月額
-		columnInfoList.setKyoekihiPerson(Integer.parseInt(comDto.getSc006KyoekihiMonthPay()));
+		columnInfoList.setKyoekihiPerson(Integer.parseInt(getPayText(comDto.getSc006KyoekihiMonthPay())));
 		//個人負担共益費調整金額
-		columnInfoList.setKyoekihiPersonAdjust(Integer.parseInt(comDto.getSc006KyoekihiTyoseiPay()));
+		columnInfoList.setKyoekihiPersonAdjust(Integer.parseInt(getPayText(comDto.getSc006KyoekihiTyoseiPay())));
 		//個人負担共益費月額（調整後）
-		columnInfoList.setKyoekihiPersonTotal(Integer.parseInt(comDto.getHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo()));
+		columnInfoList.setKyoekihiPersonTotal(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo())));
 		//共益費支払月
 		columnInfoList.setKyoekihiPayMonth(getToRegistString(comDto.getSc006KyoekihiPayMonthSelect()));
 		//区画１駐車場使用料月額
-		columnInfoList.setParking1RentalMonth(Integer.parseInt(comDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroGetsugaku()));
+		columnInfoList.setParking1RentalMonth(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroGetsugaku())));
 		//区画１駐車場使用料日割金額 
-		columnInfoList.setParking1RentalDay(Integer.parseInt(comDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku()));
+		columnInfoList.setParking1RentalDay(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku())));
 		//区画２駐車場使用料月額
-		columnInfoList.setParking2RentalMonth(Integer.parseInt(comDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroGetsugaku()));
+		columnInfoList.setParking2RentalMonth(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroGetsugaku())));
 		//区画２駐車場使用料日割金額
-		columnInfoList.setParking2RentalDay(Integer.parseInt(comDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku()));
+		columnInfoList.setParking2RentalDay(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku())));
 		//駐車場使用料調整金額
-		columnInfoList.setParkingRentalAdjust(Integer.parseInt(comDto.getSc006TyusyaTyoseiPay()));
+		columnInfoList.setParkingRentalAdjust(Integer.parseInt(getPayText(comDto.getSc006TyusyaTyoseiPay())));
 		//駐車場使用料月額（調整後）
-		columnInfoList.setParkingRentalTotal(Integer.parseInt(comDto.getHdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo()));
+		columnInfoList.setParkingRentalTotal(Integer.parseInt(getPayText(comDto.getHdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo())));
 
 		//更新日時
 		columnInfoList.setUpdateDate(skfBaseBusinessLogicUtils.getSystemDateTime());
