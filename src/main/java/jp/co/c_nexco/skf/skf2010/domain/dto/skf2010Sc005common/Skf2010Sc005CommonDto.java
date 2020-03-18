@@ -75,6 +75,4 @@ public class Skf2010Sc005CommonDto extends Skf201030CommonDto {
 	private String agreDateToErr;
 	private String applStatusErr;
 
-	private String backUrl;
-
 }

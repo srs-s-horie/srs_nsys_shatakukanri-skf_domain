@@ -95,6 +95,9 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		// 画面ID保持
 		dto.setPrePageId(FunctionIdConstant.SKF2010_SC005);
 
+		// 戻るボタンで遷移する画面を設定
+		String backUrl = "skf/" + FunctionIdConstant.SKF1010_SC001 + "/init";
+		dto.setBackUrl(backUrl);
 	}
 
 	/**
