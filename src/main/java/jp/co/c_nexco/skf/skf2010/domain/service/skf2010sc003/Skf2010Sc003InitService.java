@@ -9,10 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -80,15 +78,19 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 
 		// 申請状況一覧を検索
 		setStatusList(initDto);
-		
+
 		// データ連携用の排他制御用更新日を取得
-		//ログインセッションのユーザ情報
+		// ログインセッションのユーザ情報
 		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		//ログインセッションユーザ情報の社員番号
+		// ログインセッションユーザ情報の社員番号
 		String shainNo = userInfoMap.get("shainNo");
 		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> dateLinkageMap = skfBatchUtils
 				.getUpdateDateForUpdateSQL(shainNo);
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC003, dateLinkageMap);
+
+		// 戻るボタンで遷移する画面を設定
+		String backUrl = "skf/" + FunctionIdConstant.SKF1010_SC001 + "/init";
+		initDto.setBackUrl(backUrl);
 
 		return initDto;
 	}

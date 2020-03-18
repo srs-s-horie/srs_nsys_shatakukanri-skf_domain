@@ -12,6 +12,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005InitDto;
@@ -88,9 +89,15 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		// 社員番号初期化
 		dto.setShainNo(null);
 
+		// セッション情報初期化
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY);
+
 		// 画面ID保持
 		dto.setPrePageId(FunctionIdConstant.SKF2010_SC005);
 
+		// 戻るボタンで遷移する画面を設定
+		String backUrl = "skf/" + FunctionIdConstant.SKF1010_SC001 + "/init";
+		dto.setBackUrl(backUrl);
 	}
 
 	/**
@@ -111,6 +118,9 @@ public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005Ini
 		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
 		param = skf2010Sc005SharedService.setParam(dto);
 		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
+		// 検索結果をセッションに保存
+		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
+
 		// グリッド表示（リストテーブル）作成
 		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
 

@@ -11,9 +11,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Skf201030CommonDto extends BaseDto {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+
+	private String backUrl;
 
 }

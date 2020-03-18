@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
@@ -20,6 +19,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -126,10 +126,12 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
 		param = skf2010Sc005SharedService.setParam(transDto);
 		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
+		// 最新の検索結果をセッションに保存
+		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
 		// グリッド表示（リストテーブル）作成
 		List<Map<String, Object>> dispList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
 		transDto.setLtResultList(dispList);
-		
+
 		if (!CheckUtils.isEqual(applStatus, defaultApplStatus)) {
 			// 更新前と更新後の申請状況が違っていた場合
 			// 社宅管理データ連携処理実行
@@ -138,6 +140,7 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 			if (resultBatch != null) {
 				skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(transDto, resultBatch);
 				skfRollBackExpRepository.rollBack();
+				throwBusinessExceptionIfErrors(transDto.getResultMessages());
 				return transDto;
 			}
 		}
