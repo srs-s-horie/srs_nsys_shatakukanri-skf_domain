@@ -3,7 +3,6 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -153,7 +152,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1133, "申請日");
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "applDateFrom", "applDateTo" }, MessageIdConstant.E_SKF_1133, "申請日");
 				dto.setApplDateFromErr(validationErrorCode);
 				dto.setApplDateToErr(validationErrorCode);
 				result = false;
@@ -168,7 +167,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1133, "承認日／修正依頼日");
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "agreDateFrom", "agreDateTo" }, MessageIdConstant.E_SKF_1133, "承認日／修正依頼日");
 				dto.setAgreDateFromErr(validationErrorCode);
 				dto.setAgreDateToErr(validationErrorCode);
 				result = false;
