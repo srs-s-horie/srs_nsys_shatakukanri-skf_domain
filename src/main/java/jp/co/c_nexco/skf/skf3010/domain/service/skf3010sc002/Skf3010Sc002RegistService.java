@@ -44,6 +44,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc002common.Skf3010Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002RegistDto;
@@ -79,6 +80,8 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 	private Skf3010MShatakuParkingContractRepository skf3010MShatakuParkingContractRepository;
 	@Autowired
 	private Skf3010Sc002GetParkingBlockContractDataExpRepository skf3010Sc002GetParkingBlockContractDataExpRepository;
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
 
 	/** 定数 */
 	// 駐車場契約形態：社宅と一括
@@ -357,6 +360,26 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 //			}
 			delParking = null;
 		}
+		/** 駐車場住所取得 */
+		// 都道府県用・汎用コード取得
+		Map<String, String> genericCodeMapShataku = 
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+		// 都道府県名取得
+		String parkingAddress = genericCodeMapShataku.get(mShataku.getPrefCd());
+		if (CheckUtils.isEmpty(parkingAddress)) {
+			parkingAddress = "";
+		}
+		// 駐車場住所設定
+		parkingAddress += mShataku.getAddress();
+		if (CheckUtils.isEmpty(parkingAddress)) {
+			// 住所未設定時はnullとする
+			parkingAddress = null;
+		}
+		String postNo = mShataku.getZipCd();
+		if (CheckUtils.isEmpty(postNo)) {
+			// 住所未設定時はnullとする
+			postNo = null;
+		}
 		// 次新規区画駐車場管理番号
 		Long parkingKanriNo = skf3010Sc002SharedService.getNextParkingKanriNo(shatakuKanriNo.toString());
 		// 区画情報登録更新ループ
@@ -379,26 +402,28 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 				updateCnt = skf3010MShatakuParkingBlockRepository.insertSelective(mShatakuParkingBlock);
 				// 更新カウント判定
 				if (updateCnt < 1) {
-					LogUtils.debugByMsg("駐車場区画登録失敗：" + mShatakuParkingBlock.getParkingBlock());
+					LogUtils.debugByMsg("追加駐車場区画登録失敗：" + mShatakuParkingBlock.getParkingBlock());
 					return updateCnt;
 				}
-//				// 一棟借上判定
-//				if (registDto.getIttoFlg()) {
-					// 区画契約情報も登録する
-					// 駐車場契約情報登録
-					Skf3010MShatakuParkingContract parkingContract = new Skf3010MShatakuParkingContract();
-					parkingContract.setShatakuKanriNo(shatakuKanriNo);
-					parkingContract.setParkingKanriNo(parkingKanriNo);
-					parkingContract.setContractPropertyId(1L);
-					parkingContract.setParkingContractType(PARKING_CONTRACT_TYPE);
-					parkingContract.setParkingAddressKbn(PARKING_ADDRESS);
-					updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(parkingContract);
-					// 更新カウント判定
-					if (updateCnt < 1) {
-						LogUtils.debugByMsg("駐車場契約情報登録失敗：" + mShatakuParkingBlock.getParkingBlock());
-						return updateCnt;
-					}
-//				}
+
+				// 駐車場契約情報登録
+				Skf3010MShatakuParkingContract parkingContract = new Skf3010MShatakuParkingContract();
+				parkingContract.setShatakuKanriNo(shatakuKanriNo);
+				parkingContract.setParkingKanriNo(parkingKanriNo);
+				parkingContract.setContractPropertyId(1L);
+				parkingContract.setParkingContractType(PARKING_CONTRACT_TYPE);
+				parkingContract.setParkingAddressKbn(PARKING_ADDRESS);
+				// 一棟借上げ判定
+				if (CodeConstant.ITTOU.equals(mShataku.getShatakuKbn())) {
+					parkingContract.setParkingAddress(parkingAddress);
+					parkingContract.setParkingZipCd(postNo);
+				}
+				updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(parkingContract);
+				// 更新カウント判定
+				if (updateCnt < 1) {
+					LogUtils.debugByMsg("追加駐車場契約情報登録失敗：" + mShatakuParkingBlock.getParkingBlock());
+					return updateCnt;
+				}
 				// 次新規区画駐車場管理番号更新
 				parkingKanriNo++;
 			}
@@ -553,6 +578,26 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 			LogUtils.debugByMsg("社宅駐車場登録失敗");
 			return updateCnt;
 		}
+		/** 駐車場住所取得 */
+		// 都道府県用・汎用コード取得
+		Map<String, String> genericCodeMapShataku = 
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_PREFCD);
+		// 都道府県名取得
+		String parkingAddress = genericCodeMapShataku.get(mShataku.getPrefCd());
+		if (CheckUtils.isEmpty(parkingAddress)) {
+			parkingAddress = "";
+		}
+		// 駐車場住所設定
+		parkingAddress += mShataku.getAddress();
+		if (CheckUtils.isEmpty(parkingAddress)) {
+			// 住所未設定時はnullとする
+			parkingAddress = null;
+		}
+		String postNo = mShataku.getZipCd();
+		if (CheckUtils.isEmpty(postNo)) {
+			// 住所未設定時はnullとする
+			postNo = null;
+		}
 		/** 駐車場区画情報登録 */
 		// 次新規区画駐車場管理番号
 		Long parkingKanriNo = skf3010Sc002SharedService.getNextParkingKanriNo(shatakuKanriNo.toString());
@@ -568,22 +613,24 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 				LogUtils.debugByMsg("駐車場区画登録失敗：" + mShatakuParkingBlock.getParkingBlock());
 				return updateCnt;
 			}
-//			// 一棟借上判定
-//			if (ittoFlg) {
-				// 駐車場契約情報登録
-				Skf3010MShatakuParkingContract parkingContract = new Skf3010MShatakuParkingContract();
-				parkingContract.setShatakuKanriNo(shatakuKanriNo);
-				parkingContract.setParkingKanriNo(parkingKanriNo);
-				parkingContract.setContractPropertyId(1L);
-				parkingContract.setParkingContractType(PARKING_CONTRACT_TYPE);
-				parkingContract.setParkingAddressKbn(PARKING_ADDRESS);
-				updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(parkingContract);
-				// 更新カウント判定
-				if (updateCnt < 1) {
-					LogUtils.debugByMsg("駐車場契約情報登録失敗：" + mShatakuParkingBlock.getParkingBlock());
-					return updateCnt;
-				}
-//			}
+			// 駐車場契約情報登録
+			Skf3010MShatakuParkingContract parkingContract = new Skf3010MShatakuParkingContract();
+			parkingContract.setShatakuKanriNo(shatakuKanriNo);
+			parkingContract.setParkingKanriNo(parkingKanriNo);
+			parkingContract.setContractPropertyId(1L);
+			parkingContract.setParkingContractType(PARKING_CONTRACT_TYPE);
+			parkingContract.setParkingAddressKbn(PARKING_ADDRESS);
+			// 一棟借上げ判定
+			if (CodeConstant.ITTOU.equals(mShataku.getShatakuKbn())) {
+				parkingContract.setParkingAddress(parkingAddress);
+				parkingContract.setParkingZipCd(postNo);
+			}
+			updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(parkingContract);
+			// 更新カウント判定
+			if (updateCnt < 1) {
+				LogUtils.debugByMsg("駐車場契約情報登録失敗：" + mShatakuParkingBlock.getParkingBlock());
+				return updateCnt;
+			}
 			parkingKanriNo++;
 		}
 		/** 社宅備品登録 */
