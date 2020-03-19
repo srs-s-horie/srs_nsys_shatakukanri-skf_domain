@@ -253,8 +253,7 @@ public class Skf2010Sc004SharedService {
 
 		// 排他チェック
 		if (!CheckUtils.isEqual(baseUpdateData.getUpdateDate(), lastUpdateDate)) {
-			errMsg.put("error", MessageIdConstant.E_SKF_1134);
-			errMsg.put("value", "appl_history");
+			errMsg.put("error", MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 
@@ -563,6 +562,9 @@ public class Skf2010Sc004SharedService {
 			String agreDate, String agreName1, String agreName2, Date lastUpdateDate, Map<String, String> errorMsg) {
 		Boolean result = true;
 
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
+
 		// 申請書類履歴テーブルの楽観的排他（データのロック処理）
 		Skf2010Sc004GetApplHistoryInfoForUpdateExpParameter param = new Skf2010Sc004GetApplHistoryInfoForUpdateExpParameter();
 		Skf2010Sc004GetApplHistoryInfoForUpdateExp lockData = new Skf2010Sc004GetApplHistoryInfoForUpdateExp();
@@ -576,8 +578,7 @@ public class Skf2010Sc004SharedService {
 		}
 		// 排他チェック
 		if (!CheckUtils.isEqual(lockData.getUpdateDate(), lastUpdateDate)) {
-			errorMsg.put("error", MessageIdConstant.E_SKF_1134);
-			errorMsg.put("value", "appl_history");
+			errorMsg.put("error", MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 
@@ -614,6 +615,8 @@ public class Skf2010Sc004SharedService {
 		}
 		// 申請状況
 		record.setApplStatus(applStatus);
+		// 更新者名
+		record.setUpdateUserId(loginUserInfo.get("userName"));
 
 		int res = skf2010Sc004UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(record);
 		if (res <= 0) {

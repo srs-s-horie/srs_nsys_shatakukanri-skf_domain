@@ -113,7 +113,9 @@ public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001Ap
 
 		// 更新処理
 		if (!skf2030Sc001SharedService.updateDispInfo(applInfo, applyDto)) {
-			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1075);
+			if (applyDto.getResultMessages() == null) {
+				ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1075);
+			}
 			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			return applyDto;
 		}

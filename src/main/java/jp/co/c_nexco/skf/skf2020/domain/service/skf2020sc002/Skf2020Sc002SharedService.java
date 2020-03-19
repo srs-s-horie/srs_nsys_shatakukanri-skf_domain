@@ -2134,7 +2134,7 @@ public class Skf2020Sc002SharedService {
 		if (!CheckUtils.isEqual(resultUpdateDate.getUpdateDate(),
 				dto.getLastUpdateDate(KEY_LAST_UPDATE_DATE_HISTORY))) {
 			// 排他チェックエラー
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134, "skf2010_t_appl_history");
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134);
 			return false;
 		}
 

@@ -118,7 +118,7 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 		resultList = skf2010Sc003SharedService.getApplHistoryStatusInfo(shainNo, applDateFrom, applDateTo, agreDateFrom,
 				agreDateTo, applName, applStatus);
 
-		initDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList));
+		initDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList, initDto));
 	}
 
 	/**

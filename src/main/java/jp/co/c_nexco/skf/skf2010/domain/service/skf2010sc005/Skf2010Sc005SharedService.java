@@ -76,8 +76,10 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
@@ -334,6 +336,14 @@ public class Skf2010Sc005SharedService {
 		Skf2010Sc005GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc005GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc005GetApplHistoryInfoByParameterExpRepository.getApplHistoryInfoByParameter(param);
 
+		// 排他チェック
+		Map<String, Date> lastUpdateDateMap = dto.getLastUpdateDateMap();
+		Date lastUpdateDate = lastUpdateDateMap.get(applNo);
+		if (!CheckUtils.isEqual(tApplHistoryData.getUpdateDate(), lastUpdateDate)) {
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134);
+			return false;
+		}
+
 		// 次のステータスを設定する
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
 
@@ -423,7 +433,7 @@ public class Skf2010Sc005SharedService {
 		// 申請情報履歴更新
 		int applHistoryRes = skf2010TApplHistoryRepository.updateByPrimaryKeySelective(updateData);
 		if (applHistoryRes <= 0) {
-
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			return false;
 		}
 
@@ -505,7 +515,8 @@ public class Skf2010Sc005SharedService {
 	 * @param tApplHistoryData
 	 * @return
 	 */
-	public List<Map<String, Object>> createListTable(List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData) {
+	public List<Map<String, Object>> createListTable(List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData,
+			Skf2010Sc005CommonDto dto) {
 		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
 		if (tApplHistoryData.size() <= 0) {
 			return returnList;
@@ -516,6 +527,7 @@ public class Skf2010Sc005SharedService {
 		genericCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
 
 		Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>> forUpdateListMap = new HashMap<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>>();
+		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
 
 		for (Skf2010Sc005GetShoninIchiranShoninExp tmpData : tApplHistoryData) {
 			String applDate = CodeConstant.NONE;
@@ -576,8 +588,13 @@ public class Skf2010Sc005SharedService {
 			Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skfBatchUtils
 					.getUpdateDateForUpdateSQL(tmpData.getShainNo());
 			forUpdateListMap.put(tmpData.getShainNo(), forUpdateMap);
+
+			// 排他処理用最終更新日セット
+			lastUpdateDateMap.put(tmpData.getApplNo(), tmpData.getUpdateDate());
 		}
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC005, forUpdateListMap);
+
+		dto.setLastUpdateDateMap(lastUpdateDateMap);
 		return returnList;
 	}
 
@@ -1485,7 +1502,7 @@ public class Skf2010Sc005SharedService {
 	 * @throws Exception
 	 */
 	public boolean updateStatusShinsachu(String applId, String applNo, boolean agreeAuthority, String applStatus,
-			Map<String, String> statusMap) throws Exception {
+			Map<String, String> statusMap, Skf2010Sc005CommonDto dto) throws Exception {
 		boolean statusUpdateFlg = true;
 
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)
@@ -1514,8 +1531,15 @@ public class Skf2010Sc005SharedService {
 		if (agreeAuthority) {
 			// ステータスを審査中に更新
 			if (statusUpdateFlg) {
-				boolean result = updateApplHistory(applNo, applId, CodeConstant.STATUS_SHINSACHU);
+				Map<String, Date> lastUpdateDateMap = dto.getLastUpdateDateMap();
+				Date lastUpdateDate = lastUpdateDateMap.get(applNo);
+				Map<String, String> errorMsg = new HashMap<String, String>();
+				boolean result = updateApplHistory(applNo, applId, CodeConstant.STATUS_SHINSACHU, lastUpdateDate,
+						errorMsg);
 				if (!result) {
+					if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
+						ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
+					}
 					return false;
 				}
 				// ステータスを審査中に変更
@@ -1532,7 +1556,8 @@ public class Skf2010Sc005SharedService {
 	 * @param applNo
 	 * @return
 	 */
-	public boolean updateApplHistory(String applNo, String applId, String applStatus) throws Exception {
+	public boolean updateApplHistory(String applNo, String applId, String applStatus, Date lastUpdateDate,
+			Map<String, String> errorMsg) throws Exception {
 		boolean result = true;
 
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
@@ -1546,6 +1571,12 @@ public class Skf2010Sc005SharedService {
 		baseUpdateData = skf2010Sc005GetApplHistoryStatusInfoForUpdateExpRepository
 				.getApplHistoryStatusInfoForUpdate(param);
 		if (baseUpdateData == null) {
+			return false;
+		}
+
+		// 排他チェック実施
+		if (!CheckUtils.isEqual(baseUpdateData.getUpdateDate(), lastUpdateDate)) {
+			errorMsg.put("error", MessageIdConstant.E_SKF_1134);
 			return false;
 		}
 
@@ -1572,16 +1603,15 @@ public class Skf2010Sc005SharedService {
 		}
 
 		Skf2010Sc005UpdateApplHistoryAgreeStatusExp updateData = new Skf2010Sc005UpdateApplHistoryAgreeStatusExp();
-		// 更新対象のキー設定
+		// 更新対象のプライマリキー設定
 		updateData.setCompanyCd(companyCd);
 		updateData.setApplNo(applNo);
-
-		updateData.setApplStatus(applStatus);
-		updateData.setAgreDate(agreDate);
-		updateData.setAgreName1(agreName1);
-		updateData.setAgreName2(agreName2);
-		updateData.setUpdateDate(new Date());
-		updateData.setUpdateUserId(loginUserInfo.get("userName"));
+		// 更新対象
+		updateData.setApplStatus(applStatus); // 申請状況
+		updateData.setAgreDate(agreDate); // 承認/修正依頼日
+		updateData.setAgreName1(agreName1); // 承認者１
+		updateData.setAgreName2(agreName2); // 承認者２
+		updateData.setUpdateUserId(loginUserInfo.get("userName")); // 更新者
 
 		int updateResult = skf2010Sc005UpdateApplHistoryAgreeStatusExpRepository
 				.updateApplHistoryAgreeStatus(updateData);

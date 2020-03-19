@@ -235,8 +235,7 @@ public class Skf2010Sc006SharedService {
 
 		// 排他チェック
 		if (!CheckUtils.isEqual(tApplHistoryData.getUpdateDate(), lastUpdateDate)) {
-			errMap.put("error", MessageIdConstant.E_SKF_1134);
-			errMap.put("value", "appl_history");
+			errMap.put("error", MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 
@@ -395,8 +394,7 @@ public class Skf2010Sc006SharedService {
 
 		// 排他チェック
 		if (!CheckUtils.isEqual(applInfo.getUpdateDate(), lastUpdateDate)) {
-			errMap.put("error", MessageIdConstant.E_SKF_1134);
-			errMap.put("value", "appl_history");
+			errMap.put("error", MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 
@@ -499,8 +497,7 @@ public class Skf2010Sc006SharedService {
 
 		// 排他チェック
 		if (!CheckUtils.isEqual(applInfo.getUpdateDate(), lastUpdateDate)) {
-			errorMsg.put("error", MessageIdConstant.E_SKF_1134);
-			errorMsg.put("value", "appl_history");
+			errorMsg.put("error", MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 

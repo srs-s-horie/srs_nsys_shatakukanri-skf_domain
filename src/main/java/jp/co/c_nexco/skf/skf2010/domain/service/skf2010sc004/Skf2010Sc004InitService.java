@@ -270,6 +270,8 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 排他制御用最終更新日セット
 		initDto.addLastUpdateDate(skf2010Sc004SharedService.KEY_LAST_UPDATE_DATE_HISTORY,
 				applHistoryInfo.getUpdateDate());
+		menuScopeSessionBean.put(skf2010Sc004SharedService.KEY_LAST_UPDATE_DATE_HISTORY,
+				applHistoryInfo.getUpdateDate());
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
 

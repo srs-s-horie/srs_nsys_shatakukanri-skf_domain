@@ -148,7 +148,7 @@ public class Skf2010Sc005SearchService extends BaseServiceAbstract<Skf2010Sc005S
 		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
 
 		// グリッド表示（リストテーブル）作成
-		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
+		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData, dto);
 
 		return rtnList;
 	}

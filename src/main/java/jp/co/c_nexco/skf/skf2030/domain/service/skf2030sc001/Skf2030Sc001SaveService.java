@@ -166,7 +166,7 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 
 		saveDto.setApplStatus(CodeConstant.STATUS_ICHIJIHOZON);
 
-		// TODO:社宅管理データ連携処理実行
+		// 社宅管理データ連携処理実行
 		String status = CodeConstant.STATUS_ICHIJIHOZON;
 		String pageId = FunctionIdConstant.SKF2030_SC001;
 		List<String> resultBatch = skf2030Sc001SharedService.doShatakuRenkei(menuScopeSessionBean, shainNo, applNo,

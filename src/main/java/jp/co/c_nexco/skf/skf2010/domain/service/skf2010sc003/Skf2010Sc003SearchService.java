@@ -40,12 +40,12 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	
+
 	@Value("${skf2010.skf2010_sc003.max_search_count}")
 	private String searchMaxCount;
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
-	
+
 	// 基準会社コード
 	private String companyCd = CodeConstant.C001;
 
@@ -79,7 +79,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 			// 検索結果表示最大数以上
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1002, "100", "抽出条件を変更してください。");
 		}
-		searchDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList));
+		searchDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList, searchDto));
 		return searchDto;
 	}
 
@@ -96,10 +96,10 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		dto.setApplDateToErr("");
 		dto.setAgreDateFromErr("");
 		dto.setAgreDateToErr("");
-		
+
 		// 申請状況
 		if (dto.getApplStatus() == null || dto.getApplStatus().length == 0) {
-			ServiceHelper.addErrorResultMessage(dto, new String[] {"applStatusArea"}, MessageIdConstant.E_SKF_1054,
+			ServiceHelper.addErrorResultMessage(dto, new String[] { "applStatusArea" }, MessageIdConstant.E_SKF_1054,
 					"申請状況");
 			result = false;
 		}
@@ -152,7 +152,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
-				ServiceHelper.addErrorResultMessage(dto, new String[] { "applDateFrom", "applDateTo" }, MessageIdConstant.E_SKF_1133, "申請日");
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "applDateFrom", "applDateTo" },
+						MessageIdConstant.E_SKF_1133, "申請日");
 				dto.setApplDateFromErr(validationErrorCode);
 				dto.setApplDateToErr(validationErrorCode);
 				result = false;
@@ -167,7 +168,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 
 			diff = fromDate.compareTo(toDate);
 			if (diff > 0) {
-				ServiceHelper.addErrorResultMessage(dto, new String[] { "agreDateFrom", "agreDateTo" }, MessageIdConstant.E_SKF_1133, "承認日／修正依頼日");
+				ServiceHelper.addErrorResultMessage(dto, new String[] { "agreDateFrom", "agreDateTo" },
+						MessageIdConstant.E_SKF_1133, "承認日／修正依頼日");
 				dto.setAgreDateFromErr(validationErrorCode);
 				dto.setAgreDateToErr(validationErrorCode);
 				result = false;
