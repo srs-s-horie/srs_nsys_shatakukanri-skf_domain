@@ -91,6 +91,7 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 				// 「郵便番号」と「住所」に検索結果から取得した値をそれぞれ設定
 				dto.setZipCode(resultEntity.getPostalCd());
 				dto.setAddress(resultEntity.getPrefName() + resultEntity.getCityName() + resultEntity.getAreaName());
+				skf3070Sc002SheardService.getDropDownList(dto);
 			}
 		}
 
