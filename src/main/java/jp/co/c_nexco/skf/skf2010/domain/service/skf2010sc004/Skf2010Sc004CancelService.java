@@ -4,6 +4,7 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc004;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -76,25 +78,32 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 		String applNo = cancelDto.getApplNo();
 
 		// 「申請書類履歴テーブル」よりステータスを更新
-		boolean result = skf2010Sc004SharedService.updateApplHistoryCancel(applNo, applId);
+		Map<String, String> errMsg = new HashMap<String, String>();
+		Date lastUpdateDate = cancelDto.getLastUpdateDate(skf2010Sc004SharedService.KEY_LAST_UPDATE_DATE_HISTORY);
+		boolean result = skf2010Sc004SharedService.updateApplHistoryCancel(applNo, applId, lastUpdateDate, errMsg);
 		if (!result) {
-			ServiceHelper.addErrorResultMessage(cancelDto, null, MessageIdConstant.E_SKF_1075);
+			if (NfwStringUtils.isNotEmpty(errMsg.get("error"))) {
+				ServiceHelper.addErrorResultMessage(cancelDto, null, errMsg.get("error"), errMsg.get("value"));
+			} else {
+				ServiceHelper.addErrorResultMessage(cancelDto, null, MessageIdConstant.E_SKF_1075);
+			}
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 		}
 
 		// 社宅管理データ連携処理実行
 		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
-		if(tApplHistoryData == null){
+		if (tApplHistoryData == null) {
 			ServiceHelper.addErrorResultMessage(cancelDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 			return cancelDto;
 		}
 		String afterApplStatus = CodeConstant.STATUS_TORISAGE;
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, CodeConstant.NONE, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
+		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, CodeConstant.NONE,
+				afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
-		if(resultBatch != null){
+		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
 		}

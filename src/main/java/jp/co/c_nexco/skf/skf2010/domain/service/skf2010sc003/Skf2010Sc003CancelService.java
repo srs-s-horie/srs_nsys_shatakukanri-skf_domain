@@ -4,6 +4,8 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,7 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 	private String searchMaxCount;
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
-	
+
 	// 基準会社コード
 	private String companyCd = CodeConstant.C001;
 
@@ -65,7 +67,7 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 	@Override
 	public BaseDto index(Skf2010Sc003CancelDto cancelDto) throws Exception {
 		// 操作ログを出力する
-	    skfOperationLogUtils.setAccessLog("取下げ", companyCd, cancelDto.getPageId());
+		skfOperationLogUtils.setAccessLog("取下げ", companyCd, cancelDto.getPageId());
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 
@@ -73,9 +75,13 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 		String applNo = cancelDto.getApplNo();
 		// 申請書ID
 		String applId = cancelDto.getApplId();
-
+		// 最終更新日
+		Map<String, Date> lastUpdateDateMap = cancelDto.getLastUpdateDateMap();
+		Date lastUpdateDate = lastUpdateDateMap.get(applNo);
+		// エラー処理用Map
+		Map<String, String> errorMsg = new HashMap<String, String>();
 		// 「申請書類履歴テーブル」よりステータスを更新
-		boolean result = skf2010Sc003SharedService.updateApplHistoryCancel(applNo, applId);
+		boolean result = skf2010Sc003SharedService.updateApplHistoryCancel(applNo, applId, lastUpdateDate, errorMsg);
 		if (!result) {
 			ServiceHelper.addErrorResultMessage(cancelDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
@@ -84,12 +90,13 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 		// 社宅管理データ連携処理実行（データ連携用Mapは消さない）
 		String afterApplStatus = CodeConstant.STATUS_TORISAGE;
 		List<String> resultBatch = new ArrayList<String>();
-		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId, FunctionIdConstant.SKF2010_SC003);
-		if(resultBatch != null){
+		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId,
+				FunctionIdConstant.SKF2010_SC003);
+		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
 		}
-		
+
 		// 表示データ取得
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(cancelDto);
 		if (resultList == null || resultList.size() <= 0) {
@@ -98,7 +105,7 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 			// 検索結果表示最大数以上
 			ServiceHelper.addWarnResultMessage(cancelDto, MessageIdConstant.W_SKF_1002, "100", "抽出条件を変更してください。");
 		}
-		cancelDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList));
+		cancelDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList, cancelDto));
 
 		// 完了メッセージ表示
 		ServiceHelper.addResultMessage(cancelDto, MessageIdConstant.I_SKF_2047);
@@ -108,7 +115,8 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 
 	@SuppressWarnings("unchecked")
 	private List<Skf2010Sc003GetApplHistoryStatusInfoExp> getApplHistoryList(Skf2010Sc003CancelDto dto) {
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		String shainNo = loginUserInfo.get("shainNo");
 
 		String applDateFrom = skfDateFormatUtils.dateFormatFromString(dto.getApplDateFrom(), pattern);

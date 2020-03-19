@@ -109,9 +109,11 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 
 		// 「申請書類ID」「ステータス」の組み合わせにより、ステータスの値を更新
 		boolean updateResult = skf2010Sc005SharedService.updateStatusShinsachu(applId, applNo, agreeAuthority,
-				applStatus, statusMap);
+				applStatus, statusMap, transDto);
 		if (!updateResult) {
-			ServiceHelper.addErrorResultMessage(transDto, null, MessageIdConstant.E_SKF_1075);
+			if (transDto.getResultMessages() == null) {
+				ServiceHelper.addErrorResultMessage(transDto, null, MessageIdConstant.E_SKF_1075);
+			}
 			throwBusinessExceptionIfErrors(transDto.getResultMessages());
 			return transDto;
 		}
@@ -129,7 +131,7 @@ public class Skf2010Sc005TransferService extends BaseServiceAbstract<Skf2010Sc00
 		// 最新の検索結果をセッションに保存
 		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
 		// グリッド表示（リストテーブル）作成
-		List<Map<String, Object>> dispList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
+		List<Map<String, Object>> dispList = skf2010Sc005SharedService.createListTable(tApplHistoryData, transDto);
 		transDto.setLtResultList(dispList);
 
 		if (!CheckUtils.isEqual(applStatus, defaultApplStatus)) {

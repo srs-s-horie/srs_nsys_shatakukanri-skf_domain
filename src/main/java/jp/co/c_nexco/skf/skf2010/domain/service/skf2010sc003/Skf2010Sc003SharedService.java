@@ -1,6 +1,7 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
@@ -35,6 +37,7 @@ import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDat
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc003common.Skf2010Sc003CommonDto;
 
 /**
  * Skf2010Sc005 承認一覧内部処理クラス
@@ -118,9 +121,11 @@ public class Skf2010Sc003SharedService {
 	 * 申請情報からリストテーブルのデータを作成します
 	 * 
 	 * @param applHistoryList
+	 * @param dto
 	 * @return
 	 */
-	public List<Map<String, Object>> createListTable(List<Skf2010Sc003GetApplHistoryStatusInfoExp> applHistoryList) {
+	public List<Map<String, Object>> createListTable(List<Skf2010Sc003GetApplHistoryStatusInfoExp> applHistoryList,
+			Skf2010Sc003CommonDto dto) {
 		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
 		if (applHistoryList == null || applHistoryList.size() <= 0) {
 			return returnList;
@@ -132,6 +137,9 @@ public class Skf2010Sc003SharedService {
 		// 汎用コード取得
 		Map<String, String> genericCodeMap = new HashMap<String, String>();
 		genericCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
+
+		// 排他処理用最終更新日Map
+		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
 
 		for (Skf2010Sc003GetApplHistoryStatusInfoExp applHistoryData : applHistoryList) {
 			String applDate = CodeConstant.NONE;
@@ -184,7 +192,13 @@ public class Skf2010Sc003SharedService {
 			}
 
 			returnList.add(tmpMap);
+
+			// 最終更新日セット
+			lastUpdateDateMap.put(applHistoryData.getApplNo(), applHistoryData.getUpdateDate());
 		}
+		// Dtoに最終更新日Mapをセット
+		dto.setLastUpdateDateMap(lastUpdateDateMap);
+
 		return returnList;
 	}
 
@@ -192,9 +206,12 @@ public class Skf2010Sc003SharedService {
 	 * 申請履歴を一時保存に変更します
 	 * 
 	 * @param applNo
+	 * @param errorMsg
+	 * @param lastUpdateDate
 	 * @return
 	 */
-	public boolean updateApplHistoryCancel(String applNo, String applId) throws Exception {
+	public boolean updateApplHistoryCancel(String applNo, String applId, Date lastUpdateDate,
+			Map<String, String> errorMsg) throws Exception {
 		boolean result = true;
 
 		// 更新対象のデータを取得（行ロック実施）
@@ -206,6 +223,11 @@ public class Skf2010Sc003SharedService {
 		baseUpdateData = skf2010Sc003GetApplHistoryStatusInfoForUpdateExpRepository
 				.getApplHistoryStatusInfoForUpdate(param);
 		if (baseUpdateData == null) {
+			return false;
+		}
+		// 排他チェック
+		if (!CheckUtils.isEqual(baseUpdateData.getUpdateDate(), lastUpdateDate)) {
+			errorMsg.put("error", MessageIdConstant.E_SKF_1134);
 			return false;
 		}
 
@@ -225,7 +247,18 @@ public class Skf2010Sc003SharedService {
 		return result;
 	}
 
-	public boolean deleteApplHistory(String applNo, String applId, List<String> saveTableList) {
+	/**
+	 * 申請書類データを削除します
+	 * 
+	 * @param applNo
+	 * @param applId
+	 * @param saveTableList
+	 * @param lastUpdateDate
+	 * @param errorMsg
+	 * @return boolean
+	 */
+	public boolean deleteApplHistory(String applNo, String applId, List<String> saveTableList, Date lastUpdateDate,
+			Map<String, String> errorMsg) {
 		// 排他処理（行ロック）
 		Skf2010Sc003GetApplHistoryStatusInfoForUpdateExp updateData = new Skf2010Sc003GetApplHistoryStatusInfoForUpdateExp();
 		Skf2010Sc003GetApplHistoryStatusInfoForUpdateExpParameter param = new Skf2010Sc003GetApplHistoryStatusInfoForUpdateExpParameter();
@@ -234,7 +267,17 @@ public class Skf2010Sc003SharedService {
 		param.setApplId(applId);
 		updateData = skf2010Sc003GetApplHistoryStatusInfoForUpdateExpRepository
 				.getApplHistoryStatusInfoForUpdate(param);
-		if (updateData != null) {
+		if (updateData == null) {
+			// データが無かった場合、事前に別ユーザーが削除しているので排他チェックエラーとする
+			errorMsg.put("error", MessageIdConstant.E_SKF_1134);
+			return false;
+		} else {
+			// 排他チェック
+			if (!CheckUtils.isEqual(updateData.getUpdateDate(), lastUpdateDate)) {
+				errorMsg.put("error", MessageIdConstant.E_SKF_1134);
+				return false;
+			}
+
 			// 指定された件数分帳票テーブルを削除
 			int delCount = 0;
 			for (String saveTableName : saveTableList) {

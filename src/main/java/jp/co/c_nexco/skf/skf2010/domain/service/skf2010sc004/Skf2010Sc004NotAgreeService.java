@@ -153,17 +153,21 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		String applStatus = CodeConstant.STATUS_DOI_SHINAI;
 		String applTacFlg = CodeConstant.NONE;
 		Map<String, String> errorMsg = new HashMap<String, String>();
+
+		// 排他処理用最終更新日取得
+		Date lastUpdateDate = dto.getLastUpdateDate(skf2010Sc004SharedService.KEY_LAST_UPDATE_DATE_HISTORY);
+
 		// 「申請書類履歴テーブル」よりステータスを更新
 		boolean agreeStatusRes = skf2010Sc004SharedService.updateApplHistoryAgreeStatus(applNo, applDate, applTacFlg,
-				applStatus, CodeConstant.NONE, CodeConstant.NONE, CodeConstant.NONE, errorMsg);
+				applStatus, CodeConstant.NONE, CodeConstant.NONE, CodeConstant.NONE, lastUpdateDate, errorMsg);
 		if (!agreeStatusRes) {
 			ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
 			return false;
 		}
 
 		// コメントの更新
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
-				commentNote, errorMsg);
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, commentNote,
+				errorMsg);
 		if (!commentErrorMessage) {
 			return false;
 		}

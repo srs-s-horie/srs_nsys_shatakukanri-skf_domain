@@ -64,7 +64,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
 	@Autowired
-	private  SkfCommentUtils skfCommentUtils;
+	private SkfCommentUtils skfCommentUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -307,7 +307,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 			}
 
 		}
-		// ページ遷移先は「申請状況一覧」
+		// セッション内にある排他処理用最終更新日を削除
+		menuScopeSessionBean.remove(skf2010Sc004SharedService.KEY_LAST_UPDATE_DATE_HISTORY);
 
 		return agreeDto;
 	}
@@ -449,16 +450,19 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		String applStatus = CodeConstant.STATUS_DOI_ZUMI;
 		String applTacFlg = CodeConstant.NONE;
 
+		// 排他処理用最終更新日取得
+		Date lastUpdateDate = (Date) menuScopeSessionBean.get(skf2010Sc004SharedService.KEY_LAST_UPDATE_DATE_HISTORY);
+
 		boolean agreeStatusRes = skf2010Sc004SharedService.updateApplHistoryAgreeStatus(applNo, applDate, applTacFlg,
-				applStatus, CodeConstant.NONE, CodeConstant.NONE, CodeConstant.NONE, errorMsg);
+				applStatus, CodeConstant.NONE, CodeConstant.NONE, CodeConstant.NONE, lastUpdateDate, errorMsg);
 		if (!agreeStatusRes) {
-			ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
+			ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"), errorMsg.get("value"));
 			return false;
 		}
 
 		// コメントの更新
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
-				commentNote, errorMsg);
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, commentNote,
+				errorMsg);
 		if (!commentErrorMessage) {
 			return false;
 		}

@@ -654,7 +654,7 @@ public class Skf2030Sc002SharedService {
 		// 楽観的排他チェック（申請情報履歴）
 		if (!CheckUtils.isEqual(updApplInfo.getUpdateDate(),
 				dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE))) {
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134, "skf2010_t_appl_history");
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 
@@ -681,6 +681,15 @@ public class Skf2030Sc002SharedService {
 		case CodeConstant.STATUS_SHINSACHU:
 			// 申請中、審査中
 			// 備品希望申請テーブルを更新
+			Skf2030TBihinKiboShinsei tmpBihinData = new Skf2030TBihinKiboShinsei();
+			tmpBihinData = skfBihinInfoUtils.getBihinShinseiInfo(companyCd, applInfo.get("applNo"));
+			Date lastUpdateDateBihinShinsei = dto.getLastUpdateDate(BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE);
+			if (!CheckUtils.isEqual(tmpBihinData.getUpdateDate(), lastUpdateDateBihinShinsei)) {
+				// 排他チェックエラー
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
+				return false;
+			}
+
 			result = skfBihinInfoUtils.updateBihinKiboShinseiInfo(applInfo, companyCd, null, null, null, null, null,
 					dto.getDairiName(), dto.getDairiRenrakusaki());
 			if (!result) {
@@ -700,13 +709,13 @@ public class Skf2030Sc002SharedService {
 		}
 
 		// コメント更新
-		String commentNote = dto.getCommentNote();		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"), updateStatus, 
-				commentNote, errorMsg);
+		String commentNote = dto.getCommentNote();
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"),
+				updateStatus, commentNote, errorMsg);
 		if (!commentErrorMessage) {
 			return false;
 		}
-		
+
 		// 承認完了通知・修正依頼完了通知の場合のみ
 		if (mailKbn != null) {
 			switch (mailKbn) {
@@ -929,5 +938,5 @@ public class Skf2030Sc002SharedService {
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC002);
 		return resultBatch;
 	}
-	
+
 }

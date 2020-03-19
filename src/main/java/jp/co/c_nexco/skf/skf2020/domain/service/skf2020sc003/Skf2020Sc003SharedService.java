@@ -297,6 +297,13 @@ public class Skf2020Sc003SharedService {
 			return false;
 		}
 
+		// 排他チェック
+		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
+		if (!CheckUtils.isEqual(applInfo.getUpdateDate(), lastUpdateDate)) {
+			errorMsg.put("error", MessageIdConstant.E_SKF_1135);
+			return false;
+		}
+
 		Map<String, String> userInfo = new HashMap<String, String>();
 		userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
@@ -325,8 +332,6 @@ public class Skf2020Sc003SharedService {
 				break;
 			}
 
-			Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
-
 			boolean resultUpdateApplInfo = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, shainNo,
 					applNo, applInfo.getApplId(), null, null, newStatus, null, shonin1, shonin2, lastUpdateDate,
 					errorMsg);
@@ -340,13 +345,13 @@ public class Skf2020Sc003SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			String commentNote = dto.getCommentNote();		
-			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus, 
+			String commentNote = dto.getCommentNote();
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus,
 					commentNote, errorMsg);
 			if (!commentErrorMessage) {
 				return false;
 			}
-		}	
+		}
 
 		// 添付ファイル管理テーブル更新処理
 		boolean resultUpdateFile = updateAttachedFileInfo(newStatus, applNo, shainNo, attachedFileList, applTacFlg,

@@ -440,13 +440,16 @@ public class Skf2030Sc001SharedService {
 		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("shainNo"),
 				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, null, CodeConstant.NONE,
 				CodeConstant.NONE, lastUpdateDate, errorMsg)) {
+			if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
+				ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
+			}
 			return false;
 		}
 
 		// コメント更新
-		String commentNote = dto.getCommentNote();		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"), updateStatus, 
-				commentNote, errorMsg);
+		String commentNote = dto.getCommentNote();
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"),
+				updateStatus, commentNote, errorMsg);
 		if (!commentErrorMessage) {
 			return false;
 		}

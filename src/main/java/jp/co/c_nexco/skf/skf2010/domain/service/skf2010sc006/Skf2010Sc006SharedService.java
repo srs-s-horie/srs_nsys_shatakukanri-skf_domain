@@ -121,6 +121,8 @@ public class Skf2010Sc006SharedService {
 
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
 
+	protected final String KEY_LAST_UPDATE_DATE_HISTORY = "skf2010_t_appl_history";
+
 	/**
 	 * 社宅入居希望等申請情報を取得する
 	 * 
@@ -223,13 +225,19 @@ public class Skf2010Sc006SharedService {
 	 */
 	@Transactional
 	public boolean updateApplStatus(String companyCd, String applNo, String comment, String applTacFlag,
-			Map<String, String> errMap) throws Exception {
+			Date lastUpdateDate, Map<String, String> errMap) throws Exception {
 		if ((companyCd == null || CheckUtils.isEmpty(companyCd) || (applNo == null || CheckUtils.isEmpty(applNo)))) {
 			return false;
 		}
 		// 更新対象の申請情報を取得
 		Skf2010Sc006GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc006GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = getApplHistoryInfo(applNo);
+
+		// 排他チェック
+		if (!CheckUtils.isEqual(tApplHistoryData.getUpdateDate(), lastUpdateDate)) {
+			errMap.put("error", MessageIdConstant.E_SKF_1135);
+			return false;
+		}
 
 		// 次のステータスを設定する
 		Skf2010TApplHistory updateData = new Skf2010TApplHistory();
@@ -327,9 +335,9 @@ public class Skf2010Sc006SharedService {
 		}
 
 		// コメント更新
-		String commentNote = comment;		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"), nextStatus, 
-				commentNote, errMap);
+		String commentNote = comment;
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applInfo.get("applNo"),
+				nextStatus, commentNote, errMap);
 		if (!commentErrorMessage) {
 			return false;
 		}
@@ -371,17 +379,22 @@ public class Skf2010Sc006SharedService {
 	 * @return
 	 */
 	public boolean representData(String companyCd, String applNo, String comment, String applUpdateDate,
-			String applTacFlag, Map<String, String> errMap) {
+			String applTacFlag, Date lastUpdateDate, Map<String, String> errMap) {
 		if ((companyCd == null || CheckUtils.isEmpty(companyCd) || (applNo == null || CheckUtils.isEmpty(applNo)))) {
 			return false;
 		}
-		// ログインユーザー情報取得
-		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		skfLoginUserInfoUtils.getSkfLoginUserInfo();
 
 		// 更新対象の申請情報を取得
 		Skf2010Sc006GetApplHistoryInfoByParameterExp applInfo = new Skf2010Sc006GetApplHistoryInfoByParameterExp();
 		applInfo = getApplHistoryInfo(applNo);
 		if (applInfo == null) {
+			return false;
+		}
+
+		// 排他チェック
+		if (!CheckUtils.isEqual(applInfo.getUpdateDate(), lastUpdateDate)) {
+			errMap.put("error", MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 
@@ -444,13 +457,6 @@ public class Skf2010Sc006SharedService {
 			return false;
 		}
 
-		// コメント更新
-		String commentNote = comment;		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
-				commentNote, errMap);
-		if (!commentErrorMessage) {
-			return false;
-		}
 		return true;
 	}
 
@@ -462,7 +468,7 @@ public class Skf2010Sc006SharedService {
 	 * @param errorMsg
 	 * @return
 	 */
-	public boolean saveApplInfo(String newStatus, String applTacFlag, Skf2010CommonDto dto,
+	public boolean saveApplInfo(String newStatus, String applTacFlag, Skf2010CommonDto dto, Date lastUpdateDate,
 			Map<String, String> errorMsg) {
 		String shainNo = dto.getShainNo();
 		String applNo = dto.getApplNo();
@@ -479,6 +485,12 @@ public class Skf2010Sc006SharedService {
 		applInfo = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(companyCd, shainNo, applNo, applId);
 		if (applInfo == null) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+			return false;
+		}
+
+		// 排他チェック
+		if (!CheckUtils.isEqual(applInfo.getUpdateDate(), lastUpdateDate)) {
+			errorMsg.put("error", MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 
@@ -518,8 +530,8 @@ public class Skf2010Sc006SharedService {
 
 		// 修正依頼、差戻し時はコメントテーブルを更新
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
-			String commentNote = dto.getCommentNote();		
-			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus, 
+			String commentNote = dto.getCommentNote();
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus,
 					commentNote, errorMsg);
 			if (!commentErrorMessage) {
 				return false;

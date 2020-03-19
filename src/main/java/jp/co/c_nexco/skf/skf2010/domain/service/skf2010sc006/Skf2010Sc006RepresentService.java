@@ -1,6 +1,7 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,10 +60,17 @@ public class Skf2010Sc006RepresentService extends BaseServiceAbstract<Skf2010Sc0
 		String applNo = reDto.getApplNo();
 		String comment = reDto.getCommentNote();
 		String applUpdateDate = reDto.getApplUpdateDate();
+
+		Date lastUpdateDate = reDto.getLastUpdateDate(skf2010Sc006SharedService.KEY_LAST_UPDATE_DATE_HISTORY);
+
 		boolean res = skf2010Sc006SharedService.representData(companyCd, applNo, comment, applUpdateDate, applTacFlag,
-				errMap);
+				lastUpdateDate, errMap);
 		if (!res) {
-			ServiceHelper.addErrorResultMessage(reDto, null, errMap.get("error"));
+			if (errMap.get("value") != null) {
+				ServiceHelper.addErrorResultMessage(reDto, null, errMap.get("error"), errMap.get("value"));
+			} else {
+				ServiceHelper.addErrorResultMessage(reDto, null, errMap.get("error"));
+			}
 			throwBusinessExceptionIfErrors(reDto.getResultMessages());
 			return reDto;
 		}

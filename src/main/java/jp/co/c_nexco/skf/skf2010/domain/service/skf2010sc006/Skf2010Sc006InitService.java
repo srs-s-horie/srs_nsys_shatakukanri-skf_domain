@@ -312,6 +312,9 @@ public class Skf2010Sc006InitService extends BaseServiceAbstract<Skf2010Sc006Ini
 			applId = tApplHistoryData.getApplId();
 			initDto.setShonin1Name(tApplHistoryData.getAgreName1());
 			applShainNo = tApplHistoryData.getShainNo();
+			// 排他処理用最終更新日付保存
+			initDto.addLastUpdateDate(skf2010Sc006SharedService.KEY_LAST_UPDATE_DATE_HISTORY,
+					tApplHistoryData.getUpdateDate());
 		}
 
 		if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)) {

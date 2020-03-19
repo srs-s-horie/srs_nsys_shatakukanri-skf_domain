@@ -3,11 +3,9 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
@@ -124,7 +122,7 @@ public class Skf2010Sc005UpdateService extends BaseServiceAbstract<Skf2010Sc005U
 		}
 
 		// グリッド表示（リストテーブル）作成
-		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData);
+		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData, dto);
 
 		return rtnList;
 	}
