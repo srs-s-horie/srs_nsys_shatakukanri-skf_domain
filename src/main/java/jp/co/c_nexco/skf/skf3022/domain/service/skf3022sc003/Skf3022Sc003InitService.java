@@ -30,6 +30,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
+import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003InitDto;
 import jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003.Skf3022Sc003SharedService;
@@ -50,7 +51,8 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 	private CodeCacheUtils codeCacheUtils;
 	@Autowired
 	private SkfDropDownUtils ddlUtils;
-
+	@Autowired
+	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Value("${skf.common.settings.shiyouryou_keisan_kbn}")
@@ -364,7 +366,11 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 			initDto.setSc003Address("");
 		}
 		// 所在地区分(地域区分)
-		initDto.setSc003AddressKbn(shatakuInfo.getAreaKbn());
+		// 所在地区分(地域区分)・汎用コード取得
+		Map<String, String> genericCodeMapAreaKbn = 
+				skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_AREA_KBN);
+		// 所在地区分(地域区分)名設定
+		initDto.setSc003AddressKbn(genericCodeMapAreaKbn.get(shatakuInfo.getAreaKbn()));
 
 		/** 画面左側（基本情報）の設定 */
 		// 規格
