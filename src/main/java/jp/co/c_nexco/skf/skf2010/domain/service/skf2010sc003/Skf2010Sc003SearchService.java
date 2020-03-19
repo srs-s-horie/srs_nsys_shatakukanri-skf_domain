@@ -78,6 +78,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 		} else if (resultList.size() > Integer.parseInt(searchMaxCount)) {
 			// 検索結果表示最大数以上
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1002, "100", "抽出条件を変更してください。");
+			return searchDto;
 		}
 		searchDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList));
 		return searchDto;
