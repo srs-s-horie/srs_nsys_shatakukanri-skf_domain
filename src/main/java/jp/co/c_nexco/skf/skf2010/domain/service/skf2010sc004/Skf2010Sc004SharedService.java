@@ -93,6 +93,8 @@ import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImp
 @Service
 public class Skf2010Sc004SharedService {
 
+	protected final String KEY_LAST_UPDATE_DATE_HISTORY = "skf2010_t_appl_history";
+
 	private String companyCd = CodeConstant.C001;
 
 	@Autowired
@@ -230,9 +232,11 @@ public class Skf2010Sc004SharedService {
 	 * 申請履歴を一時保存に変更します
 	 * 
 	 * @param applNo
+	 * @param errMsg
 	 * @return
 	 */
-	public boolean updateApplHistoryCancel(String applNo, String applId) throws Exception {
+	public boolean updateApplHistoryCancel(String applNo, String applId, Date lastUpdateDate,
+			Map<String, String> errMsg) throws Exception {
 		boolean result = true;
 
 		// 更新対象のデータを取得（行ロック実施）
@@ -244,6 +248,13 @@ public class Skf2010Sc004SharedService {
 		baseUpdateData = skf2010Sc004GetApplHistoryStatusInfoForUpdateExpRepository
 				.getApplHistoryStatusInfoForUpdate(param);
 		if (baseUpdateData == null) {
+			return false;
+		}
+
+		// 排他チェック
+		if (!CheckUtils.isEqual(baseUpdateData.getUpdateDate(), lastUpdateDate)) {
+			errMsg.put("error", MessageIdConstant.E_SKF_1134);
+			errMsg.put("value", "appl_history");
 			return false;
 		}
 
@@ -549,7 +560,7 @@ public class Skf2010Sc004SharedService {
 	}
 
 	public boolean updateApplHistoryAgreeStatus(String applNo, Date applDate, String applTacFlg, String applStatus,
-			String agreDate, String agreName1, String agreName2, Map<String, String> errorMsg) {
+			String agreDate, String agreName1, String agreName2, Date lastUpdateDate, Map<String, String> errorMsg) {
 		Boolean result = true;
 
 		// 申請書類履歴テーブルの楽観的排他（データのロック処理）
@@ -559,10 +570,17 @@ public class Skf2010Sc004SharedService {
 		param.setApplNo(applNo);
 		lockData = skf2010Sc004GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
 		if (lockData == null) {
-			// 排他エラーメッセージ
+			// データ取得エラー
 			errorMsg.put("error", MessageIdConstant.W_SKF_1009);
 			return false;
 		}
+		// 排他チェック
+		if (!CheckUtils.isEqual(lockData.getUpdateDate(), lastUpdateDate)) {
+			errorMsg.put("error", MessageIdConstant.E_SKF_1134);
+			errorMsg.put("value", "appl_history");
+			return false;
+		}
+
 		// 更新するパラメータの設定
 		Skf2010Sc004UpdateApplHistoryAgreeStatusExp record = new Skf2010Sc004UpdateApplHistoryAgreeStatusExp();
 		// プライマリキー設定

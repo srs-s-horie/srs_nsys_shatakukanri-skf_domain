@@ -1,6 +1,7 @@
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc006;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +68,11 @@ public class Skf2010Sc006SendoutService extends BaseServiceAbstract<Skf2010Sc006
 		String applStatus = CodeConstant.STATUS_HININ;
 		Map<String, String> errMap = new HashMap<String, String>();
 		String applNo = soDto.getApplNo();
-		boolean res = skf2010Sc006SharedService.saveApplInfo(applStatus, applTacFlag, soDto, errMap);
+		Date lastUpdateDate = soDto.getLastUpdateDate(skf2010Sc006SharedService.KEY_LAST_UPDATE_DATE_HISTORY);
+		boolean res = skf2010Sc006SharedService.saveApplInfo(applStatus, applTacFlag, soDto, lastUpdateDate, errMap);
 		if (!res) {
 			if (NfwStringUtils.isNotEmpty(errMap.get("value"))) {
-				if (NfwStringUtils.isNotEmpty(errMap.get("value"))) {
+				if (NfwStringUtils.isNotEmpty(errMap.get("value2"))) {
 					ServiceHelper.addErrorResultMessage(soDto, null, errMap.get("error"), errMap.get("value"),
 							errMap.get("value2"));
 				} else {

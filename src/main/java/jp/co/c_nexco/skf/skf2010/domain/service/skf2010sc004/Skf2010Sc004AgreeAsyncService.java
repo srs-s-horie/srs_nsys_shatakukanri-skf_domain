@@ -64,7 +64,7 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
 	@Autowired
-	private  SkfCommentUtils skfCommentUtils;
+	private SkfCommentUtils skfCommentUtils;
 
 	@Value("${skf.common.validate_error}")
 	private String validationErrorCode;
@@ -457,8 +457,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		}
 
 		// コメントの更新
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
-				commentNote, errorMsg);
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, commentNote,
+				errorMsg);
 		if (!commentErrorMessage) {
 			return false;
 		}

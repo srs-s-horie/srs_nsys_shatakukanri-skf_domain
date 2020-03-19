@@ -266,6 +266,10 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1135);
 		}
 
+		// 排他制御用最終更新日セット
+		initDto.addLastUpdateDate(skf2010Sc004SharedService.KEY_LAST_UPDATE_DATE_HISTORY,
+				applHistoryInfo.getUpdateDate());
+
 		if (applId.equals(FunctionIdConstant.R0100)) {
 
 			Skf2020TNyukyoChoshoTsuchi tNyukyoChoshoTsuchi = new Skf2020TNyukyoChoshoTsuchi();
