@@ -457,13 +457,6 @@ public class Skf2010Sc006SharedService {
 			return false;
 		}
 
-		// コメント更新
-		String commentNote = comment;
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, commentNote,
-				errMap);
-		if (!commentErrorMessage) {
-			return false;
-		}
 		return true;
 	}
 
