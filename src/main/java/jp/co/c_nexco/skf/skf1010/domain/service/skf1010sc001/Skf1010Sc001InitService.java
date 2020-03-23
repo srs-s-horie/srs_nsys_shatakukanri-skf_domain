@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetInformationNewInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetInformationNewInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf1010Sc001.Skf1010Sc001GetOshiraseCountBihinHenkyakuExp;
@@ -776,10 +774,10 @@ public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001Ini
 		oshiraseDataList2 = skf1010Sc001GetShinseiStatusAdminExpRepository.getShinseiStatusAdmin(param);
 		for (Skf1010Sc001GetShinseiStatusAdminExp osiraseData2 : oshiraseDataList2) {
 			Map<String, Object> resultMap = new HashMap<String, Object>();
-			if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSACHU)) {
+			if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSEICHU) || osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSACHU)) {
 				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-				String message = getOshirase("infomation.skf.i_skf_2051", updateDate, osiraseData2.getName(),
+				String message = getOshirase("infomation.skf.i_skf_2044", updateDate, osiraseData2.getName(),
 						osiraseData2.getShainNo(), osiraseData2.getApplName(), osiraseData2.getAgency(),
 						osiraseData2.getAffiliation1());
 				resultMap.put("message", message);
