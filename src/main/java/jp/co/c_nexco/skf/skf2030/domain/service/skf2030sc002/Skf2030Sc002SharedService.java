@@ -160,7 +160,7 @@ public class Skf2030Sc002SharedService {
 			return false;
 		}
 		// 排他処理用備品希望申請最終更新日保持
-		dto.addLastUpdateDate(BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE, bihinShinseiInfo.getLastUpdateDate());
+		dto.addLastUpdateDate(BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE, bihinShinseiInfo.getUpdateDate());
 
 		// 所属
 		// 機関

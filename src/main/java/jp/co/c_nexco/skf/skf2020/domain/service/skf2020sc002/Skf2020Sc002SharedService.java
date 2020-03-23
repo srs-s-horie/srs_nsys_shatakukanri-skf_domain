@@ -1774,7 +1774,7 @@ public class Skf2020Sc002SharedService {
 
 		String Msg = "バイト数カット処理：　";
 		// 勤務先のTEL
-		dto.setTel(NfwStringUtils.rightTrimbyByte(dto.getTel(), 14));
+		dto.setTel(NfwStringUtils.rightTrimbyByte(dto.getTel(), 13));
 		// 新所属 部等 その他
 		dto.setNewAffiliation1Other(NfwStringUtils.rightTrimbyByte(dto.getNewAffiliation1Other(), 128));
 		LogUtils.debugByMsg(Msg + "新所属 部等" + dto.getNewAffiliation1Other());
