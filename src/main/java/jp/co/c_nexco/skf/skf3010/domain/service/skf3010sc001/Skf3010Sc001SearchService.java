@@ -133,7 +133,7 @@ public class Skf3010Sc001SearchService extends BaseServiceAbstract<Skf3010Sc001S
 		// 空き駐車場選択値設定(検索キー)
 		searchDto.setHdnEmptyParkingCd(searchDto.getEmptyParkingCd());
 		// 社宅名設定(検索キー)
-		searchDto.setHdnShatakuName(searchDto.getShatakuName());
+		searchDto.setHdnSearchShatakuName(searchDto.getShatakuName());
 		// 社宅住所設定(検索キー)
 		searchDto.setHdnShatakuAddress(searchDto.getShatakuAddress());
 

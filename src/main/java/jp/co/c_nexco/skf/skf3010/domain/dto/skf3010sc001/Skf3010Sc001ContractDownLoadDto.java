@@ -93,7 +93,7 @@ public class Skf3010Sc001ContractDownLoadDto extends FileDownloadDto {
 	// 空き駐車場コード(検索キー)
 	private String hdnEmptyParkingCd;
     // 社宅名(検索キー)
-    private String hdnShatakuName;
+    private String hdnSearchShatakuName;
 	// 社宅住所(検索キー)
 	private String hdnShatakuAddress;
 	

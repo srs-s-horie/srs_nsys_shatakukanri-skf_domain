@@ -35,7 +35,7 @@ public class Skf3010Sc001CommonDto extends Skf301010CommonDto {
 	// 空き駐車場コード
 	private String hdnEmptyParkingCd;
 	// 社宅名
-	private String hdnShatakuName;
+	private String hdnSearchShatakuName;
 	// 社宅住所
 	private String hdnShatakuAddress;
 

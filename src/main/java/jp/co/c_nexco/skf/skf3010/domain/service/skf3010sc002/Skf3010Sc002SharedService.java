@@ -2626,7 +2626,9 @@ public class Skf3010Sc002SharedService {
 
 		/** セッション情報取得 */
 		// 遷移元判定
-		if (!NfwStringUtils.isEmpty(initDto.getHdnShatakuKanriNo())) {
+		if (!NfwStringUtils.isEmpty(initDto.getHdnShatakuKanriNo()) &&
+				(FunctionIdConstant.SKF3010_SC002.equals(initDto.getPrePageId())
+						|| FunctionIdConstant.SKF3010_SC007.equals(initDto.getPrePageId()))) {
 			// 駐車場契約からの画面遷移 or 自画面
 			shatakuKanriNo = (initDto.getHdnShatakuKanriNo() != null) ? initDto.getHdnShatakuKanriNo() : "";
 
@@ -2646,7 +2648,8 @@ public class Skf3010Sc002SharedService {
 			areaKbnCd = shatakuInfo.getAreaKbn();
 			emptyRoomCount = shatakuInfo.getEmptyRoomCount();
 			emptyParkingCount = shatakuInfo.getEmptyParkingCount();
-		} else if (!NfwStringUtils.isEmpty(initDto.getHdnRowShatakuKanriNo())) {
+		} else if (!NfwStringUtils.isEmpty(initDto.getHdnRowShatakuKanriNo())
+				&& FunctionIdConstant.SKF3010_SC001.equals(initDto.getPrePageId())) {
 			// 社宅一覧からの遷移
 			shatakuKanriNo =(initDto.getHdnRowShatakuKanriNo() != null) ? initDto.getHdnRowShatakuKanriNo(): "";
 

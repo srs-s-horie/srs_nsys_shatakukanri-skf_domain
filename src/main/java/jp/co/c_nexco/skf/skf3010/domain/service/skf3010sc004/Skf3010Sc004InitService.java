@@ -60,8 +60,13 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 				
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
+//		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
+//				&& Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3010_SC005)) {
+
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-				&& Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3010_SC005)) {
+				&& (Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3010_SC005)
+						|| Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3010_SC004))) {
+
 			/** 保有社宅部屋登録画面からの遷移 */
 			LogUtils.debugByMsg("保有社宅部屋登録画面からの遷移");
 			// 登録画面のhidden項目をinitDtoに詰めなおす
@@ -88,6 +93,9 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 			// 社宅一覧から遷移
 			// 画面連携のhidden項目を初期化
 			initDto.setHdnRoomKanriNo(null);
+			// 検索条件クリア
+			initDto.setOriginalAuse(null);
+			initDto.setLendKbn(null);
 			// 呼び出し元のhidden項目をinitDtoに詰める
 			initDto.setShatakuKanriNo(Long.parseLong(initDto.getHdnRowShatakuKanriNo()));
 			initDto.setShatakuName(initDto.getHdnRowShatakuName());

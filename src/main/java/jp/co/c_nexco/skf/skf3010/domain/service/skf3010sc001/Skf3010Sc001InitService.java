@@ -76,7 +76,7 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 		String hdnUseKbnCd = initDto.getHdnUseKbnCd();
 		String hdnEmptyRoomCd = initDto.getHdnEmptyRoomCd();
 		String hdnEmptyParkingCd = initDto.getHdnEmptyParkingCd();
-		String hdnShatakuName = initDto.getHdnShatakuName();
+		String hdnShatakuName = initDto.getHdnSearchShatakuName();
 		String hdnShatakuAddress = initDto.getHdnShatakuAddress();
 
 		// 遷移元判定
@@ -84,8 +84,8 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 				|| FunctionIdConstant.SKF3010_SC002.equals(initDto.getPrePageId())
 				|| FunctionIdConstant.SKF3010_SC004.equals(initDto.getPrePageId())
 				|| FunctionIdConstant.SKF3010_SC006.equals(initDto.getPrePageId())) {
-			// 初期表示フラグをfalseに設定
-			initializeFlg = false;
+//			// 初期表示フラグをfalseに設定
+//			initializeFlg = false;
 			// 管理会社の選択値を設定
 			initDto.setSelectedCompanyCd(hdnSelectedCompanyCd);
 			// 管理会社選択値判定
@@ -128,7 +128,7 @@ public class Skf3010Sc001InitService extends BaseServiceAbstract<Skf3010Sc001Ini
 			initDto.setHdnSelectedCompanyCd(null);
 			initDto.setHdnShatakuAddress(null);
 			initDto.setHdnShatakuKbnCd(null);
-			initDto.setHdnShatakuName(null);
+			initDto.setHdnSearchShatakuName(null);
 			initDto.setHdnUseKbnCd(initDto.getUseKbnCd());
 			
 			//検索条件初期化
