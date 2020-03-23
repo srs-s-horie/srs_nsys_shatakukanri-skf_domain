@@ -161,7 +161,6 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 		//Page_LoadComplete
 		skf3030Sc002SharedService.setBihinListPageLoadComplete(initDto);
 		
-		
 		return initDto;
 	}
 	
@@ -389,7 +388,7 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 					initDto.setSc006ShatakuStts(CodeConstant.ZEN_HYPHEN);
 				}
 				//備品提示ステータス
-				String bihinTeijiStatus = teijiStatusDt.get(0).getShatakuTeijiStatus();
+				String bihinTeijiStatus = teijiStatusDt.get(0).getBihinTeijiStatus();
 				if(!SkfCheckUtils.isNullOrEmpty(bihinTeijiStatus)){
 					initDto.setSc006BihinStts(genericCodeBihinTeijiStatus.get(bihinTeijiStatus));
 					initDto.setSc006BihinSttsCd(bihinTeijiStatus);
@@ -580,13 +579,13 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 				//社宅使用料日割金額
 				initDto.setSc006SiyoryoHiwariPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getRentalDay(),false));
 				//社宅使用料調整金額
-				initDto.setSc006SiyoroTyoseiPay(tsukibetsuShiyoryoDt.getRentalAdjust().toString());
+				initDto.setSc006SiyoroTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getRentalAdjust(),false));
 				//社宅使用料月額（調整後）
 				initDto.setSc006SyatauMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getRentalTotal(),false));
 				//個人負担共益費月額
-				initDto.setSc006KyoekihiMonthPay(tsukibetsuShiyoryoDt.getKyoekihiPerson().toString());
+				initDto.setSc006KyoekihiMonthPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPerson(),false));
 				//個人負担共益費調整金額
-				initDto.setSc006KyoekihiTyoseiPay(tsukibetsuShiyoryoDt.getKyoekihiPersonAdjust().toString());
+				initDto.setSc006KyoekihiTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPersonAdjust(),false));
 				//個人負担共益費月額（調整後）
 				initDto.setSc006KyoekihiPayAfter(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPersonTotal(),false));
 				//共益費支払月
@@ -600,7 +599,7 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 				//駐車場使用料日割金額（区画2）
 				initDto.setSc006TyusyaDayPayTwo(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getParking2RentalDay(),false));
 				//駐車場使用料調整金額
-				initDto.setSc006TyusyaTyoseiPay(tsukibetsuShiyoryoDt.getParkingRentalAdjust().toString());
+				initDto.setSc006TyusyaTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getParkingRentalAdjust(),false));
 
 				if(tsukibetsuShiyoryoDt.getParkingRentalTotal() != null && !SkfCheckUtils.isNullOrEmpty(tsukibetsuShiyoryoDt.getParkingRentalTotal().toString())){
 					//駐車場使用料月額（調整後）
