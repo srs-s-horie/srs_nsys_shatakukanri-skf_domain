@@ -2099,7 +2099,10 @@ public class Skf3030Sc002SharedService {
 		//isErrValueType(comDto,errMsg);
 
 		//整合性チェック
-		isErrDateFormat(comDto,errMsg);
+		if (0 == errMsg.toString().length()){
+			//必須エラーなしの場合
+			isErrDateFormat(comDto,errMsg);
+		}
 
 		//Me.hdnFieldMessage.Value = errMsg.toString();
 
