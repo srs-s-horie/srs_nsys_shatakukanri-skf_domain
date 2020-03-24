@@ -129,7 +129,7 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		String afterApplStatus = tApplHistoryData.getApplStatus();
 		List<String> resultBatch = new ArrayList<String>();
 		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, CodeConstant.NONE,
-				afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
+				afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004, shainNo);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(notAgreeDto, resultBatch);

@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,9 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.common.util.SkfReturnFormEditUtils;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfReturnFormEditUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004CancelDto;
 
@@ -50,6 +50,8 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 	private SkfGenericCodeUtils skfGenericCodeUtils;
 	@Autowired
 	private SkfReturnFormEditUtils skfReturnFormEditUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -90,6 +92,10 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 		}
 
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
+		String shainNo = loginUserInfo.get("shainNo");
+
 		// 社宅管理データ連携処理実行
 		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
@@ -101,7 +107,7 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 		String afterApplStatus = CodeConstant.STATUS_TORISAGE;
 		List<String> resultBatch = new ArrayList<String>();
 		resultBatch = skf2010Sc004SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, CodeConstant.NONE,
-				afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004);
+				afterApplStatus, applId, FunctionIdConstant.SKF2010_SC004, shainNo);
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004);
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
@@ -124,17 +130,17 @@ public class Skf2010Sc004CancelService extends BaseServiceAbstract<Skf2010Sc004C
 		// 汎用コード取得
 		Map<String, String> genericCodeMap = new HashMap<String, String>();
 		genericCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_STATUS);
-		
+
 		// 変更データ設定
 		Map<String, Object> changeListTableData = new HashMap<String, Object>();
 		changeListTableData.put("applStatus", CodeConstant.STATUS_ICHIJIHOZON);
 		changeListTableData.put("applStatusText", genericCodeMap.get(CodeConstant.STATUS_ICHIJIHOZON));
 		changeListTableData.put("cancel", null);
 		changeListTableData.put("delete", CodeConstant.DOUBLE_QUOTATION);
-		
+
 		/** 申請状況一覧画面のリストテーブルのFormデータから書き換える */
-		boolean changeCheck = skfReturnFormEditUtils.editListTableFormDataByPrimaryKey(FunctionIdConstant.SKF2010_SC003, "ltResultList", 
-				"applNo", applNo, changeListTableData);
+		boolean changeCheck = skfReturnFormEditUtils.editListTableFormDataByPrimaryKey(FunctionIdConstant.SKF2010_SC003,
+				"ltResultList", "applNo", applNo, changeListTableData);
 
 		// 完了メッセージ表示
 		ServiceHelper.addResultMessage(cancelDto, MessageIdConstant.I_SKF_2047);

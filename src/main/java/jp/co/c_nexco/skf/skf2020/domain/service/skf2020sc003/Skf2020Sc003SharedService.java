@@ -361,7 +361,7 @@ public class Skf2020Sc003SharedService {
 		}
 
 		int resultUpdateDisp = updateDispInfo(newStatus, operationDate, dto);
-		if (resultUpdateDisp <= 0) {
+		if (resultUpdateDisp <= 0 && NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
 			return false;
 		}
 
@@ -373,6 +373,7 @@ public class Skf2020Sc003SharedService {
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(dto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			return false;
 		}
 
 		return true;
