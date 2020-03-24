@@ -326,15 +326,16 @@ public class Skf2010Sc003SharedService {
 	 * @param applStatus
 	 * @param applId
 	 * @param pageId
+	 * @param shainNo
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> doShatakuRenkei(MenuScopeSessionBean menuScopeSessionBean, String applNo, String applStatus,
-			String applId, String pageId) {
+			String applId, String pageId, String shainNo) {
 		// ログインユーザー情報取得
 		Map<String, String> loginUserInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		String userId = loginUserInfoMap.get("userCd");
-		String shainNo = loginUserInfoMap.get("shainNo");
+		// String shainNo = loginUserInfoMap.get("shainNo");
 		// 排他チェック用データ取得
 		Map<String, Object> forUpdateObject = (Map<String, Object>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC003);
