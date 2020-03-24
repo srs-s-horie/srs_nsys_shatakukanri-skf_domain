@@ -306,10 +306,11 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			rowData.addCellDataBean(Rp002Info.MANAGE_AGENCY_NAME.col + tagetRowIdx,
 					skf3030Sc001SharedService.cnvEmptyStrToNull(data.getManageBusinessAreaName()));
 
-			Map<String, String> shatakKbnMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
+//			Map<String, String> shatakKbnMap = skfGenericCodeUtils
+//					.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
+			Map<String, String> shatakKbnReportMap = getShatakuKbnReportMap();
 			//社宅基礎データ_物件データ_保有借上
-			rowData.addCellDataBean(Rp002Info.HOYU_KARIAGE.col + tagetRowIdx, shatakKbnMap.get(data.getShatakKbn()));
+			rowData.addCellDataBean(Rp002Info.HOYU_KARIAGE.col + tagetRowIdx, shatakKbnReportMap.get(data.getShatakKbn()));
 			//社宅基礎データ_物件データ_社宅名
 			rowData.addCellDataBean(Rp002Info.SHATAK_NAME.col + tagetRowIdx,
 					skf3030Sc001SharedService.cnvEmptyStrToNull(data.getShatakName()));
@@ -355,17 +356,20 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			//社宅基礎データ_社宅使用料_対象面積
 			rowData.addCellDataBean(Rp002Info.TAISHO_MENSEK.col + tagetRowIdx, String.valueOf(data.getMenseki()));
 			//社宅基礎データ_社宅使用料_地域
-			Map<String, String> areaKbnMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_AREA_KBN);
-			rowData.addCellDataBean(Rp002Info.AREA.col + tagetRowIdx, areaKbnMap.get(data.getAreaKbn()));
+//			Map<String, String> areaKbnMap = skfGenericCodeUtils
+//					.getGenericCode(FunctionIdConstant.GENERIC_CODE_AREA_KBN);
+			Map<String, String> areaKbnReportMap = getAreaKbnReportMap();
+			rowData.addCellDataBean(Rp002Info.AREA.col + tagetRowIdx, areaKbnReportMap.get(data.getAreaKbn()));
 			//社宅基礎データ_社宅使用料_寮(0.7)減免
-			Map<String, String> auseKbnMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_AUSE_KBN);
-			rowData.addCellDataBean(Rp002Info.RYO_GENMEN_07.col + tagetRowIdx, auseKbnMap.get(data.getAuse()));
+//			Map<String, String> auseKbnMap = skfGenericCodeUtils
+//					.getGenericCode(FunctionIdConstant.GENERIC_CODE_AUSE_KBN);
+			Map<String, String> auseReportMap = getRyoGenmen07Map();
+			rowData.addCellDataBean(Rp002Info.RYO_GENMEN_07.col + tagetRowIdx, auseReportMap.get(data.getAuse()));
 			//社宅基礎データ_社宅使用料_狭小減免
-			Map<String, String> kyoshoKbnMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOSHOADJUST_KBN);
-			rowData.addCellDataBean(Rp002Info.KYOSHO_GENMEN.col + tagetRowIdx, kyoshoKbnMap.get(data.getKyosyoFlg()));
+//			Map<String, String> kyoshoKbnMap = skfGenericCodeUtils
+//					.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOSHOADJUST_KBN);
+			Map<String, String> kyoshoReportKbnMap = getKyoshoAdjustReportMap();
+			rowData.addCellDataBean(Rp002Info.KYOSHO_GENMEN.col + tagetRowIdx, kyoshoReportKbnMap.get(data.getKyosyoFlg()));
 			//社宅基礎データ_社宅使用料_寒冷地減免
 			if (!"0".equals(data.getKanreitiFlg())) {
 				Map<String, String> kanreishiKbnMap = skfGenericCodeUtils
@@ -376,10 +380,11 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 				rowData.addCellDataBean(Rp002Info.KANREICHI_GENMEN.col + tagetRowIdx, "");
 			}
 			//社宅基礎データ_社宅使用料_役員適用
-			Map<String, String> yakuinKbnMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_YAKUIN_TEKIYO_KBN);
+//			Map<String, String> yakuinKbnMap = skfGenericCodeUtils
+//					.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_YAKUIN_TEKIYO_KBN);
+			Map<String, String> yakuinKbnReportMap = getYakuinReportMap();
 			rowData.addCellDataBean(Rp002Info.YAKUIN_TEKIYO.col + tagetRowIdx,
-					yakuinKbnMap.get(data.getYakuinSannteiKbn()));
+					yakuinKbnReportMap.get(data.getYakuinSannteiKbn()));
 			//社宅基礎データ_社宅使用料_月額
 			if (data.getRentalMonth() != null) {
 				rowData.addCellDataBean(Rp002Info.RENTAL_TOTAL.col + tagetRowIdx, String.valueOf(data.getRentalMonth()),
@@ -404,10 +409,11 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 						"#,#");
 			}
 			//社宅基礎データ_個人負担共益費_種別
-			Map<String, String> kyoekihiPayMonthKbnMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOEKIHI_PAY_MONTH_KBN);
+//			Map<String, String> kyoekihiPayMonthKbnMap = skfGenericCodeUtils
+//					.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOEKIHI_PAY_MONTH_KBN);
+			Map<String, String> kyoekihiPayMonthReportKbnMap = getKyoekihiPayReportMap();
 			rowData.addCellDataBean(Rp002Info.KYOEKIHI_PAY_MONTH.col + tagetRowIdx,
-					kyoekihiPayMonthKbnMap.get(data.getKyoekihiPayMonth()));
+					kyoekihiPayMonthReportKbnMap.get(data.getKyoekihiPayMonth()));
 			//社宅基礎データ_個人負担共益費_個人負担月額
 			if (data.getNowKyoekihiPerson() != null) {
 				rowData.addCellDataBean(Rp002Info.KYOEKIHI_PERSON_TOTAL.col + tagetRowIdx,
@@ -417,9 +423,10 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 						"#,#");
 			}
 			//社宅等相互利用協定データ_対象_有無
-			Map<String, String> mutualUseKbnMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_MUTUALUSE_KBN);
-			String mutualUseKbn = mutualUseKbnMap.get(data.getMutualUseKbn());
+//			Map<String, String> mutualUseKbnMap = skfGenericCodeUtils
+//					.getGenericCode(FunctionIdConstant.GENERIC_CODE_MUTUALUSE_KBN);
+			Map<String, String> mutualUseReportKbnMap = getMutualUseReportMap();
+			String mutualUseKbn = mutualUseReportKbnMap.get(data.getMutualUseKbn());
 
 			rowData.addCellDataBean(Rp002Info.MUTUAL_USE.col + tagetRowIdx, mutualUseKbn);
 			//社宅等相互利用協定データ_賃貸借契約_貸付会社
@@ -431,7 +438,8 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			if (!NfwStringUtils.isEmpty(data.getMutualUseStartDay())) {
 				String mutualUseStartDay = skfDateFormatUtils.dateFormatFromString(data.getMutualUseStartDay(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-				rowData.addCellDataBean(Rp002Info.MUTUAL_USE_STARTDAY.col + tagetRowIdx, mutualUseStartDay);
+				rowData.addCellDataBean(Rp002Info.MUTUAL_USE_STARTDAY.col + tagetRowIdx, mutualUseStartDay,
+						Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			} else {
 				rowData.addCellDataBean(Rp002Info.MUTUAL_USE_STARTDAY.col + tagetRowIdx, "");
 			}
@@ -439,16 +447,18 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			if (!NfwStringUtils.isEmpty(data.getMutualUseEndDay())) {
 				String mutualUseEndDay = skfDateFormatUtils.dateFormatFromString(data.getMutualUseEndDay(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-				rowData.addCellDataBean(Rp002Info.MUTUAL_USE_ENDDAY.col + tagetRowIdx, mutualUseEndDay);
+				rowData.addCellDataBean(Rp002Info.MUTUAL_USE_ENDDAY.col + tagetRowIdx, mutualUseEndDay,
+						Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			} else {
 				rowData.addCellDataBean(Rp002Info.MUTUAL_USE_ENDDAY.col + tagetRowIdx, "");
 			}
 			//社宅等相互利用協定データ_賃貸借契約_原籍違い判定
 			Map<String, String> kyojushaKbnMap = skfGenericCodeUtils
 					.getGenericCode(FunctionIdConstant.GENERIC_CODE_KYOJUSHA_KBN);
+			Map<String, String> kyojushaKbnReportMap = getKyojushaKbnReportMap();
 			if (!NfwStringUtils.isEmpty(data.getGensekiHanteiKbn())) {
 				rowData.addCellDataBean(Rp002Info.GENSEKI_CHIGAI_HANTEI.col + tagetRowIdx,
-						kyojushaKbnMap.get(data.getGensekiHanteiKbn()));
+						kyojushaKbnReportMap.get(data.getGensekiHanteiKbn()));
 			} else {
 				rowData.addCellDataBean(Rp002Info.GENSEKI_CHIGAI_HANTEI.col + tagetRowIdx, "");
 			}
@@ -526,12 +536,14 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			rowData.addCellDataBean(Rp002Info.ASSING_CD.col + tagetRowIdx,
 					skf3030Sc001SharedService.cnvEmptyStrToNull(data.getAssignCd()));
 			//入居者データ_用途
-			rowData.addCellDataBean(Rp002Info.NYUKYO_YOTO.col + tagetRowIdx, auseKbnMap.get(data.getAuse()));
+			Map<String, String> auseReport2Map = getAuseReport2Map();
+			rowData.addCellDataBean(Rp002Info.NYUKYO_YOTO.col + tagetRowIdx, auseReport2Map.get(data.getAuse()));
 			//入退居管理_入居日
 			if (!NfwStringUtils.isEmpty(data.getNyukyoDate())) {
 				String nyukyoDate = skfDateFormatUtils.dateFormatFromString(data.getNyukyoDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-				rowData.addCellDataBean(Rp002Info.NYUKYO_DATE.col + tagetRowIdx, nyukyoDate);
+				rowData.addCellDataBean(Rp002Info.NYUKYO_DATE.col + tagetRowIdx, nyukyoDate,
+						Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			} else {
 				rowData.addCellDataBean(Rp002Info.NYUKYO_DATE.col + tagetRowIdx, "");
 			}
@@ -539,7 +551,8 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			if (!NfwStringUtils.isEmpty(data.getTaikyoDate())) {
 				String taikyoDate = skfDateFormatUtils.dateFormatFromString(data.getTaikyoDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-				rowData.addCellDataBean(Rp002Info.TAIKYO_DATE.col + tagetRowIdx, taikyoDate);
+				rowData.addCellDataBean(Rp002Info.TAIKYO_DATE.col + tagetRowIdx, taikyoDate,
+						Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			} else {
 				rowData.addCellDataBean(Rp002Info.TAIKYO_DATE.col + tagetRowIdx, "");
 			}
@@ -641,8 +654,10 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 				rowData.addCellDataBean(Rp002Info.PARKING_CNT.col + tagetRowIdx, "0");
 			}
 
-			rowData.addCellDataBean(Rp002Info.PARKING_STARTDATE.col + tagetRowIdx, parkingStartDate);
-			rowData.addCellDataBean(Rp002Info.PARKING_ENDDATE.col + tagetRowIdx, parkingEndDate);
+			rowData.addCellDataBean(Rp002Info.PARKING_STARTDATE.col + tagetRowIdx, parkingStartDate,
+					Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			rowData.addCellDataBean(Rp002Info.PARKING_ENDDATE.col + tagetRowIdx, parkingEndDate,
+					Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			//備考_補足データ等
 			rowData.addCellDataBean(Rp002Info.BIKO.col + tagetRowIdx,
 					skf3030Sc001SharedService.cnvEmptyStrToNull(data.getBikoLedger()));
@@ -715,7 +730,8 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			if (!NfwStringUtils.isEmpty(data.getTaiyoDate())) {
 				String taiyoDate = skfDateFormatUtils.dateFormatFromString(data.getTaiyoDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-				rowData.addCellDataBean(Rp002Info.BIHIN_TAIYO_DATE.col + tagetRowIdx, taiyoDate);
+				rowData.addCellDataBean(Rp002Info.BIHIN_TAIYO_DATE.col + tagetRowIdx, taiyoDate,
+						Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			} else {
 				rowData.addCellDataBean(Rp002Info.BIHIN_TAIYO_DATE.col + tagetRowIdx, "");
 			}
@@ -723,7 +739,8 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			if (!NfwStringUtils.isEmpty(data.getHenkyakuDate())) {
 				String henkyakDate = skfDateFormatUtils.dateFormatFromString(data.getHenkyakuDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-				rowData.addCellDataBean(Rp002Info.BIHIN_HENKYAKU_DATE.col + tagetRowIdx, henkyakDate);
+				rowData.addCellDataBean(Rp002Info.BIHIN_HENKYAKU_DATE.col + tagetRowIdx, henkyakDate,
+						Cell.CELL_TYPE_NUMERIC,SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			} else {
 				rowData.addCellDataBean(Rp002Info.BIHIN_HENKYAKU_DATE.col + tagetRowIdx, "");
 			}
@@ -932,11 +949,12 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 		try {
 			LogUtils.debugByMsg("社宅管理台帳データ出力処理開始:" + DateTime.now().toString());
-			SkfFileOutputUtils.fileOutputExcel(wbdb, cellparams, FILE_NAME_KEY, funcId, START_LINE, null, resultMap, 4);
+			SkfFileOutputUtils.fileOutputKanriDaichoExcel(wbdb, cellparams, FILE_NAME_KEY, funcId, START_LINE, null, resultMap, 4);
 			LogUtils.debugByMsg("社宅管理台帳データ出力処理終了:" + DateTime.now().toString());
 
 		} catch (Exception e) {
 			ServiceHelper.addErrorResultMessage(inDto, null, MessageIdConstant.E_SKF_1070);
+			LogUtils.debugByMsg(e.getMessage());
 			sheetDataBean = null;
 			sheetDataBeanList = null;
 			cellparams = null;
@@ -1169,4 +1187,129 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 		return rtnArry;
 	}
 
+	
+	/**
+	 * 寮(0.7)減免の用途区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getRyoGenmen07Map(){
+		Map<String, String> auseWordMap = new HashMap<String, String>();
+		//Map生成
+		auseWordMap.put("1", SkfCommonConstant.AUSE_KBN_REPORT_1);
+		auseWordMap.put("2", SkfCommonConstant.AUSE_KBN_REPORT_2);
+		auseWordMap.put("3", SkfCommonConstant.AUSE_KBN_REPORT_3);
+		
+		return auseWordMap;
+	}
+	
+	/**
+	 * 用途区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getAuseReport2Map(){
+		Map<String, String> auseWordMap = new HashMap<String, String>();
+		//Map生成
+		auseWordMap.put("1", SkfCommonConstant.AUSE_KBN_REPORT2_1);
+		auseWordMap.put("2", SkfCommonConstant.AUSE_KBN_REPORT2_2);
+		auseWordMap.put("3", SkfCommonConstant.AUSE_KBN_REPORT2_3);
+		
+		return auseWordMap;
+	}
+	
+	/**
+	 * 相互利用区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getMutualUseReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("0", SkfCommonConstant.MUTUALUSE_KBN_REPORT_0);
+		wordMap.put("1", SkfCommonConstant.MUTUALUSE_KBN_REPORT_1);
+		
+		return wordMap;
+	}
+	
+	/**
+	 * 相互利用区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getKyoekihiPayReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("1", SkfCommonConstant.KYOEKIHIPAYMONTH_KBN_REPORT_1);
+		wordMap.put("2", SkfCommonConstant.KYOEKIHIPAYMONTH_KBN_REPORT_2);
+		
+		return wordMap;
+	}
+	
+	/**
+	 * 調整区分（狭小）変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getKyoshoAdjustReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("0", SkfCommonConstant.KYOSHOADJUST_KBN_REPORT_0);
+		wordMap.put("1", SkfCommonConstant.KYOSHOADJUST_KBN_REPORT_1);
+		
+		return wordMap;
+	}
+	
+	/**
+	 * 役員区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getYakuinReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("0", SkfCommonConstant.YAKUIN_KBN_REPORT_0);
+		wordMap.put("1", SkfCommonConstant.YAKUIN_KBN_REPORT_1);
+		wordMap.put("2", SkfCommonConstant.YAKUIN_KBN_REPORT_2);
+		
+		return wordMap;
+	}
+	
+	/**
+	 * 地域区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getAreaKbnReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("1", SkfCommonConstant.AREA_KBN_REPORT_1);
+		wordMap.put("2", SkfCommonConstant.AREA_KBN_REPORT_2);
+		wordMap.put("3", SkfCommonConstant.AREA_KBN_REPORT_3);
+		wordMap.put("4", SkfCommonConstant.AREA_KBN_REPORT_4);
+		
+		return wordMap;
+	}
+	
+	/**
+	 * 社宅区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getShatakuKbnReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("1", SkfCommonConstant.SHATAKU_KBN_REPORT_1);
+		wordMap.put("2", SkfCommonConstant.SHATAKU_KBN_REPORT_2);
+		wordMap.put("3", SkfCommonConstant.SHATAKU_KBN_REPORT_3);
+		wordMap.put("4", SkfCommonConstant.SHATAKU_KBN_REPORT_4);
+		
+		return wordMap;
+	}
+	
+	/**
+	 * 居住者区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getKyojushaKbnReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("0", SkfCommonConstant.KYOJUSHA_KBN_REPORT_0);
+		wordMap.put("1", SkfCommonConstant.KYOJUSHA_KBN_REPORT_1);
+		wordMap.put("2", SkfCommonConstant.KYOJUSHA_KBN_REPORT_2);
+		
+		return wordMap;
+	}
 }
