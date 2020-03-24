@@ -992,7 +992,7 @@ public class Skf3022Sc006SharedService {
 			// 結果判定
 			if (sameRoomTeijiList.size() > 0) {
 				LogUtils.debugByMsg("退居、入居提示データあり");
-				// I_SKF_3085メッセージ設定
+				// I_SKF_3085メッセージ設定(退居後に新しい入居者がいます。（社員番号：{0}　社員氏名：{1}）)
 				setMsgBox(MessageFormat.format(
 						PropertyUtils.getValue(MessageIdConstant.I_SKF_3085),
 						sameRoomTeijiList.get(0).getShainNo(),
@@ -1018,7 +1018,7 @@ public class Skf3022Sc006SharedService {
 			// 結果判定
 			if (sameRoomTeijiList.size() > 0) {
 				LogUtils.debugByMsg("入居、退居提示データあり");
-				// I_SKF_3086メッセージ設定
+				// I_SKF_3086メッセージ設定(現在入居者がいます。（社員番号：{0}　社員氏名：{1}）)
 				setMsgBox(MessageFormat.format(
 						PropertyUtils.getValue(MessageIdConstant.I_SKF_3086),
 						sameRoomTeijiList.get(0).getShainNo(),
@@ -1055,7 +1055,7 @@ public class Skf3022Sc006SharedService {
 				// 結果判定
 				if (sameParkingBlockList.size() > 0) {
 					LogUtils.debugByMsg("入居、退居提示データなし、区画1駐車場利用者あり");
-					// I_SKF_3092メッセージ設定
+					// I_SKF_3092メッセージ設定(現在駐車場利用者がいます。（社員番号：{0}　社員氏名：{1}）利用者の駐車場利用終了日を確認してください。)
 					setMsgBox(MessageFormat.format(
 							PropertyUtils.getValue(MessageIdConstant.I_SKF_3092),
 							sameParkingBlockList.get(0).getShainNo(),
@@ -1071,7 +1071,7 @@ public class Skf3022Sc006SharedService {
 					// 結果判定
 					if (sameParkingBlockList.size() > 0) {
 						LogUtils.debugByMsg("入居、退居提示データなし、区画2駐車場利用者あり");
-						// I_SKF_3092メッセージ設定
+						// I_SKF_3092メッセージ設定(現在駐車場利用者がいます。（社員番号：{0}　社員氏名：{1}）利用者の駐車場利用終了日を確認してください。)
 						setMsgBox(MessageFormat.format(
 								PropertyUtils.getValue(MessageIdConstant.I_SKF_3092),
 								sameParkingBlockList.get(0).getShainNo(),
