@@ -452,6 +452,9 @@ public class Skf3030Sc001SharedService {
 		case Skf3030Sc001SharedService.POSITIVE_LINKDATA_KAIJO:
 			rtnVal = Skf3030Sc001SharedService.POSITIVE_LINKDATA_CREATE_KAIJO;
 			break;
+		case Skf3030Sc001SharedService.POSITIVE_LINKDATA_KAKUTEIZUMI:
+			rtnVal = Skf3030Sc001SharedService.POSITIVE_LINKDATA_CREATE_JIKKOUZUMI;
+			break;
 		default:
 			break;
 		}

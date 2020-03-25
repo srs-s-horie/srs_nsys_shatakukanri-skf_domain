@@ -949,7 +949,8 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 		try {
 			LogUtils.debugByMsg("社宅管理台帳データ出力処理開始:" + DateTime.now().toString());
-			SkfFileOutputUtils.fileOutputKanriDaichoExcel(wbdb, cellparams, FILE_NAME_KEY, funcId, START_LINE, null, resultMap, 4);
+			SkfFileOutputUtils.fileOutputKanriDaichoExcel(wbdb, cellparams, FILE_NAME_KEY, 
+					funcId, START_LINE, null, resultMap, 4, false);
 			LogUtils.debugByMsg("社宅管理台帳データ出力処理終了:" + DateTime.now().toString());
 
 		} catch (Exception e) {
@@ -1089,7 +1090,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 			if (Objects.equals(sysNengetsu, taikyoNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.TAIKYO_DATE.col, targetIdx,
-						IndexedColors.RED.getIndex(), IndexedColors.LIME.getIndex());
+						IndexedColors.RED.getIndex(), IndexedColors.BRIGHT_GREEN.getIndex());
 
 			} else if (Integer.parseInt(sysNengetsu) < Integer.parseInt(taikyoNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.TAIKYO_DATE.col, targetIdx,
@@ -1103,7 +1104,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 			if (Objects.equals(sysNengetsu, parkingEndNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.PARKING_ENDDATE.col, targetIdx,
-						IndexedColors.RED.getIndex(), IndexedColors.LIME.getIndex());
+						IndexedColors.RED.getIndex(), IndexedColors.BRIGHT_GREEN.getIndex());
 
 			} else if (Integer.parseInt(sysNengetsu) < Integer.parseInt(parkingEndNengetsu)) {
 				cellParams = changeCellStyle(cellParams, Rp002Info.PARKING_ENDDATE.col, targetIdx,
@@ -1230,7 +1231,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 	}
 	
 	/**
-	 * 相互利用区分変換Map生成
+	 * 共益費支払い区分変換Map生成
 	 * @return
 	 */
 	private Map<String, String> getKyoekihiPayReportMap(){
