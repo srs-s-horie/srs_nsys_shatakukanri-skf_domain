@@ -151,6 +151,9 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 //      End If
 		initDto.setBihinItiranFlg(1); 
 		
+		//エラー変数初期化
+		skf3030Sc002SharedService.errReset(initDto);
+		
 		//画面初期化
 		initialize(initDto);
 		
@@ -198,30 +201,29 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 			String shukkosha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHUKKOSHA_KEY);
 			String biko = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_BIKO_KEY);
 			
-			Map<String, Object> searchInfoSessionMap = new HashMap<String, Object>();
+			//DTOに設定
+			initDto.setSerachKanriKaisha(kanriKaisha);
+			initDto.setSerachAgency(agency);
+			initDto.setSerachShainNo(shainNo);
+			initDto.setSerachShainName(shainName);
+			initDto.setSerachShatakName(shatakName);
+			initDto.setSerachShatakKbn(shatakKbn);
+			initDto.setSerachSogoriyo(sogoriyo);
+			initDto.setSerachNengetsu(nengetsu);
+			initDto.setSerachShimeShori(shimeShori);
+			initDto.setSerachPositiveRenkei(positiveRenkei);
+			initDto.setSerachKaishakanSokin(kaishakanSokin);
+			initDto.setSerachGensekiKaisha(gensekiKaisha);
+			initDto.setSerachKyuyoSikyuKaisha(kyuyoSikyuKaisha);
+			initDto.setSerachKyojushaKbn(kyojushaKbn);
+			initDto.setSerachAkiHeya(akiHeya);
+			initDto.setSerachParkingSiyoryo(parkingSiyoryo);
+			initDto.setSerachHonraiYoto(honraiYoto);
+			initDto.setSerachHonraiKikaku(honraiKikaku);
+			initDto.setSerachYakuin(yakuin);
+			initDto.setSerachShukkosha(shukkosha);
+			initDto.setSerachBiko(biko);
 
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_KANRI_KAISHA_KEY, kanriKaisha);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_AGENCY_KEY, agency);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NO_KEY, shainNo);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NAME_KEY, shainName);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_NAME_KEY, shatakName);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_KBN_KEY, shatakKbn);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SOGORIYO_KEY, sogoriyo);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_NENGETSU_KEY, nengetsu);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SHIME_SHORI_KEY, shimeShori);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_POSITIVE_RENKEI_KEY, positiveRenkei);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_KAISHAKAN_SOKIN_KEY, kaishakanSokin);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_GENSEKI_KAISHA_KEY, gensekiKaisha);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SIKYU_KAISHA_KEY, kyuyoSikyuKaisha);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_KYOJUSHA_KBN_KEY, kyojushaKbn);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_AKI_HEYA_KEY, akiHeya);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_PARKING_KEY, parkingSiyoryo);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_YOTO_KEY, honraiYoto);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_KIKAKU_KEY, honraiKikaku);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_YAKUIN_KEY, yakuin);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_SHUKKOSHA_KEY, shukkosha);
-			searchInfoSessionMap.put(Skf303010CommonSharedService.SEARCH_INFO_BIKO_KEY, biko);
-			bean.put(SessionCacheKeyConstant.SHATAKUKANRI_DAICHO_SEARCH, searchInfoSessionMap);
 		}
 		//削除後動作エラー回避のためDTOクリア
 		initDto.setHdnShatakuKanriId("");

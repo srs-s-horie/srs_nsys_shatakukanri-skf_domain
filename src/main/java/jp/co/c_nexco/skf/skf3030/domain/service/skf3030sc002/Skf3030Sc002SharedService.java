@@ -45,6 +45,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoom;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiBihinData;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiBihinDataKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiData;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRirekiKey;
@@ -1814,6 +1816,30 @@ public class Skf3030Sc002SharedService {
 //			ddlBihinTaiyoStts.Enabled = status   //備品貸与状態
 //		    End If
 //		Next
+		List<Map<String,Object>> BihinDt = new ArrayList<Map<String, Object>>();
+		
+		// 備品情報リスト
+		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
+		bihinList.addAll(jsonArrayToArrayList(comDto.getJsonBihin()));
+		
+		for(Map<String,Object> bihinRow : bihinList){
+			Map<String,Object> tmpMap = new HashMap<String,Object>();
+		
+			tmpMap.put("bihinCd", bihinRow.get("bihinCd").toString());
+			tmpMap.put("bihinName", bihinRow.get("bihinName").toString());
+			tmpMap.put("heyaSonaetukeSttsStr", bihinRow.get("heyaSonaetukeSttsStr").toString());
+			tmpMap.put("bihinTaiyoStts", bihinRow.get("bihinTaiyoStts").toString());
+			tmpMap.put("bihinTaiyoSttsList", bihinRow.get("bihinTaiyoSttsList").toString());
+			tmpMap.put("bihinStatusOld", bihinRow.get("bihinStatusOld").toString());
+			tmpMap.put("updateFlg", bihinRow.get("updateFlg").toString());
+			tmpMap.put("updateDate", bihinRow.get("updateDate").toString());
+			tmpMap.put("heyaSonaetukeStts", bihinRow.get("heyaSonaetukeStts").toString());
+			tmpMap.put("bihinTaiyoSttsKbn", bihinRow.get("bihinTaiyoSttsKbn").toString());
+			
+			BihinDt.add(tmpMap);
+		}
+		comDto.setBihinInfoListTableData(getBihinListTableDataViewColumnFromView(BihinDt,status));
+		
 
 		comDto.setSc006TaiyoDayDisableFlg(setStatus); //貸与日
 		comDto.setSc006HenkyakuDayDisableFlg(setStatus); //返却日
@@ -2042,6 +2068,52 @@ public class Skf3030Sc002SharedService {
 	}
 	
 	/**
+	 * リストテーブルに出力するリストを取得する。
+	 * (非活制御有)
+	 * 
+	 * @param originList
+	 * @return リストテーブルに出力するリスト
+	 */
+	public List<Map<String, Object>> getBihinListTableDataViewColumnFromView(List<Map<String,Object>> originList,Boolean status) {
+
+		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
+
+		//備品貸与状態リスト
+		List<Map<String, Object>> statusList = ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_BIHINLENTSTATUS_KBN, "",false);
+				
+		int i=0;
+		for(Map<String,Object> tmpData : originList){
+
+			Map<String, Object> tmpMap = new HashMap<String, Object>();
+
+			//備品コード
+			tmpMap.put("bihinCd", HtmlUtils.htmlEscape(tmpData.get("bihinCd").toString()));
+			tmpMap.put("bihinName", HtmlUtils.htmlEscape(tmpData.get("bihinName").toString()));
+			//部屋備付状態
+			tmpMap.put("heyaSonaetukeStts", tmpData.get("heyaSonaetukeStts").toString());
+			tmpMap.put("heyaSonaetukeSttsStr", HtmlUtils.htmlEscape(tmpData.get("heyaSonaetukeSttsStr").toString()));
+
+			//備品貸与状態
+			String bihinTaiyoStts = tmpData.get("bihinTaiyoStts").toString();
+			String statusListCode = createBihinStatusSelect(bihinTaiyoStts,statusList,tmpData.get("bihinCd").toString());
+			if(Skf3030Sc002CommonDto.SHITADORI.equals(tmpData.get("bihinCd").toString().substring(0, 1)) || !status){
+				//下取りの備品貸与状態ドロップダウンを非活性にセット
+				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "' disabled>" + statusListCode + "</select>");
+			}else{
+				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "'>" + statusListCode + "</select>");
+			}
+			tmpMap.put("bihinStatusOld", tmpData.get("bihinStatusOld").toString());
+			tmpMap.put("bihinTaiyoSttsKbn", tmpData.get("bihinTaiyoSttsKbn").toString());
+			
+			setViewList.add(tmpMap);
+			i++;
+		}
+
+		return setViewList;
+	}
+
+	
+	/**
 	 * 貸与状態SelectのHTMLコード生成処理
 	 * @param bihinStatus 備付状況
 	 * @param statusList 備付状況リスト
@@ -2121,6 +2193,99 @@ public class Skf3030Sc002SharedService {
 		}else{
 			return true;
 		}
+	}
+	
+	/**
+	 * エラー変数初期化
+	 * @param comDto
+	 */
+	public void errReset(Skf3030Sc002CommonDto comDto){
+		// 原籍会社
+		comDto.setSc006OldKaisyaNameSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 給与支給会社名
+		comDto.setSc006KyuyoKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 入居予定日
+		comDto.setSc006NyukyoYoteiDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 退居予定日
+		comDto.setSc006TaikyoYoteiDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用開始日1
+		comDto.setSc006RiyouStartDayOneErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用終了日1
+		comDto.setSc006RiyouEndDayOneErr(CodeConstant.DOUBLE_QUOTATION);
+		// 居住者区分
+		comDto.setSc006KyojyusyaKbnSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用開始日2
+		comDto.setSc006RiyouStartDayTwoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用終了日2
+		comDto.setSc006RiyouEndDayTwoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 役員算定
+		comDto.setSc006YakuinSanteiSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 社宅使用料調整金額
+		comDto.setSc006SiyoroTyoseiPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 駐車場使用料調整金額
+		comDto.setSc006TyusyaTyoseiPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 個人負担共益費月額
+		comDto.setSc006KyoekihiMonthPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 個人負担共益費調整金額
+		comDto.setSc006KyoekihiTyoseiPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 共益費支払月選択値
+		comDto.setSc006KyoekihiPayMonthSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 貸与日
+		comDto.setSc006TaiyoDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 返却日
+		comDto.setSc006HenkyakuDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入希望日
+		comDto.setSc006KibouDayInErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入希望時間
+		comDto.setSc006KibouTimeInSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入本人連絡先
+		comDto.setSc006HonninAddrInErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入受取代理人名
+		comDto.setSc006UketoriDairiInNameErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入受取代理人連絡先
+		comDto.setSc006UketoriDairiAddrErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出希望日
+		comDto.setSc006KibouDayOutErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出希望時間
+		comDto.setSc006KibouTimeOutSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出本人連絡先
+		comDto.setSc006HonninAddrOutErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出立会代理人名
+		comDto.setSc006TachiaiDairiErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出立会代理人連絡先
+		comDto.setSc006TachiaiDairiAddrErr(CodeConstant.DOUBLE_QUOTATION);
+		// 配属会社名選択値
+		comDto.setSc006HaizokuKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 出向の有無(相互利用状況)
+		comDto.setSc006SogoRyojokyoSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 所属機関
+		comDto.setSc006SyozokuKikanErr(CodeConstant.DOUBLE_QUOTATION);
+		// 貸付会社選択値
+		comDto.setSc006TaiyoKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 室・部名
+		comDto.setSc006SituBuNameErr(CodeConstant.DOUBLE_QUOTATION);
+		// 借受会社
+		comDto.setSc006KariukeKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 課等名
+		comDto.setSc006KanadoMeiErr(CodeConstant.DOUBLE_QUOTATION);
+		// 相互利用判定区分
+		comDto.setSc006SogoHanteiKbnSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 配属データコード番号
+		comDto.setSc006HaizokuNoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 社宅使用料会社間送金区分
+		comDto.setSc006SokinShatakuSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 共益費会社間送付区分
+		comDto.setSc006SokinKyoekihiSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 開始日
+		comDto.setSc006StartDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 終了日
+		comDto.setSc006EndDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 社宅賃貸料
+		comDto.setSc006ChintaiRyoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 駐車場料金
+		comDto.setSc006TyusyajoRyokinErr(CodeConstant.DOUBLE_QUOTATION);
+		// 共益費(事業者負担)
+		comDto.setSc006KyoekihiErr(CodeConstant.DOUBLE_QUOTATION);
 	}
 	
 	/**
@@ -3673,6 +3838,30 @@ public class Skf3030Sc002SharedService {
 		comDto.setSc006KyoekihiPayAfter(sc006KyoekihiPayAfter);
 		comDto.setSc006StartDay(getDateText(sc006StartDay));
 		comDto.setSc006EndDay(getDateText(sc006EndDay));
+		
+		List<Map<String,Object>> BihinDt = new ArrayList<Map<String, Object>>();
+		
+		// 備品情報リスト
+		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
+		bihinList.addAll(jsonArrayToArrayList(comDto.getJsonBihin()));
+		
+		for(Map<String,Object> bihinRow : bihinList){
+			Map<String,Object> tmpMap = new HashMap<String,Object>();
+		
+			tmpMap.put("bihinCd", bihinRow.get("bihinCd").toString());
+			tmpMap.put("bihinName", bihinRow.get("bihinName").toString());
+			tmpMap.put("heyaSonaetukeSttsStr", bihinRow.get("heyaSonaetukeSttsStr").toString());
+			tmpMap.put("bihinTaiyoStts", bihinRow.get("bihinTaiyoStts").toString());
+			tmpMap.put("bihinTaiyoSttsList", bihinRow.get("bihinTaiyoSttsList").toString());
+			tmpMap.put("bihinStatusOld", bihinRow.get("bihinStatusOld").toString());
+			tmpMap.put("updateFlg", bihinRow.get("updateFlg").toString());
+			tmpMap.put("updateDate", bihinRow.get("updateDate").toString());
+			tmpMap.put("heyaSonaetukeStts", bihinRow.get("heyaSonaetukeStts").toString());
+			tmpMap.put("bihinTaiyoSttsKbn", bihinRow.get("bihinTaiyoSttsKbn").toString());
+			
+			BihinDt.add(tmpMap);
+		}
+		comDto.setBihinInfoListTableData(getBihinListTableDataViewColumnFromView(BihinDt,comDto.getGBihinInfoControlStatusFlg()));
 	}
 	
 	/**

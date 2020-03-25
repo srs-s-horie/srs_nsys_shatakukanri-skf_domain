@@ -72,7 +72,8 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 		initDto = initItems(initDto);
 
 		if (!NfwStringUtils.isEmpty(initDto.getPrePageId())
-				&& FunctionIdConstant.SKF3030_SC002.equals(initDto.getPrePageId())) {
+				&& (FunctionIdConstant.SKF3030_SC001.equals(initDto.getPrePageId())
+				|| FunctionIdConstant.SKF3030_SC002.equals(initDto.getPrePageId()))) {
 
 			@SuppressWarnings("unchecked")
 			Map<String, Object> sessionData = (Map<String, Object>) bean
@@ -301,6 +302,10 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 
 		String rtn = "";
 
+		if(Objects.equals(kbn, null)){
+			return rtn;
+		}
+		
 		switch (kbn) {
 		case Skf3030Sc001SharedService.POSITIVE_LINKDATA_CREATE_MIJIKKOU:
 			rtn = Skf3030Sc001SharedService.POSITIVE_LINKDATA_MIJIKKOU;
