@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skf3030.domain.service.skf3030sc001;
+package jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc005;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc001.Skf3030Sc001PrevPageDto;
+import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc005.Skf3022Sc005PrevPageDto;
 
 /**
  * Skf3030Sc001PrevPageService 戻るサービス処理クラス。
@@ -19,7 +19,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc001.Skf3030Sc001PrevPageDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3030Sc001PrevPageService extends BaseServiceAbstract<Skf3030Sc001PrevPageDto> {
+public class Skf3022Sc005PrevPageService extends BaseServiceAbstract<Skf3022Sc005PrevPageDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -31,12 +31,12 @@ public class Skf3030Sc001PrevPageService extends BaseServiceAbstract<Skf3030Sc00
 	 * @return 処理結果
 	 */
 	@Override
-	public Skf3030Sc001PrevPageDto index(Skf3030Sc001PrevPageDto prevPageDto) {
+	public Skf3022Sc005PrevPageDto index(Skf3022Sc005PrevPageDto prevPageDto) {
 
 		// デバッグログ
 		LogUtils.debugByMsg("戻る");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("戻る", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
+		skfOperationLogUtils.setAccessLog("戻る", CodeConstant.C001, FunctionIdConstant.SKF3022_SC005);
 
 		// 画面遷移（戻る）
 		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF1010_SC001, "init");
