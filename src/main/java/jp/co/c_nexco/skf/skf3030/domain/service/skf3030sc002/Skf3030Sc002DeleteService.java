@@ -5,12 +5,14 @@ package jp.co.c_nexco.skf.skf3030.domain.service.skf3030sc002;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc001.Skf3030Sc001GetShatakuKanriDaichoInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002DeleteRirekiExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetTeijiDataTeijiNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetTeijiDataTeijiNoExpParameter;
@@ -41,6 +43,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuMutualRe
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuMutualRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuRentalRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShozokuRirekiRepository;
+import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -48,9 +51,11 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030Sc002common.Skf3030Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002DeleteDto;
+import jp.co.c_nexco.skf.skf3030.domain.service.common.Skf303010CommonSharedService;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
 
 /**
@@ -62,6 +67,8 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
 @Service
 public class Skf3030Sc002DeleteService extends BaseServiceAbstract<Skf3030Sc002DeleteDto> {
 	
+	@Autowired
+	private ApplicationScopeBean bean;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
@@ -189,8 +196,34 @@ public class Skf3030Sc002DeleteService extends BaseServiceAbstract<Skf3030Sc002D
 			deleteDto.setSc006SiyoryoMonthPay("");
 			
 			//社宅管理台帳画面へ遷移
-			TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF3030_SC001, "init");
+			TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF3030_SC001);
 			deleteDto.setTransferPageInfo(nextPage);
+			
+			//セッション情報設定
+			Map<String, Object> searchInfoSessionMap = new HashMap<String, Object>();
+
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_KANRI_KAISHA_KEY, deleteDto.getSerachKanriKaisha());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_AGENCY_KEY, deleteDto.getSerachAgency());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHAIN_NO_KEY, deleteDto.getSerachShainNo());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHAIN_NAME_KEY, deleteDto.getSerachShainName());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHATAK_NAME_KEY, deleteDto.getSerachShatakName());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHATAK_KBN_KEY, deleteDto.getSerachShatakKbn());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SOGORIYO_KEY, deleteDto.getSerachSogoriyo());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_NENGETSU_KEY, deleteDto.getSerachNengetsu());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHIME_SHORI_KEY, deleteDto.getSerachShimeShori());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_POSITIVE_RENKEI_KEY, deleteDto.getSerachPositiveRenkei());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_KAISHAKAN_SOKIN_KEY, deleteDto.getSerachKaishakanSokin());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_GENSEKI_KAISHA_KEY, deleteDto.getSerachGensekiKaisha());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SIKYU_KAISHA_KEY, deleteDto.getSerachKyuyoSikyuKaisha());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_KYOJUSHA_KBN_KEY, deleteDto.getSerachKyojushaKbn());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_AKI_HEYA_KEY, deleteDto.getSerachAkiHeya());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_PARKING_KEY, deleteDto.getSerachParkingSiyoryo());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_HONRAI_YOTO_KEY, deleteDto.getSerachHonraiYoto());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_HONRAI_KIKAKU_KEY, deleteDto.getSerachHonraiKikaku());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_YAKUIN_KEY, deleteDto.getSerachYakuin());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHUKKOSHA_KEY, deleteDto.getSerachShukkosha());
+			searchInfoSessionMap.put(Skf303010CommonSharedService.NYUTAIKYO_INFO_BIKO_KEY, deleteDto.getSerachBiko());
+			bean.put(SessionCacheKeyConstant.SHATAKUKANRI_DAICHO_SEARCH, searchInfoSessionMap);
 		}
 		
 		
