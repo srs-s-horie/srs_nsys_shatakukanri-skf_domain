@@ -16,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc005.Skf3022Sc005GetSameAppNoCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc005.Skf3022Sc005GetTeijiDataInfoExpRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -205,7 +206,12 @@ public class Skf3022Sc005SharedService {
 			//申請区分
 			String shinseiKbn = tmpData.getApplKbn();
 			tmpMap.put("hdnSinseiKbnCd", shinseiKbn);
-			tmpMap.put("colSinseiKbn", genericCodeApplKbn.get(shinseiKbn));
+			// 申請区分設定判定
+			if (!CheckUtils.isEmpty(shinseiKbn)) {
+				tmpMap.put("colSinseiKbn", genericCodeApplKbn.get(shinseiKbn));
+			} else {
+				tmpMap.put("colSinseiKbn", CodeConstant.ZEN_HYPHEN);
+			}
 			//入居予定日
 			tmpMap.put("colNyukyoDate", skfDateFormatUtils.dateFormatFromString(tmpData.getNyukyoYoteiDate(), "yyyy/MM/dd"));
 			//退居予定日

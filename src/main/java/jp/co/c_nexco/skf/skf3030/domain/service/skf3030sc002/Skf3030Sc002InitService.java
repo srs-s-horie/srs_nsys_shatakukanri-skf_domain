@@ -13,7 +13,6 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc001.Skf3030Sc001GetShatakuKanriDaichoInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetBihinInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetBihinInfoForNoIdExp;
@@ -138,7 +137,7 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3030_SC002);
-		
+		skf3030Sc002SharedService.initialize(initDto);
 		//フラグ初期化
 		initDto.setBihinItiranFlg(0);
 		initDto.setBihinItiranReloadFlg(false);

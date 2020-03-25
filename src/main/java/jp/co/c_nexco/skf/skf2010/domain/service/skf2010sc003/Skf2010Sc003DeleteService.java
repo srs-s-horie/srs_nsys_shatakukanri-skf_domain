@@ -100,11 +100,15 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 			return delDto;
 		}
 
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
+		String shainNo = loginUserInfo.get("shainNo");
+
 		// 社宅管理データ連携処理実行（データ連携用Mapは消さない）
 		String afterApplStatus = skf2010Sc003SharedService.getApplStatus(applNo);
 		List<String> resultBatch = new ArrayList<String>();
 		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId,
-				FunctionIdConstant.SKF2010_SC003);
+				FunctionIdConstant.SKF2010_SC003, shainNo);
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(delDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
