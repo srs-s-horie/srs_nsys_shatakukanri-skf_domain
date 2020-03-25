@@ -122,7 +122,13 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 //      'コントロールの設定
 		skf3022Sc005SharedService.getDropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
 				bhJyokyo, bhJyokyoList, bhKakunin, bhKakuninList, moveInOut, moveInOutList);
-		
+
+		// 社員番号
+		initDto.setShainNo(param.getShainNo());
+		// 社員名
+		initDto.setShainName(param.getShainName());
+		// 社宅名
+		initDto.setShatakuName(param.getShatakuName());
 		initDto.setNyutaikyoKbnList(nyutaikyoKbnList);
 		initDto.setStJyokyoList(stJyokyoList);
 		initDto.setStKakuninList(stKakuninList);
@@ -157,12 +163,6 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 		//社員番号変更フラグ
 		comDto.setHdnShainNoChangeFlg(null);
 		//検索条件
-		// 社員番号
-		comDto.setShainNo(null);
-		// 社員名
-		comDto.setShainName(null);
-		// 社宅名
-		comDto.setShatakuName(null);
 		// 入退居区分
 		comDto.setNyutaikyoKbn(null);
 		// 入退居区分リスト
