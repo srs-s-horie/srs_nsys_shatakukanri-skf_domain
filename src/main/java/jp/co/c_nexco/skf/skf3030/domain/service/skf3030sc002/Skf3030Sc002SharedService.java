@@ -45,8 +45,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoom;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomKey;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiBihinData;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiBihinDataKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiData;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRirekiKey;
