@@ -55,7 +55,9 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
 		
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
-		
+		// 初期化
+		initialize(initDto);
+
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 
@@ -131,5 +133,74 @@ public class Skf3022Sc005InitService extends BaseServiceAbstract<Skf3022Sc005Ini
  		
 		return initDto;
 	}
-	
+
+	/**
+	 * 初期化処理
+	 * 「*」項目はアドレスとして戻り値になる
+	 * 
+	 * @param comDto	*DTO
+	 */
+	private void initialize(Skf3022Sc005InitDto comDto) {
+
+		//提示番号
+		comDto.setHdnTeijiNo(null);
+		//入居予定日
+		comDto.setHdnNyukyoDate(null);
+		//退居予定日
+		comDto.setHdnTaikyoDate(null);
+		//申請書類管理番号
+		comDto.setHdnShoruikanriNo(null);
+		//入退居区分
+		comDto.setHdnNyutaikyoKbn(null);
+		//申請区分
+		comDto.setHdnApplKbn(null);
+		//社員番号変更フラグ
+		comDto.setHdnShainNoChangeFlg(null);
+		//検索条件
+		// 社員番号
+		comDto.setShainNo(null);
+		// 社員名
+		comDto.setShainName(null);
+		// 社宅名
+		comDto.setShatakuName(null);
+		// 入退居区分
+		comDto.setNyutaikyoKbn(null);
+		// 入退居区分リスト
+		comDto.setNyutaikyoKbnList(null);
+		// 社宅提示
+		// 社宅提示状況
+		comDto.setStJyokyo(null);
+		// 社宅提示状況リスト
+		comDto.setStJyokyoList(null);
+		// 社宅提示確認督促
+		comDto.setStKakunin(null);
+		// 社宅提示確認督促リスト
+		comDto.setStKakuninList(null);
+		// 備品提示
+		// 備品提示状況
+		comDto.setBhJyokyo(null);
+		// 備品提示状況リスト
+		comDto.setBhJyokyoList(null);
+		// 備品提示確認督促
+		comDto.setBhKakunin(null);
+		// 備品提示確認督促リスト
+		comDto.setBhKakuninList(null);
+		// 備品搬入搬出督促
+		comDto.setMoveInOut(null);
+		// 備品搬入搬出督促リスト
+		comDto.setMoveInOutList(null);
+
+		//検索結果一覧用
+		comDto.setListTableData(null);
+		comDto.setListTableMaxRowCount(null);
+
+		//ボタン制御
+		comDto.setBtnShatakuTeijiDisabled(null);
+		comDto.setBtnBihinTeijiDisabled(null);
+		comDto.setBtnBihinInOutDisabled(null);
+		//督促カウント
+		comDto.setHdnStTeijiCnt(null);
+		comDto.setHdnBhTeijiCnt(null);
+		comDto.setHdnMoveInOutCnt(null);
+	}
 }

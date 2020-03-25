@@ -53,7 +53,9 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 
 		//操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
-				
+		// 初期化
+		initialize(initDto);
+
 		// 画面のhidden項目をinitDtoに詰めなおす
 		initDto.setHdnRoomKanriNo(initDto.getHdnRoomKanriNo());
 		initDto.setShatakuKanriNo(Long.parseLong(initDto.getHdnShatakuKanriNo()));
@@ -261,4 +263,108 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		
 	}
 
+	/**
+	 * 初期化処理
+	 * 「*」項目はアドレスとして戻り値になる
+	 * 
+	 * @param comDto	*DTO
+	 */
+	private void initialize(Skf3010Sc005InitDto comDto) {
+
+		// 社宅名
+		comDto.setShatakuName(null);
+		// 地域区分
+		comDto.setAreaKbn(null);
+		// 社宅区分
+		comDto.setShatakuKbn(null);
+		// 空き部屋数
+		comDto.setEmptyRoomCount(null);
+		// 空き駐車場数
+		comDto.setEmptyParkingCount(null);
+		// 社宅管理番号
+		comDto.setShatakuKanriNo(null);
+		// 更新フラグ
+		comDto.setUpdateFlag(null);
+		//　部屋番号
+		comDto.setRoomNo(null);
+		// 本来延面積
+		comDto.setOriginalMenseki(null);
+		// 本来規格
+		comDto.setOriginalKikaku(null);
+		// 本来規格補足
+		comDto.setOriginalKikakuHosoku(null);
+		// 貸与延面積
+		comDto.setLendMenseki(null);
+		// 本来用途
+		comDto.setOriginalAuse(null);
+		//本来用途補足			
+		comDto.setOriginalAuseHosoku(null);
+		//サンルーム延面積
+		comDto.setSunRoomMenseki(null);
+		//貸与区分
+		comDto.setLendKbn(null);
+		//貸与区分補足
+		comDto.setLendKbnHosoku(null);
+		//寒冷地減免区分事由区分
+		comDto.setColdExemptionKbn(null);
+		//備考
+		comDto.setBiko(null);
+		//階段面積
+		comDto.setStairsMenseki(null);
+		//物置面積
+		comDto.setBarnMenseki(null);
+		//物置調整面積
+		comDto.setBarnMensekiAdjust(null);
+		// 本来規格リスト
+		comDto.setOriginalKikakuList(null);
+		// 本来用途リスト
+		comDto.setOriginalAuseList(null);
+		// 貸与区分リスト
+		comDto.setLendKbnList(null);
+		// 寒冷地減免事由区分リスト
+		comDto.setColdExemptionKbnList(null);
+		//物置調整面積
+		comDto.setHdnBarnMensekiAdjust(null);
+		//備品名称
+		comDto.setBihinName(null);
+		//備付状況
+		comDto.setBihinStatus(null);
+		//備付最新状態区分(非表示)
+		comDto.setBihinLatestStatus(null);
+		//備品リスト
+		comDto.setBihinListData(null);
+		// 非表示備品情報リスト
+		comDto.setHdnBihinStatusList(null);
+		//登録用備品データ
+		comDto.setRegistBihinData(null);
+		comDto.setHdnRegistFlg(null);
+		comDto.setDeleteBtnFlg(null);
+		/** エラー系 **/
+		// 部屋番号
+		comDto.setRoomNoError(null);
+		// 本来延面積
+		comDto.setOriginalMensekiError(null);
+		// 貸与延面積
+		comDto.setLendMensekiError(null);
+		// 本来用途
+		comDto.setOriginalAuseError(null);
+		// 本来規格
+		comDto.setOriginalKikakuError(null);
+		//貸与区分
+		comDto.setLendKbnError(null);
+		//サンルーム延面積
+		comDto.setSunRoomMensekiError(null);
+		//階段面積
+		comDto.setStairsMensekiError(null);
+		//物置面積
+		comDto.setBarnMensekiError(null);
+		// 本来規格（補助）
+		comDto.setOriginalKikakuHosokuError(null);
+		//本来用途（補助）			
+		comDto.setOriginalAuseHosokuError(null);
+		//貸与区分（補助）
+		comDto.setLendKbnHosokuError(null);
+		//備考
+		comDto.setBikoError(null);
+	}
 }

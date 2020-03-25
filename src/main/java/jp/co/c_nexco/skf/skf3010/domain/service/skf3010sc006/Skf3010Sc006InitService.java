@@ -45,6 +45,8 @@ public class Skf3010Sc006InitService extends BaseServiceAbstract<Skf3010Sc006Ini
 		logger.info("初期表示");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		// 初期化
+		skf3010Sc006SharedService.initialize(initDto);
 
 		// 契約情報変更モード
 		//String selectMode = Skf3010Sc006CommonDto.CONTRACT_MODE_INIT;

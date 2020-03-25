@@ -58,6 +58,8 @@ public class Skf3010Sc007InitService extends BaseServiceAbstract<Skf3010Sc007Ini
  		
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		// 初期化
+		initialize(initDto);
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 		//データ保持用リスト
@@ -169,5 +171,129 @@ public class Skf3010Sc007InitService extends BaseServiceAbstract<Skf3010Sc007Ini
 		initDto.setShatakuKbn(shatakuKbn);
 
 	}
-	
+
+	/**
+	 * 初期化処理
+	 * 「*」項目はアドレスとして戻り値になる
+	 * 
+	 * @param comDto	*DTO
+	 */
+	private void initialize(Skf3010Sc007InitDto comDto) {
+
+		// 社宅名
+		comDto.setShatakuName(null);
+		// 地域区分
+		comDto.setAreaKbn(null);
+		// 社宅区分
+		comDto.setShatakuKbn(null);
+
+		//区画番号
+		comDto.setParkingBlock(null);
+		comDto.setHdnParkingBlock(null);
+		//契約番号
+		comDto.setContractPropertyId(null);
+		//契約番号リスト
+		comDto.setContractPropertyIdList(null);
+		//リスト用文字列
+		comDto.setContractPropertyIdListData(null);
+		//契約形態リスト
+		comDto.setParkingContractTypeList(null);
+		comDto.setParkingContractType(null);
+		//賃貸人（代理人）
+		comDto.setOwnerName(null);
+		comDto.setOwnerNo(null);
+		//郵便番号
+		comDto.setParkingZipCd(null);
+		//住所
+		comDto.setParkingAddress(null);
+		//駐車場名
+		comDto.setParkingName(null);
+		//経理連携用管理番号
+		comDto.setAssetRegisterNo(null);
+		//貸与区分
+		comDto.setParkinglendKbnList(null);
+		comDto.setParkinglendKbn(null);
+		//契約開始日
+		comDto.setContractStartDate(null);
+		comDto.setSetContractStartDate(null);
+		//契約終了日
+		comDto.setContractEndDate(null);
+		comDto.setSetContractEndDate(null);
+		//駐車場料（地代） 
+		comDto.setLandRent(null);
+		comDto.setLandRentNum(null);
+		//備考
+		comDto.setBiko(null);
+		//駐車場管理番号
+		comDto.setParkingKanriNo(null);
+		//更新日時
+		comDto.setBlockUpdateDate(null);
+		//更新日時
+		comDto.setContractUpdateDate(null);
+
+
+		//駐車場一覧用
+		comDto.setListTableData(null);
+		comDto.setListTableMaxRowCount(null);
+		//データ保持用リスト
+		comDto.setHdnListData(null);
+		comDto.setHdnListDataJson(null);
+
+		//入力制御
+		comDto.setContractInfoDisabled(null);
+		comDto.setAddButtonDisabled(null);
+		comDto.setDeleteButtonDisabled(null);
+		comDto.setRegistButtonDisabled(null);
+		comDto.setCancelButtonDisabled(null);
+		comDto.setContractListDisabled(null);
+
+		//動作制御
+		comDto.setSelectMode(null);
+		//削除情報有無
+		comDto.setHdnDelInfoFlg(null);
+
+		//入力チェック用
+		//契約番号
+		comDto.setHdnBackupContractPropertyId(null);
+		//契約番号最大値
+		comDto.setHdnBackupMaxContractPropertyId(null);
+		//登録済み契約番号
+		comDto.setHdnRegistContractPropertyId(null);
+		//契約形態
+		comDto.setHdnBackupParkingContractType(null);
+		//賃貸人（代理人）
+		comDto.setHdnBackupOwnerName(null);
+		//賃貸人（代理人）番号
+		comDto.setHdnBackupOwnerNo(null);
+		//郵便番号
+		comDto.setHdnBackupParkingZipCd(null);
+		//住所
+		comDto.setHdnBackupParkingAddress(null);
+		//駐車場名
+		comDto.setHdnBackupParkingName(null);
+		//経理連携用資産番号
+		comDto.setHdnBackupAssetRegisterNo(null);
+		//貸与区分
+		comDto.setHdnBackupParkinglendKbn(null);
+		//契約開始日
+		comDto.setHdnBackupContractStartDate(null);
+		//契約終了日
+		comDto.setHdnBackupContractEndDate(null);
+		//駐車場料（地代） 
+		comDto.setHdnBackupLandRent(null);
+		//備考
+		comDto.setHdnBackupBiko(null);
+
+		/** エラー系 **/
+		comDto.setOwnerNameError(null);
+		comDto.setParkingZipCdError(null);
+		comDto.setParkingAddressError(null);
+		comDto.setParkingNameError(null);
+		comDto.setAssetRegisterNoError(null);
+		comDto.setContractStartDateError(null);
+		comDto.setContractEndDateError(null);
+		comDto.setLandRentError(null);
+		comDto.setParkingContractTypeError(null);
+		comDto.setContractPropertyIdError(null);
+	}
 }
