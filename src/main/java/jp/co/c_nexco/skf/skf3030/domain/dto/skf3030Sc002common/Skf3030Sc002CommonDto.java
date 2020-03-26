@@ -1160,4 +1160,28 @@ public class Skf3030Sc002CommonDto extends Skf303010CommonDto {
 	private String sc006TyusyajoRyokinErr;
 	// 共益費(事業者負担)
 	private String sc006KyoekihiErr;
+	
+	/** 検索条件保持 */
+	private String serachKanriKaisha ;//(Skf303010CommonSharedService.SEARCH_INFO_KANRI_KAISHA_KEY);
+	private String serachAgency ;//(Skf303010CommonSharedService.SEARCH_INFO_AGENCY_KEY);
+	private String serachShainNo ;//(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NO_KEY);
+	private String serachShainName ;//(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NAME_KEY);
+	private String serachShatakName ;//(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_NAME_KEY);
+	private String serachShatakKbn ;//(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_KBN_KEY);
+	private String serachSogoriyo ;//(Skf303010CommonSharedService.SEARCH_INFO_SOGORIYO_KEY);
+	private String serachNengetsu ;//(Skf303010CommonSharedService.SEARCH_INFO_NENGETSU_KEY);
+	private String serachShimeShori ;//(Skf303010CommonSharedService.SEARCH_INFO_SHIME_SHORI_KEY);
+	private String serachPositiveRenkei ;//(Skf303010CommonSharedService.SEARCH_INFO_POSITIVE_RENKEI_KEY);
+	private String serachKaishakanSokin ;//(Skf303010CommonSharedService.SEARCH_INFO_KAISHAKAN_SOKIN_KEY);
+	private String serachGensekiKaisha ;//(Skf303010CommonSharedService.SEARCH_INFO_GENSEKI_KAISHA_KEY);
+	private String serachKyuyoSikyuKaisha ;//(Skf303010CommonSharedService.SEARCH_INFO_SIKYU_KAISHA_KEY);
+	private String serachKyojushaKbn ;//(Skf303010CommonSharedService.SEARCH_INFO_KYOJUSHA_KBN_KEY);
+	private String serachAkiHeya ;//(Skf303010CommonSharedService.SEARCH_INFO_AKI_HEYA_KEY);
+	private String serachParkingSiyoryo ;//(Skf303010CommonSharedService.SEARCH_INFO_PARKING_KEY);
+	private String serachHonraiYoto ;//(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_YOTO_KEY);
+	private String serachHonraiKikaku ;//(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_KIKAKU_KEY);
+	private String serachYakuin ;//(Skf303010CommonSharedService.SEARCH_INFO_YAKUIN_KEY);
+	private String serachShukkosha ;//(Skf303010CommonSharedService.SEARCH_INFO_SHUKKOSHA_KEY);
+	private String serachBiko ;//(Skf303010CommonSharedService.SEARCH_INFO_BIKO_KEY);
+
 }

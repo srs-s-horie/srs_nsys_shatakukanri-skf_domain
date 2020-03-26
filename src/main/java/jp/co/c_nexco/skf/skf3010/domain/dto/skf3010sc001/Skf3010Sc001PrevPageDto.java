@@ -1,19 +1,19 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc005;
+package jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001;
 
-import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc005common.Skf3022Sc005CommonDto;
+import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010Sc001common.Skf3010Sc001CommonDto;
 import lombok.EqualsAndHashCode;
 
 /**
- * Skf3022Sc005InitDto　Skf3022_Sc005画面のInitDto。
+ * Skf3010Sc001PrevPageのDto。
  * 
  * @author NEXCOシステムズ
  */
 @lombok.Data
 @EqualsAndHashCode(callSuper = true)
-public class Skf3022Sc005InitDto extends Skf3022Sc005CommonDto {
+public class Skf3010Sc001PrevPageDto extends Skf3010Sc001CommonDto {
 	
 	private static final long serialVersionUID = -1902278406295003652L;
 }

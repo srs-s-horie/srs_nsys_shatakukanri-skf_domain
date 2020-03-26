@@ -57,11 +57,10 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		initialize(initDto);
 				
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
-//		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-//				&& Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3010_SC005)) {
 
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
 				&& (Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3010_SC005)
@@ -224,5 +223,50 @@ public class Skf3010Sc004InitService extends BaseServiceAbstract<Skf3010Sc004Ini
 		}
 		initDto.setShatakuKbn(shatakuKbn);
 
+	}
+
+	/**
+	 * 初期化処理
+	 * 「*」項目はアドレスとして戻り値になる
+	 * @param comDto	*DTO
+	 */
+	private void initialize(Skf3010Sc004InitDto comDto) {
+
+		// リストテーブルデータ
+		comDto.setListTableData(null);
+		// 部屋管理番号
+		comDto.setShatakuRoomKanriNo(null);
+		// 部屋名ROOM_NO
+		comDto.setRoomNo(null);
+		// 本来社宅用途ORIGINAL_AUSE
+		comDto.setOriginalAuse(null);
+		// 本来規格ORIGINAL_KIKAKU
+		comDto.setOriginalKikaku(null);
+		// 本来延面積ORIGINAL_MENSEKI
+		comDto.setOriginalMenseki(null);
+		// 貸与区分LEND_KBN
+		comDto.setLendKbn(null);
+		// 備考BIKO
+		comDto.setBiko(null);
+		// 氏名漢字
+		comDto.setName(null);
+		// 社宅名
+		comDto.setShatakuName(null);
+		// 地域区分
+		comDto.setAreaKbn(null);
+		// 社宅区分
+		comDto.setShatakuKbn(null);
+		// 空き部屋数
+		comDto.setEmptyRoomCount(null);
+		// 空き駐車場数
+		comDto.setEmptyParkingCount(null);
+		// 社宅管理番号
+		comDto.setShatakuKanriNo(null);
+		// 更新フラグ
+		comDto.setUpdateFlag(null);
+		// 本来用途リスト
+		comDto.setAuseList(null);
+		// 貸与区分リスト
+		comDto.setLendList(null);
 	}
 }

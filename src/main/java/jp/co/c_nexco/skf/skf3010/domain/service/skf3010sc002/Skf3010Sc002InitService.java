@@ -44,6 +44,7 @@ public class Skf3010Sc002InitService extends BaseServiceAbstract<Skf3010Sc002Ini
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3010_SC002);
 
 		// DTO初期化
+		skf3010Sc002SharedService.initialize(initDto);
 		// 選択タブインデックス
 		initDto.setHdnNowSelectTabIndex(null);
 		// 契約情報プルダウン

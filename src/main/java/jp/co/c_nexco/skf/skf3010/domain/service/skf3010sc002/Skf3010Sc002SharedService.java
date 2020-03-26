@@ -3841,4 +3841,332 @@ public class Skf3010Sc002SharedService {
 		// 更新日時
 		mShatakuContract.setLastUpdateDate(comDto.getContractUpdateDate());
 	}
+
+	/**
+	 * 初期化
+	 * 「*」項目はアドレスとして戻り値になる
+	 * @param comDto	*DTO
+	 */
+	public void initialize(Skf3010Sc002CommonDto comDto) {
+		/** 画面上部 */
+		// 空き部屋数
+		comDto.setEmptyRoomCount(null);
+		// 空き駐車場数
+		comDto.setEmptyParkingCount(null);
+		// 一棟借上フラグ(trueの場合は一棟借上)
+		comDto.setIttoFlg(false);
+		// 社宅区分(一棟借上フラグがfalseの場合に参照)
+		comDto.setShatakuKbn(null);
+
+		/** テキストボックス */
+		/** 基本情報 */
+		// 郵便番号
+		comDto.setZipCd(null);
+		// 都道府県コード
+		comDto.setPref(null);
+		// 社宅住所(継承元にある)
+		comDto.setShatakuAddress(null);
+		// 社宅構造詳細
+		comDto.setShatakuStructureDetail(null);
+		// 建築年月日
+		comDto.setBuildDate(null);
+		// 実年数
+		comDto.setJituAge(null);
+		// 次回算定年月日
+		comDto.setNextCalcDate(null);
+		// 経年
+		comDto.setAging(null);
+		// 社宅補足ファイル名1
+		comDto.setShatakuHosokuFileName1(null);
+		// 社宅補足ファイル名2
+		comDto.setShatakuHosokuFileName2(null);
+		// 社宅補足ファイル名3
+		comDto.setShatakuHosokuFileName3(null);
+		// 社宅補足リンク名1
+		comDto.setShatakuHosokuLink1(null);
+		// 社宅補足リンク名2
+		comDto.setShatakuHosokuLink2(null);
+		// 社宅補足リンク名3
+		comDto.setShatakuHosokuLink3(null);
+		// 社宅補足サイズ1
+		comDto.setShatakuHosokuSize1(null);
+		// 社宅補足サイズ2
+		comDto.setShatakuHosokuSize2(null);
+		// 社宅補足サイズ3
+		comDto.setShatakuHosokuSize3(null);
+		// 社宅補足ファイル1
+		comDto.setShatakuHosokuFile1(null);
+		// 社宅補足ファイル2
+		comDto.setShatakuHosokuFile2(null);
+		// 社宅補足ファイル3
+		comDto.setShatakuHosokuFile3(null);
+		// 備考
+		comDto.setBiko(null);
+		// 基本情報更新日時(排他用)
+		comDto.setKihonUpdateDate(null);
+		/** 駐車場情報 */
+		// 駐車場基本使用料
+		comDto.setParkingRent(null);
+		// 駐車場台数
+		comDto.setParkingBlockCount(null);
+		// 貸与可能総数
+		comDto.setLendPossibleCount(null);
+		// 駐車場補足ファイル名1
+		comDto.setParkingHosokuFileName1(null);
+		// 駐車場補足ファイル名2
+		comDto.setParkingHosokuFileName2(null);
+		// 駐車場補足ファイル名3
+		comDto.setParkingHosokuFileName3(null);
+		// 駐車場補足リンク1
+		comDto.setParkingHosokuLink1(null);
+		// 駐車場補足リンク2
+		comDto.setParkingHosokuLink2(null);
+		// 駐車場補足リンク3
+		comDto.setParkingHosokuLink3(null);
+		// 駐車場補足サイズ1
+		comDto.setParkingHosokuSize1(null);
+		// 駐車場補足サイズ2
+		comDto.setParkingHosokuSize2(null);
+		// 駐車場補足サイズ3
+		comDto.setParkingHosokuSize3(null);
+		// 駐車場補足ファイル1
+		comDto.setParkingHosokuFile1(null);
+		// 駐車場補足ファイル2
+		comDto.setParkingHosokuFile2(null);
+		// 駐車場補足ファイル3
+		comDto.setParkingHosokuFile3(null);
+		// 駐車場備考
+		comDto.setParkingBiko(null);
+		// 駐車場情報更新日時(排他用)
+		comDto.setParkingUpdateDate(null);
+		/** 管理者情報 */
+		/** 寮長・自治会長 */
+		// 部屋番号：寮長・自治会長
+		comDto.setDormitoryLeaderRoomNo(null);
+		// 氏名：寮長・自治会長
+		comDto.setDormitoryLeaderName(null);
+		// 電子メールアドレス：寮長・自治会長
+		comDto.setDormitoryLeaderMailAddress(null);
+		// 電話番号：寮長・自治会長
+		comDto.setDormitoryLeaderTelNumber(null);
+		// 内線番号：寮長・自治会長
+		comDto.setDormitoryLeaderExtentionNo(null);
+		// 備考：寮長・自治会長
+		comDto.setDormitoryLeaderBiko(null);
+		// 更新日時(排他用)：寮長・自治会長
+		comDto.setDormitoryLeaderUpdateDate(null);
+		/** 鍵管理者 */
+		// 部屋番号 ：鍵管理者
+		comDto.setKeyManagerRoomNo(null);
+		// 氏名 ：鍵管理者
+		comDto.setKeyManagerName(null);
+		// 電子メールアドレス ：鍵管理者
+		comDto.setKeyManagerMailAddress(null);
+		// 電話番号 ：鍵管理者
+		comDto.setKeyManagerTelNumber(null);
+		// 内線番号 ：鍵管理者
+		comDto.setKeyManagerExtentionNo(null);
+		// 備考 ：鍵管理者
+		comDto.setKeyManagerBiko(null);
+		// 更新日時(排他用)：鍵管理者
+		comDto.setKeyManagerUpdateDate(null);
+		/** 寮母・管理会社 */
+		// 部屋番号：寮母・管理会社
+		comDto.setMatronRoomNo(null);
+		// 氏名：寮母・管理会社
+		comDto.setMatronName(null);
+		// 電子メールアドレス：寮母・管理会社
+		comDto.setMatronMailAddress(null);
+		// 電話番号：寮母・管理会社
+		comDto.setMatronTelNumber(null);
+		// 内線番号：寮母・管理会社
+		comDto.setMatronExtentionNo(null);
+		// 備考：寮母・管理会社
+		comDto.setMatronBiko(null);
+		// 更新日時(排他用)：寮母・管理会社
+		comDto.setMatronUpdateDate(null);
+		/** 契約情報 */
+		// 賃貸人（代理人）名
+		comDto.setContractOwnerName(null);
+		// 賃貸人（代理人）番号
+		comDto.setContractOwnerNo(null);
+		// 経理連携用管理番号
+		comDto.setAssetRegisterNo(null);
+		// 契約開始日
+		comDto.setContractStartDay(null);
+		// 契約終了日
+		comDto.setContractEndDay(null);
+		// 家賃
+		comDto.setContractRent(null);
+		// 共益費
+		comDto.setContractKyoekihi(null);
+		// 駐車場料（地代）
+		comDto.setContractLandRent(null);
+		// 備考
+		comDto.setContractBiko(null);
+		// 契約情報更新日時(排他用)
+		comDto.setContractUpdateDate(null);
+		// 契約情報表示プルダウンインデックス
+		comDto.setHdnDispContractSelectedIndex(null);
+		// 契約情報選択プルダウンインデックス
+		comDto.setHdnChangeContractSelectedIndex(null);
+		// 契約情報削除プルダウンインデックス
+		comDto.setHdnDeleteContractSelectedValue(null);
+
+		// 選択タブインデックス
+		comDto.setHdnNowSelectTabIndex(null);
+
+		/** 補足ファイル */
+		// ファイル番号
+		comDto.setFileNo(null);
+		// 種別
+		comDto.setHosokuType(null);	//補足種別
+		//ファイルボックス
+		comDto.setTmpFileBoxshataku1(null);
+		comDto.setTmpFileBoxshataku2(null);
+		comDto.setTmpFileBoxshataku3(null);
+		comDto.setTmpFileBoxparking1(null);
+		comDto.setTmpFileBoxparking2(null);
+		comDto.setTmpFileBoxparking3(null);
+
+		/** 駐車場契約情報への連携用 */
+//		comDto.setHdnShatakuKanriNo(null);
+		comDto.setHdnShatakuName(null);
+		comDto.setHdnAreaKbn(null);
+		comDto.setHdnShatakuKbn(null);
+		comDto.setHdnEmptyRoomCount(null);
+		comDto.setHdnEmptyParkingCount(null);
+
+		/** ドロップダウンリスト */
+		// 地域区分リスト
+		comDto.setAreaKbnList(null);
+		// 地域区分選択値コード
+		comDto.setAreaKbnCd(null);
+		// 管理事業領域リスト
+		comDto.setManageBusinessAreaList(null);
+		// 都道府県リスト
+		comDto.setPrefList(null);
+		// 社宅構造リスト
+		comDto.setShatakuStructureList(null);
+		// 社宅構造選択値コード
+		comDto.setStructureKbnCd(null);
+		// エレベーターリスト
+		comDto.setElevatorList(null);
+		// 駐車場構造リスト
+		comDto.setParkingStructureList(null);
+		// 契約番号リスト
+		comDto.setContractNoList(null);
+		// 貸与区分選択値リスト文字列(追加ボタン押下用)
+		comDto.setLendKbnSelectListString(null);
+		// デフォルト貸与状況(追加ボタン押下用)
+		comDto.setDefaultParkingLendStatus(null);
+
+		/** リストテーブル */
+		// 駐車場情報リスト(画面表示時に使用するリスト)
+		comDto.setParkingInfoListTableData(null);
+		// 駐車場情報リスト(初期表示時：DB取得時)
+		comDto.setHdnStartingParkingInfoListTableData(null);
+		// 駐車場情報リスト(現在画面に表示されているリスト)
+		comDto.setNowParkingInfoListTableData(null);
+		// 備品情報リスト
+		comDto.setBihinInfoListTableData(null);
+		// 契約情報リスト
+		comDto.setContractInfoListTableData(null);
+		// 非表示備品情報リスト
+		comDto.setHdnBihinInfoListTableData(null);
+		// 社宅部屋情報リスト(排他処理用)
+		comDto.setShatakuRoomExlusiveCntrllList(null);
+		// 社宅部屋備品情報リスト(排他処理用)
+		comDto.setRoomeBihinExlusiveCntrllList(null);
+
+		/** フラグ */
+		// 新規保有社宅フラグ(新規：true, 編集：false)
+		comDto.setNewShatakuFlg(false);
+		// 契約情報追加ボタン(非活性：true, 活性:false)
+		comDto.setContractAddDisableFlg(false);
+		// 契約情報削除ボタン(非活性：true, 活性:false)
+		comDto.setContractDelDisableFlg(false);
+		// 駐車場契約情報ボタン(非活性：true, 活性:false)
+		comDto.setParkingContractDisableFlg(false);
+
+		/** JSON(連携用) */
+		// JSON駐車場区画情報 リスト
+		comDto.setJsonParking(null);
+		// JSON備品情報 リスト
+		comDto.setJsonBihin(null);
+		// ドロップダウン選択値リスト
+		comDto.setJsonDrpDwnList(null);
+		// 可変ラベルリスト
+		comDto.setJsonLabelList(null);
+
+		/** データ比較用 */
+		// 建築年月日
+		comDto.setStartingBuildDate(null);
+		// 社宅構造
+		comDto.setStartingShatakuStructure(null);
+		// 駐車場構造リスト
+		comDto.setStartingParkingStructure(null);
+		// 地域区分
+		comDto.setStartingAreaKbn(null);
+
+		/** エラー系 **/
+		// 社宅名
+		comDto.setShatakuNameErr(null);
+		// 地域区分
+		comDto.setAreaKbnErr(null);
+		// 社宅区分
+		comDto.setShatakuKbnErr(null);
+		// 利用区分
+		comDto.setUseKbnKbnErr(null);
+		// 管理会社
+		comDto.setManageCompanyErr(null);
+		// 管理機関
+		comDto.setManageAgencyErr(null);
+		// 管理事業領域
+		comDto.setManageBusinessAreaErr(null);
+		// 郵便番号
+		comDto.setZipCdErr(null);
+		// 都道府県
+		comDto.setPrefErr(null);
+		// 社宅住所
+		comDto.setShatakuAddressErr(null);
+		// 社宅構造
+		comDto.setShatakuStructureErr(null);
+		// 建築年月日
+		comDto.setBuildDateErr(null);
+		// 駐車場構造
+		comDto.setParkingStructureErr(null);
+		// 寮長・自治会長 メールアドレス
+		comDto.setDormitoryLeaderMailAddressErr(null);
+		// 鍵管理者 メールアドレス
+		comDto.setKeyManagerMailAddressErr(null);
+		// 寮母・管理会社 メールアドレス
+		comDto.setMatronMailAddressErr(null);
+		// 寮長・自治会長 電話番号
+		comDto.setDormitoryLeaderTelNumberErr(null);
+		// 鍵管理者 電話番号
+		comDto.setKeyManagerTelNumberErr(null);
+		// 寮母・管理会社 電話番号
+		comDto.setMatronTelNumberErr(null);
+		// 寮長・自治会長 内線番号
+		comDto.setDormitoryLeaderExtentionNoErr(null);
+		// 鍵管理者 内線番号
+		comDto.setKeyManagerExtentionNoErr(null);
+		// 寮母・管理会社 内線番号
+		comDto.setMatronExtentionNoErr(null);
+		// 賃貸人（代理人）名
+		comDto.setContractOwnerNameErr(null);
+		// 経理連携用管理番号
+		comDto.setAssetRegisterNoErr(null);
+		// 契約開始日
+		comDto.setContractStartDayErr(null);
+		// 契約終了日
+		comDto.setContractEndDayErr(null);
+		// 家賃
+		comDto.setContractRentErr(null);
+		// 共益費
+		comDto.setContractKyoekihiErr(null);
+		// 駐車場料（地代）
+		comDto.setContractLandRentErr(null);
+	}
 }

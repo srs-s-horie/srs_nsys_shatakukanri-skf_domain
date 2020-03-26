@@ -87,11 +87,15 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 		}
 
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
+				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
+		String shainNo = loginUserInfo.get("shainNo");
+
 		// 社宅管理データ連携処理実行（データ連携用Mapは消さない）
 		String afterApplStatus = CodeConstant.STATUS_TORISAGE;
 		List<String> resultBatch = new ArrayList<String>();
 		resultBatch = skf2010Sc003SharedService.doShatakuRenkei(menuScopeSessionBean, applNo, afterApplStatus, applId,
-				FunctionIdConstant.SKF2010_SC003);
+				FunctionIdConstant.SKF2010_SC003, shainNo);
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
 			skfRollBackExpRepository.rollBack();

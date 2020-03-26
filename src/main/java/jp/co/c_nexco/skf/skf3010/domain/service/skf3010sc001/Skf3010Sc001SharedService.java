@@ -342,4 +342,5 @@ public class Skf3010Sc001SharedService {
 		genericCodeMapPref = null;
 		return setViewList;
 	}
+
 }

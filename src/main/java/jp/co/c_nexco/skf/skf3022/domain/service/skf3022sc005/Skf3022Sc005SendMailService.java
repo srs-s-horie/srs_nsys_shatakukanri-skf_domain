@@ -354,7 +354,7 @@ public class Skf3022Sc005SendMailService extends BaseServiceAbstract<Skf3022Sc00
 			mailCnt = mailCnt + 1;
 			
 			if(!ret){
-				LogUtils.debugByMsg("メール送信失敗");
+				LogUtils.debugByMsg("メール送信失敗:"+ map.get("shainNo").toString());
 				//'送信失敗件数
 				mailFailCnt = mailFailCnt + 1;
 				//MessageIdConstant.I_SKF_3080
@@ -366,7 +366,7 @@ public class Skf3022Sc005SendMailService extends BaseServiceAbstract<Skf3022Sc00
 				LogUtils.warn(Skf3022Sc005SendMailService.class, message);
 
 			}else{
-				LogUtils.debugByMsg("メール送信成功");
+				LogUtils.debugByMsg("メール送信成功:"+ map.get("shainNo").toString());
 				sendMailFlg = true;
 				//'送信成功件数
 				mailSuccessCnt = mailSuccessCnt + 1;

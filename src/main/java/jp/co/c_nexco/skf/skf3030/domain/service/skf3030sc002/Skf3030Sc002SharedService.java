@@ -1814,6 +1814,30 @@ public class Skf3030Sc002SharedService {
 //			ddlBihinTaiyoStts.Enabled = status   //備品貸与状態
 //		    End If
 //		Next
+		List<Map<String,Object>> BihinDt = new ArrayList<Map<String, Object>>();
+		
+		// 備品情報リスト
+		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
+		bihinList.addAll(jsonArrayToArrayList(comDto.getJsonBihin()));
+		
+		for(Map<String,Object> bihinRow : bihinList){
+			Map<String,Object> tmpMap = new HashMap<String,Object>();
+		
+			tmpMap.put("bihinCd", bihinRow.get("bihinCd").toString());
+			tmpMap.put("bihinName", bihinRow.get("bihinName").toString());
+			tmpMap.put("heyaSonaetukeSttsStr", bihinRow.get("heyaSonaetukeSttsStr").toString());
+			tmpMap.put("bihinTaiyoStts", bihinRow.get("bihinTaiyoStts").toString());
+			tmpMap.put("bihinTaiyoSttsList", bihinRow.get("bihinTaiyoSttsList").toString());
+			tmpMap.put("bihinStatusOld", bihinRow.get("bihinStatusOld").toString());
+			tmpMap.put("updateFlg", bihinRow.get("updateFlg").toString());
+			tmpMap.put("updateDate", bihinRow.get("updateDate").toString());
+			tmpMap.put("heyaSonaetukeStts", bihinRow.get("heyaSonaetukeStts").toString());
+			tmpMap.put("bihinTaiyoSttsKbn", bihinRow.get("bihinTaiyoSttsKbn").toString());
+			
+			BihinDt.add(tmpMap);
+		}
+		comDto.setBihinInfoListTableData(getBihinListTableDataViewColumnFromView(BihinDt,status));
+		
 
 		comDto.setSc006TaiyoDayDisableFlg(setStatus); //貸与日
 		comDto.setSc006HenkyakuDayDisableFlg(setStatus); //返却日
@@ -2042,6 +2066,52 @@ public class Skf3030Sc002SharedService {
 	}
 	
 	/**
+	 * リストテーブルに出力するリストを取得する。
+	 * (非活制御有)
+	 * 
+	 * @param originList
+	 * @return リストテーブルに出力するリスト
+	 */
+	public List<Map<String, Object>> getBihinListTableDataViewColumnFromView(List<Map<String,Object>> originList,Boolean status) {
+
+		List<Map<String, Object>> setViewList = new ArrayList<Map<String, Object>>();
+
+		//備品貸与状態リスト
+		List<Map<String, Object>> statusList = ddlUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_BIHINLENTSTATUS_KBN, "",false);
+				
+		int i=0;
+		for(Map<String,Object> tmpData : originList){
+
+			Map<String, Object> tmpMap = new HashMap<String, Object>();
+
+			//備品コード
+			tmpMap.put("bihinCd", HtmlUtils.htmlEscape(tmpData.get("bihinCd").toString()));
+			tmpMap.put("bihinName", HtmlUtils.htmlEscape(tmpData.get("bihinName").toString()));
+			//部屋備付状態
+			tmpMap.put("heyaSonaetukeStts", tmpData.get("heyaSonaetukeStts").toString());
+			tmpMap.put("heyaSonaetukeSttsStr", HtmlUtils.htmlEscape(tmpData.get("heyaSonaetukeSttsStr").toString()));
+
+			//備品貸与状態
+			String bihinTaiyoStts = tmpData.get("bihinTaiyoStts").toString();
+			String statusListCode = createBihinStatusSelect(bihinTaiyoStts,statusList,tmpData.get("bihinCd").toString());
+			if(Skf3030Sc002CommonDto.SHITADORI.equals(tmpData.get("bihinCd").toString().substring(0, 1)) || !status){
+				//下取りの備品貸与状態ドロップダウンを非活性にセット
+				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "' disabled>" + statusListCode + "</select>");
+			}else{
+				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "'>" + statusListCode + "</select>");
+			}
+			tmpMap.put("bihinStatusOld", tmpData.get("bihinStatusOld").toString());
+			tmpMap.put("bihinTaiyoSttsKbn", tmpData.get("bihinTaiyoSttsKbn").toString());
+			
+			setViewList.add(tmpMap);
+			i++;
+		}
+
+		return setViewList;
+	}
+
+	
+	/**
 	 * 貸与状態SelectのHTMLコード生成処理
 	 * @param bihinStatus 備付状況
 	 * @param statusList 備付状況リスト
@@ -2121,6 +2191,99 @@ public class Skf3030Sc002SharedService {
 		}else{
 			return true;
 		}
+	}
+	
+	/**
+	 * エラー変数初期化
+	 * @param comDto
+	 */
+	public void errReset(Skf3030Sc002CommonDto comDto){
+		// 原籍会社
+		comDto.setSc006OldKaisyaNameSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 給与支給会社名
+		comDto.setSc006KyuyoKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 入居予定日
+		comDto.setSc006NyukyoYoteiDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 退居予定日
+		comDto.setSc006TaikyoYoteiDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用開始日1
+		comDto.setSc006RiyouStartDayOneErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用終了日1
+		comDto.setSc006RiyouEndDayOneErr(CodeConstant.DOUBLE_QUOTATION);
+		// 居住者区分
+		comDto.setSc006KyojyusyaKbnSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用開始日2
+		comDto.setSc006RiyouStartDayTwoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 利用終了日2
+		comDto.setSc006RiyouEndDayTwoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 役員算定
+		comDto.setSc006YakuinSanteiSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 社宅使用料調整金額
+		comDto.setSc006SiyoroTyoseiPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 駐車場使用料調整金額
+		comDto.setSc006TyusyaTyoseiPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 個人負担共益費月額
+		comDto.setSc006KyoekihiMonthPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 個人負担共益費調整金額
+		comDto.setSc006KyoekihiTyoseiPayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 共益費支払月選択値
+		comDto.setSc006KyoekihiPayMonthSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 貸与日
+		comDto.setSc006TaiyoDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 返却日
+		comDto.setSc006HenkyakuDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入希望日
+		comDto.setSc006KibouDayInErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入希望時間
+		comDto.setSc006KibouTimeInSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入本人連絡先
+		comDto.setSc006HonninAddrInErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入受取代理人名
+		comDto.setSc006UketoriDairiInNameErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬入受取代理人連絡先
+		comDto.setSc006UketoriDairiAddrErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出希望日
+		comDto.setSc006KibouDayOutErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出希望時間
+		comDto.setSc006KibouTimeOutSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出本人連絡先
+		comDto.setSc006HonninAddrOutErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出立会代理人名
+		comDto.setSc006TachiaiDairiErr(CodeConstant.DOUBLE_QUOTATION);
+		// 搬出立会代理人連絡先
+		comDto.setSc006TachiaiDairiAddrErr(CodeConstant.DOUBLE_QUOTATION);
+		// 配属会社名選択値
+		comDto.setSc006HaizokuKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 出向の有無(相互利用状況)
+		comDto.setSc006SogoRyojokyoSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 所属機関
+		comDto.setSc006SyozokuKikanErr(CodeConstant.DOUBLE_QUOTATION);
+		// 貸付会社選択値
+		comDto.setSc006TaiyoKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 室・部名
+		comDto.setSc006SituBuNameErr(CodeConstant.DOUBLE_QUOTATION);
+		// 借受会社
+		comDto.setSc006KariukeKaisyaSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 課等名
+		comDto.setSc006KanadoMeiErr(CodeConstant.DOUBLE_QUOTATION);
+		// 相互利用判定区分
+		comDto.setSc006SogoHanteiKbnSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 配属データコード番号
+		comDto.setSc006HaizokuNoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 社宅使用料会社間送金区分
+		comDto.setSc006SokinShatakuSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 共益費会社間送付区分
+		comDto.setSc006SokinKyoekihiSelectErr(CodeConstant.DOUBLE_QUOTATION);
+		// 開始日
+		comDto.setSc006StartDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 終了日
+		comDto.setSc006EndDayErr(CodeConstant.DOUBLE_QUOTATION);
+		// 社宅賃貸料
+		comDto.setSc006ChintaiRyoErr(CodeConstant.DOUBLE_QUOTATION);
+		// 駐車場料金
+		comDto.setSc006TyusyajoRyokinErr(CodeConstant.DOUBLE_QUOTATION);
+		// 共益費(事業者負担)
+		comDto.setSc006KyoekihiErr(CodeConstant.DOUBLE_QUOTATION);
 	}
 	
 	/**
@@ -3673,6 +3836,30 @@ public class Skf3030Sc002SharedService {
 		comDto.setSc006KyoekihiPayAfter(sc006KyoekihiPayAfter);
 		comDto.setSc006StartDay(getDateText(sc006StartDay));
 		comDto.setSc006EndDay(getDateText(sc006EndDay));
+		
+		List<Map<String,Object>> BihinDt = new ArrayList<Map<String, Object>>();
+		
+		// 備品情報リスト
+		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
+		bihinList.addAll(jsonArrayToArrayList(comDto.getJsonBihin()));
+		
+		for(Map<String,Object> bihinRow : bihinList){
+			Map<String,Object> tmpMap = new HashMap<String,Object>();
+		
+			tmpMap.put("bihinCd", bihinRow.get("bihinCd").toString());
+			tmpMap.put("bihinName", bihinRow.get("bihinName").toString());
+			tmpMap.put("heyaSonaetukeSttsStr", bihinRow.get("heyaSonaetukeSttsStr").toString());
+			tmpMap.put("bihinTaiyoStts", bihinRow.get("bihinTaiyoStts").toString());
+			tmpMap.put("bihinTaiyoSttsList", bihinRow.get("bihinTaiyoSttsList").toString());
+			tmpMap.put("bihinStatusOld", bihinRow.get("bihinStatusOld").toString());
+			tmpMap.put("updateFlg", bihinRow.get("updateFlg").toString());
+			tmpMap.put("updateDate", bihinRow.get("updateDate").toString());
+			tmpMap.put("heyaSonaetukeStts", bihinRow.get("heyaSonaetukeStts").toString());
+			tmpMap.put("bihinTaiyoSttsKbn", bihinRow.get("bihinTaiyoSttsKbn").toString());
+			
+			BihinDt.add(tmpMap);
+		}
+		comDto.setBihinInfoListTableData(getBihinListTableDataViewColumnFromView(BihinDt,comDto.getGBihinInfoControlStatusFlg()));
 	}
 	
 	/**
@@ -3712,5 +3899,662 @@ public class Skf3030Sc002SharedService {
 		}
 		
 		return resultLong;
+	}
+
+	/**
+	 * DTO変数初期化
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * @param comDto	*DTO
+	 */
+	public void initialize(Skf3030Sc002CommonDto comDto) {
+
+		/** 提示データ一覧検索条件退避 */
+		// 社員番号
+		comDto.setSearchInfoShainNo(null);
+		// 社員氏名
+		comDto.setSearchInfoShainName(null);
+		// 社宅名
+		comDto.setSearchInfoShatakuName(null);
+		// 入退居区分
+		comDto.setSearchInfoNyutaikyoKbn(null);
+		// 社宅提示状況
+		comDto.setSearchInfoStJyokyo(null);
+		// 社宅提示確認督促
+		comDto.setSearchInfoStKakunin(null);
+		// 備品提示状況
+		comDto.setSearchInfoBhJyokyo(null);
+		// 備品提示確認督促
+		comDto.setSearchInfoBhKakunin(null);
+		// 備品搬入搬出督促
+		comDto.setSearchInfoMoveInout(null);
+
+		/** 次月予約登録パラメータ */
+		// 提示番号
+		comDto.setHdnJigetuYoyakuTeijiNo(null);
+		// 基準年月
+		comDto.setHdnJigetuYoyakuYearMonth(null);
+		// 社宅管理台帳ID
+		comDto.setHdnJigetuYoyakuShatakuKanriId(null);
+		// 社宅使用料月額
+		comDto.setHdnJigetuYoyakuRental(null);
+		// 個人負担共益費月額
+		comDto.setHdnJigetuYoyakuKyoekihiPerson(null);
+		// 区画1_駐車場使用料月額
+		comDto.setHdnJigetuYoyakuParkingRentalOne(null);
+		// 区画2_駐車場使用料月額
+		comDto.setHdnJigetuYoyakuParkingRentalTwo(null);
+
+		/** 使用料計算入力支援戻り値 */
+		// 規格
+		comDto.setHdnRateShienKikaku(null);
+		// 用途
+		comDto.setHdnRateShienYoto(null);
+		// 延べ面積
+		comDto.setHdnRateShienNobeMenseki(null);
+		// 基準面積(基準使用料算定上延べ面積)
+		comDto.setHdnRateShienKijunMenseki(null);
+		// 社宅面積(社宅使用料算定上延べ面積)
+		comDto.setHdnRateShienShatakuMenseki(null);
+		// 規格名
+		comDto.setHdnRateShienKikakuName(null);
+		// 用途名
+		comDto.setHdnRateShienYotoName(null);
+		// サンルーム面積
+		comDto.setHdnRateShienSunroomMenseki(null);
+		// 階段面積
+		comDto.setHdnRateShienKaidanMenseki(null);
+		// 物置面積
+		comDto.setHdnRateShienMonookiMenseki(null);
+		// 単価
+		comDto.setHdnRateShienTanka(null);
+		// 経年
+		comDto.setHdnRateShienKeinen(null);
+		// 経年残価率
+		comDto.setHdnRateShienKeinenZankaRitsu(null);
+		// 使用料パターン名
+		comDto.setHdnRateShienPatternName(null);
+		// 使用料パターン月額
+		comDto.setHdnRateShienPatternGetsugaku(null);
+		// 社宅使用料月額
+		comDto.setHdnRateShienShatakuGetsugaku(null);
+		// 社宅基本使用料
+		comDto.setHdnRateShienKihonShiyoryo(null);
+
+		/** 非表示項目 */
+		// 社宅管理台帳ID
+		comDto.setHdnShatakuKanriId(null);
+		// 社宅管理番号
+		comDto.setHdnShatakuKanriNo(null);
+		// 社宅管理番号元?
+		comDto.setHdnShatakuKanriNoOld(null);
+		// 部屋管理番号
+		comDto.setHdnRoomKanriNo(null);
+		// 部屋管理番号元?
+		comDto.setHdnRoomKanriNoOld(null);
+		// 管理会社コード
+		comDto.setHdnCompanyCode(null);
+		// 締め処理実行区分
+		comDto.setHdnBillingActKbn(null);
+		// 旧提示番号
+		comDto.setHdnTeijiNoOld(null);
+		// 入退居区分元?
+		comDto.setHdnNyutaikyoKbnOld(null);
+		// 同一書類管理番号存在フラグ
+		comDto.setHdnSameFlg(false);
+		// 役員算定区分
+		comDto.setHdnYakuin(null);
+		// 個人負担共益費月額
+		comDto.setHdnKojinFutan(null);
+		// 区画番号1
+		comDto.setHdnKukakuNoOne(null);
+		// 利用開始日1
+		comDto.setHdnRiyouStartDayOne(null);
+		// 利用終了日1
+		comDto.setHdnRiyouEndDayOne(null);
+		// 区画番号2
+		comDto.setHdnKukakuNoTwo(null);
+		// 利用開始日2
+		comDto.setHdnRiyouStartDayTwo(null);
+		// 利用終了日2
+		comDto.setHdnRiyouEndDayTwo(null);
+		// 使用料計算パターンID元
+		comDto.setHdnSiyouryoIdOld(null);
+		// 使用料パターンID
+		comDto.setHdnSiyouryoId(null);
+		// 使用料計算パターンID
+		comDto.setHdnShiyoryoKeisanPatternId(null);
+		// 駐車場区画番号元（区画１）
+		comDto.setHdnChushajoNoOneOld(null);
+		//comDto.setHdnChushajoNoOne(null);
+		// 駐車場区画番号元（区画2）
+		comDto.setHdnChushajoNoTwoOld(null);
+		//comDto.setHdnChushajoNoTwo(null);
+		// 継続登録フラグ
+		comDto.setHdnKeizokuBtnFlg(false);
+		// 原籍会社コード
+		comDto.setHdnGensekiKaishaCd(null);
+		// 給与支給会社コード
+		comDto.setHdnKyuyoKaishaCd(null);
+		// 貸付会社コード
+		comDto.setHdnKashitsukeKaishaCd(null);
+		// 借受会社コード
+		comDto.setHdnKariukeKaishaCd(null);
+		// 配属会社コード
+		comDto.setHdnHaizokuKaishaCd(null);
+		// 社宅提示ステータス
+		comDto.setHdnShatakuTeijiStatus(null);
+		// 備品提示ステータス
+		comDto.setHdnBihinTeijiStatus(null);
+		// 備品貸与区分
+		comDto.setHdnBihinTaiyoKbn(null);
+		// 提示データ更新日
+		comDto.setHdnTeijiDataUpdateDate(null);
+		// 社宅部屋情報マスタ元更新日
+		comDto.setHdnShatakuRoomUpdateDate(null);
+		comDto.setHdnShatakuRoomOldUpdateDate(null);
+		// 社宅駐車場区画情報マスタ元（区画１）更新日
+		comDto.setHdnShatakuParkingBlock1UpdateDate(null);
+		comDto.setHdnShatakuParkingBlockOld1UpdateDate(null);
+		comDto.setHdnShatakuParkingBlockOld11UpdateDate(null);
+		// 社宅駐車場区画情報マスタ元（区画２）更新日
+		comDto.setHdnShatakuParkingBlock2UpdateDate(null);
+		comDto.setHdnShatakuParkingBlockOld2UpdateDate(null);
+		comDto.setHdnShatakuParkingBlockOld21UpdateDate(null);
+		// 生年月日
+		comDto.setHdnBirthday(null);
+		// 社宅部屋変更フラグ
+		comDto.setHdnShatakuHeyaFlg(null);
+		// 使用料パターン排他処理用更新日付
+		comDto.setHdnRentalPatternUpdateDate(null);
+		// 入退居予定データ更新日
+		comDto.setHdnNyutaikyoYoteiUpdateDate(null);
+		// 備品搬出待ちフラグ
+		comDto.setHdnBihinMoveOutFlg(false);
+		// 使用料変更フラグ
+		comDto.setHdnSiyouryoFlg(null);
+		// ?
+		comDto.setHdnFieldMessage(null);
+		// 区画１ 終了日
+		comDto.setHdnEndDayOne(null);
+		// 区画2 終了日
+		comDto.setHdnEndDayTwo(null);
+		// ?
+		comDto.setHdnIsInfo(null);
+		comDto.setBihinItiranReloadFlg(false);
+		//次回TabIndex
+		comDto.setNextTabIndex(null);
+
+		comDto.setHdnShatakuRoomKanriNo(null);
+		comDto.setHdnNengetsu(null);
+		comDto.setHdnShainNo(null);
+		comDto.setHdnShainName(null);
+		//社員番号変更フラグ
+		comDto.setHdnShainNoChangeFlg(null);
+		comDto.setHdnRentalPatternId(null);
+		comDto.setHdnChushajoKanriNo1(null);
+		comDto.setHdnChushajoKanriNo2(null);
+		comDto.setHdnBihinCd(null);
+		comDto.setHdnShatakuShiyoryoGetsugaku(null);
+		comDto.setHdnChangeBeforeRentalPatternId(null);
+		comDto.setHdnChangeBeforeNyukyoYoteibi(null);
+		comDto.setHdnChangeBeforeTaikyoYoteibi(null);
+		comDto.setHdnChangeBeforeYakuinSantei(null);
+		comDto.setHdnChangeBeforeShatakuShiyoryoChoseiKingaku(null);
+		comDto.setHdnChangeBeforeKojinFutanKyoekihiGetsugaku(null);
+		comDto.setHdnChangeBeforeKojinFutanKyoekihiChoseiKingaku(null);
+		comDto.setHdnChangeBeforeChushajoKanriNo1(null);
+		comDto.setHdnChangeBeforeKukaku1RiyoKaishibi(null);
+		comDto.setHdnChangeBeforeKukaku1RiyoShuryobi(null);
+		comDto.setHdnChangeBeforeChushajoKanriNo2(null);
+		comDto.setHdnChangeBeforeKukaku2RiyoKaishibi(null);
+		comDto.setHdnChangeBeforeKukaku2RiyoShuryobi(null);
+		comDto.setHdnChangeBeforeKaishibi(null);
+		comDto.setHdnChangeBeforeShuryobi(null);
+		comDto.setHdnChangeBeforeTaiyobi(null);
+		comDto.setHdnChangeBeforeHenkyakubi(null);
+		comDto.setHdnNYUTAIKYO_KBN(null);
+		comDto.setHdnRentalFlg(null);
+		comDto.setHdnShatakuKanriFlg1(null);
+		comDto.setHdnShatakuKanriFlg2(null);
+		comDto.setHdnKaiSanAfterShatakuShiyoryoHiwariKingaku(null);
+		comDto.setHdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo(null);
+		comDto.setHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku(null);
+		comDto.setHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku(null);
+		comDto.setHdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo(null);
+		comDto.setHdnKaiSanAfterShatakuShiyoryoGetsugaku(null);
+		comDto.setHdnKaiSanAfterKukaku1ChushajoShiyoroGetsugaku(null);
+		comDto.setHdnKaiSanAfterKukaku2ChushajoShiyoroGetsugaku(null);
+		comDto.setHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo(null);
+		//comDto.setHdnEndDay1(null);
+		//comDto.setHdnEndDay2(null);
+		//使用料パターン名
+		comDto.setLitShiyoryoKeisanPattern(null);
+		//寒冷地減免
+		comDto.setLitKanreichiGenmen(null);
+		//狭小減免
+		comDto.setLitKyoshoGenmen(null);
+
+		/** メッセージボックス */
+		// スタイル
+		comDto.setSc006MsgBoxStyle(null);
+		// メッセージ
+		comDto.setSc006Msg(null);
+
+		/** 運用ガイド */
+		comDto.setOperationGuidePath(null);
+
+		/** タブステータス */
+		// 社宅タブ
+		comDto.setShatakuTabStatus(false);
+		// 備品タブ
+		comDto.setBihinTabStatus(false);
+		// 役員情報/相互利用タブ
+		comDto.setSogoTabStatu(false);
+
+		/** サーバー処理連携用 */
+		// 表示タブインデックス
+		comDto.setHdnTabIndex(null);
+		// 作成完了ボタン押下時メッセージ
+		comDto.setLitMessageCreate(null);
+		// 一時保存ボタン押下時メッセージ
+		comDto.setLitMessageTmpSave(null);
+		// 社宅管理台帳登録
+		comDto.setLitMessageShatakuLogin(null);
+		// 継続登録ボタン押下時メッセージ
+		comDto.setLitMessageKeizokuLogin(null);
+		// 前に戻るボタン押下時メッセージ
+		comDto.setLitMessageBack(null);
+		// 処理状態
+		comDto.setSc006Status(null);
+		// JSONラベルリスト
+		comDto.setJsonLabelList(null);
+		// JSON備品情報 リスト
+		comDto.setJsonBihin(null);
+		// 協議中フラグ状態
+		comDto.setSc006KyoekihiKyogichuCheckState(null);
+
+		/** ラベル値 */
+		// 社員番号
+		comDto.setSc006ShainNo(null);
+		// 社宅名
+		comDto.setSc006ShatakuName(null);
+		// 貸与規格(使用料計算パターン名)
+		comDto.setSc006SiyoryoPatName(null);
+		// 社員氏名
+		comDto.setSc006ShainName(null);
+		// 部屋番号
+		comDto.setSc006HeyaNo(null);
+		// 社宅使用料月額（ヘッダ項目）
+		comDto.setSc006SiyoryoMonthPay(null);
+		// 対象年月
+		comDto.setSc006TaishoNengetsu(null);
+		// 入退居（ヘッダ項目）
+		comDto.setSc006NyutaikyoKbn(null);
+		// 入退居(フォント色)
+		comDto.setSc006NyutaikyoKbnColor(null);
+		// 社宅提示(ヘッダ項目)
+		comDto.setSc006ShatakuStts(null);
+		// 社宅提示(フォント色)
+		comDto.setSc006ShatakuSttsColor(null);
+		// 社宅提示(ヘッダ項目)
+		comDto.setSc006ShatakuSttsCd(null);
+		// 備品提示(ヘッダ項目)
+		comDto.setSc006BihinStts(null);
+		// 備品提示(フォント色)
+		comDto.setSc006BihinSttsColor(null);
+		// 備品提示(ヘッダ項目)
+		comDto.setSc006BihinSttsCd(null);
+		// 区画番号1
+		comDto.setSc006KukakuNoOne(null);
+		// 駐車場使用料月額1
+		comDto.setSc006TyusyaMonthPayOne(null);
+		// 駐車場使用料日割金額1
+		comDto.setSc006TyusyaDayPayOne(null);
+		// 貸与用途
+		comDto.setSc006TaiyoYouto(null);
+		// 区画番号2
+		comDto.setSc006KukakuNoTwo(null);
+		// 貸与規格
+		comDto.setSc006TaiyoKikaku(null);
+		// 社宅使用料月額
+		comDto.setSc006ShiyoryoTsukigaku(null);
+		// 駐車場使用料月額2
+		comDto.setSc006TyusyaMonthPayTwo(null);
+		// 社宅使用料日割金額
+		comDto.setSc006SiyoryoHiwariPay(null);
+		// 駐車場使用料日割金額 2
+		comDto.setSc006TyusyaDayPayTwo(null);
+		// 社宅使用料月額(調整後)
+		comDto.setSc006SyatauMonthPayAfter(null);
+		// 駐車場使用料月額(調整後)
+		comDto.setSc006TyusyaMonthPayAfter(null);
+		// 個人負担共益費月額(調整後)
+		comDto.setSc006KyoekihiPayAfter(null);
+		// 管理会社
+		comDto.setSc006KanriKaisya(null);
+
+		/** 入力エリア */
+		// 入居予定日
+		comDto.setSc006NyukyoYoteiDay(null);
+		// 退居予定日
+		comDto.setSc006TaikyoYoteiDay(null);
+		// 利用開始日1
+		comDto.setSc006RiyouStartDayOne(null);
+		// 利用終了日1
+		comDto.setSc006RiyouEndDayOne(null);
+		// 利用開始日2
+		comDto.setSc006RiyouStartDayTwo(null);
+		// 利用終了日2
+		comDto.setSc006RiyouEndDayTwo(null);
+		// 社宅使用料調整金額
+		comDto.setSc006SiyoroTyoseiPay(null);
+		// 駐車場使用料調整金額
+		comDto.setSc006TyusyaTyoseiPay(null);
+		// 個人負担共益費 協議中
+		comDto.setSc006KyoekihiKyogichuCheck(false);
+		// 備考
+		comDto.setSc006Bicou(null);
+		// 個人負担共益費月額
+		comDto.setSc006KyoekihiMonthPay(null);
+		// 個人負担共益費調整金額
+		comDto.setSc006KyoekihiTyoseiPay(null);
+		// 貸与日
+		comDto.setSc006TaiyoDay(null);
+		// 返却日
+		comDto.setSc006HenkyakuDay(null);
+		// 搬入希望日
+		comDto.setSc006KibouDayIn(null);
+		// 搬入本人連絡先
+		comDto.setSc006HonninAddrIn(null);
+		// 搬入受取代理人名
+		comDto.setSc006UketoriDairiInName(null);
+		// 搬入受取代理人連絡先
+		comDto.setSc006UketoriDairiAddr(null);
+		// 搬入レンタル指示書発行日
+		comDto.setSc006HannyuShijisyoHakkoubi(null);
+		// 搬出希望日
+		comDto.setSc006KibouDayOut(null);
+		// 搬出本人連絡先
+		comDto.setSc006HonninAddrOut(null);
+		// 搬出立会代理人名
+		comDto.setSc006TachiaiDairi(null);
+		// 搬出立会代理人連絡先
+		comDto.setSc006TachiaiDairiAddr(null);
+		// 搬出レンタル指示書発行日
+		comDto.setSc006HanshutuShijisyoHakkoubi(null);
+		// 代理人備考
+		comDto.setSc006DairiBiko(null);
+		// 備品備考
+		comDto.setSc006BihinBiko(null);
+		// 所属機関
+		comDto.setSc006SyozokuKikan(null);
+		// 室・部名
+		comDto.setSc006SituBuName(null);
+		// 課等名
+		comDto.setSc006KanadoMei(null);
+		// 配属データコード番号
+		comDto.setSc006HaizokuNo(null);
+		// 開始日
+		comDto.setSc006StartDay(null);
+		// 終了日
+		comDto.setSc006EndDay(null);
+		// 社宅賃貸料
+		comDto.setSc006ChintaiRyo(null);
+		// 駐車場料金
+		comDto.setSc006TyusyajoRyokin(null);
+		// 共益費(事業者負担)
+		comDto.setSc006Kyoekihi(null);
+
+		/** ドロップダウンリスト */
+		// 原籍会社選択値
+		comDto.setSc006OldKaisyaNameSelect(null);
+		// 原籍会社選択リスト
+		comDto.setSc006OldKaisyaNameSelectList(null);
+		// 給与支給会社名選択値
+		comDto.setSc006KyuyoKaisyaSelect(null);
+		// 給与支給会社名選択リスト
+		comDto.setSc006KyuyoKaisyaSelectList(null);
+		// 居住者区分選択値
+		comDto.setSc006KyojyusyaKbnSelect(null);
+		// 居住者区分選択リスト
+		comDto.setSc006KyojyusyaKbnSelectList(null);
+		// 役員算定選択値
+		comDto.setSc006YakuinSanteiSelect(null);
+		// 役員算定選択リスト
+		comDto.setSc006YakuinSanteiSelectList(null);
+		// 共益費支払月選択値
+		comDto.setSc006KyoekihiPayMonthSelect(null);
+		// 共益費支払月選択リスト
+		comDto.setSc006KyoekihiPayMonthSelectList(null);
+		// 搬入希望時間選択値
+		comDto.setSc006KibouTimeInSelect(null);
+		// 搬入希望時間選択リスト
+		comDto.setSc006KibouTimeInSelectList(null);
+		// 搬出希望時間選択値
+		comDto.setSc006KibouTimeOutSelect(null);
+		// 搬出希望時間選択リスト
+		comDto.setSc006KibouTimeOutSelectList(null);
+		// 配属会社名選択値
+		comDto.setSc006HaizokuKaisyaSelect(null);
+		// 配属会社名選択リスト
+		comDto.setSc006HaizokuKaisyaSelectList(null);
+		// 出向の有無(相互利用状況)選択値
+		comDto.setSc006SogoRyojokyoSelect(null);
+		// 出向の有無(相互利用状況)選択リスト
+		comDto.setSc006SogoRyojokyoSelectList(null);
+		// 貸付会社選択値
+		comDto.setSc006TaiyoKaisyaSelect(null);
+		// 貸付会社選択リスト
+		comDto.setSc006TaiyoKaisyaSelectList(null);
+		// 借受会社選択値
+		comDto.setSc006KariukeKaisyaSelect(null);
+		// 借受会社選択リスト
+		comDto.setSc006KariukeKaisyaSelectList(null);
+		// 相互利用判定区分選択値
+		comDto.setSc006SogoHanteiKbnSelect(null);
+		// 相互利用判定区分選択リスト
+		comDto.setSc006SogoHanteiKbnSelectList(null);
+		// 社宅使用料会社間送金区分選択値
+		comDto.setSc006SokinShatakuSelect(null);
+		// 社宅使用料会社間送金区分選択リスト
+		comDto.setSc006SokinShatakuSelectList(null);
+		// 共益費会社間送付区分選択値
+		comDto.setSc006SokinKyoekihiSelect(null);
+		// 共益費会社間送付区分選択リスト
+		comDto.setSc006SokinKyoekihiSelectList(null);
+
+		/** リストテーブル */
+		// 備品情報リスト
+		comDto.setBihinInfoListTableData(null);
+
+		/** 上部ボタン */
+		// 申請内容
+		//TODO 社員入力に直す
+		comDto.setSc006ShinseiNaiyoDisableFlg(false);
+		// 社宅入力支援
+		comDto.setShayakuHeyaShienDisableFlg(false);
+		// 社宅使用料入力支援
+		comDto.setShiyoryoShienDisableFlg(false);
+
+		/** タブ切替 */
+		// 備品情報タブ
+		comDto.setTbpBihinInfo(false);
+		// 役員情報/相互利用情報タブ
+		comDto.setTbpSougoRiyouInfo(false);
+
+		/** 社宅情報 */
+		// 原籍会社
+		comDto.setSc006OldKaisyaNameSelectDisableFlg(false);
+		// 給与支給会社
+		comDto.setSc006KyuyoKaisyaSelectDisableFlg(false);
+		// 入居予定日
+		comDto.setSc006NyukyoYoteiDayDisableFlg(false);
+		// 退居予定日
+		comDto.setSc006TaikyoYoteiDayDisableFlg(false);
+		// 居住者区分
+		comDto.setSc006KyojyusyaKbnSelectDisableFlg(false);
+		// 役員算定
+		comDto.setSc006YakuinSanteiSelectDisableFlg(false);
+		// 社宅使用料調整金額
+		comDto.setSc006SiyoroTyoseiPayDisableFlg(false);
+		// 社宅情報:個人負担共益費 協議中
+		comDto.setSc006KyoekihiKyogichuCheckDisableFlg(false);
+		// 個人負担共益費月額
+		comDto.setSc006KyoekihiMonthPayDisableFlg(false);
+		// 個人負担共益費調整金額
+		comDto.setSc006KyoekihiTyoseiPayDisableFlg(false);
+		// 共益費支払月
+		comDto.setSc006KyoekihiPayMonthSelectDisableFlg(false);
+		// 駐車場入力支援（区画１）
+		comDto.setParkingShien1DisableFlg(false);
+		// 利用開始日1
+		comDto.setSc006RiyouStartDayOneDisableFlg(false);
+		// 区画1クリア
+		comDto.setClearParking1DisableFlg(false);
+		// 利用終了日1
+		comDto.setSc006RiyouEndDayOneDisableFlg(false);
+		// 駐車場入力支援（区画2）
+		comDto.setParkingShien2DisableFlg(false);
+		// 利用開始日2
+		comDto.setSc006RiyouStartDayTwoDisableFlg(false);
+		// 区画2クリア
+		comDto.setClearParking2DisableFlg(false);
+		// 利用終了日2
+		comDto.setSc006RiyouEndDayTwoDisableFlg(false);
+		// 社宅情報:駐車場使用料調整金額
+		comDto.setSc006TyusyaTyoseiPayDisableFlg(false);
+		// 社宅情報:備考
+		comDto.setSc006BicouDisableFlg(false);
+		// 社宅情報
+		comDto.setGShatakuInfoControlStatusFlg(false);
+
+		/** 備品情報 */
+		// 貸与日
+		comDto.setSc006TaiyoDayDisableFlg(false);
+		// 返却日
+		comDto.setSc006HenkyakuDayDisableFlg(false);
+		// 搬入希望日
+		comDto.setSc006KibouDayInDisableFlg(false);
+		// 搬入希望時間帯
+		comDto.setSc006KibouTimeInSelectDisableFlg(false);
+		// 搬入本人連絡先
+		comDto.setSc006HonninAddrInDisableFlg(false);
+		// 受取代理人
+		comDto.setSc006UketoriDairiInNameDisableFlg(false);
+		// 搬入社員入力支援
+		comDto.setSc006UketoriDairiInShienDisableFlg(false);
+		// 受取代理人連絡先
+		comDto.setSc006UketoriDairiAddrDisableFlg(false);
+		// 搬出希望日
+		comDto.setSc006KibouDayOutDisableFlg(false);
+		// 搬出希望日時時間帯
+		comDto.setSc006KibouTimeOutSelectDisableFlg(false);
+		// 搬出本人連絡先
+		comDto.setSc006HonninAddrOutDisableFlg(false);
+		// 搬出立会代理人
+		comDto.setSc006TachiaiDairiDisableFlg(false);
+		// 搬出社員入力支援
+		comDto.setSc006TachiaiDairiShienDisableFlg(false);
+		// 搬出立会代理人連絡先
+		comDto.setSc006TachiaiDairiAddrDisableFlg(false);
+		// 代理人備考
+		comDto.setSc006DairiBikoDisableFlg(false);
+		// 備品備考
+		comDto.setSc006BihinBikoDisableFlg(false);
+		// 備品情報
+		comDto.setGBihinInfoControlStatusFlg(false);
+
+		/** 相互利用/役員情報 */
+		// 貸付会社
+		comDto.setSc006TaiyoKaisyaSelectDisableFlg(false);
+		// 借受会社
+		comDto.setSc006KariukeKaisyaSelectDisableFlg(false);
+		// 出向の有無(相互利用状況)
+		comDto.setSc006SogoRyojokyoSelectDisableFlg(false);
+		// 相互利用判定区分
+		comDto.setSc006SogoHanteiKbnSelectDisableFlg(false);
+		// 社宅使用料会社間送金区分
+		comDto.setSc006SokinShatakuSelectDisableFlg(false);
+		// 送金区分（共益費）
+		comDto.setSc006SokinKyoekihiSelectDisableFlg(false);
+		// 社宅賃貸料
+		comDto.setSc006ChintaiRyoDisableFlg(false);
+		// 駐車場料金
+		comDto.setSc006TyusyajoRyokinDisableFlg(false);
+		// 共益費(事業者負担)
+		comDto.setSc006KyoekihiDisableFlg(false);
+		// 開始日
+		comDto.setSc006StartDayDisableFlg(false);
+		// 終了日
+		comDto.setSc006EndDayDisableFlg(false);
+		// 配属会社名
+		comDto.setSc006HaizokuKaisyaSelectDisableFlg(false);
+		// 所属機関
+		comDto.setSc006SyozokuKikanDisableFlg(false);
+		// 室・部名
+		comDto.setSc006SituBuNameDisableFlg(false);
+		// 課等名
+		comDto.setSc006KanadoMeiDisableFlg(false);
+		// 配属データコード番号
+		comDto.setSc006HaizokuNoDisableFlg(false);
+		// 相互利用情報タブ項目制御
+		//private String gSougoRiyouInfoControlStatusFlg(false);
+		// 相互利用情報タブ項目制御
+		comDto.setHdnSougoRiyouFlg(null);
+
+		/** 下部ボタン */
+		// 運用ガイドボタン
+		comDto.setBtnUnyonGuideDisableFlg(false);
+		// 登録ボタン
+		comDto.setBtnRegistDisableFlg(false);
+		// 次月予約ボタン
+		comDto.setBtnJigetuYoyakuDisableFlg(false);
+		// 削除ボタン
+		comDto.setBtnDeleteDisableFlg(false);
+
+		/** エラー変数初期化 */
+		comDto.setSc006OldKaisyaNameSelectErr(null);
+		comDto.setSc006KyuyoKaisyaSelectErr(null);
+		comDto.setSc006NyukyoYoteiDayErr(null);
+		comDto.setSc006TaikyoYoteiDayErr(null);
+		comDto.setSc006RiyouStartDayOneErr(null);
+		comDto.setSc006RiyouEndDayOneErr(null);
+		comDto.setSc006KyojyusyaKbnSelectErr(null);
+		comDto.setSc006RiyouStartDayTwoErr(null);
+		comDto.setSc006RiyouEndDayTwoErr(null);
+		comDto.setSc006YakuinSanteiSelectErr(null);
+		comDto.setSc006SiyoroTyoseiPayErr(null);
+		comDto.setSc006TyusyaTyoseiPayErr(null);
+		comDto.setSc006KyoekihiMonthPayErr(null);
+		comDto.setSc006KyoekihiTyoseiPayErr(null);
+		comDto.setSc006KyoekihiPayMonthSelectErr(null);
+		comDto.setSc006TaiyoDayErr(null);
+		comDto.setSc006HenkyakuDayErr(null);
+		comDto.setSc006KibouDayInErr(null);
+		comDto.setSc006KibouTimeInSelectErr(null);
+		comDto.setSc006HonninAddrInErr(null);
+		comDto.setSc006UketoriDairiInNameErr(null);
+		comDto.setSc006UketoriDairiAddrErr(null);
+		comDto.setSc006KibouDayOutErr(null);
+		comDto.setSc006KibouTimeOutSelectErr(null);
+		comDto.setSc006HonninAddrOutErr(null);
+		comDto.setSc006TachiaiDairiErr(null);
+		comDto.setSc006TachiaiDairiAddrErr(null);
+		comDto.setSc006HaizokuKaisyaSelectErr(null);
+		comDto.setSc006SogoRyojokyoSelectErr(null);
+		comDto.setSc006SyozokuKikanErr(null);
+		comDto.setSc006TaiyoKaisyaSelectErr(null);
+		comDto.setSc006SituBuNameErr(null);
+		comDto.setSc006KariukeKaisyaSelectErr(null);
+		comDto.setSc006KanadoMeiErr(null);
+		comDto.setSc006SogoHanteiKbnSelectErr(null);
+		comDto.setSc006HaizokuNoErr(null);
+		comDto.setSc006SokinShatakuSelectErr(null);
+		comDto.setSc006SokinKyoekihiSelectErr(null);
+		comDto.setSc006StartDayErr(null);
+		comDto.setSc006EndDayErr(null);
+		comDto.setSc006ChintaiRyoErr(null);
+		comDto.setSc006TyusyajoRyokinErr(null);
+		comDto.setSc006KyoekihiErr(null);
 	}
 }

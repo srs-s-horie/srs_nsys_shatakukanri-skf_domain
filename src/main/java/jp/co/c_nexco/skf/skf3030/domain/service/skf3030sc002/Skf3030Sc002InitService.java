@@ -137,7 +137,7 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 		LogUtils.debugByMsg("初期表示");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3030_SC002);
-		
+		skf3030Sc002SharedService.initialize(initDto);
 		//フラグ初期化
 		initDto.setBihinItiranFlg(0);
 		initDto.setBihinItiranReloadFlg(false);
@@ -149,6 +149,9 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 //        Return
 //      End If
 		initDto.setBihinItiranFlg(1); 
+		
+		//エラー変数初期化
+		skf3030Sc002SharedService.errReset(initDto);
 		
 		//画面初期化
 		initialize(initDto);
@@ -170,33 +173,57 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 		SimpleDateFormat dateFormat = new SimpleDateFormat(Skf3030Sc002InitDto.DATE_FORMAT);
 
 		//セッション情報をチェック
-//		Map<String, Object> searchSessionData = (Map<String, Object>) bean
-//				.get(SessionCacheKeyConstant.SHATAKUKANRI_DAICHO_SEARCH);
-//		
-//		if (searchSessionData != null) {
-//			// 検索条件データ
-//			String kanriKaisha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_KANRI_KAISHA_KEY);
-//			String agency = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_AGENCY_KEY);
-//			String shainNo = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NO_KEY);
-//			String shainName = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NAME_KEY);
-//			String shatakName = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_NAME_KEY);
-//			String shatakKbn = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_KBN_KEY);
-//			String sogoriyo = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SOGORIYO_KEY);
-//			String nengetsu = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_NENGETSU_KEY);
-//			String shimeShori = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHIME_SHORI_KEY);
-//			String positiveRenkei = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_POSITIVE_RENKEI_KEY);
-//			String kaishakanSokin = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_KAISHAKAN_SOKIN_KEY);
-//			String gensekiKaisha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_GENSEKI_KAISHA_KEY);
-//			String kyuyoSikyuKaisha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SIKYU_KAISHA_KEY);
-//			String kyojushaKbn = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_KYOJUSHA_KBN_KEY);
-//			String akiHeya = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_AKI_HEYA_KEY);
-//			String parkingSiyoryo = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_PARKING_KEY);
-//			String honraiYoto = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_YOTO_KEY);
-//			String honraiKikaku = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_KIKAKU_KEY);
-//			String yakuin = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_YAKUIN_KEY);
-//			String shukkosha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHUKKOSHA_KEY);
-//			String biko = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_BIKO_KEY);
-//		}
+		Map<String, Object> searchSessionData = (Map<String, Object>) bean
+				.get(SessionCacheKeyConstant.SHATAKUKANRI_DAICHO_SEARCH);
+		
+		if (searchSessionData != null) {
+			// 検索条件データ
+			String kanriKaisha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_KANRI_KAISHA_KEY);
+			String agency = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_AGENCY_KEY);
+			String shainNo = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NO_KEY);
+			String shainName = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHAIN_NAME_KEY);
+			String shatakName = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_NAME_KEY);
+			String shatakKbn = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHATAK_KBN_KEY);
+			String sogoriyo = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SOGORIYO_KEY);
+			String nengetsu = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_NENGETSU_KEY);
+			String shimeShori = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHIME_SHORI_KEY);
+			String positiveRenkei = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_POSITIVE_RENKEI_KEY);
+			String kaishakanSokin = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_KAISHAKAN_SOKIN_KEY);
+			String gensekiKaisha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_GENSEKI_KAISHA_KEY);
+			String kyuyoSikyuKaisha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SIKYU_KAISHA_KEY);
+			String kyojushaKbn = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_KYOJUSHA_KBN_KEY);
+			String akiHeya = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_AKI_HEYA_KEY);
+			String parkingSiyoryo = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_PARKING_KEY);
+			String honraiYoto = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_YOTO_KEY);
+			String honraiKikaku = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_HONRAI_KIKAKU_KEY);
+			String yakuin = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_YAKUIN_KEY);
+			String shukkosha = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHUKKOSHA_KEY);
+			String biko = (String) searchSessionData.get(Skf303010CommonSharedService.SEARCH_INFO_BIKO_KEY);
+			
+			//DTOに設定
+			initDto.setSerachKanriKaisha(kanriKaisha);
+			initDto.setSerachAgency(agency);
+			initDto.setSerachShainNo(shainNo);
+			initDto.setSerachShainName(shainName);
+			initDto.setSerachShatakName(shatakName);
+			initDto.setSerachShatakKbn(shatakKbn);
+			initDto.setSerachSogoriyo(sogoriyo);
+			initDto.setSerachNengetsu(nengetsu);
+			initDto.setSerachShimeShori(shimeShori);
+			initDto.setSerachPositiveRenkei(positiveRenkei);
+			initDto.setSerachKaishakanSokin(kaishakanSokin);
+			initDto.setSerachGensekiKaisha(gensekiKaisha);
+			initDto.setSerachKyuyoSikyuKaisha(kyuyoSikyuKaisha);
+			initDto.setSerachKyojushaKbn(kyojushaKbn);
+			initDto.setSerachAkiHeya(akiHeya);
+			initDto.setSerachParkingSiyoryo(parkingSiyoryo);
+			initDto.setSerachHonraiYoto(honraiYoto);
+			initDto.setSerachHonraiKikaku(honraiKikaku);
+			initDto.setSerachYakuin(yakuin);
+			initDto.setSerachShukkosha(shukkosha);
+			initDto.setSerachBiko(biko);
+
+		}
 		//削除後動作エラー回避のためDTOクリア
 		initDto.setHdnShatakuKanriId("");
 		initDto.setHdnShatakuKanriNo("");
@@ -579,13 +606,13 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 				//社宅使用料日割金額
 				initDto.setSc006SiyoryoHiwariPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getRentalDay(),false));
 				//社宅使用料調整金額
-				initDto.setSc006SiyoroTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getRentalAdjust(),false));
+				initDto.setSc006SiyoroTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getRentalAdjust(),false).replace(",", ""));
 				//社宅使用料月額（調整後）
 				initDto.setSc006SyatauMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getRentalTotal(),false));
 				//個人負担共益費月額
-				initDto.setSc006KyoekihiMonthPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPerson(),false));
+				initDto.setSc006KyoekihiMonthPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPerson(),false).replace(",", ""));
 				//個人負担共益費調整金額
-				initDto.setSc006KyoekihiTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPersonAdjust(),false));
+				initDto.setSc006KyoekihiTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPersonAdjust(),false).replace(",", ""));
 				//個人負担共益費月額（調整後）
 				initDto.setSc006KyoekihiPayAfter(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getKyoekihiPersonTotal(),false));
 				//共益費支払月
@@ -599,7 +626,7 @@ public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002Ini
 				//駐車場使用料日割金額（区画2）
 				initDto.setSc006TyusyaDayPayTwo(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getParking2RentalDay(),false));
 				//駐車場使用料調整金額
-				initDto.setSc006TyusyaTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getParkingRentalAdjust(),false));
+				initDto.setSc006TyusyaTyoseiPay(skf3030Sc002SharedService.convertYenFormat(tsukibetsuShiyoryoDt.getParkingRentalAdjust(),false).replace(",", ""));
 
 				if(tsukibetsuShiyoryoDt.getParkingRentalTotal() != null && !SkfCheckUtils.isNullOrEmpty(tsukibetsuShiyoryoDt.getParkingRentalTotal().toString())){
 					//駐車場使用料月額（調整後）

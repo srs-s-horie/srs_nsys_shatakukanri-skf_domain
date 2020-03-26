@@ -83,6 +83,8 @@ public class Skf3022Sc006InitService extends BaseServiceAbstract<Skf3022Sc006Ini
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 
+		// 初期化
+		skf3022Sc006SharedService.initialize(initDto);
 		// 取得提示データ
 		Skf3022Sc006GetTeijiDataExp getTeijiData = new Skf3022Sc006GetTeijiDataExp();
 

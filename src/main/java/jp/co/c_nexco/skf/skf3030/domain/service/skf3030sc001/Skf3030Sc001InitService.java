@@ -80,6 +80,9 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 			if (sessionData != null) {
 				initDto = initDispFromNyutaikyoRegist(initDto, sessionData);
 			}
+			//セッション情報削除
+			bean.remove(SessionCacheKeyConstant.SHATAKUKANRI_DAICHO_SEARCH);
+			
 		}
 		
 		return initDto;
@@ -93,6 +96,54 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 	 * @return Skf3030Sc001InitDto
 	 */
 	private Skf3030Sc001InitDto initItems(Skf3030Sc001InitDto initDto) {
+
+		/** 管理会社ドロップダウンリスト */
+		initDto.setCompanyAgencyDropDownList(null);
+		/** 管理機関ドロップダウンリスト */
+		initDto.setAgencyDropDownList(null);
+		/** 「年」ドロップダウンリスト */
+		initDto.setYearDropDownList(null);
+		/** 「月」ドロップダウンリスト */
+		initDto.setMonthDropDownList(null);
+		/** 「社宅区分」ドロップダウンリスト */
+		initDto.setShatakuKbnDropDownList(null);
+		/** 「相互利用」ドロップダウンリスト */
+		initDto.setMutualuseDropDownList(null);
+		/** 「検索結果一覧」リスト */
+		initDto.setSearchDataList(null);
+		
+		/** 「締め処理」ラベル */
+		initDto.setLabelShimeShori(null);
+		/** 「POSITIVE連携」ラベル */
+		initDto.setLabelPositiveRenkei(null);
+		/** 「社員番号」テキスト */
+		initDto.setTxtShainNo(null);
+		/** 「社宅名」テキスト */
+		initDto.setTxtShatakuName(null);
+		/** 「社員名」テキスト */
+		initDto.setTxtShainName(null);
+		
+		/**
+		 * hidden 項目
+		 */
+		/** 選択された管理会社ドロップダウンリスト */
+		initDto.setHdnCompanyAgencySelect(null);
+		/** 選択された管理機関ドロップダウンリストの選択 */
+		initDto.setHdnAgencySelect(null);
+		/** 選択された「年」ドロップダウンリストの選択 */
+		initDto.setHdnYearSelect(null);
+		/** 選択された「月」ドロップダウンリストの選択 */
+		initDto.setHdnMonthSelect(null);
+		/** 選択された 「社宅区分」ドロップダウンリストの選択 */
+		initDto.setHdnShatakuKbnSelect(null);
+		/** 選択された「相互利用」ドロップダウンリストの選択 */
+		initDto.setHdnMutualuseSelect(null);
+		/** 管理機関ドロップダウン非活性 */
+		initDto.setHdnAgencyDisabled(null);
+		/** 検索結果一覧の選択されたインデックス */
+		initDto.setHdnSelIdx(null);
+		/** 社宅管理台帳検索パラメータ */
+		initDto.setSearchParam(null);
 
 		List<Map<String, Object>> companyList = skfDropDownUtils.getDdlCompanyByCd("", true);
 		initDto.setCompanyAgencyDropDownList(companyList);
@@ -252,16 +303,22 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 		initDto.setHdnYearSelect(year);
 		initDto.setHdnMonthSelect(month);
 
-		String shimeShori = (String) sessionData.get(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHIME_SHORI_KEY);
-		initDto.setLabelShimeShori(skf3030Sc001SharedService.getBillingActKbnTxt(shimeShori));
-
-		String positiveRenkei = (String) sessionData
-				.get(Skf303010CommonSharedService.NYUTAIKYO_INFO_POSITIVE_RENKEI_KEY);
-		initDto.setLabelPositiveRenkei(getPositiveRenkeiKbnLabel(positiveRenkei));
+//		String shimeShori = (String) sessionData.get(Skf303010CommonSharedService.NYUTAIKYO_INFO_SHIME_SHORI_KEY);
+//		initDto.setLabelShimeShori(skf3030Sc001SharedService.getBillingActKbnTxt(shimeShori));
+//
+//		String positiveRenkei = (String) sessionData
+//				.get(Skf303010CommonSharedService.NYUTAIKYO_INFO_POSITIVE_RENKEI_KEY);
+//		initDto.setLabelPositiveRenkei(getPositiveRenkeiKbnLabel(positiveRenkei));
+		Map<String, String> getsujiShoriJoukyouShoukaiMap = skf3030Sc001SharedService
+				.getGetsujiShoriJoukyouShoukai(initDto.getHdnYearSelect() + initDto.getHdnMonthSelect());
+		initDto.setLabelShimeShori(getsujiShoriJoukyouShoukaiMap.get(Skf3030Sc001SharedService.SHIME_SHORI_TXT_KEY));
+		initDto.setLabelPositiveRenkei(
+				getsujiShoriJoukyouShoukaiMap.get(Skf3030Sc001SharedService.POSITIVE_RENKEI_TXT_KEY));
 		
 		initDto = (Skf3030Sc001InitDto) skf3030Sc001SharedService.setDropDownSelect(initDto);
 
-		// TODO 当月更新は必要か？
+		// 当月更新は必要か？
+		//画面にないので無い扱いにする。
 
 		Skf3030Sc001GetShatakuKanriDaichoInfoExpParameter searchParam = skf3030Sc001SharedService
 				.createSearchParam(initDto, sessionData, true);
@@ -301,6 +358,10 @@ public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001Ini
 
 		String rtn = "";
 
+		if(Objects.equals(kbn, null)){
+			return rtn;
+		}
+		
 		switch (kbn) {
 		case Skf3030Sc001SharedService.POSITIVE_LINKDATA_CREATE_MIJIKKOU:
 			rtn = Skf3030Sc001SharedService.POSITIVE_LINKDATA_MIJIKKOU;

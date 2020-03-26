@@ -301,6 +301,9 @@ public class Skf3030Sc001SharedService {
 
 			String yakuin = (String) sessionData.get(Skf303010CommonSharedService.NYUTAIKYO_INFO_YAKUIN_KEY);
 			rtnParam.setYakuin(cnvEmptyStrToNull(yakuin));
+			
+			String shukkosha = (String) sessionData.get(Skf303010CommonSharedService.SEARCH_INFO_SHUKKOSHA_KEY);
+			rtnParam.setShukkosha(cnvEmptyStrToNull(shukkosha));
 
 			String biko = (String) sessionData.get(Skf303010CommonSharedService.NYUTAIKYO_INFO_BIKO_KEY);
 			rtnParam.setBiko(cnvEmptyStrToNull(biko));
@@ -448,6 +451,9 @@ public class Skf3030Sc001SharedService {
 			break;
 		case Skf3030Sc001SharedService.POSITIVE_LINKDATA_KAIJO:
 			rtnVal = Skf3030Sc001SharedService.POSITIVE_LINKDATA_CREATE_KAIJO;
+			break;
+		case Skf3030Sc001SharedService.POSITIVE_LINKDATA_KAKUTEIZUMI:
+			rtnVal = Skf3030Sc001SharedService.POSITIVE_LINKDATA_CREATE_JIKKOUZUMI;
 			break;
 		default:
 			break;
