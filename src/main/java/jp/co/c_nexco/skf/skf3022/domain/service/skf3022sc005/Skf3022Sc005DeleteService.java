@@ -30,6 +30,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingB
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiDataRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -111,34 +112,36 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 //      'コントロールの設定
 		skf3022Sc005SharedService.getDropDownList(nyutaikyoKbn, nyutaikyoKbnList, stJyokyo, stJyokyoList, stKakunin, stKakuninList, 
 				bhJyokyo, bhJyokyoList, bhKakunin, bhKakuninList, moveInOut, moveInOutList);
-		
-		
+
 		Long delTeijiNo = CodeConstant.LONG_ZERO;
 		String delShainNo = CodeConstant.DOUBLE_QUOTATION;
 		String delNyutaikyoKbn = CodeConstant.DOUBLE_QUOTATION;
-        String updateDate = CodeConstant.DOUBLE_QUOTATION;
-        String updateDateNtk = CodeConstant.DOUBLE_QUOTATION;
-        String updateDateShataku = CodeConstant.DOUBLE_QUOTATION;
-        String updateDateParkOne = CodeConstant.DOUBLE_QUOTATION;
-        String updateDateParkTwo = CodeConstant.DOUBLE_QUOTATION;
-        String shatakuNo = CodeConstant.DOUBLE_QUOTATION;
-        String roomNo = CodeConstant.DOUBLE_QUOTATION;
-        String parkOne = CodeConstant.DOUBLE_QUOTATION;
-        String parkTwo = CodeConstant.DOUBLE_QUOTATION;
-		
-        delTeijiNo = Long.parseLong(deleteDto.getDelTeijiNo());
-        delShainNo = deleteDto.getDelShainNo();
-        delNyutaikyoKbn = deleteDto.getDelNyutaikyoKbn();
-        updateDate = deleteDto.getDelUpdateDate();
-        updateDateNtk = deleteDto.getDelUpdateDateNtk();
-        updateDateShataku = deleteDto.getDelUpdateDateShataku();
-        updateDateParkOne = deleteDto.getDelUpdateDateParkOne();
-        updateDateParkTwo = deleteDto.getDelUpdateDateParkTwo();
-        shatakuNo = deleteDto.getDelShatakuNo();
-        roomNo = deleteDto.getDelRoomNo();
-        parkOne = deleteDto.getDelParkOne();
-        parkTwo = deleteDto.getDelParkTwo();
-		
+		String updateDate = CodeConstant.DOUBLE_QUOTATION;
+		String updateDateNtk = CodeConstant.DOUBLE_QUOTATION;
+		String updateDateShataku = CodeConstant.DOUBLE_QUOTATION;
+		String updateDateParkOne = CodeConstant.DOUBLE_QUOTATION;
+		String updateDateParkTwo = CodeConstant.DOUBLE_QUOTATION;
+		String shatakuNo = CodeConstant.DOUBLE_QUOTATION;
+		String roomNo = CodeConstant.DOUBLE_QUOTATION;
+		String parkOne = CodeConstant.DOUBLE_QUOTATION;
+		String parkTwo = CodeConstant.DOUBLE_QUOTATION;
+
+		delTeijiNo = Long.parseLong(deleteDto.getDelTeijiNo());
+		delShainNo = deleteDto.getDelShainNo();
+		delNyutaikyoKbn = deleteDto.getDelNyutaikyoKbn();
+		updateDate = deleteDto.getDelUpdateDate();
+		updateDateNtk = deleteDto.getDelUpdateDateNtk();
+		updateDateShataku = deleteDto.getDelUpdateDateShataku();
+		updateDateParkOne = deleteDto.getDelUpdateDateParkOne();
+		updateDateParkTwo = deleteDto.getDelUpdateDateParkTwo();
+		shatakuNo = deleteDto.getDelShatakuNo();
+		roomNo = deleteDto.getDelRoomNo();
+		parkOne = deleteDto.getDelParkOne();
+		parkTwo = deleteDto.getDelParkTwo();
+
+		if (!CheckUtils.isEmpty(delShainNo)) {
+			delShainNo = delShainNo.replace(CodeConstant.ASTERISK, "");
+		}
 		int retCount = DeleteTeijiDataCount(delTeijiNo, delShainNo, delNyutaikyoKbn, updateDate,
 				updateDateNtk, updateDateShataku, updateDateParkOne, updateDateParkTwo,
 				shatakuNo, roomNo, parkOne, parkTwo , deleteDto.getPageId());
