@@ -47,7 +47,7 @@ public class Skf2010Sc004CommonDto extends Skf2010CommonDto {
 	private boolean commentAreaVisible = true;
 
 	// 入力フォーム表示フラグ
-	private String inputAreaVisible;
+	private boolean inputAreaVisible;
 
 	// 初期入居日
 	private String syokiNyukyoDate;
