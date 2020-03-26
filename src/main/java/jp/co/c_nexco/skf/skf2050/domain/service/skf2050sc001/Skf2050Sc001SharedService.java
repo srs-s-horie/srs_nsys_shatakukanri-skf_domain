@@ -257,9 +257,8 @@ public class Skf2050Sc001SharedService {
 			dto.setCompletionVisible(false);
 			// 立会人項目非表示
 			dto.setDairininVisible(false);
-			// コメント非表示
+			// コメント欄非表示
 			dto.setCommentAreaVisible(false);
-			dto.setCommentBtnVisible(false);
 			break;
 		case CodeConstant.STATUS_KAKUNIN_IRAI:
 			// ステータスが確認依頼の場合の画面の表示
@@ -270,9 +269,8 @@ public class Skf2050Sc001SharedService {
 			dto.setCompletionVisible(false);
 			// 立会人項目非表示
 			dto.setDairininVisible(false);
-			// コメント表示
+			// コメント欄表示
 			dto.setCommentAreaVisible(true);
-			dto.setCommentBtnVisible(true);
 			break;
 		case CodeConstant.STATUS_HANSYUTSU_MACHI:
 			// ステータスが搬出待ちの場合の画面の表示
@@ -282,9 +280,8 @@ public class Skf2050Sc001SharedService {
 			dto.setCarryOutVisible(true);
 			// 立会人項目表示
 			dto.setDairininVisible(true);
-			// コメント表示
+			// コメント欄表示
 			dto.setCommentAreaVisible(true);
-			dto.setCommentBtnVisible(true);
 			break;
 		case CodeConstant.STATUS_HANSYUTSU_ZUMI:
 		case CodeConstant.STATUS_SHONIN1:
@@ -298,9 +295,8 @@ public class Skf2050Sc001SharedService {
 			dto.setMaskPattern("ST30");
 			// 立会人項目表示
 			dto.setDairininVisible(true);
-			// 「コメント表示」ボタン表示
+			// コメントボタン表示
 			dto.setCommentAreaVisible(false);
-			dto.setCommentBtnVisible(true);
 			break;
 		default:
 			// その他の場合
