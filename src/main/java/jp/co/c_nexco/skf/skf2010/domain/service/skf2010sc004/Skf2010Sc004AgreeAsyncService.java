@@ -282,6 +282,8 @@ public class Skf2010Sc004AgreeAsyncService extends AsyncBaseServiceAbstract<Skf2
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(agreeDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+			return agreeDto;
 		}
 
 		// Hidden領域の備品希望要否

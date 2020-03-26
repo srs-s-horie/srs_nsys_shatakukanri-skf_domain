@@ -37,6 +37,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryApplTacFlgExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
@@ -112,6 +113,8 @@ public class Skf2040Sc002SharedService {
 	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
 	@Autowired
 	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	private MenuScopeSessionBean menuScopeSessionBean;
 
@@ -678,8 +681,8 @@ public class Skf2040Sc002SharedService {
 		// 修正依頼、差戻し時はコメントテーブルの登録
 		if (newStatus.equals(CodeConstant.STATUS_SASHIMODOSHI) || newStatus.equals(CodeConstant.STATUS_HININ)) {
 			// コメント更新
-			String commentNote = dto.getCommentNote();		
-			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus, 
+			String commentNote = dto.getCommentNote();
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newStatus,
 					commentNote, errorMsg);
 			if (!commentErrorMessage) {
 				return false;
@@ -724,6 +727,8 @@ public class Skf2040Sc002SharedService {
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(dto, resultList);
+				skfRollBackExpRepository.rollBack();
+				return false;
 			}
 
 		} else if (FunctionIdConstant.R0103.equals(dto.getApplId())) {
@@ -743,6 +748,8 @@ public class Skf2040Sc002SharedService {
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(dto, resultList);
+				skfRollBackExpRepository.rollBack();
+				return false;
 			}
 		}
 

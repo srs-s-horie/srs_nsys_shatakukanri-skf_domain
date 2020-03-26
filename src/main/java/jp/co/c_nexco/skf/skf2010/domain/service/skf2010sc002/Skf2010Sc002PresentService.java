@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -49,6 +50,8 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 	private Skf2010Sc002GetTeijiShatakuInfoExpRepository skf2010Sc002GetTeijiShatakuInfoExpRepository;
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	// 承認者更新フラグ
 	private String agreNameUpdate = "1";
@@ -161,6 +164,8 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 				// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 				if (resultList != null) {
 					skf2020Fc001NyukyoKiboSinseiDataImport.addResultMessageForDataLinkage(preDto, resultList);
+					skfRollBackExpRepository.rollBack();
+					return preDto;
 				}
 
 			}

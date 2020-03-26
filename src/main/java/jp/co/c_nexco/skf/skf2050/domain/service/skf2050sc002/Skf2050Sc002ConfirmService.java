@@ -97,8 +97,8 @@ public class Skf2050Sc002ConfirmService extends BaseServiceAbstract<Skf2050Sc002
 				status, pageId);
 		if (resultBatch != null) {
 			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(confDto, resultBatch);
-			throwBusinessExceptionIfErrors(confDto.getResultMessages());
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(confDto.getResultMessages());
 			return confDto;
 		}
 

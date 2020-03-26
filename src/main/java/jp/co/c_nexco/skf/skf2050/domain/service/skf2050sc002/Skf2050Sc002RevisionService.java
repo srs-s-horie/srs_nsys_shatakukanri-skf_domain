@@ -98,8 +98,8 @@ public class Skf2050Sc002RevisionService extends BaseServiceAbstract<Skf2050Sc00
 				status, pageId);
 		if (resultBatch != null) {
 			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(revDto, resultBatch);
-			throwBusinessExceptionIfErrors(revDto.getResultMessages());
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(revDto.getResultMessages());
 			return revDto;
 		}
 

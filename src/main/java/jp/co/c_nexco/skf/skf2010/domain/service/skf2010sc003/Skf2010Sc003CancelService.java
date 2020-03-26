@@ -99,6 +99,7 @@ public class Skf2010Sc003CancelService extends BaseServiceAbstract<Skf2010Sc003C
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(cancelDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 		}
 
 		// 表示データ取得

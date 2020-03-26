@@ -77,8 +77,11 @@ public class Skf2020Sc003RevisionService extends BaseServiceAbstract<Skf2020Sc00
 
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.SASHIMODOSHI_KANRYO_TSUCHI, applInfo, commentNote,
 					CodeConstant.NONE, applInfo.get("applShainNo"), CodeConstant.NONE, urlBase);
-		} else if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
-			ServiceHelper.addErrorResultMessage(rvsDto, null, errorMsg.get("error"));
+		} else {
+			// エラーメッセージが空ではない場合
+			if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
+				ServiceHelper.addErrorResultMessage(rvsDto, null, errorMsg.get("error"));
+			}
 			throwBusinessExceptionIfErrors(rvsDto.getResultMessages());
 			return rvsDto;
 		}

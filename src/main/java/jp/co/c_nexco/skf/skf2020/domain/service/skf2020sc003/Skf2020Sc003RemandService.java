@@ -78,9 +78,11 @@ public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003R
 
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
 					applInfo.get("applShainNo"), CodeConstant.NONE, urlBase);
-			;
-		} else if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
-			ServiceHelper.addErrorResultMessage(rmdDto, null, errorMsg.get("error"));
+		} else {
+			// エラーメッセージが空ではない場合
+			if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
+				ServiceHelper.addErrorResultMessage(rmdDto, null, errorMsg.get("error"));
+			}
 			throwBusinessExceptionIfErrors(rmdDto.getResultMessages());
 			return rmdDto;
 		}

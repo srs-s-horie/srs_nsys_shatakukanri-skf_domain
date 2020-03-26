@@ -125,6 +125,8 @@ public class Skf2010Sc006RevisionService extends BaseServiceAbstract<Skf2010Sc00
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(reDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(reDto.getResultMessages());
+			return reDto;
 		}
 
 		// 画面遷移

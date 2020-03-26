@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -52,7 +53,9 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 	@Autowired
 	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
 	@Autowired
-	private SkfCommentUtils skfCommentUtils; 
+	private SkfCommentUtils skfCommentUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	private String sFalse = "false";
 	Map<String, String> errorMsg = new HashMap<String, String>();
@@ -138,9 +141,9 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		}
 
 		// コメント更新
-		String commentNote = appDto.getCommentNote();		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, nextStatus, 
-				commentNote, errorMsg);
+		String commentNote = appDto.getCommentNote();
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, nextStatus, commentNote,
+				errorMsg);
 		if (!commentErrorMessage) {
 			ServiceHelper.addErrorResultMessage(appDto, null, errorMsg.get("error"));
 			throwBusinessExceptionIfErrors(appDto.getResultMessages());
@@ -183,6 +186,8 @@ public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc00
 		// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 		if (resultList != null) {
 			skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(appDto, resultList);
+			skfRollBackExpRepository.rollBack();
+			return appDto;
 		}
 
 		// 終了メッセージ出力

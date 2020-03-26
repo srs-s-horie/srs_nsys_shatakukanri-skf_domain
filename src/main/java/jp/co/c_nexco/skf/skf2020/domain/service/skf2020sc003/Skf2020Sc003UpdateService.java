@@ -112,6 +112,7 @@ public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003U
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(updDto.getResultMessages());
 		}
 
 		// 操作ログを出力する
