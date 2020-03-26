@@ -26,6 +26,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
@@ -363,6 +364,13 @@ public class Skf2020Sc003SharedService {
 		int resultUpdateDisp = updateDispInfo(newStatus, operationDate, dto);
 		if (resultUpdateDisp <= 0 && NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
 			return false;
+		}
+
+		// 「前の画面へ」対策に最新の申請履歴の更新日時を取得する
+		List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> newApplHistory = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
+		newApplHistory = skfApplHistoryInfoUtils.getApplHistoryInfo(companyCd, applNo);
+		if (newApplHistory != null && newApplHistory.size() > 0) {
+			dto.addLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE, newApplHistory.get(0).getLastUpdateDate());
 		}
 
 		// 社宅連携フラグ(0：社宅未連携、1：社宅連携)が「1」の場合に実行
