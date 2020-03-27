@@ -171,6 +171,13 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		/**
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
 		 */
+		String applNo = dto.getApplNo();
+		
+		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService
+				.getApplHistoryInfo(applNo);
+
+		String RealApplStatus = applHistoryInfo.getApplStatus();
+		
 		int displayLevel = 1;
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
@@ -182,7 +189,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 			}
 
 			// 社宅入居希望等申請
-			switch (applStatus) {
+			switch (RealApplStatus) {
 			case CodeConstant.STATUS_KAKUNIN_IRAI:
 				/**
 				 * 確認依頼： 案内＋誓約書追加
@@ -190,6 +197,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				dto.setMaskPattern("PTN_B");
 				displayLevel = 2;
 				dto.setLevel2Open("true");
+				dto.setInputAreaVisible(true);
 				break;
 			case CodeConstant.STATUS_DOI_ZUMI:
 			case CodeConstant.STATUS_DOI_SHINAI:
@@ -201,6 +209,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				displayLevel = 2;
 				dto.setLevel2Open("true");
 				dto.setRepresentBtnFlg("false");
+				dto.setCommentAreaVisible(false);
 				break;
 			case CodeConstant.STATUS_SHONIN_ZUMI:
 				/**
@@ -210,6 +219,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				displayLevel = 3;
 				dto.setLevel3Open("true");
 				dto.setRepresentBtnFlg("false");
+				dto.setCommentAreaVisible(false);
 				break;
 			case CodeConstant.STATUS_HININ:
 			case CodeConstant.STATUS_SHINSACHU:
