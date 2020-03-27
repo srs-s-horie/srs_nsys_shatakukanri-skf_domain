@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -76,7 +77,10 @@ public class Skf2020Sc003ConfirmService extends BaseServiceAbstract<Skf2020Sc003
 
 		Map<String, String> errorMsg = new HashMap<String, String>();
 		if (!skf2020sc003SharedService.saveApplInfo(newStatus, confDto, errorMsg)) {
-			ServiceHelper.addErrorResultMessage(confDto, null, errorMsg.get("error"));
+			// エラーメッセージが空ではない場合
+			if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
+				ServiceHelper.addErrorResultMessage(confDto, null, errorMsg.get("error"));
+			}
 			throwBusinessExceptionIfErrors(confDto.getResultMessages());
 		}
 

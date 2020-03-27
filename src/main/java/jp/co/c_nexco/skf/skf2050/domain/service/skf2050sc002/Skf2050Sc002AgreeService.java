@@ -104,8 +104,8 @@ public class Skf2050Sc002AgreeService extends BaseServiceAbstract<Skf2050Sc002Ag
 				status, pageId);
 		if (resultBatch != null) {
 			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(agreeDto, resultBatch);
-			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
 			return agreeDto;
 		}
 		// フォームデータを設定

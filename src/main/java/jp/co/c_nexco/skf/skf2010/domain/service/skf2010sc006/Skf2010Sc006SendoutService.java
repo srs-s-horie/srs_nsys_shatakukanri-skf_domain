@@ -125,6 +125,8 @@ public class Skf2010Sc006SendoutService extends BaseServiceAbstract<Skf2010Sc006
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(soDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(soDto.getResultMessages());
+			return soDto;
 		}
 
 		// 画面遷移

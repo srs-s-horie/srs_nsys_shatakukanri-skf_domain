@@ -134,6 +134,8 @@ public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc00
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(notAgreeDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
+			return notAgreeDto;
 		}
 
 		// ページ遷移先は「申請状況一覧」

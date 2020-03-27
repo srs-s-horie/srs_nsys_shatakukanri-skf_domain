@@ -106,6 +106,8 @@ public class Skf2010Sc006UpdateService extends BaseServiceAbstract<Skf2010Sc006U
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(updDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(updDto.getResultMessages());
+			return updDto;
 		}
 
 		// 次のステータスを設定する

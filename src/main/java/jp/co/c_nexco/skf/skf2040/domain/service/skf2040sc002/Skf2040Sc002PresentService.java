@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -58,6 +59,8 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	private String sTrue = "true";
 	private String sFalse = "false";
@@ -154,13 +157,13 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 
 			// コメントがある場合は更新
 			if (NfwStringUtils.isNotEmpty(comment)) {
-				String commentNote = preDto.getCommentNote();		
-				boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, preDto.getApplNo(), nextStatus, 
-						commentNote, errorMsg);
+				String commentNote = preDto.getCommentNote();
+				boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, preDto.getApplNo(),
+						nextStatus, commentNote, errorMsg);
 				if (!commentErrorMessage) {
 					ServiceHelper.addErrorResultMessage(preDto, null, errorMsg.get("error"));
 					throwBusinessExceptionIfErrors(preDto.getResultMessages());
-				}	
+				}
 			}
 
 			// 添付ファイル管理テーブル更新処理
@@ -218,6 +221,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultList != null) {
 				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(preDto, resultList);
+				skfRollBackExpRepository.rollBack();
 				return preDto;
 			}
 
@@ -254,9 +258,9 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			}
 
 			// コメント更新
-			String commentNote = preDto.getCommentNote();		
-			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, preDto.getApplNo(), nextStatus, 
-					commentNote, errorMsg);
+			String commentNote = preDto.getCommentNote();
+			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, preDto.getApplNo(),
+					nextStatus, commentNote, errorMsg);
 			if (!commentErrorMessage) {
 				ServiceHelper.addErrorResultMessage(preDto, null, errorMsg.get("error"));
 				throwBusinessExceptionIfErrors(preDto.getResultMessages());
@@ -278,6 +282,7 @@ public class Skf2040Sc002PresentService extends BaseServiceAbstract<Skf2040Sc002
 			// データ連携の戻り値がnullではない場合は、エラーメッセージを出して処理中断
 			if (resultListBihin != null) {
 				skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(preDto, resultListBihin);
+				skfRollBackExpRepository.rollBack();
 				return preDto;
 			}
 		}

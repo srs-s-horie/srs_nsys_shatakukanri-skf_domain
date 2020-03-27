@@ -6,10 +6,8 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc002;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -97,8 +95,8 @@ public class Skf2050Sc002ReturnService extends BaseServiceAbstract<Skf2050Sc002R
 				status, pageId);
 		if (resultBatch != null) {
 			skf2050Fc001BihinHenkyakuSinseiDataImport.addResultMessageForDataLinkage(returnDto, resultBatch);
-			throwBusinessExceptionIfErrors(returnDto.getResultMessages());
 			skfRollBackExpRepository.rollBack();
+			throwBusinessExceptionIfErrors(returnDto.getResultMessages());
 			return returnDto;
 		}
 
