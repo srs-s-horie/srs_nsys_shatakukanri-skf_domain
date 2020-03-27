@@ -135,7 +135,7 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 			if (resultList != null) {
 				skf2020Fc001NyukyoKiboSinseiDataImport.addResultMessageForDataLinkage(applyDto, resultList);
 				skfRollBackExpRepository.rollBack();
-				return applyDto;
+				throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			}
 
 		} else if (FunctionIdConstant.R0103.equals(applyDto.getApplId())) {
@@ -154,7 +154,7 @@ public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002Ap
 			if (resultList != null) {
 				skf2040Fc001TaikyoTodokeDataImport.addResultMessageForDataLinkage(applyDto, resultList);
 				skfRollBackExpRepository.rollBack();
-				return applyDto;
+				throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			}
 		}
 

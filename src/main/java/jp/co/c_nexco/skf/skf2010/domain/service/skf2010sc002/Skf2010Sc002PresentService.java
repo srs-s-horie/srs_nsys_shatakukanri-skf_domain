@@ -165,7 +165,7 @@ public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002
 				if (resultList != null) {
 					skf2020Fc001NyukyoKiboSinseiDataImport.addResultMessageForDataLinkage(preDto, resultList);
 					skfRollBackExpRepository.rollBack();
-					return preDto;
+					throwBusinessExceptionIfErrors(preDto.getResultMessages());
 				}
 
 			}

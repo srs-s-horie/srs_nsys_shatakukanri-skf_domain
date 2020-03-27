@@ -112,7 +112,7 @@ public class Skf2010Sc003DeleteService extends BaseServiceAbstract<Skf2010Sc003D
 		if (resultBatch != null) {
 			skfBatchBusinessLogicUtils.addResultMessageForDataLinkage(delDto, resultBatch);
 			skfRollBackExpRepository.rollBack();
-			return delDto;
+			throwBusinessExceptionIfErrors(delDto.getResultMessages());
 		}
 
 		// 表示データ取得
