@@ -3,6 +3,9 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.dto.skf2060Sc002common;
 
+import java.util.List;
+import java.util.Map;
+
 import jp.co.c_nexco.skf.skf2060.domain.dto.common.Skf206010CommonDto;
 import lombok.EqualsAndHashCode;
 
@@ -37,4 +40,7 @@ public class Skf2060Sc002CommonDto extends Skf206010CommonDto {
     
     //ラジオボタン用借上物件番号
     private String radioCandidateNo;
+    
+    //理由ドロップダウン
+    private List<Map<String, Object>> riyuList;
 }
