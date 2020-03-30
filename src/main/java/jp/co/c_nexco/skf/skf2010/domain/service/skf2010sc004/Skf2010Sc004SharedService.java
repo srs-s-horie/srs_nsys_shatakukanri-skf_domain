@@ -37,6 +37,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004Inse
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004InsertTaikyoReportInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004UpdateApplHistoryAgreeStatusExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplicationKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
@@ -78,6 +79,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -157,6 +159,8 @@ public class Skf2010Sc004SharedService {
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
+	@Autowired
+	private SkfBihinInfoUtils skfBihinInfoUtils;
 
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
@@ -809,6 +813,18 @@ public class Skf2010Sc004SharedService {
 		newApplNo = skfShinseiUtils.getApplNo(companyCd, shainNo, applId);
 
 		return newApplNo;
+	}
+
+	/**
+	 * 備品一覧を取得する
+	 * 
+	 * @param applNo
+	 * @return
+	 */
+	public List<SkfBihinInfoUtilsGetBihinInfoExp> getBihinList(String applNo) {
+		List<SkfBihinInfoUtilsGetBihinInfoExp> bihinList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();
+		bihinList = skfBihinInfoUtils.getBihinInfo(companyCd, applNo);
+		return bihinList;
 	}
 
 	/**
