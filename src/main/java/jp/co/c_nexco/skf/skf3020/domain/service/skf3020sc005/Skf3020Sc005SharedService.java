@@ -214,7 +214,7 @@ public class Skf3020Sc005SharedService {
 		initDisplayItems(inDto);
 
 		if (changeFlg) {
-			inDto.setMaskFlg(true);
+			//inDto.setMaskFlg(true);
 			inDto.setMaskPattern("CHANGE");
 
 			String hdnNyutaikyoYoteiKbn = inDto.getHdnNyutaikyoYoteiKbn();
