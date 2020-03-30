@@ -173,12 +173,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
 		 */
 		String applNo = dto.getApplNo();
-
+		
 		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService
 				.getApplHistoryInfo(applNo);
 
 		String RealApplStatus = applHistoryInfo.getApplStatus();
-
+		
 		int displayLevel = 1;
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
@@ -337,7 +337,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				initDto.setApplUpdateDate(applDate);
 				// 社宅入居希望等調書
 				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
-				switch (initDto.getApplStatus()) {
+				switch (applHistoryInfo.getApplStatus()) {
 				case CodeConstant.STATUS_KAKUNIN_IRAI:
 				case CodeConstant.STATUS_DOI_ZUMI:
 				case CodeConstant.STATUS_DOI_SHINAI:
