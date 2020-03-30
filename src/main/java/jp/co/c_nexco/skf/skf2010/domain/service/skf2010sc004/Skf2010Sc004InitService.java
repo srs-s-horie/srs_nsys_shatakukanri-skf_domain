@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc004.Skf2010Sc004GetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
@@ -173,12 +172,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
 		 */
 		String applNo = dto.getApplNo();
-
+		
 		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService
 				.getApplHistoryInfo(applNo);
 
 		String RealApplStatus = applHistoryInfo.getApplStatus();
-
+		
 		int displayLevel = 1;
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
@@ -337,7 +336,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				initDto.setApplUpdateDate(applDate);
 				// 社宅入居希望等調書
 				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
-				switch (initDto.getApplStatus()) {
+				switch (applHistoryInfo.getApplStatus()) {
 				case CodeConstant.STATUS_KAKUNIN_IRAI:
 				case CodeConstant.STATUS_DOI_ZUMI:
 				case CodeConstant.STATUS_DOI_SHINAI:
@@ -347,17 +346,6 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 					mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
 					// 備品希望
 					initDto.setBihinKibo(tNyukyoChoshoTsuchi.getBihinKibo());
-					// 備品申請が全て「申請不可」場合も申請不要に切り替え
-					List<SkfBihinInfoUtilsGetBihinInfoExp> bihinList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();
-					bihinList = skf2010Sc004SharedService.getBihinList(applNo);
-					if (bihinList != null && bihinList.size() > 0) {
-						for (SkfBihinInfoUtilsGetBihinInfoExp bihinInfo : bihinList) {
-							if (CheckUtils.isEqual(bihinInfo.getBihinHope(), CodeConstant.BIHIN_KIBO_KANOU)) {
-								initDto.setBihinKibo(CodeConstant.BIHIN_KIBO_SHINSEI_HITSUYO);
-							}
-						}
-					}
-
 					break;
 				default:
 					break;
