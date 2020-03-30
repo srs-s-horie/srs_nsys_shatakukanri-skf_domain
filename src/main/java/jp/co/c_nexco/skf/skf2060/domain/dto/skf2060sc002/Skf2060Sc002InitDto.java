@@ -43,8 +43,6 @@ public class Skf2060Sc002InitDto extends Skf2060Sc002CommonDto {
 	private String shatakuNameAddress;
 	//添付ファイル
 	private String attachedFile;
-    //理由ドロップダウン
-    private List<Map<String, Object>> riyuList;
 	
     // 操作ガイド
     private String operationGuide;

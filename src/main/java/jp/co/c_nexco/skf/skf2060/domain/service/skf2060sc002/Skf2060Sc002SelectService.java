@@ -5,6 +5,7 @@ package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc002;
 
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,9 @@ import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc002.Skf2060Sc002SelectDto;
@@ -59,6 +62,8 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 	private Skf2060Sc002GetApplHistoryInfoForUpdateExpRepository skf2060Sc002GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
 	private Skf2060Sc002SharedService skf2060Sc002SharedService;
+	@Autowired
+	private SkfDropDownUtils skfDropDownUtils;
 	
 	// 会社コード
 	private String companyCd = CodeConstant.C001;
@@ -83,7 +88,16 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 		skfOperationLogUtils.setAccessLog("選択", companyCd, selectDto.getPageId());
 		
 		//入力チェックを行う
-		this.inputCheck(selectDto);
+		boolean inputCheck = this.inputCheck(selectDto);
+		if(!inputCheck){
+			//ドロップダウン作成
+			List<Map<String, Object>> riyuList = new ArrayList<Map<String, Object>>();
+			riyuList.addAll(skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_NO_AGREE_REASON, selectDto.getRiyuDropdown(), false));
+			selectDto.setRiyuList(riyuList);
+
+			return selectDto;
+			
+		}
 		
 		//「選択」ラジオボタンにて選択された物件の借上候補物件番号（選択しないの場合は'0')
 		String candidateNo = selectDto.getRadioCandidateNo();
@@ -247,11 +261,11 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 	 * @return なし
 	 * @throws UnsupportedEncodingException 
 	 */
-	public void inputCheck(Skf2060Sc002SelectDto selectDto) throws UnsupportedEncodingException{
+	public boolean inputCheck(Skf2060Sc002SelectDto selectDto) throws UnsupportedEncodingException{
 		//いずれの物件の「選択」ラジオボタンも選択されていない場合
 		if(selectDto.getRadioCandidateNo() == null){
 			ServiceHelper.addErrorResultMessage(selectDto, null, MessageIdConstant.E_SKF_1054, "物件");
-			throwBusinessExceptionIfErrors(selectDto.getResultMessages());
+			return false;
 
 		//「選択しない」ラベルが表示されている行が選択されている場合
 		}else if(selectDto.getRadioCandidateNo().equals("0")){
@@ -260,14 +274,15 @@ public class Skf2060Sc002SelectService extends BaseServiceAbstract<Skf2060Sc002S
 				//備考入力欄入力チェック
 				if(selectDto.getBiko() == null || CheckUtils.isEmpty(selectDto.getBiko().trim())){
 					ServiceHelper.addErrorResultMessage(selectDto, new String[] { "biko" }, MessageIdConstant.E_SKF_1048, "理由入力欄");
-					throwBusinessExceptionIfErrors(selectDto.getResultMessages());
+					return false;
 				//備考入力欄桁数チェック
 				}else if(CheckUtils.isMoreThanByteSize(selectDto.getBiko().trim(), 256)){
 					ServiceHelper.addErrorResultMessage(selectDto, new String[] { "biko" }, MessageIdConstant.E_SKF_1071, "理由入力欄","128");
-					throwBusinessExceptionIfErrors(selectDto.getResultMessages());
+					return false;
 				}
 			}
 		}
+		return true;
 	}
 	
 	/**
