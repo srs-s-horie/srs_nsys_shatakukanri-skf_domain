@@ -403,13 +403,9 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 					key.setCompanyCd(companyCd);
 					key.setCandidateNo((long) checkDataParamList.get(j).get("candidateNo"));
 					data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
-					String lastUpdateDateString = skfDateFormatUtils.dateFormatFromDate(data.getUpdateDate(),
-							SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
-					SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
-					Date lastUpdateDate = sdf.parse(lastUpdateDateString);
 					// 楽観的排他チェック
 					super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate
-							+ checkDataParamList.get(j).get("candidateNo").toString()), lastUpdateDate);
+							+ checkDataParamList.get(j).get("candidateNo").toString()), data.getUpdateDate());
 					boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd,
 							(long) checkDataParamList.get(j).get("candidateNo"));
 					// 登録に失敗した場合
