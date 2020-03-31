@@ -34,6 +34,8 @@ import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc001.Skf3050Sc001ShainConfir
 public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050Sc001ShainConfirmDto> {
 	
 	@Autowired
+	Skf3050Sc001SharedService skf3050Sc001SharedService;
+	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3050Sc001GetShatakuShainNameExpRepository skf3050Sc001GetShatakuShainNameExpRepository;
@@ -169,7 +171,12 @@ public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050
 			confirmDto.setBtnRegistDisabled("true");
 		}
 		
-		confirmDto.setListTableData(updateListTableDataViewColumn(grvShainBangoList,confirmDto.getListTableData()));
+		//検索結果一覧用
+		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
+		//再取得
+		skf3050Sc001SharedService.setGrvShainBangoList(listTableData);
+		//リストの再生成
+		confirmDto.setListTableData(updateListTableDataViewColumn(grvShainBangoList,listTableData));
 		confirmDto.setListPage(confirmDto.getListPage());
 		
 		return confirmDto;

@@ -110,6 +110,13 @@ public class Skf3050Sc001SharedService {
 			
 			tmpMap.put("hdnTxtBoxName", "txtShainNo" + i);
 			
+			//従業員マスタ:社員氏名
+			tmpMap.put("colShainNameJugyoin", "");
+			//従業員マスタ:所属
+			tmpMap.put("colShozokuJugyoin", "");
+			//社宅社員マスタ更新日
+			tmpMap.put("hdnUpdateDateNew", "");
+			
 			setViewList.add(tmpMap);
 		}
 
