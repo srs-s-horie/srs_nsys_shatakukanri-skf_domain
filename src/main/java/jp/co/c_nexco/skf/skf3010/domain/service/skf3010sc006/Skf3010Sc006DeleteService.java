@@ -125,8 +125,8 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		if(delCount <= 0){
 			// 元の画面状態に戻す
 			skf3010Sc006SharedService.setBeforeInfo(delDto);
-			// 削除時にエラーが発生しました。ヘルプデスクへ連絡してください。
-			ServiceHelper.addErrorResultMessage(delDto, null, MessageIdConstant.E_SKF_1076);
+			//他のユーザによって更新されています。一覧画面へ戻って再度検索してください。
+			ServiceHelper.addErrorResultMessage(delDto, null, MessageIdConstant.E_SKF_1135);
 			// ロールバック
 			throwBusinessExceptionIfErrors(delDto.getResultMessages());
 			return delDto;
