@@ -25,6 +25,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001Upda
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsGetKariageBukkenFileInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukken;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukkenKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeiji;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiDetail;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageTeijiFile;
@@ -39,8 +40,10 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRe
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiDetailRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
@@ -85,6 +88,8 @@ public class Skf2060Sc001SharedService {
 	public static List<Skf2060Sc001GetKariageBukkenFileExp> dataParam2;
 
 	private String companyCd = CodeConstant.C001;
+
+	public final String KariageBukkenLastUpdateDate = "Skf2060Sc001kariageBukkenLastUpdateDate";
 
 	/**
 	 * 申請書書類履歴テーブルを取得する。
@@ -593,10 +598,13 @@ public class Skf2060Sc001SharedService {
 	 * @param companyCd
 	 * @param applNo
 	 * @param teijiKaisu
+	 * @param errorMsg
+	 * @param lastUpdateDateMap
 	 * 
 	 * @return 更新できた場合もしくは提示済みの物件が存在しなかった場合true 更新できなかった場合false
 	 */
-	public boolean updateKariageBukkenTeijiFlg(String companyCd, String applNo, short teijiKaisu) {
+	public boolean updateKariageBukkenTeijiFlg(String companyCd, String applNo, short teijiKaisu,
+			Map<String, Date> lastUpdateDateMap, Map<String, String> errorMsg) {
 
 		int updateCount = 0;
 		String teijiFlg = "0";
@@ -612,6 +620,28 @@ public class Skf2060Sc001SharedService {
 		}
 
 		if (teijiDataList.get(0).getCheckCandidateNo() != 0) {
+			// 更新対象データを取得
+			Skf2060TKariageBukken kategoriData = new Skf2060TKariageBukken();
+			Skf2060TKariageBukkenKey kariageKey = new Skf2060TKariageBukkenKey();
+			kariageKey.setCompanyCd(companyCd);
+			kariageKey.setCandidateNo(teijiDataList.get(0).getCheckCandidateNo());
+			kategoriData = skf2060TKariageBukkenRepository.selectByPrimaryKey(kariageKey);
+			if (kategoriData == null) {
+				return false;
+			}
+			// 排他チェック実施
+			String lastUpdateDateKey = this.KariageBukkenLastUpdateDate + teijiDataList.get(0).getCheckCandidateNo();
+			Date lastUpdateDate = lastUpdateDateMap.get(lastUpdateDateKey);
+			String lastUpdateDateStr = skfDateFormatUtils.dateFormatFromDate(lastUpdateDate,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			String updateDateStr = skfDateFormatUtils.dateFormatFromDate(kategoriData.getUpdateDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			if (!CheckUtils.isEqual(lastUpdateDateStr, updateDateStr)) {
+				// 排他チェックエラー
+				errorMsg.put("error", MessageIdConstant.E_SKF_1134);
+				return false;
+			}
+
 			Skf2060TKariageBukken updateData = new Skf2060TKariageBukken();
 			updateData.setCompanyCd(companyCd);
 			updateData.setCandidateNo(teijiDataList.get(0).getCheckCandidateNo());
@@ -621,6 +651,19 @@ public class Skf2060Sc001SharedService {
 			if (updateCount <= 0) {
 				return false;
 			}
+
+			// 最新の更新日を取得する
+			kategoriData = new Skf2060TKariageBukken();
+			kariageKey = new Skf2060TKariageBukkenKey();
+			kariageKey.setCompanyCd(companyCd);
+			kariageKey.setCandidateNo(teijiDataList.get(0).getCheckCandidateNo());
+			kategoriData = skf2060TKariageBukkenRepository.selectByPrimaryKey(kariageKey);
+			if (kategoriData == null) {
+				return false;
+			}
+
+			// 排他処理用更新日を入れ替え
+			lastUpdateDateMap.put(lastUpdateDateKey, kategoriData.getUpdateDate());
 		}
 		return true;
 	}
