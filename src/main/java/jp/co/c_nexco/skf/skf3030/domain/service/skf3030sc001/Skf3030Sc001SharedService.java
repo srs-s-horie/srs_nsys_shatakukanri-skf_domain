@@ -558,11 +558,16 @@ public class Skf3030Sc001SharedService {
 			String shatakKbn = getTargetDropDownLabel(shatakuDaichoInfo.getShatakuKbn(), shatakKbnList);
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_SHATAK_KBN_KEY, shatakKbn);
 
+			//退居日
 			String entityTaikyoDate = shatakuDaichoInfo.getTaikyoDate();
+			//社宅提示ステータス
 			String entityTeijiSts = shatakuDaichoInfo.getShatakuTeijiStatus();
+			//社員番号変更フラグ
 			String entityShainNoChgFlg = shatakuDaichoInfo.getShainNoChangeFlg();
+			//社員番号
 			String shainNo = shatakuDaichoInfo.getShainNo();
 
+			//退居日が空白、社宅提示ステータスが”承認”、社員番号変更フラグが”１”の場合、”＊”を付ける
 			if (NfwStringUtils.isEmpty(entityTaikyoDate)
 					&& CodeConstant.PRESENTATION_SITUATION_SHONIN.equals(entityTeijiSts)
 					&& SHAIN_NO_CHG_AVAILABLE.equals(entityShainNoChgFlg)) {
@@ -570,6 +575,7 @@ public class Skf3030Sc001SharedService {
 			}
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_SHAIN_NO_KEY, shainNo);
 
+			//社宅提示ステータス
 			String teijiSts = "";
 			if (NfwStringUtils.isEmpty(entityTeijiSts)) {
 				teijiSts = HYPHEN;
@@ -583,6 +589,7 @@ public class Skf3030Sc001SharedService {
 			}
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_SHATAK_TEIJI_KEY, teijiSts);
 
+			//備品データステータス
 			String entityBihinTeijiSts = shatakuDaichoInfo.getBihinTeijiStatus();
 			String bihinTeijiSts = "";
 			if (NfwStringUtils.isEmpty(entityBihinTeijiSts)) {
@@ -597,6 +604,7 @@ public class Skf3030Sc001SharedService {
 			}
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_BIHIN_TEIJI_KEY, bihinTeijiSts);
 
+			//社宅使用料
 			Integer entitySiyoryo = shatakuDaichoInfo.getRentalTotal();
 			String siyoryo = "";
 			if (entitySiyoryo != null) {
@@ -606,6 +614,7 @@ public class Skf3030Sc001SharedService {
 			}
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_SIYORYO_KEY, siyoryo);
 
+			//個人負担共益費
 			Integer entityKyoekihi = shatakuDaichoInfo.getKyoekihiPersonTotal();
 			String kyoekihi = "";
 			if (entityKyoekihi != null) {
@@ -615,6 +624,7 @@ public class Skf3030Sc001SharedService {
 			}
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_KYOEKIHI_KEY, kyoekihi);
 
+			//駐車場使用料
 			String parkingSiyoryo = "";
 			Integer entityParkingSiyoryo = shatakuDaichoInfo.getParkingRentalTotal();
 			if (entityParkingSiyoryo != null) {
@@ -639,6 +649,7 @@ public class Skf3030Sc001SharedService {
 			}
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_TAIKYO_DATE_KEY, taikyoDate);
 
+			//相互利用
 			String sogoriyo = getTargetDropDownLabel(shatakuDaichoInfo.getMutualUseKbn(), mutualuseList);
 			targetMap.put(Skf303010CommonSharedService.SEARCH_COL_SOGORIYO_KEY, sogoriyo);
 

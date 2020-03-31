@@ -723,9 +723,9 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 		rtnData.setGas(bihinStsKbnMap.get(daichoData.getGasLentStatusKbn()));
 		//備品貸与データ
 		// ┗貸与日
-		rtnData.setTaiyoDate(bihinStsKbnMap.get(daichoData.getTaiyoDate()));
+		rtnData.setTaiyoDate(daichoData.getTaiyoDate());
 		// ┗返却日
-		rtnData.setHenkyakuDate(bihinStsKbnMap.get(daichoData.getHenkyakuDate()));
+		rtnData.setHenkyakuDate(daichoData.getHenkyakuDate());
 
 		return rtnData;
 	}
