@@ -476,7 +476,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	 * @param beginningEndKbn
 	 * @return
 	 */
-	private boolean createShatakuShainRireki(String beginningEndKbn) {
+	private boolean createShatakuShainRireki(String beginningEndKbn) throws Exception {
 		List<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp> preUserMasterList = new ArrayList<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp>();
 		SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExpRepository getBaseShainInfoRepository = (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExpRepository) SpringContext
 				.getBean("skfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExpRepository");
@@ -485,7 +485,8 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		if (preUserMasterList != null && preUserMasterList.size() > 0) {
 			for (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp preUserMasterInfo : preUserMasterList) {
 				// 年月を取得
-				Date inputDate = preUserMasterInfo.getInputDate();
+				// プレユーザーマスタは毎日更新されているため、年月は必ずシステム日付の年月が取得される。
+				Date inputDate = new Date();
 				String yearMonth = DateUtils.format(inputDate, SkfCommonConstant.YMD_STYLE_YYYYMM_FLAT);
 				// ●社宅社員異動履歴データの存在チェック
 				int cnt = getShatakuShainRirekiCount(preUserMasterInfo.getShainNo(), yearMonth, beginningEndKbn);
@@ -743,13 +744,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	 * @param beginningEndKbn
 	 */
 	private void setInsertShatakuShainRireki(Skf1010MShatakuShainRireki insertRireki,
-			SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp preUserMasterInfo, String beginningEndKbn) {
+			SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfoExp preUserMasterInfo, String beginningEndKbn)
+			throws Exception {
 		// 会社コード
 		insertRireki.setCompanyCd(companyCd);
 		// 社員番号
 		insertRireki.setShainNo(preUserMasterInfo.getShainNo());
 		// 年月
-		Date inputDate = preUserMasterInfo.getInputDate();
+		Date inputDate = new Date();
 		String yearMonth = DateUtils.format(inputDate, SkfCommonConstant.YMD_STYLE_YYYYMM_FLAT);
 		insertRireki.setYearMonth(yearMonth);
 		// 月初月末区分
