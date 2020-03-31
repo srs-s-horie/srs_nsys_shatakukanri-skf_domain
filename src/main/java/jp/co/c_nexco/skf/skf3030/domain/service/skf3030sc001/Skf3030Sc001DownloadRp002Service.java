@@ -954,7 +954,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 			LogUtils.debugByMsg("社宅管理台帳データ出力処理終了:" + DateTime.now().toString());
 
 		} catch (Exception e) {
-			ServiceHelper.addErrorResultMessage(inDto, null, MessageIdConstant.E_SKF_1070);
+			//ServiceHelper.addErrorResultMessage(inDto, null, MessageIdConstant.E_SKF_1070);
 			LogUtils.debugByMsg(e.getMessage());
 			sheetDataBean = null;
 			sheetDataBeanList = null;
