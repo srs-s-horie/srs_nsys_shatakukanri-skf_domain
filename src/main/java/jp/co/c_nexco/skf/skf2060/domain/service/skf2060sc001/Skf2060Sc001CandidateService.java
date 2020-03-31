@@ -318,12 +318,18 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 				}
 
 				// 「申請書類管理番号」と「提示回数」をもとに借上候補物件提示明細テーブルに存在する全ての借上候補物件データの「提示フラグ」を"0"(提示可)に更新する。
+				Map<String, Date> lastUpdateDateMap = candidateDto.getLastUpdateDateMap();
+				Map<String, String> errorMsg = new HashMap<String, String>();
 				boolean updateKariageBukkenTeijiFlgCheck = skf2060Sc001SharedService
-						.updateKariageBukkenTeijiFlg(companyCd, applNo, teijiKaisu);
+						.updateKariageBukkenTeijiFlg(companyCd, applNo, teijiKaisu, lastUpdateDateMap, errorMsg);
 				// 更新に失敗した場合
 				if (!(updateKariageBukkenTeijiFlgCheck)) {
 					// エラーメッセージの設定
-					ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1073);
+					if (errorMsg.get("error") != null) {
+						ServiceHelper.addErrorResultMessage(candidateDto, null, errorMsg.get("error"));
+					} else {
+						ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1073);
+					}
 					throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
 				}
 				// 提示回数を＋１する
@@ -404,8 +410,9 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 					key.setCandidateNo((long) checkDataParamList.get(j).get("candidateNo"));
 					data = skf2060TKariageBukkenRepository.selectByPrimaryKey(key);
 					// 楽観的排他チェック
-					super.checkLockException(candidateDto.getLastUpdateDate(candidateDto.KariageBukkenLastUpdateDate
-							+ checkDataParamList.get(j).get("candidateNo").toString()), data.getUpdateDate());
+					String lastUpdateDateKey = candidateDto.KariageBukkenLastUpdateDate
+							+ checkDataParamList.get(j).get("candidateNo");
+					super.checkLockException(lastUpdateDateMap.get(lastUpdateDateKey), data.getUpdateDate());
 					boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd,
 							(long) checkDataParamList.get(j).get("candidateNo"));
 					// 登録に失敗した場合
