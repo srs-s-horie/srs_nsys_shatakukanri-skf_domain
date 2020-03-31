@@ -89,9 +89,11 @@ public class Skf3050Sc002ProvCalcService extends BaseServiceAbstract<Skf3050Sc00
 
 		String result = SkfCommonConstant.ABNORMAL;
 		result = skf3050Sc002SharedService.updateTsukibetsuTsukiji(paramMap, endList);
-
-		Integer dbPrcRtn = skf3050Sc002SharedService.endShimeProc(result, paramMap.get(Skf3050Bt001SharedTask.COMPANY_CD),
-				Skf3050Bt001SharedTask.BATCH_ID_B5001, SkfCommonConstant.PROCESSING);
+/* US 仮計算処理排他エラー対応 */
+//		Integer dbPrcRtn = skf3050Sc002SharedService.endShimeProc(result, paramMap.get(Skf3050Bt001SharedTask.COMPANY_CD),
+//				Skf3050Bt001SharedTask.BATCH_ID_B5001, SkfCommonConstant.PROCESSING);
+		Integer dbPrcRtn = skf3050Sc002SharedService.endShimeProc(result, CodeConstant.C001, batchPrgId, SkfCommonConstant.PROCESSING);
+/* UE 仮計算処理排他エラー対応 */
 
 		if (dbPrcRtn > 0) {
 			skf3050Sc002SharedService.outputManagementLogEndProc(endList, null);
@@ -101,7 +103,7 @@ public class Skf3050Sc002ProvCalcService extends BaseServiceAbstract<Skf3050Sc00
 
 		if (!SkfCommonConstant.ABNORMAL.equals(result)) {
 			String targetNengetsu = skf3050Sc002SharedService.editDisplayNengetsu(jikkouShijiYoteiNengetsu);
-			ServiceHelper.addErrorResultMessage(provCalcDto, null, MessageIdConstant.I_SKF_3091, targetNengetsu);
+			ServiceHelper.addResultMessage(provCalcDto, MessageIdConstant.I_SKF_3091, targetNengetsu);
 		
 		} else {
 			ServiceHelper.addErrorResultMessage(provCalcDto, null, MessageIdConstant.E_SKF_1079);

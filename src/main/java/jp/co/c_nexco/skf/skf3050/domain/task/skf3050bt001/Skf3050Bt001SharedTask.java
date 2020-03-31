@@ -666,11 +666,9 @@ public class Skf3050Bt001SharedTask {
 	@Transactional
 	public int endProc(String endFlag, String companyCd, String programId, String searchEndFlag) throws ParseException {
 
-		Date endDate = getStrSystemDate();
-
 		//バッチ制御テーブルを更新
-		int updateCnt = skfBatchBusinessLogicUtils.updateBatchControl(endDate, endFlag, companyCd, programId,
-				searchEndFlag);
+		int updateCnt = skfBatchBusinessLogicUtils.updateBatchControl(
+								endFlag, companyCd, programId, searchEndFlag);
 
 		if (updateCnt > 0) {
 			return RETURN_STATUS_OK;

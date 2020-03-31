@@ -567,11 +567,9 @@ public class Skf3050Sc002SharedService {
 	@Transactional
 	public void endCreatePositiveDataProc(String companyCd, String endFlg) throws ParseException {
 
-		Date endDate = getSystemDate();
-
 		//バッチ制御テーブルを更新
-		skfBatchBusinessLogicUtils.updateBatchControl(endDate, endFlg, companyCd, createPositiveDataBatchPrgId,
-				SkfCommonConstant.PROCESSING);
+		skfBatchBusinessLogicUtils.updateBatchControl(
+				endFlg, companyCd, createPositiveDataBatchPrgId, SkfCommonConstant.PROCESSING);
 	}
 
 	/**
@@ -1900,6 +1898,10 @@ public class Skf3050Sc002SharedService {
 		if (lockResult.size() == 0) {
 			return SkfCommonConstant.ABNORMAL;
 		}
+/* AS 締め処理性能向上 */
+		List<String> lockBihinMeisaiResult = skf3050Bt001GetDataForUpdateExpRepository.getSkf3030TShatakuBihinRirekiData(paramShoriNengetsu);
+		List<String> lockShozokuRirekiResult = skf3050Bt001GetDataForUpdateExpRepository.getSkf3030TShozokuRirekiData(paramShoriNengetsu);
+/* AE 締め処理性能向上 */
 
 		updateGenbutsuSanteigaku(paramUserId, paramShoriNengetsu);
 		
@@ -1988,13 +1990,18 @@ public class Skf3050Sc002SharedService {
 
 			List<Skf3050Bt001GetBihinMeisaiExp> bihinMeisaiDtList = getBihinMeisai(paramShoriNengetsu,
 					renRirekiRow.getShatakuKanriId());
-
+/* AS 締め処理性能向上 */
+			if (bihinMeisaiDtList.size() > 0 && (lockBihinMeisaiResult.size() == 0 || lockShozokuRirekiResult.size() == 0)) {
+				return SkfCommonConstant.ABNORMAL;
+			}
+/* AE 締め処理性能向上 */
 			for (int j = 0; j < bihinMeisaiDtList.size(); j++) {
-				
-				List<String> lockBihinMeisaiResult = skf3050Bt001GetDataForUpdateExpRepository.getSkf3030TShatakuBihinRirekiData(paramShoriNengetsu);
-				if (lockBihinMeisaiResult.size() == 0) {
-					return SkfCommonConstant.ABNORMAL;
-				}
+/* DS 締め処理性能向上 */
+//				List<String> lockBihinMeisaiResult = skf3050Bt001GetDataForUpdateExpRepository.getSkf3030TShatakuBihinRirekiData(paramShoriNengetsu);
+//				if (lockBihinMeisaiResult.size() == 0) {
+//					return SkfCommonConstant.ABNORMAL;
+//				}
+/* DE 締め処理性能向上 */
 
 				updateBihinMeisai(renRirekiRow.getShatakuKanriId(), bihinMeisaiDtList.get(j).getBihinPayment(),
 						paramUserId, bihinMeisaiDtList.get(j).getBihinCd(), paramShoriNengetsu);
@@ -2096,12 +2103,12 @@ public class Skf3050Sc002SharedService {
 						preJigyoName = shainIdoDt2.getShainBusinessAreaName();
 					}
 				}
-
-				List<String> lockShozokuRirekiResult = skf3050Bt001GetDataForUpdateExpRepository.getSkf3030TShozokuRirekiData(paramShoriNengetsu);
-				if (lockShozokuRirekiResult.size() == 0) {
-					return SkfCommonConstant.ABNORMAL;
-				}
-				
+/* DS 締め処理性能向上 */
+//				List<String> lockShozokuRirekiResult = skf3050Bt001GetDataForUpdateExpRepository.getSkf3030TShozokuRirekiData(paramShoriNengetsu);
+//				if (lockShozokuRirekiResult.size() == 0) {
+//					return SkfCommonConstant.ABNORMAL;
+//				}
+/* DE 締め処理性能向上 */
 				updateShozokuRireki(companyCd, agencyCd, agencyName, affilCd1, affilName1, affilCd2, affilName2,
 						touJigyoCd, touJigyoName, preJigyoCd, preJigyoName, paramUserId,
 						renRirekiRow.getShatakuKanriId(), paramShoriNengetsu);
@@ -2222,10 +2229,8 @@ public class Skf3050Sc002SharedService {
 	public int endShimeProc(String endFlag, String companyCd, String programId, String searchEndFlag)
 			throws ParseException {
 
-		Date endDate = getSystemDate();
-
-		int updateCnt = skfBatchBusinessLogicUtils.updateBatchControl(endDate, endFlag, companyCd, programId,
-				searchEndFlag);
+		int updateCnt = skfBatchBusinessLogicUtils.updateBatchControl(
+							endFlag, companyCd, programId, searchEndFlag);
 
 		if (updateCnt > 0) {
 			return RETURN_STATUS_OK;

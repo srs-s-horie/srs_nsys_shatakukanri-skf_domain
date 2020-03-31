@@ -214,10 +214,8 @@ public class Skf3050Bt003SharedTask {
 	@Transactional
 	public void endProc(String companyCd) throws ParseException {
 
-		Date endDate = getSystemDate();
-
-		skfBatchBusinessLogicUtils.updateBatchControl(endDate, SkfCommonConstant.COMPLETE, companyCd, BATCH_ID_B5003,
-				SkfCommonConstant.PROCESSING);
+		skfBatchBusinessLogicUtils.updateBatchControl(
+				SkfCommonConstant.COMPLETE, companyCd, BATCH_ID_B5003, SkfCommonConstant.PROCESSING);
 	}
 
 	/**

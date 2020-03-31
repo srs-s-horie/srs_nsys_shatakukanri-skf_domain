@@ -401,10 +401,8 @@ public class Skf3050Bt004SharedTask {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void endProc(String endFlg, String companyCd) {
 
-		Date endDate = getSystemDate();
-
-		skfBatchBusinessLogicUtils.updateBatchControl(endDate, endFlg, companyCd, BATCH_ID_B5004,
-				SkfCommonConstant.PROCESSING);
+		skfBatchBusinessLogicUtils.updateBatchControl(
+				endFlg, companyCd, BATCH_ID_B5004, SkfCommonConstant.PROCESSING);
 	}
 
 	/**
