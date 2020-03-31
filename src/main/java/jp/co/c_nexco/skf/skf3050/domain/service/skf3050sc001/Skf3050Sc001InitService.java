@@ -68,8 +68,7 @@ public class Skf3050Sc001InitService extends BaseServiceAbstract<Skf3050Sc001Ini
 		initDto.setListTableData(listTableData);
 		//最大行数を設定
 		initDto.setListPage("1");//初期表示時は1ページ目
-		//initDto.setListTableMaxRowCount(listTableMaxRowCount);
-		initDto.setListTableMaxRowCount("2");
+		initDto.setListTableMaxRowCount(listTableMaxRowCount);
 		
 		return initDto;
 	}
