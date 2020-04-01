@@ -188,7 +188,16 @@ public class Skf2010Sc003SharedService {
 			if (applHistoryData.getApplStatus().equals(CodeConstant.STATUS_ICHIJIHOZON)
 					|| applHistoryData.getApplStatus().equals(CodeConstant.STATUS_SASHIMODOSHI)
 					|| applHistoryData.getApplStatus().equals(CodeConstant.STATUS_HININ)) {
-				tmpMap.put("delete", ""); // 削除ボタン（アイコン）
+				// 備品希望申請と備品返却確認のみ削除ボタンを表示しない
+				switch (applHistoryData.getApplId()) {
+				case FunctionIdConstant.R0104:
+				case FunctionIdConstant.R0105:
+					break;
+				default:
+					tmpMap.put("delete", ""); // 削除ボタン（アイコン）
+					break;
+				}
+
 			}
 
 			returnList.add(tmpMap);
