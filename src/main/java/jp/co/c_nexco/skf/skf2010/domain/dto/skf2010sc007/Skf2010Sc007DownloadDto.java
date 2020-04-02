@@ -17,6 +17,8 @@ public class Skf2010Sc007DownloadDto extends FileDownloadDto {
 
 	// 申請書類ファイル名
 	private String downloadFileName;
+	// 画面表示区分
+	private String confirmationKbn;
 
 	// 機能ID
 	private String functionId;

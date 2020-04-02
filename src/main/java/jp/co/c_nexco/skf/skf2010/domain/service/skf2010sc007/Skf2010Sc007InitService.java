@@ -73,7 +73,7 @@ public class Skf2010Sc007InitService extends BaseServiceAbstract<Skf2010Sc007Ini
 			initDto.setApplId(FunctionIdConstant.R0100);
 
 		} else if (TAIKYO.equals(initDto.getConfirmationKbn())) {
-			// 区分が退居だった場合はメッセージを「入居希望申請に設定
+			// 区分が退居だった場合はメッセージを「社宅（自動車保管場所）退居届」に設定
 			applName = "社宅（自動車保管場所）退居届";
 			initDto.setApplId(FunctionIdConstant.R0103);
 		}
