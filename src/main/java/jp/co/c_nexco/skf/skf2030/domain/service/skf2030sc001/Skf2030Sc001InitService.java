@@ -72,11 +72,15 @@ public class Skf2030Sc001InitService extends BaseServiceAbstract<Skf2030Sc001Ini
 		skf2030Sc001SharedService.setEnabled(initDto, applInfo);
 
 		// バナー戻るボタン遷移先調整
+		String backUrl = "skf/" + FunctionIdConstant.SKF2030_SC001 + "/init";
 		String pageId = initDto.getPageId();
 		if (!CheckUtils.isEqual(pageId, FunctionIdConstant.SKF2030_SC001)) {
 			initDto.setPageId(null);
 			initDto.setPrePageId(FunctionIdConstant.SKF1010_SC001);
+			// 社宅TOPを設定
+			backUrl = "skf/" + FunctionIdConstant.SKF1010_SC001 + "/init";
 		}
+		initDto.setBackUrl(backUrl);
 
 		return initDto;
 	}
