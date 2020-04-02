@@ -277,10 +277,10 @@ public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005Ini
 		comDto.setAreaKbn(null);
 		// 社宅区分
 		comDto.setShatakuKbn(null);
-		// 空き部屋数
-		comDto.setEmptyRoomCount(null);
-		// 空き駐車場数
-		comDto.setEmptyParkingCount(null);
+//		// 空き部屋数
+//		comDto.setEmptyRoomCount(null);
+//		// 空き駐車場数
+//		comDto.setEmptyParkingCount(null);
 		// 社宅管理番号
 		comDto.setShatakuKanriNo(null);
 		// 更新フラグ

@@ -778,7 +778,7 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 			String reizokoFlg = getBihinValueHenkan(tmpData.getReizokoReturnKbn());
 			tmpMap.put("col13", reizokoFlg);
 			// テレビ
-			String tvFlg = getBihinValueHenkan(tmpData.getTerebidaiReturnKbn());
+			String tvFlg = getBihinValueHenkan(tmpData.getTerebiReturnKbn());
 			tmpMap.put("col14", tvFlg);
 			// テレビ台
 			String tvDaiFlg = getBihinValueHenkan(tmpData.getTerebidaiReturnKbn());
@@ -896,7 +896,7 @@ public class Skf3040Sc001DownloadService extends BaseServiceAbstract<Skf3040Sc00
 			String reizokoFlg = getBihinValueShitadori(tmpData.getReizokoReturnKbn());
 			tmpMap.put("col13", reizokoFlg);
 			// テレビ
-			String tvFlg = getBihinValueShitadori(tmpData.getTerebidaiReturnKbn());
+			String tvFlg = getBihinValueShitadori(tmpData.getTerebiReturnKbn());
 			tmpMap.put("col14", tvFlg);
 			// テレビ台
 			String tvDaiFlg = getBihinValueShitadori(tmpData.getTerebidaiReturnKbn());
