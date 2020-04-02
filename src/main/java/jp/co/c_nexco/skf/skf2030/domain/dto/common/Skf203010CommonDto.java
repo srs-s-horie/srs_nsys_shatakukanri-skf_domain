@@ -82,4 +82,7 @@ public class Skf203010CommonDto extends BaseDto {
 	// 操作ガイド
 	private String operationGuide;
 
+	// 戻るボタン用URL
+	private String backUrl;
+
 }
