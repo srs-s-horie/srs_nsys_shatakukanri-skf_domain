@@ -17,5 +17,9 @@ public class Skf309030CommonSharedService {
 	// 一覧画面遷移時の更新フラグ
 	public static final String UPDATE_FLAG_NEW = "0";
 	public static final String UPDATE_FLAG_UPDATE = "1";
+	
+	// 検索フラグ
+	public static final String SEARCH_FLAG_DO_NOT = "0";
+	public static final String SEARCH_FLAG_DO = "1";
 
 }

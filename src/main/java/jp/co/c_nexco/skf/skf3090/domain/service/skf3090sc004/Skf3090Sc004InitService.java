@@ -11,6 +11,8 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -20,6 +22,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc004.Skf3090Sc004InitDto;
+import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309030CommonSharedService;
 
 /**
  * Skf3090Sc004InitService 従業員マスタ一覧初期表示処理クラス
@@ -56,8 +59,12 @@ public class Skf3090Sc004InitService extends BaseServiceAbstract<Skf3090Sc004Ini
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())
-				&& Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3090_SC005)) {
+				&& Objects.equals(initDto.getPrePageId(), FunctionIdConstant.SKF3090_SC005)
+				&& Objects.equals(Skf309030CommonSharedService.SEARCH_FLAG_DO, initDto.getSearchFlag())) {
 			/** 従業員マスタ登録画面からの遷移が、元々リストテーブルからの遷移での復帰だった場合、リストテーブルの情報を取得する */
+			
+			LogUtils.debugByMsg("社員情報検索処理有り");
+			
 			// 登録画面のhidden項目をinitDtoに詰めなおす
 			initDto.setShainNo(initDto.getHdnShainNo());
 			initDto.setName(initDto.getHdnName());
@@ -88,10 +95,14 @@ public class Skf3090Sc004InitService extends BaseServiceAbstract<Skf3090Sc004Ini
 			initDto.setHdnAffiliation1Cd(null);
 			initDto.setHdnAffiliation2Cd(null);
 
-			/*
-			 * // テキスト系の文言を初期化する initDto.setShainNo(null);
-			 * initDto.setName(null); initDto.setNameKk(null);
-			 */
+			// テキスト系の文言を初期化する
+			initDto.setShainNo(null);
+			initDto.setName(null);
+			initDto.setNameKk(null);
+			initDto.setOriginalCompanyCd(null);
+			initDto.setAgencyCd(null);
+			initDto.setAffiliation1Cd(null);
+			initDto.setAffiliation2Cd(null);
 
 		}
 
