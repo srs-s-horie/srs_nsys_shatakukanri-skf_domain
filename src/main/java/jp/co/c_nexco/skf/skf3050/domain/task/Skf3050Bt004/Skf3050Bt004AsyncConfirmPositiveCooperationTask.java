@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.task.AsyncTaskAbstract;
 import jp.co.c_nexco.ptp.common.constants.CommonConstant;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 
 /**
  * Skf3050Bt004AsyncConfirmPositiveCooperationTask POSITIVE連携データ確定（オンラインバッチ）クラス
@@ -42,7 +43,7 @@ public class Skf3050Bt004AsyncConfirmPositiveCooperationTask extends AsyncTaskAb
 
 		@SuppressWarnings("unchecked")
 		Map<String, String> paramMap = (Map<String, String>) this.params.get("parameter");
-
+		String confirmResult = SkfCommonConstant.ABNORMAL;
 		outputStartLog(paramMap);
 
 		//パラメータ数のチェック
@@ -61,14 +62,15 @@ public class Skf3050Bt004AsyncConfirmPositiveCooperationTask extends AsyncTaskAb
 			skf3050Bt004SharedTask.outputEndProcLog();
 			return;
 		}
-		
-		//トランザクションBの開始
-		String confirmResult = skf3050Bt004SharedTask.confirmData(paramMap);
-
+		try {
+			//トランザクションBの開始
+			confirmResult = skf3050Bt004SharedTask.confirmData(paramMap);
+		} catch (Exception e) {
+			LogUtils.infoByMsg("異常終了:" + Skf3050Bt004SharedTask.BATCH_NAME + "(" + e.getMessage() + ")");
+		}
 		//トランザクションCの開始
 		//終了処理
 		skf3050Bt004SharedTask.endProc(confirmResult, paramMap.get(Skf3050Bt004SharedTask.SKF3050BT004_COMPANY_CD_KEY));
-
 		//管理ログ終了処理
 		skf3050Bt004SharedTask.outputEndProcLog();
 	}

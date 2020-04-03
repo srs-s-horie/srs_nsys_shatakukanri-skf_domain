@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -224,6 +225,9 @@ public class Skf3050Bt004SharedTask {
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
 
+	@Value("${skf3050.skf3050_bt004.batch_prg_id}")
+	private String confirmPositiveDataBatchPrgId;
+
 	public static final String BATCH_NAME = "POSITIVE連携データ確定";
 	public static final int PARAMETER_NUM = 4;
 	public static final String SYSTEM_NG = "9";
@@ -237,7 +241,6 @@ public class Skf3050Bt004SharedTask {
 	private static final String PARAM_NAME_COMPANY_CD = "会社コード";
 	private static final String PARAM_NAME_USER_ID = "ユーザID";
 	private static final String PARAM_NAME_SHORI_NENGETSU = "処理年月";
-	private static final String BATCH_ID_B5004 = "B5004";
 
 	private static final String ERRMSG_TSUKIBETSUSHOZOKU_0 = "月別所属履歴（当月）";
 	private static final String ERRMSG_TSUKIBETSUSOGORIREKI_0 = "月別相互利用履歴（当月）";
@@ -265,7 +268,7 @@ public class Skf3050Bt004SharedTask {
 
 		//取得可否チェック
 		String retParameterName = checkParameter(parameter);
-		String programId = BATCH_ID_B5004;
+		String programId = confirmPositiveDataBatchPrgId;
 		Date sysDate = getSystemDate();
 
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
@@ -282,7 +285,7 @@ public class Skf3050Bt004SharedTask {
 		}
 
 		//プログラムIDの設定
-		if (!BATCH_ID_B5004.equals(parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY))) {
+		if (!programId.equals(parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY))) {
 			//異常終了として、バッチ制御テーブルを登録
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT004_COMPANY_CD_KEY), programId,
 					parameter.get(SKF3050BT004_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
@@ -340,7 +343,7 @@ public class Skf3050Bt004SharedTask {
 
 		for (Skf3050Bt004GetShatakuHeyaDataExp shatakuHeyaDt : shatakuHeyaDtList) {
 
-			List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+			List<Long> lockResult = skf3050Bt004GetDataForUpdateExpRepository
 					.getSkf3010MShatakuRoomData(shatakuHeyaDt.getShatakuKanriNo());
 			if (lockResult.size() == 0) {
 				endAbnormalProc();
@@ -357,7 +360,7 @@ public class Skf3050Bt004SharedTask {
 
 		for (Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp tyushaKukakuDt : tyushaKukakuDtList) {
 
-			List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+			List<Long> lockResult = skf3050Bt004GetDataForUpdateExpRepository
 					.getSkf3010MShatakuParkingBlockData(tyushaKukakuDt.getShatakuKanriNo());
 			if (lockResult.size() == 0) {
 				endAbnormalProc();
@@ -402,7 +405,7 @@ public class Skf3050Bt004SharedTask {
 	public void endProc(String endFlg, String companyCd) {
 
 		skfBatchBusinessLogicUtils.updateBatchControl(
-				endFlg, companyCd, BATCH_ID_B5004, SkfCommonConstant.PROCESSING);
+				endFlg, companyCd, confirmPositiveDataBatchPrgId, SkfCommonConstant.PROCESSING);
 	}
 
 	/**
@@ -455,7 +458,7 @@ public class Skf3050Bt004SharedTask {
 						return false;
 					}
 
-					List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+					List<Long> lockResult = skf3050Bt004GetDataForUpdateExpRepository
 							.getSkf3010MShatakuData(shatakuKanriNo);
 					if (lockResult.size() == 0) {
 						return false;
@@ -491,7 +494,7 @@ public class Skf3050Bt004SharedTask {
 					return false;
 				}
 
-				List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+				List<Long> lockResult = skf3050Bt004GetDataForUpdateExpRepository
 						.getSkf3030TRentalPatternData(ptnDt.getShatakuKanriNo());
 				if (lockResult.size() == 0) {
 					return false;
@@ -937,7 +940,7 @@ public class Skf3050Bt004SharedTask {
 
 		if (teijiDataInfoList.size() > 0) {
 			for (Skf3050Bt004GetTeijiDataInfoExp teijiDataInfo : teijiDataInfoList) {
-				List<String> lockBihinDataResult = skf3050Bt004GetDataForUpdateExpRepository
+				List<Long> lockBihinDataResult = skf3050Bt004GetDataForUpdateExpRepository
 						.getSkf3022TTeijiBihinData(teijiDataInfo.getTeijiNo());
 				//①提示備品データの削除
 				if (lockBihinDataResult.size() != 0) {
@@ -951,7 +954,7 @@ public class Skf3050Bt004SharedTask {
 				}
 
 				//②提示データの削除
-				List<String> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository
+				List<Long> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository
 						.getSkf3022TTeijiData(teijiDataInfo.getTeijiNo());
 				if (lockTeijiDataResult.size() != 0) {
 
@@ -1252,6 +1255,7 @@ public class Skf3050Bt004SharedTask {
 		}
 
 		param.setShatakuKanriNo(shatakuKanriBangou);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
 		Integer updateCnt = skf3050Bt004UpdateShatakuKihonJyohoJikaiSanteiNengappiExpRepository
 				.updateShatakuKihonJyohoJikaiSanteiNengappi(param);
@@ -1323,6 +1327,7 @@ public class Skf3050Bt004SharedTask {
 
 		param.setRentalPatternId(rentalPtnId);
 		param.setShatakuKanriNo(shatakuKanriBangou);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
 		Integer updateCnt = skf3050Bt004UpdateShiyoryoPatternDataExpRepository.updateShiyoryoPatternData(param);
 
@@ -1670,6 +1675,7 @@ public class Skf3050Bt004SharedTask {
 		} else {
 			param.setKyoekiAccountName(tsukiJoinDt.getRirekiKyoekiAccountName());
 		}
+		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
 
 		Integer insertCnt = skf3050Bt004InsertTsukibetuShiyoryoRirekiDataExpRepository
 				.insertTsukibetuShiyoryoRirekiData(param);
@@ -1705,6 +1711,7 @@ public class Skf3050Bt004SharedTask {
 		}
 
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004UpdateShatakuShiyouryouYoyakuDataExpRepository.updateShatakuShiyouryouYoyakuData(param);
 	}
@@ -1935,6 +1942,7 @@ public class Skf3050Bt004SharedTask {
 		}
 
 		param.setInsertUserId(insertUser);
+		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004InsertTsukibetuSyozokujyohoRirekiDataExpRepository.insertTsukibetuSyozokujyohoRirekiData(param);
 
@@ -2031,6 +2039,7 @@ public class Skf3050Bt004SharedTask {
 		} else {
 			param.setBihinGenbutsuGaku(touTsukiBihinData.getBihinGenbutsuGaku());
 		}
+		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004InsertTsukibetuBihinSiyoryoMeisaiDataExpRepository.insertTsukibetuBihinSiyoryoMeisaiData(param);
 
@@ -2097,6 +2106,7 @@ public class Skf3050Bt004SharedTask {
 		} else {
 			param.setParkingEndDate(tougetsuTsukiTyushaDt.getParkingEndDate());
 		}
+		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004InsertTsukibetuTyusyajyoRirekiDataExpRepository.insertTsukibetuTyusyajyoRirekiData(param);
 
@@ -2144,35 +2154,36 @@ public class Skf3050Bt004SharedTask {
 		param.setYearMonth(shoriNengetsu);
 		param.setInsertUserId(insertUser);
 
-		if (tougetsuTsukiSogoDt.getAssignCompanyCd() == null) {
+		if (tougetsuTsukiSogoDt == null || tougetsuTsukiSogoDt.getAssignCompanyCd() == null) {
 			param.setAssignCompanyCd(null);
 		} else {
 			param.setAssignCompanyCd(tougetsuTsukiSogoDt.getAssignCompanyCd());
 		}
 
-		if (tougetsuTsukiSogoDt.getAssignAgencyName() == null) {
+		if (tougetsuTsukiSogoDt == null || tougetsuTsukiSogoDt.getAssignAgencyName() == null) {
 			param.setAssignAgencyName(null);
 		} else {
 			param.setAssignAgencyName(tougetsuTsukiSogoDt.getAssignAgencyName());
 		}
 
-		if (tougetsuTsukiSogoDt.getAssignAffiliation1() == null) {
+		if (tougetsuTsukiSogoDt == null || tougetsuTsukiSogoDt.getAssignAffiliation1() == null) {
 			param.setAssignAffiliation1(null);
 		} else {
 			param.setAssignAffiliation1(tougetsuTsukiSogoDt.getAssignAffiliation1());
 		}
 
-		if (tougetsuTsukiSogoDt.getAssignAffiliation2() == null) {
+		if (tougetsuTsukiSogoDt == null || tougetsuTsukiSogoDt.getAssignAffiliation2() == null) {
 			param.setAssignAffiliation2(null);
 		} else {
 			param.setAssignAffiliation2(tougetsuTsukiSogoDt.getAssignAffiliation2());
 		}
 
-		if (tougetsuTsukiSogoDt.getAssignCd() == null) {
+		if (tougetsuTsukiSogoDt == null || tougetsuTsukiSogoDt.getAssignCd() == null) {
 			param.setAssignCd(null);
 		} else {
 			param.setAssignCd(tougetsuTsukiSogoDt.getAssignCd());
 		}
+		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004InsertTsukibetuSougoriyoRirekiDataExpRepository.insertTsukibetuSougoriyoRirekiData(param);
 
@@ -2451,6 +2462,7 @@ public class Skf3050Bt004SharedTask {
 		param.setUpdateUser(updateUser);
 		param.setShatakuKanriId(shatakuKanriId);
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository.updateTsukibetuShiyoryoRirekiData(param);
 
@@ -2508,6 +2520,7 @@ public class Skf3050Bt004SharedTask {
 		} else {
 			param.setParkingLendJokyo(lendJokyo);
 		}
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository
 				.updateshatakuTyusyajyoKukakuJyohoTaiyojyokyo(param);
@@ -2625,6 +2638,7 @@ public class Skf3050Bt004SharedTask {
 		Skf3050Bt004UpdateGetsujiSyoriKanriExpParameter param = new Skf3050Bt004UpdateGetsujiSyoriKanriExpParameter();
 		param.setCycleBillingYymm(shoriNengetsu);
 		param.setUpdateUser(updateUser);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004UpdateGetsujiSyoriKanriExpRepository.updateGetsujiSyoriKanri(param);
 
@@ -2649,6 +2663,7 @@ public class Skf3050Bt004SharedTask {
 		param.setLinkdataCreateKbn("0");
 		param.setLinkdataCommitDate("0");
 		param.setLinkdataCommitKbn("0");
+		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository.insertGetsujiSyoriKanriData(param);
 	}
@@ -2706,6 +2721,7 @@ public class Skf3050Bt004SharedTask {
 		param.setShatakuKanriNo(shatakuKanriBangou);
 		param.setShatakuRoomKanriNo(shatakuHeyaKanriBangou);
 		param.setUpdateUser(updateUser);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
 		skf3050Bt004UpdateShatakuHeyaDataExpRepository.updateShatakuHeyaData(param);
 

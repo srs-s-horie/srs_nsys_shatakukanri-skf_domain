@@ -1188,6 +1188,7 @@ public class Skf3050Sc002SharedService {
 		}
 
 		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateProgramId(createPositiveDataBatchPrgId);
 
 		Integer updCnt = skf3050Bt003UpdateGetsujiShoriKanriExpRepository.updateGetsujiShoriKanri(param);
 
@@ -2385,6 +2386,7 @@ public class Skf3050Sc002SharedService {
 		Skf3050Bt001UpdateGenbutsuSanteigakuExpParameter param = new Skf3050Bt001UpdateGenbutsuSanteigakuExpParameter();
 		param.setUpdateUserId(updateUser);
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateGenbutsuSanteigakuExpRepository.updateGenbutsuSanteigaku(param);
 	}
@@ -2403,6 +2405,7 @@ public class Skf3050Sc002SharedService {
 		Skf3050Bt001UpdateBihinGoukeiExpParameter param = new Skf3050Bt001UpdateBihinGoukeiExpParameter();
 		param.setUpdateUserId(updateUser);
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateBihinGoukeiExpRepository.updateBihinGoukei(param);
 	}
@@ -2801,6 +2804,7 @@ public class Skf3050Sc002SharedService {
 		param.setShatakuKanriId(shatakuDaichoId);
 		param.setYearMonth(shoriNengetsu);
 		param.setBihinCd(bihinCd);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateBihinMeisaiExpRepository.updateBihinMeisai(param);
 
@@ -2940,6 +2944,7 @@ public class Skf3050Sc002SharedService {
 
 		param.setYearMonth(shoriNengetsu);
 		param.setShatakuKanriId(shatakuKanriBangou);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		Integer outUpdateCnt = skf3050Bt001UpdateTsukibetsuSiyoryorirekiDataExpRepository
 				.updateTsukibetsuSiyoryorirekiData(param);
@@ -3112,6 +3117,7 @@ public class Skf3050Sc002SharedService {
 
 		param.setShatakuKanriId(shatakuKanriId);
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateShozokuRirekiExpRepository.updateShozokuRireki(param);
 
@@ -3237,6 +3243,7 @@ public class Skf3050Sc002SharedService {
 
 		param.setYearMonth(shoriNengetsu);
 		param.setShatakuKanriId(shataKanriId);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		Integer updateCnt = skf3050Bt001UpdateTsukibetsuSiyoryorirekiGenbutsuSanteiExpRepository
 				.updateTsukibetsuSiyoryorirekiGenbutsuSantei(param);
@@ -3443,6 +3450,7 @@ public class Skf3050Sc002SharedService {
 
 		param.setYearMonth(shoriNengetsu);
 		param.setShatakuKanriId(shatakuKanriDaichouId);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		int updateCnt = skf3050Bt001UpdateTsukibetsuShiyoryoAccountExpRepository.updateTsukibetsuShiyoryoAccount(param);
 
@@ -3469,6 +3477,7 @@ public class Skf3050Sc002SharedService {
 		}
 
 		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		int updateCnt = skf3050Bt001UpdateGetsujiShoriKanriDataExpRepository.updateGetsujiShoriKanriData(param);
 

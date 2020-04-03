@@ -16,6 +16,7 @@ import jp.co.c_nexco.nfw.webcore.domain.task.AsyncTaskAbstract;
 import jp.co.c_nexco.ptp.common.constants.CommonConstant;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 
 /**
  * Skf3050Bt003AsyncCreatePositiveCooperationTask POSITIVE連携データ作成（オンラインバッチ）クラス
@@ -43,6 +44,7 @@ public class Skf3050Bt003AsyncCreatePositiveCooperationTask extends AsyncTaskAbs
 
 		@SuppressWarnings("unchecked")
 		Map<String, String> paramMap = (Map<String, String>) this.params.get("parameter");
+		String endFlg = SkfCommonConstant.ABNORMAL;
 
 		outputStartLog(paramMap);
 
@@ -50,6 +52,7 @@ public class Skf3050Bt003AsyncCreatePositiveCooperationTask extends AsyncTaskAbs
 		if (paramMap.size() != Skf3050Bt003SharedTask.PARAMETER_NUM) {
 			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
 			outputEndProcLog();
+			return;
 		}
 
 		//トランザクションAを開始
@@ -57,19 +60,26 @@ public class Skf3050Bt003AsyncCreatePositiveCooperationTask extends AsyncTaskAbs
 
 		if (registResult == CodeConstant.SYS_NG) {
 			outputEndProcLog();
+			return;
 		}
 
-		//トランザクションBの開始
-		Map<String, Object> fileOutputData = skf3050Bt003SharedTask.createPositiveCooperationData(paramMap);
-
-		if (fileOutputData != null && fileOutputData.size() != 0) {
-			// 呼び出し画面作成後、Excel出力データの渡し方を修正する。⇒同期処置として画面側で実装
-			// byte[] writeFileData = (byte[]) fileOutputData.get("fileData");
-			// 解放
-			// writeFileData = null;
+		try {
+			//トランザクションBの開始
+			Map<String, Object> fileOutputData = null;
+			fileOutputData = skf3050Bt003SharedTask.createPositiveCooperationData(paramMap);
+	
+			if (fileOutputData != null && fileOutputData.size() != 0) {
+				// 呼び出し画面作成後、Excel出力データの渡し方を修正する。⇒同期処置として画面側で実装
+				// byte[] writeFileData = (byte[]) fileOutputData.get("fileData");
+				// 解放
+				// writeFileData = null;
+				endFlg = SkfCommonConstant.COMPLETE;
+			} 
+		} catch (Exception e) {
+			LogUtils.infoByMsg("異常終了:" + Skf3050Bt003SharedTask.BATCH_NAME + "(" + e.getMessage() + ")");
 		}
 
-		skf3050Bt003SharedTask.endProc(paramMap.get(Skf3050Bt003SharedTask.SKF3050BT003_COMPANY_CD_KEY));
+		skf3050Bt003SharedTask.endProc(endFlg, paramMap.get(Skf3050Bt003SharedTask.SKF3050BT003_COMPANY_CD_KEY));
 
 		outputEndProcLog();
 	}

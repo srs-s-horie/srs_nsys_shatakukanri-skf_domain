@@ -99,7 +99,7 @@ public class Skf3050Sc002ProvCalcService extends BaseServiceAbstract<Skf3050Sc00
 			skf3050Sc002SharedService.outputManagementLogEndProc(endList, null);
 		}
 		
-		provCalcDto = reDisplay(provCalcDto);
+		reDisplay(provCalcDto);
 
 		if (!SkfCommonConstant.ABNORMAL.equals(result)) {
 			String targetNengetsu = skf3050Sc002SharedService.editDisplayNengetsu(jikkouShijiYoteiNengetsu);
@@ -165,24 +165,15 @@ public class Skf3050Sc002ProvCalcService extends BaseServiceAbstract<Skf3050Sc00
 	 * @param inDto Skf3050Sc002ProvCalcDto
 	 * @return Skf3050Sc002ProvCalcDto
 	 */
-	private Skf3050Sc002ProvCalcDto reDisplay(Skf3050Sc002ProvCalcDto inDto) {
+	private void reDisplay(Skf3050Sc002ProvCalcDto inDto) {
 		
 		String targetYyyymm = inDto.getHdnSelectedTaisyonendo();
 
 		List<Map<String, Object>> gridList = skf3050Sc002SharedService.createGetsujiGrid(targetYyyymm);
 		inDto.setGetujiGrid(gridList);
 
-		inDto = (Skf3050Sc002ProvCalcDto) skf3050Sc002SharedService
-				.getJikkoushijiHighlightData(inDto, inDto.getHdnJikkouShijiYoteiNengetsu());
-
-		inDto = (Skf3050Sc002ProvCalcDto) skf3050Sc002SharedService.setBtnMsg(inDto);
-
-		inDto = (Skf3050Sc002ProvCalcDto) skf3050Sc002SharedService
-				.changeButtonStatus(inDto);
-		
-		return inDto;
+		skf3050Sc002SharedService.getJikkoushijiHighlightData(inDto, inDto.getHdnJikkouShijiYoteiNengetsu());
+		skf3050Sc002SharedService.setBtnMsg(inDto);
+		skf3050Sc002SharedService.changeButtonStatus(inDto);
 	}
-	
-	
-
 }

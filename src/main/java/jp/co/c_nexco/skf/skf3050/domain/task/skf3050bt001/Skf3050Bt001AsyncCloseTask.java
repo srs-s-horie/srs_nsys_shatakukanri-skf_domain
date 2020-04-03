@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.context.annotation.Scope;
 
 import jp.co.c_nexco.nfw.common.bean.SpringContext;
@@ -70,15 +69,20 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 		if (Skf3050Bt001SharedTask.RETURN_STATUS_NG == registResult) {
 			return;
 		}
-		//トランザクションBの開始
-		String result = skf3050Bt001SharedTask.updateTsukibetsuTsukiji(paramMap, endList);
-		if (SkfCommonConstant.ABNORMAL.equals(result)) {
-			LogUtils.error(MessageIdConstant.E_SKF_1079);
+		String result = SkfCommonConstant.ABNORMAL;
+		try {
+			//トランザクションBの開始
+			result = skf3050Bt001SharedTask.updateTsukibetsuTsukiji(paramMap, endList);
+			if (SkfCommonConstant.ABNORMAL.equals(result)) {
+				LogUtils.error(MessageIdConstant.E_SKF_1079);
+			}
+		} catch (Exception e) {
+			LogUtils.infoByMsg("異常終了:" + BATCH_NAME + "(" + e.getMessage() + ")");
 		}
 
 		//トランザクションCの開始
 		Integer dbPrcRtn = skf3050Bt001SharedTask.endProc(result, paramMap.get(Skf3050Bt001SharedTask.COMPANY_CD),
-				Skf3050Bt001SharedTask.BATCH_ID_B5001, SkfCommonConstant.PROCESSING);
+				paramMap.get(Skf3050Bt001SharedTask.BATCH_PRG_ID), SkfCommonConstant.PROCESSING);
 
 		//管理ログ終了処理
 		if (dbPrcRtn > 0) {

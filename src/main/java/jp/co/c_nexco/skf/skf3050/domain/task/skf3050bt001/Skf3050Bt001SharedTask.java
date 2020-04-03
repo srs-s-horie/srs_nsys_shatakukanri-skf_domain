@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,13 +141,14 @@ public class Skf3050Bt001SharedTask {
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 
+	@Value("${skf3050.skf3050_bt001.batch_prg_id}")
+	private String closeBatchPrgId;
 	public static final int PARAMETER_NUM = 5;
 	public static final int RETURN_STATUS_OK = 0;
 	public static final int RETURN_STATUS_NG = 9;
 	public static final String SHORI_RESULT_STS_KEY = "shoriSts";
 	public static final String SHORI_RESULT_SIYO_UPD_CNT_KEY = "shiyouUpdCount";
 	public static final String SHORI_RESULT_GEN_UPD_CNT_KEY = "genUpdCount";
-	public static final String BATCH_ID_B5001 = "B5001";
 
 	public static final String BATCH_PRG_ID = "closeBatchPrgId";
 	public static final String COMPANY_CD = "closeCompanyCd";
@@ -204,7 +206,7 @@ public class Skf3050Bt001SharedTask {
 
 		//取得可否チェック
 		String retParameterName = checkParameter(parameter);
-		String programId = BATCH_ID_B5001;
+		String programId = closeBatchPrgId;
 
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
 			//パラメータチェックエラーの場合
@@ -231,7 +233,7 @@ public class Skf3050Bt001SharedTask {
 		}
 
 		//プログラムIDの設定
-		if (!BATCH_ID_B5001.equals(parameter.get(BATCH_PRG_ID))) {
+		if (!programId.equals(parameter.get(BATCH_PRG_ID))) {
 			//異常終了として、バッチ制御テーブルを登録
 			int retStat = insertBatchControl(parameter.get(COMPANY_CD), programId, parameter.get(USER_ID),
 					SkfCommonConstant.ABNORMAL, sysDate, getStrSystemDate());
@@ -857,6 +859,7 @@ public class Skf3050Bt001SharedTask {
 		Skf3050Bt001UpdateGenbutsuSanteigakuExpParameter param = new Skf3050Bt001UpdateGenbutsuSanteigakuExpParameter();
 		param.setUpdateUserId(updateUser);
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateGenbutsuSanteigakuExpRepository.updateGenbutsuSanteigaku(param);
 	}
@@ -875,6 +878,7 @@ public class Skf3050Bt001SharedTask {
 		Skf3050Bt001UpdateBihinGoukeiExpParameter param = new Skf3050Bt001UpdateBihinGoukeiExpParameter();
 		param.setUpdateUserId(updateUser);
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateBihinGoukeiExpRepository.updateBihinGoukei(param);
 	}
@@ -1245,6 +1249,7 @@ public class Skf3050Bt001SharedTask {
 		param.setShatakuKanriId(shatakuDaichoId);
 		param.setYearMonth(shoriNengetsu);
 		param.setBihinCd(bihinCd);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateBihinMeisaiExpRepository.updateBihinMeisai(param);
 
@@ -1384,6 +1389,7 @@ public class Skf3050Bt001SharedTask {
 
 		param.setYearMonth(shoriNengetsu);
 		param.setShatakuKanriId(shatakuKanriBangou);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		Integer outUpdateCnt = skf3050Bt001UpdateTsukibetsuSiyoryorirekiDataExpRepository
 				.updateTsukibetsuSiyoryorirekiData(param);
@@ -1556,6 +1562,7 @@ public class Skf3050Bt001SharedTask {
 
 		param.setShatakuKanriId(shatakuKanriId);
 		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		skf3050Bt001UpdateShozokuRirekiExpRepository.updateShozokuRireki(param);
 
@@ -1682,6 +1689,7 @@ public class Skf3050Bt001SharedTask {
 
 		param.setYearMonth(shoriNengetsu);
 		param.setShatakuKanriId(shataKanriId);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		Integer updateCnt = skf3050Bt001UpdateTsukibetsuSiyoryorirekiGenbutsuSanteiExpRepository
 				.updateTsukibetsuSiyoryorirekiGenbutsuSantei(param);
@@ -1888,6 +1896,7 @@ public class Skf3050Bt001SharedTask {
 
 		param.setYearMonth(shoriNengetsu);
 		param.setShatakuKanriId(shatakuKanriDaichouId);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		int updateCnt = skf3050Bt001UpdateTsukibetsuShiyoryoAccountExpRepository.updateTsukibetsuShiyoryoAccount(param);
 
@@ -1914,6 +1923,7 @@ public class Skf3050Bt001SharedTask {
 		}
 
 		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateProgramId(closeBatchPrgId);
 
 		int updateCnt = skf3050Bt001UpdateGetsujiShoriKanriDataExpRepository.updateGetsujiShoriKanriData(param);
 

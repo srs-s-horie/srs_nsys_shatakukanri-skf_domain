@@ -60,26 +60,29 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 			skf3050Bt002SharedTask.outputEndProcLog("");
 			return;
 		}
-
 		//トランザクションBの開始
 		String endFlag = SkfCommonConstant.ABNORMAL;
 		String updateGetsujiDataMsg = "";
-		boolean canLock = skf3050Bt002SharedTask
-				.canLockTableData(paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_SHORI_NENGETSU_KEY));
-
-		if (canLock) {
-			Map<String, String> result = skf3050Bt002SharedTask.updateGetsujiData(paramMap);
-			endFlag = result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_RESULT_KEY);
-			updateGetsujiDataMsg = result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_MSG_KEY);
-
-		} else {
-			LogUtils.error(MessageIdConstant.E_SKF_1079, "");
+		try {
+			boolean canLock = skf3050Bt002SharedTask
+					.canLockTableData(paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_SHORI_NENGETSU_KEY));
+	
+			if (canLock) {
+				Map<String, String> result = skf3050Bt002SharedTask.updateGetsujiData(paramMap);
+				endFlag = result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_RESULT_KEY);
+				updateGetsujiDataMsg = result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_MSG_KEY);
+	
+			} else {
+				LogUtils.error(MessageIdConstant.E_SKF_1079, "");
+			}
+		} catch (Exception e) {
+			LogUtils.infoByMsg("異常終了:" + Skf3050Bt002SharedTask.BATCH_NAME + "(" + e.getMessage() + ")");
 		}
 
 		//トランザクションCの開始
 		//終了処理
 		Integer dbPrcRtn = skf3050Bt002SharedTask.endProc(endFlag,
-				paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_COMPANY_CD_KEY), Skf3050Bt002SharedTask.BATCH_ID_B5002,
+				paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_COMPANY_CD_KEY), paramMap.get(Skf3050Bt002SharedTask.SKF3050BT002_BATCH_PRG_ID_KEY),
 				SkfCommonConstant.PROCESSING);
 
 		if (dbPrcRtn == CodeConstant.SYS_OK) {

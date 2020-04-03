@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +63,9 @@ public class Skf3050Bt003SharedTask {
 	@Autowired
 	private Skf3050Bt003UpdateGetsujiShoriKanriExpRepository skf3050Bt003UpdateGetsujiShoriKanriExpRepository;
 
+	@Value("${skf3050.skf3050_bt003.batch_prg_id}")
+	private String createPositiveDataBatchPrgId;
+
 	public static final String BATCH_NAME = "POSITIVE連携データ作成";
 	public static final int PARAMETER_NUM = 4;
 
@@ -74,7 +78,6 @@ public class Skf3050Bt003SharedTask {
 	private static final String PARAM_NAME_COMPANY_CD = "会社コード";
 	private static final String PARAM_NAME_USER_ID = "ユーザID";
 	private static final String PARAM_NAME_SHORI_NENGETSU = "処理年月";
-	private static final String BATCH_ID_B5003 = "B5003";
 
 	private static final String IF0002 = "IF0002";
 	private static final String IF0003 = "IF0003";
@@ -108,7 +111,7 @@ public class Skf3050Bt003SharedTask {
 
 		//取得可否チェック
 		String retParameterName = checkParameter(parameter);
-		String programId = BATCH_ID_B5003;
+		String programId = createPositiveDataBatchPrgId;
 		Date sysDate = getSystemDate();
 
 		if (!NfwStringUtils.isEmpty(retParameterName)) {
@@ -127,9 +130,9 @@ public class Skf3050Bt003SharedTask {
 				return CodeConstant.SYS_NG;
 			}
 		}
-		
+
 		//プログラムIDの設定
-		if (!BATCH_ID_B5003.equals(parameter.get(SKF3050BT003_BATCH_PRG_ID_KEY))) {
+		if (!programId.equals(parameter.get(SKF3050BT003_BATCH_PRG_ID_KEY))) {
 			//異常終了として、バッチ制御テーブルを登録
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT003_COMPANY_CD_KEY), programId,
 					parameter.get(SKF3050BT003_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
@@ -212,10 +215,10 @@ public class Skf3050Bt003SharedTask {
 	 * @throws ParseException
 	 */
 	@Transactional
-	public void endProc(String companyCd) throws ParseException {
+	public void endProc(String endFlg, String companyCd) throws ParseException {
 
 		skfBatchBusinessLogicUtils.updateBatchControl(
-				SkfCommonConstant.COMPLETE, companyCd, BATCH_ID_B5003, SkfCommonConstant.PROCESSING);
+				endFlg, companyCd, createPositiveDataBatchPrgId, SkfCommonConstant.PROCESSING);
 	}
 
 	/**
@@ -748,6 +751,7 @@ public class Skf3050Bt003SharedTask {
 		}
 
 		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateProgramId(createPositiveDataBatchPrgId);
 
 		Integer updCnt = skf3050Bt003UpdateGetsujiShoriKanriExpRepository.updateGetsujiShoriKanri(param);
 

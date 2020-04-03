@@ -85,11 +85,9 @@ public class Skf3050Sc002InitService extends BaseServiceAbstract<Skf3050Sc002Ini
 		List<Map<String, Object>> gridList = skf3050Sc002SharedService.createGetsujiGrid(standardYear);
 		initDto.setGetujiGrid(gridList);
 
-		initDto = (Skf3050Sc002InitDto) skf3050Sc002SharedService.getJikkoushijiHighlightData(initDto, sysDateYyyymm);
-
-		initDto = (Skf3050Sc002InitDto) skf3050Sc002SharedService.setBtnMsg(initDto);
-
-		initDto = (Skf3050Sc002InitDto) skf3050Sc002SharedService.changeButtonStatus(initDto);
+		skf3050Sc002SharedService.getJikkoushijiHighlightData(initDto, sysDateYyyymm);
+		skf3050Sc002SharedService.setBtnMsg(initDto);
+		skf3050Sc002SharedService.changeButtonStatus(initDto);
 
 		return initDto;
 	}

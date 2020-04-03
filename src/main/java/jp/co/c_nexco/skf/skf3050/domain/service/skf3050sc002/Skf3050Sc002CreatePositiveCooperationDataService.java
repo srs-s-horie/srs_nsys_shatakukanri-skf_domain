@@ -24,6 +24,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050Sc002common.Skf3050Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002CreatePositiveCooperationDataDto;
 
 /**
@@ -106,7 +107,7 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 		skf3050Sc002SharedService.endCreatePositiveDataProc(dataMap.get(Skf3050Sc002SharedService.COMPANY_CD_KEY), endFlg);
 		
 		//▼再表示処理
-		createPositiveCoopDto = reDisplay(createPositiveCoopDto);
+		reDisplay(createPositiveCoopDto);
 		
 		return createPositiveCoopDto;
 	}
@@ -196,22 +197,18 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 	 * @param inDto Skf3050Sc002CreatePositiveCooperationDataDto
 	 * @return Skf3050Sc002CreatePositiveCooperationDataDto
 	 */
-	private Skf3050Sc002CreatePositiveCooperationDataDto reDisplay(Skf3050Sc002CreatePositiveCooperationDataDto inDto) {
+	private void reDisplay(Skf3050Sc002CommonDto inDto) {
 		
 		String targetYyyymm = inDto.getHdnSelectedTaisyonendo();
 
 		List<Map<String, Object>> gridList = skf3050Sc002SharedService.createGetsujiGrid(targetYyyymm);
 		inDto.setGetujiGrid(gridList);
 
-		inDto = (Skf3050Sc002CreatePositiveCooperationDataDto) skf3050Sc002SharedService
-				.getJikkoushijiHighlightData(inDto, inDto.getHdnJikkouShijiYoteiNengetsu());
+		skf3050Sc002SharedService.getJikkoushijiHighlightData(inDto, inDto.getHdnJikkouShijiYoteiNengetsu());
 
-		inDto = (Skf3050Sc002CreatePositiveCooperationDataDto) skf3050Sc002SharedService.setBtnMsg(inDto);
+		skf3050Sc002SharedService.setBtnMsg(inDto);
 
-		inDto = (Skf3050Sc002CreatePositiveCooperationDataDto) skf3050Sc002SharedService
-				.changeButtonStatus(inDto);
-		
-		return inDto;
+		skf3050Sc002SharedService.changeButtonStatus(inDto);
 	}
 
 }
