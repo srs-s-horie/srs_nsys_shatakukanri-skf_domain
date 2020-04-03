@@ -64,7 +64,7 @@ public class Skf2050Sc001InitService extends BaseServiceAbstract<Skf2050Sc001Ini
 		initDto.setOperationGuide(operationGuide);
 
 		// 戻るボタンの遷移先設定
-		String backUrl = "skf/" + FunctionIdConstant.SKF2010_SC003; // 申請状況一覧
+		String backUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init"; // 申請状況一覧
 		initDto.setBackUrl(backUrl);
 
 		return initDto;

@@ -103,6 +103,11 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				.getUpdateDateForUpdateSQL(shainNo);
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC004, dateLinkageMap);
 
+		// 戻るボタンの遷移先設定
+		String backUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
+
+		initDto.setBackUrl(backUrl);
+
 		return initDto;
 	}
 
@@ -173,12 +178,12 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		 * displayLevel : 項目表示レベル アコーディオン項目をどこまで表示するかをこれで指定する。
 		 */
 		String applNo = dto.getApplNo();
-		
+
 		Skf2010Sc004GetApplHistoryInfoByParameterExp applHistoryInfo = skf2010Sc004SharedService
 				.getApplHistoryInfo(applNo);
 
 		String RealApplStatus = applHistoryInfo.getApplStatus();
-		
+
 		int displayLevel = 1;
 
 		if (applId.equals(FunctionIdConstant.R0100)) {
