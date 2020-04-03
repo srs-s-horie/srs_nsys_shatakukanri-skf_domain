@@ -5,7 +5,6 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc007;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -33,6 +32,10 @@ public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc00
 
 	// 基準会社コード
 	private String companyCd = CodeConstant.C001;
+	// 画面表示判定 社宅入居希望等調書
+	private static final String NYUKYO = "1";
+	// 画面表示判定 退居（自動車の保管場所返還）届
+	private static final String TAIKYO = "2";
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
@@ -42,8 +45,19 @@ public class Skf2010Sc007DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("申請要件を確認", companyCd, dto.getPageId());
 
-		// ダウンロードファイル名
-		String downloadFileName = "skf.skf_appl_requirement.FileId";
+		String downloadFileName = "";
+
+		if (NYUKYO.equals(dto.getConfirmationKbn())) {
+			// 区分が入居だった場合
+			// ダウンロードファイル名
+			downloadFileName = "skf.skf_appl_requirement.FileId_Nyukyo";
+
+		} else if (TAIKYO.equals(dto.getConfirmationKbn())) {
+			// 区分が退居だった場合
+			// ダウンロードファイル名
+			downloadFileName = "skf.skf_appl_requirement.FileId_Taikyo";
+
+		}
 
 		// 機能ID
 		String functionId = "skfapplrequirement";

@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf3070.domain.service.skf3070sc002;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetPostalCodeAddressExp;
@@ -56,7 +58,7 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 			return dto;
 		}
 
-		SkfGetInfoUtilsGetPostalCodeAddressExp resultEntity = new SkfGetInfoUtilsGetPostalCodeAddressExp();
+		List<SkfGetInfoUtilsGetPostalCodeAddressExp> resultEntity = new ArrayList<SkfGetInfoUtilsGetPostalCodeAddressExp>();
 		SkfGetInfoUtilsGetPostalCodeAddressExpParameter param = new SkfGetInfoUtilsGetPostalCodeAddressExpParameter();
 		// 住所検索
 		if (NfwStringUtils.isNotEmpty(dto.getZipCode())) {
@@ -65,10 +67,11 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 			resultEntity = skfGetInfoUtilsGetPostalCodeAddressExpRepository.getAddressInfo(param);
 
 			// 該当する郵便番号が無かった場合
-			if (resultEntity == null) {
+			if (resultEntity.size() <= 0) {
 				ServiceHelper.addErrorResultMessage(dto, new String[] { "zipCode" }, MessageIdConstant.E_SKF_1047);
 				// ドロップダウンリストを再検索して処理を終了する
 				skf3070Sc002SheardService.getDropDownList(dto);
+				return dto;
 			}
 		} else if (NfwStringUtils.isNotEmpty(dto.getAddress())) {
 			// 「郵便番号」が未入力で、「住所」が入力されている場合、住所で郵便番号を検索
@@ -77,22 +80,22 @@ public class Skf3070Sc002SearchAddressService extends BaseServiceAbstract<Skf307
 			resultEntity = skfGetInfoUtilsGetPostalCodeAddressExpRepository.getAddressInfo(param);
 
 			// 該当する住所が無かった場合
-			if (resultEntity == null) {
+			if (resultEntity.size() <= 0) {
 				ServiceHelper.addErrorResultMessage(dto, new String[] { "address" }, MessageIdConstant.E_SKF_2019);
 				// ドロップダウンリストを再検索して処理を終了する
 				skf3070Sc002SheardService.getDropDownList(dto);
+				return dto;
 			}
 		}
 
 		// 住所情報が存在する場合
-		if (resultEntity != null) {
-			if (resultEntity.getPostalCd() != null && resultEntity.getPrefName() != null
-					&& resultEntity.getCityName() != null && resultEntity.getAreaName() != null) {
-				// 「郵便番号」と「住所」に検索結果から取得した値をそれぞれ設定
-				dto.setZipCode(resultEntity.getPostalCd());
-				dto.setAddress(resultEntity.getPrefName() + resultEntity.getCityName() + resultEntity.getAreaName());
-				skf3070Sc002SheardService.getDropDownList(dto);
-			}
+		if (resultEntity.get(0).getPostalCd() != null && resultEntity.get(0).getPrefName() != null
+				&& resultEntity.get(0).getCityName() != null && resultEntity.get(0).getAreaName() != null) {
+			// 「郵便番号」と「住所」に検索結果から取得した値をそれぞれ設定
+			dto.setZipCode(resultEntity.get(0).getPostalCd());
+			dto.setAddress(resultEntity.get(0).getPrefName() + resultEntity.get(0).getCityName()
+					+ resultEntity.get(0).getAreaName());
+			skf3070Sc002SheardService.getDropDownList(dto);
 		}
 
 		return dto;

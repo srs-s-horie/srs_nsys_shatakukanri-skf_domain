@@ -3849,6 +3849,8 @@ public class Skf3010Sc002SharedService {
 	 */
 	public void initialize(Skf3010Sc002CommonDto comDto) {
 		/** 画面上部 */
+		// 社宅名
+		comDto.setShatakuName(null);
 		// 空き部屋数
 		comDto.setEmptyRoomCount(null);
 		// 空き駐車場数
