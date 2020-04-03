@@ -272,4 +272,8 @@ public class Skf202010CommonDto extends BaseDto {
 	// 連絡先
 	private String renrakuSaki;
 
+	/**
+	 * 戻るボタンの遷移先
+	 */
+	private String backUrl;
 }
