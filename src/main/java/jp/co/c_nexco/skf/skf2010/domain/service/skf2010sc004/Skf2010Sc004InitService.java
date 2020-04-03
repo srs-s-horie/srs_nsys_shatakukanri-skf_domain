@@ -83,10 +83,11 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		String applId = initDto.getApplId();
 		String applStatus = initDto.getApplStatus();
 
-		checkDisplayLevel(applId, applStatus, initDto);
-
 		// 表示情報セット
 		setDisplayData(initDto);
+
+		// 画面表示設定
+		checkDisplayLevel(applId, applStatus, initDto);
 
 		// 申請状況のテキスト化
 		initDto.setApplStatusText(changeApplStatusText(applStatus));
@@ -183,6 +184,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				.getApplHistoryInfo(applNo);
 
 		String RealApplStatus = applHistoryInfo.getApplStatus();
+		String taiyoHitsuyo = dto.getTaiyoHitsuyo();
 
 		int displayLevel = 1;
 
@@ -221,9 +223,14 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 				/**
 				 * それ以外（同意済み以降）： 入居決定通知書追加
 				 */
+				if (CheckUtils.isEqual(taiyoHitsuyo, CodeConstant.ASKED_SHATAKU_FUYOU)) {
+					displayLevel = 1;
+					dto.setLevel1Open("true");
+				} else {
+					displayLevel = 3;
+					dto.setLevel3Open("true");
+				}
 				dto.setMaskPattern("PTN_C");
-				displayLevel = 3;
-				dto.setLevel3Open("true");
 				dto.setRepresentBtnFlg("false");
 				dto.setCommentAreaVisible(false);
 				break;
@@ -432,6 +439,7 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 		// 申請番号
 
 		// 入居希望申請調書
+		initDto.setTaiyoHitsuyo(tNyukyoChoshoTsuchi.getTaiyoHitsuyo());
 		// 社宅必要可否
 		if (tNyukyoChoshoTsuchi.getTaiyoHitsuyo() != null) {
 			switch (tNyukyoChoshoTsuchi.getTaiyoHitsuyo()) {
@@ -818,6 +826,9 @@ public class Skf2010Sc004InitService extends BaseServiceAbstract<Skf2010Sc004Ini
 
 		// 社宅を必要とする理由
 		String hitsuyoRiyu = tNyukyoChoshoTsuchi.getHitsuyoRiyu();
+		if (NfwStringUtils.isEmpty(hitsuyoRiyu)) {
+			return;
+		}
 		BaseCodeEntity bce = hitsuyoRiyuMap.get(hitsuyoRiyu);
 		initDto.setHitsuyoRiyu(bce.getCodeName());
 
