@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
@@ -69,6 +70,16 @@ public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005Ini
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
 		initDto.setPageId(FunctionIdConstant.SKF3090_SC005);
+		
+		//検索条件デバッグメッセージ
+		LogUtils.debugByMsg("従業員マスタ一覧画面での検索条件");
+		LogUtils.debugByMsg("社員番号:"+initDto.getHdnShainNo());
+		LogUtils.debugByMsg("氏名:"+initDto.getHdnName());
+		LogUtils.debugByMsg("氏名カナ:"+initDto.getHdnNameKk());
+		LogUtils.debugByMsg("会社:"+initDto.getHdnOriginalCompanyCd());
+		LogUtils.debugByMsg("機関:"+initDto.getHdnAgencyCd());
+		LogUtils.debugByMsg("部等:"+initDto.getHdnAffiliation1Cd());
+		LogUtils.debugByMsg("室、チーム又は課:"+initDto.getHdnAffiliation2Cd());
 
 		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */

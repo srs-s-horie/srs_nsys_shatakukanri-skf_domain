@@ -18,6 +18,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc004.Skf3090Sc004SearchDto;
+import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309030CommonSharedService;
 
 /**
  * Skf3090Sc004SearchService 従業員マスタ一覧検索ボタン押下時処理クラス
@@ -63,6 +64,8 @@ public class Skf3090Sc004SearchService extends BaseServiceAbstract<Skf3090Sc004S
 		listCount = skf3090Sc004SharedService.getListTableData(searchDto.getShainNo(), searchDto.getName(),
 				searchDto.getNameKk(), searchDto.getSelectedCompanyCd(), searchDto.getAgencyCd(),
 				searchDto.getAffiliation1Cd(), searchDto.getAffiliation2Cd(), listTableData);
+		
+		searchDto.setSearchFlag(Skf309030CommonSharedService.SEARCH_FLAG_DO);
 
 		// エラーメッセージ設定
 		if (listCount == 0) {
@@ -70,6 +73,7 @@ public class Skf3090Sc004SearchService extends BaseServiceAbstract<Skf3090Sc004S
 			ServiceHelper.addWarnResultMessage(searchDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
 		} else if (listCount > maxGetRecordCount.intValue()) {
 			// 取得レコード限界値超のエラー
+			searchDto.setSearchFlag(Skf309030CommonSharedService.SEARCH_FLAG_DO_NOT);
 			ServiceHelper.addErrorResultMessage(searchDto, null, MessageIdConstant.E_SKF_1046,
 					maxGetRecordCount.toString());
 			// ServiceHelper.addErrorResultMessage(searchDto, new String[] {
@@ -95,7 +99,7 @@ public class Skf3090Sc004SearchService extends BaseServiceAbstract<Skf3090Sc004S
 		searchDto.setHdnAgencyCd(searchDto.getAgencyCd());
 		searchDto.setHdnAffiliation1Cd(searchDto.getAffiliation1Cd());
 		searchDto.setHdnAffiliation2Cd(searchDto.getAffiliation2Cd());
-
+		
 		return searchDto;
 
 	}

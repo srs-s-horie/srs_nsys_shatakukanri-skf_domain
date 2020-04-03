@@ -42,4 +42,7 @@ public class Skf309030CommonDto extends BaseDto {
 	List<Map<String, Object>> affiliation1List;
 	// 室、チーム又は課ドロップダウンリスト
 	List<Map<String, Object>> affiliation2List;
+	
+	// 検索フラグ
+	private String searchFlag;
 }
