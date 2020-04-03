@@ -15,15 +15,18 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Skf204010CommonDto extends BaseDto {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    // 社宅の状態
-    private String shatakuJotai;
-    // 返却立会希望日
-    private String sessionDay;
-    // 連絡先
-    private String renrakuSaki;
-    // コメント
-    private String commentNote;
+	// 社宅の状態
+	private String shatakuJotai;
+	// 返却立会希望日
+	private String sessionDay;
+	// 連絡先
+	private String renrakuSaki;
+	// コメント
+	private String commentNote;
+
+	// 戻るボタンの遷移先
+	private String backUrl;
 
 }

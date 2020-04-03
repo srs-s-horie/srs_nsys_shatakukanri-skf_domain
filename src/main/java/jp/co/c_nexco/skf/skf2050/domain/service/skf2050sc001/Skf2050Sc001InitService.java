@@ -5,10 +5,8 @@ package jp.co.c_nexco.skf.skf2050.domain.service.skf2050sc001;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -65,6 +63,10 @@ public class Skf2050Sc001InitService extends BaseServiceAbstract<Skf2050Sc001Ini
 		String operationGuide = skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2050_SC001);
 		initDto.setOperationGuide(operationGuide);
 
+		// 戻るボタンの遷移先設定
+		String backUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init"; // 申請状況一覧
+		initDto.setBackUrl(backUrl);
+
 		return initDto;
 	}
 
@@ -74,9 +76,9 @@ public class Skf2050Sc001InitService extends BaseServiceAbstract<Skf2050Sc001Ini
 	 */
 	private void setErr(Skf2050Sc001InitDto initDto) {
 		// 「同意する」「同意しない」「搬出完了」ボタンを非活性化
-	    initDto.setBtnAgreeDisabled("true");
-	    initDto.setBtnNotAgreeDisabled("true");
-	    initDto.setBtnCarryingOutDisabled("true");
+		initDto.setBtnAgreeDisabled("true");
+		initDto.setBtnNotAgreeDisabled("true");
+		initDto.setBtnCarryingOutDisabled("true");
 		return;
 
 	}
