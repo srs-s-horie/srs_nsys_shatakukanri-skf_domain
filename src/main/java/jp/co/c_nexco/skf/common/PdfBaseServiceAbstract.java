@@ -31,7 +31,7 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	protected List<CSVDoc> pdfDataList;
 
 	/**
-	 * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード （「✓」のような特殊記号を表示するにはUnicodeLittleに設定する必要がある
+	 * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード （「✓」のような特殊記号を表示するにはUTF-16に設定する必要がある
 	 */
 	// public static final String PDF_PROCESS_ENCODE = "UnicodeLittle";
 	/**
