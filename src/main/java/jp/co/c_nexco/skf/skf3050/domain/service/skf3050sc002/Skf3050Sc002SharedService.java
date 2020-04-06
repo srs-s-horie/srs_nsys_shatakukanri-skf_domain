@@ -111,6 +111,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MCompanyRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MAccountRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050TMonthlyManageDataRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -1721,29 +1722,36 @@ public class Skf3050Sc002SharedService {
 
 		switch (parkingKukaku) {
 		case PARKING_KUKAKU_1:
+			// 区画１が新規割当
 			if (!NfwStringUtils.isEmpty(parking1StartDate)) {
 				if (Objects.equals(shoriNengetsu, parking1StartDate.substring(0, 6))) {
+					// 区画１の利用開始年月が処理年月と等しい場合、未反映の当月利用としてカウント対象とする。
 					result = true;
 				}
 			}
 			break;
 
 		case PARKING_KUKAKU_2:
+			// 区画２が新規割当
 			if (!NfwStringUtils.isEmpty(parking2StartDate)) {
 				if (Objects.equals(shoriNengetsu, parking2StartDate.substring(0, 6))) {
+					// 区画２の利用開始年月が処理年月と等しい場合、未反映の当月利用としてカウント対象とする。
 					result = true;
 				}
 			}
 			break;
 
 		case PARKING_KUKAKU_0:
-			if (NfwStringUtils.isEmpty(parking1StartDate) && NfwStringUtils.isEmpty(parking1StartDate)) {
+			if (CheckUtils.isEmpty(parking1StartDate) && CheckUtils.isEmpty(parking2StartDate)) {
+				// 区画１、区画２の利用開始年月が両方とも未入力の場合、カウント対象外
 				break;
 			}
 
-			if (!NfwStringUtils.isEmpty(parking1StartDate) && (Objects.equals(shoriNengetsu, parking1StartDate.substring(0, 6)))
-					|| !NfwStringUtils.isEmpty(parking2StartDate)
-							&& (Objects.equals(shoriNengetsu, parking2StartDate.substring(0, 6)))) {
+			if ((!CheckUtils.isEmpty(parking1StartDate) && (Objects.equals(shoriNengetsu, parking1StartDate.substring(0, 6))))
+					|| 
+				(!CheckUtils.isEmpty(parking2StartDate)	&& (Objects.equals(shoriNengetsu, parking2StartDate.substring(0, 6))))
+				) {
+				// 区画１、区画２の利用開始年月どちらかが処理年月と等しい場合、未反映の当月利用としてカウント対象とする。
 				result = true;
 			}
 			break;
