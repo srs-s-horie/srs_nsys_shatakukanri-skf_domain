@@ -3,6 +3,8 @@
  */
 package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -602,9 +604,10 @@ public class Skf2060Sc001SharedService {
 	 * @param lastUpdateDateMap
 	 * 
 	 * @return 更新できた場合もしくは提示済みの物件が存在しなかった場合true 更新できなかった場合false
+	 * @throws ParseException 
 	 */
 	public boolean updateKariageBukkenTeijiFlg(String companyCd, String applNo, short teijiKaisu,
-			Map<String, Date> lastUpdateDateMap, Map<String, String> errorMsg) {
+			Map<String, Date> lastUpdateDateMap, Map<String, String> errorMsg) throws ParseException {
 
 		int updateCount = 0;
 		String teijiFlg = "0";
@@ -663,7 +666,11 @@ public class Skf2060Sc001SharedService {
 			}
 
 			// 排他処理用更新日を入れ替え
-			lastUpdateDateMap.put(lastUpdateDateKey, kategoriData.getUpdateDate());
+			String lastUpdateDateString = skfDateFormatUtils.dateFormatFromDate(kategoriData.getUpdateDate(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+			Date sdfLastUpdateDate = sdf.parse(lastUpdateDateString);
+			lastUpdateDateMap.put(lastUpdateDateKey, sdfLastUpdateDate);
 		}
 		return true;
 	}

@@ -121,6 +121,9 @@ public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001Ini
 			initDto.setPostalCd(CodeConstant.NONE);
 			initDto.setShatakuName(CodeConstant.NONE);
 			initDto.setComment(CodeConstant.NONE);
+			
+			//支援ボタンを活性にする
+			initDto.setSupportDisabled(null);
 		}
 		
 		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2060_SC001);
