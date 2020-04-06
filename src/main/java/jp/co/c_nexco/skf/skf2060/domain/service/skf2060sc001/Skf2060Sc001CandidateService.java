@@ -30,6 +30,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -62,6 +63,8 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 	private Skf206010CommonSendMailService skf206010CommonSendMailService;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfCommentUtils skfCommentUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -412,7 +415,11 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 					// 楽観的排他チェック
 					String lastUpdateDateKey = candidateDto.KariageBukkenLastUpdateDate
 							+ checkDataParamList.get(j).get("candidateNo");
-					super.checkLockException(lastUpdateDateMap.get(lastUpdateDateKey), data.getUpdateDate());
+					String lastUpdateDateString = skfDateFormatUtils.dateFormatFromDate(data.getUpdateDate(),
+							SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+					SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDDHHMMSS_SSS);
+					Date lastUpdateDate = sdf.parse(lastUpdateDateString);
+					super.checkLockException(lastUpdateDateMap.get(lastUpdateDateKey), lastUpdateDate);
 					boolean updateKariageKohoCheck = skf2060Sc001SharedService.updateKariageKoho(companyCd,
 							(long) checkDataParamList.get(j).get("candidateNo"));
 					// 登録に失敗した場合
@@ -430,8 +437,9 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 		// コメントが記載されている場合
 		if (!(candidateDto.getComment() == null || CheckUtils.isEmpty(candidateDto.getComment().trim()))) {
 			// 申請書類コメントテーブルへコメントを追加
-			boolean insertCommentCheck = this.insertApplComment(companyCd, applNo, applStatus, shainName,
-					candidateDto.getComment());
+			Map<String, String> errorMsg = new HashMap<String, String>();
+			boolean insertCommentCheck = skfCommentUtils.insertComment(companyCd, applNo, applStatus, candidateDto.getComment(),
+					errorMsg);
 			// コメント追加に失敗した場合
 			if (!(insertCommentCheck)) {
 				ServiceHelper.addErrorResultMessage(candidateDto, null, MessageIdConstant.E_SKF_1073);
@@ -474,37 +482,6 @@ public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc0
 			TeijiKaisu = resultData.getTeijiKaisu();
 		}
 		return TeijiKaisu;
-	}
-
-	/**
-	 * 申請書類コメントテーブルへ登録を行う
-	 * 
-	 * @param companyCd
-	 * @param applNo
-	 * @param applStatus
-	 * @param commentName
-	 * @param commentNote
-	 * 
-	 * @return 登録できた場合true 登録できなかった場合false
-	 */
-	public boolean insertApplComment(String companyCd, String applNo, String applStatus, String commentName,
-			String commentNote) {
-		boolean insertCommentCheck = true;
-
-		Skf2010TApplComment commentData = new Skf2010TApplComment();
-		commentData.setCompanyCd(companyCd);
-		commentData.setApplNo(applNo);
-		commentData.setApplStatus(applStatus);
-		commentData.setCommentName(commentName);
-		commentData.setCommentNote(commentNote);
-		int insertCount = skf2010TApplCommentRepository.insertSelective(commentData);
-
-		// コメント追加に失敗した場合
-		if (insertCount <= 0) {
-			insertCommentCheck = false;
-		}
-
-		return insertCommentCheck;
 	}
 
 }
