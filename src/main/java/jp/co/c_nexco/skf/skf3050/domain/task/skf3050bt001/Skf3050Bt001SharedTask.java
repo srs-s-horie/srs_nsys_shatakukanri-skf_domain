@@ -1157,13 +1157,14 @@ public class Skf3050Bt001SharedTask {
 			parkingStartDate = shoriNengetsuShonichi;
 		}
 
-		BigDecimal decimalParkingEndDate = BigDecimal.ZERO;
+		
 		String shoriNengetsuMatsujitsu = getGetsumatsujitu(shoriNengetsu);
 		BigDecimal decimalShoriNengetsuMatsujitsu = new BigDecimal(shoriNengetsuMatsujitsu);
 
 		if (NfwStringUtils.isEmpty(parkingEndDate)) {
 			parkingEndDate = shoriNengetsuMatsujitsu;
 		} else {
+			BigDecimal decimalParkingEndDate = new BigDecimal(parkingEndDate);
 			if (decimalParkingEndDate.compareTo(decimalShoriNengetsuMatsujitsu) > 0) {
 				parkingEndDate = shoriNengetsuMatsujitsu;
 			}

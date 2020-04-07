@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -113,6 +114,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MAccountReposito
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050TMonthlyManageDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
@@ -420,7 +422,7 @@ public class Skf3050Sc002SharedService {
 	 * @return 結果
 	 * @throws ParseException
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public int registBatchControl(Map<String, String> parameter, String jikkoBatchId) throws ParseException {
 
 		//取得可否チェック
@@ -469,7 +471,7 @@ public class Skf3050Sc002SharedService {
 	 *            パラメータ
 	 * @throws Exception
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Map<String, Object> createPositiveCooperationData(Map<String, String> parameter) throws Exception {
 
 		String paramShoriNengetsu = parameter.get(SHORI_NENGETSU_KEY);
@@ -565,7 +567,7 @@ public class Skf3050Sc002SharedService {
 	 *            検索用終了フラグ
 	 * @throws ParseException
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void endCreatePositiveDataProc(String companyCd, String endFlg) throws ParseException {
 
 		//バッチ制御テーブルを更新
@@ -3499,8 +3501,7 @@ public class Skf3050Sc002SharedService {
 	 */
 	public String getUserId() {
 
-		Map<String, String> userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-		String outUserId = userInfo.get("userName");
+		String outUserId = LoginUserInfoUtils.getUserCd();
 		return outUserId;
 	}
 

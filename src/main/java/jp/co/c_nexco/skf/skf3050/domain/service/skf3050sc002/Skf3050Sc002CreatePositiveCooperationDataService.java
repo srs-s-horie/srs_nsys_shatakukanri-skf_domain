@@ -87,7 +87,13 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 		//トランザクションBの開始
 		String endFlg = SkfCommonConstant.COMPLETE;
 		Map<String, Object> fileOutputData = null;
-		fileOutputData = skf3050Sc002SharedService.createPositiveCooperationData(dataMap);
+		try {
+			fileOutputData = skf3050Sc002SharedService.createPositiveCooperationData(dataMap);
+		} catch (Exception e) {
+			LogUtils.debugByMsg(e.getMessage());
+			fileOutputData = null;
+		}
+		
 
 		if (fileOutputData != null && fileOutputData.size() != 0) {
 			byte[] writeFileData = (byte[]) fileOutputData.get("fileData");
