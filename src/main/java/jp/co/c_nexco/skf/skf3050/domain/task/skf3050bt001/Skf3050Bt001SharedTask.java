@@ -993,6 +993,7 @@ public class Skf3050Bt001SharedTask {
 		BigDecimal decimalNyuukyoDate = new BigDecimal(nyuukyoDate);
 		BigDecimal decimalShoriNengetsuShonichi = new BigDecimal(shoriNengetsuShonichi);
 
+		//入居日が処理年月の初日より過去の場合、初日とする
 		if (decimalNyuukyoDate.compareTo(decimalShoriNengetsuShonichi) < 0) {
 			nyuukyoDate = shoriNengetsuShonichi;
 		}
@@ -1000,6 +1001,7 @@ public class Skf3050Bt001SharedTask {
 		String shoriNengetsuMatsujitsu = getGetsumatsujitu(shoriNengetsu);
 		BigDecimal decimalShoriNengetsuMatsujitsu = new BigDecimal(shoriNengetsuMatsujitsu);
 
+		//退去日が未入力または処理年月末日より未来の場合、末日とする
 		if (NfwStringUtils.isEmpty(taikyoDate)) {
 			taikyoDate = shoriNengetsuMatsujitsu;
 
@@ -1020,19 +1022,23 @@ public class Skf3050Bt001SharedTask {
 		BigDecimal outDate = BigDecimal.ZERO;
 
 		if (Objects.equals(nyuukyoDate, shoriNengetsuShonichi) && Objects.equals(shoriNengetsuMatsujitsu, taikyoDate)) {
+			//処理年月の1日から末日まで入居している場合
 			outDate = shatakuRiyouryouGetsugaku;
 
 		} else if (decimalNextShoriNengetsu.compareTo(decimalNyuukyoYymm) <= 0
 				|| taikyoDateYymm.compareTo(decimalBeforeShoriNengetsu) <= 0) {
+			//処理年月に入居日がない場合
 			outDate = BigDecimal.ZERO;
 
 		} else if (!Objects.equals(nyuukyoDate, shoriNengetsuShonichi) || !Objects.equals(taikyoDate, shoriNengetsuMatsujitsu)) {
+			//処理年月の1日以外の入居、または末日以外の退居の場合
 			BigDecimal taikyoDateDd = new BigDecimal(taikyoDate.substring(6, 8));
 			BigDecimal nyuukyoDateDd = new BigDecimal(nyuukyoDate.substring(6, 8));
 			BigDecimal shoriNengetsuMatsujitsuDd = new BigDecimal(shoriNengetsuMatsujitsu.substring(6, 8));
 
-			outDate = shatakuRiyouryouGetsugaku.multiply(taikyoDateDd).subtract(nyuukyoDateDd)
-					.divide(shoriNengetsuMatsujitsuDd, 0, RoundingMode.DOWN);
+			BigDecimal niisu = taikyoDateDd.subtract(nyuukyoDateDd).add(BigDecimal.ONE);
+			
+			outDate = shatakuRiyouryouGetsugaku.multiply(niisu).divide(shoriNengetsuMatsujitsuDd, 0, RoundingMode.DOWN);
 		}
 
 		outDate = outDate.setScale(0, RoundingMode.DOWN);
@@ -1173,20 +1179,23 @@ public class Skf3050Bt001SharedTask {
 		BigDecimal outDate = BigDecimal.ZERO;
 
 		if (Objects.equals(parkingStartDate, shoriNengetsuShonichi) && Objects.equals(shoriNengetsuMatsujitsu, parkingEndDate)) {
+			//処理年月の1日から末日まで駐車場を利用している場合
 			outDate = tyuushajouShiyouryouGetsugaku;
 
 		} else if (decimalNextShoriNengetsu.compareTo(parkingStartDateYymm) <= 0
 				|| parkingEndDateYymm.compareTo(decimalBeforeShoriNengetsu) <= 0) {
+			//処理年月に駐車場の利用がない場合
 			outDate = BigDecimal.ZERO;
 
 		} else if (!Objects.equals(parkingStartDate, shoriNengetsuShonichi) || !Objects.equals(parkingEndDate, shoriNengetsuMatsujitsu)) {
+			//処理年月の1日以外の開始、または末日以外の返却の場合
 			BigDecimal parkingEndDateDd = new BigDecimal(parkingEndDate.substring(6, 8));
 			BigDecimal parkingStartDateDd = new BigDecimal(parkingStartDate.substring(6, 8));
 			BigDecimal shoriNengetsuMatsujitsuDd = new BigDecimal(shoriNengetsuMatsujitsu.substring(6, 8));
 
-			outDate = tyuushajouShiyouryouGetsugaku.multiply(parkingEndDateDd)
-					.subtract((parkingStartDateDd.add(BigDecimal.ONE)))
-					.divide(shoriNengetsuMatsujitsuDd, 0, RoundingMode.DOWN);
+			BigDecimal niisu = parkingEndDateDd.subtract(parkingStartDateDd).add(BigDecimal.ONE);
+			
+			outDate = tyuushajouShiyouryouGetsugaku.multiply(niisu).divide(shoriNengetsuMatsujitsuDd, 0, RoundingMode.DOWN);
 		}
 
 		outDate = outDate.setScale(0, RoundingMode.DOWN);
