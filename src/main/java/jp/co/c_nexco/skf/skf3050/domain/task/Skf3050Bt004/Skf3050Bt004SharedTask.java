@@ -690,17 +690,17 @@ public class Skf3050Bt004SharedTask {
 						shatakuKanriId, paramShoriNengetsu);
 
 				for (Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExp tougetsuTsukiTyushaDt : tougetsuTsukiTyushaDtList) {
+					// 利用終了日設定判定
 					if (!NfwStringUtils.isEmpty(tougetsuTsukiTyushaDt.getParkingEndDate())) {
 						String endDataYymm = tougetsuTsukiTyushaDt.getParkingEndDate().substring(0, 6);
-
+						// 利用終了日が処理年月と同年月か確認
 						if (Integer.parseInt(endDataYymm) <= Integer.parseInt(paramShoriNengetsu)) {
-							//取得した駐車場返却日≦処理年月の場合、次ループへ
+							//取得した駐車場返却日≦処理年月の場合、次ループへ(当月で利用終了の為、次月データインサート対象外とする)
 							continue;
 						}
-
-						insertTsukibetuTyusyajyoRirekiData(shatakuKanriId, tougetsuTsukiTyushaDt, nextShoriNengetsu,
-								paramUserId);
 					}
+					insertTsukibetuTyusyajyoRirekiData(shatakuKanriId, tougetsuTsukiTyushaDt, nextShoriNengetsu,
+							paramUserId);
 				}
 			}
 
