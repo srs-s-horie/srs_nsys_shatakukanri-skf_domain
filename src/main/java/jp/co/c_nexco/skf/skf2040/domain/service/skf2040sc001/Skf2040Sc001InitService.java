@@ -82,11 +82,6 @@ public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001Ini
 		LogUtils.debugByMsg("操作ガイド" + initDto.getPageId());
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
 
-		// 戻るボタンの遷移先設定
-		String backUrl = "skf/" + initDto.getPrePageId() + "/init";
-
-		initDto.setBackUrl(backUrl);
-
 		return initDto;
 	}
 

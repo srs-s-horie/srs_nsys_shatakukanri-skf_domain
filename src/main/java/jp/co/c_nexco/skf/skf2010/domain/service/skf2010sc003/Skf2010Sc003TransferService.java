@@ -5,10 +5,8 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
@@ -93,6 +91,7 @@ public class Skf2010Sc003TransferService extends BaseServiceAbstract<Skf2010Sc00
 		attribute.put(SkfCommonConstant.KEY_APPL_ID, applId);
 		attribute.put(SkfCommonConstant.KEY_APPL_NO, applNo);
 		attribute.put(SkfCommonConstant.KEY_STATUS, applStatus);
+		attribute.put("backUrl", "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init" );
 
 		TransferPageInfo tpi = TransferPageInfo.nextPage(nextPageId);
 		tpi.setTransferAttributes(attribute);
