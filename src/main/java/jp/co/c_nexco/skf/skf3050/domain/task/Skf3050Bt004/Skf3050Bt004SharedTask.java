@@ -21,10 +21,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter;
+//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter;
+//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetCompanyAgencyNameExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetNyutaikyoYoteiInfoExp;
+//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetNyutaikyoYoteiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuHeyaDataExp;
@@ -35,9 +35,9 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuShiyoryoYoyakuDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuShiyoryoYoyakuDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShiyoryoUpdateRecodExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiDataInfoExp;
+//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiJoinDataCntExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter;
+//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExp;
@@ -68,15 +68,15 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.Skf
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRirekiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoDataExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTeijiBihinDataExpRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTeijiBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTeijiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTenninshaDataExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteZengetsuTenninshaExpRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteZengetsuTenninshaExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetCompanyAgencyNameExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetDataForUpdateExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetNyutaikyoYoteiInfoExpRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetNyutaikyoYoteiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuHeyaDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuKanriDaityoSogoriyoDataExpRepository;
@@ -85,9 +85,9 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuShiyoryoYoyakuDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShiyoryoPatternDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShiyoryoUpdateRecodExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiDataInfoExpRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiJoinDataCntExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuShiyoryoRirekiDataExpRepository;
@@ -109,7 +109,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
+//import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TParkingRirekiRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -180,26 +180,26 @@ public class Skf3050Bt004SharedTask {
 	private Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
-	@Autowired
-	private Skf3050Bt004GetNyutaikyoYoteiInfoExpRepository skf3050Bt004GetNyutaikyoYoteiInfoExpRepository;
-	@Autowired
-	private Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository;
-	@Autowired
-	private Skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository;
-	@Autowired
-	private Skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository;
+//	@Autowired
+//	private Skf3050Bt004GetNyutaikyoYoteiInfoExpRepository skf3050Bt004GetNyutaikyoYoteiInfoExpRepository;
+//	@Autowired
+//	private Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository;
+//	@Autowired
+//	private Skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository;
+//	@Autowired
+//	private Skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository;
 	@Autowired
 	private Skf3050Bt004DeleteNyutaikyoDataExpRepository skf3050Bt004DeleteNyutaikyoDataExpRepository;
-	@Autowired
-	private Skf3050Bt004GetTeijiDataInfoExpRepository skf3050Bt004GetTeijiDataInfoExpRepository;
-	@Autowired
-	private Skf3050Bt004DeleteTeijiBihinDataExpRepository skf3050Bt004DeleteTeijiBihinDataExpRepository;
-	@Autowired
-	private Skf3022TTeijiDataRepository skf3022TTeijiDataRepository;
+//	@Autowired
+//	private Skf3050Bt004GetTeijiDataInfoExpRepository skf3050Bt004GetTeijiDataInfoExpRepository;
+//	@Autowired
+//	private Skf3050Bt004DeleteTeijiBihinDataExpRepository skf3050Bt004DeleteTeijiBihinDataExpRepository;
+//	@Autowired
+//	private Skf3022TTeijiDataRepository skf3022TTeijiDataRepository;
 	@Autowired
 	private Skf3050Bt004DeleteTeijiDataExpRepository skf3050Bt004DeleteTeijiDataExpRepository;
-	@Autowired
-	private Skf3050Bt004DeleteZengetsuTenninshaExpRepository skf3050Bt004DeleteZengetsuTenninshaExpRepository;
+//	@Autowired
+//	private Skf3050Bt004DeleteZengetsuTenninshaExpRepository skf3050Bt004DeleteZengetsuTenninshaExpRepository;
 	@Autowired
 	private Skf3050Bt004DeleteTenninshaDataExpRepository skf3050Bt004DeleteTenninshaDataExpRepository;
 	@Autowired
@@ -249,7 +249,7 @@ public class Skf3050Bt004SharedTask {
 
 	private static final String JIGYO_RYO_CD_KEY = "jigyoRyoikiCd";
 	private static final String JIGYO_RYO_NAME_KEY = "jigyoRyoikiName";
-	private static final String DELETE_KEEP_PERIOD_KEY = "skf.common.settings.nyutaikyo_data_keep_period";
+//	private static final String DELETE_KEEP_PERIOD_KEY = "skf.common.settings.nyutaikyo_data_keep_period";
 
 	private int updateShiyouCnt = 0;
 	private int updateShatakuCnt = 0;
@@ -881,117 +881,110 @@ public class Skf3050Bt004SharedTask {
 	private boolean deleteData() {
 
 		//削除基準日取得
-		String delDate = getDeleteKijunbi();
+//		String delDate = getDeleteKijunbi();
 
-		//▼入退居予定データ削除
-		List<Skf3050Bt004GetNyutaikyoYoteiInfoExp> nyutaikyoYoteiInfoList = skf3050Bt004GetNyutaikyoYoteiInfoExpRepository
-				.getNyutaikyoYoteiInfo(delDate);
+//		//▼入退居予定データ削除
+//		List<Skf3050Bt004GetNyutaikyoYoteiInfoExp> nyutaikyoYoteiInfoList = skf3050Bt004GetNyutaikyoYoteiInfoExpRepository
+//				.getNyutaikyoYoteiInfo(delDate);
 
 		//'①提示データとのひも付けを確認し、なければ削除基準日より古いデータ削除を行う
 		//データが存在する場合、データ件数分繰り返し処理を行う。
-		if (nyutaikyoYoteiInfoList.size() > 0) {
-			for (Skf3050Bt004GetNyutaikyoYoteiInfoExp nyutaikyoYoteiInfo : nyutaikyoYoteiInfoList) {
-				List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
-						.getSkf3021TNyutaikyoYoteiData(nyutaikyoYoteiInfo.getShainNo());
-
-				if (lockResult.size() != 0) {
-					//提示データが作成済みだったら
-					if (CodeConstant.TEIJI_CREATE_KBN_SAKUSEI_SUMI.equals(nyutaikyoYoteiInfo.getTeijiCreateKbn())) {
-						int teijiNyutaikyoYoteiDateCnt = getTeijiNyutaikyoYoteiDateCnt(delDate,
-								nyutaikyoYoteiInfo.getShainNo(), nyutaikyoYoteiInfo.getNyutaikyoKbn(),
-								nyutaikyoYoteiInfo.getTeijiNo());
-
-						//入退居予定データの削除
-						if (teijiNyutaikyoYoteiDateCnt > 0) {
-							int deleCnt = deleteNyutaikyoYoteiData2(delDate, nyutaikyoYoteiInfo.getShainNo(),
-									nyutaikyoYoteiInfo.getNyutaikyoKbn(), nyutaikyoYoteiInfo.getTeijiNo());
-							if (deleCnt < 0) {
-								return false;
-							}
-						}
-
-					} else {
-						//入退居予定データの削除
-						int deleCnt = deleteNyutaikyoYoteiData1(delDate, nyutaikyoYoteiInfo.getShainNo(),
-								nyutaikyoYoteiInfo.getNyutaikyoKbn());
-						if (deleCnt < 0) {
-							return false;
-						}
-					}
-				} else {
-					return false;
-				}
-			}
-		}
+//		if (nyutaikyoYoteiInfoList.size() > 0) {
+//			for (Skf3050Bt004GetNyutaikyoYoteiInfoExp nyutaikyoYoteiInfo : nyutaikyoYoteiInfoList) {
+//				List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
+//						.getSkf3021TNyutaikyoYoteiData(nyutaikyoYoteiInfo.getShainNo());
+//
+//				if (lockResult.size() != 0) {
+//					//提示データが作成済みだったら
+//					if (CodeConstant.TEIJI_CREATE_KBN_SAKUSEI_SUMI.equals(nyutaikyoYoteiInfo.getTeijiCreateKbn())) {
+//						int teijiNyutaikyoYoteiDateCnt = getTeijiNyutaikyoYoteiDateCnt(delDate,
+//								nyutaikyoYoteiInfo.getShainNo(), nyutaikyoYoteiInfo.getNyutaikyoKbn(),
+//								nyutaikyoYoteiInfo.getTeijiNo());
+//
+//						//入退居予定データの削除
+//						if (teijiNyutaikyoYoteiDateCnt > 0) {
+//							int deleCnt = deleteNyutaikyoYoteiData2(delDate, nyutaikyoYoteiInfo.getShainNo(),
+//									nyutaikyoYoteiInfo.getNyutaikyoKbn(), nyutaikyoYoteiInfo.getTeijiNo());
+//							if (deleCnt < 0) {
+//								return false;
+//							}
+//						}
+//
+//					} else {
+//						//入退居予定データの削除
+//						int deleCnt = deleteNyutaikyoYoteiData1(delDate, nyutaikyoYoteiInfo.getShainNo(),
+//								nyutaikyoYoteiInfo.getNyutaikyoKbn());
+//						if (deleCnt < 0) {
+//							return false;
+//						}
+//					}
+//				} else {
+//					return false;
+//				}
+//			}
+//		}
 
 		//②提示データのステータスが“承認”と紐づくデータを削除する
-		List<String> lockNyutaikyoDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteNyutaikyoData();
-		if (lockNyutaikyoDataResult.size() == 0) {
-			return false;
-		}
+//		List<String> lockNyutaikyoDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteNyutaikyoData();
+//		if (lockNyutaikyoDataResult.size() == 0) {
+//			return false;
+//		}
 
 		skf3050Bt004DeleteNyutaikyoDataExpRepository.deleteNyutaikyoData();
 
 		//▼提示データ削除
 		//①削除基準日より古いデータを削除する
 		//提示データ取得
-		List<Skf3050Bt004GetTeijiDataInfoExp> teijiDataInfoList = skf3050Bt004GetTeijiDataInfoExpRepository
-				.getTeijiDataInfo(delDate);
+//		List<Skf3050Bt004GetTeijiDataInfoExp> teijiDataInfoList = skf3050Bt004GetTeijiDataInfoExpRepository
+//				.getTeijiDataInfo(delDate);
 
-		if (teijiDataInfoList.size() > 0) {
-			for (Skf3050Bt004GetTeijiDataInfoExp teijiDataInfo : teijiDataInfoList) {
-				List<Long> lockBihinDataResult = skf3050Bt004GetDataForUpdateExpRepository
-						.getSkf3022TTeijiBihinData(teijiDataInfo.getTeijiNo());
-				//①提示備品データの削除
-				if (lockBihinDataResult.size() != 0) {
-					int teijiBihinDataDeleCnt = skf3050Bt004DeleteTeijiBihinDataExpRepository
-							.deleteTeijiBihinData(teijiDataInfo.getTeijiNo());
-					if (teijiBihinDataDeleCnt < 0) {
-						return false;
-					}
-				} else {
-					return false;
-				}
-
-				//②提示データの削除
-				List<Long> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository
-						.getSkf3022TTeijiData(teijiDataInfo.getTeijiNo());
-				if (lockTeijiDataResult.size() != 0) {
-
-					int teijiDataDeleCnt = skf3022TTeijiDataRepository.deleteByPrimaryKey(teijiDataInfo.getTeijiNo());
-					if (teijiDataDeleCnt < 0) {
-						return false;
-					}
-				} else {
-					return false;
-				}
-			}
-		}
+//		if (teijiDataInfoList.size() > 0) {
+//			for (Skf3050Bt004GetTeijiDataInfoExp teijiDataInfo : teijiDataInfoList) {
+//				List<Long> lockBihinDataResult = skf3050Bt004GetDataForUpdateExpRepository
+//						.getSkf3022TTeijiBihinData(teijiDataInfo.getTeijiNo());
+//				//①提示備品データの削除
+//				if (lockBihinDataResult.size() != 0) {
+//					int teijiBihinDataDeleCnt = skf3050Bt004DeleteTeijiBihinDataExpRepository
+//							.deleteTeijiBihinData(teijiDataInfo.getTeijiNo());
+//					if (teijiBihinDataDeleCnt < 0) {
+//						return false;
+//					}
+//				}
+//
+//				//②提示データの削除
+//				List<Long> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository
+//						.getSkf3022TTeijiData(teijiDataInfo.getTeijiNo());
+//				if (lockTeijiDataResult.size() != 0) {
+//
+//					int teijiDataDeleCnt = skf3022TTeijiDataRepository.deleteByPrimaryKey(teijiDataInfo.getTeijiNo());
+//					if (teijiDataDeleCnt < 0) {
+//						return false;
+//					}
+//				}
+//			}
+//		}
 
 		//②提示データのステータスが“承認”のデータを削除する
-		List<String> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteTeijiData();
-		if (lockTeijiDataResult.size() == 0) {
-			return false;
-		}
-
+//		List<String> lockTeijiDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteTeijiData();
+//		if (lockTeijiDataResult.size() > 0) {
+//			return false;
+//		}
 		skf3050Bt004DeleteTeijiDataExpRepository.deleteTeijiData();
 
 		//▼転任者調書データ
 		//①削除基準日より古いデータを削除する
-		List<String> lockZengetsuTenninshaResult = skf3050Bt004GetDataForUpdateExpRepository
-				.getDeleteZengetsuTenninsha(delDate);
-		if (lockZengetsuTenninshaResult.size() == 0) {
-			return false;
-		}
-		
-		skf3050Bt004DeleteZengetsuTenninshaExpRepository.deleteZengetsuTenninsha(delDate);
+//		List<String> lockZengetsuTenninshaResult = skf3050Bt004GetDataForUpdateExpRepository
+//				.getDeleteZengetsuTenninsha(delDate);
+//		if (lockZengetsuTenninshaResult.size() == 0) {
+//			return false;
+//		}
+//		skf3050Bt004DeleteZengetsuTenninshaExpRepository.deleteZengetsuTenninsha(delDate);
 
 		//②提示データのステータスがすべて“承認”のデータを削除する
-		List<String> lockTenninshaDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteTenninshaData();
-		if (lockTenninshaDataResult.size() == 0) {
-			return false;
-		}
-
+//		List<String> lockTenninshaDataResult = skf3050Bt004GetDataForUpdateExpRepository.getDeleteTenninshaData();
+//		if (lockTenninshaDataResult.size() == 0) {
+//			return false;
+//		}
 		skf3050Bt004DeleteTenninshaDataExpRepository.deleteTenninshaData();
 
 		return true;
@@ -2527,103 +2520,103 @@ public class Skf3050Bt004SharedTask {
 
 	}
 
-	/**
-	 * 削除基準日取得
-	 * 
-	 * @return 削除基準日日
-	 */
-	private String getDeleteKijunbi() {
+//	/**
+//	 * 削除基準日取得
+//	 * 
+//	 * @return 削除基準日日
+//	 */
+//	private String getDeleteKijunbi() {
+//
+//		int keepPeriod = Integer.parseInt(PropertyUtils.getValue(DELETE_KEEP_PERIOD_KEY));
+//		Date sysDate = getSystemDate();
+//
+//		Calendar calendar = Calendar.getInstance();
+//		calendar.setTime(sysDate);
+//		calendar.add(Calendar.DATE, -keepPeriod);
+//
+//		Date deleteKijunbi = calendar.getTime();
+//		SimpleDateFormat sdFormat = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+//
+//		String rtnVal = sdFormat.format(deleteKijunbi);
+//
+//		return rtnVal;
+//	}
 
-		int keepPeriod = Integer.parseInt(PropertyUtils.getValue(DELETE_KEEP_PERIOD_KEY));
-		Date sysDate = getSystemDate();
+//	/**
+//	 * 提示入退去予定データの件数取得
+//	 * 
+//	 * @param deleteDate
+//	 *            削除基準日
+//	 * @param shainNo
+//	 *            社員番号
+//	 * @param nyutaikyoKbn
+//	 *            入退居区分
+//	 * @param teijiNo
+//	 *            提示番号
+//	 * @return 提示入退去予定データの件数
+//	 */
+//	private Integer getTeijiNyutaikyoYoteiDateCnt(String deleteDate, String shainNo, String nyutaikyoKbn,
+//			Long teijiNo) {
+//
+//		Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter param = new Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter();
+//		param.setDeleteDate(deleteDate);
+//		param.setShainNo(shainNo);
+//		param.setNyutaikyoKbn(nyutaikyoKbn);
+//		param.setTeijiNo(teijiNo);
+//
+//		Integer cnt = skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository.getTeijiNyutaikyoYoteiDateCnt(param);
+//
+//		return cnt;
+//	}
 
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(sysDate);
-		calendar.add(Calendar.DATE, -keepPeriod);
+//	/**
+//	 * 入退居予定データ削除(パターン1)
+//	 * 
+//	 * @param deleteDate
+//	 *            削除基準日
+//	 * @param shainNo
+//	 *            社員番号
+//	 * @param nyutaikyoKbn
+//	 *            入退居区分
+//	 * @return 削除件数
+//	 */
+//	private Integer deleteNyutaikyoYoteiData1(String deleteDate, String shainNo, String nyutaikyoKbn) {
+//
+//		Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter param = new Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter();
+//		param.setDeleteDate(deleteDate);
+//		param.setShainNo(shainNo);
+//		param.setNyutaikyoKbn(nyutaikyoKbn);
+//
+//		Integer deleCnt = skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository.deleteNyutaikyoYoteiData1(param);
+//
+//		return deleCnt;
+//	}
 
-		Date deleteKijunbi = calendar.getTime();
-		SimpleDateFormat sdFormat = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
-
-		String rtnVal = sdFormat.format(deleteKijunbi);
-
-		return rtnVal;
-	}
-
-	/**
-	 * 提示入退去予定データの件数取得
-	 * 
-	 * @param deleteDate
-	 *            削除基準日
-	 * @param shainNo
-	 *            社員番号
-	 * @param nyutaikyoKbn
-	 *            入退居区分
-	 * @param teijiNo
-	 *            提示番号
-	 * @return 提示入退去予定データの件数
-	 */
-	private Integer getTeijiNyutaikyoYoteiDateCnt(String deleteDate, String shainNo, String nyutaikyoKbn,
-			Long teijiNo) {
-
-		Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter param = new Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter();
-		param.setDeleteDate(deleteDate);
-		param.setShainNo(shainNo);
-		param.setNyutaikyoKbn(nyutaikyoKbn);
-		param.setTeijiNo(teijiNo);
-
-		Integer cnt = skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository.getTeijiNyutaikyoYoteiDateCnt(param);
-
-		return cnt;
-	}
-
-	/**
-	 * 入退居予定データ削除(パターン1)
-	 * 
-	 * @param deleteDate
-	 *            削除基準日
-	 * @param shainNo
-	 *            社員番号
-	 * @param nyutaikyoKbn
-	 *            入退居区分
-	 * @return 削除件数
-	 */
-	private Integer deleteNyutaikyoYoteiData1(String deleteDate, String shainNo, String nyutaikyoKbn) {
-
-		Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter param = new Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter();
-		param.setDeleteDate(deleteDate);
-		param.setShainNo(shainNo);
-		param.setNyutaikyoKbn(nyutaikyoKbn);
-
-		Integer deleCnt = skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository.deleteNyutaikyoYoteiData1(param);
-
-		return deleCnt;
-	}
-
-	/**
-	 * 入退居予定データ削除(パターン2)
-	 * 
-	 * @param deleteDate
-	 *            削除基準日
-	 * @param shainNo
-	 *            社員番号
-	 * @param nyutaikyoKbn
-	 *            入退居区分
-	 * @param teijiNo
-	 *            提示番号
-	 * @return 削除件数
-	 */
-	private Integer deleteNyutaikyoYoteiData2(String deleteDate, String shainNo, String nyutaikyoKbn, Long teijiNo) {
-
-		Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter param = new Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter();
-		param.setDeleteDate(deleteDate);
-		param.setShainNo(shainNo);
-		param.setNyutaikyoKbn(nyutaikyoKbn);
-		param.setTeijiNo(teijiNo);
-
-		Integer deleCnt = skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository.deleteNyutaikyoYoteiData2(param);
-
-		return deleCnt;
-	}
+//	/**
+//	 * 入退居予定データ削除(パターン2)
+//	 * 
+//	 * @param deleteDate
+//	 *            削除基準日
+//	 * @param shainNo
+//	 *            社員番号
+//	 * @param nyutaikyoKbn
+//	 *            入退居区分
+//	 * @param teijiNo
+//	 *            提示番号
+//	 * @return 削除件数
+//	 */
+//	private Integer deleteNyutaikyoYoteiData2(String deleteDate, String shainNo, String nyutaikyoKbn, Long teijiNo) {
+//
+//		Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter param = new Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter();
+//		param.setDeleteDate(deleteDate);
+//		param.setShainNo(shainNo);
+//		param.setNyutaikyoKbn(nyutaikyoKbn);
+//		param.setTeijiNo(teijiNo);
+//
+//		Integer deleCnt = skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository.deleteNyutaikyoYoteiData2(param);
+//
+//		return deleCnt;
+//	}
 
 	/**
 	 * 月次処理管理テーブルの更新
