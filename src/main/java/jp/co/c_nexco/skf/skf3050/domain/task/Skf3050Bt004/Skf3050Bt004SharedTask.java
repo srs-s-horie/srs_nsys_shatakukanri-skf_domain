@@ -1475,21 +1475,46 @@ public class Skf3050Bt004SharedTask {
 			String taikyoYymm = taikyoDate.substring(0, 6);
 
 			if (Integer.parseInt(taikyoYymm) <= Integer.parseInt(shoriNengetsu)) {
+				//退居日が当月処理月以前の場合
 				if (shatakuYoyakuDtList.size() == 0) {
 					jigetsuShatakuShiyouryouTyouseiKingaku = BigDecimal.ZERO;
-
 				} else {
+					//社宅使用料予約データ.社宅使用料調整金額を設定
 					jigetsuShatakuShiyouryouTyouseiKingaku = BigDecimal
 							.valueOf(shatakuYoyakuDtList.get(0).getRentalAdjust());
 				}
+			}else{
+				String nextShoriNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
+				if (Integer.parseInt(taikyoYymm) >= Integer.parseInt(nextShoriNengetsu)) {
+					//当月処理月の翌月以降の場合
+					if (shatakuYoyakuDtList.size() == 0) {
+						//当月処理月の月別使用料履歴.社宅使用料調整金額を設定
+						jigetsuShatakuShiyouryouTyouseiKingaku = BigDecimal.valueOf(tsukiJoinDt.getRirekiRentalAdjust());
+
+					} else {
+						//社宅使用料予約データ.社宅使用料調整金額を設定
+						jigetsuShatakuShiyouryouTyouseiKingaku = BigDecimal.valueOf(shatakuYoyakuDtList.get(0).getRentalAdjust());
+					}
+				}
+				
 			}
+		}else{
+			//退居日が未入力
+			if (shatakuYoyakuDtList.size() == 0) {
+				//当月処理月の月別使用料履歴.社宅使用料調整金額を設定
+				jigetsuShatakuShiyouryouTyouseiKingaku = BigDecimal.valueOf(tsukiJoinDt.getRirekiRentalAdjust());
+			} else {
+				//社宅使用料予約データ.社宅使用料調整金額を設定
+				jigetsuShatakuShiyouryouTyouseiKingaku = BigDecimal.valueOf(shatakuYoyakuDtList.get(0).getRentalAdjust());
+			}
+			
 		}
 
 		return jigetsuShatakuShiyouryouTyouseiKingaku;
 	}
 
 	/**
-	 * 次月の社宅使用料調整金額の取得
+	 * 次月の個人負担共益費調整金額の取得
 	 * 
 	 * @param tsukiJoinDt
 	 *            月別使用料履歴データ
@@ -1497,12 +1522,13 @@ public class Skf3050Bt004SharedTask {
 	 *            社宅使用料予約データ
 	 * @param shoriNengetsu
 	 *            処理年月
-	 * @return 次月の社宅使用料調整金額
+	 * @return 次月の個人負担共益費調整金額
 	 */
 	private BigDecimal getJigetsuKojinhutanKyouekihiTyouseiKingaku(
 			Skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExp tsukiJoinDt,
 			List<Skf3050Bt004GetShatakuShiyoryoYoyakuDataExp> shatakuYoyakuDtList, String shoriNengetsu) {
 
+		//次月の個人負担共益費調整金額
 		BigDecimal jigetsuKojinhutanKyouekihiTyouseiKingaku = BigDecimal.ZERO;
 		String taikyoDate = tsukiJoinDt.getLedgerTaikyoDate();
 
@@ -1510,14 +1536,38 @@ public class Skf3050Bt004SharedTask {
 			String taikyoYymm = taikyoDate.substring(0, 6);
 
 			if (Integer.parseInt(taikyoYymm) <= Integer.parseInt(shoriNengetsu)) {
+				//退居日が当月処理月以前の場合
 				if (shatakuYoyakuDtList.size() == 0) {
 					jigetsuKojinhutanKyouekihiTyouseiKingaku = BigDecimal.ZERO;
 
 				} else {
+					//社宅使用料予約データ.個人負担共益費調整金額を設定
 					jigetsuKojinhutanKyouekihiTyouseiKingaku = BigDecimal
 							.valueOf(shatakuYoyakuDtList.get(0).getKyoekihiPersonAdjust());
 				}
+			}else{
+				String nextShoriNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
+				if (Integer.parseInt(taikyoYymm) >= Integer.parseInt(nextShoriNengetsu)) {
+					//当月処理月の翌月以降の場合
+					if (shatakuYoyakuDtList.size() == 0) {
+						//当月処理月の月別使用料履歴.個人負担共益費調整金額を設定
+						jigetsuKojinhutanKyouekihiTyouseiKingaku = BigDecimal.valueOf(tsukiJoinDt.getRirekiKyoekihiPersonAdjust());
+					} else {
+						//社宅使用料予約データ.個人負担共益費調整金額を設定
+						jigetsuKojinhutanKyouekihiTyouseiKingaku = BigDecimal.valueOf(shatakuYoyakuDtList.get(0).getKyoekihiPersonAdjust());
+					}
+				}
 			}
+		}else{
+			//退居日が未入力
+			if (shatakuYoyakuDtList.size() == 0) {
+				//当月処理月の月別使用料履歴.個人負担共益費調整金額を設定
+				jigetsuKojinhutanKyouekihiTyouseiKingaku = BigDecimal.valueOf(tsukiJoinDt.getRirekiKyoekihiPersonAdjust());
+			} else {
+				//社宅使用料予約データ.個人負担共益費調整金額を設定
+				jigetsuKojinhutanKyouekihiTyouseiKingaku = BigDecimal.valueOf(shatakuYoyakuDtList.get(0).getKyoekihiPersonAdjust());
+			}
+			
 		}
 
 		return jigetsuKojinhutanKyouekihiTyouseiKingaku;
@@ -1538,6 +1588,7 @@ public class Skf3050Bt004SharedTask {
 			Skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExp tsukiJoinDt,
 			List<Skf3050Bt004GetShatakuShiyoryoYoyakuDataExp> shatakuYoyakuDtList, String shoriNengetsu) {
 
+		//次月の駐車場使用料調整金額
 		BigDecimal jigetsuTyushajoShiyouryouTyouseiKingaku = BigDecimal.ZERO;
 		String taikyoDate = tsukiJoinDt.getLedgerTaikyoDate();
 
@@ -1545,14 +1596,38 @@ public class Skf3050Bt004SharedTask {
 			String taikyoYymm = taikyoDate.substring(0, 6);
 
 			if (Integer.parseInt(taikyoYymm) <= Integer.parseInt(shoriNengetsu)) {
+				//退居日が当月処理月以前の場合
 				if (shatakuYoyakuDtList.size() == 0) {
 					jigetsuTyushajoShiyouryouTyouseiKingaku = BigDecimal.ZERO;
 
 				} else {
+					//社宅使用料予約データ.駐車場使用料調整金額を設定
 					jigetsuTyushajoShiyouryouTyouseiKingaku = BigDecimal
 							.valueOf(shatakuYoyakuDtList.get(0).getParkingRentalAdjust());
 				}
+			}else{
+				String nextShoriNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
+				if (Integer.parseInt(taikyoYymm) >= Integer.parseInt(nextShoriNengetsu)) {
+					//当月処理月の翌月以降の場合
+					if (shatakuYoyakuDtList.size() == 0) {
+						//当月処理月の月別使用料履歴.駐車場使用料調整金額を設定
+						jigetsuTyushajoShiyouryouTyouseiKingaku = BigDecimal.valueOf(tsukiJoinDt.getRirekiParkingRentalAdjust());
+					} else {
+						//社宅使用料予約データ.駐車場使用料調整金額を設定
+						jigetsuTyushajoShiyouryouTyouseiKingaku = BigDecimal.valueOf(shatakuYoyakuDtList.get(0).getParkingRentalAdjust());
+					}
+				}
 			}
+		}else{
+			//退居日が未入力
+			if (shatakuYoyakuDtList.size() == 0) {
+				//当月処理月の月別使用料履歴.駐車場使用料調整金額を設定
+				jigetsuTyushajoShiyouryouTyouseiKingaku = BigDecimal.valueOf(tsukiJoinDt.getRirekiParkingRentalAdjust());
+			} else {
+				//社宅使用料予約データ.駐車場使用料調整金額を設定
+				jigetsuTyushajoShiyouryouTyouseiKingaku = BigDecimal.valueOf(shatakuYoyakuDtList.get(0).getParkingRentalAdjust());
+			}
+			
 		}
 
 		return jigetsuTyushajoShiyouryouTyouseiKingaku;
