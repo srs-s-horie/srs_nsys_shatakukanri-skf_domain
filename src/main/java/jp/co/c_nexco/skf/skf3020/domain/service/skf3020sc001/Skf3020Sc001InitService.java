@@ -27,6 +27,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
+import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc001.Skf3020Sc001InitDto;
@@ -89,7 +90,7 @@ public class Skf3020Sc001InitService extends BaseServiceAbstract<Skf3020Sc001Ini
 		key.setCompanyCd(CodeConstant.C001);
 		key.setShainNo(shaiNoStr);
 		Skf1010MShain resultValue = skf1010MShainRepository.selectByPrimaryKey(key);
-		if(NfwStringUtils.isNotEmpty(resultValue.getName())){
+		if(resultValue != null && !SkfCheckUtils.isNullOrEmpty(resultValue.getName())){
 			initDto.setShainName(resultValue.getName());
 		}
 		
