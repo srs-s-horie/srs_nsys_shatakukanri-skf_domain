@@ -146,8 +146,6 @@ public class Skf3050Sc002SharedService {
 	@Autowired
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
 	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	@Autowired
 	private Skf3050Sc002GetGetsujiShoriJoukyouShoukaiExpRepository skf3050Sc002GetGetsujiShoriJoukyouShoukaiExpRepository;
 	@Autowired
 	private Skf3050TMonthlyManageDataRepository skf3050TMonthlyManageDataRepository;
