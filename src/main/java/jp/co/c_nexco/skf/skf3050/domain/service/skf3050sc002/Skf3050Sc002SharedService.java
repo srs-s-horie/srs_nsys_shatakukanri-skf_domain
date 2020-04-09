@@ -127,7 +127,6 @@ import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050Sc002common.Skf3050Sc002CommonDto;
 
