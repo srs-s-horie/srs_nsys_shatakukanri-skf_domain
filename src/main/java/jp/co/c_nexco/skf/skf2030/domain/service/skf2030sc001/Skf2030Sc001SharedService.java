@@ -150,13 +150,13 @@ public class Skf2030Sc001SharedService {
 	 * @param initDto
 	 * @throws Exception
 	 */
-	public boolean setDisplayData(Map<String, String> applInfo, Skf2030Sc001CommonDto initDto) throws Exception {
-		String applNo = applInfo.get("applNo");
+	public boolean setDisplayData(Skf2030Sc001CommonDto initDto) throws Exception {
+		String applNo = initDto.getApplNo();
 		// 申請状況を設定
-		if (NfwStringUtils.isNotEmpty(applInfo.get("status"))) {
+		if (NfwStringUtils.isNotEmpty(initDto.getApplStatus())) {
 			// 申請状況を取得
 			Map<String, String> applStatusMap = skfGenericCodeUtils.getGenericCode("SKF1001");
-			initDto.setApplStatusText(applStatusMap.get(applInfo.get("status")));
+			initDto.setApplStatusText(applStatusMap.get(initDto.getApplStatus()));
 
 			// 申請書類履歴取得
 			List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> applHistoryInfoList = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
@@ -278,7 +278,7 @@ public class Skf2030Sc001SharedService {
 			}
 
 			// 搬入待ちまでのステータスの場合、常にSKSスキーマの代理人情報を参照し、最新の情報を表示する
-			switch (applInfo.get("status")) {
+			switch (initDto.getApplStatus()) {
 			case CodeConstant.STATUS_ICHIJIHOZON:
 			case CodeConstant.STATUS_MISAKUSEI:
 			case CodeConstant.STATUS_SHINSEICHU:

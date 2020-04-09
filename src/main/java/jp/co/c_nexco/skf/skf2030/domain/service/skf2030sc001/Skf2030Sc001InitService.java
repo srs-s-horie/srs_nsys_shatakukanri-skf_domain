@@ -62,7 +62,7 @@ public class Skf2030Sc001InitService extends BaseServiceAbstract<Skf2030Sc001Ini
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC001, forUpdateMap);
 
 		// 画面内容の設定
-		boolean result = skf2030Sc001SharedService.setDisplayData(applInfo, initDto);
+		boolean result = skf2030Sc001SharedService.setDisplayData(initDto);
 		if (!result) {
 			// 初期表示に失敗した場合次処理のボタンを押せなくする。
 			initDto.setMaskPattern("ALLNG");
