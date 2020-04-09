@@ -5,10 +5,8 @@ package jp.co.c_nexco.skf.skf2030.domain.service.skf2030sc001;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -69,7 +67,7 @@ public class Skf2030Sc001ClearService extends BaseServiceAbstract<Skf2030Sc001Cl
 		clearDto.setRenrakuSaki(CodeConstant.NONE);
 
 		// 画面内容の設定
-		boolean result = skf2030Sc001SharedService.setDisplayData(applInfo, clearDto);
+		boolean result = skf2030Sc001SharedService.setDisplayData(clearDto);
 		if (!result) {
 			// 初期表示に失敗した場合次処理のボタンを押せなくする。
 			clearDto.setMaskPattern("ALLNG");

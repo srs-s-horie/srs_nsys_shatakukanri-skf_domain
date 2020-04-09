@@ -81,7 +81,7 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 		}
 
 		// 画面内容の設定
-		boolean result = skf2030Sc001SharedService.setDisplayData(applInfo, saveDto);
+		boolean result = skf2030Sc001SharedService.setDisplayData(saveDto);
 		if (!result) {
 			// 初期表示に失敗した場合次処理のボタンを押せなくする。
 			saveDto.setMaskPattern("ALLNG");
@@ -96,7 +96,6 @@ public class Skf2030Sc001SaveService extends BaseServiceAbstract<Skf2030Sc001Sav
 	private int saveDispInfo(Map<String, String> applInfo, Skf2030Sc001SaveDto saveDto) {
 		String applNo = applInfo.get("applNo");
 		String applId = applInfo.get("applId");
-		String applStatus = applInfo.get("status");
 		String shainNo = applInfo.get("shainNo");
 
 		// 申請履歴情報を更新する
