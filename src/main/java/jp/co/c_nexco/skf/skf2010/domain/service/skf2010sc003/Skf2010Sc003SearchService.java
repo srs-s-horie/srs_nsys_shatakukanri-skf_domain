@@ -71,6 +71,8 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 			return searchDto;
 		}
 
+		menuScopeSessionBean.put(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY, searchDto);
+
 		// 検索結果取得
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(searchDto);
 		if (resultList == null || resultList.size() <= 0) {
@@ -81,6 +83,7 @@ public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003S
 			return searchDto;
 		}
 		searchDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList, searchDto));
+
 		return searchDto;
 	}
 
