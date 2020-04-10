@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -77,7 +78,14 @@ public class Skf2010Sc003InitService extends BaseServiceAbstract<Skf2010Sc003Ini
 		initDto.setApplStatus(applStatusList.toArray(new String[applStatusList.size()]));
 
 		// 申請状況一覧を検索
+		if (menuScopeSessionBean.get(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY) != null) {
+			CopyUtils.copyProperties(initDto,
+					menuScopeSessionBean.get(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY));
+		}
 		setStatusList(initDto);
+
+		menuScopeSessionBean.remove(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY);
+		menuScopeSessionBean.put(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY, initDto);
 
 		// データ連携用の排他制御用更新日を取得
 		// ログインセッションのユーザ情報
