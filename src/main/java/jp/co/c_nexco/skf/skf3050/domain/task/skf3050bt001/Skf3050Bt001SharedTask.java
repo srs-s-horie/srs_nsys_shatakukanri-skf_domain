@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinGenbutsuShikyugokeigakuExpParameter;
@@ -200,7 +201,7 @@ public class Skf3050Bt001SharedTask {
 	 * @return 結果
 	 * @throws ParseException
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public int registBatchControl(Map<String, String> parameter, Date sysDate, List<String> endList)
 			throws ParseException {
 
@@ -270,7 +271,7 @@ public class Skf3050Bt001SharedTask {
 	 * @return 処理結果Map
 	 * @throws ParseException
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public String updateTsukibetsuTsukiji(Map<String, String> parameter, List<String> endList) throws ParseException {
 
 		String rtn = SkfCommonConstant.COMPLETE;
@@ -665,7 +666,7 @@ public class Skf3050Bt001SharedTask {
 	 * @return 処理結果
 	 * @throws ParseException
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public int endProc(String endFlag, String companyCd, String programId, String searchEndFlag) throws ParseException {
 
 		//バッチ制御テーブルを更新
