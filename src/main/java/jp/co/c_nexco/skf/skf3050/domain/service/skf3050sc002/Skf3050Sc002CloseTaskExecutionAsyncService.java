@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinHenkyakuDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinTaiyoDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002UpdateBihinHenkyakubiExpParameter;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002UpdateBihinHenkyakubiExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -41,6 +43,8 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3050Sc002SharedService skf3050Sc002SharedService;
+	@Autowired
+	private Skf3050Sc002UpdateBihinHenkyakubiExpRepository skf3050Sc002UpdateBihinHenkyakubiExpRepository;
 
 	private static final String ERRMSG_SHIME_BIHIN_NYUKYO = "入居情報について備品貸与日が設定されていません。";
 	private static final String ERRMSG_SHIME_BIHIN_TAIKYO = "退居情報について備品返却日が設定されていません。備品返却日に退居日を設定し、";
@@ -94,17 +98,15 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 			}
 		}
 
-		if (!FLG_ON.equals(bihinHenkyakuWarnContinueFlg)) {
-			//▼退居情報について備品返却日の設定確認（※エラーとしない）
-			String bihinHenkyakuWarningMsg = checkBihinHenkyakuData(jikkouShijiYoteiNengetsu);
+		//▼退居情報について備品返却日の設定確認（※エラーとしない）
+		String bihinHenkyakuWarningMsg = checkBihinHenkyakuData(jikkouShijiYoteiNengetsu, bihinHenkyakuWarnContinueFlg);
 
-			if (!"".equals(bihinHenkyakuWarningMsg)) {
-				//品の返却日が設定されていない場合、警告メッセージを表示
-				String msg = skf3050Sc002SharedService.editMsg(MessageIdConstant.I_SKF_3008, bihinHenkyakuWarningMsg);
-				closeTaskDto.setHdnWarnMsg(msg);
-				closeTaskDto.setHdnBihinHenkyakuWarnContinueFlg(FLG_ON);
-				return closeTaskDto;
-			}
+		if (!"".equals(bihinHenkyakuWarningMsg)) {
+			//品の返却日が設定されていない場合、警告メッセージを表示
+			String msg = skf3050Sc002SharedService.editMsg(MessageIdConstant.I_SKF_3008, bihinHenkyakuWarningMsg);
+			closeTaskDto.setHdnWarnMsg(msg);
+			closeTaskDto.setHdnBihinHenkyakuWarnContinueFlg(FLG_ON);
+			return closeTaskDto;
 		}
 
 		closeTaskDto.setHdnBihinTaiyoWarnContinueFlg("");
@@ -180,18 +182,35 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 	 *            実行指示予定年月
 	 * @return 警告メッセージ
 	 */
-	private String checkBihinHenkyakuData(String jikkouShijiYoteiNengetsu) {
+	private String checkBihinHenkyakuData(String jikkouShijiYoteiNengetsu, String bihinHenkyakuWarnContinueFlg) {
 
 		String rtnErrMsg = "";
+		// ユーザーID取得
+		String userId = LoginUserInfoUtils.getUserCd();
+		String progId = batchPrgId;
 
 		List<Skf3050Sc002GetBihinHenkyakuDataExp> bihinHenkyakuDataList = skf3050Sc002SharedService
 				.getBihinHenkyakuData(jikkouShijiYoteiNengetsu);
 		if (bihinHenkyakuDataList.size() > 0) {
-
-			for (Skf3050Sc002GetBihinHenkyakuDataExp bihinHenkyakuData : bihinHenkyakuDataList) {
-				if (NfwStringUtils.isEmpty(bihinHenkyakuData.getTaiyoHenkyakuDate())) {
-					String jikkoNengetsu = skf3050Sc002SharedService.editDisplayNengetsu(jikkouShijiYoteiNengetsu);
-					rtnErrMsg = ERRMSG_SHIME_BIHIN_TAIKYO + jikkoNengetsu;
+			if (!FLG_ON.equals(bihinHenkyakuWarnContinueFlg)) {
+				for (Skf3050Sc002GetBihinHenkyakuDataExp bihinHenkyakuData : bihinHenkyakuDataList) {
+					if (NfwStringUtils.isEmpty(bihinHenkyakuData.getTaiyoHenkyakuDate())) {
+						String jikkoNengetsu = skf3050Sc002SharedService.editDisplayNengetsu(jikkouShijiYoteiNengetsu);
+						rtnErrMsg = ERRMSG_SHIME_BIHIN_TAIKYO + jikkoNengetsu;
+						break;
+					}
+				}
+			} else {
+				// 返却日を退居日で更新
+				for (Skf3050Sc002GetBihinHenkyakuDataExp bihinHenkyakuData : bihinHenkyakuDataList) {
+					if (NfwStringUtils.isEmpty(bihinHenkyakuData.getTaiyoHenkyakuDate())) {
+						Skf3050Sc002UpdateBihinHenkyakubiExpParameter param = new Skf3050Sc002UpdateBihinHenkyakubiExpParameter();
+						param.setHenkyakuDate(bihinHenkyakuData.getNyukyoTaikyoDate());
+						param.setShatakuKanriId(bihinHenkyakuData.getShatakuKanriId());
+						param.setProgId(progId);
+						param.setUserId(userId);
+						skf3050Sc002UpdateBihinHenkyakubiExpRepository.updateBihinHenkyakubi(param);
+					}
 				}
 			}
 		}

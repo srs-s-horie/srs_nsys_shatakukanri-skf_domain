@@ -32,12 +32,12 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiD
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc005.Skf3022Sc005DeleteDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
@@ -69,8 +69,6 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 	private Skf3021TNyutaikyoYoteiDataRepository skf3021TNyutaikyoYoteiDataRepository;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3022.skf3022_sc005.max_row_count}")
@@ -229,7 +227,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
         Long parkTwol = CodeConstant.LONG_ZERO;
         
 		// ユーザーID取得
-		String userName = skfLoginUserInfoUtils.getSkfLoginUserInfo().get("userName");
+		String userId = LoginUserInfoUtils.getUserCd();
         
 //        '社宅部屋マスタテーブル更新
         if(!SkfCheckUtils.isNullOrEmpty(updateDateShataku)){
@@ -415,7 +413,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 		
     	yoteiRecord.setLastUpdateDate(nykUpdateDate);
 		// ユーザーID設定
-    	yoteiRecord.setUpdateUserId(userName);
+    	yoteiRecord.setUpdateUserId(userId);
 		// プログラムID設定
     	yoteiRecord.setUpdateProgramId(pageId);
     	
