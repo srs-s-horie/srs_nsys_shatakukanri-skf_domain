@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.PdfBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.skf2040.domain.dto.common.Skf2040OutputPdfBaseDto;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
 
@@ -168,10 +170,11 @@ public abstract class OutputPdfR0103BaseService<DTO extends Skf2040OutputPdfBase
 		pdfData.setData("taikyoDate", NfwStringUtils.defaultString(dto.getTaikyoDate()));
 		pdfData.setData("parkingHenkanDate", NfwStringUtils.defaultString(dto.getParkingHenkanDate()));
 		
-		// 退居（返還）理由
-		if (NfwStringUtils.defaultString(dto.getTaikyoRiyu())
-				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYOGO_RIYU_BREAK_LENGTH) {
-			pdfData.setData("taikyoRiyu", NfwStringUtils.defaultString(dto.getTaikyoRiyu()));
+		// 退居（返還）理由(改行を削除して設定)
+		String taikyoRiyu = NfwStringUtils.replace(NfwStringUtils.defaultString(dto.getTaikyoRiyu()),
+				FileOutput.LineSeparatorType.LINE_SEPARATOR_CRLF.toString(), CodeConstant.NONE);
+		if (taikyoRiyu.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= TAIKYOGO_RIYU_BREAK_LENGTH) {
+			pdfData.setData("taikyoRiyu", taikyoRiyu);
 		} else {
 			// 64バイトを超える表示を行う場合は改行が必要となるため、文字枠に表示する
 			pdfData.setTextBoxStart("taikyoRiyu_long");
