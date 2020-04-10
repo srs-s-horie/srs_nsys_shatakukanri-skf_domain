@@ -18,6 +18,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002DownloadDto;
 
@@ -49,11 +50,12 @@ public class Skf2010Sc002DownloadService extends BaseServiceAbstract<Skf2010Sc00
 		byte[] fileData = null;
 
 		// 添付ファイル情報を取得
-		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
+		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 
 		// 申請情報の取得を行う
 		if (attachedFileList == null || attachedFileList.size() <= 0) {
 			ServiceHelper.addErrorResultMessage(dlDto, null, MessageIdConstant.E_SKF_1067, "添付資料");
+			throwBusinessExceptionIfErrors(dlDto.getResultMessages());
 		}
 
 		for (Map<String, Object> attachedFileMap : attachedFileList) {
