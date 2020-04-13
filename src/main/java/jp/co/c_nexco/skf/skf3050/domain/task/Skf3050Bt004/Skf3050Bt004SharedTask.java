@@ -786,7 +786,7 @@ public class Skf3050Bt004SharedTask {
 			BigDecimal chushajoShiyoryoGetsugaku1 = BigDecimal.ZERO;
 			BigDecimal chushajouShiyouryouHiwari1 = BigDecimal.ZERO;
 
-			if (tsukiData1 != null) {
+			if (tsukiData1 != null && tsukiData1.getParkingKanriNo() > 0L) {
 				//▼1台目の駐車場使用料月額▼
 				SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp inputCalcChushaEntity = createShatakuRentCalcInputEntityPtn4(
 						nextShoriNengetsu, jigetsuTsukiJoin, sougoDtList.get(0).getParkingRental(),
@@ -815,7 +815,7 @@ public class Skf3050Bt004SharedTask {
 			BigDecimal chushajoShiyoryoGetsugaku2 = BigDecimal.ZERO;
 			BigDecimal chushajouShiyouryouHiwari2 = BigDecimal.ZERO;
 
-			if (tsukiData2 != null) {
+			if (tsukiData2 != null && tsukiData2.getParkingKanriNo() > 0L) {
 				//▼2台目の駐車場使用料月額▼
 				SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp inputCalcChushaEntity = createShatakuRentCalcInputEntityPtn4(
 						nextShoriNengetsu, jigetsuTsukiJoin, sougoDtList.get(0).getParkingRental(),

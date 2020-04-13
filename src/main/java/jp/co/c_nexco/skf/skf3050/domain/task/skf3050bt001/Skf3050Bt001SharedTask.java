@@ -343,7 +343,7 @@ public class Skf3050Bt001SharedTask {
 					renRirekiRow.getShatakuKanriId(), paramShoriNengetsu,
 					Long.parseLong(CodeConstant.PARKING_LEND_NO_FIRST));
 
-			if (tsukiDt1List.size() > 0) {
+			if (tsukiDt1List.size() > 0 && tsukiDt1List.get(0).getParkingKanriNo() > 0L) {
 				//▼1台目の駐車場使用料月額▼
 				//社宅使用料計算部品呼び出し（区画情報より駐車場使用料月額を取得）
 				SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp chushajoShiyoryoGetsugakuData = getChushajoShiyoryoGetsugaku(
@@ -372,7 +372,7 @@ public class Skf3050Bt001SharedTask {
 					renRirekiRow.getShatakuKanriId(), paramShoriNengetsu,
 					Long.parseLong(CodeConstant.PARKING_LEND_NO_SECOND));
 
-			if (tsukiDt2List.size() > 0) {
+			if (tsukiDt2List.size() > 0 && tsukiDt2List.get(0).getParkingKanriNo() > 0L) {
 				//▼2台目の駐車場使用料月額▼
 				//社宅使用料計算部品呼び出し（区画情報より駐車場使用料月額を取得）
 				SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp chushajoShiyoryoGetsugakuData = getChushajoShiyoryoGetsugaku(
