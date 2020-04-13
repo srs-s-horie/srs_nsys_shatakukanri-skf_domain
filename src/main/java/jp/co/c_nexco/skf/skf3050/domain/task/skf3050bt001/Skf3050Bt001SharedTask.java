@@ -72,6 +72,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt001.Skf3050Bt001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt001.Skf3050Bt001UpdateTsukibetsuSiyoryorirekiGenbutsuSanteiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MCompanyRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MAccountRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -141,6 +142,8 @@ public class Skf3050Bt001SharedTask {
 	private Skf3050MAccountRepository skf3050MAccountRepository;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 
 	@Value("${skf3050.skf3050_bt001.batch_prg_id}")
 	private String closeBatchPrgId;
@@ -641,12 +644,18 @@ public class Skf3050Bt001SharedTask {
 			List<String> lockGetsujiShoriKanriResult = skf3050Bt001GetDataForUpdateExpRepository
 					.getSkf3050TMonthlyManageData(paramShoriNengetsu);
 			if (lockGetsujiShoriKanriResult.size() == 0) {
+				skfRollBackExpRepository.rollBack();
 				return SkfCommonConstant.ABNORMAL;
 			}
 			//▼月次処理管理データ更新▼
 			updateGetsujiShoriKanriData(paramUserId, paramShoriNengetsu);
 		}
 
+		//エラーなくここまで来ていれば、コミット⇒エラー有の場合ロールバック
+		if(SkfCommonConstant.ABNORMAL.equals(rtn)){
+			skfRollBackExpRepository.rollBack();
+		}
+		
 		outputKanriInfoLog(String.valueOf(shiyouUpdCount), String.valueOf(genUpdCount));
 
 		return rtn;
