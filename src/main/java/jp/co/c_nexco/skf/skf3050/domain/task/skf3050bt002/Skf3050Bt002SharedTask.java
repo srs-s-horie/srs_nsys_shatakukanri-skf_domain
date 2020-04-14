@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.icu.text.SimpleDateFormat;
@@ -89,7 +90,7 @@ public class Skf3050Bt002SharedTask {
 	 * @return 結果
 	 * @throws ParseException
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public int registBatchControl(Map<String, String> parameter) throws ParseException {
 
 		//取得可否チェック
@@ -142,7 +143,7 @@ public class Skf3050Bt002SharedTask {
 	 * @param parameter
 	 *            パラメータ
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Map<String, String> updateGetsujiData(Map<String, String> parameter) {
 
 		Map<String, String> rtnMap = new HashMap<String, String>();
@@ -194,7 +195,7 @@ public class Skf3050Bt002SharedTask {
 	 * @return 処理結果
 	 * @throws ParseException
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public int endProc(String endFlag, String companyCd, String programId, String searchEndFlag) throws ParseException {
 
 		int updateCnt = skfBatchBusinessLogicUtils.updateBatchControl(
