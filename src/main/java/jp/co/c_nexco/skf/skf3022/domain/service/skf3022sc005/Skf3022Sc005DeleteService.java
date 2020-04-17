@@ -257,6 +257,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
     			roomRecord.setLastUpdateDate(shatakuUpdateDate);
     		}	
     		catch(ParseException ex){
+    			LogUtils.infoByMsg("DeleteTeijiDataCount, 社宅部屋更新日時変換失敗:" + ex.toString());
     			return -1;
     		}
         	
@@ -297,6 +298,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
     			parkRecord.setLastUpdateDate(parkOneUpdateDate);
     		}	
     		catch(ParseException ex){
+    			LogUtils.infoByMsg("DeleteTeijiDataCount, 駐車場1更新日時変換失敗:" + ex.toString());
     			return -1;
     		}
         	//社宅駐車場区画更新
@@ -337,6 +339,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
     			parkRecord.setLastUpdateDate(parkTwoUpdateDate);
     		}	
     		catch(ParseException ex){
+    			LogUtils.infoByMsg("DeleteTeijiDataCount, 駐車場2更新日時変換失敗:" + ex.toString());
     			return -1;
     		}
         	//社宅駐車場区画更新
@@ -367,6 +370,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 			LogUtils.debugByMsg("updateDateForRock：" + teijiUpdateDate);
 		}	
 		catch(ParseException ex){
+			LogUtils.infoByMsg("DeleteTeijiDataCount, 提示データ更新日時変換失敗:" + ex.toString());
 			return -1;
 		}
 //      '楽観的排他を行う(提示データテーブル)
@@ -406,6 +410,7 @@ public class Skf3022Sc005DeleteService extends BaseServiceAbstract<Skf3022Sc005D
 			LogUtils.debugByMsg("updateDateNtk：" + nykUpdateDate);
 		}	
 		catch(ParseException ex){
+			LogUtils.infoByMsg("DeleteTeijiDataCount, 入退居予定データ更新日時変換失敗:" + ex.toString());
 			return -1;
 		}
 		LogUtils.debugByMsg("NyutaikyoDataUpdateDate：" + tmpRecord.getUpdateDate());

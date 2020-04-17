@@ -101,7 +101,7 @@ public class Skf3090Sc001SharedService {
 				SimpleDateFormat dateFormatStr = new SimpleDateFormat("yyyy/MM/dd");
 				targetDate = dateFormatStr.format(date);
 			}catch(ParseException ex){
-				LogUtils.debugByMsg("現物支給価額マスタ一覧日付変換エラー :" + targetDate);
+				LogUtils.debugByMsg("現物支給価額マスタ一覧日付変換失敗 :" + targetDate);
 				targetDate = null;
 			}
 		}

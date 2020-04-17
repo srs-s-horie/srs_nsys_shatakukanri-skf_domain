@@ -237,7 +237,7 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 			bihinKey.setBihinCd(map.get("bihinCode").toString());
 			Skf3010MShatakuRoomBihin bihinInfo = skf3010MShatakuRoomBihinRepository.selectByPrimaryKey(bihinKey);
 			if(bihinInfo == null){
-				LogUtils.debugByMsg("部屋備品情報取得結果NULL");
+				LogUtils.infoByMsg("checkRoomBihinInfoForUpdate, 部屋備品情報取得結果NULL");
 				return false;
 			}
 			try{
@@ -247,7 +247,7 @@ public class Skf3010Sc005DeleteService extends BaseServiceAbstract<Skf3010Sc005D
 				super.checkLockException(mapDate, bihinInfo.getUpdateDate());
 			}	
 			catch(ParseException ex){
-				LogUtils.debugByMsg("部屋備品情報-更新日時変換エラー :" + map.get("updateDate").toString());
+				LogUtils.infoByMsg("checkRoomBihinInfoForUpdate, 部屋備品情報-更新日時変換NG :" + map.get("updateDate").toString());
 				return false;
 			}			
 

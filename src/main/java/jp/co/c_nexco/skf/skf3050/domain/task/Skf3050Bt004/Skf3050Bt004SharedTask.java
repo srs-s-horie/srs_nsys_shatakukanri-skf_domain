@@ -291,7 +291,7 @@ public class Skf3050Bt004SharedTask {
 					parameter.get(SKF3050BT004_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
 			LogUtils.errorByMsg(
-					"バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY) + "）");
+					"registBatchControl, バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY) + "）");
 			return CodeConstant.SYS_NG;
 		}
 		
@@ -454,7 +454,7 @@ public class Skf3050Bt004SharedTask {
 					//社宅使用料計算部品内でエラーが発生した場合
 					if (!NfwStringUtils.isEmpty(outputCalcShatakuEntity.getErrMessage())) {
 						//社宅使用料計算部品よりエラーメッセージを出力
-						LogUtils.errorByMsg(outputCalcShatakuEntity.getErrMessage());
+						LogUtils.infoByMsg("adjustKeinen, " + outputCalcShatakuEntity.getErrMessage());
 						return false;
 					}
 
@@ -490,7 +490,7 @@ public class Skf3050Bt004SharedTask {
 				//社宅使用料計算部品内でエラーが発生した場合
 				if (!NfwStringUtils.isEmpty(outputCalcShatakuEntity.getErrMessage())) {
 					//社宅使用料計算部品よりエラーメッセージを出力
-					LogUtils.errorByMsg(outputCalcShatakuEntity.getErrMessage());
+					LogUtils.infoByMsg("adjustKeinen, " + outputCalcShatakuEntity.getErrMessage());
 					return false;
 				}
 
@@ -768,7 +768,7 @@ public class Skf3050Bt004SharedTask {
 			//社宅使用料計算部品内でエラーが発生した場合
 			if (!NfwStringUtils.isEmpty(outputCalcShatakuEntity.getErrMessage())) {
 				//社宅使用料計算部品よりエラーメッセージを出力
-				LogUtils.errorByMsg(outputCalcShatakuEntity.getErrMessage());
+				LogUtils.infoByMsg("reCalcShatakuShiyoryo, " + outputCalcShatakuEntity.getErrMessage());
 				return false;
 			}
 
@@ -797,7 +797,7 @@ public class Skf3050Bt004SharedTask {
 
 				//社宅使用料計算部品内でエラーが発生した場合
 				if (!NfwStringUtils.isEmpty(outputCalcChushaEntity.getErrMessage())) {
-					LogUtils.errorByMsg(outputCalcChushaEntity.getErrMessage());
+					LogUtils.infoByMsg("reCalcShatakuShiyoryo, " + outputCalcChushaEntity.getErrMessage());
 					return false;
 				}
 
@@ -826,7 +826,7 @@ public class Skf3050Bt004SharedTask {
 
 				//社宅使用料計算部品内でエラーが発生した場合
 				if (!NfwStringUtils.isEmpty(outputCalcChushaEntity.getErrMessage())) {
-					LogUtils.errorByMsg(outputCalcChushaEntity.getErrMessage());
+					LogUtils.infoByMsg("reCalcShatakuShiyoryo, " + outputCalcChushaEntity.getErrMessage());
 					return false;
 				}
 

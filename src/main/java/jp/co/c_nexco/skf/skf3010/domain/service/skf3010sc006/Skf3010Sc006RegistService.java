@@ -313,7 +313,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010Sc006UpdateMShatakuExpRepository.updateByPrimaryKeySelective(mShataku);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅基本更新エラー");
+			LogUtils.infoByMsg("updateKariageShatakuInfo, 社宅基本更新失敗");
 			return updateCnt;
 		}
 		/** 社宅部屋更新 */
@@ -322,7 +322,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010MShatakuRoomRepository.updateByPrimaryKeySelective(mShatakuRoom);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅部屋更新エラー");
+			LogUtils.infoByMsg("updateKariageShatakuInfo, 社宅部屋更新失敗");
 			return updateCnt;
 		}
 		/** 社宅駐車場更新 */
@@ -335,7 +335,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010Sc006UpdateMShatakuParkingExpRepository.updateByPrimaryKeySelective(mShatakuParking);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅駐車場更新エラー");
+			LogUtils.infoByMsg("updateKariageShatakuInfo, 社宅駐車場更新失敗");
 			return updateCnt;
 		}
 		/** 駐車場区画更新 */
@@ -345,7 +345,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010MShatakuParkingBlockRepository.updateByPrimaryKeySelective(mShatakuParkingBlock);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("駐車場区画更新エラー：" + mShatakuParkingBlock.getParkingBlock());
+			LogUtils.infoByMsg("updateKariageShatakuInfo, 駐車場区画更新失敗：" + mShatakuParkingBlock.getParkingBlock());
 			return updateCnt;
 		}
 		
@@ -364,7 +364,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			}
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("備品更新エラー：" + bihin.getBihinCd());
+				LogUtils.infoByMsg("updateKariageShatakuInfo, 備品更新失敗：" + bihin.getBihinCd());
 				return updateCnt;
 			}
 		}
@@ -389,7 +389,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅管理者更新エラー：" + manage.getManegeKbn());
+				LogUtils.infoByMsg("updateKariageShatakuInfo, 社宅管理者更新失敗：" + manage.getManegeKbn());
 				return updateCnt;
 			}
 		}
@@ -440,7 +440,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			}
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅契約情報更新エラー：" + mShatakuContract.getContractPropertyId());
+				LogUtils.infoByMsg("updateKariageShatakuInfo, 社宅契約情報更新失敗：" + mShatakuContract.getContractPropertyId());
 				return updateCnt;
 			}
 		}
@@ -498,7 +498,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			}
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("駐車場契約情報更新エラー：" + mShatakuParkingContract.getContractPropertyId());
+				LogUtils.infoByMsg("updateKariageShatakuInfo, 駐車場契約情報更新失敗：" + mShatakuParkingContract.getContractPropertyId());
 				return updateCnt;
 			}
 		}
@@ -549,7 +549,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010MShatakuRepository.insertSelective(mShataku);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅基本登録エラー");
+			LogUtils.infoByMsg("insertKariageShatakuInfo, 社宅基本登録失敗");
 			return updateCnt;
 		}
 		/** 社宅部屋登録 */
@@ -561,7 +561,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010MShatakuRoomRepository.insertSelective(mShatakuRoom);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅部屋登録エラー");
+			LogUtils.infoByMsg("insertKariageShatakuInfo, 社宅部屋登録失敗");
 			return updateCnt;
 		}
 		/** 社宅駐車場登録 */
@@ -570,7 +570,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010MShatakuParkingRepository.insertSelective(mShatakuParking);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("社宅駐車場登録エラー");
+			LogUtils.infoByMsg("insertKariageShatakuInfo, 社宅駐車場登録失敗");
 			return updateCnt;
 		}
 		/** 駐車場区画情報登録 */
@@ -586,7 +586,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		updateCnt = skf3010MShatakuParkingBlockRepository.insertSelective(mShatakuParkingBlock);
 		// 更新カウント判定
 		if (updateCnt < 1) {
-			LogUtils.debugByMsg("駐車場区画登録エラー");
+			LogUtils.infoByMsg("insertKariageShatakuInfo, 駐車場区画登録失敗");
 			return updateCnt;
 		}
 		
@@ -598,7 +598,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			updateCnt = skf3010MShatakuRoomBihinRepository.insertSelective(bihin);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("備品登録エラー：" + bihin.getBihinCd());
+				LogUtils.infoByMsg("insertKariageShatakuInfo, 備品登録失敗：" + bihin.getBihinCd());
 				return updateCnt;
 			}
 		}
@@ -609,7 +609,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			updateCnt = skf3010MShatakuManegeRepository.insertSelective(manage);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅管理者登録エラー：" + manage.getManegeKbn());
+				LogUtils.infoByMsg("insertKariageShatakuInfo, 社宅管理者登録失敗：" + manage.getManegeKbn());
 				return updateCnt;
 			}
 		}
@@ -622,7 +622,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 			updateCnt = skf3010MShatakuContractRepository.insertSelective(mShatakuContract);
 			// 更新カウント判定
 			if (updateCnt < 1) {
-				LogUtils.debugByMsg("社宅契約情報登録エラー：" + mShatakuContract.getContractPropertyId());
+				LogUtils.infoByMsg("insertKariageShatakuInfo, 社宅契約情報登録失敗：" + mShatakuContract.getContractPropertyId());
 				return updateCnt;
 			}
 		}
@@ -637,7 +637,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 				updateCnt = skf3010MShatakuParkingContractRepository.insertSelective(mShatakuParkingContract);
 				// 更新カウント判定
 				if (updateCnt < 1) {
-					LogUtils.debugByMsg("駐車場契約情報登録エラー：" + mShatakuParkingBlock.getParkingBlock());
+					LogUtils.infoByMsg("insertKariageShatakuInfo, 駐車場契約情報登録失敗：" + mShatakuParkingBlock.getParkingBlock());
 					return updateCnt;
 				}
 			}
@@ -961,7 +961,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 
 		// 必須チェック結果判定
 		if (!isCheckOk) {
-			LogUtils.debugByMsg("必須入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("checkTouroku, 必須入力チェックNG：" + debugMessage);
 			return isCheckOk;
 		}
 		/** 形式チェック */
@@ -1267,7 +1267,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		
 		// 形式チェック結果判定
 		if (!isCheckOk) {
-			LogUtils.debugByMsg("形式チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("checkTouroku, 形式チェックNG：" + debugMessage);
 			return isCheckOk;
 		}
 		// 添付ファイルサイズチェック
@@ -1276,7 +1276,7 @@ public class Skf3010Sc006RegistService extends BaseServiceAbstract<Skf3010Sc006R
 		if (isCheckOk) {
 			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("checkTouroku, 入力チェックNG：" + debugMessage);
 		}
 
 		return isCheckOk;

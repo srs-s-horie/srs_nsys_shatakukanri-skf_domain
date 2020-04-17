@@ -331,9 +331,9 @@ public class Skf3060Sc001DownloadService extends BaseServiceAbstract<Skf3060Sc00
 
         // デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("isValidateInputDownload, 入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("isValidateInputDownload, 入力チェックNG：" + debugMessage);
 		}		
 		
 		return isCheckOk;

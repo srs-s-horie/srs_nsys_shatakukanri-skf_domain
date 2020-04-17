@@ -190,7 +190,7 @@ public class Skf3020Sc004SharedService {
 					SimpleDateFormat dateFormatStr = new SimpleDateFormat("yyyy/MM/dd");
 					takingDateStr = dateFormatStr.format(date);
 				}catch(ParseException ex){
-					LogUtils.debugByMsg("転任者情報-取込日変換エラー :" + takingDateStr);
+					LogUtils.infoByMsg("getListTableDataViewColumn, 転任者情報-取込日変換NG:" + takingDateStr);
 					takingDateStr = null;
 				}
 			}

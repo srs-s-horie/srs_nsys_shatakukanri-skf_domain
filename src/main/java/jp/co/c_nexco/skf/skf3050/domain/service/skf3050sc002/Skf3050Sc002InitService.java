@@ -79,7 +79,7 @@ public class Skf3050Sc002InitService extends BaseServiceAbstract<Skf3050Sc002Ini
 			String selectTaisyonendo = (String) dropDownList.get(0).get("value");
 			initDto.setHdnSelectedTaisyonendo(selectTaisyonendo);
 		} else {
-			LogUtils.errorByMsg("対象年度がありません。");
+			LogUtils.infoByMsg("init, 対象年度がありません。");
 		}
 
 		List<Map<String, Object>> gridList = skf3050Sc002SharedService.createGetsujiGrid(standardYear);

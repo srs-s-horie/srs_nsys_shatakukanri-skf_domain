@@ -273,7 +273,7 @@ public class Skf3090Sc003DeleteService extends BaseServiceAbstract<Skf3090Sc003D
 		try{
 			mapDate = dateFormat.parse(deleteDto.getHdnRowUpdateDate().toString());
 		}catch(ParseException ex){
-			LogUtils.debugByMsg("事業領域情報-更新日時変換エラー :" + deleteDto.getHdnRowUpdateDate().toString());
+			LogUtils.infoByMsg("deleteJigyoryoikiInfo, 事業領域情報-更新日時変換失敗 :" + deleteDto.getHdnRowUpdateDate().toString());
 			return -2;
 		}		
 

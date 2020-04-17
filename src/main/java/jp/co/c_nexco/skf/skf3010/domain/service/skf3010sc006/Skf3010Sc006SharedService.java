@@ -3171,7 +3171,7 @@ public class Skf3010Sc006SharedService {
 			if (shatakuInfoList.size() < 1) {
 				//件数が0未満（排他エラー）
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
-				logger.debug("社宅情報取得エラー");
+				logger.info("setShatakuInfo, 社宅情報取得失敗(排他)①");
 				return;
 			}
 			Skf3010Sc002GetShatkuInfoTableDataExp shatakuInfo = shatakuInfoList.get(0);
@@ -3193,7 +3193,7 @@ public class Skf3010Sc006SharedService {
 			if (shatakuInfoList.size() < 1) {
 				//件数が0未満（排他エラー）
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
-				logger.debug("社宅情報取得エラー");
+				logger.info("setShatakuInfo, 社宅情報取得失敗(排他)②");
 				return;
 			}
 			Skf3010Sc002GetShatkuInfoTableDataExp shatakuInfo = shatakuInfoList.get(0);
@@ -3349,13 +3349,13 @@ public class Skf3010Sc006SharedService {
 				mapper = null;
 			}
 		} catch (JSONException e) {
-			logger.debug(e.getMessage());
+			logger.info("jsonArrayToArrayList, " + e.getMessage());
 		} catch (JsonParseException e) {
-			logger.debug(e.getMessage());
+			logger.info("jsonArrayToArrayList, " + e.getMessage());
 		} catch (JsonMappingException e) {
-			logger.debug(e.getMessage());
+			logger.info("jsonArrayToArrayList, " + e.getMessage());
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
+			logger.info("jsonArrayToArrayList, " + e.getMessage());
 		}
 		return listData;
 	}

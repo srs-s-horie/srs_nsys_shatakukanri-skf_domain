@@ -247,7 +247,7 @@ public class Skf3022Sc003SharedService {
 				kaidanMenseki = new BigDecimal(getMensekiText(paramMap.get("kaidan")));
 			} catch (NumberFormatException e) {
 				// デバッグログ
-				LogUtils.debugByMsg("数値変換失敗");
+				LogUtils.infoByMsg("setKijunMenseki2, 数値変換失敗");
 				return false;
 			}
 		} else {
@@ -294,7 +294,7 @@ public class Skf3022Sc003SharedService {
 				monookiMenseki = new BigDecimal(getMensekiText(paramMap.get("monooki")));
 			} catch (NumberFormatException e) {
 				// デバッグログ
-				LogUtils.debugByMsg("数値変換失敗");
+				LogUtils.infoByMsg("setShatakuMenseki2, 数値変換失敗");
 				return false;
 			}
 		} else {
@@ -438,10 +438,10 @@ public class Skf3022Sc003SharedService {
 					getKingakuEdit(keinenChoseiNashiShiyoryo.setScale(0, BigDecimal.ROUND_DOWN).stripTrailingZeros().toPlainString()));
 		} catch (ArithmeticException e) {
 			// デバッグログ
-			LogUtils.debugByMsg("数値変換失敗");
+			LogUtils.infoByMsg("setKeinenChoseiNashiShiyoryo2, 数値変換失敗");
 		} catch (NumberFormatException e) {
 			// デバッグログ
-			LogUtils.debugByMsg("数値変換失敗");
+			LogUtils.infoByMsg("setKeinenChoseiNashiShiyoryo2, 数値変換失敗");
 		}
 	}
 

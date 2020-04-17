@@ -20,6 +20,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetG
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
@@ -98,6 +99,7 @@ public class Skf3090Sc001DownloadService extends BaseServiceAbstract<Skf3090Sc00
 			genbutsuShikyuKagakuSheet = createWorkSheetShikyuKagakuContract(reportData);
 			fileOutPutExcelContractInfo(genbutsuShikyuKagakuSheet, downloadDto);
 		}catch(Exception ex){
+			LogUtils.infoByMsg("index, 例外発生：" + ex.getMessage());
 			// 帳票作成時エラー	（error.skf.e_skf_1078={0}エラーが発生しました。ヘルプデスクへ連絡してください。）
 			ServiceHelper.addErrorResultMessage(downloadDto, null, MessageIdConstant.E_SKF_1078, "帳票作成");
 		}

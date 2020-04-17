@@ -955,7 +955,7 @@ public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf303
 
 		} catch (Exception e) {
 			//ServiceHelper.addErrorResultMessage(inDto, null, MessageIdConstant.E_SKF_1070);
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("outputExcel, " + e.getMessage());
 			sheetDataBean = null;
 			sheetDataBeanList = null;
 			cellparams = null;

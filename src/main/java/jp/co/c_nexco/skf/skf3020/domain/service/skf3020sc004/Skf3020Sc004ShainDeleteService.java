@@ -192,7 +192,7 @@ public class Skf3020Sc004ShainDeleteService extends BaseServiceAbstract<Skf3020S
 				try{
 					mapDate = dateFormat.parse(listTableData.get("col16").toString());
 				}catch(ParseException ex){
-					LogUtils.debugByMsg("転任者情報-更新日時変換エラー :" + listTableData.get("col16").toString());
+					LogUtils.infoByMsg("deleteKariShainNoInfo, 転任者情報-更新日時変換NG:" + listTableData.get("col16").toString());
 					return -1;
 				}			
 				super.checkLockException(mapDate, tenninshaInfo.getUpdateDate());			

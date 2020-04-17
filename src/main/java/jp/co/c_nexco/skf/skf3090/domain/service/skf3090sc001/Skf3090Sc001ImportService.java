@@ -319,6 +319,7 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 				}
 
 			} catch (Exception e) {
+				LogUtils.infoByMsg("importGenbutsuShikyuKagaku, 例外発生：" + e.getMessage());
 				// error.skf.e_skf_1079=予期せぬエラーが発生しました。ヘルプデスクへ連絡してください。
 				ServiceHelper.addErrorResultMessage(importDto, null, MessageIdConstant.E_SKF_1079);
 				return false;
@@ -373,7 +374,7 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 			excelFile = uploadExcelFile(genbutsuShikyuKagakuFile, 1, null);
 
 		} catch (Exception e) {
-			LogUtils.debugByMsg("エクセルファイル読込に失敗 " + e.toString());
+			LogUtils.infoByMsg("importExcelFile, 例外発生：" + e.toString());
 			importFile.setResultMessages(null);
 			ServiceHelper.addErrorResultMessage(importFile, null, MessageIdConstant.E_SKF_1078, "");
 			throwBusinessExceptionIfErrors(importFile.getResultMessages());
@@ -566,6 +567,7 @@ public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001I
 				// ServiceHelper.addErrorResultMessage(importDto, null,
 				// MessageIdConstant.E_SKF_1097, String.valueOf(rowNo),
 				// JYUKYO_RIEKI_GAKU, String.valueOf(4));
+				LogUtils.infoByMsg("isFormatCheckDetail, 例外発生：" + e.toString());
 				ServiceHelper.addWarnResultMessage(importDto, MessageIdConstant.E_SKF_1097, String.valueOf(rowNo) + "行目 3",
 						JYUKYO_RIEKI_GAKU, String.valueOf(4));
 				// 戻り値として異常を設定

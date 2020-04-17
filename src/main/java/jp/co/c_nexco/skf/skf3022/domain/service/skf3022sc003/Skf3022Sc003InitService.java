@@ -516,10 +516,10 @@ public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003Ini
 					skf3022Sc003SharedService.getKingakuEdit(keinenChoseiNashiShiyoryo.setScale(0, BigDecimal.ROUND_DOWN).stripTrailingZeros().toPlainString()));
 		} catch (ArithmeticException e) {
 			// デバッグログ
-			LogUtils.debugByMsg("数値変換失敗");
+			LogUtils.infoByMsg("setKeinenChoseiNashiShiyoryo1, 数値変換失敗");
 		} catch (NumberFormatException e) {
 			// デバッグログ
-			LogUtils.debugByMsg("数値変換失敗");
+			LogUtils.infoByMsg("setKeinenChoseiNashiShiyoryo1, 数値変換失敗");
 		}
 	}
 

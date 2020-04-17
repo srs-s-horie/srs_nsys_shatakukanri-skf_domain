@@ -390,14 +390,17 @@ public class Skf3022Sc005SendMailService extends BaseServiceAbstract<Skf3022Sc00
 //        '送信失敗件数i_skf_3082
 //        message = "メール送信失敗件数  ：" + mailFailCnt + "件 ";
 		ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3082, mailFailCnt);
+		LogUtils.infoByMsg("index, メール送信失敗件数  ：" + Integer.toString(mailFailCnt));
 
 //        '送信成功件数infomation.skf.i_skf_3083  ：{0}件
 //        message = "メール送信成功件数  ：" + mailSuccessCnt + "件 ";
 		ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3083, mailSuccessCnt);
+		LogUtils.infoByMsg("index, メール送信成功件数  ：" + Integer.toString(mailSuccessCnt));
 
 //        '送信件数infomation.skf.i_skf_3084=メール送信件数        ：{0}件
 //        message = "メール送信件数        ：" + mailCnt + "件 ";
 		ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3084, mailCnt);
+		LogUtils.infoByMsg("index, メール送信件数        ：" + Integer.toString(mailCnt));
 
 		if(sendMailFlg){
 			//督促ボタンは使用不可に設定
@@ -543,7 +546,7 @@ public class Skf3022Sc005SendMailService extends BaseServiceAbstract<Skf3022Sc00
 				record.setLastUpdateDate(mapDate);
 			}	
 			catch(ParseException ex){
-				LogUtils.debugByMsg("提示データ-更新日時変換エラー :" + updateDate);
+				LogUtils.infoByMsg("updateTeijiData, 提示データ-更新日時変換NG :" + updateDate);
 				return -1;
 			}
 		}

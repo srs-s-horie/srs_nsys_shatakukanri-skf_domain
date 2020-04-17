@@ -345,7 +345,7 @@ public class Skf3022Sc006CreateService extends BaseServiceAbstract<Skf3022Sc006C
 		} catch (Exception e) {
 			// 更新時にエラーが発生しました。ヘルプデスクへ連絡してください。
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1075);
-			LogUtils.debugByMsg(e.toString());
+			LogUtils.infoByMsg("update, 更新時に例外発生：" + e.toString());
 			// ロールバック
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}

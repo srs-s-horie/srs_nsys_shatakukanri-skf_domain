@@ -327,9 +327,9 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 
 		// デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("isValidateInput, 入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("isValidateInput, 入力チェックNG：" + debugMessage);
 		}
 		
 		return isCheckOk;
@@ -431,7 +431,7 @@ public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc0
 				resultCount = skf1010MAgencyRepository.insertSelective(recordAgency);
 			}
 		}catch(Exception ex){
-			LogUtils.debugByMsg("事業領域の登録エラー" + ex.toString());
+			LogUtils.infoByMsg("registJigyoryoikiInfo, 事業領域の登録失敗：" + ex.toString());
 			return -1;
 		}
 		

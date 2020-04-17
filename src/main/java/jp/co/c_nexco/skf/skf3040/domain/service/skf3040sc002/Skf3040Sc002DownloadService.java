@@ -188,7 +188,7 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 			
 		}else{
 			// エラーのため出力中止
-			LogUtils.debugByMsg("入力チェックエラーのため処理終了");
+			LogUtils.infoByMsg("index, 入力チェックNGのため処理終了");
 		}
 		
 		return downloadDto;
@@ -267,9 +267,9 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 
         // デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("validateInput, 入力チェックNG：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("validateInput, 入力チェックOK：" + debugMessage);
 		}		
 		
 		return isCheckOk;
@@ -346,6 +346,7 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 			getOutPutData(hannyuData, henkanData, shitadoriData, setExcelDataList, shatakuKanriIdList, setDbUpdateDataList);
 			
 		}catch(Exception ex){
+			LogUtils.infoByMsg("getBihinHannyuHanshutsuCheckList, " + ex.getMessage());
 			return DATA_ERROR;
 		}
 		
@@ -366,7 +367,7 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 				try{
 					mapDate = dateFormat.parse(temp.get("key3").toString());
 				}catch(ParseException ex){
-					LogUtils.debugByMsg("社宅管理台帳備品基本テーブル-更新日時変換エラー :" + temp.get("key3").toString());
+					LogUtils.debugByMsg("getBihinHannyuHanshutsuCheckList, 社宅管理台帳備品基本テーブル-更新日時変換失敗 :" + temp.get("key3").toString());
 					return DATA_ERROR;
 				}
 				
@@ -417,12 +418,12 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 				
 				// 更新できなかった
 				if(0 >= retCount){
-					LogUtils.debugByMsg("社宅管理台帳備品基本テーブル-更新エラー 　戻り値：" + String.valueOf(retCount));
+					LogUtils.infoByMsg("社宅管理台帳備品基本テーブル-更新失敗 　戻り値：" + String.valueOf(retCount));
 					// エラーで返却してロールバック
 					return DATA_ERROR;
 				}
 			}catch(Exception ex){
-				LogUtils.debugByMsg("社宅管理台帳備品基本テーブル-更新エラー " + ex.toString());
+				LogUtils.infoByMsg("getBihinHannyuHanshutsuCheckList, 社宅管理台帳備品基本テーブル-更新失敗 " + ex.toString());
 				return DATA_ERROR;
 			}
 		}
@@ -433,7 +434,7 @@ public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc00
 			carryingInOutSheet = createWorkSheetRentalBihin(setExcelDataList);
 			fileOutPutExcelContractInfo(carryingInOutSheet, downloadDto);			
 		}catch(Exception ex){
-			LogUtils.debugByMsg("帳票作成時に例外発生");
+			LogUtils.infoByMsg("getBihinHannyuHanshutsuCheckList, 帳票作成時に例外発生：" + ex.getMessage());
 			return OUTPUT_ERROR;
 		}
 		

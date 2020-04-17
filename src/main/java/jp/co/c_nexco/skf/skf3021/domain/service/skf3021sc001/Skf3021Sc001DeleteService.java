@@ -119,7 +119,7 @@ public class Skf3021Sc001DeleteService extends BaseServiceAbstract<Skf3021Sc001D
 			LogUtils.debugByMsg("hdnUpdateDate：" + nyutaikyoYoteiUpdateDate);
 		}	
 		catch(ParseException ex){
-			LogUtils.debugByMsg("入退居予定データ-更新日時変換エラー :" + hdnNyutaikyoYoteiUpdateDate);
+			LogUtils.infoByMsg("index, 入退居予定データ-更新日時変換NG :" + hdnNyutaikyoYoteiUpdateDate);
 		}
 		Date tenninshaChoshoUpdateDate = null;
 		if(!SkfCheckUtils.isNullOrEmpty(hdnTenninshaChoshoUpdateDate)){
@@ -128,7 +128,7 @@ public class Skf3021Sc001DeleteService extends BaseServiceAbstract<Skf3021Sc001D
 				LogUtils.debugByMsg("hdnUpdateDate：" + tenninshaChoshoUpdateDate);
 			}	
 			catch(ParseException ex){
-				LogUtils.debugByMsg("転任者調書-更新日時変換エラー :" + hdnTenninshaChoshoUpdateDate);
+				LogUtils.infoByMsg("index, 転任者調書-更新日時変換失敗 :" + hdnTenninshaChoshoUpdateDate);
 			}
 		}
 		

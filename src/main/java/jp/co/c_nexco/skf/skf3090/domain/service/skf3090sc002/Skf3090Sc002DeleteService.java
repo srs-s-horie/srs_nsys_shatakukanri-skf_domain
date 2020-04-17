@@ -175,7 +175,7 @@ public class Skf3090Sc002DeleteService extends BaseServiceAbstract<Skf3090Sc002D
 				
 			}
 		}catch(Exception ex){
-			LogUtils.debugByMsg("現物支給価額テーブル削除時に例外発生");
+			LogUtils.infoByMsg("deleteGenbutsuShikyuKagakuList, 現物支給価額テーブル削除時に例外発生：" + ex.toString());
 			resultCount = -1;
 		}
 		
@@ -202,7 +202,7 @@ public class Skf3090Sc002DeleteService extends BaseServiceAbstract<Skf3090Sc002D
 			}
 			
 		}catch(Exception ex){
-			LogUtils.debugByMsg("現物支給価額備考テーブル削除時に例外発生");
+			LogUtils.infoByMsg("deleteGenbutsuShikyuKagakuList, 現物支給価額備考テーブル削除時に例外発生：" + ex.toString());
 			resultCount = -1;
 		}
 		

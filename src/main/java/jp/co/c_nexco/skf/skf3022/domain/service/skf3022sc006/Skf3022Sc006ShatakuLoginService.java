@@ -326,18 +326,20 @@ public class Skf3022Sc006ShatakuLoginService extends BaseServiceAbstract<Skf3022
 		} catch (Exception e) {
 			// 登録時にエラーが発生しました。ヘルプデスクへ連絡してください。
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1073);
-			LogUtils.debugByMsg(e.toString());
+			LogUtils.infoByMsg("update, " + e.toString());
 			// ロールバック
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}
 		// 結果判定
 		switch (updateCnt) {
 			case 0:
+				LogUtils.infoByMsg("update, 更新異常が発生");
 				// 更新時にエラーが発生しました。ヘルプデスクへ連絡してください。
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1075);
 				// ロールバック
 				throwBusinessExceptionIfErrors(initDto.getResultMessages());
 			case -1:
+				LogUtils.infoByMsg("update, 排他検知");
 				// 他のユーザによって更新されています。もう一度画面を更新してください。
 				ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1009);
 				// ロールバック

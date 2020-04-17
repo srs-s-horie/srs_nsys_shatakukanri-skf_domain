@@ -359,7 +359,7 @@ public class Skf3020Sc002ImportService extends BaseServiceAbstract<Skf3020Sc002I
 			excelFile = uploadExcelFile(tenninshaChoshoFile, 1, null);
 
 		} catch (Exception e) {
-			LogUtils.debugByMsg("エクセルファイル読込に失敗 " + e.toString());
+			LogUtils.infoByMsg("uploadExcelFile, エクセルファイル読込に失敗 " + e.toString());
 			importFile.setResultMessages(null);
 			ServiceHelper.addErrorResultMessage(importFile, null, MessageIdConstant.E_SKF_1078, "");
 			throwBusinessExceptionIfErrors(importFile.getResultMessages());

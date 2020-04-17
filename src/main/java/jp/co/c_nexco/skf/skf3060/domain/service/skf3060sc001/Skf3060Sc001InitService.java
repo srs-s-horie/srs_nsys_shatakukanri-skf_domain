@@ -92,7 +92,7 @@ public class Skf3060Sc001InitService extends BaseServiceAbstract<Skf3060Sc001Ini
 			calendar.add(Calendar.YEAR, 1);
 			yearTo = calendar.get(Calendar.YEAR);
 		}catch(ParseException ex){
-			LogUtils.debugByMsg("年齢加算対象者一覧-日時変換エラー :" + sysDate);
+			LogUtils.debugByMsg("年齢加算対象者一覧-日時変換失敗 :" + sysDate);
 			yearFrom = 0;
 			yearTo = 0;
 		}

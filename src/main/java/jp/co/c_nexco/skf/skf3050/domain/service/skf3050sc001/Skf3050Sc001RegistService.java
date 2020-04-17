@@ -416,7 +416,7 @@ public class Skf3050Sc001RegistService extends BaseServiceAbstract<Skf3050Sc001R
 				return mapDate;
 			}	
 			catch(ParseException ex){
-				LogUtils.debugByMsg("日時変換エラー :" + dateStr);
+				LogUtils.debugByMsg("日時変換失敗 :" + dateStr);
 			}
 		}
 		return null;

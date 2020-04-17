@@ -146,7 +146,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
 	        if(null == mailSendList){
 	        	// 何かしらのエラーが発生
 	            ServiceHelper.addErrorResultMessage(sendMailDto, null, MessageIdConstant.E_SKF_1078, "メール送信");
-				LogUtils.debugByMsg("メール送信中にエラー発生");
+				LogUtils.infoByMsg("index, メール送信中に異常発生");
 	        }else{
 	        
 	        	List<Integer> errorList = new ArrayList<Integer>();
@@ -279,7 +279,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
             	}
         	}catch(Exception ex){
         		errorList.add(0,-9);
-				LogUtils.debugByMsg(ex.getMessage());
+				LogUtils.infoByMsg("createSendMailData, " + ex.getMessage());
         		return null;
         	}
         	
@@ -313,7 +313,7 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
     					mapDate = dateFormat.parse(checkUpdateDate);
     				}catch(ParseException ex){
     					// 誰かに先に更新されちゃった
-    					LogUtils.debugByMsg("年齢加算対象者一覧 メール送信-更新日時変換エラー :" + checkUpdateDate);
+    					LogUtils.infoByMsg("createSendMailData, 年齢加算対象者一覧 メール送信-更新日時変換失敗 :" + checkUpdateDate);
     					// 異常発生
     					errorList.add(0,-1);
     					return null;
@@ -361,13 +361,16 @@ public class Skf3060Sc001SendMailService extends BaseServiceAbstract<Skf3060Sc00
     	// メール送信結果
 		ServiceHelper.addResultMessage(sendMailDto, MessageIdConstant.I_SKF_3082, String.valueOf(ngCount));
 		message = java.text.MessageFormat.format(MessageIdConstant.I_SKF_3082, String.valueOf(ngCount));
+		LogUtils.infoByMsg("createSendMailData, " + message);
 		retMessage.append(message);        
 		ServiceHelper.addResultMessage(sendMailDto, MessageIdConstant.I_SKF_3083, String.valueOf(okCount));
 		message = java.text.MessageFormat.format(MessageIdConstant.I_SKF_3083, String.valueOf(okCount));
+		LogUtils.infoByMsg("createSendMailData, " + message);
 		retMessage.append(message);        
 		int all = ngCount + okCount;
 		ServiceHelper.addResultMessage(sendMailDto, MessageIdConstant.I_SKF_3084, String.valueOf(all));
 		message = java.text.MessageFormat.format(MessageIdConstant.I_SKF_3084, String.valueOf(all));
+		LogUtils.infoByMsg("createSendMailData, " + message);
 		retMessage.append(message);        
 		
 		return retMessage.toString();

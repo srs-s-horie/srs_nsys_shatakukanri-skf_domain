@@ -944,7 +944,7 @@ public class Skf3030Sc002SharedService {
 			}else{
 				errMsg.append(outputEntity.getErrMessage());
 				//ServiceHelper.addErrorResultMessage(comDto, null, outputEntity.getErrMessage());
-				LogUtils.debugByMsg("使用料計算エラー:" + outputEntity.getErrMessage());
+				LogUtils.infoByMsg("siyoryoKeiSan, 使用料計算失敗①:" + outputEntity.getErrMessage());
 				return;
 			}
 
@@ -1000,7 +1000,7 @@ public class Skf3030Sc002SharedService {
 			}else{
 				errMsg.append(outputEntity.getErrMessage());
 				//ServiceHelper.addErrorResultMessage(comDto, null, outputEntity.getErrMessage());
-				LogUtils.debugByMsg("使用料計算エラー:" + outputEntity.getErrMessage());
+				LogUtils.infoByMsg("siyoryoKeiSan, 使用料計算失敗②:" + outputEntity.getErrMessage());
 				return;
 			}
 			//利用終了日（区画１）が入力された場合
@@ -1042,7 +1042,7 @@ public class Skf3030Sc002SharedService {
 			}else{
 				errMsg.append(outputEntity.getErrMessage());
 				//ServiceHelper.addErrorResultMessage(comDto, null, outputEntity.getErrMessage());
-				LogUtils.debugByMsg("使用料計算エラー:" + outputEntity.getErrMessage());
+				LogUtils.infoByMsg("siyoryoKeiSan, 使用料計算失敗③:" + outputEntity.getErrMessage());
 				return;
 			}
 			//利用終了日（区画２）が入力された場合
@@ -2187,6 +2187,7 @@ public class Skf3030Sc002SharedService {
 				//Me.tbcNyutaikyoInfo.ActiveTabIndex = CInt(nextTabIndex)
 				comDto.setHdnTabIndex(comDto.getNextTabIndex());
 			}
+			LogUtils.infoByMsg("validateInput, " + errMsg.toString());
 			return false;
 		}else{
 			return true;
@@ -2295,7 +2296,7 @@ public class Skf3030Sc002SharedService {
 		//使用料計算パターン未入力場合
 		if(SkfCheckUtils.isNullOrEmpty(comDto.getSc006SiyoryoPatName())){
 			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "貸与規格");
-			errMsg.append("必須チェックエラー:貸与規格");
+			errMsg.append("必須チェックNG:貸与規格");
 		}
 
 		//原籍会社名
@@ -2304,7 +2305,7 @@ public class Skf3030Sc002SharedService {
 			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "原籍会社名");
 			comDto.setSc006OldKaisyaNameSelectErr("nfw-validation-error");
 			comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-			errMsg.append("必須チェックエラー:原籍会社名");
+			errMsg.append("必須チェックNG:原籍会社名");
 		}
 
 		//給与支給会社
@@ -2313,7 +2314,7 @@ public class Skf3030Sc002SharedService {
 			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "給与支給会社");
 			comDto.setSc006KyuyoKaisyaSelectErr("nfw-validation-error");
 			comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-			errMsg.append("必須チェックエラー:給与支給会社");
+			errMsg.append("必須チェックNG:給与支給会社");
 		}
 
 		//入居予定日未入力場合(★)
@@ -2322,7 +2323,7 @@ public class Skf3030Sc002SharedService {
 			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "入居予定日");
 			comDto.setSc006NyukyoYoteiDayErr("nfw-validation-error");
 			comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-			errMsg.append("必須チェックエラー:入居予定日");
+			errMsg.append("必須チェックNG:入居予定日");
 		}
 
 		//区画１番号、区画１利用開始日未入力チェック
@@ -2333,13 +2334,13 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "区画１利用開始日");
 				comDto.setSc006RiyouStartDayOneErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：区画1利用開始日");
 			}
 		}else{
 			if(!SkfCheckUtils.isNullOrEmpty(getDateText(comDto.getSc006RiyouStartDayOne()))){
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "区画１区画番号");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：区画1区画番号");
 			}
 		}
 
@@ -2351,13 +2352,13 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "区画２利用開始日");
 				comDto.setSc006RiyouStartDayTwoErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("必須チェックエラー:");
+				errMsg.append("必須チェックNG:区画2利用開始日");
 			}
 		}else{
 			if(!SkfCheckUtils.isNullOrEmpty(getDateText(comDto.getSc006RiyouStartDayTwo()))){
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "区画２区画番号");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：区画2区画番号");
 			}
 		}
 
@@ -2367,7 +2368,7 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "区画１利用開始日");
 				comDto.setSc006RiyouStartDayOneErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：区画1利用開始日");
 			}
 		}
 
@@ -2377,7 +2378,7 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "区画２利用開始日");
 				comDto.setSc006RiyouStartDayTwoErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：区画2利用開始日");
 			}
 		}
 
@@ -2402,7 +2403,7 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "貸与日");
 				comDto.setSc006TaiyoDayErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_BIHIN,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：貸与日①");
 			}
 		}else{
 			//備品返却日入力、貸与日未入力場合
@@ -2411,7 +2412,7 @@ public class Skf3030Sc002SharedService {
 					ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "貸与日");
 					comDto.setSc006TaiyoDayErr("nfw-validation-error");
 					comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_BIHIN,comDto));
-					errMsg.append("必須チェックエラー");
+					errMsg.append("必須チェックNG：貸与日②");
 				}
 			}
 		}
@@ -2427,21 +2428,21 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "貸付会社");
 				comDto.setSc006TaiyoKaisyaSelectErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_YAKUIN,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：貸付会社");
 			}
 			//借受会社
 			if( SkfCheckUtils.isNullOrEmpty(comDto.getSc006KariukeKaisyaSelect())){
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "借受会社");
 				comDto.setSc006KariukeKaisyaSelectErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_YAKUIN,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：借受会社");
 			}
 			//開始日
 			if( SkfCheckUtils.isNullOrEmpty(getDateText(comDto.getSc006StartDay()))){
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "開始日");
 				comDto.setSc006StartDayErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_YAKUIN,comDto));
-				errMsg.append("必須チェックエラー");
+				errMsg.append("必須チェックNG：開始日");
 			}
 		}
 	}
@@ -2459,7 +2460,7 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1133, "退居予定日");
 				comDto.setSc006TaikyoYoteiDayErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("整合性チェックエラー");
+				errMsg.append("整合性チェックNG：貸与予定日");
 			}else{
 				comDto.setSc006TaikyoYoteiDayErr("");
 			}
@@ -2472,7 +2473,7 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1133, "区画１利用終了日");
 				comDto.setSc006RiyouEndDayOneErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("整合性チェックエラー");
+				errMsg.append("整合性チェックNG：区画1利用終了日");
 			}else{
 				comDto.setSc006RiyouEndDayOneErr("");
 			}
@@ -2485,7 +2486,7 @@ public class Skf3030Sc002SharedService {
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1133, "区画２利用終了日");
 				comDto.setSc006RiyouEndDayTwoErr("nfw-validation-error");
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("整合性チェックエラー");
+				errMsg.append("整合性チェックNG：区画2利用終了日");
 			}else{
 				comDto.setSc006RiyouEndDayTwoErr("");
 			}
@@ -2499,7 +2500,7 @@ public class Skf3030Sc002SharedService {
 					ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1133, "返却日");
 					comDto.setSc006HenkyakuDayErr("nfw-validation-error");
 					comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_BIHIN,comDto));
-					errMsg.append("整合性チェックエラー");
+					errMsg.append("整合性チェックNG：返却日");
 				}else{
 					comDto.setSc006HenkyakuDayErr("");
 				}
@@ -2515,7 +2516,7 @@ public class Skf3030Sc002SharedService {
 					ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1133, "終了日");
 					comDto.setSc006EndDayErr("nfw-validation-error");
 					comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_YAKUIN,comDto));
-					errMsg.append("整合性チェックエラー");
+					errMsg.append("整合性チェックNG：終了日");
 				}else{
 					comDto.setSc006EndDayErr("");
 				}
@@ -2532,7 +2533,7 @@ public class Skf3030Sc002SharedService {
 			if(Objects.equals(comDto.getSc006KukakuNoOne(), comDto.getSc006KukakuNoTwo())){
 				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_3047);
 				comDto.setNextTabIndex(setDisplayTabIndex(Skf3030Sc002CommonDto.SELECT_TAB_INDEX_SHATAKU,comDto));
-				errMsg.append("整合性チェックエラー");
+				errMsg.append("整合性チェックNG：区画1と区画2が同一");
 			}
 		}
 	}
@@ -2566,13 +2567,13 @@ public class Skf3030Sc002SharedService {
 				mapper = null;
 			}
 		} catch (JSONException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		} catch (JsonParseException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		} catch (JsonMappingException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		} catch (IOException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		}
 		return listData;
 	}

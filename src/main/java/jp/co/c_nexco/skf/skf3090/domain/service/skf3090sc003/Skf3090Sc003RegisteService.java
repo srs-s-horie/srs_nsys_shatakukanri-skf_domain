@@ -182,9 +182,9 @@ public class Skf3090Sc003RegisteService extends BaseServiceAbstract<Skf3090Sc003
 		}
 		// デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("isValidateInput, 入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("isValidateInput, 入力チェックNG：" + debugMessage);
 		}
 		
 		return isCheckOk;
@@ -355,7 +355,7 @@ public class Skf3090Sc003RegisteService extends BaseServiceAbstract<Skf3090Sc003
 					mapDate = dateFormat.parse(updateDateStr);
 				}catch(ParseException ex){
 					// 誰かに先に更新されちゃった
-					LogUtils.debugByMsg("事業領域情報-更新日時変換エラー :" + updateDateStr);
+					LogUtils.infoByMsg("registJigyoryoikiInfo, 事業領域情報-更新日時変換失敗 :" + updateDateStr);
 					return -1;
 				}			
 				super.checkLockException(mapDate, jigyoryoikiInfo.getUpdateDate());			
@@ -404,7 +404,7 @@ public class Skf3090Sc003RegisteService extends BaseServiceAbstract<Skf3090Sc003
 				}
 			}catch(Exception ex){
 				// 何かしらのエラーが発生
-				LogUtils.debugByMsg("事業領域の更新エラー" + ex.toString());
+				LogUtils.infoByMsg("registJigyoryoikiInfo, 事業領域の更新失敗" + ex.toString());
 				return -2;
 			}
 		}

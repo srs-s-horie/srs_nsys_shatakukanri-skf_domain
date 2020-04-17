@@ -1560,6 +1560,7 @@ public class Skf3030Sc001DownloadRp003Service extends BaseServiceAbstract<Skf303
 					resultMap, 4, true);
 
 		} catch (Exception e) {
+			LogUtils.infoByMsg("outputExcel, " + e.getMessage());
 			ServiceHelper.addErrorResultMessage(inDto, null, MessageIdConstant.E_SKF_1070);
 			preMonthSheetDataBean = null;
 			thisMonthSheetDataBean = null;

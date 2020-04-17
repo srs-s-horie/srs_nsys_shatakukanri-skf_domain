@@ -330,7 +330,7 @@ public class Skf3021Sc001SendMailService extends BaseServiceAbstract<Skf3021Sc00
 				updateData.setLastUpdateDate(mapDate);
 			}	
 			catch(ParseException ex){
-				LogUtils.debugByMsg("入退居予定データ-更新日時変換エラー :" + hdnUpdateDate);
+				LogUtils.infoByMsg("updateNyutaikyoYoteiInfoOfUrgeDate, 入退居予定データ-更新日時変換NG :" + hdnUpdateDate);
 				return -1;
 			}
 		}

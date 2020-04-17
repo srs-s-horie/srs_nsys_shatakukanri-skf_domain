@@ -2888,13 +2888,13 @@ public class Skf3010Sc002SharedService {
 				mapper = null;
 			}
 		} catch (JSONException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		} catch (JsonParseException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		} catch (JsonMappingException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		} catch (IOException e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("jsonArrayToArrayList, " + e.getMessage());
 		}
 		return listData;
 	}

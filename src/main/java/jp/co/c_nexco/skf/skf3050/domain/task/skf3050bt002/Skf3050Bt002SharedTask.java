@@ -122,7 +122,7 @@ public class Skf3050Bt002SharedTask {
 					parameter.get(SKF3050BT002_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
 			LogUtils.errorByMsg(
-					"バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT002_BATCH_PRG_ID_KEY) + "）");
+					"registBatchControl, バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT002_BATCH_PRG_ID_KEY) + "）");
 			return CodeConstant.SYS_NG;
 		}
 

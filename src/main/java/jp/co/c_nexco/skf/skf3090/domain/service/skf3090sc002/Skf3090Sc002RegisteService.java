@@ -107,7 +107,7 @@ public class Skf3090Sc002RegisteService extends BaseServiceAbstract<Skf3090Sc002
 		List<String> registMoneyData = new ArrayList <String>();
 		if(false == isValidateInput(registDto, registMoneyData)){
 			// エラーの場合は何もしない
-			LogUtils.debugByMsg("入力チェックエラーのため処理終了");
+			LogUtils.infoByMsg("index, 入力チェックNGのため処理終了");
 		}else{
 			boolean isGotoPrevPage = false;
 			if(skf3090Sc002SharedService.JYOTAIKBN_1.equals(registDto.getHdnJyotaiKbn()) ||
@@ -865,9 +865,9 @@ public class Skf3090Sc002RegisteService extends BaseServiceAbstract<Skf3090Sc002
 		
 		// デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("isValidateInput, 入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("isValidateInput, 入力チェックNG：" + debugMessage);
 		}
 		
 		return isCheckOk;
@@ -972,7 +972,7 @@ public class Skf3090Sc002RegisteService extends BaseServiceAbstract<Skf3090Sc002
 					}
 				}
 			}catch(Exception ex){
-				LogUtils.debugByMsg("現物支給価額テーブル登録時に例外発生");
+				LogUtils.infoByMsg("insertDataInfo, 現物支給価額テーブル登録時に例外発生：" + ex.toString());
 				resultCount = 0;
 			}
 			
@@ -1000,7 +1000,7 @@ public class Skf3090Sc002RegisteService extends BaseServiceAbstract<Skf3090Sc002
 						resultCount ++;
 					}
 				}catch(Exception ex){
-					LogUtils.debugByMsg("現物支給価額備考テーブル登録時に例外発生");
+					LogUtils.infoByMsg("insertDataInfo, 現物支給価額備考テーブル登録時に例外発生：" + ex.toString());
 					resultCount = 0;
 					return resultCount;
 				}
@@ -1108,7 +1108,7 @@ public class Skf3090Sc002RegisteService extends BaseServiceAbstract<Skf3090Sc002
 				}
 			}
 		}catch(Exception ex){
-			LogUtils.debugByMsg("現物支給価額備考テーブル更新時に例外発生");
+			LogUtils.infoByMsg("updateDataInfo, 現物支給価額備考テーブル更新時に例外発生①：" + ex.toString());
 			resultCount = 0;
 		}
 		
@@ -1142,7 +1142,7 @@ public class Skf3090Sc002RegisteService extends BaseServiceAbstract<Skf3090Sc002
 				resultCount ++;
 			}
 		}catch(Exception ex){
-			LogUtils.debugByMsg("現物支給価額備考テーブル更新時に例外発生");
+			LogUtils.infoByMsg("updateDataInfo, 現物支給価額備考テーブル更新時に例外発生②：" + ex.toString());
 			resultCount = 0;
 		}
 		

@@ -155,7 +155,7 @@ public class Skf3020Sc004DeleteService extends BaseServiceAbstract<Skf3020Sc004D
 		try{
 			mapDate = dateFormat.parse(dto.getHdnRowUpdateDate().toString());
 		}catch(ParseException ex){
-			LogUtils.debugByMsg("転任者情報-更新日時変換エラー :" + dto.getHdnRowUpdateDate().toString());
+			LogUtils.infoByMsg("deleteTenninsyaInfo, 転任者情報-更新日時変換NG :" + dto.getHdnRowUpdateDate().toString());
 			return -1;
 		}
 		

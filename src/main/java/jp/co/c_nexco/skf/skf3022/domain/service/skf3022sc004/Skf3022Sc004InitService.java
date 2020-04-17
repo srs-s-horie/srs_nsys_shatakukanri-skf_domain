@@ -167,7 +167,7 @@ public class Skf3022Sc004InitService extends BaseServiceAbstract<Skf3022Sc004Ini
             }
         }catch(Exception ex){
         	// エラーの場合なにもしない（初期値：0を画面へ表示する）
-			LogUtils.debugByMsg("社宅使用料月額：数値変換で例外発生");
+			LogUtils.infoByMsg("setControlValues, 社宅使用料月額：数値変換で例外発生");
         }
         
         // 個人負担共益費月額
@@ -177,7 +177,7 @@ public class Skf3022Sc004InitService extends BaseServiceAbstract<Skf3022Sc004Ini
             }
         }catch(Exception ex){
         	// エラーの場合なにもしない（初期値：0を画面へ表示する）
-			LogUtils.debugByMsg("個人負担共益費月額：数値変換で例外発生");
+			LogUtils.infoByMsg("setControlValues, 個人負担共益費月額：数値変換で例外発生");
         }
         
         // 駐車場1月額
@@ -187,7 +187,7 @@ public class Skf3022Sc004InitService extends BaseServiceAbstract<Skf3022Sc004Ini
             }
         }catch(Exception ex){
         	// エラーの場合なにもしない（初期値：0を画面へ表示する）
-			LogUtils.debugByMsg("駐車場1月額：数値変換で例外発生");
+			LogUtils.infoByMsg("setControlValues, 駐車場1月額：数値変換で例外発生");
         }
         
         // 駐車場2月額
@@ -197,7 +197,7 @@ public class Skf3022Sc004InitService extends BaseServiceAbstract<Skf3022Sc004Ini
             }
         }catch(Exception ex){
         	// エラーの場合なにもしない（初期値：0を画面へ表示する）
-			LogUtils.debugByMsg("駐車場2月額：数値変換で例外発生");
+			LogUtils.infoByMsg("setControlValues, 駐車場2月額：数値変換で例外発生");
         }
         
         // 表示内容を設定

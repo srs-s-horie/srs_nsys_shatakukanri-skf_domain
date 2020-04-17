@@ -321,7 +321,7 @@ public class Skf3050Bt001SharedTask {
 
 			//社宅使用料計算部品内でエラーが発生した場合
 			if (!NfwStringUtils.isEmpty(shatakuRentCalcOutputData.getErrMessage())) {
-				LogUtils.errorByMsg(shatakuRentCalcOutputData.getErrMessage());
+				LogUtils.infoByMsg("updateTsukibetsuTsukiji, " + shatakuRentCalcOutputData.getErrMessage());
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
 			}
@@ -352,7 +352,7 @@ public class Skf3050Bt001SharedTask {
 
 				//社宅使用料計算部品内でエラーが発生した場合
 				if (!NfwStringUtils.isEmpty(chushajoShiyoryoGetsugakuData.getErrMessage())) {
-					LogUtils.errorByMsg(chushajoShiyoryoGetsugakuData.getErrMessage());
+					LogUtils.infoByMsg("updateTsukibetsuTsukiji, " + chushajoShiyoryoGetsugakuData.getErrMessage());
 					rtn = SkfCommonConstant.ABNORMAL;
 					break;
 				}
@@ -381,7 +381,7 @@ public class Skf3050Bt001SharedTask {
 
 				//社宅使用料計算部品内でエラーが発生した場合
 				if (!NfwStringUtils.isEmpty(chushajoShiyoryoGetsugakuData.getErrMessage())) {
-					LogUtils.errorByMsg(chushajoShiyoryoGetsugakuData.getErrMessage());
+					LogUtils.infoByMsg("updateTsukibetsuTsukiji, " + chushajoShiyoryoGetsugakuData.getErrMessage());
 					rtn = SkfCommonConstant.ABNORMAL;
 					break;
 				}

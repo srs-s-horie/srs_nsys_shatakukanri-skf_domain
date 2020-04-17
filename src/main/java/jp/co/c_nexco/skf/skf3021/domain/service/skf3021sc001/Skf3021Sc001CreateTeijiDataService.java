@@ -638,7 +638,7 @@ public class Skf3021Sc001CreateTeijiDataService extends BaseServiceAbstract<Skf3
 					LogUtils.debugByMsg("hdnUpdateDate：" + mapDate);
 				}	
 				catch(ParseException ex){
-					LogUtils.debugByMsg("入退居予定データ-更新日時変換エラー :" + hdnUpdateDate);
+					LogUtils.infoByMsg("insertTeijiDataInfo, 入退居予定データ-更新日時変換NG :" + hdnUpdateDate);
 					return -2;
 				}
 //				LogUtils.debugByMsg("UpdateDate：" + targetDt.getUpdateDate());

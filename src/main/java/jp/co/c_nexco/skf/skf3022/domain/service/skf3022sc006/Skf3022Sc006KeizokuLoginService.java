@@ -333,7 +333,7 @@ public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022
 		} catch (Exception e) {
 			// 登録時にエラーが発生しました。ヘルプデスクへ連絡してください。
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1073);
-			LogUtils.debugByMsg(e.toString());
+			LogUtils.infoByMsg("update, 登録時に例外発生：" + e.toString());
 			// ロールバック
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}

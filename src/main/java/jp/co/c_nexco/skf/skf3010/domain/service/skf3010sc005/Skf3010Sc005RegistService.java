@@ -454,9 +454,9 @@ public class Skf3010Sc005RegistService extends BaseServiceAbstract<Skf3010Sc005R
 
 		// デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("isValidateInput, 入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("isValidateInput, 入力チェックNG：" + debugMessage);
 		}
 
 		return isCheckOk;

@@ -387,7 +387,7 @@ public class Skf3022Sc004RegisteService extends BaseServiceAbstract<Skf3022Sc004
         	}
 			LogUtils.debugByMsg("削除件数:" + Integer.toString(delCount));
         }catch(Exception ex){
-			LogUtils.debugByMsg("社宅使用料予約データ削除中にエラー:" + ex.toString());
+			LogUtils.infoByMsg("insertShatakuRentalReserve, 社宅使用料予約データ削除中に例外:" + ex.toString());
         	return -1;
         }
 		
@@ -418,7 +418,7 @@ public class Skf3022Sc004RegisteService extends BaseServiceAbstract<Skf3022Sc004
         		record.setDeleteFlag("0");
         		retCountJigetu = skf3022TShatakuYoyakuDataRepository.insertSelective(record);
         	}catch(Exception ex){
-    			LogUtils.debugByMsg("社宅使用料予約データ（次月）登録中にエラー:" + ex.toString());
+    			LogUtils.infoByMsg("insertShatakuRentalReserve, 社宅使用料予約データ（次月）登録中に例外:" + ex.toString());
         		return -1;
         	}
         }
@@ -450,7 +450,7 @@ public class Skf3022Sc004RegisteService extends BaseServiceAbstract<Skf3022Sc004
         		record.setDeleteFlag("0");
         		retCountJijigetu = skf3022TShatakuYoyakuDataRepository.insertSelective(record);
         	}catch(Exception ex){
-    			LogUtils.debugByMsg("社宅使用料予約データ（次々月）登録中にエラー:" + ex.toString());
+    			LogUtils.infoByMsg("insertShatakuRentalReserve, 社宅使用料予約データ（次々月）登録中に異常検知:" + ex.toString());
         		return -1;
         	}
         }

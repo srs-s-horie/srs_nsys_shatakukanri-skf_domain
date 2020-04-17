@@ -450,7 +450,7 @@ public class Skf3050Sc002SharedService {
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(COMPANY_CD_KEY), programId,
 					parameter.get(USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
-			LogUtils.errorByMsg("バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(BATCH_PRG_ID_KEY) + "）");
+			LogUtils.infoByMsg("registBatchControl, バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(BATCH_PRG_ID_KEY) + "）");
 			return CodeConstant.SYS_NG;
 		}
 
@@ -1390,6 +1390,7 @@ public class Skf3050Sc002SharedService {
 		boolean notDoubleStartup = checkDoubleStartup();
 		if (!notDoubleStartup) {
 			rtnErrMsg = ERRMSG_DOUBLE_START;
+			LogUtils.infoByMsg("checkShimeShori, 二重起動");
 			return rtnErrMsg;
 		}
 
@@ -1398,6 +1399,7 @@ public class Skf3050Sc002SharedService {
 		if (renkeiKbnData == null) {
 			//月次処理管理データが取得できない場合エラー
 			rtnErrMsg = ERRMSG_SHIME_IMPOSSIBLE;
+			LogUtils.infoByMsg("checkShimeShori, 月次処理管理データ取得失敗");
 			return rtnErrMsg;
 
 		} else {
@@ -1405,6 +1407,7 @@ public class Skf3050Sc002SharedService {
 					|| CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
 				//締め処理＝実行済、または連携データ確定実行区分＝実行済の場合エラー
 				rtnErrMsg = ERRMSG_SHIME_IMPOSSIBLE;
+				LogUtils.infoByMsg("checkShimeShori, 締め処理状態が変更されている為実施不可");
 				return rtnErrMsg;
 			}
 		}
@@ -1417,6 +1420,7 @@ public class Skf3050Sc002SharedService {
 			if (kariShainNoList.size() > 0) {
 				//仮社員データが存在する場合エラー
 				rtnErrMsg = ERRMSG_SHIME_KARISHAIN;
+				LogUtils.infoByMsg("checkShimeShori, 仮社員データが存在します：" + Integer.toString(kariShainNoList.size()) + "件");
 				return rtnErrMsg;
 			}
 
@@ -1426,14 +1430,16 @@ public class Skf3050Sc002SharedService {
 			if (henkanShainBangoList.size() > 0) {
 				//社員番号変更対象者が存在する場合エラー
 				rtnErrMsg = ERRMSG_SHIME_KARISHAIN_CHG;
+				LogUtils.infoByMsg("checkShimeShori, 社員番号変更対象者が存在します：" + Integer.toString(henkanShainBangoList.size()) + "件");
 				return rtnErrMsg;
 			}
 
-			//▼当日入居データ、社宅管理台帳基本テーブルデータ存在チェック
+			//▼当月入居データ、社宅管理台帳基本テーブルデータ存在チェック
 			List<String> teijiNyukyoList = getShatakuKanriNyukyoExists(jikkouShijiYoteiNengetsu);
 			if (teijiNyukyoList.size() > 0) {
 				//提示データテーブルの台帳作成区分≠作成済の場合エラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_NYUKYO;
+				LogUtils.infoByMsg("checkShimeShori, 当月入居予定のデータが社宅管理台帳に未反映：" + Integer.toString(teijiNyukyoList.size()) + "件");
 				return rtnErrMsg;
 			}
 			
@@ -1443,6 +1449,7 @@ public class Skf3050Sc002SharedService {
 			if (parkingTeijiMisakuseiDataList.size() > 0) {
 				//提示データが未作成の駐車場利用申請が存在する場合エラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_PARKING_TEIJI_MISAKUSEI_DATA;
+				LogUtils.infoByMsg("checkShimeShori, 提示データが作成されていない駐車場利用申請が存在：" + Integer.toString(parkingTeijiMisakuseiDataList.size()) + "件");
 				return rtnErrMsg;
 			}
 
@@ -1458,6 +1465,7 @@ public class Skf3050Sc002SharedService {
 			if (parkingRiyoKaishiCount > 0) {
 				//処理年月内で未承認の駐車場貸出がある場合はエラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_PARKING_RIYOKAISHI;
+				LogUtils.infoByMsg("checkShimeShori, 当月利用開始予定の駐車場データが社宅管理台帳に未反映：" + Integer.toString(parkingRiyoKaishiCount) + "件");
 				return rtnErrMsg;
 			}
 
@@ -1466,6 +1474,7 @@ public class Skf3050Sc002SharedService {
 			if (teijiTaikyoDataList.size() > 0) {
 				//提示データテーブルの台帳作成区分≠作成済の場合エラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_TAIKYO;
+				LogUtils.infoByMsg("checkShimeShori, 当月退居予定のデータが社宅管理台帳に未反映：" + Integer.toString(teijiTaikyoDataList.size()) + "件");
 				return rtnErrMsg;
 			}
 
@@ -1474,6 +1483,7 @@ public class Skf3050Sc002SharedService {
 			if (parkingRiyoShuryoDataList.size() > 0) {
 				//処理年月内で未承認の駐車場返却がある場合はエラー
 				rtnErrMsg = ERRMSG_SHIME_SHATAKU_DAITYO_PARKING_RIYOSHURYO;
+				LogUtils.infoByMsg("checkShimeShori, 当月利用終了予定の駐車場データが社宅管理台帳に未反映：" + Integer.toString(parkingRiyoShuryoDataList.size()) + "件");
 				return rtnErrMsg;
 			}
 		}
@@ -1937,7 +1947,7 @@ public class Skf3050Sc002SharedService {
 					paramShoriNengetsu, renRirekiRow, sougoDt.get(0).getRent());
 
 			if (!NfwStringUtils.isEmpty(shatakuRentCalcOutputData.getErrMessage())) {
-				LogUtils.errorByMsg(shatakuRentCalcOutputData.getErrMessage());
+				LogUtils.infoByMsg("updateTsukibetsuTsukiji, " + shatakuRentCalcOutputData.getErrMessage());
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
 			}
@@ -1961,7 +1971,7 @@ public class Skf3050Sc002SharedService {
 						tsukiDt1List.get(0).getParkingKanriNo());
 
 				if (!NfwStringUtils.isEmpty(chushajoShiyoryoGetsugakuData.getErrMessage())) {
-					LogUtils.errorByMsg(chushajoShiyoryoGetsugakuData.getErrMessage());
+					LogUtils.infoByMsg("updateTsukibetsuTsukiji, " + chushajoShiyoryoGetsugakuData.getErrMessage());
 					rtn = SkfCommonConstant.ABNORMAL;
 					break;
 				}
@@ -1985,7 +1995,7 @@ public class Skf3050Sc002SharedService {
 						tsukiDt2List.get(0).getParkingKanriNo());
 
 				if (!NfwStringUtils.isEmpty(chushajoShiyoryoGetsugakuData.getErrMessage())) {
-					LogUtils.errorByMsg(chushajoShiyoryoGetsugakuData.getErrMessage());
+					LogUtils.infoByMsg("updateTsukibetsuTsukiji, " + chushajoShiyoryoGetsugakuData.getErrMessage());
 					rtn = SkfCommonConstant.ABNORMAL;
 					break;
 				}

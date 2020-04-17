@@ -438,14 +438,11 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				}
 			}
 		}
-		
-		
-		
 		// デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("isValidateInput, 入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("isValidateInput, 入力チェックNG：" + debugMessage);
 		}
 
 		return isCheckOk;
@@ -570,7 +567,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				setValue.setLastUpdateDate(dateFormat.parse(dto.getContractUpdateDate()));
 			}	
 			catch(ParseException ex){
-				LogUtils.debugByMsg("駐車場契約情報-更新日時変換エラー :" + dto.getContractUpdateDate());
+				LogUtils.infoByMsg("registParkingContractInfo, 駐車場契約情報-更新日時変換NG :" + dto.getContractUpdateDate());
 				return 0;
 			}
 			//更新処理
@@ -591,7 +588,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 				blockSetValue.setLastUpdateDate(dateFormat.parse(dto.getBlockUpdateDate()));
 			}	
 			catch(ParseException ex){
-				LogUtils.debugByMsg("駐車場区画情報-更新日時変換エラー :" + dto.getBlockUpdateDate());
+				LogUtils.infoByMsg("registParkingContractInfo, 駐車場区画情報-更新日時変換NG :" + dto.getBlockUpdateDate());
 				return 0;
 			}
 			
@@ -650,7 +647,7 @@ public class Skf3010Sc007RegistService extends BaseServiceAbstract<Skf3010Sc007R
 			super.checkLockException(mapDate, contractInfo.getUpdateDate());
 		}	
 		catch(ParseException ex){
-			LogUtils.debugByMsg("駐車場契約情報-更新日時変換エラー :" + contractUpdateDate);
+			LogUtils.infoByMsg("deleteParkingContractInfo, 駐車場契約情報-更新日時変換NG :" + contractUpdateDate);
 			return 0;
 		}	
 		

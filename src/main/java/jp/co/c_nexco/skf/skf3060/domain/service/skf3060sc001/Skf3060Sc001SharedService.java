@@ -276,7 +276,7 @@ public class Skf3060Sc001SharedService {
 		 try{
 	 		 mapDate = dateFormat.parse(kasanStartDate);
 	 	 }catch(ParseException ex){
-		 	 LogUtils.debugByMsg("年齢加算基準期間-日時変換エラー :" + kasanStartDate);
+		 	 LogUtils.infoByMsg("createKasanStartDate, 年齢加算基準期間-日時変換失敗 :" + kasanStartDate);
 			 return DEFAULT_KASAN_START_DATE;
 		 }		
 		 SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyyMM");
@@ -303,7 +303,7 @@ public class Skf3060Sc001SharedService {
 				SimpleDateFormat dateFormatStr = new SimpleDateFormat("yyyy/MM/dd");
 				targetDate = dateFormatStr.format(date);
 			}catch(ParseException ex){
-				LogUtils.debugByMsg("年齢加算対象者一覧-日付変換エラー :" + targetDate);
+				LogUtils.debugByMsg("年齢加算対象者一覧-日付変換失敗 :" + targetDate);
 				targetDate = null;
 			}
 		}
@@ -580,7 +580,7 @@ public class Skf3060Sc001SharedService {
 					ageKasanRental = tmpData.getAgeKasanRentalMonth();
 				}
 			} catch (ParseException e) {
-				LogUtils.debugByMsg("年齢加算使用料 算出エラー" + tmpData.getAgeKasanRentalMonth());
+				LogUtils.infoByMsg("getListTableDataViewColumn, 年齢加算使用料 算出失敗" + tmpData.getAgeKasanRentalMonth());
 				ageKasanRental = "0";
 			}
 			tmpMap.put("col11", changePayFormat(ageKasanRental));
@@ -713,9 +713,9 @@ public class Skf3060Sc001SharedService {
 
         // デバッグメッセージ出力
 		if (isCheckOk) {
-			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
+			LogUtils.debugByMsg("isValidateInput, 入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("isValidateInput, 入力チェックNG：" + debugMessage);
 		}		
 		
 		return isCheckOk;

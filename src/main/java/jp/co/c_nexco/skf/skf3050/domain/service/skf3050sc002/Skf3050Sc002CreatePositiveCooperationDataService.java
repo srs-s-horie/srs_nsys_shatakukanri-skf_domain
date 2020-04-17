@@ -90,7 +90,7 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends BaseServic
 		try {
 			fileOutputData = skf3050Sc002SharedService.createPositiveCooperationData(dataMap);
 		} catch (Exception e) {
-			LogUtils.debugByMsg(e.getMessage());
+			LogUtils.infoByMsg("index, " + e.getMessage());
 			fileOutputData = null;
 		}
 		

@@ -1083,7 +1083,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		}
 		// 形式チェック結果判定
 		if (!isCheckOk) {
-			LogUtils.debugByMsg("形式チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("checkTouroku, 形式チェックNG：" + debugMessage);
 			return isCheckOk;
 		}
 		// 添付ファイルサイズチェック
@@ -1092,7 +1092,7 @@ public class Skf3010Sc002RegistService extends BaseServiceAbstract<Skf3010Sc002R
 		if (isCheckOk) {
 			LogUtils.debugByMsg("入力チェックOK：" + debugMessage);
 		} else {
-			LogUtils.debugByMsg("入力チェックエラー：" + debugMessage);
+			LogUtils.infoByMsg("checkTouroku, 入力チェックNG：" + debugMessage);
 		}
 
 		return isCheckOk;

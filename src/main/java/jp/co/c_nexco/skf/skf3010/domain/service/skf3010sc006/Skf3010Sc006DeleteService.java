@@ -281,7 +281,7 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		cnt = skf3010Sc006GetSyatakuRentalHistoryNumExpRepository.getSyatakuRentalHistoryNum(param);
 		// 入居実績件数判定
 		if (cnt > 0) {
-			LogUtils.debugByMsg("入居実績ありエラー：" + shatakuKanriNo.toString());
+			LogUtils.infoByMsg("deleteCheck, 入居実績あり：" + shatakuKanriNo.toString());
 			return false;
 		}
 		// 提示件数取得
@@ -289,7 +289,7 @@ public class Skf3010Sc006DeleteService extends BaseServiceAbstract<Skf3010Sc006D
 		param = null;
 		// 提示件数判定
 		if (cnt > 0) {
-			LogUtils.debugByMsg("提示データエラー：" + shatakuKanriNo.toString());
+			LogUtils.infoByMsg("deleteCheck, 提示データあり：" + shatakuKanriNo.toString());
 			return false;
 		}
 		
