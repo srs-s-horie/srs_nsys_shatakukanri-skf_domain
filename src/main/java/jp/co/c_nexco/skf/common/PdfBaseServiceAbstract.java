@@ -34,7 +34,7 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	 * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード
 	 * （「✓」のような特殊記号を表示するにはUnicodeLittleに設定する必要がある
 	 */
-	// public static final String PDF_PROCESS_ENCODE = "UnicodeLittle";
+	public static final String PDF_PROCESS_ENCODE = "UnicodeLittle";
 	/**
 	 * 文字列のバイト長判定に用いるエンコード（UTF-16だと半角英数なども2バイト扱いになってしまうため、バイト長判定にはMS932を用いる）
 	 */
@@ -135,7 +135,7 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		this.pdfDataList = new ArrayList<CSVDoc>();
 		for (PDF_INFO pdfInfo : this.getPdfInfoList(pdfDto)) {
 			CSVDoc pdfData = new CSVDoc(pdfInfo.getIodPath(), CommonConstant.C_EMPTY);
-			// pdfData.setCharset(PDF_PROCESS_ENCODE);
+			pdfData.setCharset(PDF_PROCESS_ENCODE);
 			pdfData.setDebugFlg(true);
 			this.pdfDataList.add(pdfData);
 		}
@@ -195,7 +195,7 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	 */
 	protected void setPdfBaseSettings() throws PDFException {
 		// 中間処理ファイル文字エンコード
-		// this.integratePdf.setCharset(PDF_PROCESS_ENCODE);
+		this.integratePdf.setCharset(PDF_PROCESS_ENCODE);
 		// 出力した一時IODを削除するか
 		this.integratePdf.setDelete(true);
 		// PDFタイトル設定
