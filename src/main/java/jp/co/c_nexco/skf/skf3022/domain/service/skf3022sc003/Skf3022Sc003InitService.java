@@ -23,7 +23,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.Skf
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CodeCacheUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -41,7 +41,7 @@ import jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003.Skf3022Sc003SharedS
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3022Sc003InitService extends BaseServiceAbstract<Skf3022Sc003InitDto> {
+public class Skf3022Sc003InitService extends SkfServiceAbstract<Skf3022Sc003InitDto> {
 
 	@Autowired
 	private Skf3022Sc003SharedService skf3022Sc003SharedService;

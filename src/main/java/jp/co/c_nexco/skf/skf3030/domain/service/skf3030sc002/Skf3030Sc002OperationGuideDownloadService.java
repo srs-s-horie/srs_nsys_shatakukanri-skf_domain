@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -24,7 +24,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002OperationGu
  */
 
 @Service
-public class Skf3030Sc002OperationGuideDownloadService extends BaseServiceAbstract<Skf3030Sc002OperationGuideDownloadDto> {
+public class Skf3030Sc002OperationGuideDownloadService extends SkfServiceAbstract<Skf3030Sc002OperationGuideDownloadDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

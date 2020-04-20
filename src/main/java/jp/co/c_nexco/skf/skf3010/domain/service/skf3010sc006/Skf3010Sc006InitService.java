@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -21,7 +21,7 @@ import jp.co.intra_mart.common.platform.log.Logger;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3010Sc006InitService extends BaseServiceAbstract<Skf3010Sc006InitDto> {
+public class Skf3010Sc006InitService extends SkfServiceAbstract<Skf3010Sc006InitDto> {
 	
 	@Autowired
 	private Skf3010Sc006SharedService skf3010Sc006SharedService;

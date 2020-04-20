@@ -16,7 +16,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001ConfirmDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc001ConfirmService extends BaseServiceAbstract<Skf2040Sc001ConfirmDto> {
+public class Skf2040Sc001ConfirmService extends SkfServiceAbstract<Skf2040Sc001ConfirmDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

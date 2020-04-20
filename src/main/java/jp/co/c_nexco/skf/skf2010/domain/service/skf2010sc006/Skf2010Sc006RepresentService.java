@@ -11,7 +11,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetA
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006RepresentDt
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc006RepresentService extends BaseServiceAbstract<Skf2010Sc006RepresentDto> {
+public class Skf2010Sc006RepresentService extends SkfServiceAbstract<Skf2010Sc006RepresentDto> {
 
 	@Autowired
 	private Skf2010Sc006SharedService skf2010Sc006SharedService;

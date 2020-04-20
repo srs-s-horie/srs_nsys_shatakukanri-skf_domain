@@ -23,7 +23,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.CellDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
@@ -44,7 +44,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3090Sc001ImportService extends BaseServiceAbstract<Skf3090Sc001ImportDto> {
+public class Skf3090Sc001ImportService extends SkfServiceAbstract<Skf3090Sc001ImportDto> {
 
 	@Autowired
 	private Skf3090Sc001SharedService skf3090Sc001SharedService;

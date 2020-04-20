@@ -36,7 +36,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuBihinRep
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
@@ -58,7 +58,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * 
  */
 @Service
-public class Skf3040Sc002DownloadService extends BaseServiceAbstract<Skf3040Sc002DownloadDto> {
+public class Skf3040Sc002DownloadService extends SkfServiceAbstract<Skf3040Sc002DownloadDto> {
 
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;

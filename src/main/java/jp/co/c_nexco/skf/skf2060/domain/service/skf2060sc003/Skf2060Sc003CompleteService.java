@@ -20,7 +20,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc003.Skf2060Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -34,7 +34,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc003.Skf2060Sc003CompleteDto
  * 
  */
 @Service
-public class Skf2060Sc003CompleteService extends BaseServiceAbstract<Skf2060Sc003CompleteDto> {
+public class Skf2060Sc003CompleteService extends SkfServiceAbstract<Skf2060Sc003CompleteDto> {
 	
 	@Autowired
 	private Skf2010TApplHistoryRepository skf2010TApplHistoryRepository;

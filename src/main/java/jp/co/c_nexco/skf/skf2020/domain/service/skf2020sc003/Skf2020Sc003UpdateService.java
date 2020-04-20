@@ -21,7 +21,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackEx
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -38,7 +38,7 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003UpdateDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2020Sc003UpdateService extends BaseServiceAbstract<Skf2020Sc003UpdateDto> {
+public class Skf2020Sc003UpdateService extends SkfServiceAbstract<Skf2020Sc003UpdateDto> {
 
 	// 会社コード
 	private String companyCd = CodeConstant.C001;

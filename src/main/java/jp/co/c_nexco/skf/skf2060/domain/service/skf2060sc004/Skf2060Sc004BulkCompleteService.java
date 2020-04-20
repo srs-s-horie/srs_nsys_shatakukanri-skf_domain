@@ -20,7 +20,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRe
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -35,7 +35,7 @@ import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailSe
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2060Sc004BulkCompleteService extends BaseServiceAbstract<Skf2060Sc004BulkCompleteDto> {
+public class Skf2060Sc004BulkCompleteService extends SkfServiceAbstract<Skf2060Sc004BulkCompleteDto> {
     
     @Autowired
     private MenuScopeSessionBean sessionBean;

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc002.Skf3022Sc002SearchAsync
  */
 @Service
 public class Skf3022Sc002SearchAsyncService
-		extends AsyncBaseServiceAbstract<Skf3022Sc002SearchAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3022Sc002SearchAsyncDto> {
 	@Autowired
 	private Skf3022Sc002SharedService skf3022Sc002SharedService;
 	@Autowired

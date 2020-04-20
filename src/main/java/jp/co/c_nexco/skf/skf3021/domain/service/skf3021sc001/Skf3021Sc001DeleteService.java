@@ -26,7 +26,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepo
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiDataRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -41,7 +41,7 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001DeleteDto;
  * 
  */
 @Service
-public class Skf3021Sc001DeleteService extends BaseServiceAbstract<Skf3021Sc001DeleteDto> {
+public class Skf3021Sc001DeleteService extends SkfServiceAbstract<Skf3021Sc001DeleteDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc001.Skf3050Sc001PageIndexCh
  */
 @Service
 public class Skf3050Sc001PageIndexChangingAsyncService
-		extends AsyncBaseServiceAbstract<Skf3050Sc001PageIndexChangingAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3050Sc001PageIndexChangingAsyncDto> {
 	@Autowired
 	private Skf3050Sc001SharedService skf3050Sc001SharedService;
 	@Autowired

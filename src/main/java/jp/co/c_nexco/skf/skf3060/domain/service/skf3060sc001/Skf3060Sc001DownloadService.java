@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.FileEncode;
@@ -37,7 +37,7 @@ import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060sc001.Skf3060Sc001DownloadDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3060Sc001DownloadService extends BaseServiceAbstract<Skf3060Sc001DownloadDto> {
+public class Skf3060Sc001DownloadService extends SkfServiceAbstract<Skf3060Sc001DownloadDto> {
 
 	@Autowired
 	Skf3060Sc001SharedService skf3060Sc001SharedService;

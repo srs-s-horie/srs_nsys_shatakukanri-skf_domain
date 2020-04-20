@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetShainInfoExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -18,7 +18,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc008.Skf2010Sc008SelectDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc008SelectService extends BaseServiceAbstract<Skf2010Sc008SelectDto> {
+public class Skf2010Sc008SelectService extends SkfServiceAbstract<Skf2010Sc008SelectDto> {
 
 	/**
 	 * 代行ログイン画面 共通サービス

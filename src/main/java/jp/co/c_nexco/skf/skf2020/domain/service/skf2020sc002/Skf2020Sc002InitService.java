@@ -16,7 +16,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -38,7 +38,7 @@ import jp.co.intra_mart.foundation.user_context.model.UserProfile;
  */
 
 @Service
-public class Skf2020Sc002InitService extends BaseServiceAbstract<Skf2020Sc002InitDto> {
+public class Skf2020Sc002InitService extends SkfServiceAbstract<Skf2020Sc002InitDto> {
 
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TInformation;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc008.Skf3090Sc008EditDto;
  * 
  */
 @Service
-public class Skf3090Sc008EditService extends BaseServiceAbstract<Skf3090Sc008EditDto> {
+public class Skf3090Sc008EditService extends SkfServiceAbstract<Skf3090Sc008EditDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -49,7 +49,7 @@ public class Skf3090Sc008EditService extends BaseServiceAbstract<Skf3090Sc008Edi
 		
 		//「編集」ボタンを押した行の公開開始日を取得
 		String openDate = editDto.getHdnOpenDate(); 
-        
+
 		Skf1010TInformation informationData = skf3090Sc008SharedService.getInformation(companyCd, openDate.replace("/", ""));
 		
 		if(informationData != null){

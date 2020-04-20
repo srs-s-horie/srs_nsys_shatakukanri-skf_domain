@@ -17,7 +17,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetS
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetShatakuParkingBlockExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ParkingSupp
  */
 @Service
 public class Skf3022Sc006ParkingSupportCallBackAsyncService
-	extends AsyncBaseServiceAbstract<Skf3022Sc006ParkingSupportCallBackAsyncDto> {
+	extends SkfAsyncServiceAbstract<Skf3022Sc006ParkingSupportCallBackAsyncDto> {
 
 	@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;

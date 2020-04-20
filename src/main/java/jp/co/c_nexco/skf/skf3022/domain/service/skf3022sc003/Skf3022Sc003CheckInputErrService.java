@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -36,7 +36,7 @@ import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc003.Skf3022Sc003CheckInputE
  */
 @Service
 public class Skf3022Sc003CheckInputErrService
-	extends BaseServiceAbstract<Skf3022Sc003CheckInputErrDto> {
+	extends SkfServiceAbstract<Skf3022Sc003CheckInputErrDto> {
 
 	@Autowired
 	private SkfDropDownUtils ddlUtils;

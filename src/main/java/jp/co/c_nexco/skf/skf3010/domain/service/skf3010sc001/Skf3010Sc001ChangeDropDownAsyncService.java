@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001ChangeDropDownAsyncDto;
 
 /**
@@ -21,7 +21,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc001.Skf3010Sc001ChangeDropD
  */
 @Service
 public class Skf3010Sc001ChangeDropDownAsyncService
-		extends AsyncBaseServiceAbstract<Skf3010Sc001ChangeDropDownAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3010Sc001ChangeDropDownAsyncDto> {
 
 	@Autowired
 	private Skf3010Sc001SharedService skf3010Sc001SharedService;

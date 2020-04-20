@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshiki;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309040CommonSharedServ
  * 
  */
 @Service
-public class Skf3090Sc007InitService extends BaseServiceAbstract<Skf3090Sc007InitDto> {
+public class Skf3090Sc007InitService extends SkfServiceAbstract<Skf3090Sc007InitDto> {
 
 	// 戻り値用Map用定数
 	private static final String KEY_COMPANY_CD = "COMPANY_CODE";

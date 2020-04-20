@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc001.Skf3030Sc001ChangeCompa
  */
 @Service
 public class Skf3030Sc001ChangeCompanyDropDownAsyncService
-		extends AsyncBaseServiceAbstract<Skf3030Sc001ChangeCompanyDropDownAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3030Sc001ChangeCompanyDropDownAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

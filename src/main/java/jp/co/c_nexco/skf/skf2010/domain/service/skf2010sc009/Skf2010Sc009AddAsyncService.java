@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -28,7 +28,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009AddAsyncDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc009AddAsyncService extends AsyncBaseServiceAbstract<Skf2010Sc009AddAsyncDto> {
+public class Skf2010Sc009AddAsyncService extends SkfAsyncServiceAbstract<Skf2010Sc009AddAsyncDto> {
 
 	@Autowired
 	private Skf2010Sc009SharedService skf2010Sc009SharedService;

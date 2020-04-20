@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExpParameter;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc001.Skf3070Sc001SearchDto;
  * 
  */
 @Service
-public class Skf3070Sc001SearchService extends BaseServiceAbstract<Skf3070Sc001SearchDto> {
+public class Skf3070Sc001SearchService extends SkfServiceAbstract<Skf3070Sc001SearchDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

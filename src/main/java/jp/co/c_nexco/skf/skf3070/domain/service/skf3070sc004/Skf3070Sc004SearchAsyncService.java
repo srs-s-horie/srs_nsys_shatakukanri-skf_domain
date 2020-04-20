@@ -11,7 +11,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc004.Skf3070Sc004GetO
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -24,7 +24,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc004.Skf3070Sc004SearchAsync
  * 
  */
 @Service
-public class Skf3070Sc004SearchAsyncService extends AsyncBaseServiceAbstract<Skf3070Sc004SearchAsyncDto> {
+public class Skf3070Sc004SearchAsyncService extends SkfAsyncServiceAbstract<Skf3070Sc004SearchAsyncDto> {
 
 	@Autowired
 	private Skf3070Sc004SharedService skf3070Sc004SharedService;

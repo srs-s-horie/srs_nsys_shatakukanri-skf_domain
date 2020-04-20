@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc002.Skf2050Sc002InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2050Sc002InitService extends BaseServiceAbstract<Skf2050Sc002InitDto> {
+public class Skf2050Sc002InitService extends SkfServiceAbstract<Skf2050Sc002InitDto> {
 
 	@Autowired
 	private Skf2050Sc002SharedService skf2050Sc002SharedService;

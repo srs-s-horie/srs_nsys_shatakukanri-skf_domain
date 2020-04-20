@@ -18,7 +18,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -37,7 +37,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc004.Skf2010Sc004NotAgreeDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc004NotAgreeService extends BaseServiceAbstract<Skf2010Sc004NotAgreeDto> {
+public class Skf2010Sc004NotAgreeService extends SkfServiceAbstract<Skf2010Sc004NotAgreeDto> {
 
 	@Autowired
 	private Skf2010Sc004SharedService skf2010Sc004SharedService;

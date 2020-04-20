@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007ContractInfoSelectAsyncDto;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007ContractInf
  */
 @Service
 public class Skf3010Sc007ContractInfoSelectAsyncService
-		extends AsyncBaseServiceAbstract<Skf3010Sc007ContractInfoSelectAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3010Sc007ContractInfoSelectAsyncDto> {
 	
 	/**
 	 * 駐車場契約情報の編集有無チェック

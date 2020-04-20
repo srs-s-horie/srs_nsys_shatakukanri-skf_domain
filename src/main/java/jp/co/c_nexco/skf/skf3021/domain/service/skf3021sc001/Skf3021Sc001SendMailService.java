@@ -20,7 +20,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiDataRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -38,7 +38,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  *
  */
 @Service
-public class Skf3021Sc001SendMailService extends BaseServiceAbstract<Skf3021Sc001SendMailDto> {
+public class Skf3021Sc001SendMailService extends SkfServiceAbstract<Skf3021Sc001SendMailDto> {
 
 	@Autowired
 	private Skf3021Sc001SharedService skf3021Sc001SharedService;

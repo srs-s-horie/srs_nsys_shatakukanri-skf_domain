@@ -6,7 +6,7 @@ package jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc002;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc002.Skf3022Sc002SelectErrAsyncDto;
@@ -19,7 +19,7 @@ import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc002.Skf3022Sc002SelectErrAs
  */
 @Service
 public class Skf3022Sc002SelectErrAsyncService
-		extends AsyncBaseServiceAbstract<Skf3022Sc002SelectErrAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3022Sc002SelectErrAsyncDto> {
 
 	/**
 	 * 駐車場情報の取得サービス

@@ -13,7 +13,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -28,7 +28,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005DeleteDto;
  *
  */
 @Service
-public class Skf3090Sc005DeleteService extends BaseServiceAbstract<Skf3090Sc005DeleteDto> {
+public class Skf3090Sc005DeleteService extends SkfServiceAbstract<Skf3090Sc005DeleteDto> {
 
 	@Autowired
 	Skf3090Sc005GetLedgerCountExpRepository skf3090Sc005GetLedgerCountExpRepository;

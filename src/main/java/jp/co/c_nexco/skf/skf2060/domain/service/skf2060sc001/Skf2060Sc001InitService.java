@@ -19,7 +19,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -35,7 +35,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001InitDto;
  * 
  */
 @Service
-public class Skf2060Sc001InitService extends BaseServiceAbstract<Skf2060Sc001InitDto> {
+public class Skf2060Sc001InitService extends SkfServiceAbstract<Skf2060Sc001InitDto> {
 	
 	@Autowired
 	private Skf1010MShainRepository skf1010MShainRepository;

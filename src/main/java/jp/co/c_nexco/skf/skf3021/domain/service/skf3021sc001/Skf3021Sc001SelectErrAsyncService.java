@@ -6,7 +6,7 @@ package jp.co.c_nexco.skf.skf3021.domain.service.skf3021sc001;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001SelectErrAsyncDto;
 
@@ -19,7 +19,7 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001SelectErrAs
  */
 @Service
 public class Skf3021Sc001SelectErrAsyncService
-		extends AsyncBaseServiceAbstract<Skf3021Sc001SelectErrAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3021Sc001SelectErrAsyncDto> {
 
 	/**
 	 * 未選択エラーメッセージ表示

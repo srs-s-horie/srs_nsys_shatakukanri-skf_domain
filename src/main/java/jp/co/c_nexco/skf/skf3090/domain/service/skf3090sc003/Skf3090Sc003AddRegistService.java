@@ -22,7 +22,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MBusinessAreaRep
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -36,7 +36,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3090Sc003AddRegistService extends BaseServiceAbstract<Skf3090Sc003AddRegistDto> {
+public class Skf3090Sc003AddRegistService extends SkfServiceAbstract<Skf3090Sc003AddRegistDto> {
 
 	@Autowired
 	Skf3090Sc003SharedService skf3090Sc003SharedService;	

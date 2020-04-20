@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005ChangeDropDownAsyncDto;
 
 /**
@@ -18,7 +18,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005ChangeDropD
  */
 @Service
 public class Skf3010Sc005ChangeDropDownAsyncService
-		extends AsyncBaseServiceAbstract<Skf3010Sc005ChangeDropDownAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3010Sc005ChangeDropDownAsyncDto> {
 
 	/**
 	 * 物置調整面積表示データを生成する。

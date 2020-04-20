@@ -68,7 +68,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuMutualRi
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShatakuRentalRirekiRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -88,7 +88,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * 
  */
 @Service
-public class Skf3030Sc002RegistService extends BaseServiceAbstract<Skf3030Sc002RegistDto> {
+public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002RegistDto> {
 	
 	@Autowired
 	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;

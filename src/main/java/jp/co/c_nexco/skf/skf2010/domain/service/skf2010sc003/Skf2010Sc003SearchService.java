@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -29,7 +29,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003SearchDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc003SearchService extends BaseServiceAbstract<Skf2010Sc003SearchDto> {
+public class Skf2010Sc003SearchService extends SkfServiceAbstract<Skf2010Sc003SearchDto> {
 
 	@Autowired
 	private Skf2010Sc003SharedService skf2010Sc003SharedService;

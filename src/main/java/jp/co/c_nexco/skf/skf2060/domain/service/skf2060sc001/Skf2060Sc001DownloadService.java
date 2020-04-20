@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001DownloadDto
  * 
  */
 @Service
-public class Skf2060Sc001DownloadService extends BaseServiceAbstract<Skf2060Sc001DownloadDto> {
+public class Skf2060Sc001DownloadService extends SkfServiceAbstract<Skf2060Sc001DownloadDto> {
 
 	@Autowired
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;

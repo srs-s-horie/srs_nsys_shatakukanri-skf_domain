@@ -14,7 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetG
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MPayInKindBiko;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MPayInKindBikoRepository;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc002.Skf3090Sc002InitDto;
  * 
  */
 @Service
-public class Skf3090Sc002InitService extends BaseServiceAbstract<Skf3090Sc002InitDto> {
+public class Skf3090Sc002InitService extends SkfServiceAbstract<Skf3090Sc002InitDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

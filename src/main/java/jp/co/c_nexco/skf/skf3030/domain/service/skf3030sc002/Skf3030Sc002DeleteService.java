@@ -45,7 +45,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TShozokuRirekiRe
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -64,7 +64,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * 
  */
 @Service
-public class Skf3030Sc002DeleteService extends BaseServiceAbstract<Skf3030Sc002DeleteDto> {
+public class Skf3030Sc002DeleteService extends SkfServiceAbstract<Skf3030Sc002DeleteDto> {
 	
 	@Autowired
 	private ApplicationScopeBean bean;

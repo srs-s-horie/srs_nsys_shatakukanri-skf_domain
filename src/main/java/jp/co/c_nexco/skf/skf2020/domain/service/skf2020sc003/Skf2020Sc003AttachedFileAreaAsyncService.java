@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003AttachedFileAreaAsyncDto;
@@ -21,7 +21,7 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003AttachedFil
  */
 @Service
 public class Skf2020Sc003AttachedFileAreaAsyncService
-		extends AsyncBaseServiceAbstract<Skf2020Sc003AttachedFileAreaAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf2020Sc003AttachedFileAreaAsyncDto> {
 
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtils;

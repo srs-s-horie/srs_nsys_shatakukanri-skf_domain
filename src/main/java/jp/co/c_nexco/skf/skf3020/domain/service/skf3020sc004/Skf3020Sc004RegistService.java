@@ -18,7 +18,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -39,7 +39,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiD
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3020Sc004RegistService extends BaseServiceAbstract<Skf3020Sc004RegistDto>  {
+public class Skf3020Sc004RegistService extends SkfServiceAbstract<Skf3020Sc004RegistDto>  {
 
 	@Autowired
 	Skf3020Sc004SharedService skf3020Sc004SharedService;	

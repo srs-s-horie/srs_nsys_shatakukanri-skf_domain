@@ -17,7 +17,7 @@ import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001ChangeDropD
  */
 @Service
 public class Skf2040Sc001ChangeDropDownAsyncService
-		extends AsyncBaseServiceAbstract<Skf2040Sc001ChangeDropDownAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf2040Sc001ChangeDropDownAsyncDto> {
 
 	@Autowired
 	private Skf2040Sc001SharedService skf2040Sc001SharedService;

@@ -16,7 +16,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -35,7 +35,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002AddressSear
  *
  */
 @Service
-public class Skf3010Sc002AddressSearchAsyncService extends AsyncBaseServiceAbstract<Skf3010Sc002AddressSearchAsyncDto> {
+public class Skf3010Sc002AddressSearchAsyncService extends SkfAsyncServiceAbstract<Skf3010Sc002AddressSearchAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -32,7 +32,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TShatakuYoyakuDa
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3022Sc004RegisteService extends BaseServiceAbstract<Skf3022Sc004RegisteDto>  {
+public class Skf3022Sc004RegisteService extends SkfServiceAbstract<Skf3022Sc004RegisteDto>  {
 
 	@Autowired
 	Skf3022Sc004DeleteShatakuYoyakuExpRepository skf3022Sc004DeleteShatakuYoyakuExpRepository;

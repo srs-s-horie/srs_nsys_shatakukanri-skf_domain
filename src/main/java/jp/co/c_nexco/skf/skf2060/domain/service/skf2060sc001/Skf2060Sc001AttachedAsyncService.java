@@ -14,7 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001Dele
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2060TKariageBukkenFile;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001DeleteAttachedFileExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenFileRepository;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -29,7 +29,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001AttachedAsy
  * 
  */
 @Service
-public class Skf2060Sc001AttachedAsyncService extends AsyncBaseServiceAbstract<Skf2060Sc001AttachedAsyncDto> {
+public class Skf2060Sc001AttachedAsyncService extends SkfAsyncServiceAbstract<Skf2060Sc001AttachedAsyncDto> {
 
 	@Autowired
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;

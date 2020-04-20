@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeParkingRentalAdustsTextAsyncDto;
 
 /**
@@ -21,7 +21,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeParki
  */
 @Service
 public class Skf3010Sc002ChangeParkingRentalAdustsTextAsyncService
-		extends AsyncBaseServiceAbstract<Skf3010Sc002ChangeParkingRentalAdustsTextAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3010Sc002ChangeParkingRentalAdustsTextAsyncDto> {
 
 	@Autowired
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;

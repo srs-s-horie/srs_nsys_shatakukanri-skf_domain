@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetApplHistoryExp;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -28,7 +28,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001SupportDto;
  * 
  */
 @Service
-public class Skf2060Sc001SupportService extends BaseServiceAbstract<Skf2060Sc001SupportDto> {
+public class Skf2060Sc001SupportService extends SkfServiceAbstract<Skf2060Sc001SupportDto> {
 	
 	@Autowired
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -28,7 +28,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc007.Skf3010Sc007SelectListD
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3010Sc007SelectListService extends BaseServiceAbstract<Skf3010Sc007SelectListDto> {
+public class Skf3010Sc007SelectListService extends SkfServiceAbstract<Skf3010Sc007SelectListDto> {
 	
 
 	@Autowired

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -28,7 +28,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc006.Skf3090Sc006SearchDto;
  *
  */
 @Service
-public class Skf3090Sc006SearchService extends BaseServiceAbstract<Skf3090Sc006SearchDto> {
+public class Skf3090Sc006SearchService extends SkfServiceAbstract<Skf3090Sc006SearchDto> {
 
 	@Value("${skf3090.skf3090_sc006.max_search_count}")
 	private Integer maxGetRecordCount;

@@ -9,7 +9,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutAsy
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2050Sc001CarryOutAsyncService extends AsyncBaseServiceAbstract<Skf2050Sc001CarryOutAsyncDto> {
+public class Skf2050Sc001CarryOutAsyncService extends SkfAsyncServiceAbstract<Skf2050Sc001CarryOutAsyncDto> {
 
 	private final String COMPLETION_DAY_LABEL = "備品搬出完了日";
 	private final String COMMENT_LABEL = "承認者へのコメント";

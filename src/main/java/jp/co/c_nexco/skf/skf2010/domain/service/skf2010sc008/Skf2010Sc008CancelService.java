@@ -3,7 +3,7 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc008;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -16,7 +16,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc008.Skf2010Sc008InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc008CancelService extends BaseServiceAbstract<Skf2010Sc008CancelDto>{
+public class Skf2010Sc008CancelService extends SkfServiceAbstract<Skf2010Sc008CancelDto>{
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

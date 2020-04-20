@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf3060.domain.dto.skf3060sc001.Skf3060Sc001InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3060Sc001InitService extends BaseServiceAbstract<Skf3060Sc001InitDto> {
+public class Skf3060Sc001InitService extends SkfServiceAbstract<Skf3060Sc001InitDto> {
 	
 
 	@Autowired

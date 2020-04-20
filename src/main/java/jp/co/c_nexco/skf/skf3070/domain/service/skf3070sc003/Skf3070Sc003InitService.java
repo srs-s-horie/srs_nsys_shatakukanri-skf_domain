@@ -19,7 +19,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Sc003.Skf3070Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3070TOwnerInfoRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -34,7 +34,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc003.Skf3070Sc003InitDto;
  * 
  */
 @Service
-public class Skf3070Sc003InitService extends BaseServiceAbstract<Skf3070Sc003InitDto> {
+public class Skf3070Sc003InitService extends SkfServiceAbstract<Skf3070Sc003InitDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

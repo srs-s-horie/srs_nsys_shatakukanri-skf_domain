@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TInformation;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -20,7 +20,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc008.Skf3090Sc008CheckRegist
  * 
  */
 @Service
-public class Skf3090Sc008CheckRegistAsyncService extends AsyncBaseServiceAbstract<Skf3090Sc008CheckRegistAsyncDto> {
+public class Skf3090Sc008CheckRegistAsyncService extends SkfAsyncServiceAbstract<Skf3090Sc008CheckRegistAsyncDto> {
 	
 	@Autowired
 	private Skf3090Sc008SharedService skf3090Sc008SharedService;

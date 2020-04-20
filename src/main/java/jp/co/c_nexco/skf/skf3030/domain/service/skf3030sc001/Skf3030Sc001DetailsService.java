@@ -13,7 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc001.Skf3030Sc001GetS
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3030.domain.service.common.Skf303010CommonSharedServ
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3030Sc001DetailsService extends BaseServiceAbstract<Skf3030Sc001DetailsDto> {
+public class Skf3030Sc001DetailsService extends SkfServiceAbstract<Skf3030Sc001DetailsDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

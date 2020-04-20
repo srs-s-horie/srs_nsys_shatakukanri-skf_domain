@@ -27,7 +27,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetKariageTeijiFileDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc002.Skf2060Sc002GetShainSoshikiInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -44,7 +44,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc002.Skf2060Sc002InitDto;
  * 
  */
 @Service
-public class Skf2060Sc002InitService extends BaseServiceAbstract<Skf2060Sc002InitDto> {
+public class Skf2060Sc002InitService extends SkfServiceAbstract<Skf2060Sc002InitDto> {
 	
 	@Autowired
 	private Skf2060Sc002GetApplHistoryExpRepository skf2060Sc002GetApplHistoryExpRepository;

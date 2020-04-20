@@ -15,7 +15,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChosho
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -30,7 +30,7 @@ import jp.co.c_nexco.skf.skf3020.domain.service.common.Skf302010CommonSharedServ
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3020Sc003ImportService extends BaseServiceAbstract<Skf3020Sc003ImportDto> {
+public class Skf3020Sc003ImportService extends SkfServiceAbstract<Skf3020Sc003ImportDto> {
 
 	private String companyCd = CodeConstant.C001;
 	@Autowired

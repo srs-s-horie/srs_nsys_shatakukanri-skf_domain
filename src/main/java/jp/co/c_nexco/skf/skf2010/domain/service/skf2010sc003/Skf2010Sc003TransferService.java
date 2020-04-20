@@ -13,7 +13,7 @@ import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003TransferDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc003TransferService extends BaseServiceAbstract<Skf2010Sc003TransferDto> {
+public class Skf2010Sc003TransferService extends SkfServiceAbstract<Skf2010Sc003TransferDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

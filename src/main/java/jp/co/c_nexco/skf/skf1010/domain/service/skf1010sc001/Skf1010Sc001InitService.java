@@ -38,7 +38,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf1010Sc001.Skf1010Sc001GetShinseiStatusUserExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -54,7 +54,7 @@ import jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001.Skf1010Sc001InitDto;
  * 
  */
 @Service
-public class Skf1010Sc001InitService extends BaseServiceAbstract<Skf1010Sc001InitDto> {
+public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001InitDto> {
 
 	/** 定数 */
 	// 会社コード（中日本）

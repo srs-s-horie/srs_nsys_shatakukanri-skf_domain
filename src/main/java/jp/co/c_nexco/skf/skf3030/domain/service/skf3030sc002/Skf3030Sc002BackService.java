@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002BackDto;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3030.domain.service.common.Skf303010CommonSharedServ
  * 
  */
 @Service
-public class Skf3030Sc002BackService extends BaseServiceAbstract<Skf3030Sc002BackDto> {
+public class Skf3030Sc002BackService extends SkfServiceAbstract<Skf3030Sc002BackDto> {
 	
 	@Autowired
 	private ApplicationScopeBean bean;

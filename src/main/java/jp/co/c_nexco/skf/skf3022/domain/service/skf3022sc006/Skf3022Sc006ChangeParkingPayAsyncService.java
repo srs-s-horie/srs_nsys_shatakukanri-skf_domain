@@ -6,7 +6,7 @@ package jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc006;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -19,7 +19,7 @@ import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ChangeParki
  */
 @Service
 public class Skf3022Sc006ChangeParkingPayAsyncService
-	extends AsyncBaseServiceAbstract<Skf3022Sc006ChangeParkingPayAsyncDto> {
+	extends SkfAsyncServiceAbstract<Skf3022Sc006ChangeParkingPayAsyncDto> {
 
 	@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
