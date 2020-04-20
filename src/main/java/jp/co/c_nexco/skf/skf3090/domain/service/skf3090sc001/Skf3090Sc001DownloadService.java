@@ -21,7 +21,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc001.Skf3090Sc001GetG
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc001.Skf3090Sc001GetGenbutsuShikyuKagakuReportInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
@@ -39,7 +39,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc001.Skf3090Sc001DownloadDto
  * 
  */
 @Service
-public class Skf3090Sc001DownloadService extends BaseServiceAbstract<Skf3090Sc001DownloadDto> {
+public class Skf3090Sc001DownloadService extends SkfServiceAbstract<Skf3090Sc001DownloadDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

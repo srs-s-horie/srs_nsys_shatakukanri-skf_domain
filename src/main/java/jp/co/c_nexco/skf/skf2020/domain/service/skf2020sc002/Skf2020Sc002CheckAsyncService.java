@@ -13,7 +13,7 @@ import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -29,7 +29,7 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002CheckAsyncD
  *
  */
 @Service
-public class Skf2020Sc002CheckAsyncService extends AsyncBaseServiceAbstract<Skf2020Sc002CheckAsyncDto> {
+public class Skf2020Sc002CheckAsyncService extends SkfAsyncServiceAbstract<Skf2020Sc002CheckAsyncDto> {
 
 	@Autowired
 	private Skf2020Sc002SharedService skf2020Sc002SharedService;

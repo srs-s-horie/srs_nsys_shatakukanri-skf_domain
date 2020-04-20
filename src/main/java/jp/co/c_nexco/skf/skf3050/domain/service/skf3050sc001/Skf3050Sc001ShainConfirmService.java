@@ -17,7 +17,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetS
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainNameExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc001.Skf3050Sc001ShainConfir
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3050Sc001ShainConfirmService extends BaseServiceAbstract<Skf3050Sc001ShainConfirmDto> {
+public class Skf3050Sc001ShainConfirmService extends SkfServiceAbstract<Skf3050Sc001ShainConfirmDto> {
 	
 	@Autowired
 	Skf3050Sc001SharedService skf3050Sc001SharedService;

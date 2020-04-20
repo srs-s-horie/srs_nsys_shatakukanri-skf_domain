@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc005InitService extends BaseServiceAbstract<Skf2010Sc005InitDto> {
+public class Skf2010Sc005InitService extends SkfServiceAbstract<Skf2010Sc005InitDto> {
 
 	@Autowired
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;

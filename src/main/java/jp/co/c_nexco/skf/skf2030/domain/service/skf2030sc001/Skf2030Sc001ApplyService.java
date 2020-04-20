@@ -14,7 +14,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -30,7 +30,7 @@ import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc001.Skf2030Sc001ApplyDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2030Sc001ApplyService extends BaseServiceAbstract<Skf2030Sc001ApplyDto> {
+public class Skf2030Sc001ApplyService extends SkfServiceAbstract<Skf2030Sc001ApplyDto> {
 
 	@Autowired
 	private Skf2030Sc001SharedService skf2030Sc001SharedService;

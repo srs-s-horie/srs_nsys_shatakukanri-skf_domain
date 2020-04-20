@@ -19,7 +19,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiData;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -37,7 +37,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * 
  */
 @Service
-public class Skf3022Sc006KeizokuLoginService extends BaseServiceAbstract<Skf3022Sc006KeizokuLoginDto> {
+public class Skf3022Sc006KeizokuLoginService extends SkfServiceAbstract<Skf3022Sc006KeizokuLoginDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

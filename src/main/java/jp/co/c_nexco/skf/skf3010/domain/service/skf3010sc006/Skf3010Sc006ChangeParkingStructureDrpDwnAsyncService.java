@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -26,7 +26,7 @@ import jp.co.intra_mart.common.platform.log.Logger;
  */
 @Service
 public class Skf3010Sc006ChangeParkingStructureDrpDwnAsyncService
-		extends AsyncBaseServiceAbstract<Skf3010Sc006ChangeParkingStructureDrpDwnAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3010Sc006ChangeParkingStructureDrpDwnAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

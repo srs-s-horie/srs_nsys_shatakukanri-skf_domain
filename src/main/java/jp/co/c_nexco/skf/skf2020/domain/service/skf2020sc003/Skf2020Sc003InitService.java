@@ -13,7 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGe
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -30,7 +30,7 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2020Sc003InitService extends BaseServiceAbstract<Skf2020Sc003InitDto> {
+public class Skf2020Sc003InitService extends SkfServiceAbstract<Skf2020Sc003InitDto> {
 
 	@Autowired
 	private Skf2020Sc003SharedService skf2020sc003SharedService;

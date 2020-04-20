@@ -15,7 +15,7 @@ import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -32,7 +32,7 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc002.Skf2050Sc002RevisionDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2050Sc002RevisionService extends BaseServiceAbstract<Skf2050Sc002RevisionDto> {
+public class Skf2050Sc002RevisionService extends SkfServiceAbstract<Skf2050Sc002RevisionDto> {
 
 	private String companyCd = CodeConstant.C001;
 	private final String COMMENT_LABEL = "申請者へのコメント";

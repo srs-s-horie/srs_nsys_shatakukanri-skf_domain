@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc004.Skf2060Sc004GetKariageListExpParameter;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -29,7 +29,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2060Sc004InitService extends BaseServiceAbstract<Skf2060Sc004InitDto> {
+public class Skf2060Sc004InitService extends SkfServiceAbstract<Skf2060Sc004InitDto> {
 
 	@Autowired
 	private MenuScopeSessionBean sessionBean;

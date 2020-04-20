@@ -23,7 +23,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
@@ -44,7 +44,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc001.Skf3030Sc001DownloadRp0
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3030Sc001DownloadRp002Service extends BaseServiceAbstract<Skf3030Sc001DownloadRp002Dto> {
+public class Skf3030Sc001DownloadRp002Service extends SkfServiceAbstract<Skf3030Sc001DownloadRp002Dto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

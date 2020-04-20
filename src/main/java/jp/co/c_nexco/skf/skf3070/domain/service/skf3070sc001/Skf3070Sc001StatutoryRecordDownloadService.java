@@ -29,7 +29,7 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.CellDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
@@ -54,7 +54,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc001.Skf3070Sc001StatutoryRe
  */
 @Service
 public class Skf3070Sc001StatutoryRecordDownloadService
-		extends BaseServiceAbstract<Skf3070Sc001StatutoryRecordDownloadDto> {
+		extends SkfServiceAbstract<Skf3070Sc001StatutoryRecordDownloadDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

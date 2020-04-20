@@ -10,7 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc003.Skf3090Sc003InitDto;
  * 
  */
 @Service
-public class Skf3090Sc003InitService extends BaseServiceAbstract<Skf3090Sc003InitDto> {
+public class Skf3090Sc003InitService extends SkfServiceAbstract<Skf3090Sc003InitDto> {
 	
 	@Autowired
 	Skf3090Sc003SharedService skf3090Sc003SharedService;

@@ -11,7 +11,7 @@ import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -24,7 +24,7 @@ import jp.co.c_nexco.skf.skf2050.domain.dto.skf2050sc001.Skf2050Sc001CarryOutDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2050Sc001CarryOutService extends BaseServiceAbstract<Skf2050Sc001CarryOutDto> {
+public class Skf2050Sc001CarryOutService extends SkfServiceAbstract<Skf2050Sc001CarryOutDto> {
 
 	@Autowired
 	private Skf2050Sc001SharedService skf2050Sc001SharedService;

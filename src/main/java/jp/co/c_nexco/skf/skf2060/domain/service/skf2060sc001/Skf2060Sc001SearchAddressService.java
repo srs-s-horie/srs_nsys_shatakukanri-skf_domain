@@ -11,7 +11,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUti
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetPostalCodeAddressExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetPostalCodeAddressExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001SearchAddre
  * 
  */
 @Service
-public class Skf2060Sc001SearchAddressService extends BaseServiceAbstract<Skf2060Sc001SearchAddressDto> {
+public class Skf2060Sc001SearchAddressService extends SkfServiceAbstract<Skf2060Sc001SearchAddressDto> {
 
 	@Autowired
 	private SkfGetInfoUtilsGetPostalCodeAddressExpRepository skfGetInfoUtilsGetPostalCodeAddressExpRepository;

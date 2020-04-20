@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005ChangeDropDownAsyncDto;
 
 /**
@@ -20,7 +20,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc005.Skf3090Sc005ChangeDropD
  */
 @Service
 public class Skf3090Sc005ChangeDropDownAsyncService
-		extends AsyncBaseServiceAbstract<Skf3090Sc005ChangeDropDownAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3090Sc005ChangeDropDownAsyncDto> {
 
 	@Autowired
 	private Skf3090Sc005SharedService skf3090Sc005SharedService;

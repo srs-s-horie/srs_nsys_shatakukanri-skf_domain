@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeStructureDrpDwnAsyncDto;
 
 /**
@@ -19,7 +19,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeStruc
  */
 @Service
 public class Skf3010Sc002ChangeStructureDrpDwnAsyncService
-		extends AsyncBaseServiceAbstract<Skf3010Sc002ChangeStructureDrpDwnAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3010Sc002ChangeStructureDrpDwnAsyncDto> {
 
 	@Autowired
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;

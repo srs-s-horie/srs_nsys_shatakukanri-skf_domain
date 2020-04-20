@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailSe
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2060Sc004SendMailService extends BaseServiceAbstract<Skf2060Sc004SendMailDto> {
+public class Skf2060Sc004SendMailService extends SkfServiceAbstract<Skf2060Sc004SendMailDto> {
     
     @Autowired
     Skf206010CommonSendMailService skf206010CommonSharedService;

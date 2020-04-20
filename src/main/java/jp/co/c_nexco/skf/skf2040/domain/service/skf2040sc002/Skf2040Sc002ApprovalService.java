@@ -17,7 +17,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackEx
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -36,7 +36,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002ApprovalDto
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc002ApprovalService extends BaseServiceAbstract<Skf2040Sc002ApprovalDto> {
+public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002ApprovalDto> {
 
 	@Autowired
 	private Skf2040Sc002SharedService skf2040Sc002SharedService;

@@ -9,7 +9,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001CheckAsyncD
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc001CheckAsyncService extends AsyncBaseServiceAbstract<Skf2040Sc001CheckAsyncDto> {
+public class Skf2040Sc001CheckAsyncService extends SkfAsyncServiceAbstract<Skf2040Sc001CheckAsyncDto> {
 
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";

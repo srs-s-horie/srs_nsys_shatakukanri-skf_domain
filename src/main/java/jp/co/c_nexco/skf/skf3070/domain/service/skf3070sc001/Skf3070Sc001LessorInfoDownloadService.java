@@ -21,7 +21,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Rp002.Skf3070Rp002GetO
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Rp002.Skf3070Rp002GetOwnerInfoListExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3070Rp002.Skf3070Rp002GetOwnerInfoListExpRepository;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
@@ -41,7 +41,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc001.Skf3070Sc001LessorInfoD
  * 
  */
 @Service
-public class Skf3070Sc001LessorInfoDownloadService extends BaseServiceAbstract<Skf3070Sc001LessorInfoDownloadDto> {
+public class Skf3070Sc001LessorInfoDownloadService extends SkfServiceAbstract<Skf3070Sc001LessorInfoDownloadDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

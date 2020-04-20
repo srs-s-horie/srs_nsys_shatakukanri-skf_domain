@@ -15,7 +15,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetI
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -30,7 +30,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002ShainSuppor
  * 
  */
 @Service
-public class Skf3030Sc002ShainSupportCallBackService extends BaseServiceAbstract<Skf3030Sc002ShainSupportCallBackDto> {
+public class Skf3030Sc002ShainSupportCallBackService extends SkfServiceAbstract<Skf3030Sc002ShainSupportCallBackDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

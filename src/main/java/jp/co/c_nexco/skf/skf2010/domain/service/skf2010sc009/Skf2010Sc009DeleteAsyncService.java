@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc009.Skf2010Sc009DeleteAsync
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc009DeleteAsyncService extends AsyncBaseServiceAbstract<Skf2010Sc009DeleteAsyncDto> {
+public class Skf2010Sc009DeleteAsyncService extends SkfAsyncServiceAbstract<Skf2010Sc009DeleteAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

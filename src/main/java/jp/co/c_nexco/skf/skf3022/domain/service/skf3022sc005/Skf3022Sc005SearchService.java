@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetTeijiDataInfoExpParameter;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc005.Skf3022Sc005SearchDto;
  *
  */
 @Service
-public class Skf3022Sc005SearchService extends BaseServiceAbstract<Skf3022Sc005SearchDto> {
+public class Skf3022Sc005SearchService extends SkfServiceAbstract<Skf3022Sc005SearchDto> {
 
 	@Autowired
 	private Skf3022Sc005SharedService skf3022Sc005SharedService;

@@ -20,7 +20,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3020TTenninshaChoshoData
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -35,7 +35,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3020Sc004ShainDeleteService extends BaseServiceAbstract<Skf3020Sc004ShainDeleteDto> {
+public class Skf3020Sc004ShainDeleteService extends SkfServiceAbstract<Skf3020Sc004ShainDeleteDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;	

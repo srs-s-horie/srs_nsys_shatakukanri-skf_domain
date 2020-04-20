@@ -14,7 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -32,7 +32,7 @@ import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309030CommonSharedServ
  *
  */
 @Service
-public class Skf3090Sc005InitService extends BaseServiceAbstract<Skf3090Sc005InitDto> {
+public class Skf3090Sc005InitService extends SkfServiceAbstract<Skf3090Sc005InitDto> {
 
 	// 戻り値Map用定数
 	private static final String KEY_COMPANY_CD = "COMPANY_CODE";

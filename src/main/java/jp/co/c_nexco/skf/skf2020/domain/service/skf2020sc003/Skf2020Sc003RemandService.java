@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003RemandDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2020Sc003RemandService extends BaseServiceAbstract<Skf2020Sc003RemandDto> {
+public class Skf2020Sc003RemandService extends SkfServiceAbstract<Skf2020Sc003RemandDto> {
 
 	@Autowired
 	private Skf2020Sc003SharedService skf2020sc003SharedService;

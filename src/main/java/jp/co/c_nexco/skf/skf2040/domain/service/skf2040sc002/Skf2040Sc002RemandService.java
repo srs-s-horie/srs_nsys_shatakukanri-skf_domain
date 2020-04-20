@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -24,7 +24,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002RemandDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc002RemandService extends BaseServiceAbstract<Skf2040Sc002RemandDto> {
+public class Skf2040Sc002RemandService extends SkfServiceAbstract<Skf2040Sc002RemandDto> {
 
 	@Autowired
 	private Skf2040Sc002SharedService skf2040sc002SharedService;

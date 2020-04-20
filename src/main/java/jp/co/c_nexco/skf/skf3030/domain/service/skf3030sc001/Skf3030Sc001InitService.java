@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc001.Skf3030Sc001GetShatakuKanriDaichoInfoExpParameter;
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -33,7 +33,7 @@ import jp.co.c_nexco.skf.skf3030.domain.service.common.Skf303010CommonSharedServ
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3030Sc001InitService extends BaseServiceAbstract<Skf3030Sc001InitDto> {
+public class Skf3030Sc001InitService extends SkfServiceAbstract<Skf3030Sc001InitDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

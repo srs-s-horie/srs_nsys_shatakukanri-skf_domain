@@ -24,7 +24,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -43,7 +43,7 @@ import jp.co.c_nexco.skf.skf2060.domain.service.common.Skf206010CommonSendMailSe
  * 
  */
 @Service
-public class Skf2060Sc001CandidateService extends BaseServiceAbstract<Skf2060Sc001CandidateDto> {
+public class Skf2060Sc001CandidateService extends SkfServiceAbstract<Skf2060Sc001CandidateDto> {
 
 	@Autowired
 	private Skf2060Sc001SharedService skf2060Sc001SharedService;

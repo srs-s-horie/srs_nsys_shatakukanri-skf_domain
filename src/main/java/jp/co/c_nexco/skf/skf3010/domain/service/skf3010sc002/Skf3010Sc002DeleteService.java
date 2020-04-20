@@ -45,7 +45,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepo
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TRentalPatternRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -61,7 +61,7 @@ import jp.co.intra_mart.mirage.integration.guice.Transactional;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3010Sc002DeleteService extends BaseServiceAbstract<Skf3010Sc002DeleteDto> {
+public class Skf3010Sc002DeleteService extends SkfServiceAbstract<Skf3010Sc002DeleteDto> {
 
 	@Autowired
 	private Skf3010Sc002SharedService skf3010Sc002SharedService;

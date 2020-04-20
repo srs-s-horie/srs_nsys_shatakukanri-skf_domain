@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309030CommonSharedServ
  *
  */
 @Service
-public class Skf3090Sc004SearchService extends BaseServiceAbstract<Skf3090Sc004SearchDto> {
+public class Skf3090Sc004SearchService extends SkfServiceAbstract<Skf3090Sc004SearchDto> {
 
 	@Value("${skf3090.skf3090_sc004.max_search_count}")
 	private Integer maxGetRecordCount;

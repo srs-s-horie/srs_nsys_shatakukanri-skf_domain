@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002ShiyoryoSup
  * 
  */
 @Service
-public class Skf3030Sc002ShiyoryoSupportCallBackService extends BaseServiceAbstract<Skf3030Sc002ShiyoryoSupportCallBackDto> {
+public class Skf3030Sc002ShiyoryoSupportCallBackService extends SkfServiceAbstract<Skf3030Sc002ShiyoryoSupportCallBackDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

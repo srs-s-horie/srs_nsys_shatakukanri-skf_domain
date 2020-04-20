@@ -13,7 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetO
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
@@ -29,7 +29,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc001.Skf3070Sc001InitDto;
  * 
  */
 @Service
-public class Skf3070Sc001InitService extends BaseServiceAbstract<Skf3070Sc001InitDto> {
+public class Skf3070Sc001InitService extends SkfServiceAbstract<Skf3070Sc001InitDto> {
 
 	@Autowired
 	private MenuScopeSessionBean sessionBean;

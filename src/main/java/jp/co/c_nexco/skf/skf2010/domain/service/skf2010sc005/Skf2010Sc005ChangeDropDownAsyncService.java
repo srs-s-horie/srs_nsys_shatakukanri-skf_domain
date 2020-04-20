@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005ChangeDropDownAsyncDto;
@@ -20,7 +20,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005ChangeDropD
  */
 @Service
 public class Skf2010Sc005ChangeDropDownAsyncService
-		extends AsyncBaseServiceAbstract<Skf2010Sc005ChangeDropDownAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf2010Sc005ChangeDropDownAsyncDto> {
 
 	@Autowired
 	private Skf2010Sc005SharedService skf2010Sc005SharedService;

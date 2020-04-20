@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc006.Skf3090Sc006GetSoshikiInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc006.Skf3090Sc006InitDto;
  * 
  */
 @Service
-public class Skf3090Sc006InitService extends BaseServiceAbstract<Skf3090Sc006InitDto> {
+public class Skf3090Sc006InitService extends SkfServiceAbstract<Skf3090Sc006InitDto> {
 
 	@Autowired
 	private SkfDropDownUtils skfDropDownUtils;

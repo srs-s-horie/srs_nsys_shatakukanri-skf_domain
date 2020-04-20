@@ -18,7 +18,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -38,7 +38,7 @@ import jp.co.intra_mart.foundation.user_context.model.UserProfile;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc002PresentService extends BaseServiceAbstract<Skf2010Sc002PresentDto> {
+public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002PresentDto> {
 
 	@Autowired
 	private SkfMailUtils skfMailUtils;

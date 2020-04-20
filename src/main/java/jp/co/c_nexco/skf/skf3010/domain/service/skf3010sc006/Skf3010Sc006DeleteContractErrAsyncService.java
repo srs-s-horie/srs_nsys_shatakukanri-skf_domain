@@ -6,7 +6,7 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006DeleteContractErrAsyncDto;
@@ -20,7 +20,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006DeleteContr
  *
  */
 @Service
-public class Skf3010Sc006DeleteContractErrAsyncService extends AsyncBaseServiceAbstract<Skf3010Sc006DeleteContractErrAsyncDto> {
+public class Skf3010Sc006DeleteContractErrAsyncService extends SkfAsyncServiceAbstract<Skf3010Sc006DeleteContractErrAsyncDto> {
 
 	/**
 	 * 借上社宅登録画面の契約情報削除不可メッセージ表示を行う。　

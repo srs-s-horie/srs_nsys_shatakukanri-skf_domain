@@ -33,7 +33,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Rp001.Skf3021Rp001
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
@@ -58,7 +58,7 @@ import jp.co.c_nexco.skf.skf3021.domain.dto.skf3021sc001.Skf3021Sc001NyutaikyoYo
  * 
  */
 @Service
-public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends BaseServiceAbstract<Skf3021Sc001NyutaikyoYoteiListDownloadDto> {
+public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbstract<Skf3021Sc001NyutaikyoYoteiListDownloadDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

@@ -13,7 +13,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -28,7 +28,7 @@ import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001AttachedDow
  * 
  */
 @Service
-public class Skf2060Sc001AttachedDownloadService extends BaseServiceAbstract<Skf2060Sc001AttachedDownloadDto> {
+public class Skf2060Sc001AttachedDownloadService extends SkfServiceAbstract<Skf2060Sc001AttachedDownloadDto> {
 
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtils;

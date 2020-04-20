@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshikiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MSoshikiRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -21,7 +21,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc007.Skf3090Sc007DeleteDto;
  *
  */
 @Service
-public class Skf3090Sc007DeleteService extends BaseServiceAbstract<Skf3090Sc007DeleteDto> {
+public class Skf3090Sc007DeleteService extends SkfServiceAbstract<Skf3090Sc007DeleteDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

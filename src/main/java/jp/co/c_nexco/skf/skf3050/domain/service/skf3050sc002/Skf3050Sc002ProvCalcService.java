@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf3050.domain.task.skf3050bt001.Skf3050Bt001SharedTask
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3050Sc002ProvCalcService extends BaseServiceAbstract<Skf3050Sc002ProvCalcDto> {
+public class Skf3050Sc002ProvCalcService extends SkfServiceAbstract<Skf3050Sc002ProvCalcDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

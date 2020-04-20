@@ -6,7 +6,7 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc007;
 import java.text.MessageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -20,7 +20,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc007.Skf2010Sc007InitDto;
  *
  */
 @Service
-public class Skf2010Sc007InitService extends BaseServiceAbstract<Skf2010Sc007InitDto> {
+public class Skf2010Sc007InitService extends SkfServiceAbstract<Skf2010Sc007InitDto> {
 
 	// 画面表示判定 社宅入居希望等調書
 	private static final String NYUKYO = "1";

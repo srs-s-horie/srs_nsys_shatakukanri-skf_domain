@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc005.Skf3010Sc005GetRoomInfoExp;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -28,7 +28,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3010Sc005InitService extends BaseServiceAbstract<Skf3010Sc005InitDto> {
+public class Skf3010Sc005InitService extends SkfServiceAbstract<Skf3010Sc005InitDto> {
 	
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;

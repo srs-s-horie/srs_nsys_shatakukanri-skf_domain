@@ -5,7 +5,7 @@ package jp.co.c_nexco.skf.skf3010.domain.service.skf3010sc006;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AttachedFileDeleteDto;
@@ -16,7 +16,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AttachedFil
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3010Sc006AttachedFileDeleteService extends BaseServiceAbstract<Skf3010Sc006AttachedFileDeleteDto> {
+public class Skf3010Sc006AttachedFileDeleteService extends SkfServiceAbstract<Skf3010Sc006AttachedFileDeleteDto> {
 
 	@Autowired
 	private Skf3010Sc006SharedService skf3010Sc006SharedService;

@@ -18,7 +18,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc001.Skf2040Sc001
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -41,7 +41,7 @@ import jp.co.intra_mart.foundation.user_context.model.UserProfile;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc001InitService extends BaseServiceAbstract<Skf2040Sc001InitDto> {
+public class Skf2040Sc001InitService extends SkfServiceAbstract<Skf2040Sc001InitDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

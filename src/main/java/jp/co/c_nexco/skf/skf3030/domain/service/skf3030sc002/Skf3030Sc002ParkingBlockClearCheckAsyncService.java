@@ -14,7 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetP
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetParkingInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002GetParkingInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -31,7 +31,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002ParkingBloc
  */
 @Service
 public class Skf3030Sc002ParkingBlockClearCheckAsyncService
-	extends AsyncBaseServiceAbstract<Skf3030Sc002ParkingBlockClearCheckAsyncDto> {
+	extends SkfAsyncServiceAbstract<Skf3030Sc002ParkingBlockClearCheckAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

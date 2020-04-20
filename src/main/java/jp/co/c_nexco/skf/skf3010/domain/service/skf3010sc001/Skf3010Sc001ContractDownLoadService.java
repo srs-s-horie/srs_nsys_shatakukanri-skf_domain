@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -43,7 +43,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc001.Skf3010Sc001GetP
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3010Sc001ContractDownLoadService extends BaseServiceAbstract<Skf3010Sc001ContractDownLoadDto> {
+public class Skf3010Sc001ContractDownLoadService extends SkfServiceAbstract<Skf3010Sc001ContractDownLoadDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

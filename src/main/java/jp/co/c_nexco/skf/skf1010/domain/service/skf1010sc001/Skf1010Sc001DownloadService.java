@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.skf1010.domain.dto.skf1010sc001.Skf1010Sc001DownloadDto
  */
 
 @Service
-public class Skf1010Sc001DownloadService extends BaseServiceAbstract<Skf1010Sc001DownloadDto> {
+public class Skf1010Sc001DownloadService extends SkfServiceAbstract<Skf1010Sc001DownloadDto> {
 
 	/**
 	 * サービス処理を行う。

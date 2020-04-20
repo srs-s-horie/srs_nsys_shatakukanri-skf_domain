@@ -14,7 +14,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MSoshikiReposito
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -30,7 +30,7 @@ import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309040CommonSharedServ
  *
  */
 @Service
-public class Skf3090Sc007RegistService extends BaseServiceAbstract<Skf3090Sc007RegistDto> {
+public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007RegistDto> {
 
 	/** 定数 */
 	private static final String AFFILIATION1_00 = "00";

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -23,7 +23,7 @@ import jp.co.c_nexco.skf.skf3022.domain.service.skf3022sc003.Skf3022Sc003SharedS
  */
 @Service
 public class Skf3022Sc003ChangeInputNobeMensekiAsyncService
-	extends AsyncBaseServiceAbstract<Skf3022Sc003ChangeInputNobeMensekiAsyncDto> {
+	extends SkfAsyncServiceAbstract<Skf3022Sc003ChangeInputNobeMensekiAsyncDto> {
 
 	@Autowired
 	private Skf3022Sc003SharedService skf3022Sc003SharedService;

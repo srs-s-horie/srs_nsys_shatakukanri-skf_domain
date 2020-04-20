@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -26,7 +26,7 @@ import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc002.Skf3010Sc002ChangeParki
  */
 @Service
 public class Skf3010Sc002ChangeParkingStructureDrpDwnAsyncService
-		extends AsyncBaseServiceAbstract<Skf3010Sc002ChangeParkingStructureDrpDwnAsyncDto> {
+		extends SkfAsyncServiceAbstract<Skf3010Sc002ChangeParkingStructureDrpDwnAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

@@ -53,7 +53,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CodeCacheUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -73,7 +73,7 @@ import jp.co.c_nexco.skf.skf3030.domain.service.common.Skf303010CommonSharedServ
  * 
  */
 @Service
-public class Skf3030Sc002InitService extends BaseServiceAbstract<Skf3030Sc002InitDto> {
+public class Skf3030Sc002InitService extends SkfServiceAbstract<Skf3030Sc002InitDto> {
 	
 	@Autowired
 	private ApplicationScopeBean bean;

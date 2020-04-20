@@ -12,7 +12,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGe
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -33,7 +33,7 @@ import jp.co.intra_mart.foundation.user_context.model.UserProfile;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc002ApplyService extends BaseServiceAbstract<Skf2010Sc002ApplyDto> {
+public class Skf2010Sc002ApplyService extends SkfServiceAbstract<Skf2010Sc002ApplyDto> {
 
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;

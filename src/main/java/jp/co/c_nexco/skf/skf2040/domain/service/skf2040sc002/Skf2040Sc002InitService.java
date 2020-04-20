@@ -29,7 +29,7 @@ import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -48,7 +48,7 @@ import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc002.Skf2040Sc002InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2040Sc002InitService extends BaseServiceAbstract<Skf2040Sc002InitDto> {
+public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002InitDto> {
 
 	private String sTrue = "true";
 	private String sFalse = "false";

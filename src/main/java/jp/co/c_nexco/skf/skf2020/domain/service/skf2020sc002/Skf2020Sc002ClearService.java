@@ -7,7 +7,7 @@ package jp.co.c_nexco.skf.skf2020.domain.service.skf2020sc002;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ClearDto;
@@ -18,7 +18,7 @@ import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ClearDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2020Sc002ClearService extends BaseServiceAbstract<Skf2020Sc002ClearDto> {
+public class Skf2020Sc002ClearService extends SkfServiceAbstract<Skf2020Sc002ClearDto> {
 
 	@Autowired
 	private Skf2020Sc002SharedService skf2020Sc002SharedService;

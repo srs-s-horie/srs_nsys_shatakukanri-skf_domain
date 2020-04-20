@@ -22,7 +22,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -44,7 +44,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc002.Skf2010Sc002InitDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc002InitService extends BaseServiceAbstract<Skf2010Sc002InitDto> {
+public class Skf2010Sc002InitService extends SkfServiceAbstract<Skf2010Sc002InitDto> {
 
 	@Autowired
 	private Skf2010Sc002SharedService skf2010Sc002SharedService;

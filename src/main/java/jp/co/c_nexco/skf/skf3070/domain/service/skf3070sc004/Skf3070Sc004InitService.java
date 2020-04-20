@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc004.Skf3070Sc004GetOwnerInfoExp;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc004.Skf3070Sc004InitDto;
  * 
  */
 @Service
-public class Skf3070Sc004InitService extends BaseServiceAbstract<Skf3070Sc004InitDto>{
+public class Skf3070Sc004InitService extends SkfServiceAbstract<Skf3070Sc004InitDto>{
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

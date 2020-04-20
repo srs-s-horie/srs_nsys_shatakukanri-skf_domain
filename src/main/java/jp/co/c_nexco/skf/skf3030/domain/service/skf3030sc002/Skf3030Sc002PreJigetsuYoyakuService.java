@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002PreJigetsuY
  * 
  */
 @Service
-public class Skf3030Sc002PreJigetsuYoyakuService extends BaseServiceAbstract<Skf3030Sc002PreJigetsuYoyakuDto> {
+public class Skf3030Sc002PreJigetsuYoyakuService extends SkfServiceAbstract<Skf3030Sc002PreJigetsuYoyakuDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

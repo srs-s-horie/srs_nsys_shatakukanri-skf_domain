@@ -3,7 +3,7 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc008;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
@@ -16,7 +16,7 @@ import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc008.Skf2010Sc008LogoutDto;
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf2010Sc008LogoutService extends BaseServiceAbstract<Skf2010Sc008LogoutDto> {
+public class Skf2010Sc008LogoutService extends SkfServiceAbstract<Skf2010Sc008LogoutDto> {
 
 	@Autowired
 	private MenuScopeSessionBean sessionBean;

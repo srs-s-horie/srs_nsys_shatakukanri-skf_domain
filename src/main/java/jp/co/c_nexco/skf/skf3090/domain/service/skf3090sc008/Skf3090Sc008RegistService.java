@@ -15,7 +15,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010TInformationRepo
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -27,7 +27,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc008.Skf3090Sc008RegistDto;
  * 
  */
 @Service
-public class Skf3090Sc008RegistService extends BaseServiceAbstract<Skf3090Sc008RegistDto> {
+public class Skf3090Sc008RegistService extends SkfServiceAbstract<Skf3090Sc008RegistDto> {
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;

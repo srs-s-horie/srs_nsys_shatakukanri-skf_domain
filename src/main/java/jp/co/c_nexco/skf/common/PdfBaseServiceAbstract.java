@@ -11,7 +11,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.core.constants.CommonConstant;
 import jp.co.c_nexco.nfw.webcore.domain.model.FileDownloadDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.BaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
@@ -25,7 +25,7 @@ import jp.co.intra_mart.product.pdfmaker.net.IOIntegration;
  * 
  * @author NEXCOシステムズ
  */
-public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extends BaseServiceAbstract<DTO> {
+public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extends SkfServiceAbstract<DTO> {
 
 	protected IOIntegration integratePdf;
 	protected List<CSVDoc> pdfDataList;

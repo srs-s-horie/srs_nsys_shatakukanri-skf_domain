@@ -10,7 +10,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceAbstract;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -24,7 +24,7 @@ import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc007.Skf3090Sc007AgencySearc
  *
  */
 @Service
-public class Skf3090Sc007AgencySearchAsyncService extends AsyncBaseServiceAbstract<Skf3090Sc007AgencySearchAsyncDto> {
+public class Skf3090Sc007AgencySearchAsyncService extends SkfAsyncServiceAbstract<Skf3090Sc007AgencySearchAsyncDto> {
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
