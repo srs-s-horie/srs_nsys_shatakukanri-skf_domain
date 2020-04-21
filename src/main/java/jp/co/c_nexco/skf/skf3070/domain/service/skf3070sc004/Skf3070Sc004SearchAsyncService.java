@@ -45,13 +45,6 @@ public class Skf3070Sc004SearchAsyncService extends SkfAsyncServiceAbstract<Skf3
 
 		List<Skf3070Sc004GetOwnerInfoExp> ownerInfoList = new ArrayList<Skf3070Sc004GetOwnerInfoExp>();
 
-		// 入力チェック
-		if (!checkValidate(searchDto)) {
-			// リストテーブルは表示する
-			throwBusinessExceptionIfErrors(searchDto.getResultMessages());
-			return searchDto;
-		}
-
 		// 社員情報一覧検索
 		ownerInfoList = skf3070Sc004SharedService.getOwnerInfo(searchDto.getPopOwnerName(),
 				searchDto.getPopOwnerNameKk(), searchDto.getPopAddress(), searchDto.getPopBusinessKbn());
@@ -71,26 +64,4 @@ public class Skf3070Sc004SearchAsyncService extends SkfAsyncServiceAbstract<Skf3
 		return searchDto;
 		
 	}
-
-	/**
-	 * 入力チェック
-	 * 
-	 * @param dto
-	 * @return
-	 */
-	private boolean checkValidate(Skf3070Sc004SearchAsyncDto dto) {
-		boolean result = true;
-
-
-		// 氏名又は名称（フリガナ）
-		if (NfwStringUtils.isNotBlank(dto.getPopOwnerNameKk())
-				&& !CheckUtils.isFullWidthKatakanaSpace(dto.getPopOwnerNameKk())) {
-			ServiceHelper.addErrorResultMessage(dto, new String[] { "ownerNameKk" }, MessageIdConstant.E_SKF_1005,
-					"氏名又は名称（フリガナ）");
-			result = false;
-		}
-
-		return result;
-	}
-
 }
