@@ -145,14 +145,6 @@ public class Skf3070Sc002RegistService extends SkfServiceAbstract<Skf3070Sc002Re
 	private boolean isValidateType(Skf3070Sc002RegistDto registDto) {
 		boolean result = true;
 
-		// 氏名又は名称（フリガナ）
-		if (NfwStringUtils.isNotBlank(registDto.getOwnerNameKk())
-				&& !CheckUtils.isFullWidthKatakanaSpace(registDto.getOwnerNameKk())) {
-			ServiceHelper.addErrorResultMessage(registDto, new String[] { "ownerNameKk" }, MessageIdConstant.E_SKF_1005,
-					"氏名又は名称（フリガナ）");
-			result = false;
-		}
-
 		// 郵便番号
 		if (NfwStringUtils.isNotBlank(registDto.getZipCode()) && !CheckUtils.isZipcodeFormat(registDto.getZipCode())) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "zipCode" }, MessageIdConstant.E_SKF_1007,
