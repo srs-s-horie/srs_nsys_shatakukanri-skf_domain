@@ -247,6 +247,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		for (SkfPerssonalBatchUtilsGetShainListBySharedTableExp shainInfo : shainList) {
 			SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExp insertShainInfo = new SkfPerssonalBatchUtilsInsertSkfIamPreUserMasterExp();
 			CopyUtils.copyProperties(insertShainInfo, shainInfo);
+			// 日付にスラッシュがあった場合は取り除く
+			if (NfwStringUtils.isNotEmpty(insertShainInfo.getPumBirthdate())) {
+				if (insertShainInfo.getPumBirthdate().contains(CodeConstant.SLASH)) {
+					String newBirthDay = insertShainInfo.getPumBirthdate().replace(CodeConstant.SLASH,
+							CodeConstant.NONE);
+					insertShainInfo.setPumBirthdate(newBirthDay);
+				}
+			}
 			int res = insertRepository.insertSkfIamPreUserMaster(insertShainInfo);
 			if (res <= 0) {
 				return false;
