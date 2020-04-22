@@ -264,6 +264,9 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 		SkfSoshikiBatchUtilsInsertSharedTableDataExpRepository insRepository = (SkfSoshikiBatchUtilsInsertSharedTableDataExpRepository) SpringContext
 				.getBean("skfSoshikiBatchUtilsInsertSharedTableDataExpRepository");
 		for (SkfSoshikiBatchUtilsGetSoshikiListBySharedTableExp insData : insDataList) {
+			if (NfwStringUtils.isEmpty(insData.getAgencyCd())) {
+				continue;
+			}
 			SkfSoshikiBatchUtilsInsertSharedTableDataExp inSoshikiData = new SkfSoshikiBatchUtilsInsertSharedTableDataExp();
 			CopyUtils.copyProperties(inSoshikiData, insData);
 			int insRes = insRepository.insertSharedTableData(inSoshikiData);
