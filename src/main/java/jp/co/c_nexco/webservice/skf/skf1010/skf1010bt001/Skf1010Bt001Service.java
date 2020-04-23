@@ -269,6 +269,23 @@ public class Skf1010Bt001Service extends BaseWebServiceAbstract {
 			}
 			SkfSoshikiBatchUtilsInsertSharedTableDataExp inSoshikiData = new SkfSoshikiBatchUtilsInsertSharedTableDataExp();
 			CopyUtils.copyProperties(inSoshikiData, insData);
+			// 発令日にスラッシュがあれば取り除く
+			if (NfwStringUtils.isNotEmpty(inSoshikiData.getAnnounceDate())) {
+				String announceDate = inSoshikiData.getAnnounceDate();
+				if (announceDate.contains(CodeConstant.SLASH)) {
+					announceDate = announceDate.replace(CodeConstant.SLASH, CodeConstant.NONE);
+					inSoshikiData.setAnnounceDate(announceDate);
+				}
+			}
+			// キー日付にスラッシュがあれば取り除く
+			if (NfwStringUtils.isNotEmpty(inSoshikiData.getKeyDate())) {
+				String keyDate = inSoshikiData.getKeyDate();
+				if (keyDate.contains(CodeConstant.SLASH)) {
+					keyDate = keyDate.replace(CodeConstant.SLASH, CodeConstant.NONE);
+					inSoshikiData.setKeyDate(keyDate);
+				}
+			}
+
 			int insRes = insRepository.insertSharedTableData(inSoshikiData);
 			if (insRes <= 0) {
 				return false;
