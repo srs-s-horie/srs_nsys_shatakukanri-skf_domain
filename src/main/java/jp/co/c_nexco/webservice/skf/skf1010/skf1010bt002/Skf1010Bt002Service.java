@@ -149,7 +149,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 					batchResult = SkfCommonConstant.ABNORMAL;
 					// 処理結果：バッチ制御テーブルへのデータ投入エラー
 					setLog(ERROR, MessageIdConstant.E_SKF_1073);
-					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+					setLog(INFO, MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
 							batchResult);
 					dto.setStatus(batchResult);
 					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
@@ -162,7 +162,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 					batchResult = SkfCommonConstant.ABNORMAL;
 					// 処理結果：プレユーザーマスタへのデータ投入エラー
 					setLog(ERROR, MessageIdConstant.E_SKF_1066, "プレユーザーマスタへのデータの投入");
-					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+					setLog(INFO, MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
 							batchResult);
 					dto.setStatus(batchResult);
 					dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
@@ -173,14 +173,14 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				if (!kyuyoKouseiRes) {
 					// エラーログ出力
 					batchResult = SkfCommonConstant.ABNORMAL;
-					setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+					setLog(INFO, MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
 							batchResult);
 				} else {
 					boolean shatakuRes = updateShataku();
 					if (!shatakuRes) {
 						// エラーログ出力
 						batchResult = SkfCommonConstant.ABNORMAL;
-						setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
+						setLog(INFO, MessageIdConstant.E_SKF_1131, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002,
 								batchResult);
 					}
 				}
@@ -215,7 +215,9 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		endPrc(String.valueOf(batchResult), FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, SkfCommonConstant.PROCESSING);
 
 		// 終了ログ出力
-		setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
+		if (CheckUtils.isEqual(String.valueOf(batchResult), SkfCommonConstant.COMPLETE)) {
+			setLog(INFO, MessageIdConstant.I_SKF_1041, FunctionIdConstant.BATCH_CLASS_SKF1010_BT002, batchResult);
+		}
 		dto.setStatus(batchResult);
 		dto.setMessage(String.join(CodeConstant.DOUBLE_SPACE, logList.toArray(new String[logList.size()])));
 		// 処理結果返却
@@ -302,17 +304,21 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		int shainInsCnt = 0;
 
 		// ワーク社員マスタに複写
+		setLog(INFO, MessageIdConstant.I_SKF_1022, "ワーク社員マスタ複写");
 		if (!insertWkShain()) {
 			return false;
 		}
 
 		// 社員マスタのデータを全件削除
+		setLog(INFO, MessageIdConstant.I_SKF_1022, "社員マスタのデータを全件削除");
 		shainDelCnt = deleteShatakuShainMasterInfo(null, true);
 
 		// 条件で社員マスタを作成
+		setLog(INFO, MessageIdConstant.I_SKF_1022, "条件で社員マスタを作成");
 		shainInsCnt = insertShainMst();
 
 		// 退職社員を社員マスタに追加
+		setLog(INFO, MessageIdConstant.I_SKF_1022, "退職社員を社員マスタに追加");
 		shainInsCnt += insertShainMstRetied();
 
 		// ログ出力
