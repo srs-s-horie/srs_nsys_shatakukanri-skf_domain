@@ -633,6 +633,8 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setMailAddress(idmShain.getMailAddress());
 				// 性別
 				shainInfo.setGender(idmShain.getGender());
+				// ユーザーID
+				shainInfo.setUserId(idmShain.getUserId());
 				// 登録フラグ
 				shainInfo.setRegistFlg(SkfCommonConstant.REGIST_SHINJO);
 			} else if (CheckUtils.isEqual(updateKbn, UPDATE_KBN)) {
