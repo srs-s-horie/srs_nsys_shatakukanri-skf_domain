@@ -3,10 +3,7 @@
  */
 package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc003;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,6 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
-import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
@@ -65,9 +61,6 @@ public class Skf2010Sc003InitService extends SkfServiceAbstract<Skf2010Sc003Init
 		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
-
-		// 申請日にシステム日付-1月、システム日付を設定
-		setApplDateDefault(initDto);
 
 		// オペレーションガイド取得
 		String operationGuide = skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2010_SC003);
@@ -127,31 +120,6 @@ public class Skf2010Sc003InitService extends SkfServiceAbstract<Skf2010Sc003Init
 				agreDateTo, applName, applStatus);
 
 		initDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList, initDto));
-	}
-
-	/**
-	 * カレンダーの初期値設定
-	 * 
-	 * @param initDto
-	 */
-	private void setApplDateDefault(Skf2010Sc003InitDto initDto) {
-		// Date applDateTo = new Date();
-		LocalDate applDateTo = LocalDate.now();
-		LocalDate applDateFrom = applDateTo.minusMonths(1);
-
-		// Calendar cal = Calendar.getInstance();
-		// cal.setTime((Date) applDateTo.clone());
-		//
-		// cal.add(Calendar.MONTH, -1);
-
-		// Date applDateFrom = cal.getTime();
-
-		initDto.setApplDateFrom(skfDateFormatUtils.dateFormatFromDate(
-				Date.from(applDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant()),
-				SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
-		initDto.setApplDateTo(skfDateFormatUtils.dateFormatFromDate(
-				Date.from(applDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant()),
-				SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT));
 	}
 
 	/**
