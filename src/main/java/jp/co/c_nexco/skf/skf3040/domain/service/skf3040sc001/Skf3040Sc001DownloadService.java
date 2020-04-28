@@ -614,27 +614,29 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			tmpMap.put("col2", strNullCheck(tmpData.getShainNo()));
 			// 社員氏名
 			tmpMap.put("col3", strNullCheck(tmpData.getName()));
+			// 社員フリガナ
+			tmpMap.put("col4", strNullCheck(tmpData.getName_kk()));
 			/** 立会人 **/
 			// 氏名
-			tmpMap.put("col4", strNullCheck(tmpData.getUkeireDairiName()));
+			tmpMap.put("col5", strNullCheck(tmpData.getUkeireDairiName()));
 			// 連絡先
 			if(NfwStringUtils.isEmpty(tmpData.getUkeireDairiApoint())){
-				tmpMap.put("col5", strNullCheck(tmpData.getUkeireMyApoint()));
+				tmpMap.put("col6", strNullCheck(tmpData.getUkeireMyApoint()));
 			}else{
-				tmpMap.put("col5", strNullCheck(tmpData.getUkeireDairiApoint()));
+				tmpMap.put("col7", strNullCheck(tmpData.getUkeireDairiApoint()));
 			}
 			/** 希望日時 **/
 			// 日付
-			tmpMap.put("col6", strNullCheck(tmpData.getHannyuRequestDay()));
+			tmpMap.put("col8", strNullCheck(tmpData.getHannyuRequestDay()));
 			// 時刻
 			if(NfwStringUtils.isEmpty(tmpData.getHannyuRequestKbn())){
-				tmpMap.put("col7", null);
+				tmpMap.put("col8", null);
 			}else{
-				tmpMap.put("col7", kibouJikanList.get(tmpData.getHannyuRequestKbn()));
+				tmpMap.put("col8", kibouJikanList.get(tmpData.getHannyuRequestKbn()));
 			}
 			/** 社宅 **/
 			// 郵便番号
-			tmpMap.put("col8", strNullCheck(tmpData.getZipCd()));
+			tmpMap.put("col9", strNullCheck(tmpData.getZipCd()));
 			// 所在地
 			String shozaichi = "";
 			String prefCd = strNullCheck(tmpData.getPrefCd());
@@ -645,74 +647,74 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			}else{
 				shozaichi = strNullCheck(tmpData.getAddress());
 			}
-			tmpMap.put("col9", shozaichi);
+			tmpMap.put("col10", shozaichi);
 			// 社宅名
-			tmpMap.put("col10", strNullCheck(tmpData.getShatakuName()));
+			tmpMap.put("col11", strNullCheck(tmpData.getShatakuName()));
 			// 部屋番号
-			tmpMap.put("col11", strNullCheck(tmpData.getRoomNo()));
+			tmpMap.put("col12", strNullCheck(tmpData.getRoomNo()));
 			// EV有無
 			if(NfwStringUtils.isEmpty(tmpData.getElevatorKbn())){
-				tmpMap.put("col12", null);
+				tmpMap.put("col13", null);
 			}else{
-				tmpMap.put("col12", evKbnList.get(tmpData.getElevatorKbn()));
+				tmpMap.put("col13", evKbnList.get(tmpData.getElevatorKbn()));
 			}
 			/** 備品内訳**/
 			// 冷蔵庫
 			String reizokoFlg = getBihinValueHannyu(tmpData.getReizokoApplKbn(), tmpData.getReizokoLentStatusKbn());
-			tmpMap.put("col13", reizokoFlg);
+			tmpMap.put("col14", reizokoFlg);
 			// テレビ
 			String tvFlg = getBihinValueHannyu(tmpData.getTerebiApplKbn(), tmpData.getTerebiLentStatusKbn());
-			tmpMap.put("col14", tvFlg);
+			tmpMap.put("col15", tvFlg);
 			// テレビ台
 			String tvDaiFlg = getBihinValueHannyu(tmpData.getTerebidaiApplKbn(), tmpData.getTerebidaiLentStatusKbn());
-			tmpMap.put("col15", tvDaiFlg);
+			tmpMap.put("col16", tvDaiFlg);
 			// エアコン
 			String eakonFlg = getBihinValueHannyu(tmpData.getEakonApplKbn(), tmpData.getEakonLentStatusKbn());
-			tmpMap.put("col16", eakonFlg);
+			tmpMap.put("col17", eakonFlg);
 			// 洗濯機
 			String sentakukiFlg = getBihinValueHannyu(tmpData.getSentakukiApplKbn(), tmpData.getSentakukiLentStatusKbn());
-			tmpMap.put("col17", sentakukiFlg);
+			tmpMap.put("col18", sentakukiFlg);
 			// 電子レンジ
-			tmpMap.put("col18", null);
+			tmpMap.put("col19", null);
 			// オーブンレンジ
 			String obunFlg = getBihinValueHannyu(tmpData.getObunApplKbn(), tmpData.getObunLentStatusKbn());
-			tmpMap.put("col19", obunFlg);
+			tmpMap.put("col20", obunFlg);
 			// オーブントースター
 			String obuntosutaFlg = getBihinValueHannyu(tmpData.getObuntosutaApplKbn(), tmpData.getObuntosutaLentStatusKbn());
-			tmpMap.put("col20", obuntosutaFlg);
+			tmpMap.put("col21", obuntosutaFlg);
 			// 掃除機
 			String sojikiFlg = getBihinValueHannyu(tmpData.getSojikiApplKbn(), tmpData.getSojikiLentStatusKbn());
-			tmpMap.put("col21", sojikiFlg);
+			tmpMap.put("col22", sojikiFlg);
 			// 座卓
 			String zatakuFlg = getBihinValueHannyu(tmpData.getZatakuApplKbn(), tmpData.getZatakuLentStatusKbn());
-			tmpMap.put("col22", zatakuFlg);
+			tmpMap.put("col23", zatakuFlg);
 			// 机・テーブル
 			String tukueFlg = getBihinValueHannyu(tmpData.getTukueApplKbn(), tmpData.getTukueLentStatusKbn());
-			tmpMap.put("col23", tukueFlg);
+			tmpMap.put("col24", tukueFlg);
 			// 椅子
 			String isuFlg = getBihinValueHannyu(tmpData.getIsuApplKbn(), tmpData.getIsuLentStatusKbn());
-			tmpMap.put("col24", isuFlg);
+			tmpMap.put("col25", isuFlg);
 			// 電子炊飯ジャー
 			String suihanjaFlg = getBihinValueHannyu(tmpData.getSuihanjaApplKbn(), tmpData.getSuihanjaLentStatusKbn());
-			tmpMap.put("col25", suihanjaFlg);
+			tmpMap.put("col26", suihanjaFlg);
 			// キッチンキャビネット
 			String kyabinettoFlg = getBihinValueHannyu(tmpData.getKicchinkyabinettoApplKbn(), tmpData.getKyabinettoLentStatusKbn());
-			tmpMap.put("col26", kyabinettoFlg);
+			tmpMap.put("col27", kyabinettoFlg);
 			// ガステーブル
 			String gasuteburuFlg = getBihinValueHannyu(tmpData.getGasuteburuApplKbn(), tmpData.getGasuteburuLentStatusKbn());
-			tmpMap.put("col27", gasuteburuFlg);
+			tmpMap.put("col28", gasuteburuFlg);
 			// カーテン
 			String katenFlg = getBihinValueHannyu(tmpData.getKatenApplKbn(), tmpData.getKatenLentStatusKbn());
-			tmpMap.put("col28", katenFlg);
+			tmpMap.put("col29", katenFlg);
 			// 照明機器
 			String shomeiFlg = getBihinValueHannyu(tmpData.getShomeiApplKbn(), tmpData.getShomeiLentStatusKbn());
-			tmpMap.put("col29", shomeiFlg);
+			tmpMap.put("col30", shomeiFlg);
 			/** 前回作成日 **/
 			// 前回作成日
-			tmpMap.put("col30", strNullCheck(tmpData.getHannyuCarryinInstruction()));
+			tmpMap.put("col31", strNullCheck(tmpData.getHannyuCarryinInstruction()));
 			/** 備考 **/
 			// 備考
-			tmpMap.put("col31", null);
+			tmpMap.put("col32", null);
 			
 			setExcelDataList.add(tmpMap);
 			
@@ -732,27 +734,29 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			tmpMap.put("col2", strNullCheck(tmpData.getShainNo()));
 			// 社員氏名
 			tmpMap.put("col3", strNullCheck(tmpData.getName()));
+			// 社員フリガナ
+			tmpMap.put("col4", strNullCheck(tmpData.getName_kk()));
 			/** 立会人 **/
 			// 氏名
-			tmpMap.put("col4", strNullCheck(tmpData.getTatiaiDairiName()));
+			tmpMap.put("col5", strNullCheck(tmpData.getTatiaiDairiName()));
 			// 連絡先
 			if(NfwStringUtils.isEmpty(tmpData.getTatiaiDairiApoint())){
-				tmpMap.put("col5", strNullCheck(tmpData.getTatiaiMyApoint()));
+				tmpMap.put("col6", strNullCheck(tmpData.getTatiaiMyApoint()));
 			}else{
-				tmpMap.put("col5", strNullCheck(tmpData.getTatiaiDairiApoint()));
+				tmpMap.put("col6", strNullCheck(tmpData.getTatiaiDairiApoint()));
 			}
 			/** 希望日時 **/
 			// 日付
-			tmpMap.put("col6", strNullCheck(tmpData.getHansyutuRequestDay()));
+			tmpMap.put("col7", strNullCheck(tmpData.getHansyutuRequestDay()));
 			// 時刻
 			if(NfwStringUtils.isEmpty(tmpData.getHansyutuRequestKbn())){
-				tmpMap.put("col7", null);
+				tmpMap.put("col8", null);
 			}else{
-				tmpMap.put("col7", kibouJikanList.get(tmpData.getHansyutuRequestKbn()));
+				tmpMap.put("col8", kibouJikanList.get(tmpData.getHansyutuRequestKbn()));
 			}
 			/** 社宅 **/
 			// 郵便番号
-			tmpMap.put("col8", strNullCheck(tmpData.getZipCd()));
+			tmpMap.put("col9", strNullCheck(tmpData.getZipCd()));
 			// 所在地
 			String shozaichi = "";
 			String prefCd = strNullCheck(tmpData.getPrefCd());
@@ -763,74 +767,74 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			}else{
 				shozaichi = strNullCheck(tmpData.getAddress());
 			}
-			tmpMap.put("col9", shozaichi);
+			tmpMap.put("col10", shozaichi);
 			// 社宅名
-			tmpMap.put("col10", strNullCheck(tmpData.getShatakuName()));
+			tmpMap.put("col11", strNullCheck(tmpData.getShatakuName()));
 			// 部屋番号
-			tmpMap.put("col11", strNullCheck(tmpData.getRoomNo()));
+			tmpMap.put("col12", strNullCheck(tmpData.getRoomNo()));
 			// EV有無
 			if(NfwStringUtils.isEmpty(tmpData.getElevatorKbn())){
-				tmpMap.put("col12", null);
+				tmpMap.put("col13", null);
 			}else{
-				tmpMap.put("col12", evKbnList.get(tmpData.getElevatorKbn()));
+				tmpMap.put("col13", evKbnList.get(tmpData.getElevatorKbn()));
 			}
 			/** 備品内訳**/
 			// 冷蔵庫
 			String reizokoFlg = getBihinValueHenkan(tmpData.getReizokoReturnKbn());
-			tmpMap.put("col13", reizokoFlg);
+			tmpMap.put("col14", reizokoFlg);
 			// テレビ
 			String tvFlg = getBihinValueHenkan(tmpData.getTerebiReturnKbn());
-			tmpMap.put("col14", tvFlg);
+			tmpMap.put("col15", tvFlg);
 			// テレビ台
 			String tvDaiFlg = getBihinValueHenkan(tmpData.getTerebidaiReturnKbn());
-			tmpMap.put("col15", tvDaiFlg);
+			tmpMap.put("col16", tvDaiFlg);
 			// エアコン
 			String eakonFlg = getBihinValueHenkan(tmpData.getEakonReturnKbn());
-			tmpMap.put("col16", eakonFlg);
+			tmpMap.put("col17", eakonFlg);
 			// 洗濯機
 			String sentakukiFlg = getBihinValueHenkan(tmpData.getSentakukiReturnKbn());
-			tmpMap.put("col17", sentakukiFlg);
+			tmpMap.put("col18", sentakukiFlg);
 			// 電子レンジ
-			tmpMap.put("col18", null);
+			tmpMap.put("col19", null);
 			// オーブンレンジ
 			String obunFlg = getBihinValueHenkan(tmpData.getObunReturnKbn());
-			tmpMap.put("col19", obunFlg);
+			tmpMap.put("col20", obunFlg);
 			// オーブントースター
 			String obuntosutaFlg = getBihinValueHenkan(tmpData.getObuntosutaReturnKbn());
-			tmpMap.put("col20", obuntosutaFlg);
+			tmpMap.put("col21", obuntosutaFlg);
 			// 掃除機
 			String sojikiFlg = getBihinValueHenkan(tmpData.getSojikiReturnKbn());
-			tmpMap.put("col21", sojikiFlg);
+			tmpMap.put("col22", sojikiFlg);
 			// 座卓
 			String zatakuFlg = getBihinValueHenkan(tmpData.getZatakuReturnKbn());
-			tmpMap.put("col22", zatakuFlg);
+			tmpMap.put("col23", zatakuFlg);
 			// 机・テーブル
 			String tukueFlg = getBihinValueHenkan(tmpData.getTukueReturnKbn());
-			tmpMap.put("col23", tukueFlg);
+			tmpMap.put("col24", tukueFlg);
 			// 椅子
 			String isuFlg = getBihinValueHenkan(tmpData.getIsuReturnKbn());
-			tmpMap.put("col24", isuFlg);
+			tmpMap.put("col25", isuFlg);
 			// 電子炊飯ジャー
 			String suihanjaFlg = getBihinValueHenkan(tmpData.getSuihanjaReturnKbn());
-			tmpMap.put("col25", suihanjaFlg);
+			tmpMap.put("col26", suihanjaFlg);
 			// キッチンキャビネット
 			String kyabinettoFlg = getBihinValueHenkan(tmpData.getKicchinkyabinettoReturnKbn());
-			tmpMap.put("col26", kyabinettoFlg);
+			tmpMap.put("col27", kyabinettoFlg);
 			// ガステーブル
 			String gasuteburuFlg = getBihinValueHenkan(tmpData.getGasuteburuReturnKbn());
-			tmpMap.put("col27", gasuteburuFlg);
+			tmpMap.put("col28", gasuteburuFlg);
 			// カーテン
 			String katenFlg = getBihinValueHenkan(tmpData.getKatenReturnKbn());
-			tmpMap.put("col28", katenFlg);
+			tmpMap.put("col29", katenFlg);
 			// 照明機器
 			String shomeiFlg = getBihinValueHenkan(tmpData.getShomeiReturnKbn());
-			tmpMap.put("col29", shomeiFlg);
+			tmpMap.put("col30", shomeiFlg);
 			/** 前回作成日 **/
 			// 前回作成日
-			tmpMap.put("col30", strNullCheck(tmpData.getHansyutuCarryinInstruction()));
+			tmpMap.put("col31", strNullCheck(tmpData.getHansyutuCarryinInstruction()));
 			/** 備考 **/
 			// 備考
-			tmpMap.put("col31", null);
+			tmpMap.put("col32", null);
 
 			setExcelDataList.add(tmpMap);
 			
@@ -850,27 +854,29 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			tmpMap.put("col2", strNullCheck(tmpData.getShainNo()));
 			// 社員氏名
 			tmpMap.put("col3", strNullCheck(tmpData.getName()));
+			// 社員フリガナ
+			tmpMap.put("col4", strNullCheck(tmpData.getName_kk()));
 			/** 立会人 **/
 			// 氏名
-			tmpMap.put("col4", strNullCheck(tmpData.getTatiaiDairiName()));
+			tmpMap.put("col5", strNullCheck(tmpData.getTatiaiDairiName()));
 			// 連絡先
 			if(NfwStringUtils.isEmpty(tmpData.getTatiaiDairiApoint())){
-				tmpMap.put("col5", strNullCheck(tmpData.getTatiaiMyApoint()));
+				tmpMap.put("col6", strNullCheck(tmpData.getTatiaiMyApoint()));
 			}else{
-				tmpMap.put("col5", strNullCheck(tmpData.getTatiaiDairiApoint()));
+				tmpMap.put("col6", strNullCheck(tmpData.getTatiaiDairiApoint()));
 			}
 			/** 希望日時 **/
 			// 日付
-			tmpMap.put("col6", strNullCheck(tmpData.getHansyutuRequestDay()));
+			tmpMap.put("col7", strNullCheck(tmpData.getHansyutuRequestDay()));
 			// 時刻
 			if(NfwStringUtils.isEmpty(tmpData.getHansyutuRequestKbn())){
-				tmpMap.put("col7", null);
+				tmpMap.put("col8", null);
 			}else{
-				tmpMap.put("col7", kibouJikanList.get(tmpData.getHansyutuRequestKbn()));
+				tmpMap.put("col8", kibouJikanList.get(tmpData.getHansyutuRequestKbn()));
 			}
 			/** 社宅 **/
 			// 郵便番号
-			tmpMap.put("col8", strNullCheck(tmpData.getZipCd()));
+			tmpMap.put("col9", strNullCheck(tmpData.getZipCd()));
 			// 所在地
 			String shozaichi = "";
 			String prefCd = strNullCheck(tmpData.getPrefCd());
@@ -881,74 +887,74 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			}else{
 				shozaichi = strNullCheck(tmpData.getAddress());
 			}
-			tmpMap.put("col9", shozaichi);
+			tmpMap.put("col10", shozaichi);
 			// 社宅名
-			tmpMap.put("col10", strNullCheck(tmpData.getShatakuName()));
+			tmpMap.put("col11", strNullCheck(tmpData.getShatakuName()));
 			// 部屋番号
-			tmpMap.put("col11", strNullCheck(tmpData.getRoomNo()));
+			tmpMap.put("col12", strNullCheck(tmpData.getRoomNo()));
 			// EV有無
 			if(NfwStringUtils.isEmpty(tmpData.getElevatorKbn())){
-				tmpMap.put("col12", null);
+				tmpMap.put("col13", null);
 			}else{
-				tmpMap.put("col12", evKbnList.get(tmpData.getElevatorKbn()));
+				tmpMap.put("col13", evKbnList.get(tmpData.getElevatorKbn()));
 			}
 			/** 備品内訳**/
 			// 冷蔵庫
 			String reizokoFlg = getBihinValueShitadori(tmpData.getReizokoReturnKbn());
-			tmpMap.put("col13", reizokoFlg);
+			tmpMap.put("col14", reizokoFlg);
 			// テレビ
 			String tvFlg = getBihinValueShitadori(tmpData.getTerebiReturnKbn());
-			tmpMap.put("col14", tvFlg);
+			tmpMap.put("col15", tvFlg);
 			// テレビ台
 			String tvDaiFlg = getBihinValueShitadori(tmpData.getTerebidaiReturnKbn());
-			tmpMap.put("col15", tvDaiFlg);
+			tmpMap.put("col16", tvDaiFlg);
 			// エアコン
 			String eakonFlg = getBihinValueShitadori(tmpData.getEakonReturnKbn());
-			tmpMap.put("col16", eakonFlg);
+			tmpMap.put("col17", eakonFlg);
 			// 洗濯機
 			String sentakukiFlg = getBihinValueShitadori(tmpData.getSentakukiReturnKbn());
-			tmpMap.put("col17", sentakukiFlg);
+			tmpMap.put("col18", sentakukiFlg);
 			// 電子レンジ
-			tmpMap.put("col18", null);
+			tmpMap.put("col19", null);
 			// オーブンレンジ
 			String obunFlg = getBihinValueShitadori(tmpData.getObunReturnKbn());
-			tmpMap.put("col19", obunFlg);
+			tmpMap.put("col20", obunFlg);
 			// オーブントースター
 			String obuntosutaFlg = getBihinValueShitadori(tmpData.getObuntosutaReturnKbn());
-			tmpMap.put("col20", obuntosutaFlg);
+			tmpMap.put("col21", obuntosutaFlg);
 			// 掃除機
 			String sojikiFlg = getBihinValueShitadori(tmpData.getSojikiReturnKbn());
-			tmpMap.put("col21", sojikiFlg);
+			tmpMap.put("col22", sojikiFlg);
 			// 座卓
 			String zatakuFlg = getBihinValueShitadori(tmpData.getZatakuReturnKbn());
-			tmpMap.put("col22", zatakuFlg);
+			tmpMap.put("col23", zatakuFlg);
 			// 机・テーブル
 			String tukueFlg = getBihinValueShitadori(tmpData.getTukueReturnKbn());
-			tmpMap.put("col23", tukueFlg);
+			tmpMap.put("col24", tukueFlg);
 			// 椅子
 			String isuFlg = getBihinValueShitadori(tmpData.getIsuReturnKbn());
-			tmpMap.put("col24", isuFlg);
+			tmpMap.put("col25", isuFlg);
 			// 電子炊飯ジャー
 			String suihanjaFlg = getBihinValueShitadori(tmpData.getSuihanjaReturnKbn());
-			tmpMap.put("col25", suihanjaFlg);
+			tmpMap.put("col26", suihanjaFlg);
 			// キッチンキャビネット
 			String kyabinettoFlg = getBihinValueShitadori(tmpData.getKicchinkyabinettoReturnKbn());
-			tmpMap.put("col26", kyabinettoFlg);
+			tmpMap.put("col27", kyabinettoFlg);
 			// ガステーブル
 			String gasuteburuFlg = getBihinValueShitadori(tmpData.getGasuteburuReturnKbn());
-			tmpMap.put("col27", gasuteburuFlg);
+			tmpMap.put("col28", gasuteburuFlg);
 			// カーテン
 			String katenFlg = getBihinValueShitadori(tmpData.getKatenReturnKbn());
-			tmpMap.put("col28", katenFlg);
+			tmpMap.put("col29", katenFlg);
 			// 照明機器
 			String shomeiFlg = getBihinValueShitadori(tmpData.getShomeiReturnKbn());
-			tmpMap.put("col29", shomeiFlg);
+			tmpMap.put("col30", shomeiFlg);
 			/** 前回作成日 **/
 			// 前回作成日
-			tmpMap.put("col30", strNullCheck(tmpData.getHansyutuCarryinInstruction()));
+			tmpMap.put("col31", strNullCheck(tmpData.getHansyutuCarryinInstruction()));
 			/** 備考 **/
 			// 備考
-			tmpMap.put("col31", null);
+			tmpMap.put("col32", null);
 
 			setExcelDataList.add(tmpMap);
 
@@ -1079,95 +1085,97 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			rdb.addCellDataBean("B" + rowNo, strNullCheckExcel(getRowData.get("col2")));
 			// 社員氏名(C:col3)
 			rdb.addCellDataBean("C" + rowNo, strNullCheckExcel(getRowData.get("col3")));
+			// 社員フリガナ(D:col4)
+			rdb.addCellDataBean("D" + rowNo, strNullCheckExcel(getRowData.get("col4")));
 			/** 立会人 **/
 			// 氏名(D:col4)
-			rdb.addCellDataBean("D" + rowNo, strNullCheckExcel(getRowData.get("col4")));
-			// 連絡先(E:col5)
 			rdb.addCellDataBean("E" + rowNo, strNullCheckExcel(getRowData.get("col5")));
+			// 連絡先(E:col5)
+			rdb.addCellDataBean("F" + rowNo, strNullCheckExcel(getRowData.get("col6")));
 			/** 希望日時 **/
 			// 日付(F:col6)
-			String kibouDate = strNullCheckExcel(getRowData.get("col6"));
+			String kibouDate = strNullCheckExcel(getRowData.get("col7"));
 			if(CheckUtils.isEmpty(kibouDate)){
 				// 空
-				rdb.addCellDataBean("F" + rowNo, kibouDate);
+				rdb.addCellDataBean("G" + rowNo, kibouDate);
 			}else{
 				// フォーマット指定して設定
 				rdb.addCellDataBean(
-						"F" + rowNo, 
+						"G" + rowNo, 
 						skfDateFormatUtils.dateFormatFromString(kibouDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH),
 						Cell.CELL_TYPE_NUMERIC,
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
 			}
 			// 時刻(G:col7)
-			rdb.addCellDataBean("G" + rowNo, strNullCheckExcel(getRowData.get("col7")));
+			rdb.addCellDataBean("H" + rowNo, strNullCheckExcel(getRowData.get("col8")));
 			/** 社宅 **/
 			// 郵便番号(H:col8)
-			String zipCode = strNullCheckExcel(getRowData.get("col8"));
+			String zipCode = strNullCheckExcel(getRowData.get("col9"));
 			if(CheckUtils.isEmpty(zipCode)){
 				// 空
-				rdb.addCellDataBean("H" + rowNo, zipCode);
+				rdb.addCellDataBean("I" + rowNo, zipCode);
 			}else{
 				// フォーマット指定して設定
 				if(zipCode.length() == 7){
 					String newZipCode = zipCode.substring(0, 3) + "-" + zipCode.substring(3, 7);
-					rdb.addCellDataBean("H" + rowNo, newZipCode);
+					rdb.addCellDataBean("I" + rowNo, newZipCode);
 				}else{
-					rdb.addCellDataBean("H" + rowNo, zipCode);
+					rdb.addCellDataBean("I" + rowNo, zipCode);
 				}
 			}			
 			// 所在地(I:col9)
-			rdb.addCellDataBean("I" + rowNo, strNullCheckExcel(getRowData.get("col9")));
-			// 社宅名(J:col10)
 			rdb.addCellDataBean("J" + rowNo, strNullCheckExcel(getRowData.get("col10")));
-			// 部屋番号(K:col11)
+			// 社宅名(J:col10)
 			rdb.addCellDataBean("K" + rowNo, strNullCheckExcel(getRowData.get("col11")));
-			// EV有無(L:col12)
+			// 部屋番号(K:col11)
 			rdb.addCellDataBean("L" + rowNo, strNullCheckExcel(getRowData.get("col12")));
+			// EV有無(L:col12)
+			rdb.addCellDataBean("M" + rowNo, strNullCheckExcel(getRowData.get("col13")));
 			/** 備品内訳 **/
 			// 冷蔵庫(M:col13)
-			rdb.addCellDataBean("M" + rowNo, strNullCheckExcel(getRowData.get("col13")));
-			// テレビ(N:col14)
 			rdb.addCellDataBean("N" + rowNo, strNullCheckExcel(getRowData.get("col14")));
-			// テレビ台(O:col15)
+			// テレビ(N:col14)
 			rdb.addCellDataBean("O" + rowNo, strNullCheckExcel(getRowData.get("col15")));
-			// エアコン(P:col16)
+			// テレビ台(O:col15)
 			rdb.addCellDataBean("P" + rowNo, strNullCheckExcel(getRowData.get("col16")));
-			// 洗濯機(Q:col17)
+			// エアコン(P:col16)
 			rdb.addCellDataBean("Q" + rowNo, strNullCheckExcel(getRowData.get("col17")));
-			// 電子レンジ(R:col18)
+			// 洗濯機(Q:col17)
 			rdb.addCellDataBean("R" + rowNo, strNullCheckExcel(getRowData.get("col18")));
-			// オーブンレンジ(S:col19)
+			// 電子レンジ(R:col18)
 			rdb.addCellDataBean("S" + rowNo, strNullCheckExcel(getRowData.get("col19")));
-			// オーブントースター(T:col20)
+			// オーブンレンジ(S:col19)
 			rdb.addCellDataBean("T" + rowNo, strNullCheckExcel(getRowData.get("col20")));
-			// 掃除機(U:col21)
+			// オーブントースター(T:col20)
 			rdb.addCellDataBean("U" + rowNo, strNullCheckExcel(getRowData.get("col21")));
-			// 座卓(V:col22)
+			// 掃除機(U:col21)
 			rdb.addCellDataBean("V" + rowNo, strNullCheckExcel(getRowData.get("col22")));
-			// 机・テーブル(W:col23)
+			// 座卓(V:col22)
 			rdb.addCellDataBean("W" + rowNo, strNullCheckExcel(getRowData.get("col23")));
-			// 椅子(X:col24)
+			// 机・テーブル(W:col23)
 			rdb.addCellDataBean("X" + rowNo, strNullCheckExcel(getRowData.get("col24")));
-			// 電子炊飯ジャー(Y:col25)
+			// 椅子(X:col24)
 			rdb.addCellDataBean("Y" + rowNo, strNullCheckExcel(getRowData.get("col25")));
-			// キッチンキャビネット(Z:col26)
+			// 電子炊飯ジャー(Y:col25)
 			rdb.addCellDataBean("Z" + rowNo, strNullCheckExcel(getRowData.get("col26")));
-			// ガステーブル(AA:col27)
+			// キッチンキャビネット(Z:col26)
 			rdb.addCellDataBean("AA" + rowNo, strNullCheckExcel(getRowData.get("col27")));
-			// カーテン(AB:col28)
+			// ガステーブル(AA:col27)
 			rdb.addCellDataBean("AB" + rowNo, strNullCheckExcel(getRowData.get("col28")));
-			// 照明器具(AC:col29)
+			// カーテン(AB:col28)
 			rdb.addCellDataBean("AC" + rowNo, strNullCheckExcel(getRowData.get("col29")));
+			// 照明器具(AC:col29)
+			rdb.addCellDataBean("AD" + rowNo, strNullCheckExcel(getRowData.get("col30")));
 			/** 前回作成日 **/
 			// 前回作成日(AD:col30)
-			String prevCreateDate = strNullCheckExcel(getRowData.get("col30"));
+			String prevCreateDate = strNullCheckExcel(getRowData.get("col31"));
 			if(CheckUtils.isEmpty(prevCreateDate)){
 				// 空
-				rdb.addCellDataBean("AD" + rowNo, prevCreateDate);
+				rdb.addCellDataBean("AE" + rowNo, prevCreateDate);
 			}else{
 				// フォーマット指定して設定
 				rdb.addCellDataBean(
-						"AD" + rowNo, 
+						"AE" + rowNo, 
 						skfDateFormatUtils.dateFormatFromString(prevCreateDate, SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH),
 						Cell.CELL_TYPE_NUMERIC,
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
@@ -1175,7 +1183,7 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			
 			/** 備考 **/
 			// 備考(AE:col31)
-			rdb.addCellDataBean("AE" + rowNo, strNullCheckExcel(getRowData.get("col31")));
+			rdb.addCellDataBean("AF" + rowNo, strNullCheckExcel(getRowData.get("col32")));
 			
 			// 行データ追加
 			rowDataBeanList.add(rdb);			
