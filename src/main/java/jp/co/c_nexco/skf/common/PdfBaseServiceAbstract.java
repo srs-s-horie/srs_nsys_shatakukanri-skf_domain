@@ -18,6 +18,7 @@ import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.product.pdfmaker.PDFException;
 import jp.co.intra_mart.product.pdfmaker.net.CSVDoc;
+import jp.co.intra_mart.product.pdfmaker.net.DBDoc;
 import jp.co.intra_mart.product.pdfmaker.net.IOIntegration;
 
 /**
@@ -29,6 +30,7 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 
 	protected IOIntegration integratePdf;
 	protected List<CSVDoc> pdfDataList;
+	protected List<DBDoc> ddlDataList;
 
 	/**
 	 * 中間処理ファイル（IOD,DAT）生成に使用する文字エンコード
@@ -47,6 +49,8 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	public static final String FILE_EXTENTION_PDF = ".pdf";
 	/** ファイル拡張子：IOD */
 	public static final String FILE_EXTENTION_IOD = ".iod";
+	/** ファイル拡張子：DDL */
+	public static final String FILE_EXTENTION_DDL = ".ddl";
 
 	/**
 	 * PDFに出力するデータを設定する。
@@ -124,6 +128,7 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 	/**
 	 * PDF出力処理を実行する。
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	protected DTO index(DTO pdfDto) throws Exception {
 		// PDF処理前追加処理を実行する。
@@ -133,37 +138,76 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		this.integratePdf = new IOIntegration();
 
 		this.pdfDataList = new ArrayList<CSVDoc>();
+		this.ddlDataList = new ArrayList<DBDoc>();
 		for (PDF_INFO pdfInfo : this.getPdfInfoList(pdfDto)) {
-			CSVDoc pdfData = new CSVDoc(pdfInfo.getIodPath(), CommonConstant.C_EMPTY);
-			pdfData.setCharset(PDF_PROCESS_ENCODE);
-			pdfData.setDebugFlg(true);
-			this.pdfDataList.add(pdfData);
+			if(pdfInfo.getIodPath().contains(FILE_EXTENTION_DDL)){
+				DBDoc ddlData = new DBDoc(pdfInfo.getIodPath());
+				ddlData.setCharset(PDF_PROCESS_ENCODE);
+				ddlData.setDebugFlg(true);
+				this.ddlDataList.add(ddlData);
+				
+				// PDFの基本設定
+				this.setPdfBaseSettings();
+
+				// 出力ファイルパスの設定
+				String pdfOutputPath;
+				pdfOutputPath = this.getPdfOutputPath(this.getTempFolderPath());
+
+				// 出力するPDFデータを設定する
+				this.setPdfData(pdfDto);
+
+				// PDFを結合する
+				this.pdfIntegrationForDdl();
+				
+				// PDFを出力する
+				this.outputPdf(pdfOutputPath);
+
+				// PDF処理後追加処理を実行する
+				this.afterIndexProc(pdfDto);
+				
+				PublicStorage storage = new PublicStorage(pdfOutputPath);
+
+				// ファイル情報をDTOに設定する。
+				SkfFileOutputUtils.fileOutput(pdfDto, storage);
+				pdfDto.setUploadFileName(this.getPdfFileName());
+
+				// PublicStorageに作成したPDFファイルを削除する
+				this.deleteTempFile(pdfOutputPath);
+				
+			}else{
+				CSVDoc pdfData = new CSVDoc(pdfInfo.getIodPath(), CommonConstant.C_EMPTY);
+				pdfData.setCharset(PDF_PROCESS_ENCODE);
+				pdfData.setDebugFlg(true);
+				this.pdfDataList.add(pdfData);
+				
+				// PDFの基本設定
+				this.setPdfBaseSettings();
+
+				// 出力ファイルパスの設定
+				String pdfOutputPath;
+				pdfOutputPath = this.getPdfOutputPath(this.getTempFolderPath());
+
+				// 出力するPDFデータを設定する
+				this.setPdfData(pdfDto);
+
+				// PDFを結合する
+				this.pdfIntegration();
+
+				// PDFを出力する
+				this.outputPdf(pdfOutputPath);
+
+				// PDF処理後追加処理を実行する
+				this.afterIndexProc(pdfDto);
+				
+				// ファイル情報をDTOに設定する。
+				SkfFileOutputUtils.fileOutput(pdfDto, pdfOutputPath);
+				pdfDto.setUploadFileName(this.getPdfFileName());
+
+				// PublicStorageに作成したPDFファイルを削除する
+				this.deleteTempFile(pdfOutputPath);
+				
+			}
 		}
-		// PDFの基本設定
-		this.setPdfBaseSettings();
-
-		// 出力ファイルパスの設定
-		String pdfOutputPath;
-		pdfOutputPath = this.getPdfOutputPath(this.getTempFolderPath());
-
-		// 出力するPDFデータを設定する
-		this.setPdfData(pdfDto);
-
-		// PDFを結合する
-		this.pdfIntegration();
-
-		// PDFを出力する
-		this.outputPdf(pdfOutputPath);
-
-		// PDF処理後追加処理を実行する
-		this.afterIndexProc(pdfDto);
-
-		// ファイル情報をDTOに設定する。
-		SkfFileOutputUtils.fileOutput(pdfDto, pdfOutputPath);
-		pdfDto.setUploadFileName(this.getPdfFileName());
-
-		// PublicStorageに作成したPDFファイルを削除する
-		this.deleteTempFile(pdfOutputPath);
 
 		return pdfDto;
 	}
@@ -225,6 +269,18 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		// 出力ファイルパスの設定
 		return this.getOutputPath(tempFolderPath, FILE_EXTENTION_IOD);
 	}
+	
+	/**
+	 * PDF結合前のDDLファイル出力パスを設定する。
+	 * 
+	 * @param tempFolderPath 一時出力フォルダのパス
+	 * @return iodOutputPath 結合前DDLファイルの出力パス
+	 * @throws IOException
+	 */
+	protected String getDDLOutputPath(String tempFolderPath) throws IOException {
+		// 出力ファイルパスの設定
+		return this.getOutputPath(tempFolderPath, FILE_EXTENTION_DDL);
+	}
 
 	/**
 	 * 引数で指定されたPublicStorage配下の一時フォルダに ユニークな名称の一時ファイルを作成し、パスを取得する。
@@ -272,6 +328,33 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		for (CSVDoc pdfData : this.pdfDataList) {
 			String tempIodPath = this.getIodOutputPath(this.getTempFolderPath());
 			pdfData.makeIOD(tempIodPath);
+			this.integratePdf.add(tempIodPath);
+		}
+	}
+	
+	/**
+	 * PDFの結合を行う。
+	 * 
+	 * <pre>
+	 * テンプレートごとにddlファイルを出力し、結合対象として追加する。
+	 * </pre>
+	 * 
+	 * @throws IOException
+	 */
+	protected void pdfIntegrationForDdl() throws IOException {
+		for (DBDoc ddlData : this.ddlDataList) {
+			String tempIodPath = this.getIodOutputPath(this.getTempFolderPath());
+			LogUtils.debugByMsg("ErrorCodeチェック:"+ddlData.getErrorCode());
+			int iodcount = ddlData.makeIOD(tempIodPath);
+			if(!(iodcount == 0)){
+				String resultMessage = this.integratePdf.lastMessage();
+				LogUtils.debugByMsg("makeIOD:"+iodcount+resultMessage);
+			}
+/*			int pdfcount = ddlData.makePDF(tempIodPath);
+			if(!(pdfcount == 0)){
+				String resultMessage = this.integratePdf.lastMessage();
+				LogUtils.debugByMsg("makePDF:"+pdfcount+resultMessage);
+			}*/
 			this.integratePdf.add(tempIodPath);
 		}
 	}
@@ -357,7 +440,9 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		/** 退居（自動車の保管場所返還）届 （社宅のみ） */
 		TAIKYO_HENKAN_TODOKE_SHATAKU_ONLY("skf/template/skf2040/skf2040rp001/R0103_TaikyoHenkanTodokeShatakuOnly.iod"),
 		/** 退居（自動車の保管場所返還）届（駐車場のみ） */
-		TAIKYO_HENKAN_TODOKE_PARKING_ONLY("skf/template/skf2040/skf2040rp001/R0103_TaikyoHenkanTodokeParkingOnly.iod");
+		TAIKYO_HENKAN_TODOKE_PARKING_ONLY("skf/template/skf2040/skf2040rp001/R0103_TaikyoHenkanTodokeParkingOnly.iod"),
+		/** 表形式テストPDF */
+		TABULAR_TEST("skf/template/skf2020/skf2020test/dbd_ordersheet.ddl");
 
 		private String iodPath;
 
