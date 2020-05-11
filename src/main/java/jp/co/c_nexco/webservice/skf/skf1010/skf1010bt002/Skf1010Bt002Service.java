@@ -78,6 +78,7 @@ import jp.co.intra_mart.foundation.web_api_maker.annotation.Response;
 public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 
 	private String companyCd = CodeConstant.C001;
+	private String originalCompanyCd = CodeConstant.C001;
 	private String batchResult;
 	private List<String> logList = new ArrayList<String>();
 
@@ -608,6 +609,8 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setName(idmShain.getName());
 				// 等級コード
 				shainInfo.setTokyuCd(idmShain.getTokyu());
+				// 原籍会社コード
+				shainInfo.setOriginalCompanyCd(originalCompanyCd);
 				// 機関コード
 				shainInfo.setAgencyCd(idmShain.getAgencyCd());
 				// 部等コード
