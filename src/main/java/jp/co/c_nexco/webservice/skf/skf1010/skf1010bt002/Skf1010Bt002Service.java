@@ -617,6 +617,8 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setAffiliation1Cd(idmShain.getAffiliation1Cd());
 				// 室、チーム又は課コード
 				shainInfo.setAffiliation2Cd(idmShain.getAffiliation2Cd());
+				// 事業領域コード
+				shainInfo.setBusinessAreaCd(idmShain.getBusinessAreaCd());
 				// 誕生日：年
 				String btYYYY = idmShain.getBtYYYY();
 				if (NfwStringUtils.isNotEmpty(btYYYY)) {
