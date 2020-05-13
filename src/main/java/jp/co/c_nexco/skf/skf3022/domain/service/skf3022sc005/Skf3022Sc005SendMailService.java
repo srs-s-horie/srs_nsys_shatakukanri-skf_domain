@@ -233,7 +233,7 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 							case CodeConstant.STATUS_MISAKUSEI :
 							case CodeConstant.STATUS_SHINSEICHU :
 							case CodeConstant.STATUS_SHINSACHU :
-								//TODO 上の条件はたぶん既存バグ、下が正解。。。
+							//上の条件はたぶん既存バグ、下が正解。。。
 							case CodeConstant.BIHIN_STATUS_MI_SAKUSEI :
 							case CodeConstant.BIHIN_STATUS_SAKUSEI_CHU :
 							case CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI :

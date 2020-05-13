@@ -4369,8 +4369,7 @@ public class Skf3030Sc002SharedService {
 		comDto.setBihinInfoListTableData(null);
 
 		/** 上部ボタン */
-		// 申請内容
-		//TODO 社員入力に直す
+		// 社員入力
 		comDto.setSc006ShinseiNaiyoDisableFlg(false);
 		// 社宅入力支援
 		comDto.setShayakuHeyaShienDisableFlg(false);
