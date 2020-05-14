@@ -623,11 +623,11 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			if(NfwStringUtils.isEmpty(tmpData.getUkeireDairiApoint())){
 				tmpMap.put("col6", strNullCheck(tmpData.getUkeireMyApoint()));
 			}else{
-				tmpMap.put("col7", strNullCheck(tmpData.getUkeireDairiApoint()));
+				tmpMap.put("col6", strNullCheck(tmpData.getUkeireDairiApoint()));
 			}
 			/** 希望日時 **/
 			// 日付
-			tmpMap.put("col8", strNullCheck(tmpData.getHannyuRequestDay()));
+			tmpMap.put("col7", strNullCheck(tmpData.getHannyuRequestDay()));
 			// 時刻
 			if(NfwStringUtils.isEmpty(tmpData.getHannyuRequestKbn())){
 				tmpMap.put("col8", null);
@@ -1065,7 +1065,7 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 		int outputDateRow = excelOutPutStartLine - 10;
         String sysDate = getNowDateStrFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
         //String sysDate = getNowDateStrFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-		rdbOutputDate.addCellDataBean("AE" + outputDateRow, sysDate);				
+		rdbOutputDate.addCellDataBean("AF" + outputDateRow, sysDate);				
 		// 行データ追加
 		rowDataBeanList.add(rdbOutputDate);	
 		
