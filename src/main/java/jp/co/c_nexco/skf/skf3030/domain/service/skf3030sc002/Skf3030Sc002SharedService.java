@@ -3754,7 +3754,10 @@ public class Skf3030Sc002SharedService {
 			Short month = selectShain.getBirthdayMonth();
 			Short day = selectShain.getBirthdayDay();
 			
-			birthDay = Short.toString(year) + String.format("%02d", month) + String.format("%02d", day);
+			if(year != null && month != null && day != null){
+				birthDay = Short.toString(year) + String.format("%02d", month) + String.format("%02d", day);
+			}
+			
 		}
 		return birthDay;
 	}
