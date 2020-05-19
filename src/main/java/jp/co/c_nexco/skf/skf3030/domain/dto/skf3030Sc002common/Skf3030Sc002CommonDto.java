@@ -928,8 +928,7 @@ public class Skf3030Sc002CommonDto extends Skf303010CommonDto {
 
 	/********************** 活性/非活性(仮) ****************************/
 	/** 上部ボタン */
-	// 申請内容
-	//TODO 社員入力に直す
+	// 社員入力
 	private Boolean sc006ShinseiNaiyoDisableFlg;
 	// 社宅入力支援
 	private Boolean shayakuHeyaShienDisableFlg;

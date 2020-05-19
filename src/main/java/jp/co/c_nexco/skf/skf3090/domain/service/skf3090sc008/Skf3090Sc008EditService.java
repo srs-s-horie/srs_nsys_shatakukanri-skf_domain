@@ -55,8 +55,15 @@ public class Skf3090Sc008EditService extends SkfServiceAbstract<Skf3090Sc008Edit
 		if(informationData != null){
 			//「公開開始日」に取得した公開開始日を設定
 			editDto.setOpenDateBox(informationData.getOpenDate());
-			//テキストエディターに取得した内容を設定
-			editDto.setNote(informationData.getNote());
+			
+			// テキストエディターに取得した内容を設定
+			// 移行データに含まれているpタグを削除する
+			String note = informationData.getNote();
+			String unknownPtag = "<p class=\"MsoNormal\" style=\"margin: 0mm 0mm 0pt\"></p>";
+			if(note.contains(unknownPtag)){
+				note = note.replaceAll(unknownPtag, ""); 
+			}
+			editDto.setNote(note);
 		}else{
 	 		ServiceHelper.addErrorResultMessage(editDto, null, MessageIdConstant.E_SKF_1134, "");
 		}

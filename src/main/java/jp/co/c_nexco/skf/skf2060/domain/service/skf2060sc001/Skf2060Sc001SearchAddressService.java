@@ -5,6 +5,8 @@ package jp.co.c_nexco.skf.skf2060.domain.service.skf2060sc001;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfGetInfoUtils.SkfGetInfoUtilsGetPostalCodeAddressExp;
@@ -29,6 +31,8 @@ public class Skf2060Sc001SearchAddressService extends SkfServiceAbstract<Skf2060
 	private SkfGetInfoUtilsGetPostalCodeAddressExpRepository skfGetInfoUtilsGetPostalCodeAddressExpRepository;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private Skf2060Sc001SharedService skf2060Sc001SharedService;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -91,6 +95,13 @@ public class Skf2060Sc001SearchAddressService extends SkfServiceAbstract<Skf2060
 						+ resultEntity.get(0).getAreaName());
 			}
 		}
+		
+		// リストデータ取得用
+		List<Map<String, Object>> dataParamList = new ArrayList<Map<String, Object>>();
+		boolean itiranFlg = true;
+		dataParamList = skf2060Sc001SharedService.getDataParamList(itiranFlg ,searchAddressDto.getShainNo(), searchAddressDto.getApplNo());
+		searchAddressDto.setListTableData(dataParamList);
+		
 		return searchAddressDto;
 	}
 

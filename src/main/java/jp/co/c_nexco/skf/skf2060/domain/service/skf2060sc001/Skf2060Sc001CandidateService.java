@@ -145,7 +145,12 @@ public class Skf2060Sc001CandidateService extends SkfServiceAbstract<Skf2060Sc00
 		}
 		// 入力チェックでエラーが生じたとき
 		if (!(presentedNameflg && tijiValFlg)) {
-			throwBusinessExceptionIfErrors(candidateDto.getResultMessages());
+			// リストデータ再取得
+			List<Map<String, Object>> dataParamList = new ArrayList<Map<String, Object>>();
+			dataParamList = skf2060Sc001SharedService.getDataParamList(itiranFlg ,candidateDto.getShainNo(), candidateDto.getApplNo());
+			candidateDto.setListTableData(dataParamList);
+			
+			return candidateDto;
 		}
 
 		// 申請書類履歴情報が取得できた場合
@@ -483,5 +488,4 @@ public class Skf2060Sc001CandidateService extends SkfServiceAbstract<Skf2060Sc00
 		}
 		return TeijiKaisu;
 	}
-
 }
