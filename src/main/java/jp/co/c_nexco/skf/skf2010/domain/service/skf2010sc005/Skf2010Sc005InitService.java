@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
+import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -107,17 +108,27 @@ public class Skf2010Sc005InitService extends SkfServiceAbstract<Skf2010Sc005Init
 	 * @param applStatus
 	 * @return
 	 */
-	private List<Map<String, Object>> searchApplList(Skf2010Sc005InitDto dto, List<String> applStatus) {
+	private List<Map<String, Object>> searchApplList(Skf2010Sc005InitDto dto, List<String> applStatus)
+			throws Exception {
 		List<Map<String, Object>> rtnList = new ArrayList<Map<String, Object>>();
 
 		// 社宅連携用セッション情報をセット
 		skf2010Sc005SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
+
+		// 申請状況一覧を検索
+		if (menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY) != null) {
+			CopyUtils.copyProperties(dto,
+					menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY));
+		}
 
 		// 承認一覧を条件から取得
 		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
 		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
 		param = skf2010Sc005SharedService.setParam(dto);
 		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
+		// 検索条件をセッションに保持
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY);
+		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY, dto);
 		// 検索結果をセッションに保存
 		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
 

@@ -71,14 +71,14 @@ public class Skf2010Sc003InitService extends SkfServiceAbstract<Skf2010Sc003Init
 		initDto.setApplStatus(applStatusList.toArray(new String[applStatusList.size()]));
 
 		// 申請状況一覧を検索
-		if (menuScopeSessionBean.get(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY) != null) {
+		if (menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY) != null) {
 			CopyUtils.copyProperties(initDto,
-					menuScopeSessionBean.get(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY));
+					menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY));
 		}
 		setStatusList(initDto);
 
-		menuScopeSessionBean.remove(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY);
-		menuScopeSessionBean.put(skf2010Sc003SharedService.SKF2010_SC003_SEARCH_ITEMS_KEY, initDto);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY);
+		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY, initDto);
 
 		// データ連携用の排他制御用更新日を取得
 		// ログインセッションのユーザ情報

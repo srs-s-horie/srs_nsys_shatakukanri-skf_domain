@@ -42,6 +42,7 @@ import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -111,7 +112,7 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
-	
+
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
@@ -124,7 +125,7 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 	 */
 	@Override
 	public Skf1010Sc001InitDto index(Skf1010Sc001InitDto initDto) throws Exception {
-		
+
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("初期表示", COMPANYCD, FunctionIdConstant.SKF1010_SC001);
 
@@ -364,6 +365,16 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 		}
 
 		initDto.setBihinHenkyakuInformationList(bihinHenkyakuInformationList);
+
+		// 一覧画面の検索条件保持セッション情報を破棄する
+		// 申請状況一覧画面の検索条件破棄
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY);
+		// 承認一覧画面の検索条件破棄
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY);
+		// 借上候補物件状況一覧画面検索条件破棄
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.SKF2060SC004_SEARCH_COND_SESSION_KEY);
+		// 法定調書データ管理画面検索条件破棄
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.SKF3070SC001_SEARCH_COND_SESSION_KEY);
 
 		return initDto;
 	}
@@ -772,7 +783,8 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 		oshiraseDataList2 = skf1010Sc001GetShinseiStatusAdminExpRepository.getShinseiStatusAdmin(param);
 		for (Skf1010Sc001GetShinseiStatusAdminExp osiraseData2 : oshiraseDataList2) {
 			Map<String, Object> resultMap = new HashMap<String, Object>();
-			if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSEICHU) || osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSACHU)) {
+			if (osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSEICHU)
+					|| osiraseData2.getApplStatus().equals(CodeConstant.STATUS_SHINSACHU)) {
 				String updateDate = skfDateFormatUtils.dateFormatFromDate(osiraseData2.getUpdateDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 				String message = getOshirase("infomation.skf.i_skf_2044", updateDate, osiraseData2.getName(),

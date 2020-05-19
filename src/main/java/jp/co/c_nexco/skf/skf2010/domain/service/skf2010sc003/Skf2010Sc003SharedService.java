@@ -76,8 +76,6 @@ public class Skf2010Sc003SharedService {
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 
-	protected final String SKF2010_SC003_SEARCH_ITEMS_KEY = "skf2010Sc003SearchItemKey";
-
 	private String companyCd = CodeConstant.C001;
 
 	public List<Skf2010Sc003GetApplHistoryStatusInfoExp> getApplHistoryStatusInfo(String shainNo, String applDateFrom,
