@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.BeanOutputCsv;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.OutputFileCsvProperties;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -109,13 +109,13 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 
 		// 各書類毎のオブジェクトに格納する
 		BeanOutputCsv beanOutputCsvR0100 = new FileOutput().new BeanOutputCsv(r0100List, templateFilePropertyKeyR0100,
-				FILE_TEMPLETE_FUNCTION_CD, 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 2, null);
 		BeanOutputCsv beanOutputCsvR0103 = new FileOutput().new BeanOutputCsv(r0103List, templateFilePropertyKeyR0103,
-				FILE_TEMPLETE_FUNCTION_CD, 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 2, null);
 		BeanOutputCsv beanOutputCsvR0104 = new FileOutput().new BeanOutputCsv(r0104List, templateFilePropertyKeyR0104,
-				FILE_TEMPLETE_FUNCTION_CD, 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 2, null);
 		BeanOutputCsv beanOutputCsvR0105 = new FileOutput().new BeanOutputCsv(r0105List, templateFilePropertyKeyR0105,
-				FILE_TEMPLETE_FUNCTION_CD, 1, null);
+				FILE_TEMPLETE_FUNCTION_CD, 2, null);
 		List<BeanOutputCsv> beanOutputCsvList = new ArrayList<BeanOutputCsv>();
 
 		/** データがある書類のみ作成 */

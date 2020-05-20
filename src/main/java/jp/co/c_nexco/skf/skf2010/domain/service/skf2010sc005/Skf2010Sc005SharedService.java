@@ -695,6 +695,8 @@ public class Skf2010Sc005SharedService {
 		Skf2020TNyukyoChoshoTsuchi result = skf2020TNyukyoChoshoTsuchiRepository
 				.selectByPrimaryKey(skf2020TNyukyoChoshoTsuchiKey);
 		if (result != null) {
+			titleList.add("company_cd");
+			strList.add(result.getCompanyCd());
 			titleList.add("agency");
 			strList.add(result.getAgency());
 			titleList.add("affiliation1");
@@ -1025,12 +1027,12 @@ public class Skf2010Sc005SharedService {
 			strList.add(result.getAffiliation1());
 			titleList.add("affiliation2");
 			strList.add(result.getAffiliation2());
+			titleList.add("gender");
+			strList.add(result.getGender());
 			titleList.add("tel");
 			strList.add(result.getTel());
 			titleList.add("tokyu");
 			strList.add(result.getTokyu());
-			titleList.add("gender");
-			strList.add(result.getGender());
 			titleList.add("shataku_no");
 			strList.add(result.getShainNo());
 			titleList.add("room_kanri_no");
