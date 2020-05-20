@@ -19,8 +19,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -242,6 +242,7 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 				dto.setMaskPattern("PTN_C");
 				dto.setLevel1Open("true");
 				dto.setRepresentBtnFlg("false");
+				dto.setCommentAreaVisible(false);
 				break;
 			default:
 				/**
