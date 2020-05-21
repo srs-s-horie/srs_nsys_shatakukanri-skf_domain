@@ -195,7 +195,7 @@ public class Skf3021Sc001SendMailService extends SkfServiceAbstract<Skf3021Sc001
 				ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3081, map.get("shainNo").toString());
 				
 				//成功もwarnログで出してる・・・
-				LogUtils.warn(Skf3021Sc001SendMailService.class, message);
+				LogUtils.debug(Skf3021Sc001SendMailService.class, message);
 				
 				//入退居予定データ更新
 				int updateRes = updateNyutaikyoYoteiInfoOfUrgeDate(shainNo , nyutaikyoKbn, sysDateTime, map.get("updateDateNtkyo").toString());

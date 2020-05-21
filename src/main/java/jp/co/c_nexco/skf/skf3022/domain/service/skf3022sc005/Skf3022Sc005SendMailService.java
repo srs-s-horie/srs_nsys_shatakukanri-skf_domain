@@ -142,7 +142,6 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 		//SendDunningMail
 		boolean sendMailFlg = false;
 		//StringBuilder retMessage = new StringBuilder();
-		String message = CodeConstant.DOUBLE_QUOTATION;
 		// '送信件数
 		int mailCnt = 0;
 		//'送信成功件数
@@ -354,7 +353,6 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 			mailCnt = mailCnt + 1;
 			
 			if(!ret){
-				LogUtils.debugByMsg("メール送信失敗:"+ map.get("shainNo").toString());
 				//'送信失敗件数
 				mailFailCnt = mailFailCnt + 1;
 				//MessageIdConstant.I_SKF_3080
@@ -363,7 +361,7 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 				ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3080, map.get("shainNo").toString());
 
 //                'メール送信に失敗した場合
-				LogUtils.warn(Skf3022Sc005SendMailService.class, message);
+				LogUtils.warn(Skf3022Sc005SendMailService.class, "メール送信失敗:"+ map.get("shainNo").toString());
 
 			}else{
 				LogUtils.debugByMsg("メール送信成功:"+ map.get("shainNo").toString());
