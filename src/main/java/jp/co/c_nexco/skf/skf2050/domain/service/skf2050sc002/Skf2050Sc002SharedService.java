@@ -209,6 +209,7 @@ public class Skf2050Sc002SharedService {
 			shoninName2 = loginUserInfo.get("userName");
 			shoninName1 = CodeConstant.NONE;
 			agreDate = new Date();
+			break;
 		default:
 			// その他（審査中、同意済等）
 			// 承認者名1を設定
@@ -225,9 +226,9 @@ public class Skf2050Sc002SharedService {
 		}
 
 		// コメント更新
-		String commentNote = dto.getCommentNote();		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
-				commentNote, errorMsg);
+		String commentNote = dto.getCommentNote();
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, commentNote,
+				errorMsg);
 		if (!commentErrorMessage) {
 			return false;
 		}

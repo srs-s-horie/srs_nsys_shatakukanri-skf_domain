@@ -12,8 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -182,41 +182,19 @@ public class Skf2010Sc009AddAsyncService extends SkfAsyncServiceAbstract<Skf2010
 		}
 
 		// ファイルタイプが使用可能かチェック
-		if (applId.equals(FunctionIdConstant.R0100)) {
-			switch (extension) {
-			case CodeConstant.EXTENSION_PDF:
-			case CodeConstant.EXTENSION_XDW:
-			case CodeConstant.EXTENSION_DOC:
-			case CodeConstant.EXTENSION_DOCX:
-			case CodeConstant.EXTENSION_XLS:
-			case CodeConstant.EXTENSION_XLSX:
-			case CodeConstant.EXTENSION_PPT:
-			case CodeConstant.EXTENSION_PPTX:
-			case CodeConstant.EXTENSION_JPEG:
-			case CodeConstant.EXTENSION_JPG:
-			case CodeConstant.EXTENSION_BMP:
-			case CodeConstant.EXTENSION_PNG:
-				break;
-			default:
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1026);
-				return false;
-			}
-		} else {
-			switch (extension) {
-			case CodeConstant.EXTENSION_PDF:
-			case CodeConstant.EXTENSION_XDW:
-			case CodeConstant.EXTENSION_DOC:
-			case CodeConstant.EXTENSION_DOCX:
-			case CodeConstant.EXTENSION_XLS:
-			case CodeConstant.EXTENSION_XLSX:
-			case CodeConstant.EXTENSION_PPT:
-			case CodeConstant.EXTENSION_PPTX:
-				break;
-			default:
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1026);
-				return false;
-			}
-
+		switch (extension) {
+		case CodeConstant.EXTENSION_PDF:
+		case CodeConstant.EXTENSION_XDW:
+		case CodeConstant.EXTENSION_DOC:
+		case CodeConstant.EXTENSION_DOCX:
+		case CodeConstant.EXTENSION_XLS:
+		case CodeConstant.EXTENSION_XLSX:
+		case CodeConstant.EXTENSION_PPT:
+		case CodeConstant.EXTENSION_PPTX:
+			break;
+		default:
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1026);
+			return false;
 		}
 
 		return true;
