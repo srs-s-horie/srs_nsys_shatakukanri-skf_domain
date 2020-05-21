@@ -66,6 +66,8 @@ public class Skf3010Sc005InitService extends SkfServiceAbstract<Skf3010Sc005Init
 		initDto.setEmptyRoomCount(initDto.getEmptyRoomCount());
 		initDto.setEmptyParkingCount(initDto.getEmptyParkingCount());
 		initDto.setHdnEmptyParkingCount(initDto.getHdnEmptyParkingCount());
+		initDto.setHdnOriginalAuse(initDto.getHdnOriginalAuse());
+		initDto.setHdnLendKbn(initDto.getHdnLendKbn());
 
 		// 'ヘッダ部の値をセット
 		setSearchInfo(initDto);

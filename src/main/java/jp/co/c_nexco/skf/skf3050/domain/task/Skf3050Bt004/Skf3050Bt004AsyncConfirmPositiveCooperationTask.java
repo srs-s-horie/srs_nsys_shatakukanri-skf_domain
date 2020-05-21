@@ -48,7 +48,7 @@ public class Skf3050Bt004AsyncConfirmPositiveCooperationTask extends AsyncTaskAb
 
 		//パラメータ数のチェック
 		if (paramMap.size() != Skf3050Bt004SharedTask.PARAMETER_NUM) {
-			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
+			LogUtils.info(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Bt004SharedTask.outputEndProcLog();
 			return;
 		}

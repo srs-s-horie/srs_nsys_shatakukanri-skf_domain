@@ -184,7 +184,7 @@ public class Skf3021Sc001SendMailService extends SkfServiceAbstract<Skf3021Sc001
 				ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3080, map.get("shainNo").toString());
 
 //                'メール送信に失敗した場合
-				LogUtils.warn(Skf3021Sc001SendMailService.class, message);
+				LogUtils.info(Skf3021Sc001SendMailService.class, message);
 
 			}else{
 				LogUtils.debugByMsg("メール送信成功");
@@ -195,7 +195,7 @@ public class Skf3021Sc001SendMailService extends SkfServiceAbstract<Skf3021Sc001
 				ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3081, map.get("shainNo").toString());
 				
 				//成功もwarnログで出してる・・・
-				LogUtils.warn(Skf3021Sc001SendMailService.class, message);
+				LogUtils.debug(Skf3021Sc001SendMailService.class, message);
 				
 				//入退居予定データ更新
 				int updateRes = updateNyutaikyoYoteiInfoOfUrgeDate(shainNo , nyutaikyoKbn, sysDateTime, map.get("updateDateNtkyo").toString());
@@ -209,15 +209,18 @@ public class Skf3021Sc001SendMailService extends SkfServiceAbstract<Skf3021Sc001
 		}
 
 //        '送信失敗件数i_skf_3082
-//        message = "メール送信失敗件数  ：" + mailFailCnt + "件 ";
+		message = "メール送信失敗件数  ：" + mailFailCnt + "件 ";
+		LogUtils.info(Skf3021Sc001SendMailService.class, message);
 		ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3082, mailFailCnt);
 
 //        '送信成功件数infomation.skf.i_skf_3083  ：{0}件
-//        message = "メール送信成功件数  ：" + mailSuccessCnt + "件 ";
+		message = "メール送信成功件数  ：" + mailSuccessCnt + "件 ";
+		LogUtils.info(Skf3021Sc001SendMailService.class, message);
 		ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3083, mailSuccessCnt);
 
 //        '送信件数infomation.skf.i_skf_3084=メール送信件数        ：{0}件
-//        message = "メール送信件数        ：" + mailCnt + "件 ";
+		message = "メール送信件数        ：" + mailCnt + "件 ";
+		LogUtils.info(Skf3021Sc001SendMailService.class, message);
 		ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3084, mailCnt);
 		
 		skf3021Sc001SharedService.getDropDownList(sendDto.getNyutaikyoKbn(), nyutaikyoKbnList,

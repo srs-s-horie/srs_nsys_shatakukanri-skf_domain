@@ -71,7 +71,7 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends SkfService
 
 		//パラメータ数のチェック
 		if (dataMap.size() != Skf3050Sc002SharedService.PARAMETER_NUM) {
-			LogUtils.error(MessageIdConstant.E_SKF_1092, dataMap.size());
+			LogUtils.info(MessageIdConstant.E_SKF_1092, dataMap.size());
 			outputEndProcLog();
 		}
 

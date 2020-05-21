@@ -56,7 +56,7 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 
 		//パラメータ数のチェック
 		if (paramMap.size() == 0 || paramMap.size() != Skf3050Bt001SharedTask.PARAMETER_NUM) {
-			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
+			LogUtils.info(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Bt001SharedTask.outputManagementLogEndProc(endList, sysDate);
 			return;
 		}
@@ -74,7 +74,7 @@ public class Skf3050Bt001AsyncCloseTask extends AsyncTaskAbstract {
 			//トランザクションBの開始
 			result = skf3050Bt001SharedTask.updateTsukibetsuTsukiji(paramMap, endList);
 			if (SkfCommonConstant.ABNORMAL.equals(result)) {
-				LogUtils.error(MessageIdConstant.E_SKF_1079);
+				LogUtils.info(MessageIdConstant.E_SKF_1079);
 			}
 		} catch (Exception e) {
 			LogUtils.infoByMsg("異常終了:" + BATCH_NAME + "(" + e.getMessage() + ")");

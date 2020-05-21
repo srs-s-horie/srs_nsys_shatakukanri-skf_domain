@@ -157,7 +157,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 				dt2Row = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(nctKey);
 				if(dt2Row == null){
 					//ServiceHelper.addResultMessage(downloadDto, MessageIdConstant.I_SKF_1066, "入居希望等調書・入居決定通知情報の取得"));
-					LogUtils.error(Skf3021Sc001NyutaikyoYoteiListDownloadService.class, "入居希望等調書・入居決定通知情報の取得に失敗しました。 " + applNo);
+					LogUtils.info(Skf3021Sc001NyutaikyoYoteiListDownloadService.class, "入居希望等調書・入居決定通知情報の取得に失敗しました。 " + applNo);
 					continue;
 				}
 			}else{
@@ -232,7 +232,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 				trKey.setApplNo(applNo);
 				dt2Row = skf2040TTaikyoReportRepository.selectByPrimaryKey(trKey);
 				if(dt2Row == null){
-					LogUtils.error(Skf3021Sc001NyutaikyoYoteiListDownloadService.class, "退居（自動車の保管場所返還）届情報の取得に失敗しました。 " + applNo);
+					LogUtils.info(Skf3021Sc001NyutaikyoYoteiListDownloadService.class, "退居（自動車の保管場所返還）届情報の取得に失敗しました。 " + applNo);
 					continue;
 				}
 			}
