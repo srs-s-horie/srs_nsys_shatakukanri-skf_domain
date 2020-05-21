@@ -2182,7 +2182,7 @@ public class Skf2020Sc002SharedService {
 	 */
 	private Skf2010TApplHistory setUpdateApplHistoryAgreeStatusIchiji(Skf2010TApplHistory setValue,
 			Skf2020Sc002CommonDto dto, Map<String, String> applInfo) {
-
+		
 		// キー項目をセット
 		setValue.setCompanyCd(CodeConstant.C001);
 		setValue.setApplNo(dto.getApplNo());
@@ -2190,7 +2190,7 @@ public class Skf2020Sc002SharedService {
 		// 更新項目をセット
 		setValue.setApplStatus(CodeConstant.STATUS_ICHIJIHOZON);
 		setValue.setApplTacFlg(applInfo.get("applTacFlg"));
-		setValue.setApplDate(dto.getApplHistroyApplDate());
+		setValue.setApplDate(DateUtils.getSysDate());
 		setValue.setUpdateUserId(dto.getUserId());
 		setValue.setUpdateProgramId(dto.getPageId());
 		return setValue;

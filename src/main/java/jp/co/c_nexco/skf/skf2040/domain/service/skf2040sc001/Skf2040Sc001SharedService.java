@@ -532,7 +532,7 @@ public class Skf2040Sc001SharedService {
 	protected <DTO extends Skf2040Sc001CommonDto> boolean updateTaikyoData(DTO dto) {
 
 		// 申請履歴テーブルの更新
-		this.updateApplHistoryStatusTempSave(dto, false);
+		this.updateApplHistoryStatusTempSave(dto, true);
 
 		// 退居届申請テーブル更新値の設定
 		Skf2040TTaikyoReport updateParam = this.makeTaikyoReportParam(dto);
@@ -561,7 +561,7 @@ public class Skf2040Sc001SharedService {
 		setApplValue.setApplStatus(CodeConstant.STATUS_ICHIJIHOZON);
 		setApplValue.setApplTacFlg(String.valueOf(dto.getApplTacFlg()));
 		if (isUpdateApplDate) {
-			setApplValue.setApplDate(dto.getApplHistroyApplDate());
+			setApplValue.setApplDate(DateUtils.getSysDate());
 		}
 		// 更新
 		int resultCnt = 0;
