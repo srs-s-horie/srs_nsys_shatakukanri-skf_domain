@@ -48,6 +48,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinse
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -438,7 +439,7 @@ public class Skf2030Sc001SharedService {
 		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
 
 		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("shainNo"),
-				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, null, CodeConstant.NONE,
+				applInfo.get("applNo"), applInfo.get("applId"), DateUtils.getSysDate(), null, updateStatus, null, CodeConstant.NONE,
 				CodeConstant.NONE, lastUpdateDate, errorMsg)) {
 			if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
 				ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
