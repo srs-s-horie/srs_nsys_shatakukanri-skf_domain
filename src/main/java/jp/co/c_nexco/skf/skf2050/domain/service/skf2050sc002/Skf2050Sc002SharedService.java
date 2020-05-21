@@ -194,6 +194,14 @@ public class Skf2050Sc002SharedService {
 		String applId = dto.getApplId();
 		String applStatus = newApplStatus;
 
+		// 対象申請書類履歴を取得
+		List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> applHistoryList = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
+		SkfApplHistoryInfoUtilsGetApplHistoryInfoExp applHistoryInfo = new SkfApplHistoryInfoUtilsGetApplHistoryInfoExp();
+		applHistoryList = skfApplHistoryInfoUtils.getApplHistoryInfo(companyCd, applNo);
+		if (applHistoryList != null && applHistoryList.size() > 0) {
+			applHistoryInfo = applHistoryList.get(0);
+		}
+
 		String shoninName1 = null;
 		String shoninName2 = null;
 		Date agreDate = null;
@@ -207,8 +215,9 @@ public class Skf2050Sc002SharedService {
 			// 承認済
 			// 承認者名2を設定
 			shoninName2 = loginUserInfo.get("userName");
-			shoninName1 = CodeConstant.NONE;
+			shoninName1 = applHistoryInfo.getAgreName1();
 			agreDate = new Date();
+			break;
 		default:
 			// その他（審査中、同意済等）
 			// 承認者名1を設定
@@ -225,9 +234,9 @@ public class Skf2050Sc002SharedService {
 		}
 
 		// コメント更新
-		String commentNote = dto.getCommentNote();		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, 
-				commentNote, errorMsg);
+		String commentNote = dto.getCommentNote();
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, applStatus, commentNote,
+				errorMsg);
 		if (!commentErrorMessage) {
 			return false;
 		}

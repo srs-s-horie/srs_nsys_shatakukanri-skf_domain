@@ -17,8 +17,8 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackEx
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -117,15 +117,10 @@ public class Skf2010Sc003DeleteService extends SkfServiceAbstract<Skf2010Sc003De
 
 		// 表示データ取得
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(delDto);
-		if (resultList == null || resultList.size() <= 0) {
-			ServiceHelper.addWarnResultMessage(delDto, MessageIdConstant.W_SKF_1007);
-			delDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList, delDto));
-			return delDto;
-		}
 		delDto.setLtResultList(skf2010Sc003SharedService.createListTable(resultList, delDto));
 
 		// 完了メッセージ表示
-		ServiceHelper.addResultMessage(delDto, MessageIdConstant.I_SKF_2047);
+		ServiceHelper.addResultMessage(delDto, MessageIdConstant.I_SKF_1013);
 
 		return delDto;
 	}

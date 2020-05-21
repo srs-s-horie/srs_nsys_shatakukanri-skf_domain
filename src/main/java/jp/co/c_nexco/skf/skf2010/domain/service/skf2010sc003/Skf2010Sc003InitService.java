@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
@@ -100,6 +101,7 @@ public class Skf2010Sc003InitService extends SkfServiceAbstract<Skf2010Sc003Init
 	 * 
 	 * @param initDto
 	 */
+	@SuppressWarnings("unchecked")
 	private void setStatusList(Skf2010Sc003InitDto initDto) {
 		// ログインユーザー情報から社員番号取得
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
@@ -113,7 +115,15 @@ public class Skf2010Sc003InitService extends SkfServiceAbstract<Skf2010Sc003Init
 
 		String applName = initDto.getApplName();
 
-		List<String> applStatus = getDefaultApplStatusValue();
+		List<String> applStatus = new ArrayList<String>();
+
+		if (initDto.getApplStatus() != null && initDto.getApplStatus().length > 0) {
+			// すでに申請状況の指定があればそちらを使う
+			applStatus = Arrays.asList(initDto.getApplStatus());
+		} else {
+			// 指定がなければ初期値を設定
+			applStatus = getDefaultApplStatusValue();
+		}
 
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = new ArrayList<Skf2010Sc003GetApplHistoryStatusInfoExp>();
 		resultList = skf2010Sc003SharedService.getApplHistoryStatusInfo(shainNo, applDateFrom, applDateTo, agreDateFrom,
