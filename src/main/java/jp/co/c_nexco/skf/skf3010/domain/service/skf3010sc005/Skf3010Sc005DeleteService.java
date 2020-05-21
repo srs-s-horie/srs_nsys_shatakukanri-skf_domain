@@ -102,7 +102,7 @@ public class Skf3010Sc005DeleteService extends SkfServiceAbstract<Skf3010Sc005De
 				//成功メッセージ
 				ServiceHelper.addResultMessage(deleteDto, MessageIdConstant.I_SKF_1013);
 				/** 画面遷移 */
-				deleteDto.setTransferPageInfo(TransferPageInfo.prevPage(FunctionIdConstant.SKF3010_SC004));
+				deleteDto.setTransferPageInfo(TransferPageInfo.nextPage(FunctionIdConstant.SKF3010_SC004,"init"));
 			}
 
 			throwBusinessExceptionIfErrors(deleteDto.getResultMessages());
