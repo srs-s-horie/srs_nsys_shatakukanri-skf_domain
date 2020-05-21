@@ -356,12 +356,11 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 				//'送信失敗件数
 				mailFailCnt = mailFailCnt + 1;
 				//MessageIdConstant.I_SKF_3080
-//                message = "社員" + map.get("shainNo").toString() + "に送信失敗しました。";
+//              'メール送信に失敗した場合
+				LogUtils.info(Skf3022Sc005SendMailService.class, "社員" + map.get("shainNo").toString() + "に送信失敗しました。");
 //                retMessage.append(message + System.getProperty("line.separator"));
 				ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3080, map.get("shainNo").toString());
 
-//                'メール送信に失敗した場合
-				LogUtils.warn(Skf3022Sc005SendMailService.class, "メール送信失敗:"+ map.get("shainNo").toString());
 
 			}else{
 				LogUtils.debugByMsg("メール送信成功:"+ map.get("shainNo").toString());
@@ -386,7 +385,6 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 		}
 
 //        '送信失敗件数i_skf_3082
-//        message = "メール送信失敗件数  ：" + mailFailCnt + "件 ";
 		ServiceHelper.addResultMessage(sendDto, MessageIdConstant.I_SKF_3082, mailFailCnt);
 		LogUtils.infoByMsg("index, メール送信失敗件数  ：" + Integer.toString(mailFailCnt));
 

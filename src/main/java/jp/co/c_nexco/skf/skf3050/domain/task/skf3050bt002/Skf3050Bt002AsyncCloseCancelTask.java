@@ -47,7 +47,7 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 		//トランザクションAを開始
 		//パラメータ数のチェック
 		if (paramMap.size() != Skf3050Bt002SharedTask.PARAMETER_NUM) {
-			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
+			LogUtils.info(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Bt002SharedTask.outputEndProcLog("");
 			return;
 		}
@@ -73,7 +73,7 @@ public class Skf3050Bt002AsyncCloseCancelTask extends AsyncTaskAbstract {
 				updateGetsujiDataMsg = result.get(Skf3050Bt002SharedTask.UPDATE_GETSUJI_DATA_MSG_KEY);
 	
 			} else {
-				LogUtils.error(MessageIdConstant.E_SKF_1079, "");
+				LogUtils.info(MessageIdConstant.E_SKF_1079, "");
 			}
 		} catch (Exception e) {
 			LogUtils.infoByMsg("異常終了:" + Skf3050Bt002SharedTask.BATCH_NAME + "(" + e.getMessage() + ")");

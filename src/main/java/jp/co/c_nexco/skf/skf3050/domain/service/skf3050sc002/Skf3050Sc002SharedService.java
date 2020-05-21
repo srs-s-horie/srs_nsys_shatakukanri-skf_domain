@@ -435,11 +435,11 @@ public class Skf3050Sc002SharedService {
 				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(COMPANY_CD_KEY), programId,
 						parameter.get(USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
-				LogUtils.error(MessageIdConstant.E_SKF_1089, retParameterName);
+				LogUtils.info(MessageIdConstant.E_SKF_1089, retParameterName);
 				return CodeConstant.SYS_NG;
 
 			} else {
-				LogUtils.error(MessageIdConstant.E_SKF_1089, BATCH_PARAM_NAME_COMPANY_CD);
+				LogUtils.info(MessageIdConstant.E_SKF_1089, BATCH_PARAM_NAME_COMPANY_CD);
 				return CodeConstant.SYS_NG;
 			}
 		}
@@ -1859,12 +1859,12 @@ public class Skf3050Sc002SharedService {
 					return RETURN_STATUS_NG;
 				}
 
-				LogUtils.error(MessageIdConstant.E_SKF_1089, retParameterName);
+				LogUtils.info(MessageIdConstant.E_SKF_1089, retParameterName);
 				outputManagementLogEndProc(endList, null);
 				return RETURN_STATUS_NG;
 
 			} else {
-				LogUtils.error(MessageIdConstant.E_SKF_1089, BATCH_PARAM_NAME_COMPANY_CD);
+				LogUtils.info(MessageIdConstant.E_SKF_1089, BATCH_PARAM_NAME_COMPANY_CD);
 				return RETURN_STATUS_NG;
 			}
 		}
@@ -1879,7 +1879,7 @@ public class Skf3050Sc002SharedService {
 				return RETURN_STATUS_NG;
 			}
 
-			LogUtils.error(MessageIdConstant.E_SKF_1090, parameter.get(BATCH_PRG_ID_KEY));
+			LogUtils.info(MessageIdConstant.E_SKF_1090, parameter.get(BATCH_PRG_ID_KEY));
 			outputManagementLogEndProc(endList, getSystemDate());
 			return RETURN_STATUS_NG;
 		}
@@ -1937,7 +1937,7 @@ public class Skf3050Sc002SharedService {
 					renRirekiRow.getShatakuKanriId());
 
 			if (sougoDt.size() <= 0) {
-				LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_SHATAKUKANRIDAICHOU_0,
+				LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_SHATAKUKANRIDAICHOU_0,
 						ERRMSG_SHATAKUKANRIDAICHOU_1 + CodeConstant.COLON + renRirekiRow.getShatakuKanriId());
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
@@ -2144,7 +2144,7 @@ public class Skf3050Sc002SharedService {
 				String errMsg = ERRMSG_GENSHIKYU_TEKIYO_1 + CodeConstant.COLON + getGetsumatsujitu(paramShoriNengetsu)
 						+ CodeConstant.COMMA + ERRMSG_GENSHIKYU_TODOFU_1 + CodeConstant.COLON
 						+ genSanteiRow.getPrefCd();
-				LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_GENSHIKYU_0, errMsg);
+				LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_GENSHIKYU_0, errMsg);
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
 			}
@@ -2169,7 +2169,7 @@ public class Skf3050Sc002SharedService {
 					renkeiDataSakuseiMaeData.getShatakuKanriNo());
 
 			if (shatakuKihonDtList.size() <= 0) {
-				LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_SHATAKUKIHON_0,
+				LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_SHATAKUKIHON_0,
 						ERRMSG_SHATAKUKIHON_1 + CodeConstant.COLON + renkeiDataSakuseiMaeData.getShatakuKanriNo());
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
@@ -2187,7 +2187,7 @@ public class Skf3050Sc002SharedService {
 			int rtn1Sts = (int) ret1Map.get(KEIJOU_KAMOKU_RTN_STS_KEY);
 			if (rtn1Sts == RETURN_STATUS_NG) {
 				String msg = (String) ret1Map.get(KEIJOU_KAMOKU_ERR_MSG_KEY);
-				LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_KAIKEI_0, msg);
+				LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_KAIKEI_0, msg);
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
 			}
@@ -2200,7 +2200,7 @@ public class Skf3050Sc002SharedService {
 			int rtn2Sts = (int) ret2Map.get(KEIJOU_KAMOKU_RTN_STS_KEY);
 			if (rtn2Sts == RETURN_STATUS_NG) {
 				String msg = (String) ret2Map.get(KEIJOU_KAMOKU_ERR_MSG_KEY);
-				LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_KAIKEI_0, msg);
+				LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_KAIKEI_0, msg);
 				rtn = SkfCommonConstant.ABNORMAL;
 				break;
 			}

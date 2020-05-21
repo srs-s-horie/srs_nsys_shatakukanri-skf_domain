@@ -280,7 +280,7 @@ public class Skf3050Bt004SharedTask {
 						parameter.get(SKF3050BT004_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 			}
 
-			LogUtils.error(MessageIdConstant.E_SKF_1089, retParameterName);
+			LogUtils.info(MessageIdConstant.E_SKF_1089, retParameterName);
 			return CodeConstant.SYS_NG;
 		}
 
@@ -290,7 +290,7 @@ public class Skf3050Bt004SharedTask {
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT004_COMPANY_CD_KEY), programId,
 					parameter.get(SKF3050BT004_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
-			LogUtils.errorByMsg(
+			LogUtils.infoByMsg(
 					"registBatchControl, バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY) + "）");
 			return CodeConstant.SYS_NG;
 		}
@@ -588,7 +588,7 @@ public class Skf3050Bt004SharedTask {
 
 				//当月データが存在しない場合エラー
 				if (tsukiShozokuTougetsuDtList.size() <= 0) {
-					LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_TSUKIBETSUSHOZOKU_0, shatakuKanriId.toString());
+					LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_TSUKIBETSUSHOZOKU_0, shatakuKanriId.toString());
 					return false;
 				}
 
@@ -715,7 +715,7 @@ public class Skf3050Bt004SharedTask {
 
 				//当月データが存在しない場合エラー
 				if (tougetsuTsukiSogoDtList.size() == 0) {
-					LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_TSUKIBETSUSOGORIREKI_0,
+					LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_TSUKIBETSUSOGORIREKI_0,
 							shatakuKanriId.toString());
 					return false;
 				}
@@ -753,7 +753,7 @@ public class Skf3050Bt004SharedTask {
 					.getShatakuKanriDaityoSogoriyoData(shatakuKanriId);
 
 			if (sougoDtList.size() <= 0) {
-				LogUtils.error(MessageIdConstant.E_SKF_1106, ERRMSG_TSUKIBETSUSOGO_0,
+				LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_TSUKIBETSUSOGO_0,
 						ERRMSG_TSUKIBETSUSOGO_1 + CodeConstant.COLON + shatakuKanriId.toString());
 				return false;
 			}

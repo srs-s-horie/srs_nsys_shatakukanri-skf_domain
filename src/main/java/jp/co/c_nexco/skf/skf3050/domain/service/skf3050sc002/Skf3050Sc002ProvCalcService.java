@@ -74,7 +74,7 @@ public class Skf3050Sc002ProvCalcService extends SkfServiceAbstract<Skf3050Sc002
 		List<String> endList = setEndList();
 
 		if (paramMap.size() == 0 || paramMap.size() != Skf3050Bt001SharedTask.PARAMETER_NUM) {
-			LogUtils.error(MessageIdConstant.E_SKF_1092, paramMap.size());
+			LogUtils.info(MessageIdConstant.E_SKF_1092, paramMap.size());
 			skf3050Sc002SharedService.outputManagementLogEndProc(endList, sysDate);
 			return provCalcDto;
 		}

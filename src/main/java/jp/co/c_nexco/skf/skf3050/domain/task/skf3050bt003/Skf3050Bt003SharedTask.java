@@ -122,11 +122,11 @@ public class Skf3050Bt003SharedTask {
 				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT003_COMPANY_CD_KEY), programId,
 						parameter.get(SKF3050BT003_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
-				LogUtils.error(MessageIdConstant.E_SKF_1089, retParameterName);
+				LogUtils.info(MessageIdConstant.E_SKF_1089, retParameterName);
 				return CodeConstant.SYS_NG;
 
 			} else {
-				LogUtils.error(MessageIdConstant.E_SKF_1089, PARAM_NAME_COMPANY_CD);
+				LogUtils.info(MessageIdConstant.E_SKF_1089, PARAM_NAME_COMPANY_CD);
 				return CodeConstant.SYS_NG;
 			}
 		}
@@ -137,7 +137,7 @@ public class Skf3050Bt003SharedTask {
 			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT003_COMPANY_CD_KEY), programId,
 					parameter.get(SKF3050BT003_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
 
-			LogUtils.errorByMsg(
+			LogUtils.infoByMsg(
 					"registBatchControl, バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT003_BATCH_PRG_ID_KEY) + "）");
 			return CodeConstant.SYS_NG;
 		}
