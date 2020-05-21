@@ -149,6 +149,8 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 		String level3_1 = CodeConstant.DOUBLE_QUOTATION;
 		// 管理者（組織マスタメンテナンス）
 		String level3_2 = CodeConstant.DOUBLE_QUOTATION;
+		// 管理者(操作ログ確認)
+		String level3_3 = CodeConstant.DOUBLE_QUOTATION;
 		// 操作に困ったときは（マニュアル 管理）
 		String level4_1 = CodeConstant.DOUBLE_QUOTATION;
 		// 未承認処理（全体）
@@ -185,8 +187,10 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 			initDto.setLevel5(level5);
 
 		}
-		// 社宅管理業務者
+		// 社宅管理業務者・システム管理者
 		else if (shatakuGyomuKanri.equals(roleId) || systemyKanri.equals(roleId)) {
+			level3_3 = "true";
+			initDto.setLevel3_3(level3_3);
 
 		}
 
@@ -229,8 +233,10 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 		else if (nakasashatakuKanri.equals(roleId)) {
 			level3_1 = "true";
 			level3_2 = "true";
+			level3_3 = "true";
 			initDto.setLevel3_1(level3_1);
 			initDto.setLevel3_2(level3_2);
+			initDto.setLevel3_3(level3_3);
 		}
 
 		/** システムに関するお知らせ取得 */
