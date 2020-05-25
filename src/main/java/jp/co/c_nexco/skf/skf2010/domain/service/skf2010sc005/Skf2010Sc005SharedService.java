@@ -695,6 +695,74 @@ public class Skf2010Sc005SharedService {
 		Skf2020TNyukyoChoshoTsuchi result = skf2020TNyukyoChoshoTsuchiRepository
 				.selectByPrimaryKey(skf2020TNyukyoChoshoTsuchiKey);
 		if (result != null) {
+			
+			// 日付にスラッシュを追加
+			String nyukyoYoteiDate = CodeConstant.NONE;
+			if (result.getNyukyoYoteiDate() != null) {
+				nyukyoYoteiDate = skfDateFormatUtils.dateFormatFromString(result.getNyukyoYoteiDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}	
+			
+			String carExpirationDate = CodeConstant.NONE;
+			if (result.getCarExpirationDate() != null) {
+				carExpirationDate = skfDateFormatUtils.dateFormatFromString(result.getCarExpirationDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
+			String parkingUseDate = CodeConstant.NONE;
+			if (result.getParkingUseDate() != null) {
+				parkingUseDate = skfDateFormatUtils.dateFormatFromString(result.getParkingUseDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}		
+			
+			String taikyoYoteiDate = CodeConstant.NONE;
+			if (result.getTaikyoYoteiDate() != null) {
+				taikyoYoteiDate = skfDateFormatUtils.dateFormatFromString(result.getTaikyoYoteiDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}		
+			
+			String nyukyoKanoDate = CodeConstant.NONE;
+			if (result.getNyukyoKanoDate() != null) {
+				nyukyoKanoDate = skfDateFormatUtils.dateFormatFromString(result.getNyukyoKanoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}			
+			
+			String parkingKanoDate = CodeConstant.NONE;
+			if (result.getParkingKanoDate() != null) {
+				parkingKanoDate = skfDateFormatUtils.dateFormatFromString(result.getParkingKanoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}				
+			
+			String seiyakuDate = CodeConstant.NONE;
+			if (result.getSeiyakuDate() != null) {
+				seiyakuDate = skfDateFormatUtils.dateFormatFromString(result.getSeiyakuDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}	
+			
+			String tsuchiDate = CodeConstant.NONE;
+			if(result.getTsuchiDate() != null) {
+				tsuchiDate = skfDateFormatUtils.dateFormatFromString(result.getTsuchiDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
+			}
+			
+			String carExpirationDate2 = CodeConstant.NONE;
+			if (result.getCarExpirationDate2() != null) {
+				carExpirationDate2 = skfDateFormatUtils.dateFormatFromString(result.getCarExpirationDate2(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
+			String parkingUseDate2 = CodeConstant.NONE;
+			if (result.getParkingUseDate2() != null) {
+				parkingUseDate2 = skfDateFormatUtils.dateFormatFromString(result.getParkingUseDate2(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
+			String parkingKanoDate2 = CodeConstant.NONE;
+			if (result.getParkingKanoDate2() != null) {
+				parkingKanoDate2 = skfDateFormatUtils.dateFormatFromString(result.getParkingKanoDate2(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("agency");
@@ -765,7 +833,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("dokyo_age6");
 			strList.add(result.getDokyoAge6());
 			titleList.add("nyukyo_yotei_date");
-			strList.add(result.getNyukyoKanoDate());
+			strList.add(nyukyoYoteiDate);
 			titleList.add("parking_umu");
 			strList.add(result.getParkingUmu());
 			titleList.add("car_no_input_flg");
@@ -775,11 +843,11 @@ public class Skf2010Sc005SharedService {
 			titleList.add("car_no");
 			strList.add(result.getCarNo());
 			titleList.add("car_expiration_date");
-			strList.add(result.getCarExpirationDate());
+			strList.add(carExpirationDate);
 			titleList.add("car_user");
 			strList.add(result.getCarUser());
 			titleList.add("parking_use_date");
-			strList.add(result.getParkingUseDate());
+			strList.add(parkingUseDate);
 			titleList.add("now_shataku");
 			strList.add(result.getNowShataku());
 			titleList.add("now_shataku_name");
@@ -793,7 +861,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("taikyo_yotei");
 			strList.add(result.getTaikyoYotei());
 			titleList.add("taikyo_yotei_date");
-			strList.add(result.getTaikyoYoteiDate());
+			strList.add(taikyoYoteiDate);
 			titleList.add("taikyo_riyu");
 			strList.add(result.getTaikyoRiyu());
 			titleList.add("taikyo_riyu_kbn");
@@ -821,7 +889,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("new_kyoekihi");
 			strList.add(result.getNewKyoekihi());
 			titleList.add("nyukyo_kano_date");
-			strList.add(result.getNyukyoKanoDate());
+			strList.add(nyukyoKanoDate);
 			titleList.add("parking_area");
 			strList.add(result.getParkingArea());
 			titleList.add("car_ichi_no");
@@ -829,11 +897,11 @@ public class Skf2010Sc005SharedService {
 			titleList.add("parking_rental");
 			strList.add(result.getParkingRental());
 			titleList.add("parking_kano_date");
-			strList.add(result.getParkingKanoDate());
+			strList.add(parkingKanoDate);
 			titleList.add("seiyaku_date");
-			strList.add(result.getSeiyakuDate());
+			strList.add(seiyakuDate);
 			titleList.add("tsuchi_date");
-			strList.add(result.getTsuchiDate());
+			strList.add(tsuchiDate);
 			titleList.add("combo_flg");
 			strList.add(result.getComboFlg());
 			titleList.add("import_flg");
@@ -869,11 +937,11 @@ public class Skf2010Sc005SharedService {
 			titleList.add("car_no2");
 			strList.add(result.getCarNo2());
 			titleList.add("car_expiration_date2");
-			strList.add(result.getCarExpirationDate2());
+			strList.add(carExpirationDate2);
 			titleList.add("car_user2");
 			strList.add(result.getCarUser2());
 			titleList.add("parking_use_date2");
-			strList.add(result.getParkingUseDate2());
+			strList.add(parkingUseDate2);
 			titleList.add("shataku_jotai");
 			strList.add(result.getShatakuJotai());
 			titleList.add("session_day");
@@ -889,7 +957,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("parking_rental2");
 			strList.add(result.getParkingRental2());
 			titleList.add("parking_kano_date2");
-			strList.add(result.getParkingKanoDate2());
+			strList.add(parkingKanoDate2);
 			titleList.add("bihin_kibo");
 			strList.add(result.getBihinKibo());
 			titleList.add("key_manager");
@@ -910,12 +978,6 @@ public class Skf2010Sc005SharedService {
 				strNowShatakuKanriNo = result.getNowShatakuKanriNo().toString();
 			}
 			strList.add(strNowShatakuKanriNo);
-			titleList.add("now_room_kanri_no");
-			String strNowRoomKanriNo = CodeConstant.NONE;
-			if (result.getNowRoomKanriNo() != null) {
-				strNowRoomKanriNo = result.getNowRoomKanriNo().toString();
-			}
-			strList.add(strNowRoomKanriNo);
 		}
 		return;
 	}
@@ -935,6 +997,26 @@ public class Skf2010Sc005SharedService {
 		param.setApplNo(applNo);
 		result = skf2040TTaikyoReportRepository.selectByPrimaryKey(param);
 		if (result != null) {
+			
+			// 日付にスラッシュを追加
+			String taikyoDate = CodeConstant.NONE;
+			if (result.getTaikyoDate() != null) {
+				taikyoDate = skfDateFormatUtils.dateFormatFromString(result.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
+			String parkingHenkanDate = CodeConstant.NONE;
+			if (result.getParkingHenkanDate() != null) {
+				parkingHenkanDate = skfDateFormatUtils.dateFormatFromString(result.getParkingHenkanDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
+			String sessionDay = CodeConstant.NONE;
+			if (result.getSessionDay() != null) {
+				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getSessionDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("agency");
@@ -949,9 +1031,9 @@ public class Skf2010Sc005SharedService {
 			titleList.add("address");
 			strList.add(result.getAddress());
 			titleList.add("taikyo_date");
-			strList.add(result.getTaikyoDate());
+			strList.add(taikyoDate);
 			titleList.add("parking_henkan_date");
-			strList.add(result.getParkingHenkanDate());
+			strList.add(parkingHenkanDate);
 			titleList.add("shataku_taikyo_kbn");
 			strList.add(result.getShatakuTaikyoKbn());
 			titleList.add("taikyo_area");
@@ -989,7 +1071,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("shataku_jotai");
 			strList.add(result.getShatakuJotai());
 			titleList.add("session_day");
-			strList.add(result.getSessionDay());
+			strList.add(sessionDay);
 			titleList.add("session_time");
 			strList.add(result.getSessionTime());
 			titleList.add("renraku_saki");
@@ -1017,6 +1099,20 @@ public class Skf2010Sc005SharedService {
 		param.setApplNo(applNo);
 		result = skf2030TBihinKiboShinseiRepository.selectByPrimaryKey(param);
 		if (result != null) {
+			
+			// 日付にスラッシュを追加
+			String sessionDay = CodeConstant.NONE;
+			if (result.getSessionDay() != null) {
+				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getSessionDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
+			}
+			
+			String completionDay = CodeConstant.NONE;
+			if (result.getCompletionDay() != null) {
+				completionDay = skfDateFormatUtils.dateFormatFromString(result.getCompletionDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);					
+			}
+			
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("nyukyo_appl_no");
@@ -1056,11 +1152,11 @@ public class Skf2010Sc005SharedService {
 			titleList.add("ukeire_dairi_apoint");
 			strList.add(result.getUkeireDairiApoint());
 			titleList.add("session_day");
-			strList.add(result.getSessionDay());
+			strList.add(sessionDay);
 			titleList.add("session_time");
 			strList.add(result.getSessionTime());
 			titleList.add("completion_day");
-			strList.add(result.getCompletionDay());
+			strList.add(completionDay);
 		}
 		return;
 	}
@@ -1081,6 +1177,20 @@ public class Skf2010Sc005SharedService {
 		param.setApplNo(applNo);
 		result = skf2050TBihinHenkyakuShinseiRepository.selectByPrimaryKey(param);
 		if (result != null) {
+			
+			// 日付にスラッシュを追加
+			String sessionDay = CodeConstant.NONE;
+			if (result.getSessionDay() != null) {
+				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getSessionDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
+			}
+			
+			String completionDay = CodeConstant.NONE;
+			if (result.getCompletionDay() != null) {
+				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getCompletionDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
+			}
+			
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("taikyo_appl_no");
@@ -1126,11 +1236,11 @@ public class Skf2010Sc005SharedService {
 			titleList.add("tatiai_dairi_apoint");
 			strList.add(result.getTatiaiDairiApoint());
 			titleList.add("session_day");
-			strList.add(result.getSessionDay());
+			strList.add(sessionDay);
 			titleList.add("session_time");
 			strList.add(result.getSessionTime());
 			titleList.add("completion_day");
-			strList.add(result.getCompletionDay());
+			strList.add(completionDay);
 		}
 		return;
 	}
