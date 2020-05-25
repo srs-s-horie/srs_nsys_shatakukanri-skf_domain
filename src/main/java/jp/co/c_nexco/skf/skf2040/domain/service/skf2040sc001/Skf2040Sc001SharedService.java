@@ -540,6 +540,8 @@ public class Skf2040Sc001SharedService {
 		// 排他チェック用更新日付を更新
 		dto.addLastUpdateDate(dto.UPDATE_TABLE_PREFIX_TAIKYO_REPORT + updateParam.getApplNo(),
 				updateParam.getUpdateDate());
+		// dtoのステータスを更新（一時保存）
+		dto.setApplStatus(CodeConstant.STATUS_ICHIJIHOZON);
 
 		return true;
 	}
