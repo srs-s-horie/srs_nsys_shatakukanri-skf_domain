@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
-import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -22,6 +21,7 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc003common.Skf2010Sc003CommonDto;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003InitDto;
 
 /**
@@ -73,8 +73,8 @@ public class Skf2010Sc003InitService extends SkfServiceAbstract<Skf2010Sc003Init
 
 		// 申請状況一覧を検索
 		if (menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY) != null) {
-			CopyUtils.copyProperties(initDto,
-					menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY));
+			setSearchParameter(initDto, (Skf2010Sc003CommonDto) menuScopeSessionBean
+					.get(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY));
 		}
 		setStatusList(initDto);
 
@@ -95,6 +95,15 @@ public class Skf2010Sc003InitService extends SkfServiceAbstract<Skf2010Sc003Init
 		initDto.setBackUrl(backUrl);
 
 		return initDto;
+	}
+
+	private void setSearchParameter(Skf2010Sc003InitDto initDto, Skf2010Sc003CommonDto recieveDto) {
+		initDto.setApplDateFrom(recieveDto.getApplDateFrom());
+		initDto.setApplDateTo(recieveDto.getApplDateTo());
+		initDto.setAgreDateFrom(recieveDto.getAgreDateFrom());
+		initDto.setAgreDateTo(recieveDto.getAgreDateTo());
+		initDto.setApplName(recieveDto.getApplName());
+		initDto.setApplStatus(recieveDto.getApplStatus());
 	}
 
 	/**

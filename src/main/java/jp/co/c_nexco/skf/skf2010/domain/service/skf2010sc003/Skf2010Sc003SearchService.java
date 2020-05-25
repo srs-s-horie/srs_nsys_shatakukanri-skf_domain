@@ -59,7 +59,6 @@ public class Skf2010Sc003SearchService extends SkfServiceAbstract<Skf2010Sc003Se
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Skf2010Sc003SearchDto index(Skf2010Sc003SearchDto searchDto) throws Exception {
 		// 操作ログを出力する
@@ -72,6 +71,7 @@ public class Skf2010Sc003SearchService extends SkfServiceAbstract<Skf2010Sc003Se
 			return searchDto;
 		}
 
+		// 検索条件をセッションに保持する
 		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010_SC003_SEARCH_ITEMS_KEY, searchDto);
 
 		// 検索結果取得

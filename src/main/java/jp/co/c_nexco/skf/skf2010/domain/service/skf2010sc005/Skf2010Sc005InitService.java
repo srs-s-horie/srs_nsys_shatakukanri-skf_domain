@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExpParameter;
-import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -16,6 +15,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010Sc005common.Skf2010Sc005CommonDto;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc005.Skf2010Sc005InitDto;
 
 /**
@@ -117,8 +117,8 @@ public class Skf2010Sc005InitService extends SkfServiceAbstract<Skf2010Sc005Init
 
 		// 申請状況一覧を検索
 		if (menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY) != null) {
-			CopyUtils.copyProperties(dto,
-					menuScopeSessionBean.get(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY));
+			setSearchParameter(dto, (Skf2010Sc005CommonDto) menuScopeSessionBean
+					.get(SessionCacheKeyConstant.SKF2010_SC005_SEARCH_ITEMS_KEY));
 		}
 
 		// 承認一覧を条件から取得
@@ -136,6 +136,37 @@ public class Skf2010Sc005InitService extends SkfServiceAbstract<Skf2010Sc005Init
 		rtnList = skf2010Sc005SharedService.createListTable(tApplHistoryData, dto);
 
 		return rtnList;
+	}
+
+	private void setSearchParameter(Skf2010Sc005InitDto dto, Skf2010Sc005CommonDto recieveDto) {
+		// 機関
+		dto.setAgency(recieveDto.getAgency());
+		// 部等
+		dto.setAffiliation1(recieveDto.getAffiliation1());
+		// 室、チーム
+		dto.setAffiliation2(recieveDto.getAffiliation2());
+		// 所属機関
+		dto.setShozokuKikan(recieveDto.getShozokuKikan());
+		// 申請日時（FROM）
+		dto.setApplDateFrom(recieveDto.getApplDateFrom());
+		// 申請日時（TO）
+		dto.setApplDateTo(recieveDto.getApplDateTo());
+		// 承認日／修正依頼日（From）
+		dto.setAgreDateFrom(recieveDto.getAgreDateFrom());
+		// 承認日／修正依頼日（To）
+		dto.setAgreDateTo(recieveDto.getAgreDateTo());
+		// 社員番号
+		dto.setShainNo(recieveDto.getShainNo());
+		// 申請者名
+		dto.setName(recieveDto.getName());
+		// 申請書類種別
+		dto.setApplCtgry(recieveDto.getApplCtgry());
+		// 申請書類名
+		dto.setApplName(recieveDto.getApplName());
+		// 申請状況
+		dto.setApplStatus(recieveDto.getApplStatus());
+		// 承認者名
+		dto.setAgreementName(recieveDto.getAgreementName());
 	}
 
 	/**
