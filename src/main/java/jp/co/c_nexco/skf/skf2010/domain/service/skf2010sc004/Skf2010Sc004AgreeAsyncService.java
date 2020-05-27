@@ -21,8 +21,8 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -241,29 +241,6 @@ public class Skf2010Sc004AgreeAsyncService extends SkfAsyncServiceAbstract<Skf20
 			// エラーが出た場合処理を中断する
 			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
 			return agreeDto;
-		}
-
-		// 退居届の申請書類番号が存在する場合
-		if (!NfwStringUtils.isEmpty(newApplNo)) {
-			// 社宅入居時、退居届けの承認依頼メールを送信する
-			Map<String, String> applInfo2 = new HashMap<String, String>();
-			applInfo2.put("applNo", newApplNo);
-			applInfo2.put("applId", applId);
-			applInfo2.put("applShainNo", shainNo);
-
-			boolean sendMailRes = skf2010Sc004SharedService.sendApplTsuchiMailShiShaJimuShoTanto(
-					CodeConstant.SHONIN_IRAI_TSUCHI, applInfo2, CodeConstant.NONE, errorMsg);
-			if (!sendMailRes) {
-				if (!CheckUtils.isEmpty(errorMsg.get("errorValue"))) {
-					ServiceHelper.addErrorResultMessage(agreeDto, null, errorMsg.get("error"),
-							errorMsg.get("errorValue"));
-				} else {
-					ServiceHelper.addErrorResultMessage(agreeDto, null, errorMsg.get("error"));
-				}
-				throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
-				return agreeDto;
-			}
-
 		}
 
 		// 社宅管理データ連携処理実行
