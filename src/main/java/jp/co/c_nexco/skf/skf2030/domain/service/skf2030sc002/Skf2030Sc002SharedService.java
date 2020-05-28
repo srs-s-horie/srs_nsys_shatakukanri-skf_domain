@@ -517,6 +517,18 @@ public class Skf2030Sc002SharedService {
 			// 右側のボタンがある時のみClassにfloat-lを追加
 			dto.setFloatL(CSS_FLOAT_L);
 			break;
+		case CodeConstant.STATUS_SHONIN_ZUMI:
+			// ステータス：申請中、審査中
+			dto.setCompletionDayVisible(true); // 「搬入完了日」欄 【非表示】
+
+			dto.setDispMode(CodeConstant.VIEW_LEVEL_3);
+
+			// コメント入力欄表示
+			dto.setCommentViewFlag(false);
+
+			// 右側のボタンがある時のみClassにfloat-lを追加
+			dto.setFloatL(CSS_FLOAT_L);
+			break;
 
 		default:
 			// それ以外
@@ -663,7 +675,7 @@ public class Skf2030Sc002SharedService {
 			shoninName1 = updApplInfo.getAgreName1();
 		}
 		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
-		result = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("applShainNo"),
+		result = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatusForBihin(companyCd, applInfo.get("applShainNo"),
 				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, agreDate, shoninName1,
 				shoninName2, lastUpdateDate, errorMsg);
 		if (!result) {
