@@ -411,13 +411,17 @@ public class Skf2030Sc001SharedService {
 		String updateTel = null;
 		String updateCompleteDate = null;
 
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
+		Date applDate = null;
+
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// 更新ステータス等の判定
 		switch (applInfo.get("status")) {
 		case CodeConstant.STATUS_ICHIJIHOZON:
+			// 新規の一時保存の時のみ申請日を登録
+			// if (!dto.isRevisionFlg()) {
+			applDate = DateUtils.getSysDate();
+			// }
 		case CodeConstant.STATUS_SASHIMODOSHI:
 			updateStatus = CodeConstant.STATUS_SHINSEICHU;
 			updateSessionDay = skfHtmlCreateUtils.htmlEscapeEncode(dto.getSessionDay());
@@ -438,8 +442,8 @@ public class Skf2030Sc001SharedService {
 
 		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
 
-		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatus(companyCd, applInfo.get("shainNo"),
-				applInfo.get("applNo"), applInfo.get("applId"), DateUtils.getSysDate(), null, updateStatus, null, CodeConstant.NONE,
+		if (!skfApplHistoryInfoUtils.updateApplHistoryAgreeStatusForBihin(companyCd, applInfo.get("shainNo"),
+				applInfo.get("applNo"), applInfo.get("applId"), applDate, null, updateStatus, null, CodeConstant.NONE,
 				CodeConstant.NONE, lastUpdateDate, errorMsg)) {
 			if (NfwStringUtils.isNotEmpty(errorMsg.get("error"))) {
 				ServiceHelper.addErrorResultMessage(dto, null, errorMsg.get("error"));
@@ -735,6 +739,25 @@ public class Skf2030Sc001SharedService {
 		applMaster = skf2010MApplicationRepository.selectByPrimaryKey(key);
 
 		return applMaster;
+	}
+
+	/**
+	 * 申請履歴情報を取得
+	 * 
+	 * @param applNo
+	 * @param applId
+	 * @param applStatus
+	 * @param shainNo
+	 * @return
+	 */
+	public SkfApplHistoryInfoUtilsGetApplHistoryInfoExp getApplHistoryInfo(String applNo) {
+		List<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp> applHistoryList = new ArrayList<SkfApplHistoryInfoUtilsGetApplHistoryInfoExp>();
+		applHistoryList = skfApplHistoryInfoUtils.getApplHistoryInfo(companyCd, applNo);
+
+		if (applHistoryList != null && applHistoryList.size() > 0) {
+			return applHistoryList.get(0);
+		}
+		return null;
 	}
 
 	/**
