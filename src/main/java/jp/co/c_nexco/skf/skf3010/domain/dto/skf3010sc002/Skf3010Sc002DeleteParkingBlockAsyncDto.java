@@ -19,8 +19,6 @@ public class Skf3010Sc002DeleteParkingBlockAsyncDto extends Skf3010Sc002CommonAs
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
-	// TODO 共通FWが改修してくれなかった場合はこれで実装
-	private String localPrePageId;
 	// 駐車場区画削除フラグ
 	private Boolean parkingBlockDeleteFlg;
 	// 削除駐車場管理番号
