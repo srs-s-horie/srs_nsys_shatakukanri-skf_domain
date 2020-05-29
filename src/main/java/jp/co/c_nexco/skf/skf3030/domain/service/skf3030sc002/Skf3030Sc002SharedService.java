@@ -2001,8 +2001,12 @@ public class Skf3030Sc002SharedService {
 			//備品貸与状態
 			String bihinTaiyoStts = tmpData.getBihinLentStatusKbn();
 			String statusListCode = createBihinStatusSelect(bihinTaiyoStts,statusList,tmpData.getBihinCd());
-			if(Skf3030Sc002CommonDto.SHITADORI.equals(tmpData.getBihinCd().substring(0, 1)) || !status){
-				//下取りの備品貸与状態ドロップダウンを非活性にセット
+			if(Skf3030Sc002CommonDto.SHITADORI.equals(tmpData.getBihinCd().substring(0, 1)) ){
+				//下取りの備品リストに追加しない
+				continue;
+			}
+			else if(!status){
+				//備品貸与状態ドロップダウンを非活性にセット
 				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "' disabled>" + statusListCode + "</select>");
 			}else{
 				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "'>" + statusListCode + "</select>");
@@ -2049,9 +2053,13 @@ public class Skf3030Sc002SharedService {
 			//備品貸与状態
 			String bihinTaiyoStts = tmpData.getBihinLentStatusKbn();
 			String statusListCode = createBihinStatusSelect(bihinTaiyoStts,statusList,tmpData.getBihinCd());
-			if(Skf3030Sc002CommonDto.SHITADORI.equals(tmpData.getBihinCd().substring(0, 1)) || !status){
-				//下取りの備品貸与状態ドロップダウンを非活性にセット
+			if(Skf3030Sc002CommonDto.SHITADORI.equals(tmpData.getBihinCd().substring(0, 1))){
+				//下取りの備品はリストに追加しない
+				continue;
+			} else if(!status){
+				//備品貸与状態ドロップダウンを非活性にセット
 				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "' disabled>" + statusListCode + "</select>");
+
 			}else{
 				tmpMap.put("bihinTaiyoStts","<select id='bihinTaiyoStatus" + i + "' name='bihinTaiyoStatus" + i + "'>" + statusListCode + "</select>");
 			}
