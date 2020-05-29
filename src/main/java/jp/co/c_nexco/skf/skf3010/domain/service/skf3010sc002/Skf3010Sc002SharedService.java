@@ -2713,7 +2713,13 @@ public class Skf3010Sc002SharedService {
 				setContractInfo(shatakuKanriNo, contractSelectedIndex, initDto);
 			}
 			// 駐車場契約情報ボタン(非活性：true, 活性:false)
-			parkingContractDisableFlg = false;
+			if (initDto.getStartingParkingStructure().equals("5")) {
+				// 無しの場合は非活性
+				parkingContractDisableFlg = true;
+			} else {
+				// 無し以外は活性
+				parkingContractDisableFlg = false;
+			}
 		} else {
 			// 新規の場合
 			newShatakuFlg = true;
