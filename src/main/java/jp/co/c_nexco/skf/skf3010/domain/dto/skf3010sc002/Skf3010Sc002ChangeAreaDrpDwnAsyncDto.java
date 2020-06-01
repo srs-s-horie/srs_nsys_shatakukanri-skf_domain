@@ -18,7 +18,4 @@ import lombok.EqualsAndHashCode;
 public class Skf3010Sc002ChangeAreaDrpDwnAsyncDto extends Skf3010Sc002CommonAsyncDto {
 
 	private static final long serialVersionUID = -1902278406295003652L;
-
-	// TODO 共通FWが改修してくれなかった場合はこれで実装
-	private String localPrePageId;
 }

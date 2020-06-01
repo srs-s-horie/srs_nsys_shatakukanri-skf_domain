@@ -1,5 +1,6 @@
 package jp.co.c_nexco.skf.skf2030.domain.dto.common;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
@@ -25,6 +26,10 @@ public class Skf203010CommonDto extends BaseDto {
 	private String applStatusText;
 	// 社員番号
 	private String hdnShainNo;
+	// 承認日/修正依頼日
+	private Date agreDate;
+	// 修正依頼済みフラグ
+	private boolean revisionFlg = false;
 
 	// 【所属】
 	// 機関

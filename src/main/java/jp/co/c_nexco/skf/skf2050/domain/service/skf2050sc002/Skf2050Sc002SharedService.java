@@ -130,7 +130,7 @@ public class Skf2050Sc002SharedService {
 
 		// 各備品項目の表示情報を取得
 		Map<String, String> bihinStatusMap = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHINSTATUS_KBN);
+				.getGenericCode(FunctionIdConstant.GENERIC_CODE_EQUIPMENT_STATE);
 		Map<String, String> bihinAdjustMap = skfGenericCodeUtils
 				.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_OUT_KBN);
 

@@ -19,6 +19,4 @@ public class Skf3010Sc002ChangeParkingStructureDrpDwnAsyncDto extends Skf3010Sc0
 
 	private static final long serialVersionUID = -1902278406295003652L;
 
-	// TODO 共通FWが改修してくれなかった場合はこれで実装
-	private String localPrePageId;
 }

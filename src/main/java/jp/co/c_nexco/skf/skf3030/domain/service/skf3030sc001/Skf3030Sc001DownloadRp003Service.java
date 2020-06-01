@@ -368,8 +368,8 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 		// ┗管理機関データ
 		// ┗会社コード(外部)
 		// ┗社宅会社コード(内部)
-		if (!NfwStringUtils.isEmpty(daichoData.getAgencyExternalKbn())
-				&& !"1".equals(daichoData.getAgencyExternalKbn())) {
+		if (NfwStringUtils.isEmpty(daichoData.getAgencyExternalKbn())
+				|| !"1".equals(daichoData.getAgencyExternalKbn())) {
 			rtnData.setManageCompanyCd(
 					skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getManageBusinessAreaCd()));
 		} else {
@@ -387,9 +387,10 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 
 		//┗物件データ
 		// ┗保有借上
-		Map<String, String> shatakKbnMap = skfGenericCodeUtils
-				.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
-		rtnData.setHoyuKariage(shatakKbnMap.get(daichoData.getShatakKbn()));
+//		Map<String, String> shatakKbnMap = skfGenericCodeUtils
+//				.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
+		Map<String, String> shatakKbnReportMap = getShatakuKbnReportMap();
+		rtnData.setHoyuKariage(shatakKbnReportMap.get(daichoData.getShatakKbn()));
 		// ┗社宅名
 		rtnData.setShatakName(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getShatakName()));
 		// ┗部屋番号
@@ -543,8 +544,8 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 
 		// ┗会社コード(外部)
 		// ┗社宅会社コード(内部)
-		if (!NfwStringUtils.isEmpty(daichoData.getOriginalAgencyExternalKbn())
-				&& !"1".equals(daichoData.getOriginalAgencyExternalKbn())) {
+		if (NfwStringUtils.isEmpty(daichoData.getOriginalAgencyExternalKbn())
+				|| !"1".equals(daichoData.getOriginalAgencyExternalKbn())) {
 			rtnData.setOriginalCompanyCd(
 					skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getOriginalCompanyCd()));
 		} else {
@@ -553,8 +554,8 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 		}
 		// ┗会社コード(外部)
 		// ┗社宅会社コード(内部)
-		if (!NfwStringUtils.isEmpty(daichoData.getPayAgencyExternalKbn())
-				&& !"1".equals(daichoData.getPayAgencyExternalKbn())) {
+		if (NfwStringUtils.isEmpty(daichoData.getPayAgencyExternalKbn())
+				|| !"1".equals(daichoData.getPayAgencyExternalKbn())) {
 			rtnData.setPayCompanyCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPayCompanyCd()));
 		} else {
 			rtnData.setPayCompanyCd(skf3030Sc001SharedService.cnvEmptyStrToNull(daichoData.getPayShatakuCompanyCd()));
@@ -1214,10 +1215,10 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 
 		rowData.addCellDataBean(Rp003Info.GENSEKI_CHIGAI_HANTEI.col + tagetRowIdx,
 				skf3030Sc001SharedService.cnvEmptyStrToNull(data.getGensekichigaiHantei()));
-		rowData.addCellDataBean(Rp003Info.SHATAK_COMPANY_TRANSFER.col + tagetRowIdx,
-				skf3030Sc001SharedService.cnvEmptyStrToNull(data.getShatakuCompanyTransfer()));
-		rowData.addCellDataBean(Rp003Info.KYOEKI_COMPANY_TRANSFER.col + tagetRowIdx,
-				skf3030Sc001SharedService.cnvEmptyStrToNull(data.getKyoekihiCompanyTransfer()));
+//		rowData.addCellDataBean(Rp003Info.SHATAK_COMPANY_TRANSFER.col + tagetRowIdx,
+//				skf3030Sc001SharedService.cnvEmptyStrToNull(data.getShatakuCompanyTransfer()));
+//		rowData.addCellDataBean(Rp003Info.KYOEKI_COMPANY_TRANSFER.col + tagetRowIdx,
+//				skf3030Sc001SharedService.cnvEmptyStrToNull(data.getKyoekihiCompanyTransfer()));
 		rowData.addCellDataBean(Rp003Info.ORIGINAL_COMPANY_NAME.col + tagetRowIdx,
 				skf3030Sc001SharedService.cnvEmptyStrToNull(data.getOriginalCompanyName()));
 		rowData.addCellDataBean(Rp003Info.ORIGINAL_COMPANY_CD.col + tagetRowIdx,
@@ -1431,19 +1432,19 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 			} else {
 				shatakuShunyuCompany = data.getManageCompanyName();
 			}
-		} else {
-			shatakKojyoCompany = data.getShatakuKojyoCompany();
-		}
+		} 
+//		else {
+//			shatakKojyoCompany = data.getShatakuKojyoCompany();
+//		}
 
 		rowData.addCellDataBean(Rp003Info.SHATAK_SHUNYU_COMPANY.col + tagetRowIdx, shatakuShunyuCompany);
 		rowData.addCellDataBean(Rp003Info.SHATAK_KOJYO_COMPANY.col + tagetRowIdx, shatakKojyoCompany);
 
 		String payCompCd = data.getPayCompanyCd();
 		String shatakCompTrans = "";
-
+		//社宅使用料会計処理_会社間送金_有無（○×）
 		if (Objects.equals(shatakuShunyuCompany, shatakKojyoCompany)) {
 			shatakCompTrans = Skf3030Sc001SharedService.KAISHAKAN_SOKIN_NASI;
-
 		} else {
 			if (!NfwStringUtils.isEmpty(payCompCd)) {
 				if (Integer.parseInt(payCompCd) > 10) {
@@ -1460,7 +1461,7 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 
 		String kyoekiUkeireCompany = "";
 		String kyoekiKojyoCompany = "";
-
+		//'受入機関 会社名
 		if (!"0".equals(data.getKyoekihi())) {
 			kyoekiKojyoCompany = data.getPayCompanyName();
 
@@ -1471,6 +1472,7 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 			}
 		}
 
+		//共益費預り金会計処理_会社間送金_有無（○×）
 		String kyoekiCompTrans = "";
 		if (Objects.equals(skf3030Sc001SharedService.cnvEmptyStrToNull(kyoekiUkeireCompany), skf3030Sc001SharedService.cnvEmptyStrToNull(kyoekiKojyoCompany))) {
 			kyoekiCompTrans = Skf3030Sc001SharedService.KAISHAKAN_SOKIN_NASI;
@@ -1493,6 +1495,8 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 
 		if (NfwStringUtils.isEmpty(kyoekihi)) {
 			kyoekihi = "0";
+		}
+		if("0".equals(kyoekihi)){
 			kyoekiKanjoKamok = CodeConstant.HYPHEN;
 			kyoekiUkeireCompany = "";
 			kyoekiKojyoCompany = "";
@@ -1850,7 +1854,20 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 		return cellParam;
 	}
 
-	
+	/**
+	 * 社宅区分変換Map生成
+	 * @return
+	 */
+	private Map<String, String> getShatakuKbnReportMap(){
+		Map<String, String> wordMap = new HashMap<String, String>();
+		//Map生成
+		wordMap.put("1", SkfCommonConstant.SHATAKU_KBN_REPORT_1);
+		wordMap.put("2", SkfCommonConstant.SHATAKU_KBN_REPORT_2);
+		wordMap.put("3", SkfCommonConstant.SHATAKU_KBN_REPORT_3);
+		wordMap.put("4", SkfCommonConstant.SHATAKU_KBN_REPORT_4);
+		
+		return wordMap;
+	}	
 	/**
 	 * 地域区分変換Map生成
 	 * @return
