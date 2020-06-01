@@ -78,7 +78,7 @@ public class Skf2030Sc002SharedService {
 
 	// メッセージ用定数
 	private static final String NO_DATA_MESSAGE = "初期表示中に";
-	private static final String SHATAKU_TEIJI_MSG = "社宅管理システムで提示データを確認";
+	private static final String SHATAKU_TEIJI_MSG = "提示データを確認";
 	private static final String BIHIN_TEIJI_COMP = "（備品提示データが作成完了されていません。）";
 	private static final String NYUKYO_SHONIN_MSG_T = "備品承認前に社宅入居希望等調書を承認";
 	private static final String REASON_LABEL = "申請者へのコメント";

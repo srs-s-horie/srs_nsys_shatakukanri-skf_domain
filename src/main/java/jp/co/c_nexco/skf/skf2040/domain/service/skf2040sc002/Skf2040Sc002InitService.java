@@ -29,8 +29,8 @@ import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -388,8 +388,8 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 							initDto.setBtnApproveDisabled(sTrue);
 							// 提示ボタン
 							initDto.setBtnPresentDisabeld(sTrue);
-							ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001,
-									"社宅管理システムで提示データを確認", "（備品提示データが作成完了されていません。）");
+							ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "提示データを確認",
+									"（備品提示データが作成完了されていません。）");
 							break;
 						}
 					}
@@ -400,7 +400,7 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 					// 提示ボタン
 					initDto.setBtnPresentDisabeld(sTrue);
 					// 提示不可で中断
-					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "社宅管理システムで提示データを確認",
+					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "提示データを確認",
 							"（社宅提示データが取得できませんでした。）");
 				}
 			}
