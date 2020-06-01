@@ -90,7 +90,7 @@ public class Skf2020Sc003SharedService {
 	//
 	private MenuScopeSessionBean menuScopeSessionBean;
 	// 定数一覧
-	private final String SHATAKU_TEIJI_MSG = "社宅管理システムで提示データを確認";
+	private final String SHATAKU_TEIJI_MSG = "提示データを確認";
 	private final String SHATAKU_TEIJI_NONE = "（社宅提示データが取得できませんでした。）";
 	private final String SHATAKU_TEIJI_COMP = "（社宅提示データが作成完了されていません。）";
 	private final String BIHIN_STATE_SONAETSUKE = "備付";
