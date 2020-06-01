@@ -778,7 +778,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		// 月初月末区分
 		insertRireki.setBeginningEndKbn(beginningEndKbn);
 		// 機関コード
-		insertRireki.setAgencyCd(preUserMasterInfo.getAgencyCdAsSoshikiagencycd());
+		insertRireki.setAgencyCd(preUserMasterInfo.getSoshikiagencycd());
 		// 機関名称
 		insertRireki.setAgencyName(preUserMasterInfo.getAgencyName());
 		// 属 Ⅰコード
