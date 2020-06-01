@@ -373,7 +373,7 @@ public class Skf2040Sc002SharedService {
 			if (NfwStringUtils.isNotEmpty(sessionTime)) {
 				// 返却立会希望日（時）の名称を取得
 				sessionTime = skfGenericCodeUtils
-						.getGenericCodeNameReverse(FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN, sessionTime);
+						.getGenericCodeNameReverse(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME, sessionTime);
 			}
 		}
 		// 返却立会希望日時の表示

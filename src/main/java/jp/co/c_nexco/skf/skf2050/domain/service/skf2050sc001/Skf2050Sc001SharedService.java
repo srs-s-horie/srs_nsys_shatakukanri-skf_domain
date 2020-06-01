@@ -317,7 +317,7 @@ public class Skf2050Sc001SharedService {
 		}
 		// 搬出立会時刻ドロップダウン
 		List<Map<String, Object>> ddSessionTimeList = new ArrayList<Map<String, Object>>();
-		ddSessionTimeList = skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN,
+		ddSessionTimeList = skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME,
 				bihinHenkyaku.getSessionTime(), false);
 		dto.setDdSessionTimeList(ddSessionTimeList);
 

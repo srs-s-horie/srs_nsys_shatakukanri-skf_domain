@@ -350,7 +350,7 @@ public class Skf2050Sc002SharedService {
 		String sessionTime = dto.getSessionTime();
 		if (NfwStringUtils.isNotEmpty(sessionTime)) {
 			Map<String, String> sessionTimeMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN);
+					.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
 			sessionTime = sessionTimeMap.get(sessionTime);
 		} else {
 			sessionTime = CodeConstant.NONE;
