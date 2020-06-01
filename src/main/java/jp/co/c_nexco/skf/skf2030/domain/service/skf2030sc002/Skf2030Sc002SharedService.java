@@ -238,7 +238,7 @@ public class Skf2030Sc002SharedService {
 		String applTime = CodeConstant.NONE;
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getSessionTime())) {
 			applTime = bihinShinseiInfo.getSessionTime();
-			Map<String, String> sessionTimeMap = skfGenericCodeUtils.getGenericCode("SKF1048");
+			Map<String, String> sessionTimeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
 			dto.setSessionTimeText(sessionTimeMap.get(applTime));
 		}
 		// 【 連絡先 】 ※入力項目

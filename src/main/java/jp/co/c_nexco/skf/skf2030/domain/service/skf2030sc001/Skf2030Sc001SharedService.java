@@ -262,11 +262,11 @@ public class Skf2030Sc001SharedService {
 			String applTime = CodeConstant.NONE;
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getSessionTime())) {
 				applTime = bihinShinseiInfo.getSessionTime();
-				Map<String, String> sessionTimeMap = skfGenericCodeUtils.getGenericCode("SKF1048");
+				Map<String, String> sessionTimeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
 				initDto.setSessionTimeText(sessionTimeMap.get(applTime));
 			}
 			// 希望時間取得（ドロップダウン生成時に初期値を設定）
-			initDto.setDdlWishTime(skfDropDownUtils.getGenericForDoropDownList("SKF1048", applTime, false));
+			initDto.setDdlWishTime(skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME, applTime, false));
 			// 【 連絡先 】 ※入力項目
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getRenrakuSaki())) {
 				initDto.setRenrakuSaki(bihinShinseiInfo.getRenrakuSaki());
