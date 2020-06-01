@@ -858,6 +858,14 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 	}
 
 	private void mappingTaikyoTodoke(Skf2010Sc006InitDto initDto, Skf2040TTaikyoReport taikyoReport) {
+		// 申請年月日
+		String applDate = taikyoReport.getApplDate();
+		if (NfwStringUtils.isNotEmpty(applDate)) {
+			String applDateText = skfDateFormatUtils.dateFormatFromString(applDate,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+			initDto.setApplDate(applDateText);
+		}
+		
 		// 社員番号
 		initDto.setShainNo(taikyoReport.getShainNo());
 		// 氏名
