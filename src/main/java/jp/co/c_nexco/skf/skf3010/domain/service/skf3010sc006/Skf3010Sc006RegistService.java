@@ -820,6 +820,70 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_PARKING, registDto);
 			}
 			
+		}
+		// 契約情報
+		if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("contractNo") != null) 
+				&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("contractNo").toString())) {
+			// 契約情報が存在する場合
+			// 賃貸人
+			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractOwnerName())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "賃貸人（代理人）");
+				registDto.setContractOwnerNameErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 必須入力チェック - 賃貸人（代理人）";
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+			// 経理連携用管理番号
+			if (SkfCheckUtils.isNullOrEmpty(registDto.getAssetRegisterNo())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "経理連携用管理番号");
+				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 必須入力チェック - 経理連携用管理番号";
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+			// 契約開始日
+			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractStartDay())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "契約開始日");
+				registDto.setContractStartDayErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 必須入力チェック - 契約開始日";
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+			// 家賃
+			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractRent())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "家賃");
+				registDto.setContractRentErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 必須入力チェック - 家賃";
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+			// 共益費
+			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractKyoekihi())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "共益費");
+				registDto.setContractKyoekihiErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 必須入力チェック - 共益費";
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+			// 駐車場料(地代)
+			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractLandRent())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場料(地代)");
+				registDto.setContractLandRentErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 必須入力チェック - 駐車場料(地代)";
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+		}
+		// 駐車場構造
+		if (!SkfCheckUtils.isNullOrEmpty(registDto.getParkingStructure()) &&
+				(!PARKING_STRUCTURE_NASHI.equals(registDto.getParkingStructure()))) {
+			// 駐車場構造が「なし」以外
 			//駐車場契約情報
 			if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("parkingContractNo") != null) 
 					&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("parkingContractNo").toString())) {
@@ -898,66 +962,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 				}
 			}
 		}
-		// 契約情報
-		if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("contractNo") != null) 
-				&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("contractNo").toString())) {
-			// 契約情報が存在する場合
-			// 賃貸人
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractOwnerName())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "賃貸人（代理人）");
-				registDto.setContractOwnerNameErr(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 賃貸人（代理人）";
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
-			// 経理連携用管理番号
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getAssetRegisterNo())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "経理連携用管理番号");
-				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 経理連携用管理番号";
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
-			// 契約開始日
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractStartDay())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "契約開始日");
-				registDto.setContractStartDayErr(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 契約開始日";
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
-			// 家賃
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractRent())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "家賃");
-				registDto.setContractRentErr(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 家賃";
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
-			// 共益費
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractKyoekihi())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "共益費");
-				registDto.setContractKyoekihiErr(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 共益費";
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
-			// 駐車場料(地代)
-			if (SkfCheckUtils.isNullOrEmpty(registDto.getContractLandRent())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1048, "駐車場料(地代)");
-				registDto.setContractLandRentErr(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 必須入力チェック - 駐車場料(地代)";
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
-		}
-
 
 		// 必須チェック結果判定
 		if (!isCheckOk) {
@@ -1066,7 +1070,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 			// 選択タブインデックス設定:管理者情報タブ
 			setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_ADMIN, registDto);
 		}
-
+		
 		String telNo = CodeConstant.DOUBLE_QUOTATION;
 		// 管理会社 電話番号
 		telNo = (registDto.getManageTelNumber() != null) ? registDto.getManageTelNumber() : "";
@@ -1092,6 +1096,17 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		// 契約情報
 		if ((drpDwnSelectedMap != null && drpDwnSelectedMap.get("contractNo") != null) 
 				&& !SkfCheckUtils.isNullOrEmpty(drpDwnSelectedMap.get("contractNo").toString())) {
+			
+			// 経理連携用管理番号
+			if (!CheckUtils.isHalfWidth(registDto.getAssetRegisterNo())) {
+				isCheckOk = false;
+				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
+				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
+				debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
+				// 選択タブインデックス設定：契約情報タブ
+				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
+			}
+			
 			// 契約開始日
 			String contractStartDate = registDto.getContractStartDay();
 			if (!SkfCheckUtils.isSkfDateFormat(contractStartDate,CheckUtils.DateFormatType.YYYYMMDD)) {
@@ -1141,26 +1156,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 					
 				}
 			}
-			
-//			// 経理連携用管理番号
-//			if (!CheckUtils.isAlphabetNumericSymbol(registDto.getAssetRegisterNo())) {
-//				isCheckOk = false;
-//				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
-//				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
-//				debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
-//				// 選択タブインデックス設定：契約情報タブ
-//				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-//			}
 
-			// 経理連携用管理番号
-			if (!CheckUtils.isHalfWidth(registDto.getAssetRegisterNo())) {
-				isCheckOk = false;
-				ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1002, "経理連携用管理番号");
-				registDto.setAssetRegisterNoErr(CodeConstant.NFW_VALIDATION_ERROR);
-				debugMessage += " 形式チェック - 経理連携用管理番号 - " +registDto.getAssetRegisterNo();
-				// 選択タブインデックス設定：契約情報タブ
-				setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-			}
 		}
 		
 		//駐車場契約
@@ -1173,7 +1169,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 				if(PARKING_CONTRACT_TYPE2.equals(registDto.getParkingContractType())){
 					// 郵便番号
 					String parkingZipCode = (registDto.getParkingZipCd() != null) ? registDto.getParkingZipCd() : "";
-					if(!CheckUtils.isNumeric(parkingZipCode) && parkingZipCode.length() != 7){
+					if(!CheckUtils.isNumeric(parkingZipCode) && parkingZipCode.length() > 0){
 						isCheckOk = false;
 						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "郵便番号");
 						registDto.setParkingZipCdError(CodeConstant.NFW_VALIDATION_ERROR);
@@ -1181,15 +1177,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 						// 選択タブインデックス設定：基本情報タブ
 						setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
 					}
-	//				// 経理連携用管理番号
-	//				if (!CheckUtils.isAlphabetNumericSymbol(registDto.getParkingAssetRegisterNo())) {
-	//					isCheckOk = false;
-	//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1042, "経理連携用管理番号");
-	//					registDto.setParkingAssetRegisterNoError(CodeConstant.NFW_VALIDATION_ERROR);
-	//					debugMessage += " 形式チェック - 駐車場経理連携用管理番号 - " +registDto.getAssetRegisterNo();
-	//					// 選択タブインデックス設定：契約情報タブ
-	//					setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
-	//				}
+
 					// 経理連携用管理番号
 					if (!CheckUtils.isHalfWidth(registDto.getParkingAssetRegisterNo())) {
 						isCheckOk = false;
@@ -1223,8 +1211,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 							// 選択タブインデックス設定：契約情報タブ
 							setDisplayTabIndex(Skf3010Sc006CommonDto.SELECT_TAB_INDEX_CONTRACT, registDto);
 						}
-						
-						if(isCheckOk){
+						else{
 							//日付関係
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 							Date startDate = null;
