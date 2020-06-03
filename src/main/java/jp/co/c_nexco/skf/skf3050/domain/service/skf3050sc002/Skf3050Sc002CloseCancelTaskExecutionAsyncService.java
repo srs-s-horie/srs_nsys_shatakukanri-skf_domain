@@ -85,7 +85,7 @@ public class Skf3050Sc002CloseCancelTaskExecutionAsyncService
 
 		String taskClassName = "jp.co.c_nexco.skf.skf3050.domain.task.skf3050bt002.Skf3050Bt002AsyncCloseCancelTask";
 		TaskMessage taskMsg = addSerializedTaskWithInfo(closeCancelDto, queueId, taskClassName, param,
-				CommonConstant.C_SYSTEM_ID.toUpperCase(), "Skf3050bt002", "締め解除処理制御", "締め解除処理");
+				"SKF", batchPrgId, "締め解除処理制御", "締め解除処理");
 
 		String msgId = "";
 		if (taskMsg != null) {

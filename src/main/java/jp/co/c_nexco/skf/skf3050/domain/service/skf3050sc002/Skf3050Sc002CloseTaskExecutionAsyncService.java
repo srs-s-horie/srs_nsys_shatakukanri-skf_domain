@@ -136,7 +136,7 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 		String taskClassName = "jp.co.c_nexco.skf.skf3050.domain.task.skf3050bt001.Skf3050Bt001AsyncCloseTask";
 
 		TaskMessage taskMsg = addSerializedTaskWithInfo(closeTaskDto, queueId, taskClassName, param,
-				CommonConstant.C_SYSTEM_ID.toUpperCase(), "Skf3050bt001", "締め処理制御", "締め処理");
+				"SKF", batchPrgId, "締め処理制御", "締め処理");
 
 		if (taskMsg != null) {
 			msgId = msgId + taskMsg.getMessageId();

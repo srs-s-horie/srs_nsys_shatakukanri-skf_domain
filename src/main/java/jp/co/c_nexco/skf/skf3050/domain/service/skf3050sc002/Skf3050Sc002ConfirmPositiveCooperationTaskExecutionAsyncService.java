@@ -80,7 +80,7 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionAsyncService ext
 		String taskClassName = "jp.co.c_nexco.skf.skf3050.domain.task.Skf3050Bt004.Skf3050Bt004AsyncConfirmPositiveCooperationTask";
 		// タスクメッセージを追加
 		TaskMessage taskMsg = addSerializedTaskWithInfo(confirmPositiveCoopDto, queueId, taskClassName, param,
-				CommonConstant.C_SYSTEM_ID.toUpperCase(), "Skf3050bt004", "POSITIVE連携データ確定処理制御", "POSITIVE連携データ確定処理");
+				"SKF", batchPrgId, "POSITIVE連携データ確定処理制御", "POSITIVE連携データ確定処理");
 
 		String msgId = "";
 		if (taskMsg != null) {

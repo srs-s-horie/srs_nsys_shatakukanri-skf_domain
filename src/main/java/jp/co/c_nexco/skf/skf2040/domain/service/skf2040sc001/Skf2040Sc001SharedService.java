@@ -122,7 +122,7 @@ public class Skf2040Sc001SharedService {
 	 */
 	public List<Map<String, Object>> getSessionTimeList(String defaultSelectTime) {
 		// 返却立会希望日(時)ドロップダウンリストの設定
-		return skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_REQUESTTIME_KBN,
+		return skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME,
 				defaultSelectTime, false);
 	}
 
