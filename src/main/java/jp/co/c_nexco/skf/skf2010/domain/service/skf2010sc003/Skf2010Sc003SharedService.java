@@ -16,6 +16,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateApplHistoryAgreeStatusExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinShinseiInfoExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteDocTableExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExpRepository;
@@ -30,6 +31,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -59,6 +61,8 @@ public class Skf2010Sc003SharedService {
 	private Skf2010Sc003DeleteApplHistoryExpRepository skf2010Sc003DeleteApplHistoryExpRepository;
 	@Autowired
 	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
+	@Autowired
+	private SkfBihinInfoUtils skfBihinInfoUtils;
 
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
@@ -286,7 +290,12 @@ public class Skf2010Sc003SharedService {
 				errorMsg.put("error", MessageIdConstant.E_SKF_1134);
 				return false;
 			}
+			// 申請書類が社宅入居希望等調書だった場合、備品希望申請の申請管理番号を取得
+			String bihinApplNo = null;
+			if (CheckUtils.isEqual(applId, FunctionIdConstant.R0100)) {
+				bihinApplNo = this.getApplNoByBihinKiboShinsei(applNo);
 
+			}
 			// 指定された件数分帳票テーブルを削除
 			int delCount = 0;
 			for (String saveTableName : saveTableList) {
@@ -308,6 +317,18 @@ public class Skf2010Sc003SharedService {
 			if (ahRes > 0) {
 				delCount++;
 			}
+			if (NfwStringUtils.isNotEmpty(bihinApplNo)) {
+				// 備品希望申請があった場合は申請書類履歴を削除
+				Skf2010Sc003DeleteApplHistoryExpParameter bihinParam = new Skf2010Sc003DeleteApplHistoryExpParameter();
+				bihinParam.setCompanyCd(companyCd);
+				bihinParam.setApplId(FunctionIdConstant.R0104);
+				bihinParam.setApplNo(bihinApplNo);
+				int bihinRes = skf2010Sc003DeleteApplHistoryExpRepository.deleteApplHistory(bihinParam);
+				if (bihinRes > 0) {
+					delCount++;
+				}
+			}
+
 			if (delCount <= 0) {
 				return false;
 			}
@@ -410,5 +431,23 @@ public class Skf2010Sc003SharedService {
 			afterApplStatus = tApplHistory.getApplStatus();
 		}
 		return afterApplStatus;
+	}
+
+	/**
+	 * 備品希望申請情報を取得する
+	 * 
+	 * @param applNo
+	 * @return
+	 */
+	public String getApplNoByBihinKiboShinsei(String applNo) {
+		SkfBihinInfoUtilsGetBihinShinseiInfoExp bihinKibo = new SkfBihinInfoUtilsGetBihinShinseiInfoExp();
+		List<SkfBihinInfoUtilsGetBihinShinseiInfoExp> bihinKiboList = new ArrayList<SkfBihinInfoUtilsGetBihinShinseiInfoExp>();
+		bihinKiboList = skfBihinInfoUtils.getBihinShinseiInfoByNyukyoApplNo(companyCd, applNo);
+		if (bihinKiboList != null && bihinKiboList.size() > 0) {
+			bihinKibo = bihinKiboList.get(0);
+			return bihinKibo.getApplNo();
+		}
+
+		return null;
 	}
 }
