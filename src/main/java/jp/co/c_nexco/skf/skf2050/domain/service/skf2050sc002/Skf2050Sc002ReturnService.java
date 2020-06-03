@@ -15,8 +15,8 @@ import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -82,7 +82,7 @@ public class Skf2050Sc002ReturnService extends SkfServiceAbstract<Skf2050Sc002Re
 		applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_HANSYUTSU_MACHI);
 		applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, returnDto.getShainNo());
 
-		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC005 + "/init";
+		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HANSYUTSU_MACHI_TSUCHI, applInfo, returnDto.getCommentNote(), null,
 				returnDto.getShainNo(), null, baseUrl);
 
