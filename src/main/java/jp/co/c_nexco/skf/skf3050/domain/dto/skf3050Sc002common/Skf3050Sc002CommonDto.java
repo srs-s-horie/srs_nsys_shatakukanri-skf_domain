@@ -55,5 +55,10 @@ public class Skf3050Sc002CommonDto extends FileDownloadDto {
 	private String hdnShimeKaijoBtnMsg;
 	/** 「給与連携データ確定」ボタン押下時のメッセージ */
 	private String hdnRenkeiDataKakuteiBtnMsg;
-	
+	/** 備品貸与日について警告が出ている状態でも処理続行するか判定するフラグ */
+	private String hdnBihinTaiyoWarnContinueFlg;
+	/** 備品返却日について警告が出ている状態でも処理続行するか判定するフラグ */
+	private String hdnBihinHenkyakuWarnContinueFlg;
+	/** チェック処理等で表示する警告メッセージ */
+	private String hdnWarnMsg;
 }

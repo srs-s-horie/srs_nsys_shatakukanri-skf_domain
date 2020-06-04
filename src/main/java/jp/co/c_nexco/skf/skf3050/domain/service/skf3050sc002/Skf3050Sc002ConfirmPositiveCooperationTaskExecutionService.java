@@ -1,7 +1,7 @@
 /*
  * Copyright(c) 2020 NEXCO Systems company limited All rights reserved.
  */
-package jp.co.c_nexco.skf.skf3050.domain.task.Skf3050Bt004;
+package jp.co.c_nexco.skf.skf3050.domain.service.skf3050sc002;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,15 +16,11 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter;
-//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetCompanyAgencyNameExp;
-//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetNyutaikyoYoteiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuHeyaDataExp;
@@ -35,9 +31,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuShiyoryoYoyakuDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuShiyoryoYoyakuDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShiyoryoUpdateRecodExp;
-//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiJoinDataCntExpParameter;
-//import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExp;
@@ -67,16 +61,12 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.Skf
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRirekiKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050TMonthlyManageData;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoDataExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTeijiBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTeijiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTenninshaDataExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteZengetsuTenninshaExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetCompanyAgencyNameExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetDataForUpdateExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetNyutaikyoYoteiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuHeyaDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuKanriDaityoSogoriyoDataExpRepository;
@@ -85,9 +75,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuShiyoryoYoyakuDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShiyoryoPatternDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShiyoryoUpdateRecodExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiDataInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiJoinDataCntExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuShiyoryoRirekiDataExpRepository;
@@ -109,51 +97,81 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
-//import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TParkingRirekiRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
+import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
+import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
-import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002ConfirmPositiveCooperationTaskExecutionDto;
 
 /**
- * Skf3050Bt004SharedTask POSITIVE連携データ確定（オンラインバッチ）共通クラス
- *
+ * Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService 月次運用管理画面のPOSITIVE連携データ確定処理
+ * 
  * @author NEXCOシステムズ
  */
-@Scope("prototype")
-@Component
-public class Skf3050Bt004SharedTask {
+@Service
+public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends SkfServiceAbstract<Skf3050Sc002ConfirmPositiveCooperationTaskExecutionDto> {
 
 	@Autowired
 	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
 	@Autowired
-	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private Skf3050Sc002SharedService skf3050Sc002SharedService;
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
-	private Skf3050Bt004GetShatakuKihonJyohoMasterDataExpRepository skf3050Bt004GetShatakuKihonJyohoMasterDataExpRepository;
+	private Skf3050Bt004GetDataForUpdateExpRepository skf3050Bt004GetDataForUpdateExpRepository;
 	@Autowired
 	private Skf3050Bt004GetShiyoryoPatternDataExpRepository skf3050Bt004GetShiyoryoPatternDataExpRepository;
 	@Autowired
-	private Skf3050Bt004UpdateShatakuKihonJyohoJikaiSanteiNengappiExpRepository skf3050Bt004UpdateShatakuKihonJyohoJikaiSanteiNengappiExpRepository;
-	@Autowired
 	private Skf3050Bt004GetShiyoryoUpdateRecodExpRepository skf3050Bt004GetShiyoryoUpdateRecodExpRepository;
 	@Autowired
-	private Skf3050Bt004UpdateShiyoryoPatternDataExpRepository skf3050Bt004UpdateShiyoryoPatternDataExpRepository;
+	private SkfRollBackExpRepository skfRollBackExpRepository;
 	@Autowired
 	private Skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExpRepository skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExpRepository;
 	@Autowired
+	private Skf3050Bt004GetShatakuKanriDaityoSogoriyoDataExpRepository skf3050Bt004GetShatakuKanriDaityoSogoriyoDataExpRepository;
+	@Autowired
+	private Skf3050Bt004GetShatakuHeyaDataExpRepository skf3050Bt004GetShatakuHeyaDataExpRepository;
+	@Autowired
+	private Skf3050Bt004UpdateShatakuHeyaDataExpRepository skf3050Bt004UpdateShatakuHeyaDataExpRepository;
+	@Autowired
+	private Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository;
+	@Autowired
+	private Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
+	@Autowired
+	private Skf3050Bt004DeleteNyutaikyoDataExpRepository skf3050Bt004DeleteNyutaikyoDataExpRepository;
+	@Autowired
+	private Skf3050Bt004DeleteTenninshaDataExpRepository skf3050Bt004DeleteTenninshaDataExpRepository;
+	@Autowired
+	private Skf3050Bt004DeleteTeijiDataExpRepository skf3050Bt004DeleteTeijiDataExpRepository;
+	@Autowired
+	private Skf3050Bt004UpdateGetsujiSyoriKanriExpRepository skf3050Bt004UpdateGetsujiSyoriKanriExpRepository;
+	@Autowired
+	private Skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository;
+	@Autowired
+	private Skf3050Bt004GetShatakuKihonJyohoMasterDataExpRepository skf3050Bt004GetShatakuKihonJyohoMasterDataExpRepository;
+	@Autowired
+	private Skf3050Bt004UpdateShatakuKihonJyohoJikaiSanteiNengappiExpRepository skf3050Bt004UpdateShatakuKihonJyohoJikaiSanteiNengappiExpRepository;
+	@Autowired
+	private Skf3050Bt004UpdateShiyoryoPatternDataExpRepository skf3050Bt004UpdateShiyoryoPatternDataExpRepository;
+	@Autowired
 	private Skf3050Bt004GetShatakuShiyoryoYoyakuDataExpRepository skf3050Bt004GetShatakuShiyoryoYoyakuDataExpRepository;
 	@Autowired
-	private Skf3050Bt004GetTeijiJoinDataCntExpRepository skf3050Bt004GetTeijiJoinDataCntExpRepository;
-	@Autowired
 	private Skf3050Bt004GetTsukibetuShiyoryoRirekiDataExpRepository skf3050Bt004GetTsukibetuShiyoryoRirekiDataExpRepository;
+	@Autowired
+	private Skf3050Bt004InsertTsukibetuShiyoryoRirekiDataExpRepository skf3050Bt004InsertTsukibetuShiyoryoRirekiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004UpdateShatakuShiyouryouYoyakuDataExpRepository skf3050Bt004UpdateShatakuShiyouryouYoyakuDataExpRepository;
 	@Autowired
@@ -165,141 +183,135 @@ public class Skf3050Bt004SharedTask {
 	@Autowired
 	private Skf3050Bt004GetCompanyAgencyNameExpRepository skf3050Bt004GetCompanyAgencyNameExpRepository;
 	@Autowired
+	private Skf3050Bt004InsertTsukibetuSyozokujyohoRirekiDataExpRepository skf3050Bt004InsertTsukibetuSyozokujyohoRirekiDataExpRepository;
+	@Autowired
 	private Skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExpRepository skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpRepository skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpRepository;
-	@Autowired
-	private Skf3030TParkingRirekiRepository skf3030TParkingRirekiRepository;
-	@Autowired
-	private Skf3050Bt004GetTsukibetuSougoriyoRirekiDataExpRepository skf3050Bt004GetTsukibetuSougoriyoRirekiDataExpRepository;
-	@Autowired
-	private Skf3050Bt004GetShatakuKanriDaityoSogoriyoDataExpRepository skf3050Bt004GetShatakuKanriDaityoSogoriyoDataExpRepository;
-	@Autowired
-	private Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
-	@Autowired
-	private Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository;
-	@Autowired
-	private Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
-//	@Autowired
-//	private Skf3050Bt004GetNyutaikyoYoteiInfoExpRepository skf3050Bt004GetNyutaikyoYoteiInfoExpRepository;
-//	@Autowired
-//	private Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository;
-//	@Autowired
-//	private Skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository;
-//	@Autowired
-//	private Skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository;
-	@Autowired
-	private Skf3050Bt004DeleteNyutaikyoDataExpRepository skf3050Bt004DeleteNyutaikyoDataExpRepository;
-//	@Autowired
-//	private Skf3050Bt004GetTeijiDataInfoExpRepository skf3050Bt004GetTeijiDataInfoExpRepository;
-//	@Autowired
-//	private Skf3050Bt004DeleteTeijiBihinDataExpRepository skf3050Bt004DeleteTeijiBihinDataExpRepository;
-//	@Autowired
-//	private Skf3022TTeijiDataRepository skf3022TTeijiDataRepository;
-	@Autowired
-	private Skf3050Bt004DeleteTeijiDataExpRepository skf3050Bt004DeleteTeijiDataExpRepository;
-//	@Autowired
-//	private Skf3050Bt004DeleteZengetsuTenninshaExpRepository skf3050Bt004DeleteZengetsuTenninshaExpRepository;
-	@Autowired
-	private Skf3050Bt004DeleteTenninshaDataExpRepository skf3050Bt004DeleteTenninshaDataExpRepository;
-	@Autowired
-	private Skf3050Bt004UpdateGetsujiSyoriKanriExpRepository skf3050Bt004UpdateGetsujiSyoriKanriExpRepository;
-	@Autowired
-	private Skf3050Bt004GetShatakuHeyaDataExpRepository skf3050Bt004GetShatakuHeyaDataExpRepository;
-	@Autowired
-	private Skf3050Bt004UpdateShatakuHeyaDataExpRepository skf3050Bt004UpdateShatakuHeyaDataExpRepository;
-	@Autowired
-	private Skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository;
-	@Autowired
-	private Skf3050Bt004InsertTsukibetuShiyoryoRirekiDataExpRepository skf3050Bt004InsertTsukibetuShiyoryoRirekiDataExpRepository;
-	@Autowired
-	private Skf3050Bt004InsertTsukibetuSyozokujyohoRirekiDataExpRepository skf3050Bt004InsertTsukibetuSyozokujyohoRirekiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004InsertTsukibetuBihinSiyoryoMeisaiDataExpRepository skf3050Bt004InsertTsukibetuBihinSiyoryoMeisaiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004InsertTsukibetuTyusyajyoRirekiDataExpRepository skf3050Bt004InsertTsukibetuTyusyajyoRirekiDataExpRepository;
 	@Autowired
+	private Skf3050Bt004GetTsukibetuSougoriyoRirekiDataExpRepository skf3050Bt004GetTsukibetuSougoriyoRirekiDataExpRepository;
+	@Autowired
 	private Skf3050Bt004InsertTsukibetuSougoriyoRirekiDataExpRepository skf3050Bt004InsertTsukibetuSougoriyoRirekiDataExpRepository;
 	@Autowired
-	private Skf3050Bt004GetDataForUpdateExpRepository skf3050Bt004GetDataForUpdateExpRepository;
+	private Skf3030TParkingRirekiRepository skf3030TParkingRirekiRepository;
 	@Autowired
-	private SkfRollBackExpRepository skfRollBackExpRepository;
+	private Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
+	@Autowired
+	private Skf3050Bt004GetTeijiJoinDataCntExpRepository skf3050Bt004GetTeijiJoinDataCntExpRepository;
 
-	@Value("${skf3050.skf3050_bt004.batch_prg_id}")
-	private String confirmPositiveDataBatchPrgId;
-
-	public static final String BATCH_NAME = "POSITIVE連携データ確定";
-	public static final int PARAMETER_NUM = 4;
-	public static final String SYSTEM_NG = "9";
-
-	public static final String SKF3050BT004_BATCH_PRG_ID_KEY = "confirmPostvCoopBatchPrgId";
-	public static final String SKF3050BT004_COMPANY_CD_KEY = "confirmPostvCoopCompanyCd";
-	public static final String SKF3050BT004_USER_ID_KEY = "confirmPostvCoopUserId";
-	public static final String SKF3050BT004_SHORI_NENGETSU_KEY = "confirmPostvCoopShoriNengetsu";
-
-	private static final String PARAM_NAME_PRG_ID = "バッチプログラムID";
-	private static final String PARAM_NAME_COMPANY_CD = "会社コード";
-	private static final String PARAM_NAME_USER_ID = "ユーザID";
-	private static final String PARAM_NAME_SHORI_NENGETSU = "処理年月";
-
+	private static final String BATCH_NAME = "POSITIVE連携データ確定";
 	private static final String ERRMSG_TSUKIBETSUSHOZOKU_0 = "月別所属履歴（当月）";
 	private static final String ERRMSG_TSUKIBETSUSOGORIREKI_0 = "月別相互利用履歴（当月）";
 	private static final String ERRMSG_TSUKIBETSUSOGO_0 = "社宅管理台帳相互利用基本";
 	private static final String ERRMSG_TSUKIBETSUSOGO_1 = "社宅管理台帳ID";
-
 	private static final String JIGYO_RYO_CD_KEY = "jigyoRyoikiCd";
 	private static final String JIGYO_RYO_NAME_KEY = "jigyoRyoikiName";
-//	private static final String DELETE_KEEP_PERIOD_KEY = "skf.common.settings.nyutaikyo_data_keep_period";
+
+	@Value("${skf3050.skf3050_bt004.batch_prg_id}")
+	private String confirmPositiveDataBatchPrgId;
 
 	private int updateShiyouCnt = 0;
 	private int updateShatakuCnt = 0;
 	private int insertTsukiCnt = 0;
 
-	/**
-	 * バッチ制御テーブルへ登録する。
-	 * 
-	 * @param parameter
-	 *            パラメータ
-	 * @return 結果
-	 * @throws ParseException
-	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public int registBatchControl(Map<String, String> parameter) throws ParseException {
+	@Override
+	protected BaseDto index(Skf3050Sc002ConfirmPositiveCooperationTaskExecutionDto confirmPositiveCoopDto) throws Exception {
+		
+		skfOperationLogUtils.setAccessLog("POSITIVE連携データ確定処理", CodeConstant.C001, "Skf3050Sc002");
 
-		//取得可否チェック
-		String retParameterName = checkParameter(parameter);
-		String programId = confirmPositiveDataBatchPrgId;
-		Date sysDate = getSystemDate();
-
-		if (!NfwStringUtils.isEmpty(retParameterName)) {
-			//パラメータチェックエラーの場合
-			if (!retParameterName.contains(PARAM_NAME_COMPANY_CD)) {
-				//パラメータの会社コードが設定済みの場合
-				//異常終了として、バッチ制御テーブルを登録
-				skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT004_COMPANY_CD_KEY), programId,
-						parameter.get(SKF3050BT004_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
-			}
-
-			LogUtils.info(MessageIdConstant.E_SKF_1089, retParameterName);
-			return CodeConstant.SYS_NG;
-		}
-
-		//プログラムIDの設定
-		if (!programId.equals(parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY))) {
-			//異常終了として、バッチ制御テーブルを登録
-			skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT004_COMPANY_CD_KEY), programId,
-					parameter.get(SKF3050BT004_USER_ID_KEY), SkfCommonConstant.ABNORMAL, sysDate, getSystemDate());
-
-			LogUtils.infoByMsg(
-					"registBatchControl, バッチプログラムIDが正しくありません。（バッチプログラムID：" + parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY) + "）");
-			return CodeConstant.SYS_NG;
+		confirmPositiveCoopDto.setResultMessages(null);
+		String confirmResult = SkfCommonConstant.ABNORMAL;
+		String jikkouShijiYoteiNengetsu = confirmPositiveCoopDto.getHdnJikkouShijiYoteiNengetsu();
+		
+		//▼連携データ確定処理起動事前チェック
+		String errMsg = checkBeforeStartup(jikkouShijiYoteiNengetsu);
+		if (!"".equals(errMsg)) {
+			ServiceHelper.addErrorResultMessage(confirmPositiveCoopDto, null, MessageIdConstant.E_SKF_3026, errMsg);
+			throwBusinessExceptionIfErrors(confirmPositiveCoopDto.getResultMessages());
 		}
 		
-		//処理中として、バッチ制御テーブルを登録
-		skfBatchBusinessLogicUtils.insertBatchControl(parameter.get(SKF3050BT004_COMPANY_CD_KEY), programId,
-				parameter.get(SKF3050BT004_USER_ID_KEY), SkfCommonConstant.PROCESSING, sysDate, null);
+		Map<String, String> dataMap = new HashMap<>();
+		dataMap.put(Skf3050Sc002SharedService.BATCH_PRG_ID_KEY, confirmPositiveDataBatchPrgId);
+		dataMap.put(Skf3050Sc002SharedService.COMPANY_CD_KEY, CodeConstant.C001);
+		dataMap.put(Skf3050Sc002SharedService.USER_ID_KEY, skf3050Sc002SharedService.getUserId());
+		dataMap.put(Skf3050Sc002SharedService.SHORI_NENGETSU_KEY, jikkouShijiYoteiNengetsu);
 
-		return CodeConstant.SYS_OK;
+		LogUtils.info(MessageIdConstant.I_SKF_1022, BATCH_NAME);
+
+		Date sysDate = skf3050Sc002SharedService.getSystemDate();
+		List<String> endList = skf3050Sc002SharedService.setEndList();
+
+		//トランザクションAを開始
+		int registResult = skf3050Sc002SharedService.registBatchControl(dataMap, sysDate, endList);
+
+		if (registResult == CodeConstant.SYS_NG) {
+			skf3050Sc002SharedService.outputEndProcLog(BATCH_NAME);
+			ServiceHelper.addErrorResultMessage(confirmPositiveCoopDto, null, MessageIdConstant.E_SKF_3025, "バッチ制御テーブル更新に失敗したため");
+			return confirmPositiveCoopDto;
+		}
+		try {
+			//トランザクションBの開始
+			confirmResult = confirmData(dataMap);
+		} catch (Exception e) {
+			LogUtils.infoByMsg("異常終了:" + BATCH_NAME + "(" + e.getMessage() + ")");
+		}
+		//トランザクションCの開始
+		//終了処理
+		skf3050Sc002SharedService.endProc(confirmResult,dataMap.get(
+				Skf3050Sc002SharedService.COMPANY_CD_KEY), confirmPositiveDataBatchPrgId,SkfCommonConstant.PROCESSING);
+
+		if (!SkfCommonConstant.ABNORMAL.equals(confirmResult)) {
+			String targetNengetsu = skf3050Sc002SharedService.editDisplayNengetsu(jikkouShijiYoteiNengetsu);
+			ServiceHelper.addResultMessage(confirmPositiveCoopDto, MessageIdConstant.I_SKF_3090, targetNengetsu);
+		} else {
+			ServiceHelper.addErrorResultMessage(confirmPositiveCoopDto, null, MessageIdConstant.E_SKF_1079);
+		}
+		skf3050Sc002SharedService.outputManagementLogEndProc(endList);
+		//管理ログ終了処理
+		skf3050Sc002SharedService.outputEndProcLog(BATCH_NAME);
+		// 画面リフレッシュ
+		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3050_SC002, "init");
+		confirmPositiveCoopDto.setTransferPageInfo(nextPage);
+		return confirmPositiveCoopDto;
+	}
+
+	/**
+	 * POSITIVE連携データ確定処理前のチェック
+	 * 
+	 * @param jikkouShijiYoteiNengetsu 実行指示予定年月
+	 * @return エラーメッセージ
+	 */
+	private String checkBeforeStartup(String jikkouShijiYoteiNengetsu) {
+
+		String errMsg = "";
+
+		//▼二重起動チェック
+		boolean notDoubleStartup = skf3050Sc002SharedService.checkDoubleStartup();
+		if (!notDoubleStartup) {
+			errMsg = Skf3050Sc002SharedService.ERRMSG_DOUBLE_START;
+			return errMsg;
+		}
+
+		//▼連携データ確定処理可能チェック
+		Skf3050TMonthlyManageData renkeiKbnData = skf3050Sc002SharedService.getShimePositiveRenkeiKbn(jikkouShijiYoteiNengetsu);
+		if (renkeiKbnData == null) {
+			//月次処理管理データが取得できない場合エラー
+			errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
+			return errMsg;
+		} else {
+			if (NfwStringUtils.isEmpty(renkeiKbnData.getBillingActKbn()) || 
+				!CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCreateKbn()) || 
+				CodeConstant.LINKDATA_COMMIT_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+				//締め処理＝Null、またはHR連携データ作成≠実行済、またはHR連携データ確定実行区分＝実行済の場合エラー
+				errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
+				return errMsg;
+			}
+		}
+		return errMsg;
 	}
 
 	/**
@@ -313,9 +325,9 @@ public class Skf3050Bt004SharedTask {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public String confirmData(Map<String, String> parameter) throws ParseException {
 
-		String paramShoriNengetsu = parameter.get(SKF3050BT004_SHORI_NENGETSU_KEY);
-		String paramUserId = parameter.get(SKF3050BT004_USER_ID_KEY);
-		String paramCompanyCd = parameter.get(SKF3050BT004_COMPANY_CD_KEY);
+		String paramShoriNengetsu = parameter.get(Skf3050Sc002SharedService.SHORI_NENGETSU_KEY);
+		String paramUserId = parameter.get(Skf3050Sc002SharedService.USER_ID_KEY);
+		String paramCompanyCd = parameter.get(Skf3050Sc002SharedService.COMPANY_CD_KEY);
 
 		//▼▼経年調整処理▼▼
 		if (!adjustKeinen(paramShoriNengetsu, paramUserId)) {
@@ -391,21 +403,6 @@ public class Skf3050Bt004SharedTask {
 
 		return SkfCommonConstant.COMPLETE;
 
-	}
-
-	/**
-	 * バッチ制御テーブルを更新
-	 * 
-	 * @param endFlag
-	 *            終了フラグ
-	 * @param companyCd
-	 *            会社コード
-	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void endProc(String endFlg, String companyCd) {
-
-		skfBatchBusinessLogicUtils.updateBatchControl(
-				endFlg, companyCd, confirmPositiveDataBatchPrgId, SkfCommonConstant.PROCESSING);
 	}
 
 	/**
@@ -507,8 +504,21 @@ public class Skf3050Bt004SharedTask {
 						outputCalcShatakuEntity.getKeinenZankaristu());
 			}
 		}
-
 		return true;
+	}
+
+	/**
+	 * 異常終了処理
+	 */
+	public void endAbnormalProc() {
+
+		updateShiyouCnt = 0;
+		updateShatakuCnt = 0;
+		insertTsukiCnt = 0;
+
+		outputCntLog();
+
+		skfRollBackExpRepository.rollBack();
 	}
 
 	/**
@@ -874,6 +884,124 @@ public class Skf3050Bt004SharedTask {
 	}
 
 	/**
+	 * 社宅部屋情報マスタ取得
+	 * 
+	 * @param lendJokyo
+	 *            貸与状況
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @return 社宅部屋情報
+	 */
+	private List<Skf3050Bt004GetShatakuHeyaDataExp> getShatakuHeyaData(String lendJokyo, String shoriNengetsu) {
+
+		Skf3050Bt004GetShatakuHeyaDataExpParameter param = new Skf3050Bt004GetShatakuHeyaDataExpParameter();
+
+		if (lendJokyo == null) {
+			param.setLendJokyo(null);
+		} else {
+			param.setLendJokyo(lendJokyo);
+		}
+
+		param.setShoriNengetsu(shoriNengetsu);
+
+		List<Skf3050Bt004GetShatakuHeyaDataExp> outData = skf3050Bt004GetShatakuHeyaDataExpRepository
+				.getShatakuHeyaData(param);
+
+		return outData;
+	}
+
+	/**
+	 * 社宅部屋情報テーブル更新
+	 * 
+	 * @param lendJokyo
+	 *            貸与状況
+	 * @param updateUser
+	 *            更新ユーザ
+	 * @param shatakuKanriBangou
+	 *            社宅管理番号
+	 * @param shatakuHeyaKanriBangou
+	 *            社宅部屋管理番号
+	 */
+	private void updateShatakuHeyaData(String lendJokyo, String updateUser, Long shatakuKanriBangou,
+			Long shatakuHeyaKanriBangou) {
+
+		Skf3050Bt004UpdateShatakuHeyaDataExpParameter param = new Skf3050Bt004UpdateShatakuHeyaDataExpParameter();
+
+		if (lendJokyo == null) {
+			param.setLendJokyo(null);
+		} else {
+			param.setLendJokyo(lendJokyo);
+		}
+
+		param.setShatakuKanriNo(shatakuKanriBangou);
+		param.setShatakuRoomKanriNo(shatakuHeyaKanriBangou);
+		param.setUpdateUser(updateUser);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
+
+		skf3050Bt004UpdateShatakuHeyaDataExpRepository.updateShatakuHeyaData(param);
+
+	}
+
+	/**
+	 * 月別駐車場情報テーブル、社宅駐車場区画情報マスタ取得
+	 * 
+	 * @param lendJokyo
+	 *            貸与状況
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @return 月別駐車場情報、社宅駐車場区画情報
+	 */
+	private List<Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp> getTsukibetsuTyusyajyoBlockRirekiData(
+			String lendJokyo, String shoriNengetsu) {
+
+		Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpParameter param = new Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpParameter();
+		param.setShoriNengetsu(shoriNengetsu);
+
+		if (lendJokyo == null) {
+			param.setParkingLendJokyo(null);
+		} else {
+			param.setParkingLendJokyo(lendJokyo);
+		}
+
+		List<Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp> outData = skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository
+				.getTsukibetsuTyusyajyoBlockRirekiData(param);
+
+		return outData;
+	}
+
+	/**
+	 * 社宅駐車場区画情報テーブル更新
+	 * 
+	 * @param lendJokyo
+	 *            貸与状況
+	 * @param updateUser
+	 *            更新ユーザ
+	 * @param shatakuKanriBangou
+	 *            社宅管理番号
+	 * @param parkingKanriBangou
+	 *            駐車場管理番号
+	 */
+	private void updateShatakuTyusyajyoKukakuJyohoTaiyojyokyo(String lendJokyo, String updateUser,
+			Long shatakuKanriBangou, Long parkingKanriBangou) {
+
+		Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpParameter param = new Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpParameter();
+		param.setShatakuKanriNo(shatakuKanriBangou);
+		param.setParkingKanriNo(parkingKanriBangou);
+		param.setUpdateUser(updateUser);
+
+		if (lendJokyo == null) {
+			param.setParkingLendJokyo(null);
+		} else {
+			param.setParkingLendJokyo(lendJokyo);
+		}
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
+
+		skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository
+				.updateshatakuTyusyajyoKukakuJyohoTaiyojyokyo(param);
+
+	}
+
+	/**
 	 * 対象のDBテーブルデータを削除する。
 	 * 
 	 * @return 処理結果
@@ -991,15 +1119,46 @@ public class Skf3050Bt004SharedTask {
 	}
 
 	/**
-	 * システムデータを取得する。
+	 * 月次処理管理テーブルの更新
 	 * 
-	 * @return システムデータ
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @param updateUser
+	 *            更新ユーザー
 	 */
-	public Date getSystemDate() {
+	private void updateGetsujiSyoriKanri(String shoriNengetsu, String updateUser) {
 
-		Date systemDate = skfBaseBusinessLogicUtils.getSystemDateTime();
+		Skf3050Bt004UpdateGetsujiSyoriKanriExpParameter param = new Skf3050Bt004UpdateGetsujiSyoriKanriExpParameter();
+		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateUser(updateUser);
+		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
 
-		return systemDate;
+		skf3050Bt004UpdateGetsujiSyoriKanriExpRepository.updateGetsujiSyoriKanri(param);
+
+	}
+
+	/**
+	 * 月次処理管理テーブルへのデータ追加
+	 * 
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @param insertUser
+	 *            登録ユーザー
+	 */
+	private void insertGetsujiSyoriKanriData(String shoriNengetsu, String insertUser) {
+
+		Skf3050Bt004InsertGetsujiSyoriKanriDataExpParameter param = new Skf3050Bt004InsertGetsujiSyoriKanriDataExpParameter();
+		param.setCycleBillingYymm(shoriNengetsu);
+		param.setInsertUserId(insertUser);
+		param.setBillingActDate("0");
+		param.setBillingActKbn("0");
+		param.setLinkdataCreateDate("0");
+		param.setLinkdataCreateKbn("0");
+		param.setLinkdataCommitDate("0");
+		param.setLinkdataCommitKbn("0");
+		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
+
+		skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository.insertGetsujiSyoriKanriData(param);
 	}
 
 	/**
@@ -1009,88 +1168,6 @@ public class Skf3050Bt004SharedTask {
 		LogUtils.info(MessageIdConstant.I_SKF_1030, "使用料パターン", String.valueOf(updateShiyouCnt));
 		LogUtils.info(MessageIdConstant.I_SKF_1030, "社宅基本情報", String.valueOf(updateShatakuCnt));
 		LogUtils.info(MessageIdConstant.I_SKF_1030, "月別使用料履歴", String.valueOf(insertTsukiCnt));
-	}
-
-	/**
-	 * 異常終了処理
-	 */
-	public void endAbnormalProc() {
-
-		updateShiyouCnt = 0;
-		updateShatakuCnt = 0;
-		insertTsukiCnt = 0;
-
-		outputCntLog();
-
-		skfRollBackExpRepository.rollBack();
-	}
-
-	/**
-	 * 処理終了ログ
-	 */
-	public void outputEndProcLog() {
-
-		Date sysDate = getSystemDate();
-		String strSysDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(sysDate);
-
-		LogUtils.infoByMsg("処理終了時間：" + strSysDate);
-		LogUtils.info(MessageIdConstant.I_SKF_1023, Skf3050Bt004SharedTask.BATCH_NAME);
-	}
-
-	/**
-	 * パラメータ取得可否チェック
-	 * 
-	 * @param parameter
-	 *            パラメータ
-	 * @return エラー対象パラメータ名
-	 */
-	private String checkParameter(Map<String, String> parameter) {
-
-		String retParameterName = "";
-
-		if (isEmpty(parameter.get(SKF3050BT004_BATCH_PRG_ID_KEY))) {
-			retParameterName = PARAM_NAME_PRG_ID;
-		}
-
-		if (isEmpty(parameter.get(SKF3050BT004_COMPANY_CD_KEY))) {
-			retParameterName += CodeConstant.COMMA + PARAM_NAME_COMPANY_CD;
-		}
-
-		if (isEmpty(parameter.get(SKF3050BT004_USER_ID_KEY))) {
-			retParameterName += CodeConstant.COMMA + PARAM_NAME_USER_ID;
-		}
-
-		if (isEmpty(parameter.get(SKF3050BT004_SHORI_NENGETSU_KEY))) {
-			retParameterName += CodeConstant.COMMA + PARAM_NAME_SHORI_NENGETSU;
-		}
-
-		if (retParameterName.startsWith(CodeConstant.COMMA)) {
-			retParameterName = retParameterName.substring(1);
-		}
-
-		return retParameterName;
-	}
-
-	/**
-	 * パラメータが空であるかチェックする。
-	 * 
-	 * @param inVal
-	 *            チェックする値
-	 * @return 結果
-	 */
-	public boolean isEmpty(String inVal) {
-
-		if (NfwStringUtils.isEmpty(inVal)) {
-			return true;
-		}
-
-		String param = inVal.replaceFirst("^[\\h]+", "").replaceFirst("[\\h]+$", "");
-
-		if (NfwStringUtils.isEmpty(param)) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -1136,90 +1213,6 @@ public class Skf3050Bt004SharedTask {
 	}
 
 	/**
-	 * 社宅使用料計算のEntityを作成する。（パターン2）
-	 * 
-	 * @param shoriNengetsu
-	 *            処理年月
-	 * @param rentalPtnId
-	 *            レンタルパターンID
-	 * @return Entity
-	 */
-	private SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp createShatakuRentCalcInputEntityPtn2(String shoriNengetsu,
-			String rentalPtnId, String birthDay) {
-
-		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp rtnEntity = new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
-		String paramShoriNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
-		rtnEntity.setShoriNengetsu(paramShoriNengetsu);
-		rtnEntity.setShoriKbn("2");
-		rtnEntity.setShiyouryouPatternId(rentalPtnId);
-		rtnEntity.setYakuinKbn(CodeConstant.NASHI);
-		rtnEntity.setSeinengappi(birthDay);
-
-		return rtnEntity;
-	}
-
-	/**
-	 * 社宅使用料計算のEntityを作成する。（パターン3）
-	 * 
-	 * @param shoriNengetsu
-	 *            処理年月
-	 * @param tsukiRirekiData
-	 *            月別使用料履歴データ
-	 * @param shatakuChintairyo
-	 *            社宅賃貸料
-	 * @return Entity
-	 */
-	private SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp createShatakuRentCalcInputEntityPtn3(String shoriNengetsu,
-			Skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExp tsukiRirekiData, Integer shatakuChintairyo) {
-
-		String birthDay = "";
-		if (tsukiRirekiData.getBirthdayYear() != 0) {
-			birthDay = String.format("%04d", tsukiRirekiData.getBirthdayYear());
-			birthDay += String.format("%02d", tsukiRirekiData.getBirthdayMonth());
-			birthDay += String.format("%02d", tsukiRirekiData.getBirthdayDay());
-		}
-
-		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp rtnEntity = new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
-		rtnEntity.setShoriNengetsu(shoriNengetsu);
-		rtnEntity.setShoriKbn("2");
-		rtnEntity.setShiyouryouPatternId(String.valueOf(tsukiRirekiData.getRentalPatternId()));
-		rtnEntity.setYakuinKbn(tsukiRirekiData.getRirekiYakuinSannteiKbn());
-		rtnEntity.setShatakuChintairyou(String.valueOf(shatakuChintairyo));
-		rtnEntity.setSeinengappi(birthDay);
-
-		return rtnEntity;
-	}
-
-	/**
-	 * 社宅使用料計算のEntityを作成する。（パターン4）
-	 * 
-	 * @param shoriNengetsu
-	 *            処理年月
-	 * @param tsukiRirekiData
-	 *            月別使用料履歴データ
-	 * @param chushajoChintairyo
-	 *            駐車場賃貸料
-	 * @param chushajoKanriBangou
-	 *            駐車場管理番号
-	 * @return Entity
-	 */
-	private SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp createShatakuRentCalcInputEntityPtn4(String shoriNengetsu,
-			Skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExp tsukiRirekiData, Integer chushajoChintairyo,
-			Long chushajoKanriBangou) {
-
-		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp rtnEntity = new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
-		rtnEntity.setShoriNengetsu(shoriNengetsu);
-		rtnEntity.setShoriKbn("4");
-		rtnEntity.setYakuinKbn(tsukiRirekiData.getRirekiYakuinSannteiKbn());
-		rtnEntity.setChyshajoChintairyou(String.valueOf(chushajoChintairyo));
-		rtnEntity.setShatakuKanriBangou(String.valueOf(tsukiRirekiData.getLedgerShatakuKanriNo()));
-		rtnEntity.setChushajoKanriBangou(String.valueOf(chushajoKanriBangou));
-		rtnEntity.setAuseKbn(tsukiRirekiData.getAuse());
-
-		return rtnEntity;
-	}
-
-	/**
 	 * 社宅基本情報マスタ更新
 	 * 
 	 * @param nextCalcDate
@@ -1254,6 +1247,29 @@ public class Skf3050Bt004SharedTask {
 				.updateShatakuKihonJyohoJikaiSanteiNengappi(param);
 
 		return updateCnt;
+	}
+
+	/**
+	 * 社宅使用料計算のEntityを作成する。（パターン2）
+	 * 
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @param rentalPtnId
+	 *            レンタルパターンID
+	 * @return Entity
+	 */
+	private SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp createShatakuRentCalcInputEntityPtn2(String shoriNengetsu,
+			String rentalPtnId, String birthDay) {
+
+		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp rtnEntity = new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
+		String paramShoriNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
+		rtnEntity.setShoriNengetsu(paramShoriNengetsu);
+		rtnEntity.setShoriKbn("2");
+		rtnEntity.setShiyouryouPatternId(rentalPtnId);
+		rtnEntity.setYakuinKbn(CodeConstant.NASHI);
+		rtnEntity.setSeinengappi(birthDay);
+
+		return rtnEntity;
 	}
 
 	/**
@@ -1399,36 +1415,6 @@ public class Skf3050Bt004SharedTask {
 		}
 
 		return jigetsuFlg;
-	}
-
-	/**
-	 * 提示データとの結合データ取得
-	 * 
-	 * @param shoriNengetsu
-	 *            年月
-	 * @param shainNo
-	 *            社員番号
-	 * @return 取得件数
-	 */
-	private BigDecimal getTeijiJoinDataCnt(String shoriNengetsu, String shainNo) {
-
-		Skf3050Bt004GetTeijiJoinDataCntExpParameter param = new Skf3050Bt004GetTeijiJoinDataCntExpParameter();
-
-		if (shoriNengetsu == null) {
-			param.setShoriNendo(null);
-		} else {
-			param.setShoriNendo(shoriNengetsu);
-		}
-
-		if (shainNo == null) {
-			param.setShainNo(null);
-		} else {
-			param.setShainNo(shainNo);
-		}
-
-		BigDecimal outCnt = skf3050Bt004GetTeijiJoinDataCntExpRepository.getTeijiJoinDataCnt(param);
-
-		return outCnt;
 	}
 
 	/**
@@ -1894,6 +1880,31 @@ public class Skf3050Bt004SharedTask {
 	}
 
 	/**
+	 * 会社名取得
+	 * 
+	 * @param companyCd
+	 *            会社コード
+	 * @return 会社名取得
+	 */
+	private String getCompanyName(String companyCd) {
+
+		String outVal = "";
+
+		if (NfwStringUtils.isEmpty(companyCd)) {
+			return outVal;
+		}
+
+		List<Skf3050Bt004GetCompanyAgencyNameExp> companyData = skf3050Bt004GetCompanyAgencyNameExpRepository
+				.getCompanyAgencyName(companyCd);
+
+		if (companyData.size() > 0) {
+			outVal = companyData.get(0).getCompanyName();
+		}
+
+		return outVal;
+	}
+
+	/**
 	 * 月別所属情報履歴テーブルへ登録
 	 * 
 	 * @param shatakuKanriId
@@ -2017,31 +2028,6 @@ public class Skf3050Bt004SharedTask {
 	}
 
 	/**
-	 * 会社名取得
-	 * 
-	 * @param companyCd
-	 *            会社コード
-	 * @return 会社名取得
-	 */
-	private String getCompanyName(String companyCd) {
-
-		String outVal = "";
-
-		if (NfwStringUtils.isEmpty(companyCd)) {
-			return outVal;
-		}
-
-		List<Skf3050Bt004GetCompanyAgencyNameExp> companyData = skf3050Bt004GetCompanyAgencyNameExpRepository
-				.getCompanyAgencyName(companyCd);
-
-		if (companyData.size() > 0) {
-			outVal = companyData.get(0).getCompanyName();
-		}
-
-		return outVal;
-	}
-
-	/**
 	 * 月別備品使用料明細テーブルのデータ取得
 	 * 
 	 * @param shatakuKanriDaichoId
@@ -2059,6 +2045,28 @@ public class Skf3050Bt004SharedTask {
 
 		List<Skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExp> outData = skf3050Bt004GetTsukibetuBihinSiyoryoMeisaiDataExpRepository
 				.getTsukibetuBihinSiyoryoMeisaiData(param);
+
+		return outData;
+	}
+
+	/**
+	 * 月別駐車場履歴テーブルのデータ取得
+	 * 
+	 * @param shatakuKanriDaichoId
+	 *            社宅管理台帳ID
+	 * @param shoriNengetsu
+	 *            年月
+	 * @return 月別駐車場履歴データ
+	 */
+	private List<Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExp> getTsukibetuTyusyajyoRirekiData(
+			Long shatakuKanriDaichoId, String shoriNengetsu) {
+
+		Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpParameter param = new Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpParameter();
+		param.setShatakuKanriId(shatakuKanriDaichoId);
+		param.setYearMonth(shoriNengetsu);
+
+		List<Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExp> outData = skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpRepository
+				.getTsukibetuTyusyajyoRirekiData(param);
 
 		return outData;
 	}
@@ -2111,28 +2119,6 @@ public class Skf3050Bt004SharedTask {
 
 		skf3050Bt004InsertTsukibetuBihinSiyoryoMeisaiDataExpRepository.insertTsukibetuBihinSiyoryoMeisaiData(param);
 
-	}
-
-	/**
-	 * 月別駐車場履歴テーブルのデータ取得
-	 * 
-	 * @param shatakuKanriDaichoId
-	 *            社宅管理台帳ID
-	 * @param shoriNengetsu
-	 *            年月
-	 * @return 月別駐車場履歴データ
-	 */
-	private List<Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExp> getTsukibetuTyusyajyoRirekiData(
-			Long shatakuKanriDaichoId, String shoriNengetsu) {
-
-		Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpParameter param = new Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpParameter();
-		param.setShatakuKanriId(shatakuKanriDaichoId);
-		param.setYearMonth(shoriNengetsu);
-
-		List<Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExp> outData = skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpRepository
-				.getTsukibetuTyusyajyoRirekiData(param);
-
-		return outData;
 	}
 
 	/**
@@ -2258,6 +2244,91 @@ public class Skf3050Bt004SharedTask {
 	}
 
 	/**
+	 * 社宅使用料計算のEntityを作成する。（パターン3）
+	 * 
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @param tsukiRirekiData
+	 *            月別使用料履歴データ
+	 * @param shatakuChintairyo
+	 *            社宅賃貸料
+	 * @return Entity
+	 */
+	private SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp createShatakuRentCalcInputEntityPtn3(String shoriNengetsu,
+			Skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExp tsukiRirekiData, Integer shatakuChintairyo) {
+
+		String birthDay = "";
+		if (tsukiRirekiData.getBirthdayYear() != 0) {
+			birthDay = String.format("%04d", tsukiRirekiData.getBirthdayYear());
+			birthDay += String.format("%02d", tsukiRirekiData.getBirthdayMonth());
+			birthDay += String.format("%02d", tsukiRirekiData.getBirthdayDay());
+		}
+
+		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp rtnEntity = new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
+		rtnEntity.setShoriNengetsu(shoriNengetsu);
+		rtnEntity.setShoriKbn("2");
+		rtnEntity.setShiyouryouPatternId(String.valueOf(tsukiRirekiData.getRentalPatternId()));
+		rtnEntity.setYakuinKbn(tsukiRirekiData.getRirekiYakuinSannteiKbn());
+		rtnEntity.setShatakuChintairyou(String.valueOf(shatakuChintairyo));
+		rtnEntity.setSeinengappi(birthDay);
+
+		return rtnEntity;
+	}
+
+	/**
+	 * 月別駐車場履歴テーブル（貸与番号絞込み）のデータ取得
+	 * 
+	 * @param shatakuKanriDaichoId
+	 *            社宅管理台帳ID
+	 * @param parkingLendNo
+	 *            貸与番号
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @return 月別駐車場履歴テーブル（貸与番号絞込み）のデータ
+	 */
+	private Skf3030TParkingRireki getTsukibetuTyusyajyoRirekiDataSyutokuByLendNo(Long shatakuKanriDaichoId,
+			Long parkingLendNo, String shoriNengetsu) {
+
+		Skf3030TParkingRirekiKey param = new Skf3030TParkingRirekiKey();
+		param.setShatakuKanriId(shatakuKanriDaichoId);
+		param.setParkingLendNo(parkingLendNo);
+		param.setYearMonth(shoriNengetsu);
+
+		Skf3030TParkingRireki outData = skf3030TParkingRirekiRepository.selectByPrimaryKey(param);
+
+		return outData;
+	}
+
+	/**
+	 * 社宅使用料計算のEntityを作成する。（パターン4）
+	 * 
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @param tsukiRirekiData
+	 *            月別使用料履歴データ
+	 * @param chushajoChintairyo
+	 *            駐車場賃貸料
+	 * @param chushajoKanriBangou
+	 *            駐車場管理番号
+	 * @return Entity
+	 */
+	private SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp createShatakuRentCalcInputEntityPtn4(String shoriNengetsu,
+			Skf3050Bt004GetTsukibetuShiyoryoRirekiJoinDataExp tsukiRirekiData, Integer chushajoChintairyo,
+			Long chushajoKanriBangou) {
+
+		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp rtnEntity = new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
+		rtnEntity.setShoriNengetsu(shoriNengetsu);
+		rtnEntity.setShoriKbn("4");
+		rtnEntity.setYakuinKbn(tsukiRirekiData.getRirekiYakuinSannteiKbn());
+		rtnEntity.setChyshajoChintairyou(String.valueOf(chushajoChintairyo));
+		rtnEntity.setShatakuKanriBangou(String.valueOf(tsukiRirekiData.getLedgerShatakuKanriNo()));
+		rtnEntity.setChushajoKanriBangou(String.valueOf(chushajoKanriBangou));
+		rtnEntity.setAuseKbn(tsukiRirekiData.getAuse());
+
+		return rtnEntity;
+	}
+
+	/**
 	 * 社宅使用料日割額算出
 	 * 
 	 * @param shoriNengetsuYokugetsu
@@ -2327,58 +2398,6 @@ public class Skf3050Bt004SharedTask {
 		}
 
 		return rtnVal;
-	}
-
-	/**
-	 * 月末日取得
-	 * 
-	 * @param inDate
-	 *            処理年月(YYYYMM)
-	 * @return 月末日(YYYYMMDD)
-	 */
-	private String getGetsumatsujitu(String inDate) {
-
-		if (NfwStringUtils.isEmpty(inDate)) {
-			return inDate;
-		}
-
-		Date dtEnd = skfDateFormatUtils.formatStringToDate(inDate + "01");
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(dtEnd);
-		calendar.add(Calendar.MONTH, 1);
-		calendar.add(Calendar.DAY_OF_MONTH, -1);
-
-		Date changedDate = calendar.getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
-
-		String outDate = sdf.format(changedDate);
-
-		return outDate;
-	}
-
-	/**
-	 * 月別駐車場履歴テーブル（貸与番号絞込み）のデータ取得
-	 * 
-	 * @param shatakuKanriDaichoId
-	 *            社宅管理台帳ID
-	 * @param parkingLendNo
-	 *            貸与番号
-	 * @param shoriNengetsu
-	 *            処理年月
-	 * @return 月別駐車場履歴テーブル（貸与番号絞込み）のデータ
-	 */
-	private Skf3030TParkingRireki getTsukibetuTyusyajyoRirekiDataSyutokuByLendNo(Long shatakuKanriDaichoId,
-			Long parkingLendNo, String shoriNengetsu) {
-
-		Skf3030TParkingRirekiKey param = new Skf3030TParkingRirekiKey();
-		param.setShatakuKanriId(shatakuKanriDaichoId);
-		param.setParkingLendNo(parkingLendNo);
-		param.setYearMonth(shoriNengetsu);
-
-		Skf3030TParkingRireki outData = skf3030TParkingRirekiRepository.selectByPrimaryKey(param);
-
-		return outData;
 	}
 
 	/**
@@ -2537,262 +2556,60 @@ public class Skf3050Bt004SharedTask {
 	}
 
 	/**
-	 * 月別駐車場情報テーブル、社宅駐車場区画情報マスタ取得
-	 * 
-	 * @param lendJokyo
-	 *            貸与状況
-	 * @param shoriNengetsu
-	 *            処理年月
-	 * @return 月別駐車場情報、社宅駐車場区画情報
-	 */
-	private List<Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp> getTsukibetsuTyusyajyoBlockRirekiData(
-			String lendJokyo, String shoriNengetsu) {
-
-		Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpParameter param = new Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpParameter();
-		param.setShoriNengetsu(shoriNengetsu);
-
-		if (lendJokyo == null) {
-			param.setParkingLendJokyo(null);
-		} else {
-			param.setParkingLendJokyo(lendJokyo);
-		}
-
-		List<Skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExp> outData = skf3050Bt004GetTsukibetsuTyusyajyoBlockRirekiDataExpRepository
-				.getTsukibetsuTyusyajyoBlockRirekiData(param);
-
-		return outData;
-	}
-
-	/**
-	 * 社宅駐車場区画情報テーブル更新
-	 * 
-	 * @param lendJokyo
-	 *            貸与状況
-	 * @param updateUser
-	 *            更新ユーザ
-	 * @param shatakuKanriBangou
-	 *            社宅管理番号
-	 * @param parkingKanriBangou
-	 *            駐車場管理番号
-	 */
-	private void updateShatakuTyusyajyoKukakuJyohoTaiyojyokyo(String lendJokyo, String updateUser,
-			Long shatakuKanriBangou, Long parkingKanriBangou) {
-
-		Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpParameter param = new Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpParameter();
-		param.setShatakuKanriNo(shatakuKanriBangou);
-		param.setParkingKanriNo(parkingKanriBangou);
-		param.setUpdateUser(updateUser);
-
-		if (lendJokyo == null) {
-			param.setParkingLendJokyo(null);
-		} else {
-			param.setParkingLendJokyo(lendJokyo);
-		}
-		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
-
-		skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository
-				.updateshatakuTyusyajyoKukakuJyohoTaiyojyokyo(param);
-
-	}
-
-//	/**
-//	 * 削除基準日取得
-//	 * 
-//	 * @return 削除基準日日
-//	 */
-//	private String getDeleteKijunbi() {
-//
-//		int keepPeriod = Integer.parseInt(PropertyUtils.getValue(DELETE_KEEP_PERIOD_KEY));
-//		Date sysDate = getSystemDate();
-//
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTime(sysDate);
-//		calendar.add(Calendar.DATE, -keepPeriod);
-//
-//		Date deleteKijunbi = calendar.getTime();
-//		SimpleDateFormat sdFormat = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
-//
-//		String rtnVal = sdFormat.format(deleteKijunbi);
-//
-//		return rtnVal;
-//	}
-
-//	/**
-//	 * 提示入退去予定データの件数取得
-//	 * 
-//	 * @param deleteDate
-//	 *            削除基準日
-//	 * @param shainNo
-//	 *            社員番号
-//	 * @param nyutaikyoKbn
-//	 *            入退居区分
-//	 * @param teijiNo
-//	 *            提示番号
-//	 * @return 提示入退去予定データの件数
-//	 */
-//	private Integer getTeijiNyutaikyoYoteiDateCnt(String deleteDate, String shainNo, String nyutaikyoKbn,
-//			Long teijiNo) {
-//
-//		Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter param = new Skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpParameter();
-//		param.setDeleteDate(deleteDate);
-//		param.setShainNo(shainNo);
-//		param.setNyutaikyoKbn(nyutaikyoKbn);
-//		param.setTeijiNo(teijiNo);
-//
-//		Integer cnt = skf3050Bt004GetTeijiNyutaikyoYoteiDateCntExpRepository.getTeijiNyutaikyoYoteiDateCnt(param);
-//
-//		return cnt;
-//	}
-
-//	/**
-//	 * 入退居予定データ削除(パターン1)
-//	 * 
-//	 * @param deleteDate
-//	 *            削除基準日
-//	 * @param shainNo
-//	 *            社員番号
-//	 * @param nyutaikyoKbn
-//	 *            入退居区分
-//	 * @return 削除件数
-//	 */
-//	private Integer deleteNyutaikyoYoteiData1(String deleteDate, String shainNo, String nyutaikyoKbn) {
-//
-//		Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter param = new Skf3050Bt004DeleteNyutaikyoYoteiData1ExpParameter();
-//		param.setDeleteDate(deleteDate);
-//		param.setShainNo(shainNo);
-//		param.setNyutaikyoKbn(nyutaikyoKbn);
-//
-//		Integer deleCnt = skf3050Bt004DeleteNyutaikyoYoteiData1ExpRepository.deleteNyutaikyoYoteiData1(param);
-//
-//		return deleCnt;
-//	}
-
-//	/**
-//	 * 入退居予定データ削除(パターン2)
-//	 * 
-//	 * @param deleteDate
-//	 *            削除基準日
-//	 * @param shainNo
-//	 *            社員番号
-//	 * @param nyutaikyoKbn
-//	 *            入退居区分
-//	 * @param teijiNo
-//	 *            提示番号
-//	 * @return 削除件数
-//	 */
-//	private Integer deleteNyutaikyoYoteiData2(String deleteDate, String shainNo, String nyutaikyoKbn, Long teijiNo) {
-//
-//		Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter param = new Skf3050Bt004DeleteNyutaikyoYoteiData2ExpParameter();
-//		param.setDeleteDate(deleteDate);
-//		param.setShainNo(shainNo);
-//		param.setNyutaikyoKbn(nyutaikyoKbn);
-//		param.setTeijiNo(teijiNo);
-//
-//		Integer deleCnt = skf3050Bt004DeleteNyutaikyoYoteiData2ExpRepository.deleteNyutaikyoYoteiData2(param);
-//
-//		return deleCnt;
-//	}
-
-	/**
-	 * 月次処理管理テーブルの更新
+	 * 提示データとの結合データ取得
 	 * 
 	 * @param shoriNengetsu
-	 *            処理年月
-	 * @param updateUser
-	 *            更新ユーザー
+	 *            年月
+	 * @param shainNo
+	 *            社員番号
+	 * @return 取得件数
 	 */
-	private void updateGetsujiSyoriKanri(String shoriNengetsu, String updateUser) {
+	private BigDecimal getTeijiJoinDataCnt(String shoriNengetsu, String shainNo) {
 
-		Skf3050Bt004UpdateGetsujiSyoriKanriExpParameter param = new Skf3050Bt004UpdateGetsujiSyoriKanriExpParameter();
-		param.setCycleBillingYymm(shoriNengetsu);
-		param.setUpdateUser(updateUser);
-		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
+		Skf3050Bt004GetTeijiJoinDataCntExpParameter param = new Skf3050Bt004GetTeijiJoinDataCntExpParameter();
 
-		skf3050Bt004UpdateGetsujiSyoriKanriExpRepository.updateGetsujiSyoriKanri(param);
-
-	}
-
-	/**
-	 * 月次処理管理テーブルへのデータ追加
-	 * 
-	 * @param shoriNengetsu
-	 *            処理年月
-	 * @param insertUser
-	 *            登録ユーザー
-	 */
-	private void insertGetsujiSyoriKanriData(String shoriNengetsu, String insertUser) {
-
-		Skf3050Bt004InsertGetsujiSyoriKanriDataExpParameter param = new Skf3050Bt004InsertGetsujiSyoriKanriDataExpParameter();
-		param.setCycleBillingYymm(shoriNengetsu);
-		param.setInsertUserId(insertUser);
-		param.setBillingActDate("0");
-		param.setBillingActKbn("0");
-		param.setLinkdataCreateDate("0");
-		param.setLinkdataCreateKbn("0");
-		param.setLinkdataCommitDate("0");
-		param.setLinkdataCommitKbn("0");
-		param.setInsertProgramId(confirmPositiveDataBatchPrgId);
-
-		skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository.insertGetsujiSyoriKanriData(param);
-	}
-
-	/**
-	 * 社宅部屋情報マスタ取得
-	 * 
-	 * @param lendJokyo
-	 *            貸与状況
-	 * @param shoriNengetsu
-	 *            処理年月
-	 * @return 社宅部屋情報
-	 */
-	private List<Skf3050Bt004GetShatakuHeyaDataExp> getShatakuHeyaData(String lendJokyo, String shoriNengetsu) {
-
-		Skf3050Bt004GetShatakuHeyaDataExpParameter param = new Skf3050Bt004GetShatakuHeyaDataExpParameter();
-
-		if (lendJokyo == null) {
-			param.setLendJokyo(null);
+		if (shoriNengetsu == null) {
+			param.setShoriNendo(null);
 		} else {
-			param.setLendJokyo(lendJokyo);
+			param.setShoriNendo(shoriNengetsu);
 		}
 
-		param.setShoriNengetsu(shoriNengetsu);
+		if (shainNo == null) {
+			param.setShainNo(null);
+		} else {
+			param.setShainNo(shainNo);
+		}
 
-		List<Skf3050Bt004GetShatakuHeyaDataExp> outData = skf3050Bt004GetShatakuHeyaDataExpRepository
-				.getShatakuHeyaData(param);
+		BigDecimal outCnt = skf3050Bt004GetTeijiJoinDataCntExpRepository.getTeijiJoinDataCnt(param);
 
-		return outData;
+		return outCnt;
 	}
 
 	/**
-	 * 社宅部屋情報テーブル更新
+	 * 月末日取得
 	 * 
-	 * @param lendJokyo
-	 *            貸与状況
-	 * @param updateUser
-	 *            更新ユーザ
-	 * @param shatakuKanriBangou
-	 *            社宅管理番号
-	 * @param shatakuHeyaKanriBangou
-	 *            社宅部屋管理番号
+	 * @param inDate
+	 *            処理年月(YYYYMM)
+	 * @return 月末日(YYYYMMDD)
 	 */
-	private void updateShatakuHeyaData(String lendJokyo, String updateUser, Long shatakuKanriBangou,
-			Long shatakuHeyaKanriBangou) {
+	private String getGetsumatsujitu(String inDate) {
 
-		Skf3050Bt004UpdateShatakuHeyaDataExpParameter param = new Skf3050Bt004UpdateShatakuHeyaDataExpParameter();
-
-		if (lendJokyo == null) {
-			param.setLendJokyo(null);
-		} else {
-			param.setLendJokyo(lendJokyo);
+		if (NfwStringUtils.isEmpty(inDate)) {
+			return inDate;
 		}
 
-		param.setShatakuKanriNo(shatakuKanriBangou);
-		param.setShatakuRoomKanriNo(shatakuHeyaKanriBangou);
-		param.setUpdateUser(updateUser);
-		param.setUpdateProgramId(confirmPositiveDataBatchPrgId);
+		Date dtEnd = skfDateFormatUtils.formatStringToDate(inDate + "01");
 
-		skf3050Bt004UpdateShatakuHeyaDataExpRepository.updateShatakuHeyaData(param);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dtEnd);
+		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
 
+		Date changedDate = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat(SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT);
+
+		String outDate = sdf.format(changedDate);
+
+		return outDate;
 	}
-
 }

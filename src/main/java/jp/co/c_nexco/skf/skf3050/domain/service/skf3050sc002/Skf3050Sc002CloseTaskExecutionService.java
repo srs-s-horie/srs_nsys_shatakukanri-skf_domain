@@ -3,14 +3,13 @@
  */
 package jp.co.c_nexco.skf.skf3050.domain.service.skf3050sc002;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinHenkyakuDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinTaiyoDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002UpdateBihinHenkyakubiExpParameter;
@@ -18,25 +17,25 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
-import jp.co.c_nexco.nfw.webcore.domain.service.AsyncBaseServiceOnBatchAbstract;
+import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
+import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
-import jp.co.c_nexco.nfw.webcore.domain.task.AsyncTaskHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
-import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002CloseTaskExecutionAsyncDto;
-import jp.co.intra_mart.foundation.asynchronous.TaskManager;
-import jp.co.intra_mart.foundation.asynchronous.TaskMessage;
+import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002CloseTaskExecutionDto;
 
 /**
- * Skf3050Sc002CloseTaskExecutionAsyncService 月次運用管理画面の締め処理
+ * Skf3050Sc002CloseTaskExecutionService 月次運用管理画面の締め処理
  * 
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3050Sc002CloseTaskExecutionAsyncService
-		extends AsyncBaseServiceOnBatchAbstract<Skf3050Sc002CloseTaskExecutionAsyncDto> {
+public class Skf3050Sc002CloseTaskExecutionService extends SkfServiceAbstract<Skf3050Sc002CloseTaskExecutionDto> {
+	
 
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
@@ -47,12 +46,15 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 
 	private static final String ERRMSG_SHIME_BIHIN_NYUKYO = "入居情報について備品貸与日が設定されていません。";
 	private static final String ERRMSG_SHIME_BIHIN_TAIKYO = "退居情報について備品返却日が設定されていません。備品返却日に退居日を設定し、";
+	private static final String BATCH_NAME = "締め処理";
 
-	private static final String BATCH_PRG_ID = "closeBatchPrgId";
-	private static final String COMPANY_CD = "closeCompanyCd";
-	private static final String USER_ID = "closeUserId";
-	private static final String SHORI_NENGETSU = "closeShoriNengetsu";
-	private static final String SHIME_SHORI_FLG = "shimeShoriFlg";
+//	public static final String BATCH_PRG_ID_KEY = "batchPrgId";
+//	public static final String COMPANY_CD_KEY = "batchCompanyCd";
+//	public static final String USER_ID_KEY = "batchUserId";
+//	public static final String SHORI_NENGETSU_KEY = "batchShoriNengetsu";
+//	public static final String SHIME_SHORI_FLG = "batchShimeShoriFlg";
+//	private static final String SHORI_NENGETSU = "closeShoriNengetsu";
+//	private static final String SHIME_SHORI_FLG = "shimeShoriFlg";
 
 	private static final String FLG_ON = "1";
 	
@@ -60,10 +62,11 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 	private String batchPrgId;
 
 	@Override
-	protected AsyncBaseDto index(Skf3050Sc002CloseTaskExecutionAsyncDto closeTaskDto) throws Exception {
+	protected BaseDto index(Skf3050Sc002CloseTaskExecutionDto closeTaskDto) throws Exception {
 
 		skfOperationLogUtils.setAccessLog("締め処理", CodeConstant.C001, "Skf3050Sc002");
 
+		LogUtils.info(MessageIdConstant.I_SKF_1022, BATCH_NAME);
 		String jikkouShijiYoteiNengetsu = closeTaskDto.getHdnJikkouShijiYoteiNengetsu();
 		String bihinTaiyoWarnContinueFlg = closeTaskDto.getHdnBihinTaiyoWarnContinueFlg();
 		String bihinHenkyakuWarnContinueFlg = closeTaskDto.getHdnBihinHenkyakuWarnContinueFlg();
@@ -78,10 +81,9 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 			if (!"".equals(errMsg)) {
 				//締め処理事前チェックが異常の場合、エラーメッセージを表示し処理を中断する
 				ServiceHelper.addErrorResultMessage(closeTaskDto, null, MessageIdConstant.E_SKF_3013, errMsg);
-				throwBusinessExceptionIfErrors(closeTaskDto.getResultMessages());
+				return closeTaskDto;
 			}
 		}
-
 		closeTaskDto.setHdnWarnMsg("");
 
 		if (!FLG_ON.equals(bihinTaiyoWarnContinueFlg)) {
@@ -111,40 +113,49 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 		closeTaskDto.setHdnBihinTaiyoWarnContinueFlg("");
 		closeTaskDto.setHdnBihinHenkyakuWarnContinueFlg("");
 
-		//▼締め処理バッチを起動
-		Map<String, Object> param = new HashMap<>();
-
-		// タスク設定ユーザー
-		param.put(AsyncTaskHelper.REGISTE_USER_CD, LoginUserInfoUtils.getUserCd());
-
 		Map<String, String> dataMap = new HashMap<>();
 
-		dataMap.put(BATCH_PRG_ID, batchPrgId);
-		dataMap.put(COMPANY_CD, CodeConstant.C001);
-		dataMap.put(USER_ID, skf3050Sc002SharedService.getUserId());
-		dataMap.put(SHORI_NENGETSU, jikkouShijiYoteiNengetsu);
-		dataMap.put(SHIME_SHORI_FLG, Skf3050Sc002SharedService.SHIME_SHORI_ON);
+		dataMap.put(Skf3050Sc002SharedService.BATCH_PRG_ID_KEY, batchPrgId);
+		dataMap.put(Skf3050Sc002SharedService.COMPANY_CD_KEY, CodeConstant.C001);
+		dataMap.put(Skf3050Sc002SharedService.USER_ID_KEY, skf3050Sc002SharedService.getUserId());
+		dataMap.put(Skf3050Sc002SharedService.SHORI_NENGETSU_KEY, jikkouShijiYoteiNengetsu);
+		dataMap.put(Skf3050Sc002SharedService.SHIME_SHORI_FLG, Skf3050Sc002SharedService.SHIME_SHORI_ON);
 
-		param.put("parameter", dataMap);
+		Date sysDate = skf3050Sc002SharedService.getSystemDate();
+		List<String> endList = skf3050Sc002SharedService.setEndList();
+		//トランザクションAを開始
+		int registResult = skf3050Sc002SharedService.registBatchControl(dataMap, sysDate, endList);
 
-		// タスクキューの登録
-		String queueId = "jp.co.c_nexco.skf.skf3050.domain.service.skf3050sc002.Skf3050Sc002CloseTaskExecutionAsyncService";
-		TaskManager.addSerializedTaskQueue(queueId, true);
-
-		String msgId = "";
-		String taskClassName = "jp.co.c_nexco.skf.skf3050.domain.task.skf3050bt001.Skf3050Bt001AsyncCloseTask";
-
-		TaskMessage taskMsg = addSerializedTaskWithInfo(closeTaskDto, queueId, taskClassName, param,
-				"SKF", batchPrgId, "締め処理制御", "締め処理");
-
-		if (taskMsg != null) {
-			msgId = msgId + taskMsg.getMessageId();
-			LogUtils.debugByMsg("タスク処理メッセージID：" + taskMsg.getMessageId());
+		if (Skf3050Sc002SharedService.RETURN_STATUS_NG == registResult) {
+			ServiceHelper.addErrorResultMessage(closeTaskDto, null, MessageIdConstant.E_SKF_3013, "バッチ制御テーブル更新に失敗したため");
+			return closeTaskDto;
+		}
+		String result = SkfCommonConstant.ABNORMAL;
+		try {
+			//トランザクションBの開始
+			result = skf3050Sc002SharedService.updateTsukibetsuTsukiji(dataMap, endList);
+			if (SkfCommonConstant.ABNORMAL.equals(result)) {
+				LogUtils.info(MessageIdConstant.E_SKF_1079);
+			}
+		} catch (Exception e) {
+			LogUtils.infoByMsg("異常終了:締め処理(" + e.getMessage() + ")");
 		}
 
-		//▼締め処理完了メッセージ表示
-		closeTaskDto.setTaskMsgId(msgId);
+		//トランザクションCの開始
+		skf3050Sc002SharedService.endProc(result, dataMap.get(Skf3050Sc002SharedService.COMPANY_CD_KEY),
+																			batchPrgId, SkfCommonConstant.PROCESSING);
 
+		if (!SkfCommonConstant.ABNORMAL.equals(result)) {
+			String targetNengetsu = skf3050Sc002SharedService.editDisplayNengetsu(jikkouShijiYoteiNengetsu);
+			ServiceHelper.addResultMessage(closeTaskDto, MessageIdConstant.I_SKF_3089, targetNengetsu);
+		} else {
+			ServiceHelper.addErrorResultMessage(closeTaskDto, null, MessageIdConstant.E_SKF_1079);
+		}
+		skf3050Sc002SharedService.outputManagementLogEndProc(endList);
+		LogUtils.info(MessageIdConstant.I_SKF_1023, BATCH_NAME);
+		// 画面リフレッシュ
+		TransferPageInfo nextPage = TransferPageInfo.prevPage(FunctionIdConstant.SKF3050_SC002, "init");
+		closeTaskDto.setTransferPageInfo(nextPage);
 		return closeTaskDto;
 	}
 
@@ -213,8 +224,6 @@ public class Skf3050Sc002CloseTaskExecutionAsyncService
 				}
 			}
 		}
-
 		return rtnErrMsg;
 	}
-
 }
