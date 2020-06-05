@@ -60,8 +60,8 @@ public class Skf2060Sc001AttachedAsyncService extends SkfAsyncServiceAbstract<Sk
 		String sessionKey = SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY + attachedDto.getCandidateNo();
 
 		//添付ファイルを取得し、セッションに保存
-		List<Map<String, Object>> fileDataList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean, null,
-				sessionKey);
+		List<Map<String, Object>> fileDataList = skfAttachedFileUtils.getKariageBukkenFileInfo(menuScopeSessionBean, attachedDto.getCandidateNo(),
+				null, sessionKey);
 		//添付ファイルが存在しなかった場合、初期化
 		if (fileDataList == null) {
 			fileDataList = new ArrayList<Map<String, Object>>();
@@ -114,7 +114,7 @@ public class Skf2060Sc001AttachedAsyncService extends SkfAsyncServiceAbstract<Sk
 		attachedDto.setAttachedFileLink(String.join("<br />", linkTagList));
 
 		//セッションスコープを消去する？
-		menuScopeSessionBean.remove(SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY);
+		menuScopeSessionBean.remove(sessionKey);
 
 		return attachedDto;
 	}
