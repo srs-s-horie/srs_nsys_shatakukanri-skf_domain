@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpParameter;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001GetKariageBukkenFileExpRepository;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -34,6 +37,10 @@ public class Skf2060Sc001AttachedDownloadService extends SkfServiceAbstract<Skf2
 	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private Skf2060Sc001GetKariageBukkenFileExpRepository skf2060Sc001GetKariageBukkenFileExpRepository;
+	
+	private String companyCd = CodeConstant.C001;
 
 	
 
@@ -50,9 +57,13 @@ public class Skf2060Sc001AttachedDownloadService extends SkfServiceAbstract<Skf2
 		long candidateNo = adlDto.getHdnCandidateNo();
 		String attachedNo = adlDto.getHdnAttachedNo();
 		
-		//セッションキーから添付ファイル情報を取得
-		List<Map<String, Object>> attachedFileList = new ArrayList<Map<String, Object>>();
-		attachedFileList = skfAttachedFileUtils.getKariageBukkenFileInfo(menuScopeSessionBean, candidateNo, attachedNo, SessionCacheKeyConstant.KARIAGE_ATTACHED_FILE_SESSION_KEY+attachedNo);
+		// 添付ファイル情報を取得
+		List<Skf2060Sc001GetKariageBukkenFileExp> attachedFileList = new ArrayList<Skf2060Sc001GetKariageBukkenFileExp>();
+		Skf2060Sc001GetKariageBukkenFileExpParameter param = new Skf2060Sc001GetKariageBukkenFileExpParameter();
+		param.setCompanyCd(companyCd);
+		param.setCandidateNo(candidateNo);
+		param.setAttachedNo(attachedNo);
+		attachedFileList = skf2060Sc001GetKariageBukkenFileExpRepository.getKariageBukkenFile(param);
 		
 		//添付ファイル情報が取得できなかった場合
 		if(!(attachedFileList != null && attachedFileList.size() > 0)){
@@ -61,14 +72,14 @@ public class Skf2060Sc001AttachedDownloadService extends SkfServiceAbstract<Skf2
 			throwBusinessExceptionIfErrors(adlDto.getResultMessages());
 		}
 		
-		Map<String, Object> attachedFile = attachedFileList.get(0);
-		String fileName = attachedFile.get("attachedName").toString();
+		Skf2060Sc001GetKariageBukkenFileExp attachedFile = attachedFileList.get(0);
+		String fileName = attachedFile.getAttachedName();
 		
 		// 操作ログを出力
 		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF2060_SC001);
 		
 		//ファイルデータ、ファイル名、パスの設定
-		adlDto.setFileData((byte[])attachedFile.get("fileStream"));
+		adlDto.setFileData(attachedFile.getFileStream());
 		adlDto.setUploadFileName(fileName);
 		adlDto.setViewPath(NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH);
 			
