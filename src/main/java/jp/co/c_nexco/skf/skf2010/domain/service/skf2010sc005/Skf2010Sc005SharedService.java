@@ -36,6 +36,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005Upda
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
@@ -179,8 +180,19 @@ public class Skf2010Sc005SharedService {
 	private String companyCd = CodeConstant.C001;
 	private MenuScopeSessionBean menuScopeSessionBean;
 
+	private Map<String, Object> changeWordMap = new HashMap<String, Object>();
+
 	public void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
 		this.menuScopeSessionBean = bean;
+	}
+
+	public void setChangeWordMap(String name, Map<String, String> map) {
+		changeWordMap.put(name, map);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, String> getChangeWordMap(String name) {
+		return (Map<String, String>) changeWordMap.get(name);
 	}
 
 	/**
@@ -695,74 +707,74 @@ public class Skf2010Sc005SharedService {
 		Skf2020TNyukyoChoshoTsuchi result = skf2020TNyukyoChoshoTsuchiRepository
 				.selectByPrimaryKey(skf2020TNyukyoChoshoTsuchiKey);
 		if (result != null) {
-			
+
 			// 日付にスラッシュを追加
 			String nyukyoYoteiDate = CodeConstant.NONE;
 			if (result.getNyukyoYoteiDate() != null) {
 				nyukyoYoteiDate = skfDateFormatUtils.dateFormatFromString(result.getNyukyoYoteiDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			}	
-			
+			}
+
 			String carExpirationDate = CodeConstant.NONE;
 			if (result.getCarExpirationDate() != null) {
 				carExpirationDate = skfDateFormatUtils.dateFormatFromString(result.getCarExpirationDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			String parkingUseDate = CodeConstant.NONE;
 			if (result.getParkingUseDate() != null) {
 				parkingUseDate = skfDateFormatUtils.dateFormatFromString(result.getParkingUseDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			}		
-			
+			}
+
 			String taikyoYoteiDate = CodeConstant.NONE;
 			if (result.getTaikyoYoteiDate() != null) {
 				taikyoYoteiDate = skfDateFormatUtils.dateFormatFromString(result.getTaikyoYoteiDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			}		
-			
+			}
+
 			String nyukyoKanoDate = CodeConstant.NONE;
 			if (result.getNyukyoKanoDate() != null) {
 				nyukyoKanoDate = skfDateFormatUtils.dateFormatFromString(result.getNyukyoKanoDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			}			
-			
+			}
+
 			String parkingKanoDate = CodeConstant.NONE;
 			if (result.getParkingKanoDate() != null) {
 				parkingKanoDate = skfDateFormatUtils.dateFormatFromString(result.getParkingKanoDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			}				
-			
+			}
+
 			String seiyakuDate = CodeConstant.NONE;
 			if (result.getSeiyakuDate() != null) {
 				seiyakuDate = skfDateFormatUtils.dateFormatFromString(result.getSeiyakuDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			}	
-			
-			String tsuchiDate = CodeConstant.NONE;
-			if(result.getTsuchiDate() != null) {
-				tsuchiDate = skfDateFormatUtils.dateFormatFromString(result.getTsuchiDate(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
 			}
-			
+
+			String tsuchiDate = CodeConstant.NONE;
+			if (result.getTsuchiDate() != null) {
+				tsuchiDate = skfDateFormatUtils.dateFormatFromString(result.getTsuchiDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+
 			String carExpirationDate2 = CodeConstant.NONE;
 			if (result.getCarExpirationDate2() != null) {
 				carExpirationDate2 = skfDateFormatUtils.dateFormatFromString(result.getCarExpirationDate2(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			String parkingUseDate2 = CodeConstant.NONE;
 			if (result.getParkingUseDate2() != null) {
 				parkingUseDate2 = skfDateFormatUtils.dateFormatFromString(result.getParkingUseDate2(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			String parkingKanoDate2 = CodeConstant.NONE;
 			if (result.getParkingKanoDate2() != null) {
 				parkingKanoDate2 = skfDateFormatUtils.dateFormatFromString(result.getParkingKanoDate2(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("agency");
@@ -855,7 +867,8 @@ public class Skf2010Sc005SharedService {
 			titleList.add("now_shataku_no");
 			strList.add(result.getNowShatakuNo());
 			titleList.add("now_shataku_kikaku");
-			strList.add(result.getNowShatakuKikaku());
+			Map<String, String> kikakuKbnList = this.getChangeWordMap("kikakuKbn");
+			strList.add(kikakuKbnList.get(result.getNowShatakuKikaku()));
 			titleList.add("now_shataku_menseki");
 			strList.add(result.getNowShatakuMenseki());
 			titleList.add("taikyo_yotei");
@@ -879,7 +892,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("new_shataku_no");
 			strList.add(result.getNewShatakuNo());
 			titleList.add("new_shataku_kikaku");
-			strList.add(result.getNewShatakuKikaku());
+			strList.add(kikakuKbnList.get(result.getNewShatakuKikaku()));
 			titleList.add("new_shataku_menseki");
 			strList.add(result.getNewShatakuMenseki());
 			titleList.add("new_rental");
@@ -893,7 +906,7 @@ public class Skf2010Sc005SharedService {
 			titleList.add("parking_area");
 			strList.add(result.getParkingArea());
 			titleList.add("car_ichi_no");
-			strList.add(result.getCarIchiNo());
+			strList.add(CodeConstant.NONE);
 			titleList.add("parking_rental");
 			strList.add(result.getParkingRental());
 			titleList.add("parking_kano_date");
@@ -915,7 +928,9 @@ public class Skf2010Sc005SharedService {
 			titleList.add("gender");
 			String strGender = CodeConstant.NONE;
 			if (result.getGender() != null) {
-				strGender = result.getGender().toString();
+				Map<String, String> genderMap = this.getChangeWordMap("gender");
+
+				strGender = genderMap.get(result.getGender().toString());
 			}
 			strList.add(strGender);
 			titleList.add("shataku_no");
@@ -945,15 +960,17 @@ public class Skf2010Sc005SharedService {
 			titleList.add("shataku_jotai");
 			strList.add(result.getShatakuJotai());
 			titleList.add("session_day");
-			strList.add(result.getSessionDay());
+			strList.add(skfDateFormatUtils.dateFormatFromString(result.getSessionDay(),
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH));
 			titleList.add("session_time");
-			strList.add(result.getSessionTime());
+			Map<String, String> requestTime = this.getChangeWordMap("requestTime");
+			strList.add(requestTime.get(result.getSessionTime()));
 			titleList.add("renraku_saki");
 			strList.add(result.getRenrakuSaki());
 			titleList.add("parking_area2");
 			strList.add(result.getParkingArea2());
 			titleList.add("car_ichi_no2");
-			strList.add(result.getCarIchiNo2());
+			strList.add(CodeConstant.NONE);
 			titleList.add("parking_rental2");
 			strList.add(result.getParkingRental2());
 			titleList.add("parking_kano_date2");
@@ -997,26 +1014,26 @@ public class Skf2010Sc005SharedService {
 		param.setApplNo(applNo);
 		result = skf2040TTaikyoReportRepository.selectByPrimaryKey(param);
 		if (result != null) {
-			
+
 			// 日付にスラッシュを追加
 			String taikyoDate = CodeConstant.NONE;
 			if (result.getTaikyoDate() != null) {
 				taikyoDate = skfDateFormatUtils.dateFormatFromString(result.getTaikyoDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			String parkingHenkanDate = CodeConstant.NONE;
 			if (result.getParkingHenkanDate() != null) {
 				parkingHenkanDate = skfDateFormatUtils.dateFormatFromString(result.getParkingHenkanDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			String sessionDay = CodeConstant.NONE;
 			if (result.getSessionDay() != null) {
 				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getSessionDay(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("agency");
@@ -1027,7 +1044,8 @@ public class Skf2010Sc005SharedService {
 			strList.add(result.getAffiliation2());
 
 			titleList.add("gender");
-			strList.add(result.getGender());
+			Map<String, String> genderMap = this.getChangeWordMap("gender");
+			strList.add(genderMap.get(result.getGender()));
 			titleList.add("address");
 			strList.add(result.getAddress());
 			titleList.add("taikyo_date");
@@ -1073,7 +1091,8 @@ public class Skf2010Sc005SharedService {
 			titleList.add("session_day");
 			strList.add(sessionDay);
 			titleList.add("session_time");
-			strList.add(result.getSessionTime());
+			Map<String, String> requestTime = this.getChangeWordMap("requestTime");
+			strList.add(requestTime.get(result.getSessionTime()));
 			titleList.add("renraku_saki");
 			strList.add(result.getRenrakuSaki());
 			titleList.add("parking_address1");
@@ -1092,27 +1111,27 @@ public class Skf2010Sc005SharedService {
 	 * @param titleList
 	 * @param strList
 	 */
-	public void setTBihinKibouShinsei(String companyCd, String applNo, List<String> titleList, List<String> strList) {
+	public void setTBihinKibouShinsei(String companyCd, String applNo, SkfBihinInfoUtilsGetBihinInfoExp bihinInfo,
+			List<String> titleList, List<String> strList) {
 		Skf2030TBihinKiboShinsei result = new Skf2030TBihinKiboShinsei();
 		Skf2030TBihinKiboShinseiKey param = new Skf2030TBihinKiboShinseiKey();
 		param.setCompanyCd(companyCd);
 		param.setApplNo(applNo);
 		result = skf2030TBihinKiboShinseiRepository.selectByPrimaryKey(param);
 		if (result != null) {
-			
 			// 日付にスラッシュを追加
 			String sessionDay = CodeConstant.NONE;
 			if (result.getSessionDay() != null) {
 				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getSessionDay(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			String completionDay = CodeConstant.NONE;
 			if (result.getCompletionDay() != null) {
 				completionDay = skfDateFormatUtils.dateFormatFromString(result.getCompletionDay(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);					
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("nyukyo_appl_no");
@@ -1124,13 +1143,18 @@ public class Skf2010Sc005SharedService {
 			titleList.add("affiliation2");
 			strList.add(result.getAffiliation2());
 			titleList.add("gender");
-			strList.add(result.getGender());
+			Map<String, String> genderMap = this.getChangeWordMap("gender");
+			strList.add(genderMap.get(result.getGender()));
 			titleList.add("tel");
 			strList.add(result.getTel());
 			titleList.add("tokyu");
 			strList.add(result.getTokyu());
 			titleList.add("shataku_no");
-			strList.add(result.getShainNo());
+			String strShatakuNo = CodeConstant.NONE;
+			if (result.getRoomKanriNo() != null) {
+				strShatakuNo = result.getShatakuNo().toString();
+			}
+			strList.add(strShatakuNo);
 			titleList.add("room_kanri_no");
 			String strRoomKanriNo = CodeConstant.NONE;
 			if (result.getRoomKanriNo() != null) {
@@ -1142,7 +1166,8 @@ public class Skf2010Sc005SharedService {
 			titleList.add("now_shataku_no");
 			strList.add(result.getNowShatakuNo());
 			titleList.add("now_shataku_kikaku");
-			strList.add(result.getNowShatakuKikaku());
+			Map<String, String> kikakuKbnMap = this.getChangeWordMap("kikakuKbn");
+			strList.add(kikakuKbnMap.get(result.getNowShatakuKikaku()));
 			titleList.add("now_shataku_menseki");
 			strList.add(result.getNowShatakuMenseki());
 			titleList.add("renraku_saki");
@@ -1154,9 +1179,14 @@ public class Skf2010Sc005SharedService {
 			titleList.add("session_day");
 			strList.add(sessionDay);
 			titleList.add("session_time");
-			strList.add(result.getSessionTime());
+			Map<String, String> kiboTimeMap = this.getChangeWordMap("requestTime");
+			strList.add(kiboTimeMap.get(result.getSessionTime()));
 			titleList.add("completion_day");
 			strList.add(completionDay);
+
+			// 以降備品申請データ
+			this.setBihinShinseiDataList(titleList, strList, bihinInfo, FunctionIdConstant.R0104);
+
 		}
 		return;
 	}
@@ -1169,28 +1199,27 @@ public class Skf2010Sc005SharedService {
 	 * @param titleList
 	 * @param strList
 	 */
-	public void setTBihinHenkyakuShinsei(String companyCd, String applNo, List<String> titleList,
-			List<String> strList) {
+	public void setTBihinHenkyakuShinsei(String companyCd, String applNo, SkfBihinInfoUtilsGetBihinInfoExp bihinInfo,
+			List<String> titleList, List<String> strList) {
 		Skf2050TBihinHenkyakuShinsei result = new Skf2050TBihinHenkyakuShinsei();
 		Skf2050TBihinHenkyakuShinseiKey param = new Skf2050TBihinHenkyakuShinseiKey();
 		param.setCompanyCd(companyCd);
 		param.setApplNo(applNo);
 		result = skf2050TBihinHenkyakuShinseiRepository.selectByPrimaryKey(param);
 		if (result != null) {
-			
 			// 日付にスラッシュを追加
 			String sessionDay = CodeConstant.NONE;
 			if (result.getSessionDay() != null) {
 				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getSessionDay(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			String completionDay = CodeConstant.NONE;
 			if (result.getCompletionDay() != null) {
-				sessionDay = skfDateFormatUtils.dateFormatFromString(result.getCompletionDay(),
-						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);				
+				completionDay = skfDateFormatUtils.dateFormatFromString(result.getCompletionDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			
+
 			titleList.add("company_cd");
 			strList.add(result.getCompanyCd());
 			titleList.add("taikyo_appl_no");
@@ -1206,7 +1235,8 @@ public class Skf2010Sc005SharedService {
 			titleList.add("tokyu");
 			strList.add(result.getTokyu());
 			titleList.add("gender");
-			strList.add(result.getGender());
+			Map<String, String> genderMap = this.getChangeWordMap("gender");
+			strList.add(genderMap.get(result.getGender()));
 			titleList.add("shataku_no");
 			String strShatakuNo = CodeConstant.NONE;
 			if (result.getShatakuNo() != null) {
@@ -1224,7 +1254,8 @@ public class Skf2010Sc005SharedService {
 			titleList.add("now_shataku_no");
 			strList.add(result.getNowShatakuNo());
 			titleList.add("now_shataku_kikaku");
-			strList.add(result.getNowShatakuKikaku());
+			Map<String, String> kikakuKbnMap = this.getChangeWordMap("kikakuKbn");
+			strList.add(kikakuKbnMap.get(result.getNowShatakuKikaku()));
 			titleList.add("now_shataku_menseki");
 			strList.add(result.getNowShatakuMenseki());
 			titleList.add("renraku_saki");
@@ -1233,15 +1264,66 @@ public class Skf2010Sc005SharedService {
 			strList.add(result.getTatiaiDairiName());
 			titleList.add("tatiai_dairi_apoint");
 			strList.add(result.getTatiaiDairiApoint());
-			titleList.add("tatiai_dairi_apoint");
-			strList.add(result.getTatiaiDairiApoint());
 			titleList.add("session_day");
 			strList.add(sessionDay);
 			titleList.add("session_time");
-			strList.add(result.getSessionTime());
+			Map<String, String> requestTimeMap = this.getChangeWordMap("requestTime");
+			strList.add(requestTimeMap.get(result.getSessionTime()));
 			titleList.add("completion_day");
 			strList.add(completionDay);
+
+			// 以降備品申請データ
+			this.setBihinShinseiDataList(titleList, strList, bihinInfo, FunctionIdConstant.R0105);
 		}
+		return;
+	}
+
+	/**
+	 * 備品申請情報をCSVデータリストにセットする
+	 * 
+	 * @param titleList
+	 * @param strList
+	 * @param bihinInfo
+	 */
+	public void setBihinShinseiDataList(List<String> titleList, List<String> strList,
+			SkfBihinInfoUtilsGetBihinInfoExp bihinInfo, String applId) {
+		// 備品コード
+		titleList.add("bihin_cd");
+		strList.add(bihinInfo.getBihinCd());
+		// 備品名
+		titleList.add("bihin_name");
+		strList.add(bihinInfo.getBihinName());
+		// 備品申請区分
+		titleList.add("bihin_appl");
+		Map<String, String> applKbnMap = this.getChangeWordMap("applKbn");
+		strList.add(applKbnMap.get(bihinInfo.getBihinAppl()));
+		// 備品状態区分
+		titleList.add("bihin_status");
+		Map<String, String> jotaiKbnMap = this.getChangeWordMap("jotaiKbn");
+		strList.add(jotaiKbnMap.get(bihinInfo.getBihinState()));
+		// 備品調整区分
+		titleList.add("bihin_adjust");
+		if (NfwStringUtils.isNotEmpty(bihinInfo.getBihinAdjust())) {
+			Map<String, String> choseiKbn = new HashMap<String, String>();
+			// 備品申請であれば搬入区分、備品返却であれば搬出区分を取得
+			if (CheckUtils.isEqual(applId, FunctionIdConstant.R0104)) {
+				choseiKbn = this.getChangeWordMap("hannyuKbn");
+			} else {
+				choseiKbn = this.getChangeWordMap("hanshutsuKbn");
+			}
+			String choseiVal = choseiKbn.get(bihinInfo.getBihinAdjust());
+			if (NfwStringUtils.isEmpty(choseiVal)) {
+				choseiVal = CodeConstant.HYPHEN;
+			}
+			strList.add(choseiVal);
+		} else {
+			strList.add(CodeConstant.HYPHEN);
+		}
+		// 備品希望可否区分
+		titleList.add("bihin_hope");
+		Map<String, String> wishKbnMap = this.getChangeWordMap("wishKbn");
+		strList.add(wishKbnMap.get(bihinInfo.getBihinHope()));
+
 		return;
 	}
 
