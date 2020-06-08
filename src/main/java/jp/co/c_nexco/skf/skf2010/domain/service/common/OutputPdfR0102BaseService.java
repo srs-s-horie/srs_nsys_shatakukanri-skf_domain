@@ -106,7 +106,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 		pdfData.setData("nowAffiliation1", NfwStringUtils.defaultString(dto.getNowAffiliation1()));
 		pdfData.setData("nowAffiliation2", NfwStringUtils.defaultString(dto.getNowAffiliation2()));
 		pdfData.setData("name", NfwStringUtils.defaultString(dto.getName()));
-		pdfData.setData("seiyakuDate", NfwStringUtils.defaultString(dto.getSeiyakuDate()));
+		pdfData.setData("applDate", NfwStringUtils.defaultString(dto.getApplDate()));
 		pdfData.setData("hitsuyoRiyu", NfwStringUtils.defaultString(dto.getHitsuyoRiyu()));
 		pdfData.setData("newShozaichi", NfwStringUtils.defaultString(dto.getNewShozaichi()));
 		pdfData.setData("newShatakuName", NfwStringUtils.defaultString(dto.getNewShatakuName()));
@@ -240,7 +240,7 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 		}
 
 		/** 誓約書 */
-		pdfData.setData("tsuchiDate", NfwStringUtils.defaultString(dto.getTsuchiDate()));
+		pdfData.setData("seiyakuDate", NfwStringUtils.defaultString(dto.getSeiyakuDate()));
 		// 現所属 機関
 		if (NfwStringUtils.defaultString(dto.getNowAgency())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGENCY_BREAK_LENGTH) {

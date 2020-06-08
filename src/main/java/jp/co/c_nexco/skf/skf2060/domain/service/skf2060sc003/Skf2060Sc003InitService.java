@@ -82,7 +82,7 @@ public class Skf2060Sc003InitService extends SkfServiceAbstract<Skf2060Sc003Init
 		// 操作ログを出力
 		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
 		// 操作ガイドの設定
-		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2060_SC003));
 		
 		//更新日を設定
 		Map<String, Date> lastUpdateDateMap = new HashMap<String, Date>();
