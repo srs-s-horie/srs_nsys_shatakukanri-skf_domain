@@ -521,7 +521,8 @@ public class Skf2030Sc002SharedService {
 		case CodeConstant.STATUS_SHONIN_ZUMI:
 			// ステータス：申請中、審査中
 			dto.setCompletionDayVisible(true); // 「搬入完了日」欄 【表示】
-
+			dto.setDispMode(CodeConstant.VIEW_LEVEL_1);
+			dto.setFloatL(CodeConstant.NONE);
 			// コメント入力欄表示
 			dto.setCommentViewFlag(false);
 			break;

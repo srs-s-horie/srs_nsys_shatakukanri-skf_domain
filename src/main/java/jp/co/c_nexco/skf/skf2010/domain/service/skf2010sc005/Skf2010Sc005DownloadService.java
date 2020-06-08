@@ -2,12 +2,14 @@ package jp.co.c_nexco.skf.skf2010.domain.service.skf2010sc005;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
@@ -19,6 +21,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -40,6 +43,8 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 	private SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
+	@Autowired
+	private SkfBihinInfoUtils skfBihinInfoUtils;
 
 	private Map<String, String> applStatusMap;
 
@@ -85,24 +90,76 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 		List<String[]> r0104List = new ArrayList<String[]>();
 		// 備品返却確認
 		List<String[]> r0105List = new ArrayList<String[]>();
+		// 備品申請
+		List<SkfBihinInfoUtilsGetBihinInfoExp> bihinInfoList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();
+
+		// 汎用コードマスタより名称一覧を取得する
+		// 性別
+		Map<String, String> genderMap = new HashMap<String, String>();
+		genderMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_GENDER);
+		skf2010Sc005SharedService.setChangeWordMap("gender", genderMap);
+		// 規格区分
+		Map<String, String> kikakuKbnMap = new HashMap<String, String>();
+		kikakuKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN);
+		skf2010Sc005SharedService.setChangeWordMap("kikakuKbn", kikakuKbnMap);
+		// 希望時間
+		Map<String, String> kiboTimeMap = new HashMap<String, String>();
+		kiboTimeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
+		skf2010Sc005SharedService.setChangeWordMap("requestTime", kiboTimeMap);
+		// 申請区分
+		Map<String, String> applKbnMap = new HashMap<String, String>();
+		applKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_APPL_KBN);
+		skf2010Sc005SharedService.setChangeWordMap("applKbn", applKbnMap);
+		// 状態区分
+		Map<String, String> jotaiKbnMap = new HashMap<String, String>();
+		jotaiKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_EQUIPMENT_STATE);
+		skf2010Sc005SharedService.setChangeWordMap("jotaiKbn", jotaiKbnMap);
+		// 調整区分（搬入区分）
+		Map<String, String> hannyuKbnMap = new HashMap<String, String>();
+		hannyuKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_IN_KBN);
+		skf2010Sc005SharedService.setChangeWordMap("hannyuKbn", hannyuKbnMap);
+		// 調整区分（搬出区分）
+		Map<String, String> hanshutsuKbnMap = new HashMap<String, String>();
+		hanshutsuKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_CARRING_OUT_KBN);
+		skf2010Sc005SharedService.setChangeWordMap("hanshutsuKbn", hanshutsuKbnMap);
+		// 希望可否区分
+		Map<String, String> wishKbnMap = new HashMap<String, String>();
+		wishKbnMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_BIHIN_HOPE);
+		skf2010Sc005SharedService.setChangeWordMap("wishKbn", wishKbnMap);
 
 		String[] rowData = {};
 
 		// 各書類毎のCSVファイルデータを作成
 		for (Skf2010Sc005GetShoninIchiranShoninExp applData : resultList) {
-			rowData = setApplDataForCsv(applData, applData.getApplId());
+
 			switch (applData.getApplId()) {
 			case "R0100":
+				rowData = setApplDataForCsv(applData, applData.getApplId(), null);
 				r0100List.add(rowData);
 				break;
 			case "R0103":
+				rowData = setApplDataForCsv(applData, applData.getApplId(), null);
 				r0103List.add(rowData);
 				break;
 			case "R0104":
-				r0104List.add(rowData);
+				bihinInfoList = skfBihinInfoUtils.getBihinInfo(companyCd, applData.getApplNo());
+				if (bihinInfoList != null && bihinInfoList.size() > 0) {
+					for (SkfBihinInfoUtilsGetBihinInfoExp bihinInfo : bihinInfoList) {
+						rowData = setApplDataForCsv(applData, applData.getApplId(), bihinInfo);
+						r0104List.add(rowData);
+					}
+				}
+
 				break;
 			case "R0105":
-				r0105List.add(rowData);
+				bihinInfoList = skfBihinInfoUtils.getBihinInfo(companyCd, applData.getApplNo());
+				if (bihinInfoList != null && bihinInfoList.size() > 0) {
+					for (SkfBihinInfoUtilsGetBihinInfoExp bihinInfo : bihinInfoList) {
+						rowData = setApplDataForCsv(applData, applData.getApplId(), bihinInfo);
+						r0105List.add(rowData);
+					}
+				}
+
 				break;
 			}
 		}
@@ -150,7 +207,8 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 	 * @param columnMap
 	 * @return
 	 */
-	private String[] setApplDataForCsv(Skf2010Sc005GetShoninIchiranShoninExp applData, String applId) {
+	private String[] setApplDataForCsv(Skf2010Sc005GetShoninIchiranShoninExp applData, String applId,
+			SkfBihinInfoUtilsGetBihinInfoExp bihinInfo) {
 		List<String> tmpList = new ArrayList<String>();
 
 		// 日付型を文字列型に変更する
@@ -201,10 +259,14 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 			skf2010Sc005SharedService.setTTaikyoReport(companyCd, applData.getApplNo(), titleList, tmpList);
 			break;
 		case "R0104":
-			skf2010Sc005SharedService.setTBihinKibouShinsei(companyCd, applData.getApplNo(), titleList, tmpList);
+			// 備品申請件数分行を作成
+			skf2010Sc005SharedService.setTBihinKibouShinsei(companyCd, applData.getApplNo(), bihinInfo, titleList,
+					tmpList);
 			break;
 		case "R0105":
-			skf2010Sc005SharedService.setTBihinHenkyakuShinsei(companyCd, applData.getApplNo(), titleList, tmpList);
+			// 備品申請件数分行を作成
+			skf2010Sc005SharedService.setTBihinHenkyakuShinsei(companyCd, applData.getApplNo(), bihinInfo, titleList,
+					tmpList);
 			break;
 		}
 
