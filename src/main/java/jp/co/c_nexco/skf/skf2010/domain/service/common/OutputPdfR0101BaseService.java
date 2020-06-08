@@ -169,7 +169,7 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 	}
 
 	private void setSeiyakusho(CSVDoc pdfData, DTO dto) {
-		pdfData.setData("tsuchiDate", NfwStringUtils.defaultString(dto.getTsuchiDate()));
+		pdfData.setData("seiyakuDate", NfwStringUtils.defaultString(dto.getSeiyakuDate()));
 		// 現所属 「機関」
 		if (NfwStringUtils.defaultString(dto.getNowAgency())
 				.getBytes(Charset.forName(STR_BYTE_LENGTH_ENCODE)).length <= AGECNY_BREAK_LENGTH) {
