@@ -232,7 +232,7 @@ public class Skf3090Sc003DeleteService extends SkfServiceAbstract<Skf3090Sc003De
 				int listCount = skf3090Sc003SharedService.getListTableData(deleteDto.getSelectedManageCompanyCd(), deleteDto.getBusinessAreaCd(), deleteDto.getBusinessAreaName(), null, listTableData);
 				if(listCount == 0){
 					// 取得レコード0件のワーニング
-					ServiceHelper.addWarnResultMessage(deleteDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
+					//ServiceHelper.addWarnResultMessage(deleteDto, MessageIdConstant.W_SKF_1007, String.valueOf(listCount));
 					// 登録ボタン非活性化
 					deleteDto.setRegistButtonDisabled(true);
 				}else{
