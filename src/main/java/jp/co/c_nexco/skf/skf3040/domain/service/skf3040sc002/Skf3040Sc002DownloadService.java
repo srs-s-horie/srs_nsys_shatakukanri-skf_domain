@@ -133,7 +133,10 @@ public class Skf3040Sc002DownloadService extends SkfServiceAbstract<Skf3040Sc002
 	 * 下取
 	 */
 	private String SHITADORI = "下取";
-	
+	/**
+	 * 搬入搬出
+	 */
+	private String HANNYU_HANSYUTU = "搬入搬出";
 	
 	/**
 	 * サービス処理を行う。　
@@ -407,7 +410,10 @@ public class Skf3040Sc002DownloadService extends SkfServiceAbstract<Skf3040Sc002
 				
 				// 更新対象カラムへ現在日時取得と設定
 		        String sysDate = getNowDateStrFormat("yyyyMMdd");
-				if(Objects.equals(temp.get("key1"), HANNYU)){
+		        if(Objects.equals(temp.get("key1"), HANNYU_HANSYUTU)){
+					updateParam.setHannyuChecklistDate(sysDate);
+					updateParam.setHansyutuChecklistDate(sysDate);
+				}else if(Objects.equals(temp.get("key1"), HANNYU)){
 					updateParam.setHannyuChecklistDate(sysDate);
 					updateParam.setHansyutuChecklistDate(strNullCheck(bihinData.getHansyutuChecklistDate()));
 				}else{
@@ -592,7 +598,20 @@ public class Skf3040Sc002DownloadService extends SkfServiceAbstract<Skf3040Sc002
 			String gyoumu, String shatakuKanriId, String updateTime){
 		// 更新用条件の設定
 		if(shatakuKanriIdList.size() > 0 && shatakuKanriIdList.contains(shatakuKanriId)){
-			//　処理なし
+			//　処理なし→搬入搬出両方更新対応
+			if(Objects.equals(gyoumu, HANNYU)){
+				//処理なし
+			}else{
+				//搬出の場合チェック
+				for(Map<String, Object> tmp : setDbUpdateDataList){
+					if(Objects.equals(shatakuKanriId, tmp.get("key2"))
+							&& Objects.equals(HANNYU, tmp.get("key1"))){
+						//同一社宅管理IDで、業務が搬入のデータを搬入搬出に上書き
+						tmp.put("key1", HANNYU_HANSYUTU);
+						break;
+					}
+				}
+			}
 		}else{
 			shatakuKanriIdList.add(shatakuKanriId);
 			Map<String, Object> tmpUpdateMap = new HashMap<String, Object>();

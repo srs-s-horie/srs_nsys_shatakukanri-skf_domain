@@ -1036,7 +1036,7 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 				for(Map<String, Object> tmp : setDbUpdateDataList){
 					if(Objects.equals(shatakuKanriId, tmp.get("key2"))
 							&& Objects.equals(HANNYU, tmp.get("key1"))){
-						//同一社宅管理IDで、業務が搬入
+						//同一社宅管理IDで、業務が搬入のデータを搬入搬出に上書き
 						tmp.put("key1", HANNYU_HANSYUTU);
 						break;
 					}
