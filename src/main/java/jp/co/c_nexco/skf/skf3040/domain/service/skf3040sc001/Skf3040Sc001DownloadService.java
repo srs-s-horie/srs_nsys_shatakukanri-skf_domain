@@ -147,6 +147,10 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 	 * 下取
 	 */
 	private String SHITADORI = "下取";
+	/**
+	 * 搬入搬出
+	 */
+	private String HANNYU_HANSYUTU = "搬入搬出";
 	
 	/**
 	 * 社宅管理台帳備品基本が更新対象
@@ -399,39 +403,42 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 					updateParam.setShatakuKanriId(shatakuKanriId);
 					// その他の項目
 					// NULL更新したいカラムがあるので「updateByPrimaryKey」を使う このため、全カラムにデータ詰める
-					updateParam.setTaiyoDate(strNullCheck(bihinData.getTaiyoDate()));
-					updateParam.setHannyuRequestDay(strNullCheck(bihinData.getHannyuRequestDay()));
-					updateParam.setHannyuRequestKbn(strNullCheck(bihinData.getHannyuRequestKbn()));
-					updateParam.setHannyuConfirmDate(strNullCheck(bihinData.getHannyuConfirmDate()));
-					updateParam.setUkeireDairiName(strNullCheck(bihinData.getUkeireDairiName()));
-					updateParam.setUkeireDairiApoint(strNullCheck(bihinData.getUkeireDairiApoint()));
-					updateParam.setHenkyakuDate(strNullCheck(bihinData.getHenkyakuDate()));
-					updateParam.setHansyutuRequestDay(strNullCheck(bihinData.getHansyutuRequestDay()));
-					updateParam.setHansyutuRequestKbn(strNullCheck(bihinData.getHansyutuRequestKbn()));
-					updateParam.setHansyutuConfirmDate(strNullCheck(bihinData.getHansyutuConfirmDate()));
-					updateParam.setTatiaiDairiName(strNullCheck(bihinData.getTatiaiDairiName()));
-					updateParam.setTatiaiDairiApoint(strNullCheck(bihinData.getTatiaiDairiApoint()));
-					updateParam.setDairiBiko(strNullCheck(bihinData.getDairiBiko()));
-					updateParam.setBihinBiko(strNullCheck(bihinData.getBihinBiko()));
-					updateParam.setUkeireMyApoint(strNullCheck(bihinData.getUkeireMyApoint()));
-					updateParam.setTatiaiMyApoint(strNullCheck(bihinData.getTatiaiMyApoint()));
-					updateParam.setHannyuChecklistDate(strNullCheck(bihinData.getHannyuChecklistDate()));
-					updateParam.setHansyutuChecklistDate(strNullCheck(bihinData.getHansyutuChecklistDate()));
-					updateParam.setDeleteFlag(bihinData.getDeleteFlag());
-					updateParam.setInsertDate(bihinData.getInsertDate());
-					updateParam.setInsertUserId(bihinData.getInsertUserId());
-					updateParam.setInsertProgramId(bihinData.getInsertProgramId());
-					
+//					updateParam.setTaiyoDate(strNullCheck(bihinData.getTaiyoDate()));
+//					updateParam.setHannyuRequestDay(strNullCheck(bihinData.getHannyuRequestDay()));
+//					updateParam.setHannyuRequestKbn(strNullCheck(bihinData.getHannyuRequestKbn()));
+//					updateParam.setHannyuConfirmDate(strNullCheck(bihinData.getHannyuConfirmDate()));
+//					updateParam.setUkeireDairiName(strNullCheck(bihinData.getUkeireDairiName()));
+//					updateParam.setUkeireDairiApoint(strNullCheck(bihinData.getUkeireDairiApoint()));
+//					updateParam.setHenkyakuDate(strNullCheck(bihinData.getHenkyakuDate()));
+//					updateParam.setHansyutuRequestDay(strNullCheck(bihinData.getHansyutuRequestDay()));
+//					updateParam.setHansyutuRequestKbn(strNullCheck(bihinData.getHansyutuRequestKbn()));
+//					updateParam.setHansyutuConfirmDate(strNullCheck(bihinData.getHansyutuConfirmDate()));
+//					updateParam.setTatiaiDairiName(strNullCheck(bihinData.getTatiaiDairiName()));
+//					updateParam.setTatiaiDairiApoint(strNullCheck(bihinData.getTatiaiDairiApoint()));
+//					updateParam.setDairiBiko(strNullCheck(bihinData.getDairiBiko()));
+//					updateParam.setBihinBiko(strNullCheck(bihinData.getBihinBiko()));
+//					updateParam.setUkeireMyApoint(strNullCheck(bihinData.getUkeireMyApoint()));
+//					updateParam.setTatiaiMyApoint(strNullCheck(bihinData.getTatiaiMyApoint()));
+//					updateParam.setHannyuChecklistDate(strNullCheck(bihinData.getHannyuChecklistDate()));
+//					updateParam.setHansyutuChecklistDate(strNullCheck(bihinData.getHansyutuChecklistDate()));
+//					updateParam.setDeleteFlag(bihinData.getDeleteFlag());
+//					updateParam.setInsertDate(bihinData.getInsertDate());
+//					updateParam.setInsertUserId(bihinData.getInsertUserId());
+//					updateParam.setInsertProgramId(bihinData.getInsertProgramId());
 					// 更新対象カラムへ現在日時取得と設定
 			        String sysDate = getNowDateStrFormat("yyyyMMdd");
-					if(Objects.equals(temp.get("key1"), HANNYU)){
+			        if(Objects.equals(temp.get("key1"), HANNYU_HANSYUTU)){
 						updateParam.setHannyuCarryinInstruction(sysDate);
-						updateParam.setHansyutuCarryinInstruction(strNullCheck(bihinData.getHansyutuCarryinInstruction()));
-					}else{
-						updateParam.setHannyuCarryinInstruction(strNullCheck(bihinData.getHannyuCarryinInstruction()));
 						updateParam.setHansyutuCarryinInstruction(sysDate);
 					}
-					int retCount = skf3030TShatakuBihinRepository.updateByPrimaryKey(updateParam);
+					if(Objects.equals(temp.get("key1"), HANNYU)){
+						updateParam.setHannyuCarryinInstruction(sysDate);
+						//updateParam.setHansyutuCarryinInstruction(strNullCheck(bihinData.getHansyutuCarryinInstruction()));
+					}else{
+						//updateParam.setHannyuCarryinInstruction(strNullCheck(bihinData.getHannyuCarryinInstruction()));
+						updateParam.setHansyutuCarryinInstruction(sysDate);
+					}
+					int retCount = skf3030TShatakuBihinRepository.updateByPrimaryKeySelective(updateParam);
 					
 					// 更新できなかった
 					if(0 >= retCount){
@@ -464,90 +471,90 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 					updateParam.setTeijiNo(shatakuKanriId);
 					// その他の項目
 					// NULL更新したいカラムがあるので「updateByPrimaryKey」を使う このため、全カラムにデータ詰める
-					updateParam.setShainNo(strNullCheck(teijiData.getShainNo()));
-					updateParam.setNyutaikyoKbn(strNullCheck(teijiData.getNyutaikyoKbn()));
-					updateParam.setName(strNullCheck(teijiData.getName()));
-					updateParam.setApplKbn(strNullCheck(teijiData.getApplKbn()));
-					updateParam.setShatakuKanriNo(teijiData.getShatakuKanriNo());
-					updateParam.setShatakuRoomKanriNo(teijiData.getShatakuRoomKanriNo());
-					updateParam.setRentalPatternId(teijiData.getRentalPatternId());
-					updateParam.setKyojushaKbn(strNullCheck(teijiData.getKyojushaKbn()));
-					updateParam.setYakuinSannteiKbn(strNullCheck(teijiData.getYakuinSannteiKbn()));
-					updateParam.setRentalDay(teijiData.getRentalDay());
-					updateParam.setRentalAdjust(teijiData.getRentalAdjust());
-					updateParam.setKyoekihiPersonKyogichuFlg(strNullCheck(teijiData.getKyoekihiPersonKyogichuFlg()));
-					updateParam.setKyoekihiPerson(teijiData.getKyoekihiPerson());
-					updateParam.setKyoekihiPersonAdjust(teijiData.getKyoekihiPersonAdjust());
-					updateParam.setKyoekihiPayMonth(strNullCheck(teijiData.getKyoekihiPayMonth()));
-					updateParam.setParkingBlock1(strNullCheck(teijiData.getParkingBlock1()));
-					updateParam.setParking1StartDate(strNullCheck(teijiData.getParking1StartDate()));
-					updateParam.setParking1EndDate(strNullCheck(teijiData.getParking1EndDate()));
-					updateParam.setParkingBlock2(strNullCheck(teijiData.getParkingBlock2()));
-					updateParam.setParking2StartDate(strNullCheck(teijiData.getParking2StartDate()));
-					updateParam.setParking2EndDate(strNullCheck(teijiData.getParking2EndDate()));
-					updateParam.setParkingRentalAdjust(teijiData.getParkingRentalAdjust());
-					updateParam.setParking1RentalDay(teijiData.getParking1RentalDay());
-					updateParam.setParking2RentalDay(teijiData.getParking2RentalDay());
-					updateParam.setBiko(strNullCheck(teijiData.getBiko()));
-					updateParam.setEquipmentStartDate(strNullCheck(teijiData.getEquipmentStartDate()));
-					updateParam.setEquipmentEndDate(strNullCheck(teijiData.getEquipmentEndDate()));
-					updateParam.setCarryinRequestDay(strNullCheck(teijiData.getCarryinRequestDay()));
-					updateParam.setCarryinRequestKbn(strNullCheck(teijiData.getCarryinRequestKbn()));
-					updateParam.setUkeireMyApoint(strNullCheck(teijiData.getUkeireMyApoint()));
-					updateParam.setUkeireDairiName(strNullCheck(teijiData.getUkeireDairiName()));
-					updateParam.setUkeireDairiApoint(strNullCheck(teijiData.getUkeireDairiApoint()));
-					updateParam.setCarryoutRequestDay(strNullCheck(teijiData.getCarryoutRequestDay()));
-					updateParam.setCarryoutRequestKbn(strNullCheck(teijiData.getCarryoutRequestKbn()));
-					updateParam.setTatiaiMyApoint(strNullCheck(teijiData.getTatiaiMyApoint()));
-					updateParam.setTatiaiDairiName(strNullCheck(teijiData.getTatiaiDairiName()));
-					updateParam.setTatiaiDairiApoint(strNullCheck(teijiData.getTatiaiDairiApoint()));
-					updateParam.setBihinConfirmDate(strNullCheck(teijiData.getBihinConfirmDate()));
-					updateParam.setDairiKiko(strNullCheck(teijiData.getDairiKiko()));
-					updateParam.setBihinBiko(strNullCheck(teijiData.getBihinBiko()));
-					updateParam.setKashitukeCompanyCd(strNullCheck(teijiData.getKashitukeCompanyCd()));
-					updateParam.setKariukeCompanyCd(strNullCheck(teijiData.getKariukeCompanyCd()));
-					updateParam.setRent(teijiData.getRent());
-					updateParam.setParkingRental(teijiData.getParkingRental());
-					updateParam.setKyoekihiBusiness(teijiData.getKyoekihiBusiness());
-					updateParam.setMutualUseStartDay(strNullCheck(teijiData.getMutualUseStartDay()));
-					updateParam.setMutualUseEndDay(strNullCheck(teijiData.getMutualUseEndDay()));
-					updateParam.setAssignCompanyCd(strNullCheck(teijiData.getAssignCompanyCd()));
-					updateParam.setAgency(strNullCheck(teijiData.getAgency()));
-					updateParam.setAffiliation1(strNullCheck(teijiData.getAffiliation1()));
-					updateParam.setAffiliation2(strNullCheck(teijiData.getAffiliation2()));
-					updateParam.setAssignCd(strNullCheck(teijiData.getAssignCd()));
-					updateParam.setOriginalCompanyCd(strNullCheck(teijiData.getOriginalCompanyCd()));
-					updateParam.setPayCompanyCd(strNullCheck(teijiData.getPayCompanyCd()));
-					updateParam.setShatakuTeijiStatus(strNullCheck(teijiData.getShatakuTeijiStatus()));
-					updateParam.setShatakuTeijiUrgeDate(strNullCheck(teijiData.getShatakuTeijiUrgeDate()));
-					updateParam.setBihinTaiyoKbn(strNullCheck(teijiData.getBihinTaiyoKbn()));
-					updateParam.setBihinTeijiStatus(strNullCheck(teijiData.getBihinTeijiStatus()));
-					updateParam.setBihinTeijiUrgeDate(strNullCheck(teijiData.getBihinTeijiUrgeDate()));
-					updateParam.setBihinInoutUrgeDate(strNullCheck(teijiData.getBihinInoutUrgeDate()));
-					updateParam.setCreateCompleteKbn(strNullCheck(teijiData.getCreateCompleteKbn()));
-					updateParam.setLandCreateKbn(strNullCheck(teijiData.getLandCreateKbn()));
-					updateParam.setParkingKanriNo1(teijiData.getParkingKanriNo1());
-					updateParam.setParkingKanriNo2(teijiData.getParkingKanriNo2());
-					updateParam.setMutualUseKbn(strNullCheck(teijiData.getMutualUseKbn()));
-					updateParam.setShatakuCompanyTransferKbn(strNullCheck(teijiData.getShatakuCompanyTransferKbn()));
-					updateParam.setKyoekihiCompanyTransferKbn(strNullCheck(teijiData.getKyoekihiCompanyTransferKbn()));
-					updateParam.setShatakuKanriId(teijiData.getShatakuKanriId());
-					updateParam.setJssShatakuTeijiDate(strNullCheck(teijiData.getJssShatakuTeijiDate()));
-					updateParam.setMutualJokyo(strNullCheck(teijiData.getMutualJokyo()));
-					updateParam.setRentalMonth(teijiData.getRentalMonth());
-					updateParam.setParking1RentalMonth(teijiData.getParking1RentalMonth());
-					updateParam.setParking2RentalMonth(teijiData.getParking2RentalMonth());
-					updateParam.setNowAffiliation(strNullCheck(teijiData.getNowAffiliation()));
-					updateParam.setNewAffiliation(strNullCheck(teijiData.getNewAffiliation()));
-					updateParam.setDeleteFlag(teijiData.getDeleteFlag());
-					updateParam.setInsertDate(teijiData.getInsertDate());
-					updateParam.setInsertUserId(teijiData.getInsertUserId());
-					updateParam.setInsertProgramId(teijiData.getInsertProgramId());					
+//					updateParam.setShainNo(strNullCheck(teijiData.getShainNo()));
+//					updateParam.setNyutaikyoKbn(strNullCheck(teijiData.getNyutaikyoKbn()));
+//					updateParam.setName(strNullCheck(teijiData.getName()));
+//					updateParam.setApplKbn(strNullCheck(teijiData.getApplKbn()));
+//					updateParam.setShatakuKanriNo(teijiData.getShatakuKanriNo());
+//					updateParam.setShatakuRoomKanriNo(teijiData.getShatakuRoomKanriNo());
+//					updateParam.setRentalPatternId(teijiData.getRentalPatternId());
+//					updateParam.setKyojushaKbn(strNullCheck(teijiData.getKyojushaKbn()));
+//					updateParam.setYakuinSannteiKbn(strNullCheck(teijiData.getYakuinSannteiKbn()));
+//					updateParam.setRentalDay(teijiData.getRentalDay());
+//					updateParam.setRentalAdjust(teijiData.getRentalAdjust());
+//					updateParam.setKyoekihiPersonKyogichuFlg(strNullCheck(teijiData.getKyoekihiPersonKyogichuFlg()));
+//					updateParam.setKyoekihiPerson(teijiData.getKyoekihiPerson());
+//					updateParam.setKyoekihiPersonAdjust(teijiData.getKyoekihiPersonAdjust());
+//					updateParam.setKyoekihiPayMonth(strNullCheck(teijiData.getKyoekihiPayMonth()));
+//					updateParam.setParkingBlock1(strNullCheck(teijiData.getParkingBlock1()));
+//					updateParam.setParking1StartDate(strNullCheck(teijiData.getParking1StartDate()));
+//					updateParam.setParking1EndDate(strNullCheck(teijiData.getParking1EndDate()));
+//					updateParam.setParkingBlock2(strNullCheck(teijiData.getParkingBlock2()));
+//					updateParam.setParking2StartDate(strNullCheck(teijiData.getParking2StartDate()));
+//					updateParam.setParking2EndDate(strNullCheck(teijiData.getParking2EndDate()));
+//					updateParam.setParkingRentalAdjust(teijiData.getParkingRentalAdjust());
+//					updateParam.setParking1RentalDay(teijiData.getParking1RentalDay());
+//					updateParam.setParking2RentalDay(teijiData.getParking2RentalDay());
+//					updateParam.setBiko(strNullCheck(teijiData.getBiko()));
+//					updateParam.setEquipmentStartDate(strNullCheck(teijiData.getEquipmentStartDate()));
+//					updateParam.setEquipmentEndDate(strNullCheck(teijiData.getEquipmentEndDate()));
+//					updateParam.setCarryinRequestDay(strNullCheck(teijiData.getCarryinRequestDay()));
+//					updateParam.setCarryinRequestKbn(strNullCheck(teijiData.getCarryinRequestKbn()));
+//					updateParam.setUkeireMyApoint(strNullCheck(teijiData.getUkeireMyApoint()));
+//					updateParam.setUkeireDairiName(strNullCheck(teijiData.getUkeireDairiName()));
+//					updateParam.setUkeireDairiApoint(strNullCheck(teijiData.getUkeireDairiApoint()));
+//					updateParam.setCarryoutRequestDay(strNullCheck(teijiData.getCarryoutRequestDay()));
+//					updateParam.setCarryoutRequestKbn(strNullCheck(teijiData.getCarryoutRequestKbn()));
+//					updateParam.setTatiaiMyApoint(strNullCheck(teijiData.getTatiaiMyApoint()));
+//					updateParam.setTatiaiDairiName(strNullCheck(teijiData.getTatiaiDairiName()));
+//					updateParam.setTatiaiDairiApoint(strNullCheck(teijiData.getTatiaiDairiApoint()));
+//					updateParam.setBihinConfirmDate(strNullCheck(teijiData.getBihinConfirmDate()));
+//					updateParam.setDairiKiko(strNullCheck(teijiData.getDairiKiko()));
+//					updateParam.setBihinBiko(strNullCheck(teijiData.getBihinBiko()));
+//					updateParam.setKashitukeCompanyCd(strNullCheck(teijiData.getKashitukeCompanyCd()));
+//					updateParam.setKariukeCompanyCd(strNullCheck(teijiData.getKariukeCompanyCd()));
+//					updateParam.setRent(teijiData.getRent());
+//					updateParam.setParkingRental(teijiData.getParkingRental());
+//					updateParam.setKyoekihiBusiness(teijiData.getKyoekihiBusiness());
+//					updateParam.setMutualUseStartDay(strNullCheck(teijiData.getMutualUseStartDay()));
+//					updateParam.setMutualUseEndDay(strNullCheck(teijiData.getMutualUseEndDay()));
+//					updateParam.setAssignCompanyCd(strNullCheck(teijiData.getAssignCompanyCd()));
+//					updateParam.setAgency(strNullCheck(teijiData.getAgency()));
+//					updateParam.setAffiliation1(strNullCheck(teijiData.getAffiliation1()));
+//					updateParam.setAffiliation2(strNullCheck(teijiData.getAffiliation2()));
+//					updateParam.setAssignCd(strNullCheck(teijiData.getAssignCd()));
+//					updateParam.setOriginalCompanyCd(strNullCheck(teijiData.getOriginalCompanyCd()));
+//					updateParam.setPayCompanyCd(strNullCheck(teijiData.getPayCompanyCd()));
+//					updateParam.setShatakuTeijiStatus(strNullCheck(teijiData.getShatakuTeijiStatus()));
+//					updateParam.setShatakuTeijiUrgeDate(strNullCheck(teijiData.getShatakuTeijiUrgeDate()));
+//					updateParam.setBihinTaiyoKbn(strNullCheck(teijiData.getBihinTaiyoKbn()));
+//					updateParam.setBihinTeijiStatus(strNullCheck(teijiData.getBihinTeijiStatus()));
+//					updateParam.setBihinTeijiUrgeDate(strNullCheck(teijiData.getBihinTeijiUrgeDate()));
+//					updateParam.setBihinInoutUrgeDate(strNullCheck(teijiData.getBihinInoutUrgeDate()));
+//					updateParam.setCreateCompleteKbn(strNullCheck(teijiData.getCreateCompleteKbn()));
+//					updateParam.setLandCreateKbn(strNullCheck(teijiData.getLandCreateKbn()));
+//					updateParam.setParkingKanriNo1(teijiData.getParkingKanriNo1());
+//					updateParam.setParkingKanriNo2(teijiData.getParkingKanriNo2());
+//					updateParam.setMutualUseKbn(strNullCheck(teijiData.getMutualUseKbn()));
+//					updateParam.setShatakuCompanyTransferKbn(strNullCheck(teijiData.getShatakuCompanyTransferKbn()));
+//					updateParam.setKyoekihiCompanyTransferKbn(strNullCheck(teijiData.getKyoekihiCompanyTransferKbn()));
+//					updateParam.setShatakuKanriId(teijiData.getShatakuKanriId());
+//					updateParam.setJssShatakuTeijiDate(strNullCheck(teijiData.getJssShatakuTeijiDate()));
+//					updateParam.setMutualJokyo(strNullCheck(teijiData.getMutualJokyo()));
+//					updateParam.setRentalMonth(teijiData.getRentalMonth());
+//					updateParam.setParking1RentalMonth(teijiData.getParking1RentalMonth());
+//					updateParam.setParking2RentalMonth(teijiData.getParking2RentalMonth());
+//					updateParam.setNowAffiliation(strNullCheck(teijiData.getNowAffiliation()));
+//					updateParam.setNewAffiliation(strNullCheck(teijiData.getNewAffiliation()));
+//					updateParam.setDeleteFlag(teijiData.getDeleteFlag());
+//					updateParam.setInsertDate(teijiData.getInsertDate());
+//					updateParam.setInsertUserId(teijiData.getInsertUserId());
+//					updateParam.setInsertProgramId(teijiData.getInsertProgramId());					
 					// 更新対象カラムへ現在日時取得と設定
 			        String sysDate = getNowDateStrFormat("yyyyMMdd");
 			        updateParam.setHannyuCarryinInstruction(sysDate);
 
-					int retCount = skf3022TTeijiDataRepository.updateByPrimaryKey(updateParam);
+					int retCount = skf3022TTeijiDataRepository.updateByPrimaryKeySelective(updateParam);
 					
 					// 更新できなかった
 					if(0 >= retCount){
@@ -1021,7 +1028,20 @@ public class Skf3040Sc001DownloadService extends SkfServiceAbstract<Skf3040Sc001
 			String gyoumu, String shatakuKanriId, String updateTime, String tableFlg){
 		// 更新用条件の設定
 		if(shatakuKanriIdList.size() > 0 && shatakuKanriIdList.contains(shatakuKanriId)){
-			//　処理なし
+			//　処理なし→搬入搬出両方更新対応
+			if(Objects.equals(gyoumu, HANNYU)){
+				//処理なし
+			}else{
+				//搬出の場合チェック
+				for(Map<String, Object> tmp : setDbUpdateDataList){
+					if(Objects.equals(shatakuKanriId, tmp.get("key2"))
+							&& Objects.equals(HANNYU, tmp.get("key1"))){
+						//同一社宅管理IDで、業務が搬入
+						tmp.put("key1", HANNYU_HANSYUTU);
+						break;
+					}
+				}
+			}
 		}else{
 			shatakuKanriIdList.add(shatakuKanriId);
 			Map<String, Object> tmpUpdateMap = new HashMap<String, Object>();
