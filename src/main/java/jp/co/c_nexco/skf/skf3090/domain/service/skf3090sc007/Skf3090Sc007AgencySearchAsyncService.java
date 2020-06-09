@@ -2,17 +2,16 @@ package jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc007;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3090Sc007.Skf3090Sc007GetAgencyInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
-import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc007.Skf3090Sc007AgencySearchAsyncDto;
@@ -36,7 +35,7 @@ public class Skf3090Sc007AgencySearchAsyncService extends SkfAsyncServiceAbstrac
 	public Skf3090Sc007AgencySearchAsyncDto index(Skf3090Sc007AgencySearchAsyncDto agencySearchAsyncDto)
 			throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("名称を検索", CodeConstant.C001, agencySearchAsyncDto.getPageId());
+		skfOperationLogUtils.setAccessLog("名称を検索", CodeConstant.C001, FunctionIdConstant.SKF3090_SC007);
 
 		List<Skf3090Sc007GetAgencyInfoExp> resultList = new ArrayList<Skf3090Sc007GetAgencyInfoExp>();
 		Skf3090Sc007GetAgencyInfoExpParameter param = new Skf3090Sc007GetAgencyInfoExpParameter();
