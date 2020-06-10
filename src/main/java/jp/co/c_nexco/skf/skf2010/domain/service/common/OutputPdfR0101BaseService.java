@@ -24,7 +24,7 @@ public abstract class OutputPdfR0101BaseService<DTO extends Skf2010OutputPdfBase
 	@Value("${skf.pdf.skf2020rp002.pdf_temp_folder_path}")
 	private String pdfTempFolderPath;
 
-	private static final int AGECNY_BREAK_LENGTH = 26;
+	private static final int AGECNY_BREAK_LENGTH = 32;
 	private static final int CAR_NAME = 32;
 	private static final int CAR_USER = 32;
 	private static final int KYOEKIHI = 7;
