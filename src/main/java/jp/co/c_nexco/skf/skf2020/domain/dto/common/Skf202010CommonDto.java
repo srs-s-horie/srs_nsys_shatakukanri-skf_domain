@@ -85,7 +85,7 @@ public class Skf202010CommonDto extends BaseDto {
 	private String agencyCd;
 	/** 部等 */
 	private String affiliation1Cd;
-	/** 室、チーム又は課 */
+	/** 室・課等 */
 	private String affiliation2Cd;
 
 	/**

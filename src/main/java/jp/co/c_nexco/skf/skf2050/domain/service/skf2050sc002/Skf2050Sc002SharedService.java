@@ -375,7 +375,7 @@ public class Skf2050Sc002SharedService {
 		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getAffiliation1())) {
 			dto.setAffiliation1(bihinHenkyaku.getAffiliation1());
 		}
-		// 室、チーム又は課
+		// 室・課等
 		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getAffiliation2())) {
 			dto.setAffiliation2(bihinHenkyaku.getAffiliation2());
 		}

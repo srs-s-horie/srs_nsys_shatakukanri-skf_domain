@@ -45,7 +45,7 @@ public class Skf2010Sc005ChangeDropDownAsyncService
 			if (agencyCd != null && !CheckUtils.isEmpty(agencyCd)) {
 				affiliation1List = skfDropDownUtils.getDdlBkAffiliation1ByCd(companyCd, agencyCd, null, true);
 			}
-			// 部等コードが設定されていた場合は室、チーム又は課コードリストを作成
+			// 部等コードが設定されていた場合は室・課等コードリストを作成
 			if (affiliation1Cd != null && !CheckUtils.isEmpty(affiliation1Cd)) {
 				affiliation2List = skfDropDownUtils.getDdlBkAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd, null,
 						true);
@@ -55,7 +55,7 @@ public class Skf2010Sc005ChangeDropDownAsyncService
 			if (agencyCd != null && !CheckUtils.isEmpty(agencyCd)) {
 				affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, agencyCd, null, true);
 			}
-			// 部等コードが設定されていた場合は室、チーム又は課コードリストを作成
+			// 部等コードが設定されていた場合は室・課等コードリストを作成
 			if (affiliation1Cd != null && !CheckUtils.isEmpty(affiliation1Cd)) {
 				affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd, null,
 						true);

@@ -46,10 +46,10 @@ public class Skf3090Sc005SharedService {
 	 * @param originalCompanyCd 原籍会社コード
 	 * @param agencyCd 機関コード
 	 * @param affiliation1Cd 部等コード
-	 * @param affiliation2Cd 室、チーム又は課コード
+	 * @param affiliation2Cd 室・課等コード
 	 * @param businessAreaCd 事業領域コード
 	 * @return 以下を含むMap<br>
-	 *         原籍会社ドロップダウンリスト（中日本、高速道路総合研究所限定）、機関ドロップダウンリスト、部等ドロップダウンリスト、室、チーム又は課ドロップダウンリスト、事業領域ドロップダウンリスト
+	 *         原籍会社ドロップダウンリスト（中日本、高速道路総合研究所限定）、機関ドロップダウンリスト、部等ドロップダウンリスト、室・課等ドロップダウンリスト、事業領域ドロップダウンリスト
 	 */
 	public Map<String, Object> getDropDownLists(String originalCompanyCd, String agencyCd, String affiliation1Cd,
 			String affiliation2Cd, String businessAreaCd) {
@@ -83,7 +83,7 @@ public class Skf3090Sc005SharedService {
 		affiliation1List.addAll(ddlUtils.getDdlAffiliation1ByCd(CodeConstant.C001, agencyCd, affiliation1Cd, true));
 		returnMap.put(KEY_AFFILIATION1_LIST, affiliation1List);
 
-		// 室、チーム又は課ドロップダウンリスト
+		// 室・課等ドロップダウンリスト
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 		affiliation2List.addAll(
 				ddlUtils.getDdlAffiliation2ByCd(CodeConstant.C001, agencyCd, affiliation1Cd, affiliation2Cd, true));

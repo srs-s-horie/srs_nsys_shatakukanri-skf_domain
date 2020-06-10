@@ -495,7 +495,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		initDto.setNowAgency(tNyukyoChoshoTsuchi.getAgency());
 		// 現所属：部等
 		initDto.setNowAffiliation1(tNyukyoChoshoTsuchi.getAffiliation1());
-		// 現所属：室、チーム又は課
+		// 現所属：室・課等
 		initDto.setNowAffiliation2(tNyukyoChoshoTsuchi.getAffiliation2());
 		// 現所属：勤務先のTEL
 		initDto.setNowTel(tNyukyoChoshoTsuchi.getTel());
@@ -503,7 +503,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		initDto.setNewAgency(tNyukyoChoshoTsuchi.getNewAgency());
 		// 新所属：部等
 		initDto.setNewAffiliation1(tNyukyoChoshoTsuchi.getNewAffiliation1());
-		// 新所属：室、チーム又は課
+		// 新所属：室・課等
 		initDto.setNewAffiliation2(tNyukyoChoshoTsuchi.getNewAffiliation2());
 
 		// 必要とする社宅
@@ -883,7 +883,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		initDto.setNowAgency(taikyoReport.getAgency());
 		// 現所属：部等
 		initDto.setNowAffiliation1(taikyoReport.getAffiliation1());
-		// 現所属：室、チーム又は課
+		// 現所属：室・課等
 		initDto.setNowAffiliation2(taikyoReport.getAffiliation2());
 
 		// 社宅情報

@@ -28,9 +28,9 @@ public class Skf3090Sc007CommonDto extends Skf309040CommonDto {
 	private String registAffiliation1Cd;
 	// 部等名称
 	private String registAffiliation1Name;
-	// 室、チーム又は課コード
+	// 室・課等コード
 	private String registAffiliation2Cd;
-	// 室、チーム又は課名称
+	// 室・課等名称
 	private String registAffiliation2Name;
 	// 事業領域コード
 	private String registBusinessAreaCd;
@@ -39,13 +39,13 @@ public class Skf3090Sc007CommonDto extends Skf309040CommonDto {
 	private String agencyCdError;
 	// 部等コード
 	private String affiliation1CdError;
-	// 室、チーム又は課コード
+	// 室・課等コード
 	private String affiliation2CdError;
 	// 機関
 	private String agencyNameError;
 	// 部等
 	private String affiliation1NameError;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2NameError;
 
 	// 事業領域ドロップダウンリスト

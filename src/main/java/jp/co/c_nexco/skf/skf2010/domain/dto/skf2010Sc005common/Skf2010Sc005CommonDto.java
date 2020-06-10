@@ -34,7 +34,7 @@ public class Skf2010Sc005CommonDto extends Skf201030CommonDto {
 	private String agency;
 	// 部等
 	private String affiliation1;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2;
 	// 社員番号
 	private String shainNo;
@@ -54,7 +54,7 @@ public class Skf2010Sc005CommonDto extends Skf201030CommonDto {
 	private List<Map<String, Object>> ddlAgencyList;
 	// ドロップダウン：部等リスト
 	private List<Map<String, Object>> ddlAffiliation1List;
-	// ドロップダウン：室、チーム又は課リスト
+	// ドロップダウン：室・課等リスト
 	private List<Map<String, Object>> ddlAffiliation2List;
 	// ドロップダウン：申請書類リスト
 	// private List<Map<String, Object>> ddlApplCtgry;

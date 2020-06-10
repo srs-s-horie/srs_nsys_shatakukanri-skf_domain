@@ -43,7 +43,7 @@ public class Skf309030Test03CommonAsyncDto extends AsyncBaseDto {
 	private List<Map<String, Object>> affiliation1List;			// IM標準版
 	private String affiliation1CdListJson;						// 共通FW版
 
-	// 室、チーム又は課リスト
+	// 室・課等リスト
 	private List<Map<String, Object>> affiliation2List;			// IM標準版
 	private String affiliation2CdListJson;						// 共通FW版
 

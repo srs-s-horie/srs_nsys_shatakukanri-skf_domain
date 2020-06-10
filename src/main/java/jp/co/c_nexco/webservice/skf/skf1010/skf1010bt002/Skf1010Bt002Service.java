@@ -615,7 +615,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				shainInfo.setAgencyCd(idmShain.getAgencyCd());
 				// 部等コード
 				shainInfo.setAffiliation1Cd(idmShain.getAffiliation1Cd());
-				// 室、チーム又は課コード
+				// 室・課等コード
 				shainInfo.setAffiliation2Cd(idmShain.getAffiliation2Cd());
 				// 事業領域コード
 				shainInfo.setBusinessAreaCd(idmShain.getBusinessAreaCd());

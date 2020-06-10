@@ -439,7 +439,7 @@ public class Skf2020Sc003SharedService {
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getAffiliation1())) {
 			dto.setAffiliation1Name(shatakuNyukyoKiboInfo.getAffiliation1());
 		}
-		// 所属 室、チーム又は課
+		// 所属 室・課等
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getAffiliation2())) {
 			dto.setAffiliation2Name(shatakuNyukyoKiboInfo.getAffiliation2());
 		}
@@ -481,7 +481,7 @@ public class Skf2020Sc003SharedService {
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNewAffiliation1())) {
 			dto.setNewAffiliation1(shatakuNyukyoKiboInfo.getNewAffiliation1());
 		}
-		// 新所属 室、チーム又は課
+		// 新所属 室・課等
 		if (!NfwStringUtils.isEmpty(shatakuNyukyoKiboInfo.getNewAffiliation2())) {
 			dto.setNewAffiliation2(shatakuNyukyoKiboInfo.getNewAffiliation2());
 		}
@@ -1435,7 +1435,7 @@ public class Skf2020Sc003SharedService {
 		// 所属 部等
 		columnInfoList.setAffiliation1(dto.getAffiliation1Name());
 
-		// 所属 室、チーム又は課
+		// 所属 室・課等
 		columnInfoList.setAffiliation2(dto.getAffiliation2Name());
 
 		// 勤務先TEL

@@ -908,7 +908,7 @@ public class Skf2040Sc001SharedService {
 			setValue.setAgency(dto.getAgencyName());
 			// 所属 部等
 			setValue.setAffiliation1(dto.getAffiliation1Name());
-			// 所属 室、チーム又は課
+			// 所属 室・課等
 			setValue.setAffiliation2(dto.getAffiliation2Name());
 			// TEL
 			setValue.setTel(dto.getTel());

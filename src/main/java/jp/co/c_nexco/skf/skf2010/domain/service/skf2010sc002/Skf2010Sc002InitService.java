@@ -420,7 +420,7 @@ public class Skf2010Sc002InitService extends SkfServiceAbstract<Skf2010Sc002Init
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getAffiliation1())) {
 			initDto.setNowAffiliation1(tNyukyoChoshoTsuchi.getAffiliation1());
 		}
-		// 現所属：室、チーム又は課
+		// 現所属：室・課等
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getAffiliation2())) {
 			initDto.setNowAffiliation2(tNyukyoChoshoTsuchi.getAffiliation2());
 		}
@@ -436,7 +436,7 @@ public class Skf2010Sc002InitService extends SkfServiceAbstract<Skf2010Sc002Init
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewAffiliation1())) {
 			initDto.setNewAffiliation1(tNyukyoChoshoTsuchi.getNewAffiliation1());
 		}
-		// 新所属：室、チーム又は課
+		// 新所属：室・課等
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNewAffiliation2())) {
 			initDto.setNewAffiliation2(tNyukyoChoshoTsuchi.getNewAffiliation2());
 		}
@@ -900,7 +900,7 @@ public class Skf2010Sc002InitService extends SkfServiceAbstract<Skf2010Sc002Init
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation1())) {
 			initDto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
 		}
-		// 室、チーム又は課
+		// 室・課等
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getAffiliation2())) {
 			initDto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
 		}

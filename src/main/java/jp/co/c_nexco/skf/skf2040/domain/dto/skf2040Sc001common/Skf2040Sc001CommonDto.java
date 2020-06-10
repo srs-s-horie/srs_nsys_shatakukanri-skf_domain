@@ -30,7 +30,7 @@ public class Skf2040Sc001CommonDto extends Skf204010CommonDto {
 	private String agencyName;
 	// 部等
 	private String affiliation1Name;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2Name;
 
 	// 現入居社宅

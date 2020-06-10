@@ -71,7 +71,7 @@ public class Skf3090Sc007SharedService {
 	 * @param companyCd 会社コード
 	 * @param agencyCd 機関コード
 	 * @param affiliation1Cd 部等コード
-	 * @param affiliation2Cd 室、チーム又は課コード
+	 * @param affiliation2Cd 室・課等コード
 	 */
 	public Skf1010MSoshiki getSoshikiByPrimaryKey(String companyCd, String agencyCd, String affiliation1Cd,
 			String affiliation2Cd) {

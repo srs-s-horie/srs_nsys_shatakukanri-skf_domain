@@ -28,7 +28,7 @@ public class Skf3090Sc005RegistDto extends Skf3090Sc005CommonDto {
 	List<Map<String, Object>> agencyList;
 	// 部等ドロップダウンリスト
 	List<Map<String, Object>> affiliation1List;
-	// 室、チーム又は課ドロップダウンリスト
+	// 室・課等ドロップダウンリスト
 	List<Map<String, Object>> affiliation2List;
 	// 事業領域ドロップダウンリスト
 	List<Map<String, Object>> businessAreaList;

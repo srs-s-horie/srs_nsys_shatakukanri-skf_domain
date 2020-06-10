@@ -21,7 +21,7 @@ public class Skf309040CommonDto extends BaseDto {
 	private String agencyCd;
 	// 部等コード
 	private String affiliation1Cd;
-	// 室、チーム又は課コード
+	// 室・課等コード
 	private String affiliation2Cd;
 	// 事業領域コード
 	private String businessAreaCd;
@@ -29,7 +29,7 @@ public class Skf309040CommonDto extends BaseDto {
 	private String agencyName;
 	// 部等
 	private String affiliation1Name;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2Name;
 
 	/** ドロップダウン系 */
@@ -39,7 +39,7 @@ public class Skf309040CommonDto extends BaseDto {
 	List<Map<String, Object>> agencyList;
 	// 部等ドロップダウンリスト
 	List<Map<String, Object>> affiliation1List;
-	// 室、チーム又は課ドロップダウンリスト
+	// 室・課等ドロップダウンリスト
 	List<Map<String, Object>> affiliation2List;
 	// 事業領域ドロップダウンリスト
 	List<Map<String, Object>> businessAreaList;

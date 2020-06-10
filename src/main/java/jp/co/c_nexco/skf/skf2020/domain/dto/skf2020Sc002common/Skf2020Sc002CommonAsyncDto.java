@@ -19,7 +19,7 @@ public class Skf2020Sc002CommonAsyncDto extends Skf202010CommonAsyncDto {
 	private String agencyCd;
 	// 部等 コード
 	private String affiliation1Cd;
-	// 室、チーム又は課コード
+	// 室・課等コード
 	private String affiliation2Cd;
 
 	/**

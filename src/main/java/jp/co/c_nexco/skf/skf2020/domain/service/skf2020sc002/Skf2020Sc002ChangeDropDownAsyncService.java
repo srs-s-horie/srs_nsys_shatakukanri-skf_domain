@@ -74,7 +74,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 			LogUtils.debugByMsg("返却する部等リスト：" + affiliation1List.toString());
 
 		}
-		// 部等コードが設定されていた場合は室、チーム又は課コードリストを作成
+		// 部等コードが設定されていた場合は室・課等コードリストを作成
 		if (newAffiliation1Cd != null && !CheckUtils.isEmpty(newAffiliation1Cd)) {
 			affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, newAgencyCd, newAffiliation1Cd,
 					newAffiliation2Cd, true);
@@ -86,7 +86,7 @@ public class Skf2020Sc002ChangeDropDownAsyncService
 				teamMap.put("selected", true);
 			}
 			affiliation2List.add(teamMap);
-			LogUtils.debugByMsg("返却室、チーム又は課：" + affiliation2List.toString());
+			LogUtils.debugByMsg("返却室・課等：" + affiliation2List.toString());
 		}
 
 		// 保有社宅名が設定されていた場合

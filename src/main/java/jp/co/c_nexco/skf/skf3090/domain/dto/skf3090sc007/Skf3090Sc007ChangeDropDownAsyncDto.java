@@ -26,7 +26,7 @@ public class Skf3090Sc007ChangeDropDownAsyncDto extends Skf3090Sc007CommonAsyncD
 	private String agencyCd;
 	// 部等コード
 	private String affiliation1Cd;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2Cd;
 	// 事業領域
 	private String businessAreaCd;

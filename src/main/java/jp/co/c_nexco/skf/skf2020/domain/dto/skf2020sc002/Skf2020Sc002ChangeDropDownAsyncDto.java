@@ -25,7 +25,7 @@ public class Skf2020Sc002ChangeDropDownAsyncDto extends Skf2020Sc002CommonAsyncD
 	private List<Map<String, Object>> ddlAgencyList;
 	/** ドロップダウン：部等リスト */
 	private List<Map<String, Object>> ddlAffiliation1List;
-	/** ドロップダウン：室、チーム又は課リスト */
+	/** ドロップダウン：室・課等リスト */
 	private List<Map<String, Object>> ddlAffiliation2List;
 	/** ドロップダウン：退居理由リスト */
 	private List<Map<String, Object>> ddlTaikyoRiyuKbnList;

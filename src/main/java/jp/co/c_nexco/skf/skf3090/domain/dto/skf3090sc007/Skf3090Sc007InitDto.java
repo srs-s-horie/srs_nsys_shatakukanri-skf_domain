@@ -23,7 +23,7 @@ public class Skf3090Sc007InitDto extends Skf3090Sc007CommonDto {
 	private String hdnAgencyCd;
 	// 部等コード
 	private String hdnAffiliation1Cd;
-	// 室、チーム又は課コード
+	// 室・課等コード
 	private String hdnAffiliation2Cd;
 	// 事業領域
 	private String hdnBusinesAreaCd;
@@ -41,13 +41,13 @@ public class Skf3090Sc007InitDto extends Skf3090Sc007CommonDto {
 	private String affiliation1CdDisabled;
 	// 部等コード名称を検索ボタン操作可否判定
 	private String affiliation1CdSearchDisabled;
-	// 室、チーム又は課コードテキストボックス操作可否判定
+	// 室・課等コードテキストボックス操作可否判定
 	private String affiliation2CdDisabled;
 	// 機関テキストボックス操作可否判定
 	private String agencyNameDisabled;
 	// 部等テキストボックス操作可否判定
 	private String affiliation1NameDisabled;
-	// 室、チーム又は課テキストンボックス操作可否判定
+	// 室・課等テキストンボックス操作可否判定
 	private String affiliation2NameDisabled;
 	// 事業領域ドロップダウン操作可否判定
 	private String businessAreaCdDisabled;
