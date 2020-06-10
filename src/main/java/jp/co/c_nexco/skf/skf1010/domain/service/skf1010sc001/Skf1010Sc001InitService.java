@@ -219,15 +219,13 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 		// 中サ（社宅）担当
 		else if (nakasaShatakutanto.equals(roleId)) {
 			level1 = "true";
-			level2_3 = "true";
-			level2_5 = "true";
-			level2_6 = "true";
-			level3 = "true";
+			level3_1 = "true";
+			level3_2 = "true";
+			level3_3 = "true";
 			initDto.setLevel1(level1);
-			initDto.setLevel2_3(level2_3);
-			initDto.setLevel2_5(level2_5);
-			initDto.setLevel2_6(level2_6);
-			initDto.setLevel3(level3);
+			initDto.setLevel3_1(level3_1);
+			initDto.setLevel3_2(level3_2);
+			initDto.setLevel3_3(level3_3);
 		}
 		// 中サ（社宅）管理者
 		else if (nakasashatakuKanri.equals(roleId)) {
