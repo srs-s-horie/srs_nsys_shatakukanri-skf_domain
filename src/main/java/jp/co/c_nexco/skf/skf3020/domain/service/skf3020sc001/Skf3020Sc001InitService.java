@@ -98,8 +98,8 @@ public class Skf3020Sc001InitService extends SkfServiceAbstract<Skf3020Sc001Init
 		int resultCount = SetGenShatakuData(initDto, shaiNoStr);
 		
 		if(resultCount == 0){
-			// 取得レコード0件のエラー
-			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1077);
+			// 取得レコード0件のエラー(現在入居中の社宅は存在しません。)
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1067, "現在入居中の社宅");
 		}
 
 		return initDto;
