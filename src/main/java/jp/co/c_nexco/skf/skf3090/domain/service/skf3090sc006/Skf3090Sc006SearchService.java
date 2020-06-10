@@ -92,7 +92,7 @@ public class Skf3090Sc006SearchService extends SkfServiceAbstract<Skf3090Sc006Se
 		affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
 		searchDto.setAffiliation1List(affiliation1List);
 
-		// 「室、チーム又は課」ドロップダウンリストを設定
+		// 「室・課等」ドロップダウンリストを設定
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 		affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd, affiliation2Cd,
 				true);

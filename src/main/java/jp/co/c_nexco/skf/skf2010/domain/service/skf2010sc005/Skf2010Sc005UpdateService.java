@@ -56,7 +56,7 @@ public class Skf2010Sc005UpdateService extends SkfServiceAbstract<Skf2010Sc005Up
 		updDto.setDdlAffiliation1List(
 				skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, updDto.getAgency(), updDto.getAffiliation1(), true));
 
-		// 室、チーム又は課ドロップダウンをセット
+		// 室・課等ドロップダウンをセット
 		updDto.setDdlAffiliation2List(skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, updDto.getAgency(),
 				updDto.getAffiliation1(), updDto.getAffiliation2(), true));
 

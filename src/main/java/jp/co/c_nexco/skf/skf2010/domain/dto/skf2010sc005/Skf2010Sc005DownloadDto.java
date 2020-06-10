@@ -31,7 +31,7 @@ public class Skf2010Sc005DownloadDto extends FileDownloadDto {
 	private String agency;
 	// 部等
 	private String affiliation1;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2;
 	// 申請者名
 	private String name;

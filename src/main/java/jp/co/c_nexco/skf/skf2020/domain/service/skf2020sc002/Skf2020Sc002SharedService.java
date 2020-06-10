@@ -236,9 +236,9 @@ public class Skf2020Sc002SharedService {
 				LogUtils.debugByMsg("部等：" + nyukyoChoshoList.getAffiliation1());
 				dto.setAffiliation1Name(nyukyoChoshoList.getAffiliation1());
 			}
-			// 室、チーム又は課
+			// 室・課等
 			if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getAffiliation2())) {
-				LogUtils.debugByMsg("室、チーム又は課：" + nyukyoChoshoList.getAffiliation2());
+				LogUtils.debugByMsg("室・課等：" + nyukyoChoshoList.getAffiliation2());
 				dto.setAffiliation2Name(nyukyoChoshoList.getAffiliation2());
 			}
 			// 勤務先のTEL
@@ -368,11 +368,11 @@ public class Skf2020Sc002SharedService {
 					dto.setNewAffiliation1Other(nyukyoChoshoList.getNewAffiliation1());
 				}
 
-				// 新所属 室、チーム又は課
+				// 新所属 室・課等
 				if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation2())) {
-					LogUtils.debugByMsg("室、チーム又は課：" + nyukyoChoshoList.getNewAffiliation2()
+					LogUtils.debugByMsg("室・課等：" + nyukyoChoshoList.getNewAffiliation2()
 							+ nyukyoChoshoList.getNewAffiliation2Other() + agensyList.getAffiliation2Cd());
-					// 室、チーム又は課ドロップダウンをセット
+					// 室・課等ドロップダウンをセット
 					List<Map<String, Object>> afflication2List = new ArrayList<Map<String, Object>>();
 					afflication2List = skfDropDownUtils.getDdlAffiliation2ByCd(CodeConstant.C001,
 							agensyList.getAgencyCd(), agensyList.getAffiliation1Cd(), agensyList.getAffiliation2Cd(),
@@ -393,9 +393,9 @@ public class Skf2020Sc002SharedService {
 				} else if ((NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAgency())
 						&& NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation1()))
 						|| dto.getDdlAffiliation1List().size() > 0) {
-					// 新所属 室、チーム又は課は、空。新所属 機関と部が空ではない
+					// 新所属 室・課等は、空。新所属 機関と部が空ではない
 
-					// 室、チーム又は課ドロップダウンをセット
+					// 室・課等ドロップダウンをセット
 					List<Map<String, Object>> afflication2List = new ArrayList<Map<String, Object>>();
 					afflication2List = skfDropDownUtils.getDdlAffiliation2ByCd(CodeConstant.C001,
 							agensyList.getAgencyCd(), agensyList.getAffiliation1Cd(), CodeConstant.NONE, true);
@@ -413,7 +413,7 @@ public class Skf2020Sc002SharedService {
 					dto.setDdlAffiliation2List(afflication2List);
 				}
 
-				// 新所属 室、チーム又は課その他に値がある場合は、新所属 室、チーム又は課その他テキストボックスに、室、チーム又は課名を設定
+				// 新所属 室・課等その他に値がある場合は、新所属 室・課等その他テキストボックスに、室・課等名を設定
 				if (NfwStringUtils.isNotEmpty(nyukyoChoshoList.getNewAffiliation2Other())) {
 					dto.setNewAffiliation2Other(nyukyoChoshoList.getNewAffiliation2());
 				}
@@ -1541,7 +1541,7 @@ public class Skf2020Sc002SharedService {
 		returnMap.put(KEY_AFFILIATION1_LIST, affiliation1List);
 		LogUtils.debugByMsg("返却する部等リスト：" + affiliation1List);
 
-		// 室、チーム又は課ドロップダウンリスト
+		// 室・課等ドロップダウンリスト
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 		affiliation2List.addAll(skfDropDownUtils.getDdlAffiliation2ByCd(CodeConstant.C001, dto.getAgencyCd(),
 				dto.getAffiliation1Cd(), dto.getAffiliation2Cd(), true));
@@ -1648,14 +1648,14 @@ public class Skf2020Sc002SharedService {
 			dto.setNewAffiliation1Other(null);
 			LogUtils.debugByMsg(Msg + "新所属-部等 その他" + dto.getNewAffiliation1Other());
 
-			// 新所属-室、チーム又は課
+			// 新所属-室・課等
 			dto.setDdlAffiliation2List(null);
 			dto.setAffiliation2Cd(null);
-			LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課" + dto.getDdlAffiliation2List());
+			LogUtils.debugByMsg(Msg + "新所属-室・課等" + dto.getDdlAffiliation2List());
 
-			// 新所属-室、チーム又は課 その他
+			// 新所属-室・課等 その他
 			dto.setNewAffiliation2Other(null);
-			LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課 その他" + dto.getNewAffiliation2Other());
+			LogUtils.debugByMsg(Msg + "新所属-室・課等 その他" + dto.getNewAffiliation2Other());
 
 			// 必要とする社宅
 			dto.setHitsuyoShataku(null);
@@ -1778,9 +1778,9 @@ public class Skf2020Sc002SharedService {
 		// 新所属 部等 その他
 		dto.setNewAffiliation1Other(NfwStringUtils.rightTrimbyByte(dto.getNewAffiliation1Other(), 128));
 		LogUtils.debugByMsg(Msg + "新所属 部等" + dto.getNewAffiliation1Other());
-		// 新所属 室、チーム又は課 その他
+		// 新所属 室・課等 その他
 		dto.setNewAffiliation2Other(NfwStringUtils.rightTrimbyByte(dto.getNewAffiliation2Other(), 128));
-		LogUtils.debugByMsg(Msg + "新所属 室、チーム又は課" + dto.getNewAffiliation2Other());
+		LogUtils.debugByMsg(Msg + "新所属 室・課等" + dto.getNewAffiliation2Other());
 		// 続柄
 		cutByteZokugara(dto);
 		// 氏名
@@ -2236,7 +2236,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setAgency(dto.getAgencyName());
 		// 現所属 部等
 		setValue.setAffiliation1(dto.getAffiliation1Name());
-		// 現所属 室、チーム又は課
+		// 現所属 室・課等
 		setValue.setAffiliation2(dto.getAffiliation2Name());
 		// TEL
 		setValue.setTel(dto.getTel());
@@ -2295,10 +2295,10 @@ public class Skf2020Sc002SharedService {
 						setValue.setNewAffiliation1(agensyList.getAffiliation1Name());
 					}
 				}
-				// 新所属-室、チーム又は課
-				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 新所属-室、チーム又は課：" + dto.getAffiliation2Cd()
+				// 新所属-室・課等
+				LogUtils.debugByMsg("入居希望等調査・入居決定通知テーブルの更新値 新所属-室・課等：" + dto.getAffiliation2Cd()
 						+ agensyList.getAffiliation2Name());
-				// 新所属-室、チーム又は課ドロップダウンリストが選択されている場合
+				// 新所属-室・課等ドロップダウンリストが選択されている場合
 				if (NfwStringUtils.isNotEmpty(dto.getAffiliation2Cd())) {
 					// 「新所属-部等」が選択されている場合は新所属-部等 その他をセット
 					if (CodeConstant.OTHER_AGENCY_ITEM_VALUE.equals(dto.getAffiliation2Cd())) {
@@ -3024,7 +3024,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setAgency(dto.getAgencyName());
 		// 所属 部等
 		setValue.setAffiliation1(dto.getAffiliation1Name());
-		// 所属 室、チーム又は課
+		// 所属 室・課等
 		setValue.setAffiliation2(dto.getAffiliation2Name());
 		// TEL
 		setValue.setTel(dto.getTel());
@@ -3171,8 +3171,8 @@ public class Skf2020Sc002SharedService {
 		dto.setNewAffiliation1Other(dto.getNewAffiliation1Other());
 		LogUtils.debugByMsg(Msg + "新所属-部等 その他" + dto.getNewAffiliation1Other());
 
-		// 新所属-室、チーム又は課
-		// 室、チーム又は課ドロップダウンをセット
+		// 新所属-室・課等
+		// 室・課等ドロップダウンをセット
 		List<Map<String, Object>> afflication2List = new ArrayList<Map<String, Object>>();
 		afflication2List = skfDropDownUtils.getDdlAffiliation2ByCd(CodeConstant.C001, dto.getAgencyCd(),
 				dto.getAffiliation1Cd(), dto.getAffiliation2Cd(), true);
@@ -3188,9 +3188,9 @@ public class Skf2020Sc002SharedService {
 		}
 		dto.setDdlAffiliation2List(afflication2List);
 
-		// 新所属-室、チーム又は課 その他
+		// 新所属-室・課等 その他
 		dto.setNewAffiliation2Other(dto.getNewAffiliation2Other());
-		LogUtils.debugByMsg(Msg + "新所属-室、チーム又は課 その他" + dto.getNewAffiliation2Other());
+		LogUtils.debugByMsg(Msg + "新所属-室・課等 その他" + dto.getNewAffiliation2Other());
 
 		// 必要とする社宅
 		dto.setHitsuyoShataku(dto.getHitsuyoShataku());

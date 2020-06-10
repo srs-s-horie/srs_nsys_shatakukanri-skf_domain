@@ -79,7 +79,7 @@ public class Skf3090Sc005InitService extends SkfServiceAbstract<Skf3090Sc005Init
 		LogUtils.debugByMsg("会社:"+initDto.getHdnOriginalCompanyCd());
 		LogUtils.debugByMsg("機関:"+initDto.getHdnAgencyCd());
 		LogUtils.debugByMsg("部等:"+initDto.getHdnAffiliation1Cd());
-		LogUtils.debugByMsg("室、チーム又は課:"+initDto.getHdnAffiliation2Cd());
+		LogUtils.debugByMsg("室・課等:"+initDto.getHdnAffiliation2Cd());
 
 		if (Skf309030CommonSharedService.UPDATE_FLAG_NEW.equals(initDto.getUpdateFlag())) {
 			/** 新規ボタンから遷移 */
@@ -213,7 +213,7 @@ public class Skf3090Sc005InitService extends SkfServiceAbstract<Skf3090Sc005Init
 	 * @param shainNo 社員番号
 	 * @return 以下を含むMap<br>
 	 *         会社コード、社員番号、氏名、氏名カナ、メールアドレス、退職日、原籍会社コード、ロールID、登録フラグ、更新日付（タイムスタンプ）、<br>
-	 *         原籍会社ドロップダウンリスト（中日本、高速道路総合研究所限定）、機関ドロップダウンリスト、部等ドロップダウンリスト、室、チーム又は課ドロップダウンリスト、事業領域ドロップダウンリスト
+	 *         原籍会社ドロップダウンリスト（中日本、高速道路総合研究所限定）、機関ドロップダウンリスト、部等ドロップダウンリスト、室・課等ドロップダウンリスト、事業領域ドロップダウンリスト
 	 */
 	private Map<String, Object> getControlValues(String companyCd, String shainNo) {
 

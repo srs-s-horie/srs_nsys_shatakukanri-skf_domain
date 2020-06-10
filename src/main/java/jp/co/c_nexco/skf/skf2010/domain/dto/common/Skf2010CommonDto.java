@@ -72,7 +72,7 @@ public class Skf2010CommonDto extends BaseDto {
 	private String nowAgency;
 	// 現所属：部等
 	private String nowAffiliation1;
-	// 現所属：室、チーム又は課
+	// 現所属：室・課等
 	private String nowAffiliation2;
 	// 現所属：勤務先のTEL
 	private String nowTel;
@@ -80,7 +80,7 @@ public class Skf2010CommonDto extends BaseDto {
 	private String newAgency;
 	// 新所属：部等
 	private String newAffiliation1;
-	// 新所属：室、チーム又は課
+	// 新所属：室・課等
 	private String newAffiliation2;
 	// 必要とする社宅：世帯
 	private String hitsuyouShatakuFamily;
@@ -190,7 +190,7 @@ public class Skf2010CommonDto extends BaseDto {
 	private String seiyakuDate;
 	// 機関（nowAgencyを使用）
 	// 部等（nowAffiliation1を使用）
-	// 室、チーム又は課（nowAffiliation2を使用）
+	// 室・課等（nowAffiliation2を使用）
 	// 氏名（name使用）
 	// 申請日
 	private String applDate;

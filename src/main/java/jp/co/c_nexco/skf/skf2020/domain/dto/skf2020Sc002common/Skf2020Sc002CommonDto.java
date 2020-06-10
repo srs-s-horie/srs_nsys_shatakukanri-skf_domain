@@ -31,7 +31,7 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	private List<Map<String, Object>> ddlAgencyList;
 	/** ドロップダウン：部等リスト */
 	private List<Map<String, Object>> ddlAffiliation1List;
-	/** ドロップダウン：室、チーム又は課リスト */
+	/** ドロップダウン：室・課等リスト */
 	private List<Map<String, Object>> ddlAffiliation2List;
 	/** ドロップダウン：退居理由リスト */
 	private List<Map<String, Object>> ddlTaikyoRiyuKbnList;
@@ -64,7 +64,7 @@ public class Skf2020Sc002CommonDto extends Skf202010CommonDto {
 	private List<Map<String, Object>> agencyList;
 	// 部等リスト
 	private List<Map<String, Object>> affiliation1List;
-	// 室、チーム又は課リスト
+	// 室・課等リスト
 	private List<Map<String, Object>> affiliation2List;
 	// 備品返却リスト
 	List<Skf2020Sc002GetBihinItemToBeReturnExp> resultBihinItemList;

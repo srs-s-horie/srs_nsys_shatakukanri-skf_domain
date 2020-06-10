@@ -57,7 +57,7 @@ public class Skf2050Sc001CommonDto extends Skf205010CommonDto {
 	private String agency;
 	// 部等（テキスト）
 	private String affiliation1;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2;
 	// 勤務地のTEL
 	private String tel;

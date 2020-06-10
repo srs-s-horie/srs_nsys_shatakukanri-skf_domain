@@ -68,7 +68,7 @@ public class Skf3090Sc004SharedService {
 		affiliation1List
 				.addAll(ddlUtils.getDdlAffiliation1ByCd(CodeConstant.C001, agencyCd, affiliation1Cd, isFirstRowEmpty));
 
-		// 室、チーム又は課リスト
+		// 室・課等リスト
 		affiliation2List.clear();
 		affiliation2List.addAll(ddlUtils.getDdlAffiliation2ByCd(CodeConstant.C001, agencyCd, affiliation1Cd,
 				affiliation2Cd, isFirstRowEmpty));

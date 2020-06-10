@@ -26,12 +26,12 @@ public class Skf2010Sc008CommonDto extends Skf201050CommonDto {
 	private String agency;
 	// 部等
 	private String affiliation1;
-	// 室、チーム又は課
+	// 室・課等
 	private String affiliation2;
 	// 機関名
 	private String agencyName;
 	// 部等名
 	private String affiliation1Name;
-	// 室、チーム又は課名
+	// 室・課等名
 	private String affiliation2Name;
 }

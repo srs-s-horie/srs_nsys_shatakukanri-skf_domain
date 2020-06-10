@@ -86,13 +86,13 @@ public class Skf3090Sc007InitService extends SkfServiceAbstract<Skf3090Sc007Init
 		String affiliation1CdDisabled = CodeConstant.DOUBLE_QUOTATION;
 		// 部等コード名称を検索ボタン操作可否判定
 		String affiliation1CdSearchDisabled = CodeConstant.DOUBLE_QUOTATION;
-		// 室、チーム又は課コードテキストボックス操作可否判定
+		// 室・課等コードテキストボックス操作可否判定
 		String affiliation2CdDisabled = CodeConstant.DOUBLE_QUOTATION;
 		// 機関テキストボックス操作可否判定
 		String agencyNameDisabled = CodeConstant.DOUBLE_QUOTATION;
 		// 部等テキストボックス操作可否判定
 		String affiliation1NameDisabled = CodeConstant.DOUBLE_QUOTATION;
-		// 室、チーム又は課テキストボックス操作可否判定
+		// 室・課等テキストボックス操作可否判定
 		String affiliation2NameDisabled = CodeConstant.DOUBLE_QUOTATION;
 		// 事業領域ドロップダウン操作可否判定
 		String businessAreaCdDisabled = CodeConstant.DOUBLE_QUOTATION;
@@ -129,13 +129,13 @@ public class Skf3090Sc007InitService extends SkfServiceAbstract<Skf3090Sc007Init
 			affiliation1CdDisabled = "false";
 			// 部等コード名称を検索ボタン操作可能
 			affiliation1CdSearchDisabled = "false";
-			// 室、チーム又は課コードテキストボックス操作可能
+			// 室・課等コードテキストボックス操作可能
 			affiliation2CdDisabled = "false";
 			// 機関テキストボックス操作可能
 			agencyNameDisabled = "false";
 			// 部等テキストボックス操作可能
 			affiliation1NameDisabled = "false";
-			// 室、チーム又は課テキストボックス操作可能
+			// 室・課等テキストボックス操作可能
 			affiliation2NameDisabled = "false";
 			// 事業領域ドロップダウンリスト操作可能
 			businessAreaCdDisabled = "false";
@@ -187,13 +187,13 @@ public class Skf3090Sc007InitService extends SkfServiceAbstract<Skf3090Sc007Init
 				affiliation1CdDisabled = "true";
 				// 部等コード名称を検索ボタン操作不可
 				affiliation1CdSearchDisabled = "true";
-				// 室、チーム又は課コードテキストボックス操作不可
+				// 室・課等コードテキストボックス操作不可
 				affiliation2CdDisabled = "true";
 				// 機関テキストボックス操作不可
 				agencyNameDisabled = "true";
 				// 部等テキストボックス操作不可
 				affiliation1NameDisabled = "true";
-				// 室、チーム又は課テキストボックス操作不可
+				// 室・課等テキストボックス操作不可
 				affiliation2NameDisabled = "true";
 				// 事業領域ドロップダウン操作不可
 				businessAreaCdDisabled = "true";
@@ -269,13 +269,13 @@ public class Skf3090Sc007InitService extends SkfServiceAbstract<Skf3090Sc007Init
 		returnMap.put(KEY_AGENCY_CD, resultValue.getAgencyCd());
 		// 部等コード
 		returnMap.put(KEY_AFFILIATION1_CD, resultValue.getAffiliation1Cd());
-		// 室、チーム又は課コード
+		// 室・課等コード
 		returnMap.put(KEY_AFFILIATION2_CD, resultValue.getAffiliation2Cd());
 		// 機関
 		returnMap.put(KEY_AGENCY_NAME, resultValue.getAgencyName());
 		// 部等
 		returnMap.put(KEY_AFFILIATION1_NAME, resultValue.getAffiliation1Name());
-		// 室、チーム又は課
+		// 室・課等
 		returnMap.put(KEY_AFFILIATION2_NAME, resultValue.getAffiliation2Name());
 		// 登録フラグ
 		returnMap.put(KEY_REGIST_FLAG, resultValue.getRegistFlg());

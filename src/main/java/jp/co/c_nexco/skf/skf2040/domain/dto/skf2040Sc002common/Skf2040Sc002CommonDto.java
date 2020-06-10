@@ -40,7 +40,7 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private String nowAgency;
 	// 現所属：部等
 	private String nowAffiliation1;
-	// 現所属：室、チーム又は課
+	// 現所属：室・課等
 	private String nowAffiliation2;
 
 	// 申請日

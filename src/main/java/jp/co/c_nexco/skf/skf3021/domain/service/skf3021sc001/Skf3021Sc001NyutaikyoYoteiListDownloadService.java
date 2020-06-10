@@ -395,10 +395,10 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 		//現所属
 		String nowAffiliation = CodeConstant.DOUBLE_QUOTATION;
 		if(nyukyoRow != null){
-			//・入居の場合:入居希望等調書・入居決定通知の'現所属 機関/現所属 部等/現所属 室、チーム又は課を繋げて表示する。
+			//・入居の場合:入居希望等調書・入居決定通知の'現所属 機関/現所属 部等/現所属 室・課等を繋げて表示する。
 			nowAffiliation = nyukyoRow.getAgency() +" "+ nyukyoRow.getAffiliation1() +" "+ nyukyoRow.getNewAffiliation2();
 		}else if(taikyoRow != null){
-			//・退居の場合:退居（自動車の保管場所返還）の'所属 機関/所属 部等/所属室、チーム又は課を繋げて表示する。
+			//・退居の場合:退居（自動車の保管場所返還）の'所属 機関/所属 部等/所属室・課等を繋げて表示する。
 			nowAffiliation = taikyoRow.getAgency() +" "+ taikyoRow.getAffiliation1() +" "+ taikyoRow.getAffiliation2();
 		}
 		listRow.setNowAffiliation(nowAffiliation.replace("null", ""));

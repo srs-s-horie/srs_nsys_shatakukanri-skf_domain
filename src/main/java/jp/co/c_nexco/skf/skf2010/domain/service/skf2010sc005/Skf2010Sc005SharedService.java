@@ -217,14 +217,14 @@ public class Skf2010Sc005SharedService {
 		if (CheckUtils.isEqual(shozoku, CodeConstant.SHOZOKU_SHINSEI)) {
 			// 部等ドロップダウンを作成
 			ddlAffiliation1List = skfDropDownUtils.getDdlBkAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
-			// 室、チーム又は課ドロップダウを作成
+			// 室・課等ドロップダウを作成
 			ddlAffiliation2List = skfDropDownUtils.getDdlBkAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd,
 					affiliation2Cd, true);
 
 		} else {
 			// 部等ドロップダウンを作成
 			ddlAffiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
-			// 室、チーム又は課ドロップダウを作成
+			// 室・課等ドロップダウを作成
 			ddlAffiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd,
 					affiliation2Cd, true);
 		}
@@ -662,7 +662,7 @@ public class Skf2010Sc005SharedService {
 	}
 
 	/**
-	 * 室、チーム又は課の名称を取得します
+	 * 室・課等の名称を取得します
 	 * 
 	 * @param companyCd
 	 * @param agencyCd

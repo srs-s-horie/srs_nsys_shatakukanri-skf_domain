@@ -59,7 +59,7 @@ public class Skf3090Sc006ChangeDropDownAsyncService
 		affiliation1List = skfDropDownUtils.getDdlAffiliation1ByCd(companyCd, agencyCd, affiliation1Cd, true);
 		asyncDto.setAffiliation1List(affiliation1List);
 
-		// 「室、チーム又は課」ドロップダウンの設定
+		// 「室・課等」ドロップダウンの設定
 		List<Map<String, Object>> affiliation2List = new ArrayList<Map<String, Object>>();
 		affiliation2List = skfDropDownUtils.getDdlAffiliation2ByCd(companyCd, agencyCd, affiliation1Cd, affiliation2Cd,
 				true);

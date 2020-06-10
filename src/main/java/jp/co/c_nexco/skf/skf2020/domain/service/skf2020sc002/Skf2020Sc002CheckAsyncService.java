@@ -159,13 +159,13 @@ public class Skf2020Sc002CheckAsyncService extends SkfAsyncServiceAbstract<Skf20
 					result = false;
 				}
 
-				// 室、チーム又は課 その他
+				// 室・課等 その他
 				LogUtils.debugByMsg(
-						msg + " 室、チーム又は課 その他" + checkDto.getAffiliation1Cd() + checkDto.getNewAffiliation1Other());
+						msg + " 室・課等 その他" + checkDto.getAffiliation1Cd() + checkDto.getNewAffiliation1Other());
 				if (CodeConstant.RELATION_OTHERS.equals(checkDto.getAffiliation2Cd())
 						&& NfwStringUtils.isBlank(checkDto.getNewAffiliation2Other())) {
 					ServiceHelper.addErrorResultMessage(checkDto, new String[] { "newAffiliation2Other" },
-							MessageIdConstant.E_SKF_1048, "室、チーム又は課 その他");
+							MessageIdConstant.E_SKF_1048, "室・課等 その他");
 					result = false;
 				}
 			}

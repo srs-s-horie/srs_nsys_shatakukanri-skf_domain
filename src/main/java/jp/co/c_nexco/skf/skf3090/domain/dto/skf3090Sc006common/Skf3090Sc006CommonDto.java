@@ -37,7 +37,7 @@ public class Skf3090Sc006CommonDto extends Skf309040CommonDto {
 	private String hdnAgencyCd;
 	// 部等コード
 	private String hdnAffiliation1Cd;
-	// 室、チーム又は課
+	// 室・課等
 	private String hdnAffiliation2Cd;
 	// 事業領域
 	private String hdnBusinessAreaCd;

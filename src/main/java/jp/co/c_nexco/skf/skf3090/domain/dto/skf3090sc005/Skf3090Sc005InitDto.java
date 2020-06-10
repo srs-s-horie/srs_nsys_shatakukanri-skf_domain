@@ -25,7 +25,7 @@ public class Skf3090Sc005InitDto extends Skf3090Sc005CommonDto {
 	private String hdnAgencyCd;
 	// 部等コード
 	private String hdnAffiliation1Cd;
-	// 室、チーム又は課コード
+	// 室・課等コード
 	private String hdnAffiliation2Cd;
 	// リストテーブルで選択された社員番号
 	private String hdnSelectedShainNo;

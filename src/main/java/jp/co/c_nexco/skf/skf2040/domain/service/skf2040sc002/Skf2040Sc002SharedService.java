@@ -431,7 +431,7 @@ public class Skf2040Sc002SharedService {
 		dto.setNowAgency(taikyoRepDt.getAgency());
 		// 部等
 		dto.setNowAffiliation1(taikyoRepDt.getAffiliation1());
-		// 室、チーム又は課
+		// 室・課等
 		dto.setNowAffiliation2(taikyoRepDt.getAffiliation2());
 		// 現住所
 		dto.setAddress(taikyoRepDt.getAddress());

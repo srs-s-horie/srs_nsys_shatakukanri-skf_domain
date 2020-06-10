@@ -23,7 +23,7 @@ public class Skf2010Sc005CommonAsyncDto extends Skf201030CommonAsyncDto {
 	private List<Map<String, Object>> ddlAgencyList;
 	/** ドロップダウン：部等リスト */
 	private List<Map<String, Object>> ddlAffiliation1List;
-	/** ドロップダウン：室、チーム又は課リスト */
+	/** ドロップダウン：室・課等リスト */
 	private List<Map<String, Object>> ddlAffiliation2List;
 
 }
