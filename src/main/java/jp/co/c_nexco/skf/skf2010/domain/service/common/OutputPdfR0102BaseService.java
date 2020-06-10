@@ -38,9 +38,9 @@ public abstract class OutputPdfR0102BaseService<DTO extends Skf2010OutputPdfBase
 	private String pdfTempFolderPath;
 
 	private static final int KYOEKIHI = 7;
-	private static final int AGENCY_BREAK_LENGTH = 26;
-	private static final int AFFILIATION1_BREAK_LENGTH = 26;
-	private static final int AFFILIATION2_BREAK_LENGTH = 26;
+	private static final int AGENCY_BREAK_LENGTH = 32;
+	private static final int AFFILIATION1_BREAK_LENGTH = 32;
+	private static final int AFFILIATION2_BREAK_LENGTH = 32;
 	private static final int CAR_NAME = 32;
 	private static final int CAR_USER = 32;
 
