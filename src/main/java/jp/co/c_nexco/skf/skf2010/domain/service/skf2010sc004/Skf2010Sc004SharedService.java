@@ -356,6 +356,14 @@ public class Skf2010Sc004SharedService {
 			String nyukyoChangeFlag, String taikyoChangeFlg, String kaishiChangeFlg, String henkanChangeFlg,
 			String applNo) {
 		Skf2020TNyukyoChoshoTsuchi updData = new Skf2020TNyukyoChoshoTsuchi();
+		Skf2020TNyukyoChoshoTsuchiKey key = new Skf2020TNyukyoChoshoTsuchiKey();
+		key.setCompanyCd(companyCd);
+		key.setApplNo(applNo);
+		updData = skf2020TNyukyoChoshoTsuchiRepository.selectByPrimaryKey(key);
+		if (updData == null) {
+			return false;
+		}
+
 		// 更新条件項目
 		updData.setCompanyCd(companyCd); // 会社コード
 		updData.setApplNo(applNo); // 申請番号
@@ -377,11 +385,17 @@ public class Skf2010Sc004SharedService {
 		if (!CheckUtils.isEmpty(shiyobi)) {
 			updData.setParkingUseDate(shiyobi);
 			updData.setParkingKanoDate(shiyobi);
+		} else {
+			updData.setParkingUseDate(null);
+			updData.setParkingKanoDate(null);
 		}
 		// 駐車場使用開始日2
 		if (!CheckUtils.isEmpty(shiyobi2)) {
 			updData.setParkingUseDate2(shiyobi2);
 			updData.setParkingKanoDate2(shiyobi2);
+		} else {
+			updData.setParkingUseDate2(null);
+			updData.setParkingKanoDate2(null);
 		}
 		// 退居予定
 		if (!CheckUtils.isEmpty(taikyoYotei)) {
@@ -400,7 +414,7 @@ public class Skf2010Sc004SharedService {
 			updData.setTaikyoDateFlg(taikyoChangeFlg);
 		}
 
-		int result = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKeySelective(updData);
+		int result = skf2020TNyukyoChoshoTsuchiRepository.updateByPrimaryKey(updData);
 		if (result <= 0) {
 			return false;
 		}
