@@ -74,8 +74,6 @@ public class Skf3010Sc002DelContractListService extends SkfServiceAbstract<Skf30
 		Boolean contractAddDisableFlg = false;
 		// 契約情報削除ボタン(非活性：true, 活性:false)
 		Boolean contractDelDisableFlg = true;
-		// 駐車場契約情報ボタン(非活性：true, 活性:false)
-		Boolean parkingContractDisableFlg = true;
 
 		/** JSON(連携用) */
 		// 駐車場区画情報リスト
@@ -141,7 +139,6 @@ public class Skf3010Sc002DelContractListService extends SkfServiceAbstract<Skf30
 		if (contractNoList.size() > 0) {
 			// 削除ボタン活性
 			contractDelDisableFlg = false;
-			parkingContractDisableFlg = false;
 			// 契約情報リストから最大契約番号の契約情報を取得
 			String maxContractNo = contractNoList.get(contractNoList.size() - 1).get("value").toString();
 			for (Map<String, Object> contractDataMap : contractList) {
@@ -197,7 +194,7 @@ public class Skf3010Sc002DelContractListService extends SkfServiceAbstract<Skf30
 			SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 			initDto.setContractUpdateDate(dateFormat.parse(contractMap.get("updateDate").toString()));
 		}
-		
+
 		// 戻り値設定
 		initDto.setContractNoList(contractNoList);
 		initDto.setContractOwnerName(contractOwnerName);
@@ -211,7 +208,6 @@ public class Skf3010Sc002DelContractListService extends SkfServiceAbstract<Skf30
 		initDto.setContractBiko(biko);
 		initDto.setContractAddDisableFlg(contractAddDisableFlg);
 		initDto.setContractDelDisableFlg(contractDelDisableFlg);
-		initDto.setParkingContractDisableFlg(parkingContractDisableFlg);
 
 		return initDto;
 	}
