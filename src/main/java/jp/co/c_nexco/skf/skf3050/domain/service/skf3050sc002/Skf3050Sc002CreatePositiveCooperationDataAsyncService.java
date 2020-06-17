@@ -17,6 +17,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -50,7 +51,7 @@ public class Skf3050Sc002CreatePositiveCooperationDataAsyncService extends SkfAs
 	@Transactional
 	public AsyncBaseDto index(Skf3050Sc002CreatePositiveCooperationDataAsyncDto asyncDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("POSITIVE連携データ作成処理", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("POSITIVE連携データ作成処理", CodeConstant.C001, FunctionIdConstant.SKF3050_SC002);
 
 		asyncDto.setResultMessages(null);
 		String endFlg = SkfCommonConstant.COMPLETE;

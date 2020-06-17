@@ -27,6 +27,7 @@ import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
@@ -83,7 +84,7 @@ public class Skf3090Sc001DownloadService extends SkfServiceAbstract<Skf3090Sc001
 		downloadDto.setPageTitleKey(MessageIdConstant.SKF3090_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("現物支給価額リスト出力", CodeConstant.C001, downloadDto.getPageId());
+		skfOperationLogUtils.setAccessLog("現物支給価額リスト出力", CodeConstant.C001, FunctionIdConstant.SKF3090_SC001);
 		
 		// 検索
 		// - 検索条件セット

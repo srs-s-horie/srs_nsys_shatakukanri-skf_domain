@@ -221,7 +221,7 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 	@Override
 	protected BaseDto index(Skf3050Sc002ConfirmPositiveCooperationTaskExecutionDto confirmPositiveCoopDto) throws Exception {
 		
-		skfOperationLogUtils.setAccessLog("POSITIVE連携データ確定処理", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("POSITIVE連携データ確定処理", CodeConstant.C001, FunctionIdConstant.SKF3050_SC002);
 
 		confirmPositiveCoopDto.setResultMessages(null);
 		String confirmResult = SkfCommonConstant.ABNORMAL;

@@ -104,7 +104,7 @@ public class Skf3020Sc002ImportService extends SkfServiceAbstract<Skf3020Sc002Im
 
 	@Override
 	public BaseDto index(Skf3020Sc002ImportDto tenninshaChoshoDto) throws Exception {
-		skfOperationLogUtils.setAccessLog("転任者調書の取込開始", companyCd, tenninshaChoshoDto.getPageId());
+		skfOperationLogUtils.setAccessLog("転任者調書の取込開始", companyCd, FunctionIdConstant.SKF3020_SC002);
 
 		// 必須チェック
 		boolean isNormalData = checkValidateInput(tenninshaChoshoDto);

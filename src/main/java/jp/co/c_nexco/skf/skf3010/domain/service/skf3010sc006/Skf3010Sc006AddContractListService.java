@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AddContractListDto;
@@ -46,7 +47,7 @@ public class Skf3010Sc006AddContractListService extends SkfServiceAbstract<Skf30
 		// デバッグログ
 		logger.debug("契約情報追加");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報追加", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約情報追加", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 
 //		/** JSON(連携用) */
 //		// 駐車場区画情報リスト

@@ -56,7 +56,7 @@ public class Skf3010Sc004InitService extends SkfServiceAbstract<Skf3010Sc004Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3010_SC004_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3010_SC004);
 		initialize(initDto);
 				
 		// リストデータ取得用

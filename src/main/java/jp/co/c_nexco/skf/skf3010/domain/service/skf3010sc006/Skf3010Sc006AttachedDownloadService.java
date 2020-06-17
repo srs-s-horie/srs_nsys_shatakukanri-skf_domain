@@ -13,6 +13,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AttachedDownloadDto;
@@ -83,7 +84,7 @@ public class Skf3010Sc006AttachedDownloadService extends SkfServiceAbstract<Skf3
 		}
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, adlDto.getPageId());
+		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 		
 //		// 添付ファイル情報を取得
 //		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);

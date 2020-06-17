@@ -37,7 +37,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
-
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -115,7 +115,7 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 		}else if(TEIJI_KBN_INOUT.equals(mailTeijiKbn)){
 			btnTitle = "備品搬入・搬出督促";//MessageIdConstant.SKF3022_SC005_BTN_MOVE_INOUT;
 		}
-		skfOperationLogUtils.setAccessLog(btnTitle, CodeConstant.C001, sendDto.getPageId());
+		skfOperationLogUtils.setAccessLog(btnTitle, CodeConstant.C001, FunctionIdConstant.SKF3022_SC005);
 		
 		//入退居区分リスト
 		String nyutaikyoKbn = sendDto.getNyutaikyoKbn();

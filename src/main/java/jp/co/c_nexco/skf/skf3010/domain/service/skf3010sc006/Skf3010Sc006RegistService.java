@@ -45,6 +45,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -123,7 +124,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		// デバッグログ
 		logger.debug("借上社宅情報登録");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 
 		/** JSON(連携用) */
 //		// 駐車場区画情報リスト
@@ -201,7 +202,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 			// 新規社宅登録
 			// 新規追加
 			updateCnt = insertKariageShatakuInfo(mShataku, mShatakuRoom, mShatakuParking, mShatakuParkingBlock,
-							mShatakuBihinList, mShatakuManageList, mShatakuContract, mShatakuParkingContract ,registDto.getPageId());
+							mShatakuBihinList, mShatakuManageList, mShatakuContract, mShatakuParkingContract ,FunctionIdConstant.SKF3010_SC006);
 			// 更新結果判定
 			if (updateCnt < 1) {
 				//件数が0未満（排他エラー）
@@ -224,7 +225,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 					mShatakuManageList,
 					mShatakuContract,
 					mShatakuParkingContract,
-					registDto.getPageId(),
+					FunctionIdConstant.SKF3010_SC006,
 					registDto);
 			// 更新結果判定
 			if (updateCnt < 1) {

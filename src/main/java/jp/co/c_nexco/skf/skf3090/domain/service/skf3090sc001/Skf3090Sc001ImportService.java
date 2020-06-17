@@ -30,6 +30,7 @@ import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
@@ -116,7 +117,7 @@ public class Skf3090Sc001ImportService extends SkfServiceAbstract<Skf3090Sc001Im
 		importDto.setPageTitleKey(MessageIdConstant.SKF3090_SC001_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("現物支給価額リスト取込", CodeConstant.C001, importDto.getPageId());
+		skfOperationLogUtils.setAccessLog("現物支給価額リスト取込", CodeConstant.C001, FunctionIdConstant.SKF3090_SC001);
 
 		// 必須チェック
 		boolean isNormalData = checkValidateInput(importDto);

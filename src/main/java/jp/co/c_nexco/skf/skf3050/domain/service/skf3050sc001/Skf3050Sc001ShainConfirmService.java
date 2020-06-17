@@ -20,6 +20,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -56,7 +57,7 @@ public class Skf3050Sc001ShainConfirmService extends SkfServiceAbstract<Skf3050S
 	public Skf3050Sc001ShainConfirmDto index(Skf3050Sc001ShainConfirmDto confirmDto) throws Exception {
 		 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("社員情報確認", CodeConstant.C001, confirmDto.getPageId());
+		skfOperationLogUtils.setAccessLog("社員情報確認", CodeConstant.C001, FunctionIdConstant.SKF3050_SC001);
 		
 		//社員情報確認フラグ
 		int shainInfoConfirmFlg = CONFIRMFLG_JISSHI;

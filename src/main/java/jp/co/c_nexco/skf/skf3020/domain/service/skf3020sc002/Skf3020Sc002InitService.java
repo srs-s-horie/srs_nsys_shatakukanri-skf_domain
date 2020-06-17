@@ -42,7 +42,7 @@ public class Skf3020Sc002InitService extends SkfServiceAbstract<Skf3020Sc002Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3020_SC002_TITLE);
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3020_SC002);
 		
 		// 遷移元画面が「転任者一覧」の場合、「前に戻る」ボタンを表示する。
 		if (NfwStringUtils.isNotEmpty(initDto.getPrePageId())

@@ -56,7 +56,6 @@ public class Skf3090Sc002InitService extends SkfServiceAbstract<Skf3090Sc002Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC002_TITLE);
  		
 		// 操作ログを出力する
-		//skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
 		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3090_SC002);
 		
 		// エラースタイルをクリア

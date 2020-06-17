@@ -52,7 +52,7 @@ public class Skf3020Sc003ImportService extends SkfServiceAbstract<Skf3020Sc003Im
 //	private final static String TENNIN_CHOSHO_DATA_UPDATE_KEY = "Skf3020TTenninshaChoshoDataUpdateDate";
 
 	public BaseDto index(Skf3020Sc003ImportDto importDto) throws Exception {
-		skfOperationLogUtils.setAccessLog("転任者情報の取込開始", companyCd, importDto.getPageId());
+		skfOperationLogUtils.setAccessLog("転任者情報の取込開始", companyCd, FunctionIdConstant.SKF3020_SC003);
 
 		// 取込チェック
 		importDto = validateTorikomiJikko(importDto);

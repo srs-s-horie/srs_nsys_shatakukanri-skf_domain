@@ -117,7 +117,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 		
 		downloadDto.setPageTitleKey(MessageIdConstant.SKF3021_SC001_TITLE);
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("入退居予定リスト出力", CodeConstant.C001, downloadDto.getPageId());
+		skfOperationLogUtils.setAccessLog("入退居予定リスト出力", CodeConstant.C001, FunctionIdConstant.SKF3021_SC001);
 
 		Skf3021Rp001GetNyutaikyoYoteiInfoExpParameter param = new Skf3021Rp001GetNyutaikyoYoteiInfoExpParameter();
 		param.setJssLinkFlg(jssLinkFlg);

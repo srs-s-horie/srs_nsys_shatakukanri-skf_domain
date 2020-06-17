@@ -66,7 +66,7 @@ public class Skf3020Sc004RegistService extends SkfServiceAbstract<Skf3020Sc004Re
 	public Skf3020Sc004RegistDto index(Skf3020Sc004RegistDto registDto) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());		
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3020_SC004);		
 		
 		// Delete後の再検索のために検索条件を保持
 		String[] setone = { "1" };

@@ -3137,14 +3137,14 @@ public class Skf3030Sc002SharedService {
 		//登録者ID
 		columnInfoList.setInsertUserId(LoginUserInfoUtils.getUserCd());
 		//登録機能ID
-		columnInfoList.setInsertProgramId(comDto.getPageId());
+		columnInfoList.setInsertProgramId(FunctionIdConstant.SKF3030_SC002);
 
 		//更新日時
 		columnInfoList.setUpdateDate(skfBaseBusinessLogicUtils.getSystemDateTime());
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		//【使用料計算機能対応】追加分項目
 		//社宅使用料月額
@@ -3184,7 +3184,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		//原籍会社コード
 		columnInfoList.setOriginalCompanyCd(getToRegistString(comDto.getSc006OldKaisyaNameSelect()));
@@ -3241,7 +3241,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 
 		return columnInfoList;
 	}
@@ -3284,7 +3284,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 
 		return columnInfoList;
 	}
@@ -3338,7 +3338,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		return columnInfoList;
 	}
@@ -3384,7 +3384,7 @@ public class Skf3030Sc002SharedService {
 			//登録者ID
 			columnInfoList.setInsertUserId(LoginUserInfoUtils.getUserCd());
 			//登録機能ID
-			columnInfoList.setInsertProgramId(comDto.getPageId());
+			columnInfoList.setInsertProgramId(FunctionIdConstant.SKF3030_SC002);
 		}
 
 		//更新日時
@@ -3392,7 +3392,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		return columnInfoList;
 	}
@@ -3515,7 +3515,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		
 		return columnInfoList;
@@ -3549,7 +3549,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		return columnInfoList;
 	}
@@ -3583,7 +3583,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		return columnInfoList;
 	}
@@ -3606,7 +3606,7 @@ public class Skf3030Sc002SharedService {
 		//更新者ID
 		columnInfoList.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		//更新機能ID
-		columnInfoList.setUpdateProgramId(comDto.getPageId());
+		columnInfoList.setUpdateProgramId(FunctionIdConstant.SKF3030_SC002);
 		
 		return columnInfoList;
 	}

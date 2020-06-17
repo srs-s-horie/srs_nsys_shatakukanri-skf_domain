@@ -28,6 +28,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc005.Skf3010Sc005RegistDto;
@@ -72,7 +73,7 @@ public class Skf3010Sc005RegistService extends SkfServiceAbstract<Skf3010Sc005Re
 		registDto.setPageTitleKey(MessageIdConstant.SKF3010_SC005_TITLE);
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3010_SC005);
 
 		// エラー系のDto値を初期化
 		registDto.setRoomNoError(CodeConstant.DOUBLE_QUOTATION);

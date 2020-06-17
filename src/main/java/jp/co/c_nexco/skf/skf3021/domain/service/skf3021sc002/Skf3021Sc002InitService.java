@@ -138,7 +138,7 @@ public class Skf3021Sc002InitService extends SkfServiceAbstract<Skf3021Sc002Init
 		
 		initDto.setPageTitleKey(MessageIdConstant.SKF3021_SC002_TITLE);
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3021_SC002);
 		
 		//SetContrlorValues()
 		//申請書類管理番号の取得

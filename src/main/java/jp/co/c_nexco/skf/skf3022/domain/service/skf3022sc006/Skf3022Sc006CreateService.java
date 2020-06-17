@@ -303,7 +303,7 @@ public class Skf3022Sc006CreateService extends SkfServiceAbstract<Skf3022Sc006Cr
 		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_USER_ID, LoginUserInfoUtils.getUserCd());
 //		'更新機能ID
 //		param.Add(HttpUtility.HtmlEncode(MyBase.publicInfo.IpAddress()))
-		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_PROGRAM_ID, initDto.getPageId());
+		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_PROGRAM_ID, FunctionIdConstant.SKF3022_SC006);
 		// 使用料変更フラグ
 //		param.Add(Me.hdnSiyouryoFlg.Value)
 		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.SHIYOURYO_FLG, initDto.getHdnSiyouryoFlg());

@@ -67,7 +67,7 @@ public class Skf3030Sc001InitService extends SkfServiceAbstract<Skf3030Sc001Init
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3030_SC001_TITLE);
 
-		skfOperationLogUtils.setAccessLog("社宅管理台帳初期表示処理開始", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("社宅管理台帳初期表示処理開始", CodeConstant.C001, FunctionIdConstant.SKF3030_SC001);
 		
 		initDto = initItems(initDto);
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002ChangeDropDownDto;
 
@@ -31,7 +32,7 @@ public class Skf3050Sc002ChangeDropDownService extends SkfServiceAbstract<Skf305
 	@Override
 	protected BaseDto index(Skf3050Sc002ChangeDropDownDto changeDropDownDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("対象年度ドロップダウン変更処理開始", CodeConstant.C001, changeDropDownDto.getPageId());
+		skfOperationLogUtils.setAccessLog("対象年度ドロップダウン変更処理開始", CodeConstant.C001, FunctionIdConstant.SKF3050_SC002);
 
 		String targetYyyymm = changeDropDownDto.getHdnSelectedTaisyonendo();
 

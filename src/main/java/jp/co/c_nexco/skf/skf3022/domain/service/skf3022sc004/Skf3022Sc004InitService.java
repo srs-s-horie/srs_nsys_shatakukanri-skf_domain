@@ -21,6 +21,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc004.Skf3022Sc004InitDto;
@@ -72,7 +73,7 @@ public class Skf3022Sc004InitService extends SkfServiceAbstract<Skf3022Sc004Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3022_SC004_TITLE);
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3022_SC004);
 		
 		SimpleDateFormat dateFormatFrom = new SimpleDateFormat("yyyyMM");
 		Date dateJigetu = null;

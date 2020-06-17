@@ -18,6 +18,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -67,7 +68,7 @@ public class Skf3010Sc006AttachedFileAddService extends SkfServiceAbstract<Skf30
 
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, addDto.getPageId());
+		skfOperationLogUtils.setAccessLog("補足資料追加", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 				
 		//ファイル名
 		String fileName = CodeConstant.DOUBLE_QUOTATION;

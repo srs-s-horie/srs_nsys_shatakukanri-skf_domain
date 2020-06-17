@@ -74,7 +74,7 @@ public class Skf3020Sc001InitService extends SkfServiceAbstract<Skf3020Sc001Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3020_SC001_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3020_SC001);
 		
 		// 社員情報の設定
 		// - 社員番号

@@ -27,6 +27,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -80,7 +81,7 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 	public Skf3050Sc001RegistDto index(Skf3050Sc001RegistDto registDto) throws Exception {
 		 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3050_SC001);
 		
 		Map<String,Object> resultMap = updateShainNo(registDto.getShainListData());
 		int resultNo = Integer.parseInt(resultMap.get("errorNo").toString());

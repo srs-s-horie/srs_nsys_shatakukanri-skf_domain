@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc005.Skf3020Sc005SetDto;
@@ -28,7 +29,7 @@ public class Skf3020Sc005SetService extends SkfServiceAbstract<Skf3020Sc005SetDt
 	@Override
 	public Skf3020Sc005SetDto index(Skf3020Sc005SetDto setDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("仮社員番号設定", CodeConstant.C001, setDto.getPageId());
+		skfOperationLogUtils.setAccessLog("仮社員番号設定", CodeConstant.C001, FunctionIdConstant.SKF3020_SC005);
 
 		// 仮社員番号
 		String kariShainNo = skfBaseBusinessLogicUtils.getMaxKariShainNo();

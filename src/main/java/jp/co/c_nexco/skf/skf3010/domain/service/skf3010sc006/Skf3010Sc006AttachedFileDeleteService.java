@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006AttachedFileDeleteDto;
 
@@ -40,7 +41,7 @@ public class Skf3010Sc006AttachedFileDeleteService extends SkfServiceAbstract<Sk
 
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("補足資料削除", CodeConstant.C001, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("補足資料削除", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 				
 		//ファイル名
 		String fileName = CodeConstant.DOUBLE_QUOTATION;

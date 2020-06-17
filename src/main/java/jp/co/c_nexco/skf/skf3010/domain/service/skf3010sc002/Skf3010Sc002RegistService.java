@@ -187,7 +187,7 @@ public class Skf3010Sc002RegistService extends SkfServiceAbstract<Skf3010Sc002Re
 			}
 			// 新規追加
 			updateCnt = insertHoyuShatakuInfo(mShataku, mShatakuParking, mShatakuParkingBlockList,
-							mShatakuBihinList, mShatakuManageList, mShatakuContract, registDto.getPageId());
+							mShatakuBihinList, mShatakuManageList, mShatakuContract, FunctionIdConstant.SKF3010_SC002);
 			// 更新結果判定
 			if (updateCnt < 1) {
 				LogUtils.debugByMsg("保有社宅新規登録失敗");
@@ -211,7 +211,7 @@ public class Skf3010Sc002RegistService extends SkfServiceAbstract<Skf3010Sc002Re
 					mShatakuBihinList,
 					mShatakuManageList,
 					mShatakuContract,
-					registDto.getPageId(),
+					FunctionIdConstant.SKF3010_SC002,
 					registDto);
 			// 更新結果判定
 			if (updateCnt < 1) {
