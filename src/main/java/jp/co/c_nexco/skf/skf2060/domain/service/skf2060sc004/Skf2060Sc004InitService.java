@@ -56,7 +56,7 @@ public class Skf2060Sc004InitService extends SkfServiceAbstract<Skf2060Sc004Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2060_SC004_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2060_SC004);
 		// リストチェック状態を解除
 		initDto.setCompleteChkVal(null);
 		initDto.setReminderChkVal(null);
@@ -106,7 +106,7 @@ public class Skf2060Sc004InitService extends SkfServiceAbstract<Skf2060Sc004Init
 		}
 
 		// 操作ガイド取得
-		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2060_SC004));
 
 		// 画面ID保持
 		initDto.setPrePageId(FunctionIdConstant.SKF2060_SC004);

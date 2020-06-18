@@ -85,7 +85,7 @@ public class Skf2060Sc002SelectService extends SkfServiceAbstract<Skf2060Sc002Se
 		selectDto.setPageTitleKey(MessageIdConstant.SKF2060_SC002_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("選択", companyCd, selectDto.getPageId());
+		skfOperationLogUtils.setAccessLog("選択", companyCd, FunctionIdConstant.SKF2060_SC002);
 		
 		//入力チェックを行う
 		boolean inputCheck = this.inputCheck(selectDto);
@@ -116,7 +116,7 @@ public class Skf2060Sc002SelectService extends SkfServiceAbstract<Skf2060Sc002Se
 		Map<String, String> userInfoMap = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		//ログインセッションユーザ情報のユーザ名
 		String updateUserId = userInfoMap.get("userCd");
-		String updateProgramId = selectDto.getPageId();
+		String updateProgramId = FunctionIdConstant.SKF2060_SC002;
 		
 		//更新ステータスを設定する
 		//「選択しない」ラベルが表示されている行が選択されている場合,更新ステータスを"選択しない"に設定

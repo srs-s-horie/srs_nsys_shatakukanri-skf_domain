@@ -67,7 +67,7 @@ public class Skf2010Sc003CancelService extends SkfServiceAbstract<Skf2010Sc003Ca
 	@Override
 	public BaseDto index(Skf2010Sc003CancelDto cancelDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("取下げ", companyCd, cancelDto.getPageId());
+		skfOperationLogUtils.setAccessLog("取下げ", companyCd, FunctionIdConstant.SKF2010_SC003);
 
 		cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 

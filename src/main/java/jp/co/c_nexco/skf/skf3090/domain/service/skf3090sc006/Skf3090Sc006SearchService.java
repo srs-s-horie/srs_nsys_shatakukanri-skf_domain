@@ -16,6 +16,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -46,7 +47,7 @@ public class Skf3090Sc006SearchService extends SkfServiceAbstract<Skf3090Sc006Se
 	public BaseDto index(Skf3090Sc006SearchDto searchDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("組織を検索", CodeConstant.C001, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("組織を検索", CodeConstant.C001, FunctionIdConstant.SKF3090_SC006);
 
 		// 「会社」ドロップダウンリストの設定
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();

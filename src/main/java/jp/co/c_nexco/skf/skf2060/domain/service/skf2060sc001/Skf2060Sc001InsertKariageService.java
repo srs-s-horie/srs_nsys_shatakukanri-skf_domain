@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
@@ -51,7 +52,7 @@ public class Skf2060Sc001InsertKariageService extends SkfServiceAbstract<Skf2060
 		insertDto.setPageTitleKey(MessageIdConstant.SKF2060_SC001_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("追加", companyCd, insertDto.getPageId());
+		skfOperationLogUtils.setAccessLog("追加", companyCd, FunctionIdConstant.SKF2060_SC001);
 		
 		boolean insertCheck = false;
 		

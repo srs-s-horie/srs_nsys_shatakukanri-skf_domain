@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -57,7 +58,7 @@ public class Skf2040Sc002DownloadService extends SkfServiceAbstract<Skf2040Sc002
 		fileData = (byte[]) attachedFileMap.get("fileStream");
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, dlDto.getPageId());
+		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
 
 		dlDto.setFileData(fileData);
 		dlDto.setUploadFileName(fileName);

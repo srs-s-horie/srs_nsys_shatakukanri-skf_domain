@@ -49,7 +49,7 @@ public class Skf3090Sc005DeleteService extends SkfServiceAbstract<Skf3090Sc005De
 		deleteDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("削除", companyCd, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", companyCd, FunctionIdConstant.SKF3090_SC005);
 
 		/** 利用実績チェック */
 		// 社宅管理台帳存在チェック

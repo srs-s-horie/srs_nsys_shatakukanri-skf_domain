@@ -64,7 +64,7 @@ public class Skf2060Sc003CompleteService extends SkfServiceAbstract<Skf2060Sc003
 		completeDto.setPageTitleKey(MessageIdConstant.SKF2060_SC003_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("完了", companyCd, completeDto.getPageId());
+		skfOperationLogUtils.setAccessLog("完了", companyCd, FunctionIdConstant.SKF2060_SC003);
 		
         // 提示状況汎用コード取得
         Map<String, String> candidateStatusGenCodeReverseMap = new HashMap<String, String>();

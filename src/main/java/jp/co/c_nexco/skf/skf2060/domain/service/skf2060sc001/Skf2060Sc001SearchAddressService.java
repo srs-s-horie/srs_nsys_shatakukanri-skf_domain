@@ -16,6 +16,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001SearchAddressDto;
@@ -49,7 +50,7 @@ public class Skf2060Sc001SearchAddressService extends SkfServiceAbstract<Skf2060
 		searchAddressDto.setPageTitleKey(MessageIdConstant.SKF2060_SC001_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("住所を検索", companyCd, searchAddressDto.getPageId());
+		skfOperationLogUtils.setAccessLog("住所を検索", companyCd, FunctionIdConstant.SKF2060_SC001);
 
 		List<SkfGetInfoUtilsGetPostalCodeAddressExp> resultEntity = new ArrayList<SkfGetInfoUtilsGetPostalCodeAddressExp>();
 		SkfGetInfoUtilsGetPostalCodeAddressExpParameter param = new SkfGetInfoUtilsGetPostalCodeAddressExpParameter();

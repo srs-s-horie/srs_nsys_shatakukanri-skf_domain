@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TInformationKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010TInformationRepository;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc008.Skf3090Sc008DeleteDto;
@@ -49,7 +50,7 @@ public class Skf3090Sc008DeleteService extends SkfServiceAbstract<Skf3090Sc008De
 		deleteDto.setPageTitleKey(MessageIdConstant.SKF3090_SC008_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("お知らせ削除", companyCd, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("お知らせ削除", companyCd, FunctionIdConstant.SKF3090_SC008);
 		
 		String openDate = deleteDto.getHdnOpenDate().replace("/", "");
 		

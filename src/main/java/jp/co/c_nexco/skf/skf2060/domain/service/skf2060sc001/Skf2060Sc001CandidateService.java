@@ -81,7 +81,7 @@ public class Skf2060Sc001CandidateService extends SkfServiceAbstract<Skf2060Sc00
 		candidateDto.setPageTitleKey(MessageIdConstant.SKF2060_SC001_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("提示", companyCd, candidateDto.getPageId());
+		skfOperationLogUtils.setAccessLog("提示", companyCd, FunctionIdConstant.SKF2060_SC001);
 
 		// 提示対象者社員番号
 		String shainNo = candidateDto.getShainNo();
@@ -102,7 +102,7 @@ public class Skf2060Sc001CandidateService extends SkfServiceAbstract<Skf2060Sc00
 		// ユーザCD
 		String updateUserId = userInfoMap.get("userCd");
 		// ページID
-		String updateProgramId = candidateDto.getPageId();
+		String updateProgramId = FunctionIdConstant.SKF2060_SC001;
 		// 選択物件番号
 		long checkCandidateNo = 0;
 		// 一覧フラグ

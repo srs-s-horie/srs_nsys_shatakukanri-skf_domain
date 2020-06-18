@@ -50,7 +50,7 @@ public class Skf2040Sc001ConfirmService extends SkfServiceAbstract<Skf2040Sc001C
 		confirmDto.setPageTitleKey(MessageIdConstant.SKF2040_SC001_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請内容を確認", CodeConstant.C001, confirmDto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請内容を確認", CodeConstant.C001, FunctionIdConstant.SKF2040_SC001);
 
 		// 申請書情報の取得
 		skf2040Sc001SharedService.setSkfApplInfo(confirmDto);

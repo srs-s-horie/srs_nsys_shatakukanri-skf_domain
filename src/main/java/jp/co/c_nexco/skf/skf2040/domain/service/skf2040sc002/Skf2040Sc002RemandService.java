@@ -40,7 +40,7 @@ public class Skf2040Sc002RemandService extends SkfServiceAbstract<Skf2040Sc002Re
 	public BaseDto index(Skf2040Sc002RemandDto remDto) throws Exception {
 
 		// 操作ログ出力メソッドを呼び出す
-		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, remDto.getPageId());
+		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
 
 		// コメント欄チェック
 		boolean validate = skf2040sc002SharedService.checkValidation(remDto, sTrue);

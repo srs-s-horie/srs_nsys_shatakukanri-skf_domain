@@ -18,6 +18,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc008.Skf3090Sc008RegistDto;
@@ -52,7 +53,7 @@ public class Skf3090Sc008RegistService extends SkfServiceAbstract<Skf3090Sc008Re
 	public Skf3090Sc008RegistDto index(Skf3090Sc008RegistDto registDto) throws Exception {
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("お知らせ登録", companyCd, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("お知らせ登録", companyCd, FunctionIdConstant.SKF3090_SC008);
 		
 		//更新日を設定
 		Map<String, Date> lastUpdateDateMap = registDto.getLastUpdateDateMap();

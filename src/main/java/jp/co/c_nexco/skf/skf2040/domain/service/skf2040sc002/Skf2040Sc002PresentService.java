@@ -70,7 +70,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 	protected BaseDto index(Skf2040Sc002PresentDto preDto) throws Exception {
 
 		// 操作ログ出力メソッドを呼び出す
-		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, preDto.getPageId());
+		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
 
 		// 申請書類履歴情報の取得
 		Skf2040Sc002GetApplHistoryInfoForUpdateExp applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
@@ -142,7 +142,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			// 申請書類履歴テーブル」よりステータスを更新
 			String resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
 					preDto.getShainNo(), preDto.getApplNo(), agreDate, shoninName1, shoninName2, preDto.getApplId(),
-					applTacFlg, userInfo.get("userCd"), preDto.getPageId(), applInfo.getUpdateDate(),
+					applTacFlg, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002, applInfo.getUpdateDate(),
 					preDto.getLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_TAIKYO));
 			if ("updateError".equals(resultUpdateApplInfo)) {
 				// 更新エラー
@@ -169,7 +169,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			// 添付ファイル管理テーブル更新処理
 			boolean resultUpdateFile = skf2040Sc002SharedService.updateAttachedFileInfo(nextStatus, preDto.getApplNo(),
 					preDto.getShainNo(), attachedFileList, applTacFlg, applInfo, errorMsg, userInfo.get("userCd"),
-					preDto.getPageId());
+					FunctionIdConstant.SKF2040_SC002);
 			if (!resultUpdateFile) {
 				// 更新エラー
 				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
@@ -214,7 +214,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(dateLinkTaikyoMap);
 			// 連携実行
 			List<String> resultList = skf2040Fc001TaikyoTodokeDataImport.doProc(CodeConstant.C001, preDto.getShainNo(),
-					preDto.getApplNo(), nextStatus, userInfo.get("userCd"), preDto.getPageId());
+					preDto.getApplNo(), nextStatus, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002);
 			// セッション情報の削除
 			menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
@@ -316,7 +316,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 		// 連携実行
 		List<String> resultList = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
 				preDto.getShainNo(), preDto.getHdnBihinHenkyakuApplNo(), CodeConstant.STATUS_SHINSACHU,
-				userInfo.get("userCd"), preDto.getPageId());
+				userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002);
 		// セッション情報の削除
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
@@ -341,7 +341,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 		// 連携実行
 		List<String> resultList2 = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
 				preDto.getShainNo(), preDto.getHdnBihinHenkyakuApplNo(), CodeConstant.STATUS_KAKUNIN_IRAI,
-				userInfo.get("userCd"), preDto.getPageId());
+				userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002);
 		// セッション情報の削除
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 

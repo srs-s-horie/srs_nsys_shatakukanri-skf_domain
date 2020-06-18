@@ -55,7 +55,7 @@ public class Skf2010Sc002ApplyService extends SkfServiceAbstract<Skf2010Sc002App
 	public BaseDto index(Skf2010Sc002ApplyDto applyDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請", CodeConstant.C001, applyDto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請", CodeConstant.C001, FunctionIdConstant.SKF2010_SC002);
 
 		// 申請書類IDの有無チェック
 		if (applyDto.getApplId() == null) {
@@ -127,7 +127,7 @@ public class Skf2010Sc002ApplyService extends SkfServiceAbstract<Skf2010Sc002App
 			// 連携実行
 			List<String> resultList = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(CodeConstant.C001,
 					applyDto.getShainNo(), applyDto.getApplNo(), CodeConstant.NONE, status, userId,
-					applyDto.getPageId());
+					FunctionIdConstant.SKF2010_SC002);
 			// セッション情報の削除
 			menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
 
@@ -146,7 +146,7 @@ public class Skf2010Sc002ApplyService extends SkfServiceAbstract<Skf2010Sc002App
 			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(dateLinkNyukyoMap);
 			// 連携実行
 			List<String> resultList = skf2040Fc001TaikyoTodokeDataImport.doProc(CodeConstant.C001,
-					applyDto.getShainNo(), applyDto.getApplNo(), status, userId, applyDto.getPageId());
+					applyDto.getShainNo(), applyDto.getApplNo(), status, userId, FunctionIdConstant.SKF2010_SC002);
 			// セッション情報の削除
 			menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
 

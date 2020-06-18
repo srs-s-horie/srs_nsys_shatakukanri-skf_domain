@@ -44,7 +44,7 @@ public class Skf3070Sc002RegistService extends SkfServiceAbstract<Skf3070Sc002Re
 	protected BaseDto index(Skf3070Sc002RegistDto registDto) throws Exception {
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3070_SC002);
 
 		// 入力チェック
 		if (isValidateInput(registDto) == false) {

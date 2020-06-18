@@ -16,6 +16,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -62,7 +63,7 @@ public class Skf2010Sc003SearchService extends SkfServiceAbstract<Skf2010Sc003Se
 	@Override
 	public Skf2010Sc003SearchDto index(Skf2010Sc003SearchDto searchDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請状況を確認", companyCd, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請状況を確認", companyCd, FunctionIdConstant.SKF2010_SC003);
 
 		searchDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 

@@ -67,7 +67,7 @@ public class Skf3090Sc005RegistService extends SkfServiceAbstract<Skf3090Sc005Re
 		registDto.setPageTitleKey(MessageIdConstant.SKF3090_SC005_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("登録", companyCd, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", companyCd, FunctionIdConstant.SKF3090_SC005);
 
 		// エラー系のDto値を初期化
 		registDto.setShainNoError(CodeConstant.DOUBLE_QUOTATION);

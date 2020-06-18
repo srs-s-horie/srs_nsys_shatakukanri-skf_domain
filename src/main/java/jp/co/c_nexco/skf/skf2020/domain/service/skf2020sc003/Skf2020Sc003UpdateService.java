@@ -124,7 +124,7 @@ public class Skf2020Sc003UpdateService extends SkfServiceAbstract<Skf2020Sc003Up
 		halfSpace.add("確定");
 		halfSpace.add(shainNo);
 		halfSpace.add(defaultHitsuyouShataku + "から" + afterHitsuyouShataku + "に変更");
-		skfOperationLogUtils.setAccessLog(halfSpace.toString(), CodeConstant.C001, updDto.getPageId());
+		skfOperationLogUtils.setAccessLog(halfSpace.toString(), CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
 
 		// 初期表示
 		skf2020sc003SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
