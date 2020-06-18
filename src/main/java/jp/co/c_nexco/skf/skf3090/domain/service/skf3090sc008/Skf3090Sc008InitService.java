@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TInformation;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -56,9 +57,9 @@ public class Skf3090Sc008InitService extends SkfServiceAbstract<Skf3090Sc008Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC008_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF3090_SC008);
 		// 操作ガイドの設定
-		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF3090_SC008));
 		
 		// 項目初期化
 		initDto.setOpenDateBox(CodeConstant.NONE);

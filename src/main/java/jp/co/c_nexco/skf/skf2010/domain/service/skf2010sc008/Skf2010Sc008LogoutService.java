@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -39,7 +40,7 @@ public class Skf2010Sc008LogoutService extends SkfServiceAbstract<Skf2010Sc008Lo
 		logoutDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("代行ログアウト", companyCd, logoutDto.getPageId());
+		skfOperationLogUtils.setAccessLog("代行ログアウト", companyCd, FunctionIdConstant.SKF2010_SC008);
 
 		// ログアウト処理
 		sessionBean.put(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY, CodeConstant.NONLOGIN);

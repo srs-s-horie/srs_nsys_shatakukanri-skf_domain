@@ -51,7 +51,7 @@ public class Skf2020Sc003RemandService extends SkfServiceAbstract<Skf2020Sc003Re
 	@Override
 	public BaseDto index(Skf2020Sc003RemandDto rmdDto) throws Exception {
 		// 操作ログ出力メソッドを呼び出す
-		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, rmdDto.getPageId());
+		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
 
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		Map<String, String> errorMsg = new HashMap<String, String>();

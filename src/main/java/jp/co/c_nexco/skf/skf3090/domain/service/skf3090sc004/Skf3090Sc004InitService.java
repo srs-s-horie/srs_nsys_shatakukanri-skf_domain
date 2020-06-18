@@ -54,7 +54,7 @@ public class Skf3090Sc004InitService extends SkfServiceAbstract<Skf3090Sc004Init
 	public BaseDto index(Skf3090Sc004InitDto initDto) throws Exception {
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF3090_SC004);
 
 		// リストデータ取得用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();

@@ -13,6 +13,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010TInformation;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc008.Skf3090Sc008EditDto;
@@ -45,7 +46,7 @@ public class Skf3090Sc008EditService extends SkfServiceAbstract<Skf3090Sc008Edit
 	public Skf3090Sc008EditDto index(Skf3090Sc008EditDto editDto) throws Exception {
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("お知らせ編集", companyCd, editDto.getPageId());
+		skfOperationLogUtils.setAccessLog("お知らせ編集", companyCd, FunctionIdConstant.SKF3090_SC008);
 		
 		//「編集」ボタンを押した行の公開開始日を取得
 		String openDate = editDto.getHdnOpenDate(); 

@@ -69,7 +69,7 @@ public class Skf2010Sc003DeleteService extends SkfServiceAbstract<Skf2010Sc003De
 	@Override
 	public BaseDto index(Skf2010Sc003DeleteDto delDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("削除", companyCd, delDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", companyCd, FunctionIdConstant.SKF2010_SC003);
 
 		delDto.setPageTitleKey(MessageIdConstant.SKF2010_SC003_TITLE);
 

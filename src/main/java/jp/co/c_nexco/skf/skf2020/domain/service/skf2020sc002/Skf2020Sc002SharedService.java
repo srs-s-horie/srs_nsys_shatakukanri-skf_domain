@@ -2192,7 +2192,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setApplTacFlg(applInfo.get("applTacFlg"));
 		setValue.setApplDate(DateUtils.getSysDate());
 		setValue.setUpdateUserId(dto.getUserId());
-		setValue.setUpdateProgramId(dto.getPageId());
+		setValue.setUpdateProgramId(FunctionIdConstant.SKF2020_SC002);
 		return setValue;
 	}
 
@@ -2883,7 +2883,7 @@ public class Skf2020Sc002SharedService {
 		LogUtils.debugByMsg("現在の部屋管理番号" + dto.getHdnNowShatakuRoomKanriNo());
 
 		setValue.setUpdateUserId(dto.getUserId());
-		setValue.setUpdateProgramId(dto.getPageId());
+		setValue.setUpdateProgramId(FunctionIdConstant.SKF2020_SC002);
 
 		return setValue;
 	}
@@ -3062,7 +3062,7 @@ public class Skf2020Sc002SharedService {
 		setValue.setRenrakuSaki(dto.getRenrakuSaki());
 
 		setValue.setUpdateUserId(dto.getUserId());
-		setValue.setUpdateProgramId(dto.getPageId());
+		setValue.setUpdateProgramId(FunctionIdConstant.SKF2020_SC002);
 
 		return setValue;
 

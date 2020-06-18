@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002ClearDto;
 
@@ -29,7 +30,7 @@ public class Skf2020Sc002ClearService extends SkfServiceAbstract<Skf2020Sc002Cle
 	protected BaseDto index(Skf2020Sc002ClearDto clearDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("入力内容をクリア", CodeConstant.C001, clearDto.getPageId());
+		skfOperationLogUtils.setAccessLog("入力内容をクリア", CodeConstant.C001, FunctionIdConstant.SKF2020_SC002);
 
 		// クリア処理を呼び出す。
 		clearDisp(clearDto);

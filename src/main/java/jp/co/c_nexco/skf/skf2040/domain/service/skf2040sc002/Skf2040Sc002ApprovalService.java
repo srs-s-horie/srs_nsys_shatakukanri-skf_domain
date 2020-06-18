@@ -64,7 +64,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 	protected BaseDto index(Skf2040Sc002ApprovalDto appDto) throws Exception {
 
 		// 操作ログ出力メソッドを呼び出す
-		skfOperationLogUtils.setAccessLog("承認", CodeConstant.C001, appDto.getPageId());
+		skfOperationLogUtils.setAccessLog("承認", CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
 
 		// 申請書類履歴情報の取得
 		Skf2040Sc002GetApplHistoryInfoForUpdateExp applInfo = new Skf2040Sc002GetApplHistoryInfoForUpdateExp();
@@ -129,7 +129,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 		// 申請書類履歴テーブル」よりステータスを更新
 		String resultUpdateApplInfo = skf2040Sc002SharedService.updateApplHistoryAgreeStatus(nextStatus,
 				appDto.getShainNo(), appDto.getApplNo(), agreDate, shoninName1, shoninName2, appDto.getApplId(),
-				applTacFlg, userInfo.get("userCd"), appDto.getPageId(), applInfo.getUpdateDate(),
+				applTacFlg, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002, applInfo.getUpdateDate(),
 				appDto.getLastUpdateDate(Skf2040Sc002SharedService.KEY_LAST_UPDATE_DATE_HISTORY_TAIKYO));
 		if (resultUpdateApplInfo.equals("updateError")) {
 			// 更新エラー
@@ -159,7 +159,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 		// 添付ファイル管理テーブル更新処理
 		boolean resultUpdateFile = skf2040Sc002SharedService.updateAttachedFileInfo(nextStatus, appDto.getApplNo(),
 				appDto.getShainNo(), attachedFileList, applTacFlg, applInfo, errorMsg, userInfo.get("userCd"),
-				appDto.getPageId());
+				FunctionIdConstant.SKF2040_SC002);
 		if (!resultUpdateFile) {
 			// 更新エラー
 			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
@@ -179,7 +179,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 		skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(dateLinkTaikyoMap);
 		// 連携実行
 		List<String> resultList = skf2040Fc001TaikyoTodokeDataImport.doProc(CodeConstant.C001, appDto.getShainNo(),
-				appDto.getApplNo(), nextStatus, userInfo.get("userCd"), appDto.getPageId());
+				appDto.getApplNo(), nextStatus, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002);
 		// セッション情報の削除
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 

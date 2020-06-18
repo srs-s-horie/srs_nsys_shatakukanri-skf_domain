@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc008.Skf2010Sc008CancelDto;
@@ -37,7 +38,7 @@ public class Skf2010Sc008CancelService extends SkfServiceAbstract<Skf2010Sc008Ca
         cancelDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
         
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("キャンセル", companyCd, cancelDto.getPageId());
+		skfOperationLogUtils.setAccessLog("キャンセル", companyCd, FunctionIdConstant.SKF2010_SC008);
         
         // 取得した代行ユーザ情報を初期化する
         cancelDto = new Skf2010Sc008CancelDto();

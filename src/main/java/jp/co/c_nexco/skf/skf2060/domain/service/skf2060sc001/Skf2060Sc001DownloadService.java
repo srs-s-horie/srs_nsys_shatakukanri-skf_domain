@@ -16,6 +16,7 @@ import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -53,7 +54,7 @@ public class Skf2060Sc001DownloadService extends SkfServiceAbstract<Skf2060Sc001
 	public Skf2060Sc001DownloadDto index(Skf2060Sc001DownloadDto downloadDto) throws Exception {
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("CSV出力", companyCd, downloadDto.getPageId());
+		skfOperationLogUtils.setAccessLog("CSV出力", companyCd, FunctionIdConstant.SKF2060_SC001);
 		
 		// リストデータ取得用
 		boolean itiranFlg = true;
