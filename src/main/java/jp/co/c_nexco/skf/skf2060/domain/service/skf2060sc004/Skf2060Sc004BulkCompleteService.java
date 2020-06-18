@@ -23,6 +23,7 @@ import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -60,7 +61,7 @@ public class Skf2060Sc004BulkCompleteService extends SkfServiceAbstract<Skf2060S
     public Skf2060Sc004BulkCompleteDto index(Skf2060Sc004BulkCompleteDto bulkCompDto) throws Exception {
         
         // 操作ログを出力する
-        skfOperationLogUtils.setAccessLog("一括完了", CodeConstant.C001, bulkCompDto.getPageId());
+        skfOperationLogUtils.setAccessLog("一括完了", CodeConstant.C001, FunctionIdConstant.SKF2060_SC004);
         // 完了チェックボックスのチェック状態を取得
         @SuppressWarnings("unchecked")
         List<String> completeChkValList = Arrays.asList(bulkCompDto.getCompleteChkVal());

@@ -40,7 +40,7 @@ public class Skf2020Sc002ConfirmService extends SkfServiceAbstract<Skf2020Sc002C
 	public BaseDto index(Skf2020Sc002ConfirmDto dto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請内容を確認", CodeConstant.C001, dto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請内容を確認", CodeConstant.C001, FunctionIdConstant.SKF2020_SC002);
 
 		// 登録処理
 		// ステータスの設定

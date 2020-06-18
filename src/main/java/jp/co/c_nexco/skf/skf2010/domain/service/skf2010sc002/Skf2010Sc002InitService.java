@@ -86,7 +86,7 @@ public class Skf2010Sc002InitService extends SkfServiceAbstract<Skf2010Sc002Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC002_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC002);
 		// セッション情報引き渡し
 		skf2010Sc002SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		// セッション情報初期化

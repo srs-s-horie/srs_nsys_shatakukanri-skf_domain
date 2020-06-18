@@ -45,7 +45,7 @@ public class Skf2010Sc003TransferService extends SkfServiceAbstract<Skf2010Sc003
 	@Override
 	public BaseDto index(Skf2010Sc003TransferDto transDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("表示", companyCd, transDto.getPageId());
+		skfOperationLogUtils.setAccessLog("表示", companyCd, FunctionIdConstant.SKF2010_SC003);
 		
 		String applId = transDto.getApplId();
 		String applNo = transDto.getApplNo();

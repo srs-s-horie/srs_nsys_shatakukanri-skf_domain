@@ -85,7 +85,7 @@ public class Skf2010Sc005InitService extends SkfServiceAbstract<Skf2010Sc005Init
 		dto.setPageTitleKey(MessageIdConstant.SKF2010_SC005_TITLE);
 
 		// 操作ガイド取得
-		dto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(dto.getPageId()));
+		dto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2010_SC005));
 
 		// 社員番号初期化
 		dto.setShainNo(null);

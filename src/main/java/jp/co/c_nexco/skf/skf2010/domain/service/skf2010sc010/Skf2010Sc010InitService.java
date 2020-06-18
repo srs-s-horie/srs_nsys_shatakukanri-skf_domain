@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc010.Skf2010Sc010InitDto;
@@ -44,7 +45,7 @@ public class Skf2010Sc010InitService extends SkfServiceAbstract<Skf2010Sc010Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC010_TITLE);
 
 		// 操作ログ出力
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC010);
 
 		String applNo = initDto.getApplNo();
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc004.Skf2060Sc004SendMailDto;
@@ -44,7 +45,7 @@ public class Skf2060Sc004SendMailService extends SkfServiceAbstract<Skf2060Sc004
         
         sendMailDto.setPageTitleKey(MessageIdConstant.SKF2060_SC004_TITLE);
         // 操作ログを出力する
-        skfOperationLogUtils.setAccessLog("督促メール送信", CodeConstant.C001, sendMailDto.getPageId());
+        skfOperationLogUtils.setAccessLog("督促メール送信", CodeConstant.C001, FunctionIdConstant.SKF2060_SC004);
         // 完了チェックボックスのチェック状態を取得
         @SuppressWarnings("unchecked")
         List<String> reminderChkValList = Arrays.asList(sendMailDto.getReminderChkVal());

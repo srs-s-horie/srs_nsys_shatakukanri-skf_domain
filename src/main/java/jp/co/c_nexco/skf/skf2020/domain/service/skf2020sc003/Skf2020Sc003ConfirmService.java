@@ -50,7 +50,7 @@ public class Skf2020Sc003ConfirmService extends SkfServiceAbstract<Skf2020Sc003C
 	public BaseDto index(Skf2020Sc003ConfirmDto confDto) throws Exception {
 
 		// 操作ログ出力メソッドを呼び出す
-		skfOperationLogUtils.setAccessLog("掲示内容を確認", companyCd, confDto.getPageId());
+		skfOperationLogUtils.setAccessLog("提示内容を確認", companyCd, FunctionIdConstant.SKF2020_SC003);
 
 		confirmClickProcess(confDto);
 

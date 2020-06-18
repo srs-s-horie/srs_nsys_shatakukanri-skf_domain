@@ -12,6 +12,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001SaveDto;
@@ -40,7 +41,7 @@ public class Skf2040Sc001SaveService extends SkfServiceAbstract<Skf2040Sc001Save
 	@Override
 	public Skf2040Sc001SaveDto index(Skf2040Sc001SaveDto saveDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, saveDto.getPageId());
+		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, FunctionIdConstant.SKF2040_SC001);
 
 		// 申請書情報の取得
 		skf2040Sc001SharedService.setSkfApplInfo(saveDto);

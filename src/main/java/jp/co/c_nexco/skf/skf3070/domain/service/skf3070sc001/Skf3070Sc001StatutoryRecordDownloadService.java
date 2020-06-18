@@ -92,7 +92,7 @@ public class Skf3070Sc001StatutoryRecordDownloadService
 	public BaseDto index(Skf3070Sc001StatutoryRecordDownloadDto sRDto) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("法定調書データ出力", companyCd, sRDto.getPageId());
+		skfOperationLogUtils.setAccessLog("法定調書データ出力", companyCd, FunctionIdConstant.SKF3070_SC001);
 		
 		List<Skf3070Sc001GetOwnerContractListExp> ownerExpList = new ArrayList<Skf3070Sc001GetOwnerContractListExp>();
 		//セッションからSQLパラメータ情報を取得

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
@@ -43,10 +44,10 @@ public class Skf2010Sc008InitService extends SkfServiceAbstract<Skf2010Sc008Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC008_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2010_SC008);
 
 		// 操作ガイドの設定
-		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2010_SC008));
 
 		// セッションから代行ログイン状態を取得
 		String sessionVal = (String) sessionBean.get(SessionCacheKeyConstant.ALTER_LOGIN_SESSION_KEY);

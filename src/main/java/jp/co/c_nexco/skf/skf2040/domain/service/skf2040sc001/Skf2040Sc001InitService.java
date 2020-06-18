@@ -73,14 +73,14 @@ public class Skf2040Sc001InitService extends SkfServiceAbstract<Skf2040Sc001Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2040_SC001_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2040_SC001);
 
 		// 初期表示情報を取得
 		this.setDispInfo(initDto);
 
 		// 操作ガイド取得
-		LogUtils.debugByMsg("操作ガイド" + initDto.getPageId());
-		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+		LogUtils.debugByMsg("操作ガイド" + FunctionIdConstant.SKF2040_SC001);
+		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2040_SC001));
 
 		return initDto;
 	}

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2040.domain.dto.skf2040sc001.Skf2040Sc001DownloadDto;
@@ -36,7 +37,7 @@ public class Skf2040Sc001DownloadService extends SkfServiceAbstract<Skf2040Sc001
 	protected BaseDto index(Skf2040Sc001DownloadDto dto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請要件を確認", CodeConstant.C001, dto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請要件を確認", CodeConstant.C001, FunctionIdConstant.SKF2040_SC001);
 
 		// ダウンロードファイル名
 		String downloadFileName = "skf.skf_appl_requirement.FileId_Taikyo";

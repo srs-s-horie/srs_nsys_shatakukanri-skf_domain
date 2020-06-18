@@ -91,7 +91,7 @@ public class Skf3090Sc005InitService extends SkfServiceAbstract<Skf3090Sc005Init
 			skfOperationLogUtils.setAccessLog("詳細", companyCd, initDto.getPrePageId());
 		}
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF3090_SC005);
 
 		// エラー系のDto値を初期化
 		initDto.setShainNoError(CodeConstant.DOUBLE_QUOTATION);

@@ -48,7 +48,7 @@ public class Skf2010Sc007InitService extends SkfServiceAbstract<Skf2010Sc007Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2010_SC007_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2010_SC007);
 
 		// 申請条件内容の設定を行う
 		setApplTac(initDto);

@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc004.Skf3090Sc004SearchDto;
@@ -45,7 +46,7 @@ public class Skf3090Sc004SearchService extends SkfServiceAbstract<Skf3090Sc004Se
 	public BaseDto index(Skf3090Sc004SearchDto searchDto) throws Exception {
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("ユーザを検索", companyCd, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("ユーザを検索", companyCd, FunctionIdConstant.SKF3090_SC004);
 
 		// 戻り値に設定するリストのインスタンスを生成
 		List<Map<String, Object>> companyList = new ArrayList<Map<String, Object>>();

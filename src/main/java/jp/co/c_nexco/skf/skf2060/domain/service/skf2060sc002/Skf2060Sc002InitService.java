@@ -83,7 +83,7 @@ public class Skf2060Sc002InitService extends SkfServiceAbstract<Skf2060Sc002Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2060_SC002_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", companyCd, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", companyCd, FunctionIdConstant.SKF2060_SC002);
 		// 操作ガイドの設定
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2060_SC002));
 		
