@@ -24,6 +24,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001UpdateShainNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -209,7 +210,7 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 			//更新者情報
 			Map<String, String> userInfo = new HashMap<String, String>();
 			userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-			String updateUserId = userInfo.get("userName");
+			String updateUserId = LoginUserInfoUtils.getUserCd();
 			String updateProgramId = "Skf3050Sc001";
 			
 			//仮社員／旧社員（入居&本人同居）／一括変更後の社員（HR連携データ確定処理されるまで ）の場合
