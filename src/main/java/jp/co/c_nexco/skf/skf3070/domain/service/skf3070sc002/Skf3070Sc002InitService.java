@@ -48,7 +48,7 @@ public class Skf3070Sc002InitService extends SkfServiceAbstract<Skf3070Sc002Init
 		if (NfwStringUtils.isNotEmpty(initDto.getOwnerNo())) {
 			// 賃貸人（代理人）番号がある場合
 			// 操作ログを出力
-			skfOperationLogUtils.setAccessLog("編集", CodeConstant.C001, initDto.getPrePageId());
+			skfOperationLogUtils.setAccessLog("編集", CodeConstant.C001, FunctionIdConstant.SKF3070_SC001);
 
 			// 賃貸人（代理人）情報を取得
 			long ownerNoL = Long.parseLong(initDto.getOwnerNo());
@@ -73,7 +73,7 @@ public class Skf3070Sc002InitService extends SkfServiceAbstract<Skf3070Sc002Init
 
 		} else {
 			// 操作ログを出力
-			skfOperationLogUtils.setAccessLog("新規", CodeConstant.C001, initDto.getPrePageId());
+			skfOperationLogUtils.setAccessLog("新規", CodeConstant.C001, FunctionIdConstant.SKF3070_SC001);
 			// 項目初期化
 			initDto.setOwnerName(CodeConstant.NONE);
 			initDto.setOwnerNameKk(CodeConstant.NONE);
