@@ -706,10 +706,6 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 				}
 			}
 
-			if (teijiDataInfo != null && teijiDataInfo.getTeijiNo() >= 0) {
-
-			}
-
 			// 返却備品項目表示
 			initDto.setHenkyakuInfoViewFlg(sTrue);
 			// 返却情報の設定
