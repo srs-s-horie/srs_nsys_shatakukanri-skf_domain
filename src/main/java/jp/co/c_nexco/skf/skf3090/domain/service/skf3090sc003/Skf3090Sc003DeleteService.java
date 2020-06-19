@@ -28,6 +28,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc003.Skf3090Sc003DeleteDto;
@@ -76,7 +77,7 @@ public class Skf3090Sc003DeleteService extends SkfServiceAbstract<Skf3090Sc003De
 	public Skf3090Sc003DeleteDto index(Skf3090Sc003DeleteDto deleteDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());		
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, FunctionIdConstant.SKF3090_SC003);		
 
 		// 追加領域
 		// ---- エラー時用に、画面入力情報で置き換える（置き換えないと、検索した時の情報に戻ってしまう）

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc004.Skf3020Sc004NowSyatakuDto;
 
@@ -33,7 +34,7 @@ public class Skf3020Sc004NowSyatakuService extends SkfServiceAbstract<Skf3020Sc0
 	public Skf3020Sc004NowSyatakuDto index(Skf3020Sc004NowSyatakuDto nowSyataku) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("現社宅", CodeConstant.C001, nowSyataku.getPageId());		
+		skfOperationLogUtils.setAccessLog("現社宅", CodeConstant.C001, FunctionIdConstant.SKF3020_SC004);		
 		
 		return nowSyataku;
 	}

@@ -660,16 +660,9 @@ public class Skf3050Sc002SharedService {
 				//現物算定額合計
 				Integer genbutsuAllSum = 0;
 				
-
-//				if (rowDataBeanList.size() != 0) {
-//					targetRow = rowDataBeanList.size() + START_LINE;
-//				}
-
 				//データ行だけ繰り返す
 				for (int i = 0; i < genbutsuDataList.size(); i++) {
 					Skf3050Bt003GetPositiveGenbutsuSanteiSakuseiSyoriDataExp genbutsuShori = genbutsuDataList.get(i);
-
-//					targetRow++;
 
 					//処理月翌月の末日(YYYYMMDD)
 					String shoriNengetsuMatsujitsu = getTaishoutsukiYokugetsuMatsu(shoriNengetsu);
@@ -727,16 +720,7 @@ public class Skf3050Sc002SharedService {
 					
 					//現物算定額合計
 					genbutsuAllSum += genbutsuShori.getGenbutuSantei();
-//					String genbutuSantei = "";
-//					if (genbutsuShori.getGenbutuSantei() != null) {
-//						genbutuSantei = genbutsuShori.getGenbutuSantei().toString();
-//					}
-//
-//					RowDataBean rowData = createRowData(targetRow, genbutsuShori.getShainNo(), shoriNengetsu, "", "",
-//							"", "", "", "", "", "", genbutuSantei, "");
-//					if (rowData != null) {
-//						rowDataBeanList.add(rowData);
-//					}
+
 				}
 				Skf3050Sc002PositiveRenkeiInfoExp setExp = shainRowMap.get(shainNo);
 				
@@ -759,11 +743,6 @@ public class Skf3050Sc002SharedService {
 
 			//該当データが存在する場合
 			if (sakuseiSyoriDataList.size() > 0) {
-//				int targetRow = START_LINE;
-//
-//				if (rowDataBeanList.size() != 0) {
-//					targetRow = rowDataBeanList.size() + START_LINE;
-//				}
 
 				//取得した情報分繰り返す
 				for (int i = 0; i < sakuseiSyoriDataList.size(); i++) {
@@ -857,13 +836,7 @@ public class Skf3050Sc002SharedService {
 					}
 
 					shainRowMap.replace(shainNo, setExp);
-//					targetRow++;
-//					RowDataBean rowData = createRowData(targetRow, shainNo, shoriNengetsu, siyoryoHoyu, chusyajyoHoyu,
-//							siyoryoShagai, chusyajyoShagai, siyoryoKasiage, chusyajyoKasiage, kyoekihiHoyu,
-//							kyoekihiShagai, "", "");
-//					if (rowData != null) {
-//						rowDataBeanList.add(rowData);
-//					}
+
 				}
 			}
 		}
@@ -1120,11 +1093,6 @@ public class Skf3050Sc002SharedService {
 
 		//該当データが存在する場合
 		if (bihinDataList.size() > 0) {
-//			int targetRow = START_LINE;
-//
-//			if (rowDataBeanList.size() != 0) {
-//				targetRow = rowDataBeanList.size() + START_LINE;
-//			}
 
 			//取得した情報分繰り返す
 			for (int i = 0; i < bihinDataList.size(); i++) {
@@ -1156,13 +1124,7 @@ public class Skf3050Sc002SharedService {
 				}
 
 				shainRowMap.replace(shainNo, setExp);
-//				targetRow++;
-//
-//				RowDataBean rowData = createRowData(targetRow, shainNo, shoriNengetsu, "", "", "", "", "", "", "", "",
-//						"", bihinGenbutuGoukei);
-//				if (rowData != null) {
-//					rowDataBeanList.add(rowData);
-//				}
+
 			}
 		}
 
@@ -2377,12 +2339,6 @@ public class Skf3050Sc002SharedService {
 
 			for (int j = 0; j < bihinMeisaiDtList.size(); j++) {
 
-//				List<String> lockBihinMeisaiResult = skf3050Bt001GetDataForUpdateExpRepository
-//						.getSkf3030TShatakuBihinRirekiData(paramShoriNengetsu);
-//				if (lockBihinMeisaiResult.size() == 0) {
-//					return SkfCommonConstant.ABNORMAL;
-//				}
-
 				updateBihinMeisai(renRirekiRow.getShatakuKanriId(), bihinMeisaiDtList.get(j).getBihinPayment(),
 						paramUserId, bihinMeisaiDtList.get(j).getBihinCd(), paramShoriNengetsu);
 			}
@@ -2510,12 +2466,6 @@ public class Skf3050Sc002SharedService {
 					preJigyoName = shainIdoDt2.getShainBusinessAreaName();
 				}
 			}
-
-//			List<String> lockShozokuRirekiResult = skf3050Bt001GetDataForUpdateExpRepository
-//					.getSkf3030TShozokuRirekiData(paramShoriNengetsu);
-//			if (lockShozokuRirekiResult.size() == 0) {
-//				return SkfCommonConstant.ABNORMAL;
-//			}
 
 			//月別所属情報履歴の当月事業領域、前月事業領域の更新
 			updateShozokuRireki(companyCd, agencyCd, agencyName, affilCd1, affilName1, affilCd2, affilName2,
@@ -2895,7 +2845,7 @@ public class Skf3050Sc002SharedService {
 			throws ParseException {
 
 		String birthDay = "";
-
+		//生年月日取得(YYYYMMDD)
 		if (renRirekiRow.getBirthdayYear() != 0) {
 			birthDay = String.format("%04d", renRirekiRow.getBirthdayYear());
 			birthDay += String.format("%02d", renRirekiRow.getBirthdayMonth());
@@ -2905,6 +2855,7 @@ public class Skf3050Sc002SharedService {
 			birthDay = "";
 		}
 
+		//社宅使用料計算部品呼び出し
 		SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp param = new SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp();
 		param.setShoriNengetsu(shoriNengetsu);
 		param.setShoriKbn(SHIYORYO_GETSUGAKU_SHORI_KBN);
@@ -2913,6 +2864,7 @@ public class Skf3050Sc002SharedService {
 		param.setShatakuChintairyou(String.valueOf(shatakuChintairyo));
 		param.setSeinengappi(birthDay);
 
+		//社宅使用料月額の取得
 		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp outData = skfBaseBusinessLogicUtils
 				.getShatakuShiyouryouKeisan(param);
 
@@ -3121,19 +3073,20 @@ public class Skf3050Sc002SharedService {
 	private BigDecimal getChushajoShiyoryoHiwari(String shoriNengetsu, String parkingStartDate, String parkingEndDate,
 			BigDecimal tyuushajouShiyouryouGetsugaku) {
 
+		//処理年月初日(YYYYMMDD)
 		String shoriNengetsuShonichi = shoriNengetsu + "01";
 
 		BigDecimal decimalParkingStartDate = new BigDecimal(parkingStartDate);
 		BigDecimal decimalShoriNengetsuShonichi = new BigDecimal(shoriNengetsuShonichi);
-
+		//開始日が処理年月の初日より過去の場合、初日とする
 		if (decimalParkingStartDate.compareTo(decimalShoriNengetsuShonichi) < 0) {
 			parkingStartDate = shoriNengetsuShonichi;
 		}
 
-		
+		//処理年月末日(YYYYMMDD)
 		String shoriNengetsuMatsujitsu = getGetsumatsujitu(shoriNengetsu);
 		BigDecimal decimalShoriNengetsuMatsujitsu = new BigDecimal(shoriNengetsuMatsujitsu);
-
+		//返却日が未入力または処理年月末日より未来の場合、末日とする
 		if (NfwStringUtils.isEmpty(parkingEndDate)) {
 			parkingEndDate = shoriNengetsuMatsujitsu;
 		} else {

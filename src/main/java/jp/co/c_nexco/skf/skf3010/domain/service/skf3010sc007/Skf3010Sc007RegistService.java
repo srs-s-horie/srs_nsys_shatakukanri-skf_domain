@@ -85,7 +85,7 @@ public class Skf3010Sc007RegistService extends SkfServiceAbstract<Skf3010Sc007Re
 		registDto.setPageTitleKey(MessageIdConstant.SKF3010_SC007_TITLE);
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3010_SC007);
 		
 		// Debugログで出力
 		LogUtils.debugByMsg("駐車場契約情報-区画番号：" + registDto.getHdnParkingBlock());
@@ -561,7 +561,7 @@ public class Skf3010Sc007RegistService extends SkfServiceAbstract<Skf3010Sc007Re
 		if (modeUpdate) {
 			// 更新の場合はUPDATE
 			setValue.setUpdateUserId(LoginUserInfoUtils.getUserCd());
-			setValue.setUpdateProgramId(dto.getPageId());
+			setValue.setUpdateProgramId(FunctionIdConstant.SKF3010_SC007);
 			try{
 				//更新日時設定
 				setValue.setLastUpdateDate(dateFormat.parse(dto.getContractUpdateDate()));

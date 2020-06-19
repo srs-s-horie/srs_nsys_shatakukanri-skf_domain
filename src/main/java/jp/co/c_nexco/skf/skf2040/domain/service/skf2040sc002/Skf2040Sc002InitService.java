@@ -98,7 +98,7 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 		}
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
 		// セッション情報引き渡し
 		skf2040Sc002ShareService.setMenuScopeSessionBean(menuScopeSessionBean);
 		// セッション情報初期化

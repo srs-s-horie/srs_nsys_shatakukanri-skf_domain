@@ -64,7 +64,7 @@ public class Skf3050Sc002CloseTaskExecutionService extends SkfServiceAbstract<Sk
 	@Override
 	protected BaseDto index(Skf3050Sc002CloseTaskExecutionDto closeTaskDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("締め処理", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("締め処理", CodeConstant.C001, FunctionIdConstant.SKF3050_SC002);
 
 		LogUtils.info(MessageIdConstant.I_SKF_1022, BATCH_NAME);
 		String jikkouShijiYoteiNengetsu = closeTaskDto.getHdnJikkouShijiYoteiNengetsu();

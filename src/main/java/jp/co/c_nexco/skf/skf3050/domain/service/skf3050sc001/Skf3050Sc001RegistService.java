@@ -24,9 +24,11 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001UpdateShainNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -80,7 +82,7 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 	public Skf3050Sc001RegistDto index(Skf3050Sc001RegistDto registDto) throws Exception {
 		 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3050_SC001);
 		
 		Map<String,Object> resultMap = updateShainNo(registDto.getShainListData());
 		int resultNo = Integer.parseInt(resultMap.get("errorNo").toString());
@@ -208,7 +210,7 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 			//更新者情報
 			Map<String, String> userInfo = new HashMap<String, String>();
 			userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
-			String updateUserId = userInfo.get("userName");
+			String updateUserId = LoginUserInfoUtils.getUserCd();
 			String updateProgramId = "Skf3050Sc001";
 			
 			//仮社員／旧社員（入居&本人同居）／一括変更後の社員（HR連携データ確定処理されるまで ）の場合

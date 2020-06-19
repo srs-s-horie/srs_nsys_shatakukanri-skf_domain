@@ -59,7 +59,7 @@ public class Skf2010Sc007TransferService extends SkfServiceAbstract<Skf2010Sc007
 	public BaseDto index(Skf2010Sc007TransferDto transferDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("申請書類を作成", companyCd, transferDto.getPageId());
+		skfOperationLogUtils.setAccessLog("申請書類を作成", companyCd, FunctionIdConstant.SKF2010_SC007);
 
 		// 画面遷移前のチェック処理
 		setRedirectAppl(transferDto);

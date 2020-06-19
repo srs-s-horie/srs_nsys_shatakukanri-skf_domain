@@ -20,6 +20,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc002.Skf2020Sc002SaveDto;
@@ -48,7 +49,7 @@ public class Skf2020Sc002SaveService extends SkfServiceAbstract<Skf2020Sc002Save
 	public BaseDto index(Skf2020Sc002SaveDto saveDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, saveDto.getPageId());
+		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, FunctionIdConstant.SKF2020_SC002);
 
 		// 申請書情報の取得
 		Map<String, String> applInfo = new HashMap<String, String>();

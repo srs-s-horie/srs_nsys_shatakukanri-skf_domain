@@ -175,12 +175,7 @@ public class Skf3010Sc007SharedService {
 			tmpMap.put("colContractStartDate", skfDateFormatUtils.dateFormatFromString(tmpData.getContractStartDate(), "yyyy/MM/dd"));
 			tmpMap.put("colContractEndDate", skfDateFormatUtils.dateFormatFromString(tmpData.getContractEndDate(), "yyyy/MM/dd"));
 			
-			//駐車場代変換
-//			String landRent = CodeConstant.DOUBLE_QUOTATION;
-//			createObjToMoneyString(tmpData.getLandRent());
-//			if(tmpData.getLandRent() != null){
-//				landRent = String.format("%,d", tmpData.getLandRent());
-//			}
+			//駐車場代
 			tmpMap.put("colLandRent", createObjToMoneyString(tmpData.getLandRent()));
 			
 			tmpMap.put("colBiko", tmpData.getBiko());

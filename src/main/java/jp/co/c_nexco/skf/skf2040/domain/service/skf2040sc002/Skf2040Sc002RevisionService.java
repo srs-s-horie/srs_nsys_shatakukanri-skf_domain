@@ -39,7 +39,7 @@ public class Skf2040Sc002RevisionService extends SkfServiceAbstract<Skf2040Sc002
 	public BaseDto index(Skf2040Sc002RevisionDto rvsDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("修正依頼", CodeConstant.C001, rvsDto.getPageId());
+		skfOperationLogUtils.setAccessLog("修正依頼", CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
 
 		// コメント欄チェック
 		boolean validate = skf2040sc002SharedService.checkValidation(rvsDto, sTrue);

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc004.Skf3020Sc004InitDto;
@@ -47,7 +48,7 @@ public class Skf3020Sc004InitService extends SkfServiceAbstract<Skf3020Sc004Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3020_SC004_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3020_SC004);
 		
 		// リストチェック状態を解除
 		initDto.setNyukyoChkVal(null);

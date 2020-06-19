@@ -52,7 +52,7 @@ public class Skf3010Sc005InitService extends SkfServiceAbstract<Skf3010Sc005Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3010_SC005_TITLE);
 
 		//操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3010_SC005);
 		// 初期化
 		initialize(initDto);
 

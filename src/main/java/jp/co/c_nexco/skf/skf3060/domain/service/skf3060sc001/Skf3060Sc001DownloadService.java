@@ -23,6 +23,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput;
 import jp.co.c_nexco.nfw.webcore.utils.filetransfer.FileOutput.FileEncode;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
@@ -90,7 +91,7 @@ public class Skf3060Sc001DownloadService extends SkfServiceAbstract<Skf3060Sc001
 		downloadDto.setPageTitleKey(MessageIdConstant.SKF3060_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("CSV出力", CodeConstant.C001, downloadDto.getPageId());
+		skfOperationLogUtils.setAccessLog("CSV出力", CodeConstant.C001, FunctionIdConstant.SKF3060_SC001);
 		
 		// エラー状態クリア
 		downloadDto.setBaseTermFromErr(null);

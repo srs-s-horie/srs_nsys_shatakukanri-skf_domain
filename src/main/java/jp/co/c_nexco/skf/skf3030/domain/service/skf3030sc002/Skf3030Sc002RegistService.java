@@ -153,14 +153,13 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 	 */
 	@Override
 	public Skf3030Sc002RegistDto index(Skf3030Sc002RegistDto registDto) throws Exception {
-		
+
 		registDto.setPageTitleKey(MessageIdConstant.SKF3030_SC002_TITLE);
- 		
 		// デバッグログ
 		LogUtils.debugByMsg("登録");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3030_SC002);
-		
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss.SSS");
 		// ドロップダウンリスト
 		List<Map<String, Object>> sc006SogoRyojokyoSelectList = new ArrayList<Map<String, Object>>();
@@ -179,7 +178,7 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 		List<Map<String, Object>> sc006SokinKyoekihiSelectList = new ArrayList<Map<String, Object>>();
 		//可変ラベル値
 		skf3030Sc002SharedService.setVariableLabel(skf3030Sc002SharedService.jsonArrayToArrayList(registDto.getJsonLabelList()), registDto);
-		
+
 		//フラグ初期化
 		registDto.setBihinItiranFlg(0);
 		//LoadCompleteイベントで備品状態の再読み込みを行わない(エラー発生時のみ)
@@ -189,7 +188,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 		if(checkRiyouStartDay(registDto)){
 			return registDto;
 		}
-		
 
 		//「社宅管理台帳ID」が”0”の場合
 		if (Skf3030Sc002CommonDto.NO_SHATAKU_KANRI_ID.equals(registDto.getHdnShatakuKanriId()) ){
@@ -213,137 +211,71 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 						rentalPatternUpdateDateForRegist,
 						rentalPatternTorokuList,
 						teijiNo);
-				
-//				Map<String,Object> returnMap = insertData(
-//						skf3030Sc002SharedService.getTbtTeijiDataColumnInfoList(teijiNo,registDto), 
-//						skf3030Sc002SharedService.getTbtPublicShatakuLedgerDataColumnInfoList(registDto),
-//						registDto.getHdnShatakuKanriNo(),
-//						registDto.getHdnShatakuRoomKanriNo(),
-//						registDto.getHdnChushajoKanriNo1(),
-//						registDto.getHdnChushajoKanriNo2(),
-//						registDto.getSc006RiyouStartDayOne(),
-//						registDto.getSc006RiyouStartDayTwo(),
-//						skf3030Sc002SharedService.setBihinData(registDto,teijiNo),
-//						skf3030Sc002SharedService.getTbtPublicShatakuParkingBlockDataColumnInfoList(1, false,registDto),
-//						skf3030Sc002SharedService.getTbtPublicShatakuParkingBlockDataColumnInfoList(2, false,registDto),
-//						CodeConstant.C001,
-//						LoginUserInfoUtils.getUserCd(),
-//						registDto.getPageId(),
-//						registDto.getSc006TaiyoDay(),
-//						rentalPatternUpdateDate,
-//						rentalPatternUpdateDateForRegist,
-//						rentalPatternTorokuList);
-//				int returnCount = Integer.parseInt(returnMap.get("returnCount").toString());
-//				shatakuKanriId = returnMap.get("shatakuKanriId").toString();
-//	
-//				if(returnCount == 0){
-//						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1073);
-//						throwBusinessExceptionIfErrors(registDto.getResultMessages());
-//				}else if(returnCount == -1){
-//						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1076);
-//						throwBusinessExceptionIfErrors(registDto.getResultMessages());
-//				}else if(returnCount == -2){
-//						ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1010);
-//						throwBusinessExceptionIfErrors(registDto.getResultMessages());
-//				}else{
-//					ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
-					//登録した内容を画面に反映する
-					//取得した社宅管理IDをhdnに設定
-					//Me.hdnShatakuKanriId.Value() = shatakuKanriId
-					registDto.setHdnShatakuKanriId(shatakuKanriId);
-					//社宅使用料日割金額
-					//Me.litShatakuShiyoryoHiwariKingaku.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterShatakuShiyoryoHiwariKingaku.Value), False)
-					registDto.setSc006SiyoryoHiwariPay(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoHiwariKingaku()), false));
-					//社宅使用料月額（調整後）
-					//Me.litShatakuShiyoryoGetsugakuChoseigo.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo.Value()), False)
-					registDto.setSc006SyatauMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo()),false));
-					//駐車場使用料日割金額（区画１）
-					//Me.litKukaku1ChushajoShiyoroHiwariKingaku.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku.Value()), False)
-					registDto.setSc006TyusyaDayPayOne(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku()),false));
-					//駐車場使用料日割金額（区画２）
-					//Me.litKukaku2ChushajoShiyoroHiwariKingaku.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku.Value()), False)
-					registDto.setSc006TyusyaDayPayTwo(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku()),false));
-					//駐車場使用料月額（調整後）
-					//Me.litChushajoShiyoryoGetsugakuChoseigo.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo.Value()), False)
-					registDto.setSc006TyusyaMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo()),false));
-					//個人負担共益費月額（調整後）
-					//Me.litKojinFutanKyoekihiGetsugakuChoseigo.Text = Me.hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo.Value()
-					registDto.setSc006KyoekihiPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo()),false));
-					//Hiddenの更新
-					//使用料パターンID（hidden）と変更前使用料パターンID（hidden）比較
-					//Me.hdnChangeBeforeRentalPatternId.Value = Me.hdnRentalPatternId.Value
-					registDto.setHdnChangeBeforeRentalPatternId(registDto.getHdnRentalPatternId());
-					//【使用料計算機能対応】使用料パターンID
-					//Me.hdnShiyoryoKeisanPatternId.Value = rentalPatternTorokuList(1)
-					registDto.setHdnShiyoryoKeisanPatternId(rentalPatternTorokuList.get(Skf3030Sc002CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID));
-					//使用料パターン排他更新日
-	//					Me.hdnRentalPatternUpdateDate.Value = HttpUtility.HtmlEncode( _
-	//							DateUtil.ConversionFormatYYYYMMDDHHMMSSF6WithDelimiter( _
-	//							    S3002_NyutaikyoDataRegistBusinessLogic.GetRentalPatternInfo(Me.hdnShiyoryoKeisanPatternId.Value)(0).UPDATE_DATE))
-					List<Skf3030Sc002GetRentalPatternInfoExp> rentalPatternInfoList = new ArrayList<Skf3030Sc002GetRentalPatternInfoExp>();
-					Skf3030Sc002GetRentalPatternInfoExpParameter param = new Skf3030Sc002GetRentalPatternInfoExpParameter();
-					param.setRentalPatternId(Long.parseLong(registDto.getHdnShiyoryoKeisanPatternId()));
-					// 使用料パターン情報取得
-					rentalPatternInfoList = skf3030Sc002GetRentalPatternInfoExpRepository.getRentalPatternInfo(param);
-					if(rentalPatternInfoList.size()>0){
-						String updateDate = dateFormat.format(rentalPatternInfoList.get(0).getUpdateDate());
-						registDto.setHdnRentalPatternUpdateDate(updateDate);
-					}
-					
-					//入居予定日と変更前入居予定日（hidden）比較
-					//Me.hdnChangeBeforeNyukyoYoteibi.Value = HttpUtility.HtmlEncode(Me.txtNyukyoYoteibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeNyukyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006NyukyoYoteiDay()));
-					//退居予定日と変更前退居予定日（hidden）比較
-					//Me.hdnChangeBeforeTaikyoYoteibi.Value = HttpUtility.HtmlEncode(Me.txtTaikyoYoskf3030Sc002SharedService.convertYenFormatteibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeTaikyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaikyoYoteiDay()));
-					//役員算定と変更前役員算定（hidden）比較
-					//Me.hdnChangeBeforeYakuinSantei.Value = Me.ddlYakuinSantei.SelectedValue
-					registDto.setHdnChangeBeforeYakuinSantei(registDto.getSc006YakuinSanteiSelect());
-					//社宅使用料調整金額と変更前社宅使用料調整金額（hidden）比較
-					//Me.hdnChangeBeforeShatakuShiyoryoChoseiKingaku.Value = GetPayText(Me.txtShatakuShiyoryoChoseiKingaku.Text)
-					registDto.setHdnChangeBeforeShatakuShiyoryoChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006SiyoroTyoseiPay()));
-					//個人負担共益費月額と変更前個人負担共益費月額（hidden）比較
-					//Me.hdnChangeBeforeKojinFutanKyoekihiGetsugaku.Value = GetPayText(Me.txtKojinFutanKyoekihiGetsugaku.Text)
-					registDto.setHdnChangeBeforeKojinFutanKyoekihiGetsugaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiMonthPay()));
-					//個人負担共益費調整金額と変更前個人負担共益費調整金額（hidden）比較
-					//Me.hdnChangeBeforeKojinFutanKyoekihiChoseiKingaku.Value = GetPayText(Me.txtKojinFutanKyoekihiChoseiKingaku.Text)
-					registDto.setHdnChangeBeforeKojinFutanKyoekihiChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiTyoseiPay()));
-					//区画１駐車場管理番号（hidden）と変更前区画１駐車場管理番号（hidden）比較
-					//Me.hdnChangeBeforeChushajoKanriNo1.Value = Me.hdnChushajoKanriNo1.Value
-					registDto.setHdnChangeBeforeChushajoKanriNo1(registDto.getHdnChushajoKanriNo1());
-					//区画１利用開始日と変更前区画１利用開始日（hidden）比較
-					//Me.hdnChangeBeforeKukaku1RiyoKaishibi.Value = HttpUtility.HtmlEncode(Me.txtKukaku1RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku1RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayOne()));
-					//区画１利用終了日と変更前区画１利用終了日（hidden）比較
-					//Me.hdnChangeBeforeKukaku1RiyoShuryobi.Value = HttpUtility.HtmlEncode(Me.txtKukaku1RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku1RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayOne()));
-					//区画２駐車場管理番号（hidden）と変更前区画２駐車場管理番号（hidden）比較
-					//Me.hdnChangeBeforeChushajoKanriNo2.Value = Me.hdnChushajoKanriNo2.Value
-					registDto.setHdnChangeBeforeChushajoKanriNo2(registDto.getHdnChushajoKanriNo2());
-					//区画２利用開始日と変更前区画２利用開始日（hidden）比較
-					//Me.hdnChangeBeforeKukaku2RiyoKaishibi.Value = HttpUtility.HtmlEncode(Me.txtKukaku2RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku2RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayTwo()));
-					//区画２利用終了日と変更前区画２利用終了日（hidden）比較
-					//Me.hdnChangeBeforeKukaku2RiyoShuryobi.Value = HttpUtility.HtmlEncode(Me.txtKukaku2RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku2RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayTwo()));
-					//開始日(hidden)
-					//Me.hdnChangeBeforeKaishibi.Value = HttpUtility.HtmlEncode(Me.txtKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006StartDay()));
-					//終了日(hidden)
-					//Me.hdnChangeBeforeShuryobi.Value = HttpUtility.HtmlEncode(Me.txtShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006EndDay()));
-					//貸与日(hidden)
-					//Me.hdnChangeBeforeTaiyobi.Value = HttpUtility.HtmlEncode(Me.txtBihinTaiyobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeTaiyobi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaiyoDay()));
-					//返却日(hidden)
-					//Me.hdnChangeBeforeHenkyakubi.Value = HttpUtility.HtmlEncode(Me.txtBihinHenkyakubi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeHenkyakubi(skf3030Sc002SharedService.getDateText(registDto.getSc006HenkyakuDay()));
-					//登録成功時は備品の再読み込みを実施
-					registDto.setBihinItiranReloadFlg(false);
-//				}
-			
-//			//メッセージを表示
-//			Me.hdnFieldMessage.Value() = HttpUtility.HtmlEncode(message)
+				//登録した内容を画面に反映する
+				//取得した社宅管理IDをhdnに設定
+				registDto.setHdnShatakuKanriId(shatakuKanriId);
+				//社宅使用料日割金額
+				registDto.setSc006SiyoryoHiwariPay(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoHiwariKingaku()), false));
+				//社宅使用料月額（調整後）
+				registDto.setSc006SyatauMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo()),false));
+				//駐車場使用料日割金額（区画１）
+				registDto.setSc006TyusyaDayPayOne(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku()),false));
+				//駐車場使用料日割金額（区画２）
+				registDto.setSc006TyusyaDayPayTwo(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku()),false));
+				//駐車場使用料月額（調整後）
+				registDto.setSc006TyusyaMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo()),false));
+				//個人負担共益費月額（調整後）
+				registDto.setSc006KyoekihiPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo()),false));
+				//Hiddenの更新
+				//使用料パターンID（hidden）と変更前使用料パターンID（hidden）比較
+				registDto.setHdnChangeBeforeRentalPatternId(registDto.getHdnRentalPatternId());
+				//【使用料計算機能対応】使用料パターンID
+				registDto.setHdnShiyoryoKeisanPatternId(rentalPatternTorokuList.get(Skf3030Sc002CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID));
+				//使用料パターン排他更新日
+				List<Skf3030Sc002GetRentalPatternInfoExp> rentalPatternInfoList = new ArrayList<Skf3030Sc002GetRentalPatternInfoExp>();
+				Skf3030Sc002GetRentalPatternInfoExpParameter param = new Skf3030Sc002GetRentalPatternInfoExpParameter();
+				param.setRentalPatternId(Long.parseLong(registDto.getHdnShiyoryoKeisanPatternId()));
+				// 使用料パターン情報取得
+				rentalPatternInfoList = skf3030Sc002GetRentalPatternInfoExpRepository.getRentalPatternInfo(param);
+				if(rentalPatternInfoList.size()>0){
+					String updateDate = dateFormat.format(rentalPatternInfoList.get(0).getUpdateDate());
+					registDto.setHdnRentalPatternUpdateDate(updateDate);
+				}
+
+				//入居予定日と変更前入居予定日（hidden）比較
+				registDto.setHdnChangeBeforeNyukyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006NyukyoYoteiDay()));
+				//退居予定日と変更前退居予定日（hidden）比較
+				registDto.setHdnChangeBeforeTaikyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaikyoYoteiDay()));
+				//役員算定と変更前役員算定（hidden）比較
+				registDto.setHdnChangeBeforeYakuinSantei(registDto.getSc006YakuinSanteiSelect());
+				//社宅使用料調整金額と変更前社宅使用料調整金額（hidden）比較
+				registDto.setHdnChangeBeforeShatakuShiyoryoChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006SiyoroTyoseiPay()));
+				//個人負担共益費月額と変更前個人負担共益費月額（hidden）比較
+				registDto.setHdnChangeBeforeKojinFutanKyoekihiGetsugaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiMonthPay()));
+				//個人負担共益費調整金額と変更前個人負担共益費調整金額（hidden）比較
+				registDto.setHdnChangeBeforeKojinFutanKyoekihiChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiTyoseiPay()));
+				//区画１駐車場管理番号（hidden）と変更前区画１駐車場管理番号（hidden）比較
+				registDto.setHdnChangeBeforeChushajoKanriNo1(registDto.getHdnChushajoKanriNo1());
+				//区画１利用開始日と変更前区画１利用開始日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku1RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayOne()));
+				//区画１利用終了日と変更前区画１利用終了日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku1RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayOne()));
+				//区画２駐車場管理番号（hidden）と変更前区画２駐車場管理番号（hidden）比較
+				registDto.setHdnChangeBeforeChushajoKanriNo2(registDto.getHdnChushajoKanriNo2());
+				//区画２利用開始日と変更前区画２利用開始日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku2RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayTwo()));
+				//区画２利用終了日と変更前区画２利用終了日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku2RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayTwo()));
+				//開始日(hidden)
+				registDto.setHdnChangeBeforeKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006StartDay()));
+				//終了日(hidden)
+				registDto.setHdnChangeBeforeShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006EndDay()));
+				//貸与日(hidden)
+				registDto.setHdnChangeBeforeTaiyobi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaiyoDay()));
+				//返却日(hidden)
+				registDto.setHdnChangeBeforeHenkyakubi(skf3030Sc002SharedService.getDateText(registDto.getSc006HenkyakuDay()));
+				//登録成功時は備品の再読み込みを実施
+				registDto.setBihinItiranReloadFlg(false);
 				//画面項目
 				skf3030Sc002SharedService.setControlStatus(registDto);
 				//相互利用状況の活性非活性を設定
@@ -353,7 +285,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			//「社宅管理台帳ID」が値を持つ場合
 			//共通チェック
 			if( skf3030Sc002SharedService.validateInput(registDto) ){
-//				int changeFlg = 0;
 				String taikyoFlg  = Skf3030Sc002CommonDto.STR_UPDATE;
 //				//使用料パターンID（hidden）と変更前使用料パターンID（hidden）比較
 //				if(registDto.getHdnRentalPatternId().compareTo(registDto.getHdnChangeBeforeRentalPatternId()) != 0){
@@ -390,79 +321,25 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 					}else{
 						taikyoFlg = Skf3030Sc002CommonDto.STR_UPDATE;
 					}
-	
+
 					//退居日が前月以前であれば、即空きに設定
 					if(skfPageBusinessLogicUtils.checkPassedDay(skf3030Sc002SharedService.getDateText(registDto.getSc006TaikyoYoteiDay()))){
 						taikyoFlg = Skf3030Sc002CommonDto.STR_DELETE;
 					}
 				}
-				//changeFlg未使用のためコメントアウト
-//				//役員算定と変更前役員算定（hidden）比較
-////				If Me.ddlYakuinSantei.SelectedValue.CompareTo(Me.hdnChangeBeforeYakuinSantei.Value) <> 0 Then
-//				if( !Objects.equal(registDto.getSc006YakuinSanteiSelect(), registDto.getHdnChangeBeforeYakuinSantei()) ){
-//					changeFlg += 1;
-//				}
-//				//社宅使用料調整金額と変更前社宅使用料調整金額（hidden）比較
-////				If Me.txtShatakuShiyoryoChoseiKingaku.Text.CompareTo(Me.hdnChangeBeforeShatakuShiyoryoChoseiKingaku.Value) <> 0 Then
-//				if(registDto.getSc006SiyoroTyoseiPay().compareTo(registDto.getHdnChangeBeforeShatakuShiyoryoChoseiKingaku()) != 0){
-//					changeFlg += 1;
-//				}
-//				//個人負担共益費月額と変更前個人負担共益費月額（hidden）比較
-////				If Me.txtKojinFutanKyoekihiGetsugaku.Text.CompareTo(Me.hdnChangeBeforeKojinFutanKyoekihiGetsugaku.Value) <> 0 Then
-//				if(registDto.getSc006KyoekihiMonthPay().compareTo(registDto.getHdnChangeBeforeKojinFutanKyoekihiGetsugaku()) != 0){
-//					changeFlg += 1;
-//				}
-//				//個人負担共益費調整金額と変更前個人負担共益費調整金額（hidden）比較
-////				If Me.txtKojinFutanKyoekihiChoseiKingaku.Text.CompareTo(Me.hdnChangeBeforeKojinFutanKyoekihiChoseiKingaku.Value) <> 0 Then
-//				if(registDto.getSc006KyoekihiTyoseiPay().compareTo(registDto.getHdnChangeBeforeKojinFutanKyoekihiChoseiKingaku()) != 0){
-//					changeFlg += 1;
-//				}
-//				//区画１駐車場管理番号（hidden）と変更前区画１駐車場管理番号（hidden）比較
-////				If Me.hdnChushajoKanriNo1.Value.CompareTo(Me.hdnChangeBeforeChushajoKanriNo1.Value) <> 0 Then
-//				if(registDto.getHdnChushajoKanriNo1().compareTo(registDto.getHdnChangeBeforeChushajoKanriNo1()) != 0){
-//					changeFlg += 1;
-//				}
-//				//区画１利用開始日と変更前区画１利用開始日（hidden）比較
-////				If Me.txtKukaku1RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku1RiyoKaishibi.Value) <> 0 Then
-//				if(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayOne()).compareTo(registDto.getHdnChangeBeforeKukaku1RiyoKaishibi()) != 0){
-//					changeFlg += 1;
-//				}
-//				//区画１利用終了日と変更前区画１利用終了日（hidden）比較
-////				If Me.txtKukaku1RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku1RiyoShuryobi.Value) <> 0 Then
-//				if(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayOne()).compareTo(registDto.getHdnChangeBeforeKukaku1RiyoShuryobi()) != 0){
-//					changeFlg += 1;
-//				}
-//				//区画２駐車場管理番号（hidden）と変更前区画２駐車場管理番号（hidden）比較
-////				If Me.hdnChushajoKanriNo2.Value.CompareTo(Me.hdnChangeBeforeChushajoKanriNo2.Value) <> 0 Then
-//				if(!registDto.getHdnChushajoKanriNo2().equals(registDto.getHdnChangeBeforeChushajoKanriNo2())){
-//					changeFlg += 1;
-//				}
-//				//区画２利用開始日と変更前区画２利用開始日（hidden）比較
-////				If Me.txtKukaku2RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku2RiyoKaishibi.Value) <> 0 Then
-//				if(!skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayTwo()).equals(registDto.getHdnChangeBeforeKukaku2RiyoKaishibi())){
-//					changeFlg += 1;
-//				}
-//				//区画２利用終了日と変更前区画２利用終了日（hidden）比較
-////				If Me.txtKukaku2RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku2RiyoShuryobi.Value) <> 0 Then
-//				if(!skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayTwo()).equals(registDto.getHdnChangeBeforeKukaku2RiyoShuryobi())){
-//					changeFlg += 1;
-//				}
-	
 				//再計算処理行う
 				skf3030Sc002SharedService.siyoryoKeiSanSync(registDto);
 				throwBusinessExceptionIfErrors(registDto.getResultMessages());
-	
+
 				Boolean changeFlg1 = false;
 				Boolean changeFlg2 = false;
 				Boolean changeFlg3 = false;
 				Boolean changeFlg4 = false;
 				//変更前区画１駐車場管理番号（hidden）と区画１駐車場管理番号（hidden）比較
-//				If Me.hdnChangeBeforeChushajoKanriNo1.Value.CompareTo(Me.hdnChushajoKanriNo1.Value) <> 0 Then
 				if(!Objects.equal(registDto.getHdnChangeBeforeChushajoKanriNo1(), registDto.getHdnChushajoKanriNo1())){
 					changeFlg1 = true;
 				}
 				//変更前区画２駐車場管理番号（hidden）と区画２駐車場管理番号（hidden）比較
-//				If Me.hdnChangeBeforeChushajoKanriNo2.Value.CompareTo(Me.hdnChushajoKanriNo2.Value) <> 0 Then
 				if(!Objects.equal(registDto.getHdnChangeBeforeChushajoKanriNo2(), registDto.getHdnChushajoKanriNo2())){
 					changeFlg2 = true;
 				}
@@ -471,9 +348,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				if(!Objects.equal(registDto.getHdnChangeBeforeChushajoKanriNo1(),registDto.getHdnChushajoKanriNo1()) ||
 						skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayOne()).compareTo(registDto.getHdnChangeBeforeKukaku1RiyoKaishibi()) != 0 ||
 						skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayOne()).compareTo(registDto.getHdnChangeBeforeKukaku1RiyoShuryobi()) != 0 ){
-//				If Me.hdnChangeBeforeChushajoKanriNo1.Value.CompareTo(Me.hdnChushajoKanriNo1.Value) <> 0 Or _
-//				   Me.txtKukaku1RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku1RiyoKaishibi.Value) <> 0 Or _
-//				   Me.txtKukaku1RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku1RiyoShuryobi.Value) <> 0 Then
 					changeFlg3 = true;
 				}
 	
@@ -481,9 +355,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				if(!Objects.equal(registDto.getHdnChangeBeforeChushajoKanriNo2(), registDto.getHdnChushajoKanriNo2()) ||
 						skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayTwo()).compareTo(registDto.getHdnChangeBeforeKukaku2RiyoKaishibi()) != 0 ||
 						skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayTwo()).compareTo(registDto.getHdnChangeBeforeKukaku2RiyoShuryobi()) != 0 ){
-//				If Me.hdnChangeBeforeChushajoKanriNo2.Value.CompareTo(Me.hdnChushajoKanriNo2.Value) <> 0 Or _
-//				   Me.txtKukaku2RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku2RiyoKaishibi.Value) <> 0 Or _
-//				   Me.txtKukaku2RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty).CompareTo(Me.hdnChangeBeforeKukaku2RiyoShuryobi.Value) <> 0 Then
 					changeFlg4 = true;
 				}
 	
@@ -503,138 +374,69 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 						rentalPatternUpdateDate, 
 						rentalPatternUpdateDateForRegist,
 						rentalPatternTorokuList);
-				
-//				int returnCount = updateData(
-//							skf3030Sc002SharedService.getTbtPublicShatakuLedgerDataColumnInfoList(registDto),
-//							skf3030Sc002SharedService.getTbtPublicShatakuBihinDataColumnInfoList(registDto),
-//							skf3030Sc002SharedService.getTbtPublicShatakuMutualDataColumnInfoList(registDto),
-//							skf3030Sc002SharedService.getTbtPublicShatakuRentalRirekiDataColumnInfoList(registDto),
-//							skf3030Sc002SharedService.setBihinData(registDto,0L),
-//							skf3030Sc002SharedService.setBihinData(registDto),
-//							skf3030Sc002SharedService.getTbtPublicParkingRirekiDataColumnInfoList(1, true, registDto),
-//							skf3030Sc002SharedService.getTbtPublicParkingRirekiDataColumnInfoList(1, false, registDto),
-//							changeFlg3,
-//							skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayOne()), 
-//							skf3030Sc002SharedService.getTbtPublicShatakuParkingBlockDataColumnInfoList(1, false, registDto),
-//							changeFlg1,
-//							skf3030Sc002SharedService.getTbtPublicShatakuParkingBlockDataColumnInfoList(1, true, registDto),
-//							skf3030Sc002SharedService.getTbtPublicParkingRirekiDataColumnInfoList(2, true, registDto),
-//							skf3030Sc002SharedService.getTbtPublicParkingRirekiDataColumnInfoList(2, false, registDto),
-//							changeFlg4,
-//							skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayTwo()),
-//							skf3030Sc002SharedService.getTbtPublicShatakuParkingBlockDataColumnInfoList(2, false, registDto),
-//							changeFlg2,
-//							skf3030Sc002SharedService.getTbtPublicShatakuParkingBlockDataColumnInfoList(2, true, registDto),
-//							skf3030Sc002SharedService.getTbtPublicShatakuMutualRirekiDataColumnInfoList(registDto),
-//							skf3030Sc002SharedService.getTbtPublicShatakuRoomDataColumnInfoList(taikyoFlg,registDto),
-//							skf3030Sc002SharedService.getTbtPublicShatakuRoomBihinDataColumnInfoList(registDto),
-//							registDto.getHdnShatakuKanriId(),
-//							registDto.getHdnNengetsu(),
-//							LoginUserInfoUtils.getUserCd(),
-//							registDto.getPageId(),
-//							rentalPatternUpdateDate, 
-//							rentalPatternUpdateDateForRegist,
-//							rentalPatternTorokuList);
-//				if(returnCount == 0){
-//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1075);
-//					throwBusinessExceptionIfErrors(registDto.getResultMessages());
-//				}else if(returnCount == -1){
-//					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.W_SKF_1009);
-//					throwBusinessExceptionIfErrors(registDto.getResultMessages());
-//				}else{
-//					//更新完了メッセージ
-//					ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1011);
-					//更新完了したら、hdn変更後 ⇒変更前へ反映
-					//使用料パターンID（hidden）と変更前使用料パターンID（hidden）比較
-					//Me.hdnChangeBeforeRentalPatternId.Value = Me.hdnRentalPatternId.Value
-					registDto.setHdnChangeBeforeRentalPatternId(registDto.getHdnRentalPatternId());
-					//【使用料計算機能対応】使用料パターンID
-					//Me.hdnShiyoryoKeisanPatternId.Value = rentalPatternTorokuList(1)
-					registDto.setHdnShiyoryoKeisanPatternId(rentalPatternTorokuList.get(Skf3030Sc002CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID));
-					//使用料パターン排他更新日
-					//Me.hdnRentalPatternUpdateDate.Value = HttpUtility.HtmlEncode( _
-					//		DateUtil.ConversionFormatYYYYMMDDHHMMSSF6WithDelimiter( _
-					//		    S3002_NyutaikyoDataRegistBusinessLogic.GetRentalPatternInfo(Me.hdnShiyoryoKeisanPatternId.Value)(0).UPDATE_DATE))
-					List<Skf3030Sc002GetRentalPatternInfoExp> rentalPatternInfoList = new ArrayList<Skf3030Sc002GetRentalPatternInfoExp>();
-					Skf3030Sc002GetRentalPatternInfoExpParameter param = new Skf3030Sc002GetRentalPatternInfoExpParameter();
-					param.setRentalPatternId(Long.parseLong(registDto.getHdnShiyoryoKeisanPatternId()));
-					// 使用料パターン情報取得
-					rentalPatternInfoList = skf3030Sc002GetRentalPatternInfoExpRepository.getRentalPatternInfo(param);
-					if(rentalPatternInfoList.size()>0){
-						String updateDate = dateFormat.format(rentalPatternInfoList.get(0).getUpdateDate());
-						registDto.setHdnRentalPatternUpdateDate(updateDate);
-					}
-					//入居予定日と変更前入居予定日（hidden）比較
-					//Me.hdnChangeBeforeNyukyoYoteibi.Value = HttpUtility.HtmlEncode(Me.txtNyukyoYoteibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeNyukyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006NyukyoYoteiDay()));
-					//退居予定日と変更前退居予定日（hidden）比較
-					//Me.hdnChangeBeforeTaikyoYoteibi.Value = HttpUtility.HtmlEncode(Me.txtTaikyoYoskf3030Sc002SharedService.convertYenFormatteibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeTaikyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaikyoYoteiDay()));
-					//役員算定と変更前役員算定（hidden）比較
-					//Me.hdnChangeBeforeYakuinSantei.Value = Me.ddlYakuinSantei.SelectedValue
-					registDto.setHdnChangeBeforeYakuinSantei(registDto.getSc006YakuinSanteiSelect());
-					//社宅使用料調整金額と変更前社宅使用料調整金額（hidden）比較
-					//Me.hdnChangeBeforeShatakuShiyoryoChoseiKingaku.Value = GetPayText(Me.txtShatakuShiyoryoChoseiKingaku.Text)
-					registDto.setHdnChangeBeforeShatakuShiyoryoChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006SiyoroTyoseiPay()));
-					//個人負担共益費月額と変更前個人負担共益費月額（hidden）比較
-					//Me.hdnChangeBeforeKojinFutanKyoekihiGetsugaku.Value = GetPayText(Me.txtKojinFutanKyoekihiGetsugaku.Text)
-					registDto.setHdnChangeBeforeKojinFutanKyoekihiGetsugaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiMonthPay()));
-					//個人負担共益費調整金額と変更前個人負担共益費調整金額（hidden）比較
-					//Me.hdnChangeBeforeKojinFutanKyoekihiChoseiKingaku.Value = GetPayText(Me.txtKojinFutanKyoekihiChoseiKingaku.Text)
-					registDto.setHdnChangeBeforeKojinFutanKyoekihiChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiTyoseiPay()));
-					//区画１駐車場管理番号（hidden）と変更前区画１駐車場管理番号（hidden）比較
-					//Me.hdnChangeBeforeChushajoKanriNo1.Value = Me.hdnChushajoKanriNo1.Value
-					registDto.setHdnChangeBeforeChushajoKanriNo1(registDto.getHdnChushajoKanriNo1());
-					//区画１利用開始日と変更前区画１利用開始日（hidden）比較
-					//Me.hdnChangeBeforeKukaku1RiyoKaishibi.Value = HttpUtility.HtmlEncode(Me.txtKukaku1RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku1RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayOne()));
-					//区画１利用終了日と変更前区画１利用終了日（hidden）比較
-					//Me.hdnChangeBeforeKukaku1RiyoShuryobi.Value = HttpUtility.HtmlEncode(Me.txtKukaku1RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku1RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayOne()));
-					//区画２駐車場管理番号（hidden）と変更前区画２駐車場管理番号（hidden）比較
-					//Me.hdnChangeBeforeChushajoKanriNo2.Value = Me.hdnChushajoKanriNo2.Value
-					registDto.setHdnChangeBeforeChushajoKanriNo2(registDto.getHdnChushajoKanriNo2());
-					//区画２利用開始日と変更前区画２利用開始日（hidden）比較
-					//Me.hdnChangeBeforeKukaku2RiyoKaishibi.Value = HttpUtility.HtmlEncode(Me.txtKukaku2RiyoKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku2RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayTwo()));
-					//区画２利用終了日と変更前区画２利用終了日（hidden）比較
-					//Me.hdnChangeBeforeKukaku2RiyoShuryobi.Value = HttpUtility.HtmlEncode(Me.txtKukaku2RiyoShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKukaku2RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayTwo()));
-					//開始日(hidden)
-					//Me.hdnChangeBeforeKaishibi.Value = HttpUtility.HtmlEncode(Me.txtKaishibi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006StartDay()));
-					//終了日(hidden)
-					//Me.hdnChangeBeforeShuryobi.Value = HttpUtility.HtmlEncode(Me.txtShuryobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006EndDay()));
-					//貸与日(hidden)
-					//Me.hdnChangeBeforeTaiyobi.Value = HttpUtility.HtmlEncode(Me.txtBihinTaiyobi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeTaiyobi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaiyoDay()));
-					//返却日(hidden)
-					//Me.hdnChangeBeforeHenkyakubi.Value = HttpUtility.HtmlEncode(Me.txtBihinHenkyakubi.Text.Replace(Constant.Sign.SLASH, String.Empty).Replace(Constant.Sign.UNDER_SCORE, String.Empty))
-					registDto.setHdnChangeBeforeHenkyakubi(skf3030Sc002SharedService.getDateText(registDto.getSc006HenkyakuDay()));
-
-					//社宅使用料日割
-					//Me.litShatakuShiyoryoHiwariKingaku.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterShatakuShiyoryoHiwariKingaku.Value), False)
-					registDto.setSc006SiyoryoHiwariPay(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoHiwariKingaku()), false));
-					//社宅使用料月額(調整後)
-					//Me.litShatakuShiyoryoGetsugakuChoseigo.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo.Value), False)
-					registDto.setSc006SyatauMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo()), false));
-					//個人負担共益費(調整後)
-					//Me.litKojinFutanKyoekihiGetsugakuChoseigo.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo.Value), False)
-					registDto.setSc006KyoekihiPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo()), false));
-					//駐車場使用料(日割)
-					//Me.litKukaku1ChushajoShiyoroHiwariKingaku.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku.Value), False)
-					//Me.litKukaku2ChushajoShiyoroHiwariKingaku.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku.Value), False)
-					registDto.setSc006TyusyaDayPayOne(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku()), false));
-					registDto.setSc006TyusyaDayPayTwo(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku()), false));
-					//駐車場使用料(調整後)
-					//Me.litChushajoShiyoryoGetsugakuChoseigo.Text = StringUtil.ConvertYenFormat(Integer.Parse(Me.hdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo.Value), False)
-					registDto.setSc006TyusyaMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo()), false));
-					//更新成功時は備品の再読み込みを実施
-					registDto.setBihinItiranReloadFlg(false);
-//				}
+//				//更新完了メッセージ
+//				ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1011);
+				//更新完了したら、hdn変更後 ⇒変更前へ反映
+				//使用料パターンID（hidden）と変更前使用料パターンID（hidden）比較
+				registDto.setHdnChangeBeforeRentalPatternId(registDto.getHdnRentalPatternId());
+				//【使用料計算機能対応】使用料パターンID
+				registDto.setHdnShiyoryoKeisanPatternId(rentalPatternTorokuList.get(Skf3030Sc002CommonDto.RENTAL_PATTERN.RENTAL_PATTERNID));
+				//使用料パターン排他更新日
+				List<Skf3030Sc002GetRentalPatternInfoExp> rentalPatternInfoList = new ArrayList<Skf3030Sc002GetRentalPatternInfoExp>();
+				Skf3030Sc002GetRentalPatternInfoExpParameter param = new Skf3030Sc002GetRentalPatternInfoExpParameter();
+				param.setRentalPatternId(Long.parseLong(registDto.getHdnShiyoryoKeisanPatternId()));
+				// 使用料パターン情報取得
+				rentalPatternInfoList = skf3030Sc002GetRentalPatternInfoExpRepository.getRentalPatternInfo(param);
+				if(rentalPatternInfoList.size()>0){
+					String updateDate = dateFormat.format(rentalPatternInfoList.get(0).getUpdateDate());
+					registDto.setHdnRentalPatternUpdateDate(updateDate);
+				}
+				//入居予定日と変更前入居予定日（hidden）比較
+				registDto.setHdnChangeBeforeNyukyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006NyukyoYoteiDay()));
+				//退居予定日と変更前退居予定日（hidden）比較
+				registDto.setHdnChangeBeforeTaikyoYoteibi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaikyoYoteiDay()));
+				//役員算定と変更前役員算定（hidden）比較
+				registDto.setHdnChangeBeforeYakuinSantei(registDto.getSc006YakuinSanteiSelect());
+				//社宅使用料調整金額と変更前社宅使用料調整金額（hidden）比較
+				registDto.setHdnChangeBeforeShatakuShiyoryoChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006SiyoroTyoseiPay()));
+				//個人負担共益費月額と変更前個人負担共益費月額（hidden）比較
+				registDto.setHdnChangeBeforeKojinFutanKyoekihiGetsugaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiMonthPay()));
+				//個人負担共益費調整金額と変更前個人負担共益費調整金額（hidden）比較
+				registDto.setHdnChangeBeforeKojinFutanKyoekihiChoseiKingaku(skf3030Sc002SharedService.getPayText(registDto.getSc006KyoekihiTyoseiPay()));
+				//区画１駐車場管理番号（hidden）と変更前区画１駐車場管理番号（hidden）比較
+				registDto.setHdnChangeBeforeChushajoKanriNo1(registDto.getHdnChushajoKanriNo1());
+				//区画１利用開始日と変更前区画１利用開始日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku1RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayOne()));
+				//区画１利用終了日と変更前区画１利用終了日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku1RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayOne()));
+				//区画２駐車場管理番号（hidden）と変更前区画２駐車場管理番号（hidden）比較
+				registDto.setHdnChangeBeforeChushajoKanriNo2(registDto.getHdnChushajoKanriNo2());
+				//区画２利用開始日と変更前区画２利用開始日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku2RiyoKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouStartDayTwo()));
+				//区画２利用終了日と変更前区画２利用終了日（hidden）比較
+				registDto.setHdnChangeBeforeKukaku2RiyoShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006RiyouEndDayTwo()));
+				//開始日(hidden)
+				registDto.setHdnChangeBeforeKaishibi(skf3030Sc002SharedService.getDateText(registDto.getSc006StartDay()));
+				//終了日(hidden)
+				registDto.setHdnChangeBeforeShuryobi(skf3030Sc002SharedService.getDateText(registDto.getSc006EndDay()));
+				//貸与日(hidden)
+				registDto.setHdnChangeBeforeTaiyobi(skf3030Sc002SharedService.getDateText(registDto.getSc006TaiyoDay()));
+				//返却日(hidden)
+				registDto.setHdnChangeBeforeHenkyakubi(skf3030Sc002SharedService.getDateText(registDto.getSc006HenkyakuDay()));
+				//社宅使用料日割
+				registDto.setSc006SiyoryoHiwariPay(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoHiwariKingaku()), false));
+				//社宅使用料月額(調整後)
+				registDto.setSc006SyatauMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterShatakuShiyoryoGetsugakuChoseigo()), false));
+				//個人負担共益費(調整後)
+				registDto.setSc006KyoekihiPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo()), false));
+				//駐車場使用料(日割)
+				registDto.setSc006TyusyaDayPayOne(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku()), false));
+				registDto.setSc006TyusyaDayPayTwo(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku()), false));
+				//駐車場使用料(調整後)
+				registDto.setSc006TyusyaMonthPayAfter(skf3030Sc002SharedService.convertYenFormat(Integer.parseInt(registDto.getHdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo()), false));
+				//更新成功時は備品の再読み込みを実施
+				registDto.setBihinItiranReloadFlg(false);
 				//駐車場区画１に値が設定されていない場合、月別駐車場履歴から物理削除する
-				//If String.IsNullOrEmpty(Me.litKukaku1No.Text) Then sc006KukakuNoOne
 				if(SkfCheckUtils.isNullOrEmpty(registDto.getSc006KukakuNoOne())){
 					skf3030Sc002SharedService.deleteParkingRirekiByLendNo(registDto.getHdnShatakuKanriId(), 
 												"1",
@@ -645,15 +447,8 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 												"2",
 												skfBaseBusinessLogicUtils.getSystemProcessNenGetsu());
 				}
-
 			}
-
 		}
-		//メッセージ設定
-//		If Not String.IsNullOrEmpty(message) Then
-//		    //メッセージを表示
-//		    Me.hdnFieldMessage.Value() = HttpUtility.HtmlEncode(message)
-//		End If
 		// ドロップダウンリスト作成
 		skf3030Sc002SharedService.setDdlControlValues(
 				registDto.getSc006KyojyusyaKbnSelect(), sc006KyojyusyaKbnSelectList,
@@ -688,11 +483,8 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 		registDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
 		//相互利用状況の活性非活性を設定
 		skf3030Sc002SharedService.setControlStatusSogoRiyo(registDto);
-		
 		//Page_LoadComplete
 		skf3030Sc002SharedService.setBihinListPageLoadComplete(registDto);
-		
-		
 		return registDto;
 	}
 	
@@ -720,7 +512,7 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				skf3030Sc002SharedService.getTbtPublicShatakuParkingBlockDataColumnInfoList(2, false,registDto),
 				CodeConstant.C001,
 				LoginUserInfoUtils.getUserCd(),
-				registDto.getPageId(),
+				FunctionIdConstant.SKF3030_SC002,
 				registDto.getSc006TaiyoDay(),
 				rentalPatternUpdateDate,
 				rentalPatternUpdateDateForRegist,
@@ -782,7 +574,7 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 					registDto.getHdnShatakuKanriId(),
 					registDto.getHdnNengetsu(),
 					LoginUserInfoUtils.getUserCd(),
-					registDto.getPageId(),
+					FunctionIdConstant.SKF3030_SC002,
 					rentalPatternUpdateDate, 
 					rentalPatternUpdateDateForRegist,
 					rentalPatternTorokuList);
@@ -816,21 +608,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			dto.setHdnEndDayOne(skf3030Sc002SharedService.getMaxParkingEndDay(dto.getHdnChushajoKanriNo1(),
 					dto.getHdnShatakuKanriNo(),dto.getHdnShatakuKanriId()));
 		}
-
-		//チェックする処理がコメントアウトされており、実行する意味が無いためコメントアウト
-//		if(!SkfCheckUtils.isNullOrEmpty(skf3030Sc002SharedService.getDateText(dto.getSc006RiyouStartDayOne())) &&
-//				!SkfCheckUtils.isNullOrEmpty(dto.getHdnEndDayOne())){
-//			//駐車場１ 利用開始日
-//			Dim sDateOne As DateTime = DateUtil.ConbersionFomatStringToDate( _
-//						    Me.GetDateText(Me.txtKukaku1RiyoKaishibi.Text))
-//			//駐車場１ 終了日
-//			Dim eDateOne As DateTime = DateUtil.ConbersionFomatStringToDate(Me.hdnEndDay1.Value)
-//
-//			//駐車場１ 利用開始日 < 駐車場１ 終了日の場合
-//		    Me.txtKukaku1RiyoKaishibi.BackColor() = Color.Empty
-//		}
-
-
 		//hdnEndDay2に値が設定されていない場合、月別駐車場履歴より駐車場利用終了日の最大値を取得し設定する
 		if(SkfCheckUtils.isNullOrEmpty(dto.getHdnEndDayTwo()) && 
 				!SkfCheckUtils.isNullOrEmpty(dto.getHdnChushajoKanriNo2()) &&
@@ -839,31 +616,9 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			dto.setHdnEndDayTwo(skf3030Sc002SharedService.getMaxParkingEndDay(dto.getHdnChushajoKanriNo2(),
 					dto.getHdnShatakuKanriNo(),dto.getHdnShatakuKanriId()));
 		}
-
-//		If Not String.IsNullOrEmpty(Me.GetDateText(Me.txtKukaku2RiyoKaishibi.Text)) AndAlso _
-//		    Not String.IsNullOrEmpty(Me.hdnEndDay2.Value) Then
-//		    //駐車場２ 利用開始日
-//		    Dim sDateTwo As DateTime = DateUtil.ConbersionFomatStringToDate( _
-//						    Me.GetDateText(Me.txtKukaku2RiyoKaishibi.Text))
-//		    //駐車場２ 終了日
-//		    Dim eDateTwo As DateTime = DateUtil.ConbersionFomatStringToDate(Me.hdnEndDay2.Value)
-//
-//		    //駐車場２ 利用開始日 < 駐車場２ 終了日の場合
-//		    Me.txtKukaku2RiyoKaishibi.BackColor() = Color.Empty
-//		End If
-
-		//１つでもエラーフラグがTrueの場合、処理を終了
-//		If isRiyouStartDayError Then
-//		    Me.hdnFieldMessage.Value = HttpUtility.HtmlEncode(message.ToString())
-//		    If Not nextTabIndex Is Nothing Then
-//			Me.tbcNyutaikyoInfo.ActiveTabIndex = CInt(nextTabIndex)
-//		    End If
-//		End If
-		
 		return isRiyouStartDayError;
 	}
-	
-	
+
 	/**
 	 * 登録処理メソッド
 	 * @param columnInfoList 提示データ
@@ -905,7 +660,8 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			String rentalPatternUpdateDate,
 			Date rentalPatternUpdateDateForRegist,
 			Map<Skf3030Sc002CommonDto.RENTAL_PATTERN, String> rentalPatternTorokuList
-			){
+			)
+	{
 		
 		//int selectCount = 0;//未使用
 		int insertCount = 0;
@@ -913,8 +669,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 		int returnCount = 0;
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		String shatakuKanriId = CodeConstant.DOUBLE_QUOTATION;
-		
-		
 		//既に該当社宅が“貸与中”になっている場合、排他エラーとする
 		if(CodeConstant.LEND_JOKYO_TAIYOCHU.equals(skf3030Sc002SharedService.getRoomLendJokyo(
 				Long.parseLong(shatakuKanriNo), Long.parseLong(shatakuRoomKanriNo)))){
@@ -922,7 +676,7 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			resultMap.put("shatakuKanriId",shatakuKanriId);
 			return resultMap;
 		}
-		
+
 		Skf3022TTeijiData selectTeijiData = skf3022TTeijiDataRepository.selectByPrimaryKey(columnInfoList.getTeijiNo());
 		//提示データ重複チェック
 		if(selectTeijiData == null){
@@ -936,7 +690,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				returnCount += 1;
 			}
 		}
-		
 		//社宅部屋情報マスタを更新
 		Skf3010MShatakuRoomKey shatakuRoomKey = new Skf3010MShatakuRoomKey();
 		shatakuRoomKey.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
@@ -956,7 +709,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				returnCount += 1;
 			}
 		}
-		
 		//駐車場区画情報
 		//区画１の利用開始日が入力されている場合、社宅駐車場区画マスタ更新
 		if(!SkfCheckUtils.isNullOrEmpty(Kukaku1RiyoKaishibi)){
@@ -978,7 +730,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			}
 			selectParkingBlock = null;
 		}
-		
 		//区画２の利用開始日が入力されている場合、社宅駐車場区画マスタ更新
 		if(!SkfCheckUtils.isNullOrEmpty(Kukaku2RiyoKaishibi)){
 			Skf3010MShatakuParkingBlockKey parkBlockKey = new Skf3010MShatakuParkingBlockKey();
@@ -999,7 +750,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			}
 			selectParkingBlock2 = null;
 		}
-		
 		//提示備品データテーブルにデータ登録
 		for(Map<String,Object> dr : teijiBihinDataDt){
 			Skf3022TTeijiBihinDataKey teijiBihinKey = new Skf3022TTeijiBihinDataKey();
@@ -1022,13 +772,11 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				}
 			}
 		}
-		
 		//システム処理年月を取得する。
 		String sysShoriNenGetsu = skfBaseBusinessLogicUtils.getSystemProcessNenGetsu();
-		
+
 		Date systemDate = skfBaseBusinessLogicUtils.getSystemDateTime();
 		Long shatakuId = 0L;
-		
 		//「社宅管理台帳データ登録（社宅情報）」バッチ処理を起動する
 		shatakuId = skfPageBusinessLogicUtils.updateShatakuKanriDaichoShatakuData(columnInfoList.getTeijiNo(),
 				false, "", sysShoriNenGetsu, userId, pageId, systemDate);
@@ -1037,7 +785,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			resultMap.put("shatakuKanriId",shatakuKanriId);
 			return resultMap;
 		}
-		
 		//備品情報タブの「貸与日」が入力されている場合、「社宅基本台帳データ更新（備品）」バッチ処理を起動する
 		if(!SkfCheckUtils.isNullOrEmpty(bihinTaiyobi)){
 			//社宅管理台帳備品データの登録
@@ -1049,7 +796,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				return resultMap;
 			}
 		}
-		
 		//提示データの社宅管理台帳IDを更新
 		Skf3030Sc002UpdateTeijiDataExpParameter updTeijiParam = new Skf3030Sc002UpdateTeijiDataExpParameter();
 		updTeijiParam.setTeijiNo(columnInfoList.getTeijiNo());
@@ -1058,13 +804,12 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 		updTeijiParam.setUpdateProgramId(pageId);
 		//int updCountTJ2 = //戻り値見てない
 		skf3030Sc002UpdateTeijiDataExpRepository.updateTeijiData(updTeijiParam);
-		
+
 		Long shatakuKanriIdL = skf3030Sc002SharedService.getShatakuKannriIdFromTeijiData(columnInfoList.getTeijiNo());
 		shatakuLedgercolumnInfoList.setShatakuKanriId(shatakuKanriIdL);
 		shatakuKanriId = skf3030Sc002SharedService.getToString(shatakuKanriIdL);
 		//提示データから社宅管理ID、社宅管理No、社宅部屋管理No を削除。
 		skf3030Sc002UpdateTeijiDataExpRepository.updateTeijiDataForShatakuId(updTeijiParam);
-		
 		//「社宅管理台帳基本テーブル」のデータ更新
 		Skf3030TShatakuLedger selectSL = skf3030TShatakuLedgerRepository.selectByPrimaryKey(shatakuLedgercolumnInfoList.getShatakuKanriId());
 		if(selectSL != null){
@@ -1077,8 +822,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				returnCount += 1;
 			}
 		}
-		
-		
 		//使用料パターンテーブル登録・更新
 		if(CodeConstant.STRING_ZERO.equals(rentalPatternTorokuList.get(Skf3030Sc002CommonDto.RENTAL_PATTERN.UPDATE_KIND))){
 			//登録処理
@@ -1280,13 +1023,11 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				return resultMap;
 			}
 		}
-		
-		
 		resultMap.put("returnCount", returnCount);
 		resultMap.put("shatakuKanriId", shatakuKanriId);
 		return resultMap;
 	}
-	
+
 	/**
 	 * 登録処理メソッド
 	 * @param shatakuLedgerDataColumnInfoList 社宅管理台帳基本テーブル情報
@@ -1426,10 +1167,7 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 					returnCount += 1;
 				}
 			}
-			
 		}
-		
-		
 		//「月別駐車場履歴テーブル」のデータの区画１の情報更新
 		if(changeFlg3){
 			Skf3030TParkingRirekiKey parkRirekiKey = new Skf3030TParkingRirekiKey();
@@ -1469,7 +1207,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				}
 			}
 		}
-		
 		//変更前区画１駐車場管理番号（hidden）と区画１駐車場管理番号（hidden）が異なる場合
 		if(changeFlg1){
 			//社宅駐車場区画マスタを更新する
@@ -1525,7 +1262,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				}
 			}
 		}
-		
 		//変更前区画２駐車場管理番号（hidden）と区画２駐車場管理番号（hidden）が異なる場合
 		if(changeFlg2){
 			//社宅駐車場区画マスタを更新する
@@ -1555,7 +1291,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				returnCount += 1;
 			}
 		}
-		
 		//社宅部屋情報マスタ更新
 		Skf3010MShatakuRoomKey shatakuRoomKey = new Skf3010MShatakuRoomKey();
 		shatakuRoomKey.setShatakuKanriNo(shatakuRoomDataColumnInfoList.getShatakuKanriNo());
@@ -1569,7 +1304,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				returnCount += 1;
 			}
 		}
-		
 		//使用料パターンテーブル登録・更新
 		if(CodeConstant.STRING_ZERO.equals(rentalPatternTorokuList.get(Skf3030Sc002CommonDto.RENTAL_PATTERN.UPDATE_KIND))){
 			//データの登録
@@ -1752,8 +1486,6 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				return -1;
 			}
 		}
-		
 		return returnCount;
 	}
-
 }

@@ -36,6 +36,7 @@ import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -87,7 +88,7 @@ public class Skf3022Sc005DeleteService extends SkfServiceAbstract<Skf3022Sc005De
 		deleteDto.setPageTitleKey(MessageIdConstant.SKF3022_SC005_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, FunctionIdConstant.SKF3022_SC005);
 		
 		//入退居区分リスト
 		String nyutaikyoKbn = deleteDto.getNyutaikyoKbn();
@@ -142,7 +143,7 @@ public class Skf3022Sc005DeleteService extends SkfServiceAbstract<Skf3022Sc005De
 		}
 		int retCount = DeleteTeijiDataCount(delTeijiNo, delShainNo, delNyutaikyoKbn, updateDate,
 				updateDateNtk, updateDateShataku, updateDateParkOne, updateDateParkTwo,
-				shatakuNo, roomNo, parkOne, parkTwo , deleteDto.getPageId());
+				shatakuNo, roomNo, parkOne, parkTwo , FunctionIdConstant.SKF3022_SC005);
 		if(retCount == 0){
 			//排他エラー
 			ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.W_SKF_1009);

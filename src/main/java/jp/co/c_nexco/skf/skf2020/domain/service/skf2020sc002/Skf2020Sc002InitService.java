@@ -67,7 +67,7 @@ public class Skf2020Sc002InitService extends SkfServiceAbstract<Skf2020Sc002Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF2020_SC002_TITLE);
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF2020_SC002);
 
 		// 入力情報のクリア
 		skf2020Sc002SharedService.setClearInfo(initDto);

@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -52,7 +53,7 @@ public class Skf3070Sc001SearchService extends SkfServiceAbstract<Skf3070Sc001Se
 	public BaseDto index(Skf3070Sc001SearchDto searchDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, FunctionIdConstant.SKF3070_SC001);
 
 		// ドロップダウンの設定
 		skf3070Sc001SheardService.getDropDownList(searchDto);

@@ -34,6 +34,7 @@ import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
@@ -475,7 +476,7 @@ public class Skf3020Sc005SharedService {
 		//tenninshaChoshoData.setDataTakinginDate(inData.getDataTakinginDate());
 		//tenninshaChoshoData.setDeleteFlag(inData.getDeleteFlag());
 		
-		tenninshaChoshoData.setUpdateProgramId(inDto.getPageId());
+		tenninshaChoshoData.setUpdateProgramId(FunctionIdConstant.SKF3020_SC005);
 		tenninshaChoshoData.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 
 		return tenninshaChoshoData;

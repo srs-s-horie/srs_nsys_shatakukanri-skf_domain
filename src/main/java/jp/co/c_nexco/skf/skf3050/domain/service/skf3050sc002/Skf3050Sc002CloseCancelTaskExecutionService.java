@@ -67,7 +67,7 @@ public class Skf3050Sc002CloseCancelTaskExecutionService extends SkfServiceAbstr
 	@Override
 	protected BaseDto index(Skf3050Sc002CloseCancelTaskExecutionDto closeCancelDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("締め解除処理", CodeConstant.C001, "Skf3050Sc002");
+		skfOperationLogUtils.setAccessLog("締め解除処理", CodeConstant.C001, FunctionIdConstant.SKF3050_SC002);
 
 		closeCancelDto.setResultMessages(null);
 

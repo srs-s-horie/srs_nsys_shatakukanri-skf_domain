@@ -23,6 +23,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -83,7 +84,7 @@ public class Skf3021Sc001SendMailService extends SkfServiceAbstract<Skf3021Sc001
 		sendDto.setPageTitleKey(MessageIdConstant.SKF3021_SC001_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("督促", CodeConstant.C001, sendDto.getPageId());
+		skfOperationLogUtils.setAccessLog("督促", CodeConstant.C001, FunctionIdConstant.SKF3021_SC001);
 		
 		//入退居区分リスト
 		List<Map<String, Object>> nyutaikyoKbnList = new ArrayList<Map<String, Object>>();

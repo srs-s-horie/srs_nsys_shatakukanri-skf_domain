@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -54,7 +55,7 @@ public class Skf3060Sc001SearchService extends SkfServiceAbstract<Skf3060Sc001Se
 		searchDto.setPageTitleKey(MessageIdConstant.SKF3060_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, FunctionIdConstant.SKF3060_SC001);
 		
 		// エラー状態クリア
 		searchDto.setBaseTermFromErr("");

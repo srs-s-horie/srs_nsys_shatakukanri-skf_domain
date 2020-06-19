@@ -64,7 +64,7 @@ public class Skf3010Sc006ChangeParkingContractListService extends SkfServiceAbst
 		// デバッグログ
 		logger.debug("駐車場契約情報:" + initDto.getParkingSelectMode());
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("駐車場契約情報", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("駐車場契約情報", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 
 		/** DTO設定値 */
 		//契約形態リスト

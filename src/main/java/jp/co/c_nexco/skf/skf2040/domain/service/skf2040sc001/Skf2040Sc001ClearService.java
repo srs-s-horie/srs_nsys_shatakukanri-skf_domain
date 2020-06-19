@@ -38,7 +38,7 @@ public class Skf2040Sc001ClearService extends SkfServiceAbstract<Skf2040Sc001Cle
 		clearDto.setPageTitleKey(MessageIdConstant.SKF2040_SC001_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("入力内容をクリア", CodeConstant.C001, clearDto.getPageId());
+		skfOperationLogUtils.setAccessLog("入力内容をクリア", CodeConstant.C001, FunctionIdConstant.SKF2040_SC001);
 
 		this.execClear(clearDto);
 

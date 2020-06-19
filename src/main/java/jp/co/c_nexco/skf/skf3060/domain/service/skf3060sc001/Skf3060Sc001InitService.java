@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
@@ -64,10 +65,10 @@ public class Skf3060Sc001InitService extends SkfServiceAbstract<Skf3060Sc001Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3060_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3060_SC001);
 		
         // 操作ガイド取得
-        initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
+        initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF3060_SC001));
 		
         // 検索条件のセット
         // - 基準期間の設定

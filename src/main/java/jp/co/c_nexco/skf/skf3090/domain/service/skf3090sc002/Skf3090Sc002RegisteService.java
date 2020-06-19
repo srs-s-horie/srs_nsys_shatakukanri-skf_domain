@@ -98,7 +98,7 @@ public class Skf3090Sc002RegisteService extends SkfServiceAbstract<Skf3090Sc002R
 	public Skf3090Sc002RegisteDto index(Skf3090Sc002RegisteDto registDto) throws Exception {
 	
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());		
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3090_SC002);		
 		
 		// エラースタイルをクリア
 		skf3090Sc002SharedService.errorStyleClear(registDto);

@@ -60,7 +60,7 @@ public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002P
 	protected BaseDto index(Skf2010Sc002PresentDto preDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, preDto.getPageId());
+		skfOperationLogUtils.setAccessLog("提示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC002);
 
 		// 申請書類IDの有無チェック
 		if (preDto.getApplId() == null) {
@@ -157,7 +157,7 @@ public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002P
 				skf2020Fc001NyukyoKiboSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkNyukyoMap);
 				// 連携実行
 				List<String> resultList = skf2020Fc001NyukyoKiboSinseiDataImport.doProc(CodeConstant.C001,
-						preDto.getShainNo(), preDto.getApplNo(), CodeConstant.NONE, status, userId, preDto.getPageId());
+						preDto.getShainNo(), preDto.getApplNo(), CodeConstant.NONE, status, userId, FunctionIdConstant.SKF2010_SC002);
 				// セッション情報の削除
 				menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC002);
 

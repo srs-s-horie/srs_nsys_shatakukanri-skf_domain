@@ -94,7 +94,7 @@ public class Skf3021Sc001AkiShatakuListDownloadService extends SkfServiceAbstrac
 		
 		downloadDto.setPageTitleKey(MessageIdConstant.SKF3021_SC001_TITLE);
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("空き社宅リスト出力", CodeConstant.C001, downloadDto.getPageId());
+		skfOperationLogUtils.setAccessLog("空き社宅リスト出力", CodeConstant.C001, FunctionIdConstant.SKF3021_SC001);
 
 		Skf3021Rp001GetNyutaikyoYoteiInfoExpParameter param = new Skf3021Rp001GetNyutaikyoYoteiInfoExpParameter();
 		param.setJssLinkFlg(jssLinkFlg);

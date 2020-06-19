@@ -50,7 +50,7 @@ public class Skf3020Sc005RegisteService extends SkfServiceAbstract<Skf3020Sc005R
 	@Override
 	public Skf3020Sc005RegisteDto index(Skf3020Sc005RegisteDto registDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("転任者情報の登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("転任者情報の登録", CodeConstant.C001, FunctionIdConstant.SKF3020_SC005);
 
 		// 入力チェック
 		if (!checkToroku(registDto)) {

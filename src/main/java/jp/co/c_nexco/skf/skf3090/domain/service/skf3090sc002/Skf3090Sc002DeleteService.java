@@ -74,7 +74,7 @@ public class Skf3090Sc002DeleteService extends SkfServiceAbstract<Skf3090Sc002De
 	public Skf3090Sc002DeleteDto index(Skf3090Sc002DeleteDto deleteDto) throws Exception {
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());		
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, FunctionIdConstant.SKF3090_SC002);		
 
 		// エラースタイルをクリア
 		skf3090Sc002SharedService.errorStyleClear(deleteDto);

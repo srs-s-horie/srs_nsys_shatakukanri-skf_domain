@@ -13,6 +13,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -86,7 +87,7 @@ public class Skf3022Sc004RegisteService extends SkfServiceAbstract<Skf3022Sc004R
 	public Skf3022Sc004RegisteDto index(Skf3022Sc004RegisteDto registeDto) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registeDto.getPageId());		
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3022_SC004);		
 		
 		String[] setOne = { "1" };
 		// 次月チェックボックスのチェック状態を取得

@@ -72,7 +72,7 @@ public class Skf3010Sc005DeleteService extends SkfServiceAbstract<Skf3010Sc005De
 		int result = 0;
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, FunctionIdConstant.SKF3010_SC005);
 
 		/** 利用実績チェック */
 		// 社宅管理台帳存在チェック

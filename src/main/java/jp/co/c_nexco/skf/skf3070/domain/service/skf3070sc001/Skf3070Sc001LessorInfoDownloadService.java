@@ -68,7 +68,7 @@ public class Skf3070Sc001LessorInfoDownloadService extends SkfServiceAbstract<Sk
 	public BaseDto index(Skf3070Sc001LessorInfoDownloadDto lessorDlDto) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("賃貸人（代理人）情報出力", companyCd, lessorDlDto.getPageId());
+		skfOperationLogUtils.setAccessLog("賃貸人（代理人）情報出力", companyCd, FunctionIdConstant.SKF3070_SC001);
 		
 		// 賃貸人（代理人）情報リストを取得
 		List<Skf3070Rp002GetOwnerInfoListExp>  ownerInfoList = new ArrayList<Skf3070Rp002GetOwnerInfoListExp>();

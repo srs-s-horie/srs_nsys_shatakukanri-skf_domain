@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3010.domain.dto.skf3010sc006.Skf3010Sc006DelContractListDto;
@@ -51,7 +52,7 @@ public class Skf3010Sc006DelContractListService extends SkfServiceAbstract<Skf30
 		// デバッグログ
 		logger.info("契約情報削除");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("契約情報削除", CodeConstant.C001, delDto.getPageId());
+		skfOperationLogUtils.setAccessLog("契約情報削除", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 
 		/** DTO設定値 */
 		// 賃貸人（代理人）名
@@ -77,21 +78,6 @@ public class Skf3010Sc006DelContractListService extends SkfServiceAbstract<Skf30
 		// 契約情報削除ボタン(非活性：true, 活性:false)
 		Boolean contractDelDisableFlg = true;
 
-//		/** JSON(連携用) */
-//		// 駐車場区画情報リスト
-//		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
-//		// 備品情報リスト
-//		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
-//		// ドロップダウン選択値リスト
-//		List<Map<String, Object>> drpDwnSelectedList = new ArrayList<Map<String, Object>>();
-//		// 可変ラベルリスト
-//		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
-//
-//		// List変換
-//		parkingList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonParking()));
-//		bihinList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonBihin()));
-//		drpDwnSelectedList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonDrpDwnList()));
-//		labelList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 		// エラーコントロール初期化
 		skf3010Sc006SharedService.clearVaridateErr(delDto);
 		// 一旦画面を戻す

@@ -18,6 +18,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -46,7 +47,7 @@ public class Skf3050Sc002ProvCalcService extends SkfServiceAbstract<Skf3050Sc002
 	@Override
 	protected BaseDto index(Skf3050Sc002ProvCalcDto provCalcDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("仮計算処理", CodeConstant.C001, provCalcDto.getPageId());
+		skfOperationLogUtils.setAccessLog("仮計算処理", CodeConstant.C001, FunctionIdConstant.SKF3050_SC002);
 
 		LogUtils.info(MessageIdConstant.I_SKF_1022, BATCH_NAME);
 		String jikkouShijiYoteiNengetsu = provCalcDto.getHdnJikkouShijiYoteiNengetsu();

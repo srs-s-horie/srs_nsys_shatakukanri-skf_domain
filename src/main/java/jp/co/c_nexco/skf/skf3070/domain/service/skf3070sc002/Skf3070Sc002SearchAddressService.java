@@ -15,6 +15,7 @@ import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3070.domain.dto.skf3070sc002.Skf3070Sc002SearchAddressDto;
@@ -46,7 +47,7 @@ public class Skf3070Sc002SearchAddressService extends SkfServiceAbstract<Skf3070
 	public BaseDto index(Skf3070Sc002SearchAddressDto dto) throws Exception {
 
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("住所検索", CodeConstant.C001, dto.getPageId());
+		skfOperationLogUtils.setAccessLog("住所検索", CodeConstant.C001, FunctionIdConstant.SKF3070_SC002);
 
 		// 未入力チェック
 		if (NfwStringUtils.isEmpty(dto.getZipCode()) && NfwStringUtils.isEmpty(dto.getAddress())) {

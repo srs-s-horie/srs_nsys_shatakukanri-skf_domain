@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.service.skf3090sc003.Skf3090Sc003SharedService;
@@ -45,7 +46,7 @@ public class Skf3090Sc003InitService extends SkfServiceAbstract<Skf3090Sc003Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC003_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3090_SC003);
 		
 		// 「管理会社」ドロップダウンリストの設定
 		List<Map<String, Object>> manageCompanyKubunList = new ArrayList<Map<String, Object>>();

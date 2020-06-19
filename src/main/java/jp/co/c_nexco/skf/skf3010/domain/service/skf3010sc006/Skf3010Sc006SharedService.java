@@ -224,24 +224,6 @@ public class Skf3010Sc006SharedService {
 		param = null;
 		return shatakuCnt;
 	}
-	
-//	/**
-//	 * 駐車場区画貸与履歴数取得。<br>
-//	 * パラメータの社宅管理番号、駐車場管理番号の貸与履歴数をDBより取得する。
-//	 * 
-//	 * @param shatakuKanriNo 社宅管理番号
-//	 */
-//	public int getSyatakuParkingHistroyCount(String shatakuKanriNo, String parkingKanriNo) {
-//		int parkingBlockLendHistoryCount = 0;
-//		if (shatakuKanriNo.length() > 0 && parkingKanriNo.length() > 0) {
-//			Skf3010Sc002GetParkingBlockHistroyCountExpParameter param = new Skf3010Sc002GetParkingBlockHistroyCountExpParameter();
-//			param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
-//			param.setParkingKanriNo(Long.parseLong(parkingKanriNo));
-//			parkingBlockLendHistoryCount = skf3010Sc002GetSyatakuParkingHistroyCountExpRepository.getSyatakuParkingHistroyCount(param);
-//			param = null;
-//		}
-//		return parkingBlockLendHistoryCount;
-//	}
 
 	/**
 	 * 駐車場区画提示数取得。<br>
@@ -281,6 +263,7 @@ public class Skf3010Sc006SharedService {
 		
 		return resultListTableData.get(0).getParkingKanriNo();
 	}
+	
 	/**
 	 * 基本情報取得。<br>
 	 * 
@@ -1067,127 +1050,6 @@ public class Skf3010Sc006SharedService {
 		return setViewList;
 	}
 
-//	/**
-//	 * 社宅部屋情報取得。<br>
-//	 * 排他制御用に社宅の部屋情報を取得する。
-//	 * 
-//	 * 「※」項目はアドレスとして戻り値になる。
-//	 * 
-//	 * @param shatakuKanriNo		社宅管理番号
-//	 * @param shatakuRoomListData	*社宅部屋情報リスト
-//	 * @return	取得レコード数
-//	 */
-//	private int getShatakuRoomInfo(String shatakuKanriNo, List<Map<String, Object>> shatakuRoomListData) {
-//
-//		int resultCnt = 0;
-//		List<Skf3010Sc002GetShatakuRoomExlusiveCntrlExp> shatakuRoomList
-//					= new ArrayList<Skf3010Sc002GetShatakuRoomExlusiveCntrlExp>();
-//		Skf3010Sc002GetHoyuShatakuInfoExpParameter param = new Skf3010Sc002GetHoyuShatakuInfoExpParameter();
-//		param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
-//		// DBより社宅部屋情報を取得する
-//		skf3010Sc002GetRoomExlusiveCntrTableDataExpRepository.getRoomExlusiveCntr(param);
-//
-//		// 取得レコード数を設定
-//		resultCnt = shatakuRoomList.size();
-//
-//		// 取得データレコード数判定
-//		if (resultCnt == 0 ) {
-//			// 取得データレコード数が0件の場合、何もせず処理終了
-//			return resultCnt;
-//		}
-//		//部屋情報リスト設定
-//		shatakuRoomListData.clear();
-//		shatakuRoomListData.addAll(getShatakuRoomListColumn(shatakuRoomList));
-//		// 解放
-//		shatakuRoomList = null;
-//		param = null;
-//
-//		return resultCnt;
-//	}
-//
-//	/**
-//	 * 社宅部屋情報変換。<br>
-//	 * パラメータのDBより取得した社宅部屋情報リストをDTO変数設定用に加工する
-//	 * 
-//	 * @param originList	社宅部屋情報リスト(DB取得値)
-//	 * @return
-//	 */
-//	private List<Map<String, Object>> getShatakuRoomListColumn(
-//			List<Skf3010Sc002GetShatakuRoomExlusiveCntrlExp> originList) {
-//		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
-//		// 変換
-//		for (int i = 0; i < originList.size(); i++) {
-//			Skf3010Sc002GetShatakuRoomExlusiveCntrlExp tmpData = originList.get(i);
-//			Map<String, Object> tmpMap = new HashMap<String, Object>();
-//			tmpMap.put("shatakuKanriNo",tmpData.getShatakuKanriNo());
-//			tmpMap.put("shatakuRoomKanriNo",tmpData.getShatakuRoomKanriNo());
-//			tmpMap.put("updateDate",tmpData.getUpdateDate());
-//			resultList.add(tmpMap);
-//		}
-//		return resultList;
-//	}
-//
-//	/**
-//	 * 社宅部屋備品情報取得。<br>
-//	 * 排他制御用に社宅の部屋備品情報を取得する。
-//	 * 
-//	 * 「※」項目はアドレスとして戻り値になる。
-//	 * 
-//	 * @param shatakuKanriNo				社宅管理番号
-//	 * @param roomeBihinExlusiveCntrllList	*社宅部屋備品情報リスト
-//	 * @return	取得レコード数
-//	 */
-//	private int getShatakuRoomBihinInfo(String shatakuKanriNo, List<Map<String, Object>> roomeBihinExlusiveCntrllList) {
-//
-//		int resultCnt = 0;
-//		List<Skf3010Sc002GetRoomBihinExlusiveCntrlExp> shatakuRoomList =
-//						new ArrayList<Skf3010Sc002GetRoomBihinExlusiveCntrlExp>();
-//		Skf3010Sc002GetHoyuShatakuInfoExpParameter param = new Skf3010Sc002GetHoyuShatakuInfoExpParameter();
-//		param.setShatakuKanriNo(Long.parseLong(shatakuKanriNo));
-//		// DBより社宅部屋備品情報を取得する
-//		skf3010Sc002GetRoomBihinExlusiveCntrTableDataExpRepository.getRoomBihinExlusiveCntr(param);
-//
-//		// 取得レコード数を設定
-//		resultCnt = shatakuRoomList.size();
-//
-//		// 取得データレコード数判定
-//		if (resultCnt == 0 ) {
-//			// 取得データレコード数が0件の場合、何もせず処理終了
-//			return resultCnt;
-//		}
-//		// 備品情報リスト取得
-//		roomeBihinExlusiveCntrllList.clear();
-//		roomeBihinExlusiveCntrllList.addAll(getShatakuRoomBihinListColumn(shatakuRoomList));
-//		// 解放
-//		shatakuRoomList = null;
-//		param = null;
-//
-//		return resultCnt;
-//	}
-//
-//	/**
-//	 * 社宅部屋備品情報変換。<br>
-//	 * パラメータのDBより取得した社宅部屋備品情報リストをDTO変数設定用に加工する
-//	 * 
-//	 * @param originList	社宅部屋備品情報リスト(DB取得値)
-//	 * @return
-//	 */
-//	private List<Map<String, Object>> getShatakuRoomBihinListColumn(
-//				List<Skf3010Sc002GetRoomBihinExlusiveCntrlExp> originList) {
-//		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
-//		// 変換
-//		for (int i = 0; i < originList.size(); i++) {
-//			Skf3010Sc002GetRoomBihinExlusiveCntrlExp tmpData = originList.get(i);
-//			Map<String, Object> tmpMap = new HashMap<String, Object>();
-//			tmpMap.put("shatakuKanriNo",tmpData.getShatakuKanriNo());
-//			tmpMap.put("shatakuRoomKanriNo",tmpData.getShatakuRoomKanriNo());
-//			tmpMap.put("bihinCd",tmpData.getBihinCd());
-//			tmpMap.put("updateDate",tmpData.getUpdateDate());
-//			resultList.add(tmpMap);
-//		}
-//		return resultList;
-//	}
-
 	/**
 	 * ドロップダウンリストに設定するリストを取得する。<br>
 	 * 「※」項目はアドレスとして戻り値になる。
@@ -1419,41 +1281,6 @@ public class Skf3010Sc006SharedService {
 		aging.append(keinen.toString());
 		aging.append(" 年");
 	}
-
-	/**
-	 * 駐車場基本使用料、駐車場使用料算出
-	 * 
-	 * 「※」項目はアドレスとして戻り値になる。
-	 * 
-	 * @param buildDate				建築年月日
-	 * @param structureKbnCd		構造区分コード
-	 * @param areaKbnCd				地域区分コード
-	 * @param parkingStructure		駐車場構造区分コード
-	 * @param parkingRentalAdjusts	駐車場調整金額リスト
-	 * @param parkingBlockRentManys	*駐車場区画月額使用料リスト
-	 * @param parkingRentalValue	*駐車場基本使用料
-	 * @throws ParseException
-	 */
-//	public void parkingCalc(String buildDate, String structureKbnCd,
-//					String areaKbnCd, String parkingStructure, List <String> parkingRentalAdjusts,
-//					List <String> parkingBlockRentManys, StringBuilder parkingRentalValue) throws ParseException {
-//
-//		// 駐車場基本使用料
-//		Long parkingRentalBasicValue = 0L;
-//		// 駐車場基本使用料計算情報取得
-//		// 建築年月日、構造区分、地域区分、駐車場構造区分をパラメータ指定
-//		SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp retEntity =
-//				getChyuushajouryouShiyouGaku(buildDate, structureKbnCd, areaKbnCd, parkingStructure);
-//		// 駐車場基本使用料設定
-//		if (retEntity.getChushajouShiyoryou() != null) {
-//			parkingRentalBasicValue = retEntity.getChushajouShiyoryou().longValue();
-//		}
-//		// 駐車場基本料金が変更となるので、駐車場区分全体に対して再計算処理を行う。
-//		calcParkingBlockListRentMany(parkingRentalBasicValue, parkingRentalAdjusts, parkingBlockRentManys);
-//		// 駐車場基本使用料設定
-//		parkingRentalValue.setLength(0);
-//		parkingRentalValue.append(String.format("%,d", parkingRentalBasicValue));
-//	}
 
 	/**
 	 * 駐車場全区画使用料計算
@@ -3125,10 +2952,6 @@ public class Skf3010Sc006SharedService {
 		List<Map<String, Object>> bihinInfoListTableData = new ArrayList<Map<String, Object>>();
 		// 非表示備品情報リスト
 		List<Map<String, Object>> hdnBihinInfoListTableData = new ArrayList<Map<String, Object>>();
-//		// 社宅部屋情報リスト(排他処理用)
-//		List<Map<String, Object>> shatakuRoomExlusiveCntrllList = new ArrayList<Map<String, Object>>();
-//		// 社宅部屋備品情報リスト(排他処理用)
-//		List<Map<String, Object>> roomeBihinExlusiveCntrllList = new ArrayList<Map<String, Object>>();
 		// 貸与区分選択値リスト文字列(追加ボタン押下用)
 		String setLendKbnSelectListString = "";
 		// デフォルト貸与状況(追加ボタン押下用)
@@ -3219,14 +3042,7 @@ public class Skf3010Sc006SharedService {
 			
 			// 管理者情報タブの値をセット
 			setShatakuManageInfo(shatakuKanriNo, initDto);
-//			// 社宅部屋情報取得(排他用)
-//			getShatakuRoomInfo(shatakuKanriNo, shatakuRoomExlusiveCntrllList);
-//			initDto.setRoomeBihinExlusiveCntrllList(null);
-//			initDto.setRoomeBihinExlusiveCntrllList(shatakuRoomExlusiveCntrllList);
-//			// 社宅部屋備品情報取得(排他用)
-//			getShatakuRoomBihinInfo(shatakuKanriNo, roomeBihinExlusiveCntrllList);
-//			initDto.setRoomeBihinExlusiveCntrllList(null);
-//			initDto.setRoomeBihinExlusiveCntrllList(roomeBihinExlusiveCntrllList);
+
 			//複写フラグ判定
 			if(FALSE.equals(initDto.getCopyFlg())){
 				//基本の場合
@@ -3542,12 +3358,7 @@ public class Skf3010Sc006SharedService {
 	 * @param parkingList			区画駐車場リスト
 	 * @param comDto				*DTO
 	 */
-	public void setBeforeInfo(
-//			List<Map<String, Object>> drpDwnSelectedList,
-//			List<Map<String, Object>> labelList,
-//			List<Map<String, Object>> bihinList,
-//			List<Map<String, Object>> parkingList,
-			Skf3010Sc006CommonDto comDto) {
+	public void setBeforeInfo(Skf3010Sc006CommonDto comDto) {
 		
 		/** JSON(連携用) */
 		// 備品情報リスト

@@ -15,6 +15,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2060Sc001.Skf2060Sc001
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2060.domain.dto.skf2060sc001.Skf2060Sc001DeleteDto;
@@ -48,7 +49,7 @@ public class Skf2060Sc001DeleteService extends SkfServiceAbstract<Skf2060Sc001De
 		deleteDto.setPageTitleKey(MessageIdConstant.SKF2060_SC001_TITLE);
 		
 		// 操作ログを出力
-		skfOperationLogUtils.setAccessLog("削除", companyCd, deleteDto.getPageId());
+		skfOperationLogUtils.setAccessLog("削除", companyCd, FunctionIdConstant.SKF2060_SC001);
 		
 		Long candidateNo = Long.parseLong(deleteDto.getHdnCandidateNo());
 		//対象の借上候補物件がデータベースに存在するか

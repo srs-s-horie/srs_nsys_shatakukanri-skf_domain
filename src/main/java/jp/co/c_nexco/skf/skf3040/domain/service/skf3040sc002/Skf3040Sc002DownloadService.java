@@ -154,7 +154,7 @@ public class Skf3040Sc002DownloadService extends SkfServiceAbstract<Skf3040Sc002
 		downloadDto.setPageTitleKey(MessageIdConstant.SKF3040_SC002_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("備品搬入・搬出確認リスト出力", CodeConstant.C001, downloadDto.getPageId());
+		skfOperationLogUtils.setAccessLog("備品搬入・搬出確認リスト出力", CodeConstant.C001, FunctionIdConstant.SKF3040_SC002);
 		
 		// エラークリア
 		downloadDto.setCarryingInOutTermFromErr(null);

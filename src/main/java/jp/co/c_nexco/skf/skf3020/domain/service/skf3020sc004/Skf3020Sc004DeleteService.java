@@ -54,7 +54,7 @@ public class Skf3020Sc004DeleteService extends SkfServiceAbstract<Skf3020Sc004De
 	public Skf3020Sc004DeleteDto index(Skf3020Sc004DeleteDto deleteDto) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, deleteDto.getPageId());		
+		skfOperationLogUtils.setAccessLog("削除", CodeConstant.C001, FunctionIdConstant.SKF3020_SC004);		
 		
 		// Delete後の再検索のために検索条件を保持
 		String[] setone = { "1" };

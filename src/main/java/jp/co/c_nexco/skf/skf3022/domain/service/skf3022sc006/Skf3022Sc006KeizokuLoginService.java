@@ -270,7 +270,7 @@ public class Skf3022Sc006KeizokuLoginService extends SkfServiceAbstract<Skf3022S
 		//'更新者
 		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_USER_ID, LoginUserInfoUtils.getUserCd());
 		//'更新機能ID
-		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_PROGRAM_ID, initDto.getPageId());
+		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.UPDATE_PROGRAM_ID, FunctionIdConstant.SKF3022_SC006);
 		// 使用料変更フラグ
 		paramMap.put(Skf3022Sc006CommonDto.TEIJIDATA_PARAM.SHIYOURYO_FLG, initDto.getHdnSiyouryoFlg());
 		//

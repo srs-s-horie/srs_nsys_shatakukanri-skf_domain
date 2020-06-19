@@ -58,7 +58,7 @@ public class Skf3020Sc004ShainDeleteService extends SkfServiceAbstract<Skf3020Sc
 	public Skf3020Sc004ShainDeleteDto index(Skf3020Sc004ShainDeleteDto shainDelete) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("仮社員番号のデータ削除", CodeConstant.C001, shainDelete.getPageId());		
+		skfOperationLogUtils.setAccessLog("仮社員番号のデータ削除", CodeConstant.C001, FunctionIdConstant.SKF3020_SC004);		
 		
 		// Delete後の再検索のために検索条件を保持
 		String[] setone = { "1" };

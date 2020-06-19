@@ -17,6 +17,7 @@ import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -61,7 +62,7 @@ public class Skf3010Sc007SelectListService extends SkfServiceAbstract<Skf3010Sc0
 	public Skf3010Sc007SelectListDto index(Skf3010Sc007SelectListDto selectDto) throws Exception {
 		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("選択", CodeConstant.C001, selectDto.getPageId());
+		skfOperationLogUtils.setAccessLog("選択", CodeConstant.C001, FunctionIdConstant.SKF3010_SC007);
 				
 		// Debugログで出力
 		LogUtils.debugByMsg("駐車場契約情報-区画番号：" + selectDto.getHdnParkingBlock());

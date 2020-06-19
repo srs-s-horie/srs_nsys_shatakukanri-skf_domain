@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3090.domain.dto.skf3090sc001.Skf3090Sc001InitDto;
@@ -40,7 +41,7 @@ public class Skf3090Sc001InitService extends SkfServiceAbstract<Skf3090Sc001Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3090_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3090_SC001);
 		
 		// 現物支給価額マスタ一覧を取得
 		skf3090Sc001SharedService.getGenbutsuShikyuKagakuDataInfo(initDto);

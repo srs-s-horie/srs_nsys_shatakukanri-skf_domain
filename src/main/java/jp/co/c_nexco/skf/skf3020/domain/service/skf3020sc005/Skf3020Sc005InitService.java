@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc005.Skf3020Sc005InitDto;
@@ -29,7 +30,7 @@ public class Skf3020Sc005InitService extends SkfServiceAbstract<Skf3020Sc005Init
 	@Override
 	public Skf3020Sc005InitDto index(Skf3020Sc005InitDto initDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3020_SC005);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3020_SC005_TITLE);
 

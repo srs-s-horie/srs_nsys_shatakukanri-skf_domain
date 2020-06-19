@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.bean.ApplicationScopeBean;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -45,7 +46,7 @@ public class Skf3020Sc003InitService extends SkfServiceAbstract<Skf3020Sc003Init
 	@Override
 	public Skf3020Sc003InitDto index(Skf3020Sc003InitDto initDto) throws Exception {
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3020_SC003);
 
 		initDto.setPageTitleKey(MessageIdConstant.SKF3020_SC003_TITLE);
 		// 画面項目設定

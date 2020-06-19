@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc001.Skf3050Sc001InitDto;
@@ -47,7 +48,7 @@ public class Skf3050Sc001InitService extends SkfServiceAbstract<Skf3050Sc001Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3050_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3050_SC001);
 		
 		//検索結果一覧用
 		List<Map<String, Object>> listTableData = new ArrayList<Map<String, Object>>();

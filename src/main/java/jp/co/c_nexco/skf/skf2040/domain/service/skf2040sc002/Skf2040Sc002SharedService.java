@@ -682,7 +682,7 @@ public class Skf2040Sc002SharedService {
 
 			// 申請書類履歴テーブルの更新
 			String resultUpdateApplInfo = updateApplHistoryAgreeStatus(newStatus, shainNo, applNo, null, null, null,
-					applInfo.getApplId(), applTacFlg, userInfo.get("userCd"), dto.getPageId(), applInfo.getUpdateDate(),
+					applInfo.getApplId(), applTacFlg, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002, applInfo.getUpdateDate(),
 					lastUpdateDate);
 			if ("updateError".equals(resultUpdateApplInfo)) {
 				// 更新エラー
@@ -720,7 +720,7 @@ public class Skf2040Sc002SharedService {
 		}
 		// 添付ファイル管理テーブル更新処理
 		boolean resultUpdateFile = updateAttachedFileInfo(newStatus, applNo, shainNo, attachedFileList, applTacFlg,
-				applInfo, errorMsg, userInfo.get("userCd"), dto.getPageId());
+				applInfo, errorMsg, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002);
 		if (!resultUpdateFile) {
 			// 更新エラー
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
@@ -739,7 +739,7 @@ public class Skf2040Sc002SharedService {
 			skf2050Fc001BihinHenkyakuSinseiDataImport.setUpdateDateForUpdateSQL(dateLinkHenkyakuMap);
 			// 連携実行
 			List<String> resultList = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(CodeConstant.C001,
-					dto.getShainNo(), dto.getApplNo(), newStatus, userInfo.get("userCd"), dto.getPageId());
+					dto.getShainNo(), dto.getApplNo(), newStatus, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002);
 			// セッション情報の削除
 			menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
@@ -760,7 +760,7 @@ public class Skf2040Sc002SharedService {
 			skf2040Fc001TaikyoTodokeDataImport.setUpdateDateForUpdateSQL(dateLinkTaikyoMap);
 			// 連携実行
 			List<String> resultList = skf2040Fc001TaikyoTodokeDataImport.doProc(CodeConstant.C001, dto.getShainNo(),
-					dto.getApplNo(), newStatus, userInfo.get("userCd"), dto.getPageId());
+					dto.getApplNo(), newStatus, userInfo.get("userCd"), FunctionIdConstant.SKF2040_SC002);
 			// セッション情報の削除
 			menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
 
@@ -976,7 +976,7 @@ public class Skf2040Sc002SharedService {
 			// 申請書類履歴テーブルの更新
 			String resultUpdateApplInfo = updateApplHistoryAgreeStatus(nextStatus, dto.getShainNo(),
 					dto.getHdnBihinHenkyakuApplNo(), agreDate, shoninName1, shoninName2, applId, applTacFlg, userId,
-					dto.getPageId(), applHistoryBihinHenkyakuList.get(0).getUpdateDate(),
+					FunctionIdConstant.SKF2040_SC002, applHistoryBihinHenkyakuList.get(0).getUpdateDate(),
 					dto.getLastUpdateDate(KEY_LAST_UPDATE_DATE_HISTORY_BIHIN));
 			if ("updateError".equals(resultUpdateApplInfo)) {
 				// 更新エラー
@@ -1120,7 +1120,7 @@ public class Skf2040Sc002SharedService {
 		} else {
 			// 新規時は不要
 			setValue.setUpdateUserId(userId);
-			setValue.setUpdateProgramId(dto.getPageId());
+			setValue.setUpdateProgramId(FunctionIdConstant.SKF2040_SC002);
 		}
 
 		// 会社コード

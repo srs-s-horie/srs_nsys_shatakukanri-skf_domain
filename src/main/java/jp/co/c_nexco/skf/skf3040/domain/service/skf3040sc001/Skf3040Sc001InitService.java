@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -47,7 +48,7 @@ public class Skf3040Sc001InitService extends SkfServiceAbstract<Skf3040Sc001Init
 		initDto.setPageTitleKey(MessageIdConstant.SKF3040_SC001_TITLE);
  		
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, initDto.getPageId());
+		skfOperationLogUtils.setAccessLog("初期表示", CodeConstant.C001, FunctionIdConstant.SKF3040_SC001);
 		
 		// システム処理年月取得
 		String sysProcessDate = skfBaseBusinessLogicUtils.getSystemProcessNenGetsu();

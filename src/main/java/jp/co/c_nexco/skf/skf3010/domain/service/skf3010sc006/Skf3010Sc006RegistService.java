@@ -45,6 +45,7 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
@@ -123,11 +124,9 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		// デバッグログ
 		logger.debug("借上社宅情報登録");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, registDto.getPageId());
+		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 
 		/** JSON(連携用) */
-//		// 駐車場区画情報リスト
-//		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
 		// 備品情報リスト
 		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
 		// ドロップダウン選択値リスト
@@ -154,7 +153,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		Skf3010MShatakuParkingContract mShatakuParkingContract = new Skf3010MShatakuParkingContract();
 		
 		// List変換
-//		parkingList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonParking()));
 		bihinList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonBihin()));
 		drpDwnSelectedList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonDrpDwnList()));
 		labelList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonLabelList()));
@@ -194,14 +192,12 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		// 更新カウンタ
 		int updateCnt = 0;
 
-//		Map <String, Object> labelMap = (labelList.size() > 0) ? labelList.get(0) : null;
-
 		// 新規登録判定:社宅管理番号なし
 		if (SkfCheckUtils.isNullOrEmpty(registDto.getHdnShatakuKanriNo())) {
 			// 新規社宅登録
 			// 新規追加
 			updateCnt = insertKariageShatakuInfo(mShataku, mShatakuRoom, mShatakuParking, mShatakuParkingBlock,
-							mShatakuBihinList, mShatakuManageList, mShatakuContract, mShatakuParkingContract ,registDto.getPageId());
+							mShatakuBihinList, mShatakuManageList, mShatakuContract, mShatakuParkingContract ,FunctionIdConstant.SKF3010_SC006);
 			// 更新結果判定
 			if (updateCnt < 1) {
 				//件数が0未満（排他エラー）
@@ -224,7 +220,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 					mShatakuManageList,
 					mShatakuContract,
 					mShatakuParkingContract,
-					registDto.getPageId(),
+					FunctionIdConstant.SKF3010_SC006,
 					registDto);
 			// 更新結果判定
 			if (updateCnt < 1) {
@@ -238,8 +234,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1011);
 		}
 
-		// 成功メッセージ
-		//ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		// DTO設定
 		registDto.setHdnShatakuKanriNo(mShataku.getShatakuKanriNo().toString());
 		registDto.setHdnShatakuName(mShataku.getShatakuName());
@@ -290,8 +284,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 			Skf3010MShatakuParkingContract mShatakuParkingContract, 
 			String pageId,
 			Skf3010Sc006RegistDto registDto) {
-
-//		Map <String, Object> drpDwnSelected = (drpDwnSelectedList.size() > 0) ? drpDwnSelectedList.get(0) : null;
 
 		// 更新カウント
 		int updateCnt = 0;

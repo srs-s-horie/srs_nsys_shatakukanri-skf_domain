@@ -207,28 +207,9 @@ public class Skf3022Sc006InitService extends SkfServiceAbstract<Skf3022Sc006Init
 		initDto.setHdnTabIndex("999");
 		// 備品一覧再取得フラグ
 		initDto.setBihinItiranFlg(true);
-//
-//	        '
-		/** 運用ガイド保留(仕様確認中) */
 		// 運用ガイドのパスを設定
 		initDto.setOperationGuidePath("/skf/template/skf3022/skf3022mn006/"
 				+ PropertyUtils.getValue("skf3022.skf3022_sc006.operationGuideFile"));
-//	        Dim unyonGuide As String = String.Empty
-		// 運用ガイド取得
-//		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(initDto.getPageId()));
-
-//	        Try
-//	            unyonGuide = ConfigurationManager.AppSettings(APP_SETTINGS_OPE_GUIDE)
-//
-//	        Catch ex As ConfigurationErrorsException
-//	            If Me.log.IsWarnEnabled Then
-//	                Me.log.Warn(ERR_WEB_CONFIG_OPE_GUIDE_PATH + ex.Message)
-//	                Me.log.Warn(ex)
-//	            End If
-//	        Finally
-//	            Me.btnUnyonGuide.Attributes.Add(JS_ON_CLICK, String.Format(OPEN_WINDOW_ON_CLICK, unyonGuide))
-//	        End Try
-//
 
 		skf3022Sc006SharedService.pageLoadComplete(initDto);
 		// 処理状態クリア

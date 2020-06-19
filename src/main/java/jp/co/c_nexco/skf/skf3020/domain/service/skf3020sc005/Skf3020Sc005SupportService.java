@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3020.domain.dto.skf3020sc005.Skf3020Sc005SupportDto;
 
@@ -28,7 +29,7 @@ public class Skf3020Sc005SupportService extends SkfServiceAbstract<Skf3020Sc005S
 	@Override
 	public Skf3020Sc005SupportDto index(Skf3020Sc005SupportDto supportDto) throws Exception {
 
-		skfOperationLogUtils.setAccessLog("社員入力支援画面からのコールバック処理開始", CodeConstant.C001, supportDto.getPageId());
+		skfOperationLogUtils.setAccessLog("社員入力支援画面からのコールバック処理開始", CodeConstant.C001, FunctionIdConstant.SKF3020_SC005);
 
 		// 入力支援画面で選択された社員番号
 		String shainNo = supportDto.getHdnSelShainNo();

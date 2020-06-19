@@ -14,6 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetT
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc005.Skf3022Sc005SearchDto;
@@ -50,7 +51,7 @@ public class Skf3022Sc005SearchService extends SkfServiceAbstract<Skf3022Sc005Se
 		searchDto.setPageTitleKey(MessageIdConstant.SKF3022_SC005_TITLE);
 
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, searchDto.getPageId());
+		skfOperationLogUtils.setAccessLog("検索", CodeConstant.C001, FunctionIdConstant.SKF3022_SC005);
 		
 		//入退居区分リスト
 		String nyutaikyoKbn = searchDto.getNyutaikyoKbn();

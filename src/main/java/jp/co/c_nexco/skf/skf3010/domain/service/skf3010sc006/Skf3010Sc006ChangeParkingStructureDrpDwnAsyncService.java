@@ -73,7 +73,7 @@ public class Skf3010Sc006ChangeParkingStructureDrpDwnAsyncService
 		//駐車場月額使用料
 		Long parkingShiyoMonthFei = skf3010Sc006SharedService.setParkingMonthFei(parkingBasicRent, parkingRentalAdjust);
 
-
+//以下スクリプトで実装
 //        '駐車場情報の貸与区分ラベルを設定
 //        Me.setParkingLendKbn()
 //
