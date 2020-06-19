@@ -20,6 +20,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInf
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetSKSDairininInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc002.Skf2030Sc002GetNyukyobiInfoExpRepository;
@@ -162,6 +163,11 @@ public class Skf2030Sc002SharedService {
 		// 排他処理用備品希望申請最終更新日保持
 		dto.addLastUpdateDate(BIHIN_KIBO_SHINSEI_KEY_LAST_UPDATE_DATE, bihinShinseiInfo.getUpdateDate());
 
+		// 提示データを取得
+		String nyukyoApplNo = bihinShinseiInfo.getNyukyoApplNo();
+		SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp tmpTeijiData = skfTeijiDataInfoUtils
+				.getTeijiDataInfoByApplNo(nyukyoApplNo);
+
 		// 所属
 		// 機関
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getAgency())) {
@@ -230,6 +236,11 @@ public class Skf2030Sc002SharedService {
 		// 【 備品搬入 】
 		// 備品搬入希望日 ※入力項目
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getSessionDay())) {
+			if (tmpTeijiData != null) {
+				if (!CheckUtils.isEqual(bihinShinseiInfo.getSessionDay(), tmpTeijiData.getCarryinRequestDay())) {
+					bihinShinseiInfo.setSessionDay(tmpTeijiData.getCarryinRequestDay());
+				}
+			}
 			String sessionDayText = skfDateFormatUtils.dateFormatFromString(bihinShinseiInfo.getSessionDay(),
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			dto.setSessionDay(sessionDayText);
@@ -237,6 +248,11 @@ public class Skf2030Sc002SharedService {
 		// 備品搬入希望時間 ※入力項目
 		String applTime = CodeConstant.NONE;
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getSessionTime())) {
+			if (tmpTeijiData != null) {
+				if (!CheckUtils.isEqual(bihinShinseiInfo.getSessionTime(), tmpTeijiData.getCarryinRequestKbn())) {
+					bihinShinseiInfo.setSessionTime(tmpTeijiData.getCarryinRequestKbn());
+				}
+			}
 			applTime = bihinShinseiInfo.getSessionTime();
 			Map<String, String> sessionTimeMap = skfGenericCodeUtils
 					.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
@@ -244,6 +260,11 @@ public class Skf2030Sc002SharedService {
 		}
 		// 【 連絡先 】 ※入力項目
 		if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getRenrakuSaki())) {
+			if (tmpTeijiData != null) {
+				if (!CheckUtils.isEqual(bihinShinseiInfo.getRenrakuSaki(), tmpTeijiData.getUkeireMyApoint())) {
+					bihinShinseiInfo.setRenrakuSaki(tmpTeijiData.getUkeireMyApoint());
+				}
+			}
 			dto.setRenrakuSaki(bihinShinseiInfo.getRenrakuSaki());
 		}
 
@@ -699,8 +720,36 @@ public class Skf2030Sc002SharedService {
 				return false;
 			}
 
-			result = skfBihinInfoUtils.updateBihinKiboShinseiInfo(applInfo, companyCd, null, null, null, null, null,
-					dto.getDairiName(), dto.getDairiRenrakusaki());
+			// 提示データを取得
+			String nyukyoApplNo = tmpBihinData.getNyukyoApplNo();
+			SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp tmpTeijiData = skfTeijiDataInfoUtils
+					.getTeijiDataInfoByApplNo(nyukyoApplNo);
+
+			String sessionDay = null;
+			String sessionTime = null;
+			String renrakuSaki = null;
+			// 提示データチェック
+			if (tmpTeijiData != null) {
+				/**
+				 * 搬入希望日、搬入希望時間、連絡先<br />
+				 * こちらの3項目は提示データと差異があれば提示データで上書きする。
+				 */
+				// 搬入希望日
+				if (!CheckUtils.isEqual(tmpBihinData.getSessionDay(), tmpTeijiData.getCarryinRequestDay())) {
+					sessionDay = tmpTeijiData.getCarryinRequestDay();
+				}
+				// 搬入希望時間
+				if (!CheckUtils.isEqual(tmpBihinData.getSessionTime(), tmpTeijiData.getCarryinRequestKbn())) {
+					sessionTime = tmpTeijiData.getCarryinRequestKbn();
+				}
+				// 連絡先
+				if (!CheckUtils.isEqual(tmpBihinData.getRenrakuSaki(), tmpTeijiData.getUkeireMyApoint())) {
+					renrakuSaki = tmpTeijiData.getUkeireMyApoint();
+				}
+			}
+
+			result = skfBihinInfoUtils.updateBihinKiboShinseiInfo(applInfo, companyCd, null, renrakuSaki, sessionDay,
+					sessionTime, null, dto.getDairiName(), dto.getDairiRenrakusaki());
 			if (!result) {
 				// エラーメッセージ（メッセージID：S02000）を設定
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);

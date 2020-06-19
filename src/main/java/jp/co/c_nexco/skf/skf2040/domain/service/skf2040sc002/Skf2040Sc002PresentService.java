@@ -12,22 +12,26 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsUpdateBihinHenkyakuShinseiExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2040Fc001TaikyoTodokeDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2050Fc001BihinHenkyakuSinseiDataImport;
@@ -58,7 +62,11 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 	@Autowired
 	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
 	@Autowired
+	private SkfTeijiDataInfoUtils skfTeijiDataInfoUtils;
+	@Autowired
 	private SkfCommentUtils skfCommentUtils;
+	@Autowired
+	private SkfBihinInfoUtils skfBihinInfoUtils;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
 
@@ -201,6 +209,9 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				}
 			}
 
+			// 備品返却を提示データで更新する
+			setTeijiDataInfo(preDto);
+
 			// メール送信処理
 			skf2040Sc002SharedService.sendMail(preDto.getApplNo(), preDto.getApplId(), preDto.getShainNo(), comment,
 					preDto.getMailKbn(), true);
@@ -257,6 +268,9 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				return preDto;
 			}
 
+			// 備品返却を提示データで更新する
+			setTeijiDataInfo(preDto);
+
 			// コメント更新
 			String commentNote = preDto.getCommentNote();
 			boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, preDto.getApplNo(),
@@ -295,6 +309,47 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 
 		return preDto;
 
+	}
+
+	private boolean setTeijiDataInfo(Skf2040Sc002PresentDto dto) {
+		// 提示データを取得する
+		SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp teijiData = new SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp();
+		teijiData = skfTeijiDataInfoUtils.getTeijiDataInfoByApplNo(dto.getApplNo());
+
+		if (teijiData == null) {
+			return false;
+		}
+
+		// 提示データを元に備品返却申請テーブルを更新する
+		SkfBihinInfoUtilsUpdateBihinHenkyakuShinseiExp bihinHenkyaku = new SkfBihinInfoUtilsUpdateBihinHenkyakuShinseiExp();
+		// 搬出希望日
+		Long sessionDay = teijiData.getCarryoutRequestDay();
+		if (sessionDay != null && sessionDay != CodeConstant.LONG_ZERO) {
+			bihinHenkyaku.setSessionDay(String.valueOf(sessionDay));
+		}
+
+		// 搬出希望時間
+		Long sessionTime = teijiData.getCarryoutRequestKbn();
+		if (sessionTime != null && sessionTime != CodeConstant.LONG_ZERO) {
+			bihinHenkyaku.setSessionTime(String.valueOf(sessionTime));
+		}
+		// 連絡先
+		bihinHenkyaku.setRenrakuSaki(teijiData.getTatiaiMyApoint());
+		// 立会代理人連絡先
+		bihinHenkyaku.setTatiaiDairiApoint(teijiData.getTatiaiDairiApoint());
+		// 立会代理人氏名
+		bihinHenkyaku.setTatiaiDairiName(teijiData.getTatiaiDairiName());
+
+		// プライマリキー
+		// 会社コード
+		bihinHenkyaku.setTaikyoApplNo(dto.getApplNo());
+		// 申請書類管理番号
+		bihinHenkyaku.setCompanyCd(CodeConstant.C001);
+
+		// 備品返却申請テーブル更新
+		boolean result = skfBihinInfoUtils.updateBihinHenkyakuShinsei(bihinHenkyaku, null);
+
+		return result;
 	}
 
 	/**
