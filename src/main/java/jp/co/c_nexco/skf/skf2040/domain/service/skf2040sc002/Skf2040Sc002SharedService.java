@@ -43,6 +43,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRep
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuShinseiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
@@ -107,6 +108,8 @@ public class Skf2040Sc002SharedService {
 	Skf2040Sc002GetApplHistoryInfoExpRepository skf2040Sc002GetApplHistoryInfoExpRepository;
 	@Autowired
 	Skf2040Sc002GetBihinShinseiInfoExpRepository skf2040Sc002GetBihinShinseiInfoExpRepository;
+	@Autowired
+	Skf3022TTeijiDataRepository skf3022TTeijiDataRepository;
 	@Autowired
 	Skf2030TBihinRepository skf2030TBihinRepository;
 	@Autowired
@@ -357,9 +360,25 @@ public class Skf2040Sc002SharedService {
 	 * 
 	 * @param initDto
 	 * @param taikyoRepDt
+	 * @param teijiDataInfo
 	 */
-	protected void setBihinHenkyakuDisp(Skf2040Sc002InitDto initDto, Skf2040TTaikyoReport taikyoRepDt) {
-
+	protected void setBihinHenkyakuDisp(Skf2040Sc002InitDto initDto, Skf2040TTaikyoReport taikyoRepDt,
+			Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo) {
+		// 提示データの各項目が更新されていた場合は置き換える
+		if (teijiDataInfo != null) {
+			// 搬出希望日
+			if (!CheckUtils.isEqual(teijiDataInfo.getCarryoutRequestDay(), taikyoRepDt.getSessionDay())) {
+				taikyoRepDt.setSessionDay(teijiDataInfo.getCarryoutRequestDay());
+			}
+			// 搬出希望時間
+			if (!CheckUtils.isEqual(teijiDataInfo.getCarryoutRequestKbn(), taikyoRepDt.getSessionTime())) {
+				taikyoRepDt.setSessionTime(teijiDataInfo.getCarryoutRequestKbn());
+			}
+			// 連絡先
+			if (!CheckUtils.isEqual(teijiDataInfo.getTatiaiMyApoint(), taikyoRepDt.getRenrakuSaki())) {
+				taikyoRepDt.setRenrakuSaki(teijiDataInfo.getTatiaiMyApoint());
+			}
+		}
 		// 返却立会希望日（日）の取得
 		String sessionDay = CodeConstant.DOUBLE_QUOTATION;
 		if (NfwStringUtils.isNotEmpty(taikyoRepDt.getSessionDay())) {

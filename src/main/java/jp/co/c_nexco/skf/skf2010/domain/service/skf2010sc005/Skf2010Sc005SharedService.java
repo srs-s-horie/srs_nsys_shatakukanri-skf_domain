@@ -334,6 +334,7 @@ public class Skf2010Sc005SharedService {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean updateApplStatus(String companyCd, String applNo, Skf2010Sc005CommonDto dto) throws Exception {
 		if ((companyCd == null || CheckUtils.isEmpty(companyCd) || (applNo == null || CheckUtils.isEmpty(applNo)))) {
 			return false;
@@ -506,6 +507,15 @@ public class Skf2010Sc005SharedService {
 			String sendUser = applInfo.get("applShainNo");
 			sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId);
 		}
+		Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>> forUpdateListMap = (Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>>) menuScopeSessionBean
+				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC005);
+
+		// 社宅連携用データセット作成
+		Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>> forUpdateMap = skfBatchUtils
+				.getUpdateDateForUpdateSQL(tApplHistoryData.getShainNo());
+		forUpdateListMap.put(tApplHistoryData.getShainNo(), forUpdateMap);
+
+		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC005, forUpdateListMap);
 
 		// 社宅データ連携
 		String shainNo = tApplHistoryData.getShainNo();

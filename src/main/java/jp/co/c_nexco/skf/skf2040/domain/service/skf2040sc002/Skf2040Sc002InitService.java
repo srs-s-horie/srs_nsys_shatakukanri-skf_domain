@@ -36,6 +36,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
+import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -61,6 +62,8 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtiles;
+	@Autowired
+	private SkfBihinInfoUtils skfBihinInfoUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
@@ -613,8 +616,12 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 				// 退居（自動車の保管場所返還）届（備品返却確認）
 				initDto.setPageTitleKey(MessageIdConstant.SKF2040_SC002_TITLE2);
 
+				// 提示データ取得
+				Skf2040Sc002GetTeijiDataInfoExp teijiDataInfo = skf2040Sc002ShareService
+						.getTeijiDataInfo(initDto.getShainNo(), initDto.getApplNo());
+
 				// 備品がある場合の表示項目の設定
-				skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt);
+				skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt, teijiDataInfo);
 			}
 		} else {
 			// 退居届情報の退居する社宅区分が3：駐車場のみの場合
@@ -699,10 +706,14 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 				}
 			}
 
+			if (teijiDataInfo != null && teijiDataInfo.getTeijiNo() >= 0) {
+
+			}
+
 			// 返却備品項目表示
 			initDto.setHenkyakuInfoViewFlg(sTrue);
 			// 返却情報の設定
-			skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt);
+			skf2040Sc002ShareService.setBihinHenkyakuDisp(initDto, taikyoRepDt, teijiDataInfo);
 		}
 		return returnValue;
 	}
