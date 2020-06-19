@@ -81,21 +81,6 @@ public class Skf3010Sc006ChangeContractDrpDwnService extends SkfServiceAbstract<
 		// 契約情報削除ボタン(非活性：true, 活性:false)
 		Boolean contractDelDisableFlg = true;
 
-//		/** JSON(連携用) */
-//		// 駐車場区画情報リスト
-//		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
-//		// 備品情報リスト
-//		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
-//		// ドロップダウン選択値リスト
-//		List<Map<String, Object>> drpDwnSelectedList = new ArrayList<Map<String, Object>>();
-//		// 可変ラベルリスト
-//		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
-//
-//		// List変換
-//		parkingList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonParking()));
-//		bihinList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonBihin()));
-//		drpDwnSelectedList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonDrpDwnList()));
-//		labelList.addAll(skf3010Sc002SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 		// エラーコントロール初期化
 		skf3010Sc006SharedService.clearVaridateErr(initDto);
 		// 一旦画面を戻す

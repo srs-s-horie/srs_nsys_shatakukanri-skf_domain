@@ -52,6 +52,7 @@ public class Skf3010Sc006AttachedDownloadService extends SkfServiceAbstract<Skf3
 		byte[] fileData = null;
 		
 		if(SHATAKU_HOSOKU_LINK.equals(hosoku)){
+			//社宅
 			switch(attachedNo){
 				case "1":
 					fileName = adlDto.getShatakuHosokuFileName1();
@@ -67,6 +68,7 @@ public class Skf3010Sc006AttachedDownloadService extends SkfServiceAbstract<Skf3
 					break;
 			}
 		}else if(PARKING_HOSOKU_LINK.equals(hosoku)){
+			//駐車場
 			switch(attachedNo){
 			case "1":
 				fileName = adlDto.getParkingHosokuFileName1();
@@ -86,22 +88,6 @@ public class Skf3010Sc006AttachedDownloadService extends SkfServiceAbstract<Skf3
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog(fileName, CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 		
-//		// 添付ファイル情報を取得
-//		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
-//
-//		// 申請情報の取得を行う
-//		if (attachedFileList == null || attachedFileList.size() <= 0) {
-//			
-//		}
-//
-//		for (Map<String, Object> attachedFileMap : attachedFileList) {
-//			String nowAttachedNo = attachedFileMap.get("attachedNo").toString();
-//			if (attachedNo.equals(nowAttachedNo)) {
-//				fileName = attachedFileMap.get("attachedName").toString();
-//				fileData = (byte[]) attachedFileMap.get("fileStream");
-//				break;
-//			}
-//		}
 		if(fileName != null && fileData != null && fileData.length > 0){
 			//ファイルデータ、ファイル名、パスの設定
 			adlDto.setFileData(fileData);

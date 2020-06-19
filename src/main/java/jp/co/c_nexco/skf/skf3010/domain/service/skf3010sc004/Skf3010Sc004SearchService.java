@@ -59,13 +59,6 @@ public class Skf3010Sc004SearchService extends SkfServiceAbstract<Skf3010Sc004Se
 		// 登録画面のhidden項目をinitDtoに詰めなおす
 		searchDto.setShatakuKanriNo(Long.parseLong(searchDto.getHdnShatakuKanriNo()));
 		searchDto.setShatakuName(searchDto.getHdnShatakuName());
-		// initDto.setAreaKbn(initDto.getHdnAreaKbn());
-		// initDto.setShatakuKbn(initDto.getHdnShatakuKbn());
-		// initDto.setEmptyParkingCount(initDto.getHdnEmptyParkingCount());
-		// initDto.setEmptyRoomCount(initDto.getHdnEmptyRoomCount());
-
-		// 検索部をセット
-		//SetSearchInfo(searchDto);
 
 		// // リストテーブルの情報を取得
 		int listCount = skf3010Sc004SharedService.getListTableData(searchDto.getShatakuKanriNo(),
@@ -105,44 +98,4 @@ public class Skf3010Sc004SearchService extends SkfServiceAbstract<Skf3010Sc004Se
 		return searchDto;
 	}
 
-//	/**
-//	 * 検索部のセット
-//	 * 
-//	 * @param searchDto
-//	 */
-//	private void SetSearchInfo(Skf3010Sc004SearchDto searchDto) {
-//
-//		// 駐車場総数を取得する
-//		int parkingCouunt = skf3010Sc004SharedService.getParkingCount(searchDto.getShatakuKanriNo());
-//
-//		// 「空き駐車場数」を設定する
-//		String emptyParkingCount = searchDto.getHdnEmptyParkingCount() + CodeConstant.SLASH + parkingCouunt;
-//		searchDto.setEmptyParkingCount(emptyParkingCount);
-//
-//		// 社宅部屋総数を取得する
-//		int roomCount = skf3010Sc004SharedService.getRoomCount(searchDto.getShatakuKanriNo());
-//		String emptyRoomCount = searchDto.getHdnEmptyRoomCount() + CodeConstant.SLASH + roomCount;
-//		searchDto.setEmptyRoomCount(emptyRoomCount);
-//
-//		// 「地域区分」の設定
-//		// 汎用コード取得
-//		Map<String, String> genericCodeMapArea = new HashMap<String, String>();
-//		genericCodeMapArea = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_AREA_KBN);
-//		String areaKbn = "";
-//		if (searchDto.getHdnAreaKbn() != null) {
-//			areaKbn = genericCodeMapArea.get(searchDto.getHdnAreaKbn());
-//		}
-//		searchDto.setAreaKbn(areaKbn);
-//
-//		// 「社宅区分」を設定
-//		// 汎用コード取得
-//		Map<String, String> genericCodeMapShataku = new HashMap<String, String>();
-//		genericCodeMapShataku = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
-//		String shatakuKbn = "";
-//		if (searchDto.getHdnShatakuKbn() != null) {
-//			shatakuKbn = genericCodeMapShataku.get(searchDto.getHdnShatakuKbn());
-//		}
-//		searchDto.setShatakuKbn(shatakuKbn);
-//
-//	}
 }

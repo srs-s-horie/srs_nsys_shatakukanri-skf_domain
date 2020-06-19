@@ -127,8 +127,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		skfOperationLogUtils.setAccessLog("登録", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
 
 		/** JSON(連携用) */
-//		// 駐車場区画情報リスト
-//		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
 		// 備品情報リスト
 		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
 		// ドロップダウン選択値リスト
@@ -155,7 +153,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		Skf3010MShatakuParkingContract mShatakuParkingContract = new Skf3010MShatakuParkingContract();
 		
 		// List変換
-//		parkingList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonParking()));
 		bihinList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonBihin()));
 		drpDwnSelectedList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonDrpDwnList()));
 		labelList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(registDto.getJsonLabelList()));
@@ -194,8 +191,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		skf3010Sc006SharedService.setUpdateColumParkingContract(mShatakuParkingContract, drpDwnSelectedList, registDto);
 		// 更新カウンタ
 		int updateCnt = 0;
-
-//		Map <String, Object> labelMap = (labelList.size() > 0) ? labelList.get(0) : null;
 
 		// 新規登録判定:社宅管理番号なし
 		if (SkfCheckUtils.isNullOrEmpty(registDto.getHdnShatakuKanriNo())) {
@@ -239,8 +234,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 			ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1011);
 		}
 
-		// 成功メッセージ
-		//ServiceHelper.addResultMessage(registDto, MessageIdConstant.I_SKF_1012);
 		// DTO設定
 		registDto.setHdnShatakuKanriNo(mShataku.getShatakuKanriNo().toString());
 		registDto.setHdnShatakuName(mShataku.getShatakuName());
@@ -291,8 +284,6 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 			Skf3010MShatakuParkingContract mShatakuParkingContract, 
 			String pageId,
 			Skf3010Sc006RegistDto registDto) {
-
-//		Map <String, Object> drpDwnSelected = (drpDwnSelectedList.size() > 0) ? drpDwnSelectedList.get(0) : null;
 
 		// 更新カウント
 		int updateCnt = 0;

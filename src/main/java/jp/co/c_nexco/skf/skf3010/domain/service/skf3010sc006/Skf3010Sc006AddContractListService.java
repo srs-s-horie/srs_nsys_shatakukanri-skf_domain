@@ -48,22 +48,6 @@ public class Skf3010Sc006AddContractListService extends SkfServiceAbstract<Skf30
 		logger.debug("契約情報追加");
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("契約情報追加", CodeConstant.C001, FunctionIdConstant.SKF3010_SC006);
-
-//		/** JSON(連携用) */
-//		// 駐車場区画情報リスト
-//		List<Map<String, Object>> parkingList = new ArrayList<Map<String, Object>>();
-//		// 備品情報リスト
-//		List<Map<String, Object>> bihinList = new ArrayList<Map<String, Object>>();
-//		// ドロップダウン選択値リスト
-//		List<Map<String, Object>> drpDwnSelectedList = new ArrayList<Map<String, Object>>();
-//		// 可変ラベルリスト
-//		List<Map<String, Object>> labelList = new ArrayList<Map<String, Object>>();
-
-		// List変換
-//		parkingList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonParking()));
-//		bihinList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonBihin()));
-//		drpDwnSelectedList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonDrpDwnList()));
-//		labelList.addAll(skf3010Sc006SharedService.jsonArrayToArrayList(initDto.getJsonLabelList()));
 		
 		// エラーコントロール初期化
 		skf3010Sc006SharedService.clearVaridateErr(initDto);
