@@ -342,9 +342,9 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 
 		// プライマリキー
 		// 会社コード
-		bihinHenkyaku.setTaikyoApplNo(dto.getApplNo());
-		// 申請書類管理番号
 		bihinHenkyaku.setCompanyCd(CodeConstant.C001);
+		// 退居届の申請書類管理番号
+		bihinHenkyaku.setTaikyoApplNo(dto.getApplNo());
 
 		// 備品返却申請テーブル更新
 		boolean result = skfBihinInfoUtils.updateBihinHenkyakuShinsei(bihinHenkyaku, null);
