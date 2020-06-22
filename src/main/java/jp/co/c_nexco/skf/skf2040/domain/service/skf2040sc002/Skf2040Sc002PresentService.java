@@ -14,8 +14,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetA
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsUpdateBihinHenkyakuShinseiExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoR0105Exp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
+import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -311,10 +314,28 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 
 	}
 
-	private boolean setTeijiDataInfo(Skf2040Sc002PresentDto dto) {
+	/**
+	 * 提示データテーブルから提示データを取得し、備品返却確認テーブルのデータを更新する
+	 * 
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean setTeijiDataInfo(Skf2040Sc002PresentDto dto) throws Exception {
 		// 提示データを取得する
 		SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp teijiData = new SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp();
-		teijiData = skfTeijiDataInfoUtils.getTeijiDataInfoByApplNo(dto.getApplNo());
+		if (CheckUtils.isEqual(dto.getApplId(), FunctionIdConstant.R0105)) {
+			// 備品返却確認の場合、参照テーブルが違うため専用のSQLを使用する
+			SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoR0105Exp tmpTeijiData = new SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoR0105Exp();
+			tmpTeijiData = skfTeijiDataInfoUtils.getTeijiDataInfoByApplNoR0105(dto.getApplNo());
+			if (tmpTeijiData != null) {
+				CopyUtils.copyProperties(teijiData, tmpTeijiData);
+			} else {
+				return false;
+			}
+		} else {
+			teijiData = skfTeijiDataInfoUtils.getTeijiDataInfoByApplNo(dto.getApplNo());
+		}
 
 		if (teijiData == null) {
 			return false;
@@ -343,8 +364,13 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 		// プライマリキー
 		// 会社コード
 		bihinHenkyaku.setCompanyCd(CodeConstant.C001);
-		// 退居届の申請書類管理番号
-		bihinHenkyaku.setTaikyoApplNo(dto.getApplNo());
+		if (CheckUtils.isEqual(dto.getApplId(), FunctionIdConstant.R0105)) {
+			// 備品返却申請の申請書類管理番号
+			bihinHenkyaku.setApplNo(dto.getApplNo());
+		} else {
+			// 退居届の申請書類管理番号
+			bihinHenkyaku.setTaikyoApplNo(dto.getApplNo());
+		}
 
 		// 備品返却申請テーブル更新
 		boolean result = skfBihinInfoUtils.updateBihinHenkyakuShinsei(bihinHenkyaku, null);

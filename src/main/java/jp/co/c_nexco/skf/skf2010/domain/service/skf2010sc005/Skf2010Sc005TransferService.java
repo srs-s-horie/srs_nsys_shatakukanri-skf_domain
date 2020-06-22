@@ -14,8 +14,8 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -134,8 +134,9 @@ public class Skf2010Sc005TransferService extends SkfServiceAbstract<Skf2010Sc005
 		List<Map<String, Object>> dispList = skf2010Sc005SharedService.createListTable(tApplHistoryData, transDto);
 		transDto.setLtResultList(dispList);
 
-		if (!CheckUtils.isEqual(applStatus, defaultApplStatus)) {
-			// 更新前と更新後の申請状況が違っていた場合
+		if (!CheckUtils.isEqual(applStatus, defaultApplStatus)
+				&& !CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSACHU)) {
+			// 更新前と更新後の申請状況が違っていた場合（更新後が「審査中」以外の場合
 			// 社宅管理データ連携処理実行
 			List<String> resultBatch = skf2010Sc005SharedService.doShatakuRenkei(menuScopeSessionBean, applShainNo,
 					applNo, applStatus, applId, FunctionIdConstant.SKF2010_SC005);
