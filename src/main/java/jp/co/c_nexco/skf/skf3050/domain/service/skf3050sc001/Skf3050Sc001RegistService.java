@@ -32,7 +32,6 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
-import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc001.Skf3050Sc001RegistDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
@@ -47,8 +46,6 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 	
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
 	@Autowired
 	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
 	@Autowired
@@ -208,8 +205,6 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 			}
 			
 			//更新者情報
-			Map<String, String> userInfo = new HashMap<String, String>();
-			userInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 			String updateUserId = LoginUserInfoUtils.getUserCd();
 			String updateProgramId = "Skf3050Sc001";
 			
