@@ -30,6 +30,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuKanriIdExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuKanriIdExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetTeijiStatusInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc002.Skf2020Sc002GetTeijiStatusInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchiKey;
@@ -43,6 +45,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetNowShatakuNameExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetShatakuKanriIdExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002GetTeijiStatusInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateBihinHenkyakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc002.Skf2020Sc002UpdateNyukyoKiboInfoExpRepository;
@@ -135,6 +138,8 @@ public class Skf2020Sc002SharedService {
 	private Skf2020Sc002GetApplHistoryInfoExpRepository skf2020Sc002GetApplHistoryInfoExpRepository;
 	@Autowired
 	private Skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository;
+	@Autowired
+	private Skf2020Sc002GetTeijiStatusInfoExpRepository skf2020Sc002GetTeijiStatusInfoExpRepository;
 
 	// 駐車場の有無チェック用
 	private enum enmCheckParking {
@@ -812,7 +817,14 @@ public class Skf2020Sc002SharedService {
 	 * @param updateFlg
 	 */
 	protected void setShatakuInfo(Skf2020Sc002CommonDto dto, String updateFlg) {
-
+		
+		// 提示ステータスによる申請可否チェック
+		int count = getTeijiStatusInfo(dto.getShainNo(), CodeConstant.SYS_TAIKYO_KBN);
+						
+		if (count > 0) {
+			return;
+		} else {
+		
 		// Hidden
 		Long hdnNowShatakuRoomKanriNo = CodeConstant.LONG_ZERO;// 現居住社宅部屋管理番号
 		Long hdnNowShatakuKanriNo = CodeConstant.LONG_ZERO;// 現居住社宅管理番号
@@ -1027,7 +1039,9 @@ public class Skf2020Sc002SharedService {
 
 			}
 		}
-
+		
+		}
+		
 	}
 
 	/**
@@ -1553,6 +1567,21 @@ public class Skf2020Sc002SharedService {
 			affiliation2List.add(teamMap);
 		}
 		returnMap.put(KEY_AFFILIATION2_LIST, affiliation2List);
+		
+		// 提示ステータスによる申請可否チェック
+		int count = getTeijiStatusInfo(dto.getShainNo(), CodeConstant.SYS_TAIKYO_KBN);
+				
+		if (count > 0) {
+			// 保有社宅名ドロップダウンリストの設定
+			List<Map<String, Object>> nowShatakuNameList = new ArrayList<Map<String, Object>>();
+			returnMap.put(KEY_NOW_SHATAKU_NAME_LIST, nowShatakuNameList);
+			// 退居理由ドロップダウンリストの設定
+			List<Map<String, Object>> taikyoRiyuKbnList = new ArrayList<Map<String, Object>>();
+			returnMap.put(KEY_TAIKYO_RIYU_KBN_LIST, taikyoRiyuKbnList);
+			// 返却立会希望日(時)ドロップダウンリストの設定
+			List<Map<String, Object>> returnWitnessRequestDateList = new ArrayList<Map<String, Object>>();
+			returnMap.put(KEY_SESSION_TIME_LIST, returnWitnessRequestDateList);
+		} else {
 
 		// 保有社宅名ドロップダウンリストの設定
 		List<Map<String, Object>> nowShatakuNameList = new ArrayList<Map<String, Object>>();
@@ -1572,6 +1601,8 @@ public class Skf2020Sc002SharedService {
 				FunctionIdConstant.GENERIC_CODE_REQUEST_TIME, dto.getSessionTime(), false));
 		returnMap.put(KEY_SESSION_TIME_LIST, returnWitnessRequestDateList);
 
+		}
+		
 		return returnMap;
 	}
 
@@ -3300,5 +3331,26 @@ public class Skf2020Sc002SharedService {
 
 		// 連絡先
 		dto.setRenrakuSaki(dto.getRenrakuSaki());
+	}
+	
+	// 提示データステータス取得
+	public int getTeijiStatusInfo(String shainNo, String nyutaikyoKbn) {
+		int count = 0;
+		
+		Skf2020Sc002GetTeijiStatusInfoExp teijiCount = new Skf2020Sc002GetTeijiStatusInfoExp();
+		Skf2020Sc002GetTeijiStatusInfoExpParameter param = new Skf2020Sc002GetTeijiStatusInfoExpParameter();
+		
+		param.setShainNo(shainNo);
+		param.setNyutaikyoKbn(nyutaikyoKbn);
+		
+		teijiCount = skf2020Sc002GetTeijiStatusInfoExpRepository.getTeijiStatusInfo(param);
+		
+		if (teijiCount != null) {
+			count = teijiCount.getTeijiCount();
+		}
+		
+		return count;
+		
+		
 	}
 }
