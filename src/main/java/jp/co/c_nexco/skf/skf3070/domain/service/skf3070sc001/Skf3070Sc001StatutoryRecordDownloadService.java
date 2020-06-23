@@ -4,13 +4,11 @@
 package jp.co.c_nexco.skf.skf3070.domain.service.skf3070sc001;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.poi_v3_8.hssf.util.CellReference;
 import org.apache.poi_v3_9.ss.usermodel.Cell;
 import org.apache.poi_v3_9.ss.usermodel.IndexedColors;
@@ -18,8 +16,6 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Rp001.Skf3070Rp001GetStatutoryRecordDataListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Rp001.Skf3070Rp001GetStatutoryRecordDataListExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3070Sc001.Skf3070Sc001GetOwnerContractListExp;
@@ -29,12 +25,12 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.CellDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -157,8 +153,6 @@ public class Skf3070Sc001StatutoryRecordDownloadService
 			//法定調書データ取得
 			List<Skf3070Rp001GetStatutoryRecordDataListExp> statutoryRecordDataList = new ArrayList<Skf3070Rp001GetStatutoryRecordDataListExp>();
 			Skf3070Rp001GetStatutoryRecordDataListExpParameter param2 = new Skf3070Rp001GetStatutoryRecordDataListExpParameter();
-			// 会社コード
-			param2.setCompanyCd(companyCd);
 			// 社宅管理番号
 			param2.setShatakuKanriNo(ownerExp.getShatakuKanriNo());
 			// 法定調書データ番号
