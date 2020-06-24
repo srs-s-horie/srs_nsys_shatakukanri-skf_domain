@@ -90,7 +90,7 @@ public class Skf3090Sc007SharedService {
 	}
 
 	/**
-	 * 組織テーブルからプライマリーキーによって社員情報を取得する。
+	 * 組織テーブルからプライマリーキーによって機関情報を取得する。
 	 * 
 	 * @param companyCd 会社コード
 	 * @param agencyCd 機関コード
