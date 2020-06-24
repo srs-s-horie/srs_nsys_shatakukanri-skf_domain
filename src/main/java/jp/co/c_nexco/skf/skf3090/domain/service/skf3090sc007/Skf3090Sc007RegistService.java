@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MAgency;
@@ -14,8 +13,8 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MSoshikiReposito
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -33,7 +32,7 @@ import jp.co.c_nexco.skf.skf3090.domain.service.common.Skf309040CommonSharedServ
 public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007RegistDto> {
 
 	/** 定数 */
-	private static final String AFFILIATION1_00 = "00";
+	private static final String AFFILIATION1_000 = "000";
 	private static final String AFFILIATION2_000 = "000";
 
 	@Autowired
@@ -158,9 +157,9 @@ public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007Re
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyCd" },
 					MessageIdConstant.E_SKF_1048, "機関コード");
 			isCheck = false;
-		} else if (CheckUtils.isMoreThanByteSize(registDto.getRegistAgencyCd().trim(), 4)) {
+		} else if (CheckUtils.isMoreThanByteSize(registDto.getRegistAgencyCd().trim(), 3)) {
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAgencyCd" },
-					MessageIdConstant.E_SKF_1071, "機関コード", "4");
+					MessageIdConstant.E_SKF_1071, "機関コード", "3");
 			isCheck = false;
 		} else if (NfwStringUtils.isNotEmpty(registDto.getRegistAgencyCd())
 				&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAgencyCd().trim()))) {
@@ -174,16 +173,16 @@ public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007Re
 		// 形式チェック
 		if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
 				&& CheckUtils.isMoreThanByteSize(registDto.getRegistAffiliation1Cd().trim(), 3)) {
-					ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
-						MessageIdConstant.E_SKF_1071, "部等コード", "3");
-				isCheck = false;
-		}else if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
-					&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAffiliation1Cd().trim()))) {
-						ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
-							MessageIdConstant.E_SKF_1052, "部等コード");
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
+					MessageIdConstant.E_SKF_1071, "部等コード", "3");
+			isCheck = false;
+		} else if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())
+				&& !(CheckUtils.isAlphabetNumeric(registDto.getRegistAffiliation1Cd().trim()))) {
+			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation1Cd" },
+					MessageIdConstant.E_SKF_1052, "部等コード");
 			isCheck = false;
 		}
-		
+
 		/** 室・課等コード */
 		// 桁数チェック
 		// 形式チェック
@@ -197,8 +196,8 @@ public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007Re
 			ServiceHelper.addErrorResultMessage(registDto, new String[] { "registAffiliation2Cd" },
 					MessageIdConstant.E_SKF_1052, "室・課等コード");
 			isCheck = false;
-		}		
-		
+		}
+
 		/** 機関名称 */
 		// 必須チェック
 		// 桁数チェック
@@ -229,7 +228,7 @@ public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007Re
 					MessageIdConstant.E_SKF_1071, "室・課等名称", "64");
 			isCheck = false;
 		}
-			
+
 		return isCheck;
 	}
 
@@ -244,9 +243,9 @@ public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007Re
 	 */
 	private boolean isExistSoshiki(String companyCd, String agencyCd, String affiliation1Cd, String affiliation2Cd) {
 
-		// 部等コードがnullの場合00をセット
+		// 部等コードがnullの場合000をセット
 		if (affiliation1Cd == null) {
-			affiliation1Cd = AFFILIATION1_00;
+			affiliation1Cd = AFFILIATION1_000;
 		}
 
 		// 室・課等コードがnullの場合000をセット
@@ -308,7 +307,7 @@ public class Skf3090Sc007RegistService extends SkfServiceAbstract<Skf3090Sc007Re
 		if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation1Cd())) {
 			setValue.setAffiliation1Cd(registDto.getRegistAffiliation1Cd());
 		} else {
-			setValue.setAffiliation1Cd(AFFILIATION1_00);
+			setValue.setAffiliation1Cd(AFFILIATION1_000);
 		}
 		// 室・課等コード
 		if (NfwStringUtils.isNotEmpty(registDto.getRegistAffiliation2Cd())) {

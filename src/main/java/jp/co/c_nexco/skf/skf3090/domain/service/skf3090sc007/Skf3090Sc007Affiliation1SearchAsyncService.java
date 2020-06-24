@@ -71,9 +71,9 @@ public class Skf3090Sc007Affiliation1SearchAsyncService
 		/** 必須チェックOKだったら桁数チェック */
 		if (isCheck) {
 			// 機関コード
-			if (CheckUtils.isMoreThanByteSize(affiliation1SearchAsyncDto.getRegistAgencyCd().trim(), 4)) {
+			if (CheckUtils.isMoreThanByteSize(affiliation1SearchAsyncDto.getRegistAgencyCd().trim(), 3)) {
 				ServiceHelper.addErrorResultMessage(affiliation1SearchAsyncDto, new String[] { "registAgencyCd" },
-						MessageIdConstant.E_SKF_1071, "機関コード", "4");
+						MessageIdConstant.E_SKF_1071, "機関コード", "3");
 				isCheck = false;
 			}
 
