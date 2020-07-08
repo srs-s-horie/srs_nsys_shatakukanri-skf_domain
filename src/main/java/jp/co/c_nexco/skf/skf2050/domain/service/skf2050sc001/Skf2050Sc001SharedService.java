@@ -211,8 +211,8 @@ public class Skf2050Sc001SharedService {
 		}
 
 		// コメント更新
-		String commentNote = dto.getCommentNote();		
-		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newApplStatus, 
+		String commentNote = dto.getCommentNote();
+		boolean commentErrorMessage = skfCommentUtils.insertComment(CodeConstant.C001, applNo, newApplStatus,
 				commentNote, errorMsg);
 		if (!commentErrorMessage) {
 			return false;
@@ -397,7 +397,7 @@ public class Skf2050Sc001SharedService {
 		}
 		// 代理人連絡先
 		if (NfwStringUtils.isNotEmpty(bihinHenkyaku.getTatiaiDairiApoint())) {
-			dto.setDairininName(bihinHenkyaku.getTatiaiDairiApoint());
+			dto.setDairiRenrakuSaki(bihinHenkyaku.getTatiaiDairiApoint());
 		}
 
 		return;
@@ -493,7 +493,7 @@ public class Skf2050Sc001SharedService {
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2050SC001);
 		return resultBatch;
 	}
-	
+
 	/**
 	 * 社宅管理システム規格名称取得
 	 * 
