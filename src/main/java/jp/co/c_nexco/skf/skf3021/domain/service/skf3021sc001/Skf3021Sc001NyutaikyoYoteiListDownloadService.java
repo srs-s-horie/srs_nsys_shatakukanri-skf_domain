@@ -4,18 +4,15 @@
 package jp.co.c_nexco.skf.skf3021.domain.service.skf3021sc001;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Rp001.Skf3021Rp001GetCurrentShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Rp001.Skf3021Rp001GetCurrentShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Rp001.Skf3021Rp001GetNyutaikyoYoteiInfoExp;
@@ -33,11 +30,11 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3021Rp001.Skf3021Rp001
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsuchiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.nfw.webcore.utils.bean.RowDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.SheetDataBean;
 import jp.co.c_nexco.nfw.webcore.utils.bean.WorkBookDataBean;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -391,7 +388,15 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 		//社員氏名
 		listRow.setShainName(viewRow.getShainName());
 		//新所属
-		listRow.setNewAffiliation(viewRow.getNewAffiliation());
+		String NewAffiliation = viewRow.getNewAffiliation();
+		
+		if (NewAffiliation != null) {
+			if (NewAffiliation.contains("&lt;br /&gt;")) {
+				NewAffiliation = viewRow.getNewAffiliation().replace("&lt;br /&gt;", "");
+			}
+		}	
+		
+		listRow.setNewAffiliation(NewAffiliation);
 		//現所属
 		String nowAffiliation = CodeConstant.DOUBLE_QUOTATION;
 		if(nyukyoRow != null){
