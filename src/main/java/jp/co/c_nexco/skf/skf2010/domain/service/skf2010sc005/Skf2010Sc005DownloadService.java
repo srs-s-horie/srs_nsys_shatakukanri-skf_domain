@@ -189,8 +189,7 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 			beanOutputCsvList.add(beanOutputCsvR0105);
 		}
 		// CSVファイルを作成し、Zipファイルに圧縮する
-		String fileName = skfDateFormatUtils.dateFormatFromDate(new Date(), SkfCommonConstant.YMD_STYLE_YYYYMMDD_FLAT)
-				+ "_承認一覧.zip";
+		String fileName = "CSVファイル.zip";
 		OutputFileCsvProperties properties = new FileOutput().new OutputFileCsvProperties(
 				FileOutput.LineSeparatorType.LINE_SEPARATOR_CRLF, FileOutput.FileEncode.BOM_UTF8,
 				FileOutput.DelimiterType.COMMA, FileOutput.QuoteType.DOUBLE_QUOTATION);
