@@ -790,7 +790,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 		// 室課名称
 		insertRireki.setAffiliation2Name(preUserMasterInfo.getAffiliation2Name());
 		// 事業領域コード
-		insertRireki.setBusinessAreaCd(preUserMasterInfo.getBusinessAreaCdAsBusinessareabusinessareacd());
+		insertRireki.setBusinessAreaCd(preUserMasterInfo.getBusinessareabusinessareacd());
 		// 事業領域名称
 		insertRireki.setBusinessAreaName(preUserMasterInfo.getBusinessAreaName());
 
