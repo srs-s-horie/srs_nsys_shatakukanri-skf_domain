@@ -505,7 +505,15 @@ public class Skf2010Sc005SharedService {
 			String annai = CodeConstant.NONE;
 			String furikomiStartDate = CodeConstant.NONE;
 			String sendUser = applInfo.get("applShainNo");
-			sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId);
+			Map<String, String> errMsg = new HashMap<String, String>();
+			if (!sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId,
+					errMsg)) {
+				if (NfwStringUtils.isEmpty(errMsg.get("val"))) {
+					ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"));
+				} else {
+					ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"), errMsg.get("val"), null);
+				}
+			}
 		}
 		Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>> forUpdateListMap = (Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC005);
@@ -1544,8 +1552,9 @@ public class Skf2010Sc005SharedService {
 	 * @param sendGroundId
 	 * @throws Exception
 	 */
-	private void sendApplTsuchiMail(String sendMailKbn, Map<String, String> applInfo, String comment, String annai,
-			String furikomiStartDate, String sendUser, String sendGroundId) throws Exception {
+	private boolean sendApplTsuchiMail(String sendMailKbn, Map<String, String> applInfo, String comment, String annai,
+			String furikomiStartDate, String sendUser, String sendGroundId, Map<String, String> errMsg)
+			throws Exception {
 
 		// 申請書類名を取得
 		Skf2010MApplication skf2010MApplication = new Skf2010MApplication();
@@ -1555,7 +1564,7 @@ public class Skf2010Sc005SharedService {
 		skf2010MApplication = skf2010MApplicationRepository.selectByPrimaryKey(key);
 		if (skf2010MApplication == null) {
 			// 申請書類名が取れない時はエラーログを出力
-			return;
+			return false;
 		}
 		String applName = skf2010MApplication.getApplName();
 
@@ -1574,7 +1583,9 @@ public class Skf2010Sc005SharedService {
 		skfMShainList = skf2010Sc005GetSendApplMailInfoExpRepository.getSendApplMailInfo(mShainParam);
 		if (skfMShainList == null || skfMShainList.size() <= 0) {
 			// 申請通知メール情報が取れない時はエラーログを出力
-			return;
+			errMsg.put("error", MessageIdConstant.E_SKF_1066);
+			errMsg.put("val", "通知メール情報の取得");
+			return false;
 		}
 		skfMShainData = skfMShainList.get(0);
 
@@ -1589,45 +1600,21 @@ public class Skf2010Sc005SharedService {
 			applAgencyCd = skfMShainData.getAgencyCd();
 		}
 
-		// アウトソース担当者共通のメールアドレスを取得
-		String outMailAddress = getApplOutMailInfo(applAgencyCd, applInfo.get("applId"));
-
 		// メール送信
-		if (!CheckUtils.isEmpty(sendUser)) {
-			String mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
-
-			// URLを設定
-			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
-			sendApplTsuchiMailExist(companyCd, sendMailKbn, applInfo.get("applNo"), applDate, applShainName, comment,
-					annai, furikomiStartDate, urlBase, sendUser, mailAddress, null, applName);
-		} else {
-			sendApplTsuchiMailExist(companyCd, sendMailKbn, applInfo.get("applNo"), applDate, applShainName, comment,
-					annai, furikomiStartDate, null, sendUser, outMailAddress, null, applName);
-
+		String mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
+		if (NfwStringUtils.isEmpty(mailAddress)) {
+			// メールアドレスが設定されていない場合は処理を中断する。
+			errMsg.put("error", MessageIdConstant.E_SKF_1041);
+			errMsg.put("val", sendUser);
+			return false;
 		}
 
-		return;
-	}
+		// URLを設定
+		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+		sendApplTsuchiMailExist(companyCd, sendMailKbn, applInfo.get("applNo"), applDate, applShainName, comment, annai,
+				furikomiStartDate, urlBase, sendUser, mailAddress, null, applName);
 
-	/**
-	 * アウトソース担当者共通にメールを送信します
-	 * 
-	 * @param agencyCd
-	 * @param applId
-	 * @return
-	 */
-	private String getApplOutMailInfo(String agencyCd, String applId) {
-		String mailAddress = CodeConstant.NONE;
-
-		// 設定ファイル情報の取得
-
-		if (applId.equals(FunctionIdConstant.R0100)) {
-			// 社宅入居希望等調書
-		} else if (applId.equals(FunctionIdConstant.R0105)) {
-			// 備品返却申請
-		}
-
-		return mailAddress;
+		return true;
 	}
 
 	/**
