@@ -128,6 +128,8 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private boolean shiryoBtnViewFlg;
 	// コメントボタン表示フラグ
 	private String commentViewFlg;
+	// 提示データ一覧ボタン表示フラグ
+	private boolean teijiBtnViewFlag;
 
 	// 返却情報表示フラグ true:あり false:なし
 	private String henkyakuInfoViewFlg;

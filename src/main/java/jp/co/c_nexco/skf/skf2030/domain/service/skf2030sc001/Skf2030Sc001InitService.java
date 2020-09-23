@@ -69,7 +69,7 @@ public class Skf2030Sc001InitService extends SkfServiceAbstract<Skf2030Sc001Init
 		}
 
 		// 画面制御処理（活性／非活性）
-		skf2030Sc001SharedService.setEnabled(initDto, applInfo);
+		skf2030Sc001SharedService.setEnabled(initDto);
 
 		// バナー戻るボタン遷移先調整
 		String backUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init"; // デフォルトは申請状況一覧へ

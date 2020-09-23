@@ -262,11 +262,13 @@ public class Skf2030Sc001SharedService {
 			String applTime = CodeConstant.NONE;
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getSessionTime())) {
 				applTime = bihinShinseiInfo.getSessionTime();
-				Map<String, String> sessionTimeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
+				Map<String, String> sessionTimeMap = skfGenericCodeUtils
+						.getGenericCode(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME);
 				initDto.setSessionTimeText(sessionTimeMap.get(applTime));
 			}
 			// 希望時間取得（ドロップダウン生成時に初期値を設定）
-			initDto.setDdlWishTime(skfDropDownUtils.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME, applTime, false));
+			initDto.setDdlWishTime(skfDropDownUtils
+					.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_REQUEST_TIME, applTime, false));
 			// 【 連絡先 】 ※入力項目
 			if (NfwStringUtils.isNotEmpty(bihinShinseiInfo.getRenrakuSaki())) {
 				initDto.setRenrakuSaki(bihinShinseiInfo.getRenrakuSaki());
@@ -363,10 +365,10 @@ public class Skf2030Sc001SharedService {
 		return true;
 	}
 
-	public void setEnabled(Skf2030Sc001CommonDto dto, Map<String, String> applInfo) {
+	public void setEnabled(Skf2030Sc001CommonDto dto) {
 		// ステータスによりコントロールの活性制御を行う
 		// 画面権限等の設定による制御もあるため、非表示化・非活性化のみ行う
-		switch (applInfo.get("status")) {
+		switch (dto.getApplStatus()) {
 		case CodeConstant.STATUS_ICHIJIHOZON:
 		case CodeConstant.STATUS_MISAKUSEI:
 		case CodeConstant.STATUS_SASHIMODOSHI:

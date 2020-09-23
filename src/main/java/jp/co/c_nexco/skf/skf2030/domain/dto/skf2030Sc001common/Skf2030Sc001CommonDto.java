@@ -26,6 +26,8 @@ public class Skf2030Sc001CommonDto extends Skf203010CommonDto {
 	private boolean completionDayDisabled;
 	// 備品申請ラジオボタンフラグ
 	private String bihinCheckFlag;
+	// 提示データ一覧ボタン表示フラグ
+	private boolean teijiBtnViewFlag;
 
 	// 備品希望設定
 	// 洗濯機

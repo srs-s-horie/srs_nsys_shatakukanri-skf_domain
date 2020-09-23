@@ -352,11 +352,14 @@ public class Skf2030Sc002SharedService {
 				dto.setBihinCheckFlag(String.valueOf(isBihinAppl));
 
 			}
+			// 提示データ一覧ボタン表示フラグ初期値設定
+			dto.setTeijiBtnViewFlag(false);
 			// 社宅提示データが作成完了されていない場合
 			if (!bCreateComplete) {
 				// 未作成、社宅作成完了は提示不可で継続
 				dto.setPresentBtnDisabled(true);
-
+				// 提示データ一覧ボタンを表示
+				dto.setTeijiBtnViewFlag(true);
 				// ワーニング表示
 				ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1001, SHATAKU_TEIJI_MSG,
 						BIHIN_TEIJI_COMP);

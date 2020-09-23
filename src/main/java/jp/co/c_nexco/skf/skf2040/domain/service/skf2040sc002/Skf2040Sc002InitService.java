@@ -296,6 +296,8 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 				// 社宅の状態は非表示
 				initDto.setShatakuJotaiViewFlg(sFalse);
 
+				initDto.setTeijiBtnViewFlag(false);
+
 				// 備品情報の表示
 				if (!getBihinInfoMain(initDto)) {
 					// 返却情報欄の表示
@@ -308,6 +310,7 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 					// 備品情報の表示エラーは警告表示で継続
 					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.I_SKF_1006,
 							"返却備品情報が取得できませんでした。必要に応じて社宅管理台帳から返却備品", "メンテナンス");
+					initDto.setTeijiBtnViewFlag(true);
 					return returnValue;
 				}
 
@@ -391,6 +394,8 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 							initDto.setBtnApproveDisabled(sTrue);
 							// 提示ボタン
 							initDto.setBtnPresentDisabeld(sTrue);
+							// 提示データ一覧ボタン表示
+							initDto.setTeijiBtnViewFlag(true);
 							ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "提示データを確認",
 									"（備品提示データが作成完了されていません。）");
 							break;

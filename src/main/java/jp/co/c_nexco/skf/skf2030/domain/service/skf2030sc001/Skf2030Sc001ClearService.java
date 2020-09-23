@@ -74,7 +74,7 @@ public class Skf2030Sc001ClearService extends SkfServiceAbstract<Skf2030Sc001Cle
 		}
 
 		// 画面制御処理（活性／非活性）
-		skf2030Sc001SharedService.setEnabled(clearDto, applInfo);
+		skf2030Sc001SharedService.setEnabled(clearDto);
 
 		return clearDto;
 	}

@@ -128,4 +128,9 @@ public class Skf2030Sc002CommonDto extends Skf203010CommonDto {
 	private boolean btnRequirementVisibled;
 	// 「提示」ボタン非活性フラグ
 	private boolean presentBtnDisabled = false;
+	// 提示データ一覧ボタン表示フラグ
+	private boolean teijiBtnViewFlag;
+	// 入退居予定一覧ボタン表示フラグ
+	private boolean nyutaikyoBtnViewFlag;
+
 }

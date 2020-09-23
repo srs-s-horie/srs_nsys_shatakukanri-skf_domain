@@ -163,6 +163,10 @@ public class Skf2020Sc003CommonDto extends Skf202010CommonDto {
 	private boolean bihinVisible;
 	// コメントボタン表示フラグ
 	private boolean commentViewFlag;
+	// 提示データ一覧ボタン表示フラグ
+	private boolean teijiBtnViewFlag;
+	// 入退居予定一覧ボタン表示フラグ
+	private boolean nyutaikyoBtnViewFlag;
 
 	// 申請状況（テキスト）
 	private String applStatusText;
