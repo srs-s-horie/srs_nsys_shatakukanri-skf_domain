@@ -14,8 +14,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2030TBihinKiboShinsei;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -68,7 +68,7 @@ public class Skf2030Sc001SaveService extends SkfServiceAbstract<Skf2030Sc001Save
 
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("status", saveDto.getSendApplStatus());
+		applInfo.put("status", saveDto.getApplStatus());
 		applInfo.put("applNo", saveDto.getApplNo());
 		applInfo.put("applId", saveDto.getApplId());
 		applInfo.put("shainNo", saveDto.getHdnShainNo());
@@ -88,7 +88,7 @@ public class Skf2030Sc001SaveService extends SkfServiceAbstract<Skf2030Sc001Save
 		}
 
 		// 画面制御処理（活性／非活性）
-		skf2030Sc001SharedService.setEnabled(saveDto, applInfo);
+		skf2030Sc001SharedService.setEnabled(saveDto);
 
 		return saveDto;
 	}

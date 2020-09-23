@@ -745,13 +745,15 @@ public class Skf2020Sc003SharedService {
 	 */
 	private boolean setTeijiDataInfo(String shainNo, String applNo, Skf2020Sc003CommonDto dto, String updateFlg) {
 		List<SkfTeijiDataInfoUtilsGetTeijiDataInfoExp> teijiDataInfoList = new ArrayList<SkfTeijiDataInfoUtilsGetTeijiDataInfoExp>();
+		dto.setNyutaikyoBtnViewFlag(false);
+		dto.setTeijiBtnViewFlag(false);
 		// 提示データを取得する
 		teijiDataInfoList = skfTeijiDataInfoUtils.getTeijiDataInfo(shainNo, CodeConstant.NYUTAIKYO_KBN_NYUKYO, applNo);
 		if (teijiDataInfoList == null || teijiDataInfoList.size() <= 0) {
 			// 社宅提示データが取得できなかった場合
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1001, SHATAKU_TEIJI_MSG,
 					SHATAKU_TEIJI_NONE);
-
+			dto.setNyutaikyoBtnViewFlag(true);
 			return false;
 		}
 
@@ -766,6 +768,7 @@ public class Skf2020Sc003SharedService {
 						SHATAKU_TEIJI_COMP);
 				// 未作成は提示不可で継続
 				dto.setMaskPattern("TeijiNG");
+				dto.setTeijiBtnViewFlag(true);
 				break;
 			}
 		}
