@@ -25,6 +25,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNameListExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiCreateKbnExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
@@ -43,6 +44,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetParkingRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNameListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiCreateKbnExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
@@ -135,6 +137,8 @@ public class Skf2020Sc003SharedService {
 	private SkfBatchBusinessLogicUtils skfBatchBusinessLogicUtils;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
+	@Autowired
+	private Skf2020Sc003GetTeijiCreateKbnExpRepository skf2020Sc003GetTeijiCreateKbnExpRepository;
 
 	@Autowired
 	private SkfDateFormatUtils skfDateFormatUtils;
@@ -753,7 +757,21 @@ public class Skf2020Sc003SharedService {
 			// 社宅提示データが取得できなかった場合
 			ServiceHelper.addWarnResultMessage(dto, MessageIdConstant.W_SKF_1001, SHATAKU_TEIJI_MSG,
 					SHATAKU_TEIJI_NONE);
-			dto.setNyutaikyoBtnViewFlag(true);
+
+			// 入退居予定一覧で入居の提示データ作成区分が1（作成済）のデータを取得する
+			Skf2020Sc003GetTeijiCreateKbnExpParameter param = new Skf2020Sc003GetTeijiCreateKbnExpParameter();
+			param.setShainNo(shainNo);
+			param.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_NYUKYO);
+			param.setApplNo(applNo);
+			param.setTeijiCreateKbn(CodeConstant.SHATAKU_SAKUSEI_SUMI);
+			int count = skf2020Sc003GetTeijiCreateKbnExpRepository.getTeijiCreateKbn(param);
+
+			// 取得できた場合は提示データボタンを表示する。できなかった場合は入退居予定ボタンを表示する
+			if (count > 0) {
+				dto.setTeijiBtnViewFlag(true);
+			} else {
+				dto.setNyutaikyoBtnViewFlag(true);
+			}
 			return false;
 		}
 
