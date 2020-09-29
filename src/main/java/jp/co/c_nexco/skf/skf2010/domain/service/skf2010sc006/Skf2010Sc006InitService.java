@@ -19,8 +19,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -122,9 +122,30 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		if (userName.equals(initDto.getShonin1Name())
 				&& !CheckUtils.isEqual(initDto.getApplStatus(), CodeConstant.STATUS_SHINSACHU)) {
 			initDto.setShoninBtnViewFlag("false");
+			initDto.setNyukyoShoninBtnViewFlag("false");
+			initDto.setTaikyoShoninBtnViewFlag("false");
 			initDto.setCommentAreaVisibled(false);
 		} else {
+
 			initDto.setShoninBtnViewFlag("true");
+
+			switch (initDto.getApplId()) {
+			// 承認ボタンの切り替え
+			case FunctionIdConstant.R0100:
+				// 入居の場合
+				initDto.setNyukyoShoninBtnViewFlag("true");
+				initDto.setTaikyoShoninBtnViewFlag("false");
+				break;
+			case FunctionIdConstant.R0103:
+				// 退居の場合
+				initDto.setNyukyoShoninBtnViewFlag("false");
+				initDto.setTaikyoShoninBtnViewFlag("true");
+				break;
+			default:
+				initDto.setNyukyoShoninBtnViewFlag("false");
+				initDto.setTaikyoShoninBtnViewFlag("true");
+				break;
+			}
 		}
 
 		// ユーザーの権限チェック
@@ -136,6 +157,8 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		default:
 			// 承認権限がないユーザーは「再提示」「資料添付」「承認」ボタンを非表示にする。
 			initDto.setMaskPattern("NON");
+			initDto.setNyukyoShoninBtnViewFlag("false");
+			initDto.setTaikyoShoninBtnViewFlag("false");
 			break;
 		}
 
@@ -344,6 +367,9 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 				mappingNyukyoChoshoTsuchi(initDto, tNyukyoChoshoTsuchi);
 				// 貸与（予定）社宅等のご案内
 				mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
+				// 社宅管理番号と部屋管理番号を設定
+				initDto.setCheckShatakuKanriNo(String.valueOf(tNyukyoChoshoTsuchi.getShatakuNo()));
+				initDto.setCheckRoomKanriNo(String.valueOf(tNyukyoChoshoTsuchi.getRoomKanriNo()));
 
 			}
 		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0103)) {

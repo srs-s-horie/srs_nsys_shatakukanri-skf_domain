@@ -22,10 +22,21 @@ public class Skf2010Sc006InitDto extends Skf2010CommonDto {
 	// 承認ボタン表示フラグ（true:表示、false:非表示）
 	private String shoninBtnViewFlag;
 
+	// 入居承認ボタン表示フラグ（true:表示、false:非表示）
+	private String nyukyoShoninBtnViewFlag;
+
+	// 退居承認ボタン表示フラグ（true:表示、false:非表示）
+	private String taikyoShoninBtnViewFlag;
+
 	// コメントボタン表示フラグ（true:表示、false:非表示）
 	private String commentViewFlag;
 
 	// 再提示ボタンの表示非表示フラグ
 	private String representBtnFlg;
+
+	// 退居申請チェック用社宅管理番号
+	private String checkShatakuKanriNo;
+	// 退居申請チェック用社宅部屋管理番号
+	private String checkRoomKanriNo;
 
 }
