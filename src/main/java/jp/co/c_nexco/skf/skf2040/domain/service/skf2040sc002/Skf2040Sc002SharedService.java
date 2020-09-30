@@ -472,6 +472,8 @@ public class Skf2040Sc002SharedService {
 			dto.setParkingAddress2(taikyoRepDt.getParkingAddress2());
 		}
 		// 退居日 社宅等
+		// 退居日変更フラグ
+		dto.setTaikyoDateFlg(taikyoRepDt.getTaikyoDateFlg());
 		// 退居日
 		if ("1".equals(taikyoRepDt.getTaikyoShataku())) {
 			if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getTaikyoDate()))) {
@@ -484,6 +486,8 @@ public class Skf2040Sc002SharedService {
 				}
 			}
 		}
+		// 駐車場返還日変更フラグ
+		dto.setParkingEDateFlg(taikyoRepDt.getParkingEDateFlg());
 		// 駐車場返還日
 		if ("1".equals(taikyoRepDt.getTaikyoParking1()) || "1".equals(taikyoRepDt.getTaikyoParking2())) {
 			if ((NfwStringUtils.isNotEmpty(taikyoRepDt.getParkingHenkanDate()))) {
