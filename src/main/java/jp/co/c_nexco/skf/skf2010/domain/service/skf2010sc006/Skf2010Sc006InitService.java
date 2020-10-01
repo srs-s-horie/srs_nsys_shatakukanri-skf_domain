@@ -183,9 +183,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		}
 
 		// ユーザーの権限チェック
-		switch (roleId)
-
-		{
+		switch (roleId) {
 		case CodeConstant.SKF_220:
 		case CodeConstant.SKF_230:
 		case CodeConstant.SKF_900:
