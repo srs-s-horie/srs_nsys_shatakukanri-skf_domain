@@ -11,11 +11,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetTaikyoShatakuInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetTaikyoShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc006.Skf2010Sc006GetTaikyoShatakuInfoExpRepository;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -60,6 +63,9 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 	private SkfBatchUtils skfBatchUtils;
 	@Autowired
 	private SkfShatakuInfoUtils skfShatakuInfoUtils;
+
+	@Autowired
+	private Skf2010Sc006GetTaikyoShatakuInfoExpRepository skf2010Sc006GetTaikyoShatakuInfoExpRepository;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -123,7 +129,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 				&& !CheckUtils.isEqual(initDto.getApplStatus(), CodeConstant.STATUS_SHINSACHU)) {
 			initDto.setShoninBtnViewFlag("false");
 			initDto.setNyukyoShoninBtnViewFlag("false");
-			initDto.setTaikyoShoninBtnViewFlag("false");
+			initDto.setComShoninBtnViewFlag("false");
 			initDto.setCommentAreaVisibled(false);
 		} else {
 
@@ -133,23 +139,53 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 			// 承認ボタンの切り替え
 			case FunctionIdConstant.R0100:
 				// 入居の場合
-				initDto.setNyukyoShoninBtnViewFlag("true");
-				initDto.setTaikyoShoninBtnViewFlag("false");
+
+				List<Skf2010Sc006GetTaikyoShatakuInfoExp> dataList = new ArrayList<Skf2010Sc006GetTaikyoShatakuInfoExp>();
+
+				// 承認が完了されていない社宅退居申請を取得する
+				// パラメータの設定
+				Skf2010Sc006GetTaikyoShatakuInfoExpParameter param = new Skf2010Sc006GetTaikyoShatakuInfoExpParameter();
+				// 社宅管理番号
+				param.setShatakuKanriNo(initDto.getCheckShatakuKanriNo());
+				// 社宅部屋管理番号
+				param.setRoomKanriNo(initDto.getCheckRoomKanriNo());
+				// 申請書類ID（退居申請固定）
+				param.setApplId(FunctionIdConstant.R0103);
+				// 申請書ステータス（承認固定）
+				param.setApplStatus(CodeConstant.NYUTAIKYO_APPL_STATUS_SHONIN_ZUMI);
+				// 社宅を退居するフラグ(社宅を退居。駐車場のみは含まない）
+				param.setTaikyoShataku(CodeConstant.LEAVE);
+
+				// データ取得
+				dataList = skf2010Sc006GetTaikyoShatakuInfoExpRepository.getTaikyoShatakuInfo(param);
+
+				// 取得できた場合は特殊メッセージダイアログ表示の承認ボタン設定
+				if (dataList.size() > 0) {
+					initDto.setTaikyoShain(dataList.get(0).getShainNo());
+					initDto.setNyukyoShoninBtnViewFlag("true");
+					initDto.setComShoninBtnViewFlag("false");
+				} else {
+					initDto.setNyukyoShoninBtnViewFlag("false");
+					initDto.setComShoninBtnViewFlag("true");
+				}
+
 				break;
 			case FunctionIdConstant.R0103:
 				// 退居の場合
 				initDto.setNyukyoShoninBtnViewFlag("false");
-				initDto.setTaikyoShoninBtnViewFlag("true");
+				initDto.setComShoninBtnViewFlag("true");
 				break;
 			default:
 				initDto.setNyukyoShoninBtnViewFlag("false");
-				initDto.setTaikyoShoninBtnViewFlag("true");
+				initDto.setComShoninBtnViewFlag("true");
 				break;
 			}
 		}
 
 		// ユーザーの権限チェック
-		switch (roleId) {
+		switch (roleId)
+
+		{
 		case CodeConstant.SKF_220:
 		case CodeConstant.SKF_230:
 		case CodeConstant.SKF_900:
@@ -158,7 +194,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 			// 承認権限がないユーザーは「再提示」「資料添付」「承認」ボタンを非表示にする。
 			initDto.setMaskPattern("NON");
 			initDto.setNyukyoShoninBtnViewFlag("false");
-			initDto.setTaikyoShoninBtnViewFlag("false");
+			initDto.setComShoninBtnViewFlag("false");
 			break;
 		}
 
@@ -368,8 +404,8 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 				// 貸与（予定）社宅等のご案内
 				mappingTaiyoShatakuAnnai(initDto, tNyukyoChoshoTsuchi);
 				// 社宅管理番号と部屋管理番号を設定
-				initDto.setCheckShatakuKanriNo(String.valueOf(tNyukyoChoshoTsuchi.getShatakuNo()));
-				initDto.setCheckRoomKanriNo(String.valueOf(tNyukyoChoshoTsuchi.getRoomKanriNo()));
+				initDto.setCheckShatakuKanriNo(tNyukyoChoshoTsuchi.getShatakuNo());
+				initDto.setCheckRoomKanriNo(tNyukyoChoshoTsuchi.getRoomKanriNo());
 
 			}
 		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0103)) {
@@ -891,7 +927,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
 			initDto.setApplDate(applDateText);
 		}
-		
+
 		// 社員番号
 		initDto.setShainNo(taikyoReport.getShainNo());
 		// 氏名
