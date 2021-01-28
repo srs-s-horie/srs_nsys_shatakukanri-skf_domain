@@ -334,7 +334,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				return false;
 			}
 		} else {
-			teijiData = skfTeijiDataInfoUtils.getTeijiDataInfoByApplNo(dto.getApplNo());
+			teijiData = skfTeijiDataInfoUtils.getTeijiDataInfoByApplNo(dto.getApplNo(), CodeConstant.SYS_TAIKYO_KBN);
 		}
 
 		if (teijiData == null) {
