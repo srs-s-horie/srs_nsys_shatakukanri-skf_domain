@@ -42,7 +42,6 @@ import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
-import jp.co.c_nexco.skf.common.util.SkfHtmlCreateUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
@@ -111,8 +110,6 @@ public class Skf2030Sc002SharedService {
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
-	private SkfHtmlCreateUtils skfHtmlCreateUtils;
-	@Autowired
 	private SkfMailUtils skfMailUtils;
 
 	/**
@@ -166,7 +163,7 @@ public class Skf2030Sc002SharedService {
 		// 提示データを取得
 		String nyukyoApplNo = bihinShinseiInfo.getNyukyoApplNo();
 		SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp tmpTeijiData = skfTeijiDataInfoUtils
-				.getTeijiDataInfoByApplNo(nyukyoApplNo);
+				.getTeijiDataInfoByApplNo(nyukyoApplNo, CodeConstant.SYS_NYUKYO_KBN);
 
 		// 所属
 		// 機関
@@ -726,7 +723,7 @@ public class Skf2030Sc002SharedService {
 			// 提示データを取得
 			String nyukyoApplNo = tmpBihinData.getNyukyoApplNo();
 			SkfTeijiDataInfoUtilsGetTeijiDataInfoByApplNoExp tmpTeijiData = skfTeijiDataInfoUtils
-					.getTeijiDataInfoByApplNo(nyukyoApplNo);
+					.getTeijiDataInfoByApplNo(nyukyoApplNo, CodeConstant.SYS_NYUKYO_KBN);
 
 			String sessionDay = null;
 			String sessionTime = null;
