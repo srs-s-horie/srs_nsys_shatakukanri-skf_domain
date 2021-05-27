@@ -66,6 +66,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002PositiveRenkeiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsInputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MCompany;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MAccount;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050TMonthlyManageData;
@@ -126,6 +128,7 @@ import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.util.SkfKyoekihiCalcUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050Sc002common.Skf3050Sc002CommonDto;
 
@@ -227,7 +230,12 @@ public class Skf3050Sc002SharedService {
 	private Skf3050Bt001GetDataForUpdateExpRepository skf3050Bt001GetDataForUpdateExpRepository;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
-
+	
+	//共益費日割計算対応 2021/5/14 add start 
+	@Autowired
+	private SkfKyoekihiCalcUtils skfKyoekihiCalcUtils;
+	//共益費日割計算対応 2021/5/14 add end
+	
 	public static final String GRID_NENGETSU = "col1";
 	public static final String GRID_SHIME_SHORI = "col2";
 	public static final String GRID_POSITIVE_DATA = "col3";
@@ -1912,12 +1920,47 @@ public class Skf3050Sc002SharedService {
 					.add(decimalParkingRentalAdjust);
 
 			// ▼個人負担共益費月額（調整後）の取得▼
-			// 個人負担共益費 + 個人負担共益費調整金額
-			Integer kojinHutanKyoekihiGetsugakuTyouseigo = renRirekiRow.getKyoekihiPerson()
-					+ renRirekiRow.getKyoekihiPersonAdjust();
+			// 共益費日割計算対応 2021/5/14 edit start
+			// 社宅利用料計算情報引数
+			SkfKyoekihiCalcUtilsInputExp inputEntity = new SkfKyoekihiCalcUtilsInputExp();
+			// 処理年月
+			inputEntity.setYearMonth(paramShoriNengetsu);
+			// 共益費支払月
+			inputEntity.setKyoekihiPayMonth(renRirekiRow.getKyoekihiPayMonth());
+			// 個人負担共益費月額
+			inputEntity.setKyoekihiPerson(renRirekiRow.getKyoekihiPerson().toString());
+			// 入居予定日
+			inputEntity.setNyukyoDate(renRirekiRow.getNyukyoDate());
+			// 退居予定日
+			inputEntity.setTaikyoDate(renRirekiRow.getTaikyoDate());
+			// 社宅管理台帳ID
+			inputEntity.setShatakuKanriId(renRirekiRow.getShatakuKanriId().toString());
+			
+			// 共益費日割計算対応 2021/5/14 edit start
+			// 共益費計算結果取得
+			SkfKyoekihiCalcUtilsOutputExp outputEntity = new SkfKyoekihiCalcUtilsOutputExp();
+			try {
+				outputEntity = skfKyoekihiCalcUtils.getKyoekihiKeisan(inputEntity);
+			} catch (ParseException e) {
+				outputEntity.setErrMessage(e.getMessage());
+			}
+			
+			if (!NfwStringUtils.isEmpty(outputEntity.getErrMessage())) {
+				LogUtils.infoByMsg("updateTsukibetsuTsukiji, " + outputEntity.getErrMessage());
+				rtn = SkfCommonConstant.ABNORMAL;
+				break;
+			}
+			
+			Integer kojinHutanKyoekihiGetsugakuTyouseigo  = skfKyoekihiCalcUtils.getKyoekihiPayAfter(renRirekiRow.getKyoekihiPersonAdjust()
+					,outputEntity.getKyoekihiMonth(),outputEntity.getNyukyoKasan(),outputEntity.getTaikyoKasan());
+			
+//			// 個人負担共益費 + 個人負担共益費調整金額
+//			Integer kojinHutanKyoekihiGetsugakuTyouseigo = renRirekiRow.getKyoekihiPerson()
+//					+ renRirekiRow.getKyoekihiPersonAdjust();
+			// 共益費日割計算対応 2021/5/14 edit end
 
 			Integer shatakuShiyoryoGetsugaku = shatakuRentCalcOutputData.getShatakuShiyouryouGetsugaku().intValue();
-
+			
 			// ▼月別使用料履歴テーブル更新▼
 			shiyouUpdCount += updateTsukibetsuSiyoryorirekiData(shatakuShiyoryoGetsugaku,
 					shatakuShiyouryouHiwari.intValue(), shatakuShiyouryouTyouseigo.intValue(),
@@ -3426,4 +3469,5 @@ public class Skf3050Sc002SharedService {
 		LogUtils.infoByMsg("処理終了時間：" + strSysDate);
 		LogUtils.info(MessageIdConstant.I_SKF_1023, batchName);
 	}
+	
 }

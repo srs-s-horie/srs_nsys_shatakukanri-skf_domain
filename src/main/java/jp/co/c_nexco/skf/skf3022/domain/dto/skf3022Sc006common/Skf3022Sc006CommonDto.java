@@ -1070,5 +1070,16 @@ public class Skf3022Sc006CommonDto extends Skf302210CommonDto {
 	private String sc006TyusyajoRyokinErr;
 	// 共益費(事業者負担)
 	private String sc006KyoekihiErr;
+	
+	/** 共益費日割計算対応 2021/5/14 add start **/
+	// 共益費支払月に対する支払額
+	private String sc006KyoekihiMonth;
+	// 個人負担共益費入居時加算額
+	private String sc006KyoekihiNyukyoKasan;
+	// 個人負担共益費退居時加算額
+	private String sc006KyoekihiTaikyoKasan;
+	// 社宅管理台帳ID
+	private String hdnShatakuKanriId;
+	/** 共益費日割計算対応 2021/5/14 add end **/
 }
 

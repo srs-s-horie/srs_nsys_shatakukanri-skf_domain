@@ -59,6 +59,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004Upda
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsInputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRirekiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050TMonthlyManageData;
@@ -111,6 +113,7 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfKyoekihiCalcUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002ConfirmPositiveCooperationTaskExecutionDto;
 
@@ -202,6 +205,10 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 	private Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004GetTeijiJoinDataCntExpRepository skf3050Bt004GetTeijiJoinDataCntExpRepository;
+	//共益費日割計算対応 2021/5/14 add start 
+	@Autowired
+	private SkfKyoekihiCalcUtils skfKyoekihiCalcUtils;
+	//共益費日割計算対応 2021/5/14 add end
 
 	private static final String BATCH_NAME = "POSITIVE連携データ確定";
 	private static final String ERRMSG_TSUKIBETSUSHOZOKU_0 = "月別所属履歴（当月）";
@@ -849,30 +856,63 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 			//▼▼月別使用料履歴の更新▼▼
 			//個人負担共益費調整金額を算出
 			//個人負担共益費月額の取得
-			int kojinHutankyouekihiGetsugaku = 0;
-
-			if (!NfwStringUtils.isEmpty(jigetsuTsukiJoin.getLedgerTaikyoDate())) {
-				BigDecimal taikyoDateYymm = new BigDecimal(jigetsuTsukiJoin.getLedgerTaikyoDate().substring(0, 6));
-				BigDecimal decimalNextShoriNengetsu = new BigDecimal(nextShoriNengetsu);
-
-				if (taikyoDateYymm.compareTo(decimalNextShoriNengetsu) <= 0) {
-					//次月以前に退居している場合
-					kojinHutankyouekihiGetsugaku = 0;
-				} else {
-					kojinHutankyouekihiGetsugaku = jigetsuTsukiJoin.getRirekiKyoekihiPerson();
-				}
-
-			} else {
-				kojinHutankyouekihiGetsugaku = jigetsuTsukiJoin.getRirekiKyoekihiPerson();
+//			int kojinHutankyouekihiGetsugaku = 0;
+			// 共益費日割計算対応 2021/5/14 edit start
+			// 社宅利用料計算情報引数
+			SkfKyoekihiCalcUtilsInputExp inputEntity = new SkfKyoekihiCalcUtilsInputExp();
+			// 処理年月
+			inputEntity.setYearMonth(nextShoriNengetsu);
+			// 共益費支払月
+			inputEntity.setKyoekihiPayMonth(jigetsuTsukiJoin.getRirekiKyoekihiPayMonth());
+			// 個人負担共益費月額
+			inputEntity.setKyoekihiPerson(jigetsuTsukiJoin.getRirekiKyoekihiPerson().toString());
+			// 入居予定日
+			inputEntity.setNyukyoDate(jigetsuTsukiJoin.getLedgerNyukyoDate());
+			// 退居予定日
+			inputEntity.setTaikyoDate(jigetsuTsukiJoin.getLedgerTaikyoDate());
+			// 社宅管理台帳ID
+			inputEntity.setShatakuKanriId(shatakuKanriId.toString());
+			
+			// 使用料計算結果取得
+			SkfKyoekihiCalcUtilsOutputExp outputEntity = new SkfKyoekihiCalcUtilsOutputExp();
+			try {
+				outputEntity = skfKyoekihiCalcUtils.getKyoekihiKeisan(inputEntity);
+			} catch (ParseException e) {
+				outputEntity.setErrMessage(e.getMessage());
 			}
-
+			
+			if (!NfwStringUtils.isEmpty(outputEntity.getErrMessage())) {
+				LogUtils.infoByMsg("reCalcShatakuShiyoryo, " + outputEntity.getErrMessage());
+				return false;
+			}
+			
+//			if (!NfwStringUtils.isEmpty(jigetsuTsukiJoin.getLedgerTaikyoDate())) {
+//				BigDecimal taikyoDateYymm = new BigDecimal(jigetsuTsukiJoin.getLedgerTaikyoDate().substring(0, 6));
+//				BigDecimal decimalNextShoriNengetsu = new BigDecimal(nextShoriNengetsu);
+//
+//				if (taikyoDateYymm.compareTo(decimalNextShoriNengetsu) <= 0) {
+//					//次月以前に退居している場合
+//					kojinHutankyouekihiGetsugaku = 0;
+//				} else {
+//					kojinHutankyouekihiGetsugaku = jigetsuTsukiJoin.getRirekiKyoekihiPerson();
+//				}
+//
+//			} else {
+//				kojinHutankyouekihiGetsugaku = jigetsuTsukiJoin.getRirekiKyoekihiPerson();
+//			}
+			// 共益費日割計算対応 2021/5/14 edit end
+			
 			List<String> lockResult = skf3050Bt004GetDataForUpdateExpRepository
 					.getSkf3030TShatakuRentalRireki(nextShoriNengetsu);
 			if (lockResult.size() == 0) {
 				return false;
 			}
 
-			int kyoekihiTotal = kojinHutankyouekihiGetsugaku + jigetsuTsukiJoin.getRirekiKyoekihiPersonAdjust();
+			// 共益費日割計算対応 2021/5/14 edit start
+//			int kyoekihiTotal = kojinHutankyouekihiGetsugaku + jigetsuTsukiJoin.getRirekiKyoekihiPersonAdjust();
+			int kyoekihiTotal = skfKyoekihiCalcUtils.getKyoekihiPayAfter(jigetsuTsukiJoin.getRirekiKyoekihiPersonAdjust()
+					,outputEntity.getKyoekihiMonth(),outputEntity.getNyukyoKasan(),outputEntity.getTaikyoKasan());
+			// 共益費日割計算対応 2021/5/14 edit end
 			updateTsukibetuShiyoryoRirekiData(shatakuShiyoryoGetsugaku.intValue(), shatakuShiyouryouHiwari.intValue(),
 					kyoekihiTotal, chushajoShiyoryoGetsugaku1.intValue(), chushajoShiyoryoGetsugaku2.intValue(),
 					chushajouShiyouryouHiwari1.intValue(), chushajouShiyouryouHiwari2.intValue(), paramUserId,

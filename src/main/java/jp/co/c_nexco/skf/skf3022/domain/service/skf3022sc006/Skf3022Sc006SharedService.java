@@ -59,6 +59,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetTeijiDataForUpdateExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsInputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoom;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiData;
@@ -106,6 +108,7 @@ import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfKyoekihiCalcUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfPageBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonAsyncDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
@@ -184,7 +187,12 @@ public class Skf3022Sc006SharedService {
 	private Skf3022Sc006GetRoomBackDateExpRepository skf3022Sc006GetRoomBackDateExpRepository;
 	@Autowired
 	private SkfPageBusinessLogicUtils skfPageBusinessLogicUtils;
-
+	
+	//共益費日割計算対応 2021/5/14 add start 
+	@Autowired
+	private SkfKyoekihiCalcUtils skfKyoekihiCalcUtils;
+	//共益費日割計算対応 2021/5/14 add end
+	
 	/** 定数 */
 	// 処理区分
 	private static final String MAX_END_DATE = "99991231";
@@ -673,18 +681,51 @@ public class Skf3022Sc006SharedService {
 			comDto.setSc006KyoekihiMonthPay(CodeConstant.STRING_ZERO);
 		}
 		// 個人負担共益費調整金額
+		/** 共益費日割計算対応 2021/5/14 add start **/
+		String kyoekihiPersonAdjust = CodeConstant.STRING_ZERO;
 		if (teijiData.getKyoekihiPersonAdjust() != null) {
 			comDto.setSc006KyoekihiTyoseiPay(teijiData.getKyoekihiPersonAdjust().toString());
+			/** 共益費日割計算対応 2021/5/14 add start **/
+			kyoekihiPersonAdjust = teijiData.getKyoekihiPersonAdjust().toString();
 		} else {
 			comDto.setSc006KyoekihiTyoseiPay(CodeConstant.STRING_ZERO);
 		}
-		// 個人負担共益費月額（調整後）
-		if (teijiData.getKyoekihiPerson() != null && teijiData.getKyoekihiPersonAdjust() != null) {
-			comDto.setSc006KyoekihiPayAfter(
-					getKanmaNumEdit(Long.toString(teijiData.getKyoekihiPerson() + teijiData.getKyoekihiPersonAdjust())));
-		} else {
-			comDto.setSc006KyoekihiPayAfter(CodeConstant.STRING_ZERO);
+		/** 共益費日割計算対応 2021/5/14 add start **/
+		if(teijiData.getKyoekihiPerson() != null ){
+			Map<String, String> paramMap = createSiyoryoKeiSanParam(comDto);	// 使用料計算パラメータ
+			Map<String, String> resultMap = new HashMap<String, String>();		// 使用料計算戻り値
+			StringBuffer errMsg = new StringBuffer();							// エラーメッセージ
+			if (kyoekihiKeiSan(teijiData.getKyoekihiPerson().toString(), teijiData.getKyoekihiPayMonth(),kyoekihiPersonAdjust,
+					paramMap, resultMap, errMsg)) {
+				// 共益費計算でエラー
+				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg.toString());
+			} else {
+				// 共益費計算戻り値設定
+				setKyoekihiKeiSanParam(resultMap, comDto);
+			}
+		}else{
+			// 共益費支払月に対する支払額
+			comDto.setSc006KyoekihiMonth(CodeConstant.STRING_ZERO);
+			// 個人負担共益費入居時加算額
+			comDto.setSc006KyoekihiNyukyoKasan(CodeConstant.STRING_ZERO);
+			// 個人負担共益費退居時加算額
+			comDto.setSc006KyoekihiTaikyoKasan(CodeConstant.STRING_ZERO);
+			// 個人負担共益費月額（調整後）
+			if (teijiData.getKyoekihiPerson() != null && teijiData.getKyoekihiPersonAdjust() != null) {
+				comDto.setSc006KyoekihiPayAfter(
+						getKanmaNumEdit(Long.toString(teijiData.getKyoekihiPerson() + teijiData.getKyoekihiPersonAdjust())));
+			} else {
+				comDto.setSc006KyoekihiPayAfter(CodeConstant.STRING_ZERO);
+			}
 		}
+//		// 個人負担共益費月額（調整後）
+//		if (teijiData.getKyoekihiPerson() != null && teijiData.getKyoekihiPersonAdjust() != null) {
+//			comDto.setSc006KyoekihiPayAfter(
+//					getKanmaNumEdit(Long.toString(teijiData.getKyoekihiPerson() + teijiData.getKyoekihiPersonAdjust())));
+//		} else {
+//			comDto.setSc006KyoekihiPayAfter(CodeConstant.STRING_ZERO);
+//		}
+		/** 共益費日割計算対応 2021/5/14 add end **/
 		// 共益費支払月
 		if (!CheckUtils.isEmpty(teijiData.getKyoekihiPayMonth())) {
 			comDto.setSc006KyoekihiPayMonthSelect(teijiData.getKyoekihiPayMonth());
@@ -3140,6 +3181,14 @@ public class Skf3022Sc006SharedService {
 				comDto.setHdnRentalPatternUpdateDate("");
 			}
 		}
+		
+		//共益費日割計算対応 2021/5/14 add start
+		// 社宅管理台帳ID
+		if (teijiData.getShatakuKanriId() != null) {
+			comDto.setHdnShatakuKanriId(teijiData.getShatakuKanriId().toString());
+		}
+		//共益費日割計算対応 2021/5/14 add end
+		
 	}
 
 	/**
@@ -3447,6 +3496,9 @@ public class Skf3022Sc006SharedService {
 		paramMap.put("hdnRiyouStartDayTwo", comDto.getHdnRiyouStartDayTwo());
 		paramMap.put("sc006RiyouEndDayTwo", comDto.getSc006RiyouEndDayTwo());
 		paramMap.put("sc006TyusyaTyoseiPay", comDto.getSc006TyusyaTyoseiPay());
+		// 共益費日割計算対応 2021/5/14 add start
+		paramMap.put("hdnShatakuKanriId", comDto.getHdnShatakuKanriId());
+		// 共益費日割計算対応 2021/5/14 add end
 
 		return paramMap;
 	}
@@ -3726,7 +3778,15 @@ public class Skf3022Sc006SharedService {
 		String sc006KukakuNoTwo = (labelMap.get("sc006KukakuNoTwo") != null) ? labelMap.get("sc006KukakuNoTwo").toString() : "";
 		// 個人負担共益費月額(調整後)
 		String sc006KyoekihiPayAfter = (labelMap.get("sc006KyoekihiPayAfter") != null) ? labelMap.get("sc006KyoekihiPayAfter").toString() : "";
-
+		//共益費日割計算対応 2021/5/14 add start
+		// 共益費支払月に対する支払額
+		String sc006KyoekihiMonth = (labelMap.get("sc006KyoekihiMonth") != null) ? labelMap.get("sc006KyoekihiMonth").toString() : "0";
+		// 個人負担共益費入居時加算額
+		String sc006KyoekihiNyukyoKasan = (labelMap.get("sc006KyoekihiNyukyoKasan") != null) ? labelMap.get("sc006KyoekihiNyukyoKasan").toString() : "0";
+		// 個人負担共益費退居時加算額
+		String sc006KyoekihiTaikyoKasan = (labelMap.get("sc006KyoekihiTaikyoKasan") != null) ? labelMap.get("sc006KyoekihiTaikyoKasan").toString() : "0";
+		//共益費日割計算対応 2021/5/14 add end
+		
 		/** 戻り値設定 */
 		comDto.setSc006ShatakuName(sc006ShatakuName);
 		comDto.setSc006HeyaNo(sc006HeyaNo);
@@ -3752,6 +3812,11 @@ public class Skf3022Sc006SharedService {
 		} else {
 			comDto.setSc006KyoekihiKyogichuCheck(false);
 		}
+		//共益費日割計算対応 2021/5/14 add start
+		comDto.setSc006KyoekihiMonth(sc006KyoekihiMonth);
+		comDto.setSc006KyoekihiNyukyoKasan(sc006KyoekihiNyukyoKasan);
+		comDto.setSc006KyoekihiTaikyoKasan(sc006KyoekihiTaikyoKasan);
+		//共益費日割計算対応 2021/5/14 add end
 	}
 
 	/**
@@ -7036,6 +7101,18 @@ public class Skf3022Sc006SharedService {
 		comDto.setSc006TyusyajoRyokinErr(null);
 		// 共益費(事業者負担)
 		comDto.setSc006KyoekihiErr(null);
+		
+		
+		/** 共益費日割計算対応 2021/5/14 add start **/
+		// 共益費支払月に対する支払額
+		comDto.setSc006KyoekihiMonth(null);
+		// 個人負担共益費入居時加算額
+		comDto.setSc006KyoekihiNyukyoKasan(null);
+		// 個人負担共益費退居時加算額
+		comDto.setSc006KyoekihiTaikyoKasan(null);
+		// 社宅管理台帳ID
+		comDto.setHdnShatakuKanriId(null);
+		/** 共益費日割計算対応 2021/5/14 add end **/
 	}
 
 
@@ -7226,4 +7303,164 @@ public class Skf3022Sc006SharedService {
 		afterDate = calendar.getTime();
 		return dateFormat.format(afterDate);
 	}
+	
+	
+//共益費日割計算対応 2021/5/14 add start
+	/**
+	 * 共益費計算
+	 * 個人負担共益日の支払月額、入居時加算額、退居時加算額を算出、設定する
+	 * 
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param kyoekihiMonthPay	共益費月額
+	 * @param kyoekihiPayMonthSelect	共益費支払月："0"(前月) or "1"(当月) or "2"(翌月)
+	 * @param kyoekihiTyoseiPay 共益費調整金額
+	 * @param paramMap			パラメータMap
+	 * @param resultMap			*リザルトMap
+	 * @param errMsg			*エラーメッセージ
+	 * @return	true(異常)　/　false(正常)
+	 * @throws Exception
+	 */
+	public Boolean kyoekihiKeiSan(String kyoekihiMonthPay, String kyoekihiPayMonthSelect, String kyoekihiTyoseiPay,
+			Map<String, String> paramMap, Map<String, String> resultMap, StringBuffer errMsg) {
+
+		// 戻り値
+		Map<String, String> tmpMap = new HashMap<String, String>();
+		errMsg.delete(0, errMsg.length());
+
+		// 使用料計算結果
+		String kyoekihiMonth = CodeConstant.DOUBLE_QUOTATION;
+		String nyukyoKasan = CodeConstant.DOUBLE_QUOTATION;
+		String taikyokasan = CodeConstant.DOUBLE_QUOTATION;
+
+		// 社宅利用料計算情報引数
+		SkfKyoekihiCalcUtilsInputExp inputEntity = new SkfKyoekihiCalcUtilsInputExp();
+		// 処理年月
+		inputEntity.setYearMonth(skfBaseBusinessLogicUtils.getSystemProcessNenGetsu());
+		// 共益費支払月
+		inputEntity.setKyoekihiPayMonth(kyoekihiPayMonthSelect);
+		// 個人負担共益費月額
+		inputEntity.setKyoekihiPerson(getKingakuText(kyoekihiMonthPay));
+		// 入居予定日
+		inputEntity.setNyukyoDate(getDateText(paramMap.get("sc006NyukyoYoteiDay")));
+		// 退居予定日
+		inputEntity.setTaikyoDate(getDateText(paramMap.get("sc006TaikyoYoteiDay")));
+		// 社宅管理台帳ID
+		if (!CheckUtils.isEmpty(paramMap.get("hdnShatakuKanriId"))){
+			//社宅管理台帳IDあり
+			inputEntity.setShatakuKanriId(paramMap.get("hdnShatakuKanriId"));
+		}else{
+			inputEntity.setShatakuKanriId(CodeConstant.DOUBLE_QUOTATION);
+		}
+		
+		if(CheckUtils.isEmpty(paramMap.get("sc006NyukyoYoteiDay")) ){
+			tmpMap.put("sc006KyoekihiMonthPay", CodeConstant.STRING_ZERO);
+			tmpMap.put("sc006KyoekihiNyukyoKasan", CodeConstant.STRING_ZERO);
+			tmpMap.put("sc006KyoekihiTaikyoKasan", CodeConstant.STRING_ZERO);
+			tmpMap.put("sc006KyoekihiPayAfter", kyoekihiTyoseiPay);
+			resultMap.putAll(tmpMap);
+			return false;
+		}
+		
+		// 使用料計算結果取得
+		SkfKyoekihiCalcUtilsOutputExp outputEntity = new SkfKyoekihiCalcUtilsOutputExp();
+		try {
+			outputEntity = skfKyoekihiCalcUtils.getKyoekihiKeisan(inputEntity);
+		} catch (ParseException e) {
+			outputEntity.setErrMessage(e.getMessage());
+		}
+		
+		
+		// 計算結果判定
+		if (CheckUtils.isEmpty(outputEntity.getErrMessage())) {
+			// 共益費支払月額
+			kyoekihiMonth = outputEntity.getKyoekihiMonth().toPlainString();
+			// 入居時加算額
+			nyukyoKasan = outputEntity.getNyukyoKasan().toPlainString();
+			// 退居時加算額
+			taikyokasan = outputEntity.getTaikyoKasan().toPlainString();
+		} else {
+			errMsg.append(outputEntity.getErrMessage());
+			LogUtils.infoByMsg("kyoekihiKeiSan, 共益費日割計算で異常検出:" + outputEntity.getErrMessage());
+			return true;
+		}
+		
+		
+		tmpMap.put("sc006KyoekihiMonthPay", getKanmaNumEdit(kyoekihiMonth));
+		tmpMap.put("sc006KyoekihiNyukyoKasan", getKanmaNumEdit(nyukyoKasan));
+		tmpMap.put("sc006KyoekihiTaikyoKasan", getKanmaNumEdit(taikyokasan));
+		
+		String sc006KyoekihiPayAfter = skfKyoekihiCalcUtils.getKyoekihiPayAfter(getKingakuText(kyoekihiTyoseiPay),kyoekihiMonth,nyukyoKasan,taikyokasan);
+		
+		tmpMap.put("sc006KyoekihiPayAfter", getKanmaNumEdit(sc006KyoekihiPayAfter));
+		
+		resultMap.putAll(tmpMap);
+		return false;
+	}
+	
+	
+	/**
+	 * 共益費計算(提示データ登録内部)戻り値初期化(非同期)
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param asyncDto	*DTO
+	 * @return			パラメータマップ
+	 */
+	public void initializeKyoekihiKeiSanParamAsync(Skf3022Sc006CommonAsyncDto asyncDto) {
+
+		asyncDto.setSc006KyoekihiMonth(null);
+		asyncDto.setSc006KyoekihiNyukyoKasan(null);
+		asyncDto.setSc006KyoekihiTaikyoKasan(null);
+		asyncDto.setSc006KyoekihiPayAfter(null);
+	}
+	
+	/**
+	 * 共益費計算(提示データ登録内部)戻り値DTO設定(同期)
+	 * 共益費計算の戻り値をDTOに設定する
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param comDto	*DTO
+	 * @return			パラメータマップ
+	 */
+	public void setKyoekihiKeiSanParam(Map<String, String> resultMap, Skf3022Sc006CommonDto comDto) {
+
+		if (resultMap.containsKey("sc006KyoekihiMonthPay")) {
+			comDto.setSc006KyoekihiMonth(resultMap.get("sc006KyoekihiMonthPay"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiNyukyoKasan")) {
+			comDto.setSc006KyoekihiNyukyoKasan(resultMap.get("sc006KyoekihiNyukyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiTaikyoKasan")) {
+			comDto.setSc006KyoekihiTaikyoKasan(resultMap.get("sc006KyoekihiTaikyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiPayAfter")) {
+			comDto.setSc006KyoekihiPayAfter(resultMap.get("sc006KyoekihiPayAfter"));
+		}
+	}
+	
+	/**
+	 * 使用料計算(提示データ登録内部)戻り値DTO設定(非同期)
+	 * 使用料計算の戻り値をDTOに設定する
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param resultMap 使用料計算結果Map
+	 * @param asyncDto	*DTO
+	 * @return			パラメータマップ
+	 */
+	public void setKyoekihiKeiSanParamAsync(Map<String, String> resultMap, Skf3022Sc006CommonAsyncDto asyncDto) {
+
+		if (resultMap.containsKey("sc006KyoekihiMonthPay")) {
+			asyncDto.setSc006KyoekihiMonth(resultMap.get("sc006KyoekihiMonthPay"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiNyukyoKasan")) {
+			asyncDto.setSc006KyoekihiNyukyoKasan(resultMap.get("sc006KyoekihiNyukyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiTaikyoKasan")) {
+			asyncDto.setSc006KyoekihiTaikyoKasan(resultMap.get("sc006KyoekihiTaikyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiPayAfter")) {
+			asyncDto.setSc006KyoekihiPayAfter(resultMap.get("sc006KyoekihiPayAfter"));
+		}
+	}
+	//共益費日割計算対応 2021/5/14 add end
 }

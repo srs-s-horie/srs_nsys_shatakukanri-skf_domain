@@ -4,6 +4,8 @@
 package jp.co.c_nexco.skf.skf3030.domain.service.skf3030sc002;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
@@ -39,6 +41,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetR
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetShatakuDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsInputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock;
@@ -80,7 +84,10 @@ import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
+import jp.co.c_nexco.skf.common.util.SkfKyoekihiCalcUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfPageBusinessLogicUtils;
+import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonAsyncDto;
+import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022Sc006common.Skf3022Sc006CommonDto;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030Sc002common.Skf3030Sc002CommonAsyncDto;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030Sc002common.Skf3030Sc002CommonDto;
 
@@ -130,6 +137,11 @@ public class Skf3030Sc002SharedService {
 	private Skf3030Sc002GetMaxRentalPatternIdExpRepository skf3030Sc002GetMaxRentalPatternIdExpRepository;
 	@Autowired
 	private Skf3030Sc002GetParkingUpdateTaikyoCheckExpRepository skf3030Sc002GetParkingUpdateTaikyoCheckExpRepository;
+	
+	//共益費日割計算対応 2021/5/14 add start 
+	@Autowired
+	private SkfKyoekihiCalcUtils skfKyoekihiCalcUtils;
+	//共益費日割計算対応 2021/5/14 add end
 	
 	//比較用文字列1
 	private static final String STR_ONE = "1";
@@ -619,6 +631,11 @@ public class Skf3030Sc002SharedService {
 		paramMap.put("hdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku", comDto.getHdnKaiSanAfterKukaku1ChushajoShiyoroHiwariKingaku());
 		paramMap.put("hdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku", comDto.getHdnKaiSanAfterKukaku2ChushajoShiyoroHiwariKingaku());
 
+		// 共益費日割計算対応 2021/5/14 add start
+		paramMap.put("sc006KyoekihiPayMonthSelect", comDto.getSc006KyoekihiPayMonthSelect());
+		paramMap.put("hdnShatakuKanriId", comDto.getHdnShatakuKanriId());
+		// 共益費日割計算対応 2021/5/14 add end
+		
 		return paramMap;
 	}
 
@@ -874,6 +891,9 @@ public class Skf3030Sc002SharedService {
 		}
 		
 		setSiyoryoKeiSanParam(resultMap, comDto);
+		// 共益費日割計算対応 2021/5/14 add start
+		setKyoekihiKeiSanParam(resultMap, comDto);
+		// 共益費日割計算対応 2021/5/14 add end
 	}
 	
 	/**
@@ -904,6 +924,9 @@ public class Skf3030Sc002SharedService {
 	
 		// 使用料計算戻り値設定
 		setSiyoryoKeiSanParamAsync(resultMap, asyncDto);
+		// 共益費日割計算対応 2021/5/14 add start
+		setKyoekihiKeiSanParamAsync(resultMap, asyncDto);
+		// 共益費日割計算対応 2021/5/14 add end
 		
 	}
 	
@@ -982,7 +1005,10 @@ public class Skf3030Sc002SharedService {
 		}
 
 		//共益費計算
-		kyoekihiKeiSan(paramMap,resultMap);
+		// 共益費日割計算対応 2021/5/14 edit start
+//		kyoekihiKeiSan(paramMap,resultMap);
+		kyoekihiKeiSan(paramMap,resultMap,errMsg);
+		// 共益費日割計算対応 2021/5/14 edit end
 
 		//駐車場使用料月額（調整後）を”0”に設定する
 		resultMap.put("hdnKaiSanAfterChushajoShiyoryoGetsugakuChoseigo",CodeConstant.STRING_ZERO);
@@ -4568,4 +4594,261 @@ public class Skf3030Sc002SharedService {
 		comDto.setSc006TyusyajoRyokinErr(null);
 		comDto.setSc006KyoekihiErr(null);
 	}
+	
+	
+	
+	//共益費日割計算対応 2021/5/14 add start
+	/**
+	 * 共益費の計算(同期)
+	 * @param comDto
+	 */
+	public void kyoekihiKeiSanSync(Skf3030Sc002CommonDto comDto)  throws Exception{
+		
+		//計算前の入力チェック
+		Boolean errorFlg = false;
+		
+		//個人負担共益費月額の入力チェック
+		if(!checkPayInput(comDto.getSc006KyoekihiMonthPay(), 6)){
+				comDto.setSc006KyoekihiMonthPayErr(CodeConstant.NFW_VALIDATION_ERROR);
+				errorFlg = true;
+		}
+		//個人負担共益費調整金額の入力チェック
+		if(!checkPayInput(comDto.getSc006KyoekihiTyoseiPay(), 6)){
+				comDto.setSc006KyoekihiTyoseiPayErr(CodeConstant.NFW_VALIDATION_ERROR);
+				errorFlg = true;
+		}
+		if(errorFlg){
+			return;
+		}
+		
+		Map<String, String> paramMap = createSiyoryoKeiSanParam(comDto);
+		
+		paramMap.put("hdnShatakuKanriId", comDto.getHdnShatakuKanriId());
+		Map<String, String> resultMap = new HashMap<String, String>();
+		StringBuffer errMsg = new StringBuffer();
+		kyoekihiKeiSan(paramMap,resultMap,errMsg);
+		
+		if(errMsg != null){	
+			if(!SkfCheckUtils.isNullOrEmpty(errMsg.toString())){
+				ServiceHelper.addErrorResultMessage(comDto, null,MessageIdConstant.SKF3020_ERR_MSG_COMMON,errMsg.toString().substring(11));
+				return;
+			}
+		}
+		
+		setKyoekihiKeiSanParam(resultMap, comDto);
+
+	}
+	/**
+	 * 共益費の計算(非同期)
+	 * @param asyncDto
+	 * @throws Exception
+	 */
+	public void kyoekihiKeiSanAsync(Skf3030Sc002CommonAsyncDto asyncDto)  throws Exception{
+		
+		//計算前の入力チェック
+		//入力側で制御
+		
+		// 使用料計算用Map
+		Map<String, String> paramMap = asyncDto.getMapParam();
+		// 戻り値初期化
+		initializeKyoekihiKeiSanParamAsync(asyncDto);
+		// 使用料計算処理
+		Map<String, String> resultMap = new HashMap<String, String>();	// 使用料計算戻り値
+		StringBuffer errMsg = new StringBuffer();						// エラーメッセージ
+		
+		// 共益費月額
+		kyoekihiKeiSan(paramMap, resultMap, errMsg);
+		// 使用料計算でエラー
+		if(errMsg != null){	
+			if(!SkfCheckUtils.isNullOrEmpty(errMsg.toString())){
+				ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg.toString().substring(11));
+				return;
+			}
+		}
+	
+		// 使用料計算戻り値設定
+		setKyoekihiKeiSanParamAsync(resultMap, asyncDto);
+		
+	}
+
+	/**
+	 * 共益費計算
+	 * 個人負担共益日の支払月額、入居時加算額、退居時加算額を算出、設定する
+	 * 
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param kyoekihiMonthPay	共益費月額
+	 * @param kyoekihiPayMonthSelect	共益費支払月："0"(前月) or "1"(当月) or "2"(翌月)
+	 * @param kyoekihiTyoseiPay 共益費調整金額
+	 * @param paramMap			パラメータMap
+	 * @param resultMap			*リザルトMap
+	 * @param errMsg			*エラーメッセージ
+	 * @return	true(異常)　/　false(正常)
+	 * @throws Exception
+	 */
+	public Boolean kyoekihiKeiSan(Map<String, String> paramMap, Map<String, String> resultMap, StringBuffer errMsg) {
+
+		// 戻り値
+		Map<String, String> tmpMap = new HashMap<String, String>();
+		errMsg.delete(0, errMsg.length());
+
+		// 使用料計算結果
+		String kyoekihiMonth = CodeConstant.DOUBLE_QUOTATION;
+		String nyukyoKasan = CodeConstant.DOUBLE_QUOTATION;
+		String taikyokasan = CodeConstant.DOUBLE_QUOTATION;
+
+		// 社宅利用料計算情報引数
+		SkfKyoekihiCalcUtilsInputExp inputEntity = new SkfKyoekihiCalcUtilsInputExp();
+		// 処理年月
+		inputEntity.setYearMonth(paramMap.get("hdnNengetsu"));
+		// 共益費支払月
+		inputEntity.setKyoekihiPayMonth(paramMap.get("sc006KyoekihiPayMonthSelect"));
+		// 個人負担共益費月額
+		inputEntity.setKyoekihiPerson(getPayText(paramMap.get("sc006KyoekihiMonthPay")));
+		// 入居予定日
+		inputEntity.setNyukyoDate(getDateText(paramMap.get("sc006NyukyoYoteiDay")));
+		// 退居予定日
+		inputEntity.setTaikyoDate(getDateText(paramMap.get("sc006TaikyoYoteiDay")));
+		// 社宅管理台帳ID
+		inputEntity.setShatakuKanriId(paramMap.get("hdnShatakuKanriId"));
+		
+		if(CheckUtils.isEmpty(paramMap.get("sc006NyukyoYoteiDay"))){
+			tmpMap.put("sc006KyoekihiMonthPay", CodeConstant.STRING_ZERO);
+			tmpMap.put("sc006KyoekihiNyukyoKasan", CodeConstant.STRING_ZERO);
+			tmpMap.put("sc006KyoekihiTaikyoKasan", CodeConstant.STRING_ZERO);
+
+			tmpMap.put("sc006KyoekihiPayAfter", paramMap.get("sc006KyoekihiTyoseiPay"));
+			tmpMap.put("hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo",getPayText(paramMap.get("sc006KyoekihiTyoseiPay")));
+			resultMap.putAll(tmpMap);
+			return false;
+		}
+		
+		// 共益費計算結果取得
+		SkfKyoekihiCalcUtilsOutputExp outputEntity = new SkfKyoekihiCalcUtilsOutputExp();
+		try {
+			outputEntity = skfKyoekihiCalcUtils.getKyoekihiKeisan(inputEntity);
+		} catch (ParseException e) {
+			outputEntity.setErrMessage(e.getMessage());
+		}
+		
+		
+		// 計算結果判定
+		if (CheckUtils.isEmpty(outputEntity.getErrMessage())) {
+			// 共益費支払月額
+			kyoekihiMonth = outputEntity.getKyoekihiMonth().toPlainString();
+			// 入居時加算額
+			nyukyoKasan = outputEntity.getNyukyoKasan().toPlainString();
+			// 退居時加算額
+			taikyokasan = outputEntity.getTaikyoKasan().toPlainString();
+		} else {
+			errMsg.append(outputEntity.getErrMessage());
+			LogUtils.infoByMsg("kyoekihiKeiSan, 共益費日割計算で異常検出:" + outputEntity.getErrMessage());
+			return true;
+		}
+		
+		
+		tmpMap.put("sc006KyoekihiMonthPay", getKanmaNumEdit(kyoekihiMonth));
+		tmpMap.put("sc006KyoekihiNyukyoKasan", getKanmaNumEdit(nyukyoKasan));
+		tmpMap.put("sc006KyoekihiTaikyoKasan", getKanmaNumEdit(taikyokasan));
+		
+		String sc006KyoekihiPayAfter = skfKyoekihiCalcUtils.getKyoekihiPayAfter(getPayText(paramMap.get("sc006KyoekihiTyoseiPay")),kyoekihiMonth,nyukyoKasan,taikyokasan);
+		
+		tmpMap.put("sc006KyoekihiPayAfter", getKanmaNumEdit(sc006KyoekihiPayAfter));
+		tmpMap.put("hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo",sc006KyoekihiPayAfter);
+		
+		resultMap.putAll(tmpMap);
+		return false;
+	}
+	
+	
+	/**
+	 * 共益費計算(提示データ登録内部)戻り値初期化(非同期)
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param asyncDto	*DTO
+	 * @return			パラメータマップ
+	 */
+	public void initializeKyoekihiKeiSanParamAsync(Skf3030Sc002CommonAsyncDto asyncDto) {
+
+		asyncDto.setSc006KyoekihiMonth(null);
+		asyncDto.setSc006KyoekihiNyukyoKasan(null);
+		asyncDto.setSc006KyoekihiTaikyoKasan(null);
+		asyncDto.setSc006KyoekihiPayAfter(null);
+	}
+	
+	/**
+	 * 共益費計算(提示データ登録内部)戻り値DTO設定(同期)
+	 * 共益費計算の戻り値をDTOに設定する
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param comDto	*DTO
+	 * @return			パラメータマップ
+	 */
+	public void setKyoekihiKeiSanParam(Map<String, String> resultMap, Skf3030Sc002CommonDto comDto) {
+
+		if (resultMap.containsKey("sc006KyoekihiMonthPay")) {
+			comDto.setSc006KyoekihiMonth(resultMap.get("sc006KyoekihiMonthPay"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiNyukyoKasan")) {
+			comDto.setSc006KyoekihiNyukyoKasan(resultMap.get("sc006KyoekihiNyukyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiTaikyoKasan")) {
+			comDto.setSc006KyoekihiTaikyoKasan(resultMap.get("sc006KyoekihiTaikyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiPayAfter")) {
+			comDto.setSc006KyoekihiPayAfter(resultMap.get("sc006KyoekihiPayAfter"));
+		}
+		if (resultMap.containsKey("hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo")) {
+			comDto.setHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo(resultMap.get("hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo"));
+		}
+	}
+	
+	/**
+	 * 共益費計算(提示データ登録内部)戻り値DTO設定(非同期)
+	 * 共益費計算の戻り値をDTOに設定する
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param resultMap 共益費計算結果Map
+	 * @param asyncDto	*DTO
+	 * @return			パラメータマップ
+	 */
+	public void setKyoekihiKeiSanParamAsync(Map<String, String> resultMap, Skf3030Sc002CommonAsyncDto asyncDto) {
+
+		if (resultMap.containsKey("sc006KyoekihiMonthPay")) {
+			asyncDto.setSc006KyoekihiMonth(resultMap.get("sc006KyoekihiMonthPay"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiNyukyoKasan")) {
+			asyncDto.setSc006KyoekihiNyukyoKasan(resultMap.get("sc006KyoekihiNyukyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiTaikyoKasan")) {
+			asyncDto.setSc006KyoekihiTaikyoKasan(resultMap.get("sc006KyoekihiTaikyoKasan"));
+		}
+		if (resultMap.containsKey("sc006KyoekihiPayAfter")) {
+			asyncDto.setSc006KyoekihiPayAfter(resultMap.get("sc006KyoekihiPayAfter"));
+		}
+		if (resultMap.containsKey("hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo")) {
+			asyncDto.setHdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo(resultMap.get("hdnKaiSanAfterKojinFutanKyoekihiGetsugakuChoseigo"));
+		}
+	}
+	
+	/**
+	 * 数値の桁にカンマを付与
+	 * null、空文字は「"0"」を返却する
+	 * 
+	 * @param str	数値文字列
+	 * @return		数値文字列をカンマ区切りにした文字列
+	 */
+	public String getKanmaNumEdit(String str) {
+
+		String changeString = str;
+		DecimalFormat df1 = new DecimalFormat("#,##0");
+		if (CheckUtils.isEmpty(changeString)) {
+			changeString = CodeConstant.STRING_ZERO;
+		}
+
+		// 変換
+		changeString = df1.format(new BigDecimal(changeString.trim()));
+		return changeString;
+	}
+	//共益費日割計算対応 2021/5/14 add end
 }

@@ -1182,5 +1182,14 @@ public class Skf3030Sc002CommonDto extends Skf303010CommonDto {
 	private String serachYakuin ;//(Skf303010CommonSharedService.SEARCH_INFO_YAKUIN_KEY);
 	private String serachShukkosha ;//(Skf303010CommonSharedService.SEARCH_INFO_SHUKKOSHA_KEY);
 	private String serachBiko ;//(Skf303010CommonSharedService.SEARCH_INFO_BIKO_KEY);
+	
+	/** 共益費日割計算対応 2021/5/14 add start **/
+	// 共益費支払月に対する支払額
+	private String sc006KyoekihiMonth;
+	// 個人負担共益費入居時加算額
+	private String sc006KyoekihiNyukyoKasan;
+	// 個人負担共益費退居時加算額
+	private String sc006KyoekihiTaikyoKasan;
+	/** 共益費日割計算対応 2021/5/14 add end **/
 
 }

@@ -354,6 +354,11 @@ public class Skf3030Sc002InitService extends SkfServiceAbstract<Skf3030Sc002Init
 		initDto.setSc006TyusyaTyoseiPay("0");
 		//駐車場使用料月額（調整後）
 		initDto.setSc006TyusyaMonthPayAfter("0");
+		// 共益費日割計算対応 2021/5/14 add start
+		initDto.setSc006KyoekihiMonth("0");
+		initDto.setSc006KyoekihiNyukyoKasan("0");
+		initDto.setSc006KyoekihiTaikyoKasan("0");
+		// 共益費日割計算対応 2021/5/14 add end
 		
 		//備品情報
 		initDto.setSc006TaiyoDay("");
@@ -636,6 +641,11 @@ public class Skf3030Sc002InitService extends SkfServiceAbstract<Skf3030Sc002Init
 					skf3030Sc002SharedService.siyoryoKeiSanSync(initDto);
 					throwBusinessExceptionIfErrors(initDto.getResultMessages());
 				}
+				
+				// 共益費日割計算対応 2021/5/14 add start
+				skf3030Sc002SharedService.kyoekihiKeiSanSync(initDto);
+				throwBusinessExceptionIfErrors(initDto.getResultMessages());
+				// 共益費日割計算対応 2021/5/14 add end
 			}
 			
 			//駐車場の情報取得

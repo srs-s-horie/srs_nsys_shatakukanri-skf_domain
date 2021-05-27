@@ -516,7 +516,8 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				registDto.getSc006TaiyoDay(),
 				rentalPatternUpdateDate,
 				rentalPatternUpdateDateForRegist,
-				rentalPatternTorokuList);
+				rentalPatternTorokuList,
+				skf3030Sc002SharedService.getTbtPublicShatakuRentalRirekiDataColumnInfoList(registDto));
 		int returnCount = Integer.parseInt(returnMap.get("returnCount").toString());
 		shatakuKanriId = returnMap.get("shatakuKanriId").toString();
 
@@ -659,7 +660,8 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 			//ByRef shatakuKanriId,→Mapで返す
 			String rentalPatternUpdateDate,
 			Date rentalPatternUpdateDateForRegist,
-			Map<Skf3030Sc002CommonDto.RENTAL_PATTERN, String> rentalPatternTorokuList
+			Map<Skf3030Sc002CommonDto.RENTAL_PATTERN, String> rentalPatternTorokuList,
+			Skf3030TShatakuRentalRireki shatakuRentalRirekiDataColumnInfoList
 			)
 	{
 		
@@ -1023,6 +1025,27 @@ public class Skf3030Sc002RegistService extends SkfServiceAbstract<Skf3030Sc002Re
 				return resultMap;
 			}
 		}
+		
+		// 共益費日割計算対応 2021/5/14 add start
+		//insert時、入退居予定日無しで算出不可のため、別途更新する
+		//「月別使用料履歴テーブル」のデータ更新
+		Skf3030TShatakuRentalRirekiKey rirekiKey = new Skf3030TShatakuRentalRirekiKey();
+		rirekiKey.setShatakuKanriId(shatakuLedgercolumnInfoList.getShatakuKanriId());
+		rirekiKey.setYearMonth(sysShoriNenGetsu);
+		Skf3030TShatakuRentalRireki selectRireki = skf3030TShatakuRentalRirekiRepository.selectByPrimaryKey(rirekiKey);
+		if(selectRireki != null){
+			shatakuRentalRirekiDataColumnInfoList.setShatakuKanriId(shatakuLedgercolumnInfoList.getShatakuKanriId());
+			updateCount = skf3030Sc002UpdateTsukibetsuShiyoryoRirekiExpRepository.updateTsukibetsuShiyoryoRirekiKyoekihi(shatakuRentalRirekiDataColumnInfoList);
+			if(updateCount == 0){
+				resultMap.put("returnCount", 0);
+				resultMap.put("shatakuKanriId",shatakuKanriId);
+				return resultMap;
+			}else{
+				returnCount += 1;
+			}
+		}
+		// 共益費日割計算対応 2021/5/14 add end
+		
 		resultMap.put("returnCount", returnCount);
 		resultMap.put("shatakuKanriId", shatakuKanriId);
 		return resultMap;

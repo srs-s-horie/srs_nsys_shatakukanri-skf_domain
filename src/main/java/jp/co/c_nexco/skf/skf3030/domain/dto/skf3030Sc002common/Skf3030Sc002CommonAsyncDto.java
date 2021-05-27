@@ -61,4 +61,19 @@ public class Skf3030Sc002CommonAsyncDto extends AsyncBaseDto {
 	private String sc006KukakuNoTwo;
 	private String hdnChushajoKanriNo2;
 	//private String hdnChushajoNoTwoOld;
+	
+	/** 共益費日割計算対応 2021/5/14 add start **/
+	// 個人負担共益費調整金額
+	private String sc006KyoekihiTyoseiPay;
+	// 共益費支払月選択値
+	private String sc006KyoekihiPayMonthSelect;
+	// 個人負担共益費月額
+	private String sc006KyoekihiMonthPay;
+	// 共益費支払月に対する支払額
+	private String sc006KyoekihiMonth;
+	// 個人負担共益費入居時加算額
+	private String sc006KyoekihiNyukyoKasan;
+	// 個人負担共益費退居時加算額
+	private String sc006KyoekihiTaikyoKasan;
+	/** 共益費日割計算対応 2021/5/14 add end **/
 }

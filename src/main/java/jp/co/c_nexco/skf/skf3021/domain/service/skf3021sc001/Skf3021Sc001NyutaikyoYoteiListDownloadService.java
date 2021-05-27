@@ -4,15 +4,18 @@
 package jp.co.c_nexco.skf.skf3021.domain.service.skf3021sc001;
 
 import static jp.co.c_nexco.nfw.core.constants.CommonConstant.NFW_DATA_UPLOAD_FILE_DOWNLOAD_COMPONENT_PATH;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.poi_v3_8.ss.usermodel.Cell;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Rp001.Skf3021Rp001GetCurrentShatakuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Rp001.Skf3021Rp001GetCurrentShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3021Rp001.Skf3021Rp001GetNyutaikyoYoteiInfoExp;
@@ -366,9 +369,18 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 		//用途区分
 		Map<String, String> genericCodeAuseKbn = new HashMap<String, String>();
 		genericCodeAuseKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_AUSE_KBN);
+		// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit start
 		//社宅必要理由区分
-		Map<String, String> genericCodeNeedRiyuKbn = new HashMap<String, String>();
-		genericCodeNeedRiyuKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_NEED_RIYU_KBN);
+//		Map<String, String> genericCodeNeedRiyuKbn = new HashMap<String, String>();
+//		genericCodeNeedRiyuKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_NEED_RIYU_KBN);
+		// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit end
+		//規格区分
+		Map<String, String> genericCodeKikakuKbn = new HashMap<String, String>();
+		genericCodeKikakuKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_KIKAKU_KBN);
+		//社宅区分
+		Map<String, String> genericCodeShatakuKbn = new HashMap<String, String>();
+		genericCodeShatakuKbn = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_SHATAKU_KBN);
+		
 		
 		//入退居予定リスト listRow
 		Skf3021Rp001NyutaikyoYoteiListExp listRow = new Skf3021Rp001NyutaikyoYoteiListExp();
@@ -401,7 +413,7 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 		String nowAffiliation = CodeConstant.DOUBLE_QUOTATION;
 		if(nyukyoRow != null){
 			//・入居の場合:入居希望等調書・入居決定通知の'現所属 機関/現所属 部等/現所属 室・課等を繋げて表示する。
-			nowAffiliation = nyukyoRow.getAgency() +" "+ nyukyoRow.getAffiliation1() +" "+ nyukyoRow.getNewAffiliation2();
+			nowAffiliation = nyukyoRow.getAgency() +" "+ nyukyoRow.getAffiliation1() +" "+ nyukyoRow.getAffiliation2();
 		}else if(taikyoRow != null){
 			//・退居の場合:退居（自動車の保管場所返還）の'所属 機関/所属 部等/所属室・課等を繋げて表示する。
 			nowAffiliation = taikyoRow.getAgency() +" "+ taikyoRow.getAffiliation1() +" "+ taikyoRow.getAffiliation2();
@@ -436,14 +448,28 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 			listRow.setParking2StartDate(nyukyoRow.getParkingUseDate2());
 			//特殊事情
 			listRow.setTokushuJijo(viewRow.getTokushuJijo());
-			//入居理由
-			listRow.setHitsuyoRiyu(genericCodeNeedRiyuKbn.get(nyukyoRow.getHitsuyoRiyu()));
-			//退居理由
-			listRow.setTaikyoRiyu(nyukyoRow.getTaikyoRiyu());
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit start
+//			//入居理由
+//			listRow.setHitsuyoRiyu(genericCodeNeedRiyuKbn.get(nyukyoRow.getHitsuyoRiyu()));
+//			//退居理由
+//			listRow.setTaikyoRiyu(nyukyoRow.getTaikyoRiyu());
+			//使用者1
+			listRow.setCarUser1(nyukyoRow.getCarUser());
+			//使用者2
+			listRow.setCarUser2(nyukyoRow.getCarUser2());
+			//退居予定日
+			listRow.setTaikyoDate(nyukyoRow.getTaikyoYoteiDate());
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit end
+			
 		}else if(taikyoRow != null){
 			//退居（自動車の保管場所返還）届がある場合
 			//退居理由
 			listRow.setTaikyoRiyu(taikyoRow.getTaikyoRiyu());
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit start
+			//退居予定日
+			listRow.setTaikyoDate(taikyoRow.getTaikyoDate());
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit end
+			
 		}
 
 		//現社宅がある場合
@@ -458,6 +484,39 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 				parkingCount = shatakuRow.getParkingCount().toString();
 			}				
 			listRow.setParkingCount(parkingCount);
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit start
+			//社宅区分
+			listRow.setShatakuKbn(genericCodeShatakuKbn.get(shatakuRow.getShatakuKbn()));
+			//規格
+			listRow.setKikaku(genericCodeKikakuKbn.get(shatakuRow.getKikaku()));
+			//用途(使用料パターン)
+			listRow.setAusePattern(genericCodeAuseKbn.get(shatakuRow.getAuse()));
+			//面積
+			if(shatakuRow.getMenseki() != null){
+				listRow.setMenseki(String.valueOf(shatakuRow.getMenseki()));
+			}else{
+				listRow.setMenseki(CodeConstant.DOUBLE_QUOTATION);
+			}
+			//社宅使用料月額
+			if(shatakuRow.getRentalTotal() != null){
+				listRow.setRentalTotal(String.valueOf(shatakuRow.getRentalTotal()));
+			}else{
+				listRow.setRentalTotal(CodeConstant.DOUBLE_QUOTATION);
+			}
+			//個人負担共益費月額
+			if(shatakuRow.getKyoekihiPersonTotal() != null){
+				listRow.setKyoekihiPersonTotal(String.valueOf(shatakuRow.getKyoekihiPersonTotal()));
+			}else{
+				listRow.setKyoekihiPersonTotal(CodeConstant.DOUBLE_QUOTATION);
+			}
+			//駐車場使用料月額
+			if(shatakuRow.getParkingRentalTotal() != null){
+				listRow.setParkingRentalTotal(String.valueOf(shatakuRow.getParkingRentalTotal()));
+			}else{
+				listRow.setParkingRentalTotal(CodeConstant.DOUBLE_QUOTATION);
+			}
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit end
+
 		}
 
 
@@ -510,9 +569,14 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 			// Excel行データ設定
 			rdb.addCellDataBean("B" + rowNo, getRowData.getNyutaikyoKbn());//入居予定日
 			rdb.addCellDataBean("C" + rowNo, getRowData.getApplKbn());//申請区分
-			rdb.addCellDataBean("D" + rowNo, getRowData.getNewAffiliation());//新所属
-			rdb.addCellDataBean("E" + rowNo, getRowData.getShainNo());//社員番号
-			rdb.addCellDataBean("F" + rowNo, getRowData.getShainName());//社員氏名
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit start
+//			rdb.addCellDataBean("D" + rowNo, getRowData.getNewAffiliation());//新所属
+//			rdb.addCellDataBean("E" + rowNo, getRowData.getShainNo());//社員番号
+//			rdb.addCellDataBean("F" + rowNo, getRowData.getShainName());//社員氏名
+			rdb.addCellDataBean("F" + rowNo, getRowData.getNewAffiliation());//新所属
+			rdb.addCellDataBean("D" + rowNo, getRowData.getShainNo());//社員番号
+			rdb.addCellDataBean("E" + rowNo, getRowData.getShainName());//社員氏名
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit end
 			rdb.addCellDataBean("G" + rowNo, getRowData.getNowAffiliation());//現所属
 			//入居予定日
 			String nyukyoYoteiDate = CodeConstant.DOUBLE_QUOTATION;
@@ -534,32 +598,51 @@ public class Skf3021Sc001NyutaikyoYoteiListDownloadService extends SkfServiceAbs
 			rdb.addCellDataBean("N" + rowNo, getRowData.getLivingFamily5());//同居家族5
 			rdb.addCellDataBean("O" + rowNo, getRowData.getLivingFamily6());//同居家族6
 			rdb.addCellDataBean("P" + rowNo, getRowData.getCarModel1());//車種1
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit start
+			rdb.addCellDataBean("Q" + rowNo, getRowData.getCarUser1());//使用者1
 			//使用開始予定日1
 			String parking1StartDate = CodeConstant.DOUBLE_QUOTATION;
 			if(!SkfCheckUtils.isNullOrEmpty(getRowData.getParking1StartDate())){
 				parking1StartDate = skfDateFormatUtils.dateFormatFromString(getRowData.getParking1StartDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			rdb.addCellDataBean("Q" + rowNo, parking1StartDate,
+			rdb.addCellDataBean("R" + rowNo, parking1StartDate,
 					Cell.CELL_TYPE_NUMERIC,
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			rdb.addCellDataBean("R" + rowNo, getRowData.getCarModel2());//車種2
+			rdb.addCellDataBean("S" + rowNo, getRowData.getCarModel2());//車種2
+			rdb.addCellDataBean("T" + rowNo, getRowData.getCarUser2());//使用者2
 			//使用開始予定日2
 			String parking2StartDate = CodeConstant.DOUBLE_QUOTATION;
 			if(!SkfCheckUtils.isNullOrEmpty(getRowData.getParking2StartDate())){
 				parking2StartDate = skfDateFormatUtils.dateFormatFromString(getRowData.getParking2StartDate(),
 						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
 			}
-			rdb.addCellDataBean("S" + rowNo, parking2StartDate,
+			rdb.addCellDataBean("U" + rowNo, parking2StartDate,
 					Cell.CELL_TYPE_NUMERIC,
 					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
-			rdb.addCellDataBean("T" + rowNo, getRowData.getTokushuJijo());//特殊事情
-			rdb.addCellDataBean("U" + rowNo, getRowData.getHitsuyoRiyu());//入居理由
-			rdb.addCellDataBean("V" + rowNo, getRowData.getTaikyoRiyu());//退居理由
-			rdb.addCellDataBean("W" + rowNo, getRowData.getShatakuKbn());//区分//空文字
+			rdb.addCellDataBean("V" + rowNo, getRowData.getTokushuJijo());//特殊事情
+//			rdb.addCellDataBean("U" + rowNo, getRowData.getHitsuyoRiyu());//入居理由
+//			rdb.addCellDataBean("V" + rowNo, getRowData.getTaikyoRiyu());//退居理由
+			rdb.addCellDataBean("W" + rowNo, getRowData.getShatakuKbn());//社宅区分
 			rdb.addCellDataBean("X" + rowNo, getRowData.getShatakuName());//社宅名
 			rdb.addCellDataBean("Y" + rowNo, getRowData.getRoomNo());//部屋番号
-			rdb.addCellDataBean("Z" + rowNo, getRowData.getParkingCount(),Cell.CELL_TYPE_NUMERIC);//駐車場利用台数
+			rdb.addCellDataBean("Z" + rowNo, getRowData.getKikaku());//規格
+			rdb.addCellDataBean("AA" + rowNo, getRowData.getAusePattern());//用途(使用料パターン)
+			rdb.addCellDataBean("AB" + rowNo, getRowData.getMenseki(), Cell.CELL_TYPE_NUMERIC, "#,#.##");//面積
+			rdb.addCellDataBean("AC" + rowNo, getRowData.getParkingCount(),Cell.CELL_TYPE_NUMERIC);//駐車場利用台数
+			rdb.addCellDataBean("AD" + rowNo, getRowData.getRentalTotal(),Cell.CELL_TYPE_NUMERIC, "#,#");//社宅使用料月額
+			rdb.addCellDataBean("AE" + rowNo, getRowData.getKyoekihiPersonTotal(),Cell.CELL_TYPE_NUMERIC, "#,#");//個人負担共益費月額
+			rdb.addCellDataBean("AF" + rowNo, getRowData.getParkingRentalTotal(),Cell.CELL_TYPE_NUMERIC, "#,#");//駐車場使用料月額
+			//退居予定日
+			String taikyoYoteiDate = CodeConstant.DOUBLE_QUOTATION;
+			if(!SkfCheckUtils.isNullOrEmpty(getRowData.getTaikyoDate())){
+				taikyoYoteiDate = skfDateFormatUtils.dateFormatFromString(getRowData.getTaikyoDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			rdb.addCellDataBean("AG" + rowNo, taikyoYoteiDate,
+					Cell.CELL_TYPE_NUMERIC,
+					SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			// 入退居予定リスト出力フォーマット変更対応 2021/5/14 edit end
 			// 行データ追加
 			rowDataBeanList.add(rdb);
 		}

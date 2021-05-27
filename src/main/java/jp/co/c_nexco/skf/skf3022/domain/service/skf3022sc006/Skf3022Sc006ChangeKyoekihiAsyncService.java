@@ -14,16 +14,17 @@ import jp.co.c_nexco.skf.common.SkfAsyncServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ChangeKyoekihiAsyncDto;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ChangeNyutaikyoYoteiAsyncDto;
 
 /**
- * Skf3022Sc006ChangeNyutaikyoYoteiAsyncService 提示データ登録画面：入退居予定日変更非同期呼出処理クラス。
+ * Skf3022Sc006ChangeNyutaikyoYoteiAsyncService 提示データ登録画面：個人負担共益費変更非同期呼出処理クラス。
  * 
  * @author NEXCOシステムズ
  */
 @Service
-public class Skf3022Sc006ChangeNyutaikyoYoteiAsyncService
-	extends SkfAsyncServiceAbstract<Skf3022Sc006ChangeNyutaikyoYoteiAsyncDto> {
+public class Skf3022Sc006ChangeKyoekihiAsyncService
+	extends SkfAsyncServiceAbstract<Skf3022Sc006ChangeKyoekihiAsyncDto> {
 
 	@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
@@ -40,29 +41,20 @@ public class Skf3022Sc006ChangeNyutaikyoYoteiAsyncService
 	 *             例外
 	 */
 	@Override
-	public Skf3022Sc006ChangeNyutaikyoYoteiAsyncDto index(Skf3022Sc006ChangeNyutaikyoYoteiAsyncDto asyncDto) throws Exception {
+	public Skf3022Sc006ChangeKyoekihiAsyncDto index(Skf3022Sc006ChangeKyoekihiAsyncDto asyncDto) throws Exception {
 
 		// デバッグログ
-		LogUtils.debugByMsg("入退居予定日変更");
+		LogUtils.debugByMsg("共益費変更");
 		// 操作ログを出力する
-		skfOperationLogUtils.setAccessLog("入退居予定日変更", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
+		skfOperationLogUtils.setAccessLog("共益費変更", CodeConstant.C001, FunctionIdConstant.SKF3022_SC006);
 		/** パラメータ取得 */
 		// 使用料計算用Map
 		Map<String, String> paramMap = asyncDto.getMapParam();
 		// 戻り値初期化
-		skf3022Sc006SharedService.initializeSiyoryoKeiSanParamAsync(asyncDto);
 		skf3022Sc006SharedService.initializeKyoekihiKeiSanParamAsync(asyncDto);
 		// 使用料計算処理
 		Map<String, String> resultMap = new HashMap<String, String>();	// 使用料計算戻り値
 		StringBuffer errMsg = new StringBuffer();						// エラーメッセージ
-		if (skf3022Sc006SharedService.siyoryoKeiSan("", "", paramMap, resultMap, errMsg)) {
-			// 使用料計算でエラー
-//			ServiceHelper.addErrorResultMessage(asyncDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
-//			throwBusinessExceptionIfErrors(asyncDto.getResultMessages());
-		} else {
-			// 使用料計算戻り値設定
-			skf3022Sc006SharedService.setSiyoryoKeiSanParamAsync(resultMap, asyncDto);
-		}
 		
 		// 共益費日割計算対応 2021/5/14 add start
 		// 共益費月額
