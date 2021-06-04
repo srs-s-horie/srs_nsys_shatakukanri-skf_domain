@@ -387,8 +387,24 @@ public class Skf3022Sc006KeizokuLoginService extends SkfServiceAbstract<Skf3022S
 			skf3022Sc006SharedService.setSiyoryoKeiSanParam(resultMap, initDto);
 		}
 		// 退居予定日
-//				Me.txtTaikyoYoteiDay.Text = String.Empty
+//		Me.txtTaikyoYoteiDay.Text = String.Empty
 		initDto.setSc006TaikyoYoteiDay(CodeConstant.DOUBLE_QUOTATION);
+		/** 共益費日割計算対応 2021/5/14 add start **/
+		calcParamMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);
+		calcParamMap.put("hdnShatakuKanriId", "");
+		if (skf3022Sc006SharedService.kyoekihiKeiSan(initDto.getSc006KyoekihiMonthPay(), initDto.getSc006KyoekihiPayMonthSelect(),initDto.getSc006KyoekihiTyoseiPay(),
+				calcParamMap, resultMap, errMsg)) {
+			// 共益費計算でエラー
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.SKF3020_ERR_MSG_COMMON, errMsg);
+			LogUtils.debugByMsg("共益費日割計算で異常:" + errMsg);
+			// ロールバック
+			throwBusinessExceptionIfErrors(initDto.getResultMessages());
+		} else {
+			// 共益費計算戻り値設定
+			skf3022Sc006SharedService.setKyoekihiKeiSanParam(resultMap, initDto);
+		}
+
+		/** 共益費日割計算対応 2021/5/14 add end **/
 		// 区画１利用開始日
 //				If Not String.IsNullOrEmpty(Me.GetDateText(Me.txtRiyouEndDayOne.Text)) Then
 		if (!CheckUtils.isEmpty(skf3022Sc006SharedService.getDateText(initDto.getSc006RiyouEndDayOne()))) {
@@ -401,6 +417,7 @@ public class Skf3022Sc006KeizokuLoginService extends SkfServiceAbstract<Skf3022S
 //					Me.hdnRiyouEndDayOne.Value = String.Empty
 			initDto.setSc006RiyouEndDayOne("");
 			initDto.setHdnRiyouEndDayOne("");
+			calcParamMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);
 //					'
 			// 駐車場区画１使用料再計算
 //					Me.SiyoryoKeiSan(Me.hdnChushajoNoOne.Value, DATA_1)
@@ -427,6 +444,7 @@ public class Skf3022Sc006KeizokuLoginService extends SkfServiceAbstract<Skf3022S
 //					Me.hdnRiyouEndDayTwo.Value = String.Empty
 			initDto.setSc006RiyouEndDayTwo("");
 			initDto.setHdnRiyouEndDayTwo("");
+			calcParamMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);
 			// 駐車場区画2使用料再計算
 //					Me.SiyoryoKeiSan(Me.hdnChushajoNoTwo.Value, DATA_2)
 			if (skf3022Sc006SharedService.siyoryoKeiSan(initDto.getHdnChushajoNoTwo(), "2", calcParamMap, resultMap, errMsg)) {

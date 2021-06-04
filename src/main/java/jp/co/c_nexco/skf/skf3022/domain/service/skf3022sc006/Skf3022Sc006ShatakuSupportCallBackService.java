@@ -200,6 +200,11 @@ public class Skf3022Sc006ShatakuSupportCallBackService extends SkfServiceAbstrac
 			// 個人負担共益費月額（調整後） 
 //		    Me.lblKyoekihiPayAfter.Text = DATA_0
 			initDto.setSc006KyoekihiPayAfter(CodeConstant.STRING_ZERO);
+			/** 共益費日割計算対応 2021/5/14 add start **/
+			initDto.setSc006KyoekihiMonth(CodeConstant.STRING_ZERO);
+			initDto.setSc006KyoekihiNyukyoKasan(CodeConstant.STRING_ZERO);
+			initDto.setSc006KyoekihiTaikyoKasan(CodeConstant.STRING_ZERO);
+			/** 共益費日割計算対応 2021/5/14 add end **/
 			// 駐車場管理番号１
 //		    Me.hdnChushajoNoOne.Value = String.Empty
 			initDto.setHdnChushajoNoOne(CodeConstant.DOUBLE_QUOTATION);

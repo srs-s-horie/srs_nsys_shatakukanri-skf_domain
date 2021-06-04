@@ -18,6 +18,7 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfKyoekihiCalcUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3022.domain.dto.skf3022sc006.Skf3022Sc006ShiyoryoSupportCallBackDto;
 
@@ -34,6 +35,10 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends SkfServiceAbstra
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private Skf3022Sc006SharedService skf3022Sc006SharedService;
+	//共益費日割計算対応 2021/5/14 add start 
+	@Autowired
+	private SkfKyoekihiCalcUtils skfKyoekihiCalcUtils;
+	//共益費日割計算対応 2021/5/14 add end
 
 	/**
 	 * サービス処理を行う。　
@@ -124,9 +129,26 @@ public class Skf3022Sc006ShiyoryoSupportCallBackService extends SkfServiceAbstra
 		if (CheckUtils.isEmpty(initDto.getSc006KyoekihiMonthPay())) {
 			// 個人負担共益費月額未指定時、個人負担共益費月額（調整後）を0円とする
 			initDto.setSc006KyoekihiPayAfter("0");
+			/** 共益費日割計算対応 2021/5/14 add start **/
+			initDto.setSc006KyoekihiMonth(CodeConstant.STRING_ZERO);
+			initDto.setSc006KyoekihiNyukyoKasan(CodeConstant.STRING_ZERO);
+			initDto.setSc006KyoekihiTaikyoKasan(CodeConstant.STRING_ZERO);
+			/** 共益費日割計算対応 2021/5/14 add end **/
 		} else {
 			// 個人負担共益費月額指定時、個人負担共益費月額（調整後）を個人負担共益費月額とする
-			initDto.setSc006KyoekihiPayAfter(skf3022Sc006SharedService.getKanmaNumEdit(initDto.getSc006KyoekihiMonthPay()));
+			/** 共益費日割計算対応 2021/5/14 edit start **/
+			//initDto.setSc006KyoekihiPayAfter(skf3022Sc006SharedService.getKanmaNumEdit(initDto.getSc006KyoekihiMonthPay()));
+			//支払月額と加算額の合計算出
+			String sc006KyoekihiMonth = skf3022Sc006SharedService.getKingakuText(initDto.getSc006KyoekihiMonth());
+			String sc006KyoekihiNyukyoKasan = skf3022Sc006SharedService.getKingakuText(initDto.getSc006KyoekihiNyukyoKasan());
+			String sc006KyoekihiTaikyoKasan = skf3022Sc006SharedService.getKingakuText(initDto.getSc006KyoekihiTaikyoKasan());
+			
+			String sc006KyoekihiPayAfter = skfKyoekihiCalcUtils.getKyoekihiPayAfter(CodeConstant.STRING_ZERO,
+					sc006KyoekihiMonth,sc006KyoekihiNyukyoKasan,sc006KyoekihiTaikyoKasan);
+			
+			initDto.setSc006KyoekihiPayAfter(skf3022Sc006SharedService.getKanmaNumEdit(sc006KyoekihiPayAfter));
+			
+			/** 共益費日割計算対応 2021/5/14 edit end **/
 		}
 		/* AE imrt移植 個人負担共益費月額（調整後）が画面項目の合計(個人負担共益費月額 + 個人負担共益費調整金額)と異なる問題に対処 */
 		Map<String, String> paramMap = skf3022Sc006SharedService.createSiyoryoKeiSanParam(initDto);	// 使用料計算パラメータ
