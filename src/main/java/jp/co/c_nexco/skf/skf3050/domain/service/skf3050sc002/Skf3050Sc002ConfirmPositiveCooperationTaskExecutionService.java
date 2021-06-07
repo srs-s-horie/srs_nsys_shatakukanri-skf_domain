@@ -2386,11 +2386,17 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 
 		String shoriNengetsuYokugetsuShonichi = shoriNengetsuYokugetsu + "01";
 
-		BigDecimal decimalNyuukyoDate = new BigDecimal(nyuukyoDate);
-		BigDecimal decimalYokugetsuShonichi = new BigDecimal(shoriNengetsuYokugetsuShonichi);
-
-		if (decimalNyuukyoDate.compareTo(decimalYokugetsuShonichi) < 0) {
+		
+		// 開始日が処理年月の初日より過去の場合、初日とする
+		if (NfwStringUtils.isEmpty(nyuukyoDate)) {
 			nyuukyoDate = shoriNengetsuYokugetsuShonichi;
+		} else {
+			BigDecimal decimalNyuukyoDate = new BigDecimal(nyuukyoDate);
+			BigDecimal decimalYokugetsuShonichi = new BigDecimal(shoriNengetsuYokugetsuShonichi);
+	
+			if (decimalNyuukyoDate.compareTo(decimalYokugetsuShonichi) < 0) {
+				nyuukyoDate = shoriNengetsuYokugetsuShonichi;
+			}
 		}
 
 		String shoriNengetsuYokugetsuMatsujitsu = getGetsumatsujitu(shoriNengetsuYokugetsu);
@@ -2458,11 +2464,16 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 
 		String shoriNengetsuYokugetsuShonichi = shoriNengetsuYokugetsu + "01";
 
-		BigDecimal decimalKaishiDate = new BigDecimal(kaishiDate);
-		BigDecimal decimalYokugetsuShonichi = new BigDecimal(shoriNengetsuYokugetsuShonichi);
-
-		if (decimalKaishiDate.compareTo(decimalYokugetsuShonichi) < 0) {
+		// 開始日が処理年月の初日より過去の場合、初日とする
+		if (NfwStringUtils.isEmpty(kaishiDate)) {
 			kaishiDate = shoriNengetsuYokugetsuShonichi;
+		} else {
+			BigDecimal decimalKaishiDate = new BigDecimal(kaishiDate);
+			BigDecimal decimalYokugetsuShonichi = new BigDecimal(shoriNengetsuYokugetsuShonichi);
+	
+			if (decimalKaishiDate.compareTo(decimalYokugetsuShonichi) < 0) {
+				kaishiDate = shoriNengetsuYokugetsuShonichi;
+			}
 		}
 
 		String shoriNengetsuYokugetsuMatsujitsu = getGetsumatsujitu(shoriNengetsuYokugetsu);
