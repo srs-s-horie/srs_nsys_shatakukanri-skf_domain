@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002DeleteRirekiExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetShatakuRentalRirekiLastMonthExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetTeijiDataTeijiNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3030Sc002.Skf3030Sc002GetTeijiDataTeijiNoExpParameter;
 
@@ -33,6 +34,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002DeleteTeijiBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002DeleteTsukibetsuBihinRirekiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002DeleteTsukibetsuChushajoRirekiExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002GetShatakuRentalRirekiLastMonthExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3030Sc002.Skf3030Sc002GetTeijiDataTeijiNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingBlockRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
@@ -51,6 +53,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030Sc002common.Skf3030Sc002CommonDto;
 import jp.co.c_nexco.skf.skf3030.domain.dto.skf3030sc002.Skf3030Sc002DeleteDto;
@@ -70,6 +73,8 @@ public class Skf3030Sc002DeleteService extends SkfServiceAbstract<Skf3030Sc002De
 	private ApplicationScopeBean bean;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	SkfDateFormatUtils skfDateFormatUtils;
 	@Autowired
 	private Skf3030Sc002SharedService skf3030Sc002SharedService;
 	@Autowired
@@ -98,6 +103,8 @@ public class Skf3030Sc002DeleteService extends SkfServiceAbstract<Skf3030Sc002De
 	private Skf3030Sc002DeleteNyutaikyoDataExpRepository skf3030Sc002DeleteNyutaikyoDataExpRepository;
 	@Autowired
 	private Skf3030Sc002DeleteTeijiBihinDataExpRepository skf3030Sc002DeleteTeijiBihinDataExpRepository;
+	@Autowired
+	private Skf3030Sc002GetShatakuRentalRirekiLastMonthExpRepository skf3030Sc002GetShatakuRentalRirekiLastMonthExpRepository;
 	
 	
 	/**
@@ -168,7 +175,17 @@ public class Skf3030Sc002DeleteService extends SkfServiceAbstract<Skf3030Sc002De
 		deleteDto.setSc006HaizokuKaisyaSelectList(sc006HaizokuKaisyaSelectList);
 		deleteDto.setSc006TaiyoKaisyaSelectList(sc006TaiyoKaisyaSelectList);
 		deleteDto.setSc006KariukeKaisyaSelectList(sc006KariukeKaisyaSelectList);
-
+		
+		//削除前チェック処理
+		//前月に社宅使用料履歴があるか確認
+		int checkCount  = getShatakuRentalRirekiLastMonth(Long.parseLong(deleteDto.getHdnShatakuKanriId()),deleteDto.getHdnNengetsu());
+		
+		//取得できた場合はエラーを返して処理終了		
+		if(checkCount > 0){
+			ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.E_SKF_3031, deleteDto.getSc006ShainNo().toString());
+			return deleteDto;
+		}
+		
 		//削除処理
 		int returnCount = deleteData(Long.parseLong(deleteDto.getHdnShatakuKanriId()),
 				deleteDto.getHdnNengetsu(),
@@ -444,6 +461,31 @@ public class Skf3030Sc002DeleteService extends SkfServiceAbstract<Skf3030Sc002De
 		
 		return returnCount;
 	}
+	
+	//社宅管理台帳削除時のチェック追加対応 2021/6/14 add start
+	/**
+	 * 前月の社宅使用料履歴の取得
+	 * @param shatakuKanriId(社宅管理台帳ID）
+	 * @param nengetsu（対象年月）
+	 * @return　count（取得件数）
+	 */
+	public int getShatakuRentalRirekiLastMonth(long shatakuKanriId,String nengetsu){
+		
+		
+		//処理年月前月を取得
+		String lastYearMonth= skfDateFormatUtils.addYearMonth(nengetsu, -1);
+		
+		//前月の社宅使用料履歴の件数を取得
+		Skf3030Sc002GetShatakuRentalRirekiLastMonthExpParameter param = new Skf3030Sc002GetShatakuRentalRirekiLastMonthExpParameter();
+		
+		param.setShatakuKanriId(shatakuKanriId);
+		param.setYearMonth(lastYearMonth);
+		
+		int count = skf3030Sc002GetShatakuRentalRirekiLastMonthExpRepository.getShatakuRentalRirekiLastMonth(param);
+	
+		return count;
+	}
+	//社宅管理台帳削除時のチェック追加対応 2021/6/14 add end
 	
 
 }
