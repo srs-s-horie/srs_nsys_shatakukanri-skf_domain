@@ -3848,7 +3848,15 @@ public class Skf3030Sc002SharedService {
 		String sc006StartDay =  (labelMap.get("sc006StartDay") != null) ? labelMap.get("sc006StartDay").toString() : "";
 		// 終了日
 		String sc006EndDay =  (labelMap.get("sc006EndDay") != null) ? labelMap.get("sc006EndDay").toString() : "";
-
+		//共益費日割計算対応 2021/5/14 add start
+		// 共益費支払月に対する支払額
+		String sc006KyoekihiMonth = (labelMap.get("sc006KyoekihiMonth") != null) ? labelMap.get("sc006KyoekihiMonth").toString() : "0";
+		// 個人負担共益費入居時加算額
+		String sc006KyoekihiNyukyoKasan = (labelMap.get("sc006KyoekihiNyukyoKasan") != null) ? labelMap.get("sc006KyoekihiNyukyoKasan").toString() : "0";
+		// 個人負担共益費退居時加算額
+		String sc006KyoekihiTaikyoKasan = (labelMap.get("sc006KyoekihiTaikyoKasan") != null) ? labelMap.get("sc006KyoekihiTaikyoKasan").toString() : "0";
+		//共益費日割計算対応 2021/5/14 add end
+		
 		/** 戻り値設定 */
 		comDto.setSc006ShainName(sc006ShainName);
 		comDto.setSc006ShainNo(sc006ShainNo);
@@ -3872,6 +3880,11 @@ public class Skf3030Sc002SharedService {
 		comDto.setSc006KyoekihiPayAfter(sc006KyoekihiPayAfter);
 		comDto.setSc006StartDay(getDateText(sc006StartDay));
 		comDto.setSc006EndDay(getDateText(sc006EndDay));
+		//共益費日割計算対応 2021/5/14 add start
+		comDto.setSc006KyoekihiMonth(sc006KyoekihiMonth);
+		comDto.setSc006KyoekihiNyukyoKasan(sc006KyoekihiNyukyoKasan);
+		comDto.setSc006KyoekihiTaikyoKasan(sc006KyoekihiTaikyoKasan);
+		//共益費日割計算対応 2021/5/14 add end
 		
 		List<Map<String,Object>> BihinDt = new ArrayList<Map<String, Object>>();
 		

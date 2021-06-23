@@ -1931,6 +1931,7 @@ public class Skf3030Sc001DownloadRp003Service extends SkfServiceAbstract<Skf3030
 	private Map<String, String> getKyoekihiPayReportMap(){
 		Map<String, String> wordMap = new HashMap<String, String>();
 		//Map生成
+		wordMap.put("0", SkfCommonConstant.KYOEKIHIPAYMONTH_KBN_REPORT_0);
 		wordMap.put("1", SkfCommonConstant.KYOEKIHIPAYMONTH_KBN_REPORT_1);
 		wordMap.put("2", SkfCommonConstant.KYOEKIHIPAYMONTH_KBN_REPORT_2);
 		
