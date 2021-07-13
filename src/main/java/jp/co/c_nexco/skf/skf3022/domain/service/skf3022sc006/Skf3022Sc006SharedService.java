@@ -1300,9 +1300,9 @@ public class Skf3022Sc006SharedService {
 						// 社宅提示ステータス判定
 						switch (comDto.getHdnShatakuTeijiStatus()) {
 						// 作成中/作成済
+						// 現行障害：提示データ作成済に一時保存した場合、使用料が反映されない場合の対応  add start /
 						case CodeConstant.PRESENTATION_SITUATION_SAKUSEI_CHU:
-						case CodeConstant.PRESENTATION_SITUATION_SAKUSEI_SUMI:
-							LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場、社宅提示：作成中/作成済");
+							LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場、社宅提示：作成中");
 							// 各タブの初期ステータス
 							comDto.setShatakuTabStatus(true);
 							comDto.setBihinTabStatus(false);
@@ -1318,6 +1318,24 @@ public class Skf3022Sc006SharedService {
 							// 台帳登録
 							comDto.setBtnShatakuLoginDisableFlg(true);
 							break;
+						case CodeConstant.PRESENTATION_SITUATION_SAKUSEI_SUMI:						
+							LogUtils.debugByMsg("申請あり、入退居区分：入居、申請区分：駐車場、社宅提示：作成済");
+							// 各タブの初期ステータス
+							comDto.setShatakuTabStatus(true);
+							comDto.setBihinTabStatus(false);
+							comDto.setSogoTabStatu(false);
+							// 運用ガイド
+							comDto.setBtnUnyonGuideDisableFlg(false);
+							// 一時保存
+							comDto.setBtnTmpSaveDisableFlg(true);
+							// 作成完了
+							comDto.setBtnCreateDisableFlg(false);
+							// 次月予約
+							comDto.setBtnJigetuYoyakuDisableFlg(false);
+							// 台帳登録
+							comDto.setBtnShatakuLoginDisableFlg(true);
+							break;
+							// 現行障害：提示データ作成済に一時保存した場合、使用料が反映されない場合の対応  add end /
 						// 提示中/同意済/承認
 						case CodeConstant.PRESENTATION_SITUATION_TEIJI_CHU:
 						case CodeConstant.PRESENTATION_SITUATION_DOI_SUMI:
@@ -1405,8 +1423,10 @@ public class Skf3022Sc006SharedService {
 							comDto.setSogoTabStatu(true);
 							// 運用ガイド
 							comDto.setBtnUnyonGuideDisableFlg(false);
+							// 現行障害：提示データ作成済に一時保存した場合、使用料が反映されない場合の対応  add start /
 							// 一時保存
-							comDto.setBtnTmpSaveDisableFlg(false);
+							comDto.setBtnTmpSaveDisableFlg(true);
+							// 現行障害：提示データ作成済に一時保存した場合、使用料が反映されない場合の対応  add end /
 							// 作成完了
 							comDto.setBtnCreateDisableFlg(false);
 							// 次月予約
@@ -1632,8 +1652,8 @@ public class Skf3022Sc006SharedService {
 								break;
 							// 作成中/作成済
 							case CodeConstant.BIHIN_STATUS_SAKUSEI_CHU:
-							case CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI:
-								LogUtils.debugByMsg("申請あり、入退居区分：退居、社宅提示：承認/同意済/作成済、備品提示：作成中/作成済");
+								// 現行障害：提示データ作成済に一時保存した場合、使用料が反映されない場合の対応  add start /
+								LogUtils.debugByMsg("申請あり、入退居区分：退居、社宅提示：承認/同意済/作成済、備品提示：作成中");
 								// 各タブの初期ステータス
 								comDto.setShatakuTabStatus(false);
 								comDto.setBihinTabStatus(true);
@@ -1649,6 +1669,24 @@ public class Skf3022Sc006SharedService {
 								// 台帳登録
 								comDto.setBtnShatakuLoginDisableFlg(true);
 								break;
+							case CodeConstant.BIHIN_STATUS_SAKUSEI_SUMI:
+								LogUtils.debugByMsg("申請あり、入退居区分：退居、社宅提示：承認/同意済/作成済、備品提示：作成済");
+								// 各タブの初期ステータス
+								comDto.setShatakuTabStatus(false);
+								comDto.setBihinTabStatus(true);
+								comDto.setSogoTabStatu(false);
+								// 運用ガイド
+								comDto.setBtnUnyonGuideDisableFlg(false);
+								// 一時保存
+								comDto.setBtnTmpSaveDisableFlg(true);
+								// 作成完了
+								comDto.setBtnCreateDisableFlg(false);
+								// 次月予約
+								comDto.setBtnJigetuYoyakuDisableFlg(true);
+								// 台帳登録
+								comDto.setBtnShatakuLoginDisableFlg(true);
+								break;
+								// 現行障害：提示データ作成済に一時保存した場合、使用料が反映されない場合の対応  add end  /
 							// 提示中/搬出待ち/搬出済
 							case CodeConstant.BIHIN_STATUS_TEIJI_CHU:
 							case CodeConstant.BIHIN_STATUS_HANSHUTSU_MACHI:
