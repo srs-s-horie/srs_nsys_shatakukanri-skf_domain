@@ -2140,13 +2140,13 @@ public class Skf3022Sc006SharedService {
 				// 社宅使用料調整金額
 				comDto.setSc006SiyoroTyoseiPayDisableFlg(false);
 				// 個人負担共益費月額
-				comDto.setSc006KyoekihiMonthPayDisableFlg(false);
+				//comDto.setSc006KyoekihiMonthPayDisableFlg(false);
 				// 個人負担共益費調整金額
 				comDto.setSc006KyoekihiTyoseiPayDisableFlg(false);
 				// 駐車場使用料調整金額
 				comDto.setSc006TyusyaTyoseiPayDisableFlg(false);
 				// 共益費支払月
-				comDto.setSc006KyoekihiPayMonthSelectDisableFlg(false);
+				//comDto.setSc006KyoekihiPayMonthSelectDisableFlg(false);
 				// 相互利用情報
 				setSougoRiyouInfoControlStatus(true, comDto);
 			}
@@ -2996,6 +2996,16 @@ public class Skf3022Sc006SharedService {
 				LogUtils.debugByMsg("社宅タブステータス：false、 (入退去区分：入居以外)/(申請区分：駐車場のみ)");
 			}
 		}
+		
+		if (CodeConstant.NYUTAIKYO_KBN_HENKO.equals(comDto.getHdnNyutaikyoKbn())) {
+			LogUtils.debugByMsg("入退居区分：変更");
+			//変更の場合、非活性とする。
+			// 個人負担共益費月額
+			comDto.setSc006KyoekihiMonthPayDisableFlg(true);
+			// 共益費支払月
+			comDto.setSc006KyoekihiPayMonthSelectDisableFlg(true);
+		}
+
 	}
 
 	/**
