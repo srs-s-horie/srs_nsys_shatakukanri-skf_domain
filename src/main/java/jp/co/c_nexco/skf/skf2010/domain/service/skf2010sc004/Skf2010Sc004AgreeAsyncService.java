@@ -18,6 +18,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.model.AsyncBaseDto;
@@ -99,12 +100,19 @@ public class Skf2010Sc004AgreeAsyncService extends SkfAsyncServiceAbstract<Skf20
 		// 入力チェック
 		boolean inputAreaVisible = false;
 		boolean validateResult = true;
+		
+		
 		if (!NfwStringUtils.isEmpty(agreeDto.getInputAreaVisible())) {
 			inputAreaVisible = Boolean.valueOf(agreeDto.getInputAreaVisible());
 		}
-		if (inputAreaVisible) {
-			validateResult = inputValidate(agreeDto);
+		
+		//日付入力欄の必須入力チェック
+		validateResult = inputValidate(agreeDto);
+		if(!validateResult){
+			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
+			return agreeDto;
 		}
+		
 		// 承認者へのコメント欄の入力チェック
 		validateResult = validateReason(agreeDto);
 		if (!validateResult) {
@@ -515,48 +523,42 @@ public class Skf2010Sc004AgreeAsyncService extends SkfAsyncServiceAbstract<Skf20
 	 * @return
 	 */
 	private boolean inputValidate(Skf2010Sc004AgreeAsyncDto agreeDto) {
-		// 入力チェック
+		//必須入力チェック
 		boolean validateResult = true;
-		// 「現社宅の退居日」
-		if (!CheckUtils.isEmpty(agreeDto.getTaikyobi())
-				&& (!CheckUtils.isFormatDate(agreeDto.getTaikyobi(), "yyyy/MM/dd") || !SkfCheckUtils
-						.isSkfDateFormat(agreeDto.getTaikyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の退居日」");
-			agreeDto.setTaikyobiErr(validationErrorCode);
+		
+		//現社宅の退居日
+		if (!NfwStringUtils.isBlank(agreeDto.getSyokiTaikyoDate()) && NfwStringUtils.isBlank(agreeDto.getTaikyobi())) {
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] {"taikyobi"}, MessageIdConstant.E_SKF_1048, "現社宅の退居日");
 			validateResult = false;
+			LogUtils.debugByMsg("退居日テスト 初期→" + agreeDto.getSyokiTaikyoDate() + "入力後→" + agreeDto.getTaikyobi());
 		}
-		// 「現社宅先の駐車場返還日」
-		if (!CheckUtils.isEmpty(agreeDto.getHenkanbi())
-				&& (!CheckUtils.isFormatDate(agreeDto.getHenkanbi(), "yyyy/MM/dd") || !SkfCheckUtils
-						.isSkfDateFormat(agreeDto.getHenkanbi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「現社宅の駐車場返還日」");
-			agreeDto.setHenkanbiErr(validationErrorCode);
+		//現社宅の駐車場返還日
+		if (!NfwStringUtils.isBlank(agreeDto.getSyokiParkingDate()) && NfwStringUtils.isBlank(agreeDto.getHenkanbi())) {
+		ServiceHelper.addErrorResultMessage(agreeDto, new String[] {"henkanbi"}, MessageIdConstant.E_SKF_1048, "現社宅の駐車場返還日");
 			validateResult = false;
+			LogUtils.debugByMsg("返還日テスト 初期→" + agreeDto.getSyokiParkingDate() + "入力後→" + agreeDto.getHenkanbi());
 		}
-		// 「新社宅の入居日」
-		if (!CheckUtils.isEmpty(agreeDto.getNyukyobi())
-				&& (!CheckUtils.isFormatDate(agreeDto.getNyukyobi(), "yyyy/MM/dd") || !SkfCheckUtils
-						.isSkfDateFormat(agreeDto.getNyukyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅の入居日」");
-			agreeDto.setNyukyobiErr(validationErrorCode);
+		//新社宅入居日
+		if (!NfwStringUtils.isBlank(agreeDto.getSyokiNyukyoDate()) && NfwStringUtils.isBlank(agreeDto.getNyukyobi())) {
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] {"nyukyobi"}, MessageIdConstant.E_SKF_1048, "新社宅の入居日");
 			validateResult = false;
+			LogUtils.debugByMsg("入居日テスト 初期→" + agreeDto.getSyokiNyukyoDate() + "入力後→" + agreeDto.getNyukyobi());
 		}
-		// 「新社宅先の駐車場使用開始日」
-		if (!CheckUtils.isEmpty(agreeDto.getShiyobi()) && (!CheckUtils.isFormatDate(agreeDto.getShiyobi(), "yyyy/MM/dd")
-				|| !SkfCheckUtils.isSkfDateFormat(agreeDto.getShiyobi(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅先の駐車場使用開始日」");
-			agreeDto.setShiyobiErr(validationErrorCode);
+		//新社宅の駐車場使用開始日
+		if (!NfwStringUtils.isBlank(agreeDto.getSyokiParkingUseDate()) && NfwStringUtils.isBlank(agreeDto.getShiyobi())) {
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] {"shiyobi"}, MessageIdConstant.E_SKF_1048, "新社宅先の駐車場使用開始日");
 			validateResult = false;
+			
+			LogUtils.debugByMsg("駐車開始日１テスト 初期→" + agreeDto.getSyokiParkingUseDate() + "入力後→" + agreeDto.getShiyobi());
 		}
-		// 「新社宅先の駐車場使用開始日2」
-		if (!CheckUtils.isEmpty(agreeDto.getShiyobi2())
-				&& (!CheckUtils.isFormatDate(agreeDto.getShiyobi2(), "yyyy/MM/dd") || !SkfCheckUtils
-						.isSkfDateFormat(agreeDto.getShiyobi2(), CheckUtils.DateFormatType.YYYYMMDD))) {
-			ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1055, "「新社宅先の駐車場使用開始日2」");
-			agreeDto.setShiyobi2Err(validationErrorCode);
+		//新社宅の駐車場使用開始日２
+		if (!NfwStringUtils.isBlank(agreeDto.getSyokiParkingUseDate2()) && NfwStringUtils.isBlank(agreeDto.getShiyobi2())) {
+			ServiceHelper.addErrorResultMessage(agreeDto, new String[] {"shiyobi2"}, MessageIdConstant.E_SKF_1048, "新社宅先の駐車場使用開始日2");
 			validateResult = false;
+			LogUtils.debugByMsg("エラーに値入ってるか確認" +  agreeDto.getShiyobi2Err());
+			LogUtils.debugByMsg("駐車開始日２テスト 初期→" + agreeDto.getSyokiParkingUseDate2() + "入力後→" + agreeDto.getShiyobi2());
 		}
-
+		
 		return validateResult;
 	}
 
