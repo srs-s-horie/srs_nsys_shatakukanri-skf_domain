@@ -29,11 +29,9 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
-import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
-import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
@@ -54,8 +52,6 @@ public class Skf2010Sc004AgreeAsyncService extends SkfAsyncServiceAbstract<Skf20
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	@Autowired
-	private SkfMailUtils skfMailUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
@@ -98,14 +94,8 @@ public class Skf2010Sc004AgreeAsyncService extends SkfAsyncServiceAbstract<Skf20
 		Map<String, String> errorMsg = new HashMap<String, String>();
 
 		// 入力チェック
-		boolean inputAreaVisible = false;
 		boolean validateResult = true;
-		
-		
-		if (!NfwStringUtils.isEmpty(agreeDto.getInputAreaVisible())) {
-			inputAreaVisible = Boolean.valueOf(agreeDto.getInputAreaVisible());
-		}
-		
+			
 		//日付入力欄の必須入力チェック
 		validateResult = inputValidate(agreeDto);
 		if(!validateResult){
