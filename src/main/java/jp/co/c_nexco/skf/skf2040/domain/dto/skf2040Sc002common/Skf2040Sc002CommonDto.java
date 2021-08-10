@@ -23,7 +23,7 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	 * 退居（自動車の保管場所返還）届
 	 */
 	// 社宅管理番号
-	private String shatakuKanriNo;
+	//private String shatakuKanriNo;
 	// 氏名
 	private String name;
 	// 社員番号
@@ -77,6 +77,11 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 
 	// メール区分
 	private String mailKbn;
+	
+	// 社宅管理番号
+	public long shatakuKanriNo;
+	// 社宅部屋管理番号
+	public long shatakuRoomKanriNo;
 
 	/*
 	 * 添付資料
@@ -130,6 +135,8 @@ public class Skf2040Sc002CommonDto extends Skf204010CommonDto {
 	private String commentViewFlg;
 	// 提示データ一覧ボタン表示フラグ
 	private boolean teijiBtnViewFlag;
+	// 入退居予定覧ボタン表示フラグ
+	private boolean nyutaikyoYoteiBtnViewFlag;
 
 	// 返却情報表示フラグ true:あり false:なし
 	private String henkyakuInfoViewFlg;

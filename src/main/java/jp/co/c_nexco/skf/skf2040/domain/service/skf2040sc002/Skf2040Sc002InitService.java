@@ -15,6 +15,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetB
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetHenkyakuBihinInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetNyutaikyoYoteiInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetNyutaikyoYoteiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
@@ -25,6 +27,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetBihinUpdateDateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetNyutaikyoYoteiInfoExpRepository;
 import jp.co.c_nexco.nfw.common.entity.base.BaseCodeEntity;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -76,6 +79,8 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 	Skf2040Sc002GetBihinHenkyakuShinseiApplStatusExpRepository skf2040Sc002GetBihinHenkyakuShinseiApplStatusExpRepository;
 	@Autowired
 	Skf2040Sc002GetBihinUpdateDateExpRepository skf2040Sc002GetBihinUpdateDateExpRepository;
+	@Autowired
+	Skf2040Sc002GetNyutaikyoYoteiInfoExpRepository skf2040Sc002GetNyutaikyoYoteiInfoExpRepository;
 
 	/**
 	 * サービス処理を行う。
@@ -375,13 +380,26 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 				// 備品返却なし
 				// 【提示ボタン：非表示】【承認ボタン：表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_E
 				// 【PDFダウンロードボタン：表示】
-				skf2040Sc002ShareService.setButtonVisible("PTN_E", sTrue, initDto);
+				skf2040Sc002ShareService.setButtonVisible("PTN_E", sTrue, initDto);	
+				
+				//退居届が出されている社宅に対して未処理の「変更」データが存在するか確認。存在した場合警告文を出して処理終了
+				boolean checkValue = checkShatakuChangeFlag(initDto);
+				if(checkValue){
+					break;
+				}
+							
 			} else {
 				// 備品返却あり
 				// 【提示ボタン：表示】【承認ボタン：非表示】【修正依頼ボタン：表示】【差戻しボタン：表示】【添付資料ボタン：表示】→PTN_C
 				// 【PDFダウンロードボタン：表示】
 				skf2040Sc002ShareService.setButtonVisible("PTN_C", sTrue, initDto);
-
+				
+				//退居届が出されている社宅に対して未処理の「変更」データが存在するか確認。存在した場合警告文を出して処理終了
+				boolean checkValue = checkShatakuChangeFlag(initDto);
+				if(checkValue){
+					break;
+				}
+								
 				// 社宅管理の提示データが作成完了か判定し、提示ボタン活性化
 				if (teijiDataInfo != null && teijiDataInfo.getTeijiNo() > 0) {
 					// 社宅提示データの備品提示ステータスが作成完了されていない場合
@@ -529,6 +547,8 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 		} else {
 			// 社宅退居区分を設定
 			initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn());
+			initDto.setShatakuKanriNo(taikyoRepDt.getShatakuNo());
+			initDto.setShatakuRoomKanriNo(taikyoRepDt.getRoomKanriNo());
 		}
 
 		// 退居届情報の退居する社宅区分が１（社宅、駐車場を退居および返還）または２（社宅を退居）の場合
@@ -672,6 +692,8 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 		} else {
 			// 社宅退居区分を設定
 			initDto.setShatakuTaikyoKbn(taikyoRepDt.getShatakuTaikyoKbn());
+			initDto.setShatakuKanriNo(taikyoRepDt.getShatakuNo());
+			initDto.setShatakuRoomKanriNo(taikyoRepDt.getRoomKanriNo());
 		}
 
 		// 社宅管理の提示データを取得
@@ -814,5 +836,75 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 
 		return applStatusText;
 	}
+	
+	
+	// 現行障害：入退居区分が「変更」のデータ処理残留してしまう問題対応  add start /
+	/**
+	 * 「変更」の入退居予定データおよび提示データが登録されていないかのチェック
+	 * 
+	 * @param applStatus
+	 * @return
+	 */
+	private boolean checkShatakuChangeFlag(Skf2040Sc002InitDto initDto) {
+		
+		LogUtils.debugByMsg("「変更」の入退居予定データおよび提示データが登録されていないかのチェック:" );
+		boolean checkValue = false;
 
+		//　退居する社宅に対して未処理の「変更」ステータスの内容がないか確認する。
+		Skf2040Sc002GetNyutaikyoYoteiInfoExpParameter param = new Skf2040Sc002GetNyutaikyoYoteiInfoExpParameter();
+		param.setShainNo(initDto.getShainNo());
+		param.setShatakuKanriNo(initDto.getShatakuKanriNo());
+		param.setShatakuRoomKanriNo(initDto.getShatakuRoomKanriNo());
+		Skf2040Sc002GetNyutaikyoYoteiInfoExp result = new Skf2040Sc002GetNyutaikyoYoteiInfoExp();
+		result = skf2040Sc002GetNyutaikyoYoteiInfoExpRepository.getNyutaikyoYoteiInfo(param);
+		
+		LogUtils.debugByMsg("「変更」の入退居予定データおよび提示データが登録されていないかのチェック:"  + result);
+		
+		boolean warningFlg = false;
+		//取得できた場合は、警告フラグをたてる
+		if(result != null){
+			warningFlg = true; 
+		}
+		
+		if(warningFlg){
+			//警告フラグがtrueの場合
+			initDto.setNyutaikyoYoteiBtnViewFlag(false);
+			initDto.setTeijiBtnViewFlag(true);
+			
+			if(!(CodeConstant.LAND_CREATE_KBN_SAKUSEI_SUMI.equals(result.getLandCreateKbn()))){	
+				//台帳作成区分が「作成済み」以外の場合警告文設定
+				
+				if(CodeConstant.YES.equals(result.getTeijiCreateKbn())){	
+					//「変更」社宅の提示データが作成されている場合
+					// 提示不可で継続
+					// 承認ボタン
+					initDto.setBtnApproveDisabled(sTrue);
+					// 提示ボタン
+					initDto.setBtnPresentDisabeld(sTrue);
+					// 提示データ一覧ボタン表示
+					initDto.setTeijiBtnViewFlag(true);
+					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "退居届が出されている社宅について未処理の「変更」提示データが存在しています。提示データ登録画面にて処理を完了",
+							"（処理を完了してから、退居届の承認または返却備品の提示に進んでください。）");	
+					checkValue = true;
+					
+				}else{
+					//「変更」社宅の提示データが未作成の場合
+					//提示不可で継続
+					// 承認ボタン
+					initDto.setBtnApproveDisabled(sTrue);
+					// 提示ボタン
+					initDto.setBtnPresentDisabeld(sTrue);
+					//入退居予定一覧ボタン表示
+					initDto.setNyutaikyoYoteiBtnViewFlag(true);
+					ServiceHelper.addWarnResultMessage(initDto, MessageIdConstant.W_SKF_1001, "退居届が出されている社宅について未処理の「変更」入退居予定データが存在しています。提示データを作成し処理を完了",
+							"（処理を完了してから、退居届の承認または返却備品の提示に進んでください。）");
+					checkValue = true;							
+				}	
+			}			
+		}
+
+		LogUtils.debugByMsg("「変更」の入退居予定データおよび提示データが登録されていないかのチェック:"  + checkValue);
+		return checkValue;
+	}
+	// 現行障害：入退居区分が「変更」のデータ処理残留してしまう問題対応  add end /
 }
