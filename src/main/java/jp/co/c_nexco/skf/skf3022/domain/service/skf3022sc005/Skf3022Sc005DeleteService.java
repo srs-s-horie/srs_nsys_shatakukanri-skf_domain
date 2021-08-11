@@ -17,18 +17,23 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetP
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetParkLendJokyoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetRoomLendJokyoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetRoomLendJokyoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetTeijiBihinDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetTeijiBihinDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc005.Skf3022Sc005GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingBlock;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoom;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiData;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3021TNyutaikyoYoteiDataKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiBihinDataKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3022TTeijiData;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc005.Skf3022Sc005GetParkLendJokyoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc005.Skf3022Sc005GetRoomLendJokyoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc005.Skf3022Sc005GetTeijiBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc005.Skf3022Sc005UpdateNyutaiyoYoteiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuParkingBlockRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3010MShatakuRoomRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3021TNyutaikyoYoteiDataRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiBihinDataRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -70,6 +75,10 @@ public class Skf3022Sc005DeleteService extends SkfServiceAbstract<Skf3022Sc005De
 	private Skf3021TNyutaikyoYoteiDataRepository skf3021TNyutaikyoYoteiDataRepository;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private Skf3022TTeijiBihinDataRepository skf3022TTeijiBihinDataRepository;
+	@Autowired
+	private Skf3022Sc005GetTeijiBihinDataExpRepository skf3022Sc005GetTeijiBihinDataExpRepository;
 	
 	// リストテーブルの１ページ最大表示行数
 	@Value("${skf3022.skf3022_sc005.max_row_count}")
@@ -346,14 +355,59 @@ public class Skf3022Sc005DeleteService extends SkfServiceAbstract<Skf3022Sc005De
         	//社宅駐車場区画更新
         	ret = skf3010MShatakuParkingBlockRepository.updateByPrimaryKeySelective(parkRecord);
         	
-//          '更新できなかった場合
+        	//更新できなかった場合
         	if(ret <= 0){
-//              'トランザクションをロールバックする
+        	//トランザクションをロールバックする
         		return -1;
         	}else{
         		retCount = ret;
         	}
         }
+        
+        //不具合修正　削除時に提示備品データが残る対応
+        //提示備品データ削除
+        List<Skf3022Sc005GetTeijiBihinDataExp> teijiBihinList = new ArrayList<Skf3022Sc005GetTeijiBihinDataExp>();
+        Skf3022Sc005GetTeijiBihinDataExpParameter param = new Skf3022Sc005GetTeijiBihinDataExpParameter();
+        param.setTeijiNo(teijiNo);
+        teijiBihinList = skf3022Sc005GetTeijiBihinDataExpRepository.getTeijiBihinData(param);
+        
+        if(teijiBihinList.size() > 0){
+            //提示備品が取得できた場合
+        	//件数分削除
+        	for(int i= 0; i < teijiBihinList.size(); i++ ){
+        		
+                Date teijiBihinUpdateDate = null;
+                try{
+        			//更新日
+                	teijiBihinUpdateDate = dateFormat.parse(updateDateForRock);	
+        			LogUtils.debugByMsg("updateDateForRock：" + teijiBihinUpdateDate);
+        		}	
+        		catch(ParseException ex){
+        			LogUtils.infoByMsg("DeleteTeijiDataCount, 提示備品データ更新日時変換失敗:" + ex.toString());
+        			return -1;
+        		}
+                
+                //楽観的排他を行う(提示備品データテーブル)
+        		LogUtils.debugByMsg("teijiBihinDataupdateDate：" + teijiBihinList.get(i).getUpdateDate());
+        		super.checkLockException(teijiBihinUpdateDate, teijiBihinList.get(i).getUpdateDate());
+        		
+        		Skf3022TTeijiBihinDataKey key = new Skf3022TTeijiBihinDataKey();
+            	key.setTeijiNo(teijiBihinList.get(i).getTeijiNo());
+            	key.setBihinCd(teijiBihinList.get(i).getBihinCd());
+        		
+        		ret = skf3022TTeijiBihinDataRepository.deleteByPrimaryKey(key);
+        		
+        		//更新できなかった場合
+            	if(ret <= 0){
+                  //トランザクションをロールバックする
+            		return -1;
+            	}else{
+            		retCount = ret;
+            	}	
+        	}
+        }
+
+        
 
         //提示データ削除
         Skf3022TTeijiData teijiData = new Skf3022TTeijiData();
