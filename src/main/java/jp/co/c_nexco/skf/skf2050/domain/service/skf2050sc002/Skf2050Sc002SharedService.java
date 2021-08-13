@@ -334,6 +334,17 @@ public class Skf2050Sc002SharedService {
 			dto.setAllDateAreaEscape(true);
 			break;
 		}
+		
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		// 承認可能ロールのみの処理		
+		boolean result = skfLoginUserInfoUtils.isAgreeAuthority( CodeConstant.C001, FunctionIdConstant.R0105, loginUserInfo.get("roleId"), applStatus);
+		if(!result){
+			// 修正依頼、確認、承認ボタン全て非表示
+			dto.setAllButtonEscape(true);
+			// コメント欄非表示
+			dto.setCommentAreaVisibled(false);
+		}
 
 		return;
 	}

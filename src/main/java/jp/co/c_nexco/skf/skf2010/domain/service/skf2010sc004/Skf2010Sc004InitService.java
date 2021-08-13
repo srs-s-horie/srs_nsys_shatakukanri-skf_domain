@@ -127,16 +127,13 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-		switch (roleId) {
-		case CodeConstant.NAKASA_SHATAKU_TANTO:
-		case CodeConstant.NAKASA_SHATAKU_KANRI:
-		case CodeConstant.SYSTEM_KANRI:
+		boolean result = skfLoginUserInfoUtils.isAgreeAuthority(companyCd, initDto.getApplId(), roleId, initDto.getApplStatus());
+		if(result){
 			isAdmin = true;
-			break;
-		default:
+		}else{
 			isAdmin = false;
-			break;
 		}
+
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {
 			applStatus = CodeConstant.STATUS_SHONIN1;

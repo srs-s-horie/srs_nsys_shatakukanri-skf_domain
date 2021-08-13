@@ -337,12 +337,10 @@ public class Skf2010Sc003SharedService {
 	}
 
 	private boolean checkAdminRole(String roleId) {
-		if (NfwStringUtils.isNotEmpty(roleId)) {
-			if (CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE1)
-					|| CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE2)
-					|| CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE3)) {
-				return true;
-			}
+		
+		boolean res = skfLoginUserInfoUtils.isAgreeAuthority(companyCd, null, roleId, CodeConstant.NONE);
+		if(res){
+			return true;
 		}
 
 		return false;

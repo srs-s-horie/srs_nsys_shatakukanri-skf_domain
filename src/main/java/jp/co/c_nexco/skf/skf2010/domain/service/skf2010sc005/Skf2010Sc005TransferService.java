@@ -208,16 +208,4 @@ public class Skf2010Sc005TransferService extends SkfServiceAbstract<Skf2010Sc005
 		return transDto;
 	}
 
-	private boolean checkAdminRole(String roleId) {
-		if (NfwStringUtils.isNotEmpty(roleId)) {
-			if (CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE1)
-					|| CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE2)
-					|| CheckUtils.isEqual(roleId, SkfCommonConstant.ADMIN_ROLE3)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 }
