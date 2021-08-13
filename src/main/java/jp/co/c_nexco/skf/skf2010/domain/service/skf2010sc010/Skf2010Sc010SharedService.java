@@ -44,22 +44,18 @@ public class Skf2010Sc010SharedService {
 		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfoFromAlterLogin(bean);
 
 		Map<String, String> genericCodeMap = new HashMap<String, String>();
-
-		switch (loginUserInfo.get("roleId")) {
-		case SkfCommonConstant.ADMIN_ROLE1:
-		case SkfCommonConstant.ADMIN_ROLE2:
-		case SkfCommonConstant.ADMIN_ROLE3:
-			genericCodeMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_COMMENT_APPL_STATUS_ADMIN);
-			break;
-		default:
-			genericCodeMap = skfGenericCodeUtils
-					.getGenericCode(FunctionIdConstant.GENERIC_CODE_COMMENT_APPL_STATUS_USER);
-			break;
-		}
-
+		
 		// コメント一覧を取得する
 		resultList = skfCommentUtils.getCommentList(companyCd, applNo, CodeConstant.STATUS_SHONIN1);
+		
+		boolean res = skfLoginUserInfoUtils.isAgreeAuthority(companyCd, null, loginUserInfo.get("roleId"), CodeConstant.NONE);
+		if(res){
+			genericCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_COMMENT_APPL_STATUS_ADMIN);
+		}else{
+			genericCodeMap = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_COMMENT_APPL_STATUS_USER);	
+		}
+		
+		
 		if (resultList != null && resultList.size() > 0) {
 			Map<String, String> commentMap = null;
 			for (SkfCommentUtilsGetCommentListExp result : resultList) {

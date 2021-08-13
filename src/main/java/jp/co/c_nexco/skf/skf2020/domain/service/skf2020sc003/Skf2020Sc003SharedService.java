@@ -1745,6 +1745,16 @@ public class Skf2020Sc003SharedService {
 		if (!taiyoHitsuyo.equals(CodeConstant.ASKED_SHATAKU_HITSUYO)) {
 			dto.setEditBtnVisible(false);
 		}
+		
+		
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		// 承認可能ロールのみ編集ボタン、修正依頼、差戻し、提示ボタン押下可能		
+		boolean result = skfLoginUserInfoUtils.isAgreeAuthority( CodeConstant.C001, FunctionIdConstant.R0100, loginUserInfo.get("roleId"), dto.getApplStatus());
+		if(!result){
+			dto.setEditBtnVisible(false);
+			dto.setApproverBtnViewFlag(false);
+		}
 	}
 
 	private Map<String, Object> setBihinData(Skf2020Sc003CommonDto dto, String bihinCd, String bihinName,

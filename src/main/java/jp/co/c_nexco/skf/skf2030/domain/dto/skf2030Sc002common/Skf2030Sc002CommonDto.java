@@ -132,5 +132,7 @@ public class Skf2030Sc002CommonDto extends Skf203010CommonDto {
 	private boolean teijiBtnViewFlag;
 	// 入退居予定一覧ボタン表示フラグ
 	private boolean nyutaikyoBtnViewFlag;
+	//　承認者用ボタン表示フラグ
+	private boolean allButtonEscape;
 
 }

@@ -356,6 +356,15 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 			setButtonControl(initDto, teijiDataInfo, applHistoryList.get(0));
 			break;
 		}
+		
+		
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		// 承認可能ロールのみの処理		
+		boolean result = skfLoginUserInfoUtils.isAgreeAuthority( CodeConstant.C001, FunctionIdConstant.R0103, loginUserInfo.get("roleId"), initDto.getApplStatus());
+		if(!result){
+			skf2040Sc002ShareService.setButtonVisible("PTN_F", sFalse, initDto);
+		}
 
 		// 表示正常終了
 		return returnValue;
@@ -467,7 +476,7 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 			skf2040Sc002ShareService.setButtonVisible("PTN_F", sFalse, initDto);
 			break;
 		}
-
+		
 	}
 
 	/**
@@ -842,7 +851,7 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 	/**
 	 * 「変更」の入退居予定データおよび提示データが登録されていないかのチェック
 	 * 
-	 * @param applStatus
+	 * @param initDto
 	 * @return
 	 */
 	private boolean checkShatakuChangeFlag(Skf2040Sc002InitDto initDto) {

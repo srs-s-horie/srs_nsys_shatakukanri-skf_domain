@@ -131,7 +131,16 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 			initDto.setNyukyoShoninBtnViewFlag("false");
 			initDto.setComShoninBtnViewFlag("false");
 			initDto.setCommentAreaVisibled(false);
+			
+		} else if(CheckUtils.isEqual(initDto.getApplStatus(), CodeConstant.STATUS_ICHIJIHOZON)){
+			//承認の場合は非表示
+			initDto.setShoninBtnViewFlag("false");
+			initDto.setNyukyoShoninBtnViewFlag("false");
+			initDto.setComShoninBtnViewFlag("false");
+			initDto.setCommentAreaVisibled(false);
+		
 		} else {
+		
 
 			initDto.setShoninBtnViewFlag("true");
 
@@ -183,19 +192,14 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		}
 
 		// ユーザーの権限チェック
-		switch (roleId) {
-		case CodeConstant.SKF_220:
-		case CodeConstant.SKF_230:
-		case CodeConstant.SKF_900:
-			break;
-		default:
+		// 承認可能ロール以外の場合はボタンを非表示にする	
+		boolean result = skfLoginUserInfoUtils.isAgreeAuthority(companyCd, initDto.getApplId(), roleId, initDto.getApplStatus());
+		if(!result){
 			// 承認権限がないユーザーは「再提示」「資料添付」「承認」ボタンを非表示にする。
 			initDto.setMaskPattern("NON");
 			initDto.setNyukyoShoninBtnViewFlag("false");
 			initDto.setComShoninBtnViewFlag("false");
-			break;
 		}
-
 	}
 
 	/**
@@ -215,16 +219,13 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 
 		// 一般ユーザーかチェック
 		boolean isAdmin = false;
-		switch (roleId) {
-		case CodeConstant.NAKASA_SHATAKU_TANTO:
-		case CodeConstant.NAKASA_SHATAKU_KANRI:
-		case CodeConstant.SYSTEM_KANRI:
+		boolean result = skfLoginUserInfoUtils.isAgreeAuthority(companyCd, initDto.getApplId(), roleId, initDto.getApplStatus());
+		if(result){
 			isAdmin = true;
-			break;
-		default:
+		}else{
 			isAdmin = false;
-			break;
 		}
+				
 		// 一般ユーザーの場合、申請状況に「承認１」をセット
 		if (!isAdmin) {
 			applStatus = CodeConstant.STATUS_SHONIN1;
