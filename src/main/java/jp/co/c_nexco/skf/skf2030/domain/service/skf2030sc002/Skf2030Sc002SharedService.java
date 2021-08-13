@@ -398,10 +398,12 @@ public class Skf2030Sc002SharedService {
 			}
 		}
 
+		dto.setAllButtonEscape(false);
 		// 承認可能ロール以外の場合はボタンを非表示にする	
 		boolean result = skfLoginUserInfoUtils.isAgreeAuthority(companyCd, FunctionIdConstant.R0104, loginUserInfo.get("roleId"), applInfo.get("status"));
 		if(!result){
 			dto.setMaskPattern("NONADMIN");
+			dto.setAllButtonEscape(true);
 		}
 		
 		return true;
