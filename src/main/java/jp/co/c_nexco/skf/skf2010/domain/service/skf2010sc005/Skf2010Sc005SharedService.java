@@ -1481,65 +1481,6 @@ public class Skf2010Sc005SharedService {
 		return true;
 	}
 
-//	/**
-//	 * 承認権限チェックを行う
-//	 * 
-//	 * @param companyCd
-//	 * @param applId
-//	 * @param roleId
-//	 * @param applStatus
-//	 * @return
-//	 */
-//	private boolean isAgreeAuthority(String companyCd, String applId, String roleId, String applStatus) {
-//		boolean result = false;
-//
-//		// ステータスチェック
-//		if (CodeConstant.STATUS_SHINSEICHU.equals(applStatus)
-//				|| CodeConstant.STATUS_SHOZOKUCHO_KAKUNINZUMI.equals(applStatus)
-//				|| CodeConstant.STATUS_SHINSACHU.equals(applStatus)
-//				|| CodeConstant.STATUS_TORIKOMI_KANRYO.equals(applStatus)
-//				|| CodeConstant.STATUS_DOI_ZUMI.equals(applStatus) || CodeConstant.STATUS_DOI_SHINAI.equals(applStatus)
-//				|| CodeConstant.STATUS_HANSYUTSU_ZUMI.equals(applStatus)
-//				|| CodeConstant.STATUS_HANNYU_ZUMI.equals(applStatus)
-//				|| CodeConstant.STATUS_SHONIN1.equals(applStatus)) {
-//
-//			String wfLevel = CodeConstant.NONE;
-//			switch (applStatus) {
-//			case CodeConstant.STATUS_SHINSEICHU:
-//			case CodeConstant.STATUS_SHOZOKUCHO_KAKUNINZUMI:
-//			case CodeConstant.STATUS_SHINSACHU:
-//			case CodeConstant.STATUS_TORIKOMI_KANRYO:
-//			case CodeConstant.STATUS_DOI_ZUMI:
-//			case CodeConstant.STATUS_DOI_SHINAI:
-//			case CodeConstant.STATUS_HANSYUTSU_ZUMI:
-//			case CodeConstant.STATUS_HANNYU_ZUMI:
-//				wfLevel = CodeConstant.LEVEL_1;
-//				break;
-//			case CodeConstant.STATUS_SHONIN1:
-//				wfLevel = CodeConstant.LEVEL_2;
-//				break;
-//			}
-//
-//			int cnt = 0;
-//			Skf2010Sc005GetAgreeAuthorityCountExp mApplicationExp = new Skf2010Sc005GetAgreeAuthorityCountExp();
-//			Skf2010Sc005GetAgreeAuthorityCountExpParameter param = new Skf2010Sc005GetAgreeAuthorityCountExpParameter();
-//			param.setCompanyCd(companyCd);
-//			param.setApplId(applId);
-//			param.setRoleId(roleId);
-//			param.setWfLevel(wfLevel);
-//			mApplicationExp = skf2010Sc005GetAgreeAuthorityCountExpRepository.getAgreeAuthorityCount(param);
-//			if (mApplicationExp != null) {
-//				cnt = Integer.valueOf(mApplicationExp.getExpr1());
-//				if (cnt > 0) {
-//					result = true;
-//				}
-//			}
-//
-//		}
-//
-//		return result;
-//	}
-
 	/**
 	 * 申請通知メール送信のメイン処理を行います
 	 * 
