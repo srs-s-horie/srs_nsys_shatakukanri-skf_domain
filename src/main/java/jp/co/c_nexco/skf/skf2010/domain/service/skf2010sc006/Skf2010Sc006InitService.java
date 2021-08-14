@@ -138,6 +138,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 			initDto.setNyukyoShoninBtnViewFlag("false");
 			initDto.setComShoninBtnViewFlag("false");
 			initDto.setCommentAreaVisibled(false);
+			initDto.setRevisionRemandBtnFlg(true);
 		
 		} else {
 		
@@ -199,6 +200,7 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 			initDto.setMaskPattern("NON");
 			initDto.setNyukyoShoninBtnViewFlag("false");
 			initDto.setComShoninBtnViewFlag("false");
+			initDto.setRevisionRemandBtnFlg(true);
 		}
 	}
 

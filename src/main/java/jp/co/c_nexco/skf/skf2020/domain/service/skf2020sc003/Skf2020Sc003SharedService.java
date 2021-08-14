@@ -1742,6 +1742,7 @@ public class Skf2020Sc003SharedService {
 		// 社宅を必要する場合以外は、編集ボタンを非表示
 		String taiyoHitsuyo = dto.getTaiyoHituyo();
 		dto.setEditBtnVisible(true);
+		dto.setApproverBtnViewFlag(true);
 		if (!taiyoHitsuyo.equals(CodeConstant.ASKED_SHATAKU_HITSUYO)) {
 			dto.setEditBtnVisible(false);
 		}
