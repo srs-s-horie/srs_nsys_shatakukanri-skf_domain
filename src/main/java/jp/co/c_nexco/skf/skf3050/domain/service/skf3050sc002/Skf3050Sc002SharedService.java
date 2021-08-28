@@ -852,7 +852,7 @@ public class Skf3050Sc002SharedService {
 			return null;
 		}
 		
-		//TODO　給与年月　表示のため処理年月に加算する 
+		//給与年月　表示のため処理年月に加算する 
 		String salaryNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
 
 		RowDataBean rtnRowData = new RowDataBean();
