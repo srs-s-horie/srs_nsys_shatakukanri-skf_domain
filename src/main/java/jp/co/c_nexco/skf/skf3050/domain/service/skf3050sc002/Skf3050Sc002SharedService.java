@@ -851,6 +851,9 @@ public class Skf3050Sc002SharedService {
 				&& NfwStringUtils.isEmpty(genbutugakuShaho) && NfwStringUtils.isEmpty(bihingenbutuShaho)) {
 			return null;
 		}
+		
+		//給与年月　表示のため処理年月に加算する 
+		String salaryNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
 
 		RowDataBean rtnRowData = new RowDataBean();
 
@@ -858,7 +861,7 @@ public class Skf3050Sc002SharedService {
 		rtnRowData.addCellDataBean("B" + targetRow, shaiNo == null ? "" : shaiNo);
 		rtnRowData.addCellDataBean("C" + targetRow, "1");
 		rtnRowData.addCellDataBean("D" + targetRow, "0");
-		rtnRowData.addCellDataBean("E" + targetRow, shoriNengetsu == null ? "" : shoriNengetsu);
+		rtnRowData.addCellDataBean("E" + targetRow, salaryNengetsu == null ? "" : salaryNengetsu);
 		rtnRowData.addCellDataBean("F" + targetRow, "");
 		rtnRowData.addCellDataBean("G" + targetRow, siyoryoHoyu == null ? "" : siyoryoHoyu);
 		rtnRowData.addCellDataBean("H" + targetRow, chusyajyoHoyu == null ? "" : chusyajyoHoyu);
