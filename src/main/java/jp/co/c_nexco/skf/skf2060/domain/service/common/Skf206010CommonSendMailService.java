@@ -21,6 +21,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfGetInfoUtils.SkfGetInf
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfShinseiUtils.SkfShinseiUtilsGetApplHistoryInfoByApplNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
+import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
@@ -190,7 +191,7 @@ public class Skf206010CommonSendMailService {
 
 		// URL作成
 		if (urlBase != null) {
-			String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
+			String url = PropertyUtils.getValue("skf.common.baseUrl") + urlBase.replaceFirst("^/", "");
 			replaceMap.put("【url】", url);
 		}
 

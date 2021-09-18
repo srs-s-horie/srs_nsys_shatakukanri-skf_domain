@@ -77,6 +77,7 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
@@ -1614,7 +1615,7 @@ public class Skf2010Sc005SharedService {
 
 		// URL作成
 		if (urlBase != null) {
-			String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
+			String url = PropertyUtils.getValue("skf.common.baseUrl") + urlBase.replaceFirst("^/", "");
 			replaceMap.put("【url】", url);
 		}
 
