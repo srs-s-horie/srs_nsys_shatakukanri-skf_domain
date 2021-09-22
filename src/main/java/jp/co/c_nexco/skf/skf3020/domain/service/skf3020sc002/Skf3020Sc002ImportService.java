@@ -197,139 +197,148 @@ public class Skf3020Sc002ImportService extends SkfServiceAbstract<Skf3020Sc002Im
 					MessageIdConstant.E_SKF_1043, MSG_SHEET_NAME);
 			return false;
 		}
+		
+		
+		try{
 				
-		//SheetDataBean sheetDataBean = sheetDataBeanList.get(0);
-		List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();
-		Map<String, Integer> posMap = createColumnNoMap(rowDataBeanList); // 対象のデータ格納position
-		int shimeiEmptyCnt = 0; // 空の社員氏名カウント
-		boolean duplicateShainNo = false; // 重複する社員番号の判定用
-		List<String> existShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複確認用)
-		List<String> existShainNoErrorList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複エラー用)
-		boolean nonexistShainNo = false; // 存在しない社員番号の判定用
-		List<String> nonexistShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(既存確認用)
-
-		// 転任者調書エクセルファイルの内容読み込んでいく
-		for (int i = 0; i < (rowDataBeanList.size() - 1); i++) {
-			// 先頭行は飛ばす
-			RowDataBean row = rowDataBeanList.get(i + 1);
-			List<CellDataBean> cellDataBeanList = row.getCellDataBeanList();
-
-			int shimeiPos = posMap.get(IMPORT_COL.IMPORT_COL_NAME.getColStr());
-			String shimei = cellDataBeanList.get(shimeiPos).getValue(); // 社員氏名
-			if (shimei == null || CheckUtils.isEmpty(shimei)) {
-				shimeiEmptyCnt++;
-				// 社員氏名が連続で無い場合
-				if (shimeiEmptyCnt > NAME_SERCH_CNT) {
-					break;
-				}
-				continue;
-			}
-
-			// 社員氏名に除外文字が含まれている場合
-			if (JOGAI_MOJI_1.equals(shimei) || shimei.contains(JOGAI_MOJI_2)) {
-				continue;
-			}
-
-			int shainNoPos = posMap.get(IMPORT_COL.IMPORT_COL_SHAIN_NO.getColStr());
-			String shainNo = cellDataBeanList.get(shainNoPos).getValue(); // 社員番号
-			if (shainNo != null && !CheckUtils.isEmpty(shainNo)) {
-				boolean exsistNoFlg = false;
-
-				for (int j = 0; j < existShainNoList.size(); j++) {
-					String listShainNo = existShainNoList.get(j);
-					// 社員番号重複チェック
-					if (Objects.equals(shainNo, listShainNo)) {
-						exsistNoFlg = true;
-						duplicateShainNo = true;
-						
-						boolean errorFlg = true;
-						for (int k = 0; k < existShainNoErrorList.size(); k++) {
-							// エラー社員番号重複チェック
-							if (Objects.equals(shainNo, existShainNoErrorList.get(k))) {
-								//エラー用リストに存在する
-								errorFlg = false;
-								break;
-							}
-						}
-						if(errorFlg){
-							// エラー用リストに無い場合
-							existShainNoErrorList.add(shainNo);
-						}
+			//SheetDataBean sheetDataBean = sheetDataBeanList.get(0);
+			List<RowDataBean> rowDataBeanList = sheetDataBean.getRowDataBeanList();
+			Map<String, Integer> posMap = createColumnNoMap(rowDataBeanList); // 対象のデータ格納position
+			int shimeiEmptyCnt = 0; // 空の社員氏名カウント
+			boolean duplicateShainNo = false; // 重複する社員番号の判定用
+			List<String> existShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複確認用)
+			List<String> existShainNoErrorList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(重複エラー用)
+			boolean nonexistShainNo = false; // 存在しない社員番号の判定用
+			List<String> nonexistShainNoList = new ArrayList<String>(); // 取り込んだ社員番号保持リスト(既存確認用)
+	
+			// 転任者調書エクセルファイルの内容読み込んでいく
+			for (int i = 0; i < (rowDataBeanList.size() - 1); i++) {
+				// 先頭行は飛ばす
+				RowDataBean row = rowDataBeanList.get(i + 1);
+				List<CellDataBean> cellDataBeanList = row.getCellDataBeanList();
+	
+				int shimeiPos = posMap.get(IMPORT_COL.IMPORT_COL_NAME.getColStr());
+				String shimei = cellDataBeanList.get(shimeiPos).getValue(); // 社員氏名
+				if (shimei == null || CheckUtils.isEmpty(shimei)) {
+					shimeiEmptyCnt++;
+					// 社員氏名が連続で無い場合
+					if (shimeiEmptyCnt > NAME_SERCH_CNT) {
 						break;
 					}
+					continue;
 				}
-
-				// リストに格納されてない社員番号の場合
-				if (!exsistNoFlg) {
-					existShainNoList.add(shainNo);
+	
+				// 社員氏名に除外文字が含まれている場合
+				if (JOGAI_MOJI_1.equals(shimei) || shimei.contains(JOGAI_MOJI_2)) {
+					continue;
 				}
-				exsistNoFlg = false;
-
-				// 社員番号存在チェック
-				if (!skf3020Sc002SharedService.checkShainExists(shainNo)) {
-					nonexistShainNo = true;
-					exsistNoFlg = true;
-					for (int j = 0; j < nonexistShainNoList.size(); j++) {
+	
+				int shainNoPos = posMap.get(IMPORT_COL.IMPORT_COL_SHAIN_NO.getColStr());
+				String shainNo = cellDataBeanList.get(shainNoPos).getValue(); // 社員番号
+				if (shainNo != null && !CheckUtils.isEmpty(shainNo)) {
+					boolean exsistNoFlg = false;
+	
+					for (int j = 0; j < existShainNoList.size(); j++) {
+						String listShainNo = existShainNoList.get(j);
 						// 社員番号重複チェック
-						if (Objects.equals(shainNo, nonexistShainNoList.get(j))) {
-							exsistNoFlg = false;
+						if (Objects.equals(shainNo, listShainNo)) {
+							exsistNoFlg = true;
+							duplicateShainNo = true;
+							
+							boolean errorFlg = true;
+							for (int k = 0; k < existShainNoErrorList.size(); k++) {
+								// エラー社員番号重複チェック
+								if (Objects.equals(shainNo, existShainNoErrorList.get(k))) {
+									//エラー用リストに存在する
+									errorFlg = false;
+									break;
+								}
+							}
+							if(errorFlg){
+								// エラー用リストに無い場合
+								existShainNoErrorList.add(shainNo);
+							}
 							break;
 						}
 					}
+	
+					// リストに格納されてない社員番号の場合
+					if (!exsistNoFlg) {
+						existShainNoList.add(shainNo);
+					}
+					exsistNoFlg = false;
+	
+					// 社員番号存在チェック
+					if (!skf3020Sc002SharedService.checkShainExists(shainNo)) {
+						nonexistShainNo = true;
+						exsistNoFlg = true;
+						for (int j = 0; j < nonexistShainNoList.size(); j++) {
+							// 社員番号重複チェック
+							if (Objects.equals(shainNo, nonexistShainNoList.get(j))) {
+								exsistNoFlg = false;
+								break;
+							}
+						}
+					}
+					
+					if (exsistNoFlg) {
+						nonexistShainNoList.add(shainNo);
+					}
 				}
+	
+				// 取込データ保持DTO作成
+				Skf302010SaveDto saveDto = createSaveDto(shimei, shainNo, cellDataBeanList, posMap);
+				importData.add(saveDto);
+	
+				if (importData.size() > IMPORT_DATA_CNT_UPPER) {
+					break;
+				}
+	
+				// カウント初期化
+				shimeiEmptyCnt = 0;
+			}
+	
+			// 社員番号重複している場合
+			if (duplicateShainNo) {
+				ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+						MessageIdConstant.E_SKF_3045, "");
 				
-				if (exsistNoFlg) {
-					nonexistShainNoList.add(shainNo);
+				for (int i=0; i < existShainNoErrorList.size(); i++) {
+						ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+								MessageIdConstant.SKF3020_ERR_MSG_COMMON, existShainNoErrorList.get(i));
 				}
+				return false;
 			}
-
-			// 取込データ保持DTO作成
-			Skf302010SaveDto saveDto = createSaveDto(shimei, shainNo, cellDataBeanList, posMap);
-			importData.add(saveDto);
-
+	
+			// 存在しない社員番号がある場合
+			if (nonexistShainNo) {
+				ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+						MessageIdConstant.E_SKF_3046, "");
+				
+				for (int i=0; i < nonexistShainNoList.size(); i++) {
+						ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+								MessageIdConstant.SKF3020_ERR_MSG_COMMON, nonexistShainNoList.get(i));
+				}
+				return false;
+			}
+	
+			// データ無しの場合
+			if (importData.size() == 0) {
+				ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+						MessageIdConstant.E_SKF_1064);
+				return false;
+			}
+	
+			// データ件数の上限越え
 			if (importData.size() > IMPORT_DATA_CNT_UPPER) {
-				break;
+				ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
+						MessageIdConstant.E_SKF_1065, IMPORT_DATA_CNT_UPPER);
+				return false;
 			}
-
-			// カウント初期化
-			shimeiEmptyCnt = 0;
-		}
-
-		// 社員番号重複している場合
-		if (duplicateShainNo) {
-			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-					MessageIdConstant.E_SKF_3045, "");
-			
-			for (int i=0; i < existShainNoErrorList.size(); i++) {
-					ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-							MessageIdConstant.SKF3020_ERR_MSG_COMMON, existShainNoErrorList.get(i));
-			}
-			return false;
-		}
-
-		// 存在しない社員番号がある場合
-		if (nonexistShainNo) {
-			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-					MessageIdConstant.E_SKF_3046, "");
-			
-			for (int i=0; i < nonexistShainNoList.size(); i++) {
-					ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-							MessageIdConstant.SKF3020_ERR_MSG_COMMON, nonexistShainNoList.get(i));
-			}
-			return false;
-		}
-
-		// データ無しの場合
-		if (importData.size() == 0) {
-			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-					MessageIdConstant.E_SKF_1064);
-			return false;
-		}
-
-		// データ件数の上限越え
-		if (importData.size() > IMPORT_DATA_CNT_UPPER) {
-			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, new String[] { ERR_TARGET_ITEM },
-					MessageIdConstant.E_SKF_1065, IMPORT_DATA_CNT_UPPER);
+		
+		} catch (Exception e) {
+			LogUtils.infoByMsg("uploadExcelFile, エクセルファイル読込に失敗 " + e.toString());
+			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, null, MessageIdConstant.E_SKF_1083, "Excelファイル読込に失敗しました。ファイル内容を確認してください。");
 			return false;
 		}
 
