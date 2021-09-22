@@ -336,14 +336,9 @@ public class Skf3020Sc002ImportService extends SkfServiceAbstract<Skf3020Sc002Im
 				return false;
 			}
 		
-		}catch(IndexOutOfBoundsException e){
-			LogUtils.infoByMsg("uploadExcelFile, エクセルファイル読込に失敗 " + e.toString());
-			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, null, MessageIdConstant.E_SKF_1083, "Excelファイル読込に失敗しました。ファイル内容を確認してください。");
-			return false;			
-		
 		} catch (Exception e) {
 			LogUtils.infoByMsg("uploadExcelFile, エクセルファイル読込に失敗 " + e.toString());
-			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, null, MessageIdConstant.E_SKF_1078, "");
+			ServiceHelper.addErrorResultMessage(tenninshaChoshoDto, null, MessageIdConstant.E_SKF_1083, "Excelファイル読込に失敗しました。ファイル内容を確認してください。");
 			return false;
 		}
 
