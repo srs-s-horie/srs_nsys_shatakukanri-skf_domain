@@ -611,8 +611,6 @@ public class Skf3050Sc002SharedService {
 				for (int i = 0; i < genbutsuDataList.size(); i++) {
 					Skf3050Bt003GetPositiveGenbutsuSanteiSakuseiSyoriDataExp genbutsuShori = genbutsuDataList.get(i);
 
-					// 処理月翌月の末日(YYYYMMDD)
-					// String shoriNengetsuMatsujitsu = getTaishoutsukiYokugetsuMatsu(shoriNengetsu);
 					// 処理月の末日(YYYYMMDD)
 					String matsujitsu = getGetsumatsujitu(shoriNengetsu);
 					// 社員番号有無
