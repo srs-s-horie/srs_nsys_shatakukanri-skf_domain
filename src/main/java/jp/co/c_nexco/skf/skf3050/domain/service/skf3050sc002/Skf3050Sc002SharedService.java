@@ -612,7 +612,9 @@ public class Skf3050Sc002SharedService {
 					Skf3050Bt003GetPositiveGenbutsuSanteiSakuseiSyoriDataExp genbutsuShori = genbutsuDataList.get(i);
 
 					// 処理月翌月の末日(YYYYMMDD)
-					String shoriNengetsuMatsujitsu = getTaishoutsukiYokugetsuMatsu(shoriNengetsu);
+					// String shoriNengetsuMatsujitsu = getTaishoutsukiYokugetsuMatsu(shoriNengetsu);
+					// 処理月の末日(YYYYMMDD)
+					String matsujitsu = getGetsumatsujitu(shoriNengetsu);
 					// 社員番号有無
 					if (SkfCheckUtils.isNullOrEmpty(genbutsuShori.getShainNo())) {
 						// nullまたは空の場合スキップ
@@ -651,13 +653,13 @@ public class Skf3050Sc002SharedService {
 						shainRowMap.put(shainNo, newExp);
 					}
 
-					// 入居日が処理月翌月の末日より小さく、退居日が空、もしくは処理月翌月初日より大きい場合
+					// 入居日が処理月以前かつ、退居日が空、もしくは処理月末日以降の場合
 					if (genbutsuShori.getNyukyoDate() != null) {
 						int nyukyoDate = Integer.parseInt(genbutsuShori.getNyukyoDate());
-						int shoriNengetsuMatsujitsuNum = Integer.parseInt(shoriNengetsuMatsujitsu);
+						int shoriNengetsuMatsujitsuNum = Integer.parseInt(matsujitsu);
 						if (nyukyoDate <= shoriNengetsuMatsujitsuNum && (SkfCheckUtils
 								.isNullOrEmpty(genbutsuShori.getTaikyoDate())
-								|| Integer.parseInt(genbutsuShori.getTaikyoDate()) > shoriNengetsuMatsujitsuNum)) {
+								|| Integer.parseInt(genbutsuShori.getTaikyoDate()) >= shoriNengetsuMatsujitsuNum)) {
 							// 現物算定額合計(入居中のみ）
 							genbutsuSum += genbutsuShori.getGenbutuSantei();
 						}
