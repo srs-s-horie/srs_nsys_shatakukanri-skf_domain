@@ -39,8 +39,12 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetR
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetRentalPatternInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetRentalPatternInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameAppNoCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameParkingBlockLedgerInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameParkingBlockLedgerInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameParkingBlockTeijiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameParkingBlockTeijiInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameRoomLedgerInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameRoomLedgerInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameRoomTeijiInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameRoomTeijiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetShatakuDataExp;
@@ -77,7 +81,9 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetRoomBackDateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetTeijiBihinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameAppNoCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameParkingBlockLedgerInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameParkingBlockTeijiInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameRoomLedgerInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetSameRoomTeijiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetShatakuDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetShatakuParkingBlockExpRepository;
@@ -99,6 +105,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CodeCacheUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -106,6 +113,7 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
+import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfKyoekihiCalcUtils;
@@ -187,6 +195,13 @@ public class Skf3022Sc006SharedService {
 	private Skf3022Sc006GetRoomBackDateExpRepository skf3022Sc006GetRoomBackDateExpRepository;
 	@Autowired
 	private SkfPageBusinessLogicUtils skfPageBusinessLogicUtils;
+	@Autowired
+	private SkfDateFormatUtils skfDateFormatUtils;
+	@Autowired
+	private Skf3022Sc006GetSameRoomLedgerInfoExpRepository skf3022Sc006GetSameRoomLedgerInfoExpRepository;
+	@Autowired
+	private Skf3022Sc006GetSameParkingBlockLedgerInfoExpRepository skf3022Sc006GetSameParkingBlockLedgerInfoExpRepository;
+	
 	
 	//共益費日割計算対応 2021/5/14 add start 
 	@Autowired
@@ -1000,104 +1015,15 @@ public class Skf3022Sc006SharedService {
 				setMsgBox(PropertyUtils.getValue(MessageIdConstant.I_SKF_3088), comDto);
 			}
 		// 退居
-		} else if (CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(comDto.getHdnNyutaikyoKbnOld())) {
-			// 入居の提示データを取得
-			List<Skf3022Sc006GetSameRoomTeijiInfoExp> sameRoomTeijiList = new ArrayList<Skf3022Sc006GetSameRoomTeijiInfoExp>();
-			Skf3022Sc006GetSameRoomTeijiInfoExpParameter sameRoomParam = new Skf3022Sc006GetSameRoomTeijiInfoExpParameter();
-			Long shatakuKanriNoOld = CheckUtils.isEmpty(comDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(comDto.getHdnShatakuKanriNoOld());
-			Long shatakuRoomKanriNoOld = CheckUtils.isEmpty(comDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(comDto.getHdnRoomKanriNoOld());
-			sameRoomParam.setShatakuKanriNo(shatakuKanriNoOld);
-			sameRoomParam.setShatakuRoomKanriNo(shatakuRoomKanriNoOld);
-			sameRoomParam.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_NYUKYO);
-			if (shatakuKanriNoOld != null && shatakuRoomKanriNoOld != null) {
-				sameRoomTeijiList = skf3022Sc006GetSameRoomTeijiInfoExpRepository.getSameRoomTeijiInfo(sameRoomParam);
-			}
-			// 結果判定
-			if (sameRoomTeijiList.size() > 0) {
-				LogUtils.debugByMsg("退居、入居提示データあり");
-				// I_SKF_3085メッセージ設定(退居後に新しい入居者がいます。（社員番号：{0}　社員氏名：{1}）)
-				setMsgBox(MessageFormat.format(
-						PropertyUtils.getValue(MessageIdConstant.I_SKF_3085),
-						sameRoomTeijiList.get(0).getShainNo(),
-						sameRoomTeijiList.get(0).getShainName()), comDto);
-			} else {
-				LogUtils.debugByMsg("退居、入居提示データなし");
-				// メッセージボックス非表示
-				setMsgBox(null, comDto);
-			}
+		} else if (CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(comDto.getHdnNyutaikyoKbnOld())) {		
+			//メッセージボックスの設定
+			setMessageBoxTeijiDate(comDto,CodeConstant.NYUTAIKYO_KBN_TAIKYO);
+
 		// 入居
 		} else {
-			// 退居の提示データを取得
-			List<Skf3022Sc006GetSameRoomTeijiInfoExp> sameRoomTeijiList = new ArrayList<Skf3022Sc006GetSameRoomTeijiInfoExp>();
-			Skf3022Sc006GetSameRoomTeijiInfoExpParameter sameRoomParam = new Skf3022Sc006GetSameRoomTeijiInfoExpParameter();
-			Long shatakuKanriNoOld = CheckUtils.isEmpty(comDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(comDto.getHdnShatakuKanriNoOld());
-			Long shatakuRoomKanriNoOld = CheckUtils.isEmpty(comDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(comDto.getHdnRoomKanriNoOld());
-			sameRoomParam.setShatakuKanriNo(shatakuKanriNoOld);
-			sameRoomParam.setShatakuRoomKanriNo(shatakuRoomKanriNoOld);
-			sameRoomParam.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_TAIKYO);
-			if (shatakuKanriNoOld != null && shatakuRoomKanriNoOld != null) {
-				sameRoomTeijiList = skf3022Sc006GetSameRoomTeijiInfoExpRepository.getSameRoomTeijiInfo(sameRoomParam);
-			}
-			// 結果判定
-			if (sameRoomTeijiList.size() > 0) {
-				LogUtils.debugByMsg("入居、退居提示データあり");
-				// I_SKF_3086メッセージ設定(現在入居者がいます。（社員番号：{0}　社員氏名：{1}）)
-				setMsgBox(MessageFormat.format(
-						PropertyUtils.getValue(MessageIdConstant.I_SKF_3086),
-						sameRoomTeijiList.get(0).getShainNo(),
-						sameRoomTeijiList.get(0).getShainName()), comDto);
-/* DS imart移植 無意味な判定の為削除(当該フラグは変化しない) */
-//				// 備品提示ステータスを判断する
-//				if (CodeConstant.BIHIN_STATUS_HANSHUTSU_MACHI.equals(sameRoomTeijiList.get(0).getBihinTeijiStatus())
-//						|| CodeConstant.BIHIN_STATUS_HANSHUTSU_SUMI.equals(sameRoomTeijiList.get(0).getBihinTeijiStatus())
-//						|| CodeConstant.BIHIN_STATUS_SHONIN.equals(sameRoomTeijiList.get(0).getBihinTeijiStatus())) {
-//					// 備品搬出待ちフラグをtrue
-//					LogUtils.debugByMsg("備品搬出待ちフラグをtrue");
-//					comDto.setHdnBihinMoveOutFlg(true);
-//				}
-/* DE imart移植 無意味な判定の為削除 */
-			} else {
-				// 同じ駐車場区画１の提示データ情報を取得
-				List<Skf3022Sc006GetSameParkingBlockTeijiInfoExp> sameParkingBlockList = new ArrayList<Skf3022Sc006GetSameParkingBlockTeijiInfoExp>();
-				Skf3022Sc006GetSameParkingBlockTeijiInfoExpParameter param = new Skf3022Sc006GetSameParkingBlockTeijiInfoExpParameter();
-				Long parkingKanriNoOld1 = CheckUtils.isEmpty(comDto.getHdnChushajoNoOneOld()) ? null : Long.parseLong(comDto.getHdnChushajoNoOneOld());
-				param.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_TAIKYO);
-				param.setShatakuKanriNo(shatakuKanriNoOld);
-				param.setParkingKanriNo(parkingKanriNoOld1);
-				if (shatakuKanriNoOld != null && parkingKanriNoOld1 != null) {
-					sameParkingBlockList = skf3022Sc006GetSameParkingBlockTeijiInfoExpRepository.getSameParkingBlockTeijiInfo(param);
-				}
-				// 結果判定
-				if (sameParkingBlockList.size() > 0) {
-					LogUtils.debugByMsg("入居、退居提示データなし、区画1駐車場利用者あり");
-					// I_SKF_3092メッセージ設定(現在駐車場利用者がいます。（社員番号：{0}　社員氏名：{1}）利用者の駐車場利用終了日を確認してください。)
-					setMsgBox(MessageFormat.format(
-							PropertyUtils.getValue(MessageIdConstant.I_SKF_3092),
-							sameParkingBlockList.get(0).getShainNo(),
-							sameParkingBlockList.get(0).getShainName()), comDto);
-				} else {
-					sameParkingBlockList.clear();
-					// 同じ駐車場区画２の提示データ情報を取得
-					Long parkingKanriNoOld2 = CheckUtils.isEmpty(comDto.getHdnChushajoNoTwoOld()) ? null : Long.parseLong(comDto.getHdnChushajoNoTwoOld());
-					param.setParkingKanriNo(parkingKanriNoOld2);
-					if (shatakuKanriNoOld != null && parkingKanriNoOld2 != null) {
-						sameParkingBlockList = skf3022Sc006GetSameParkingBlockTeijiInfoExpRepository.getSameParkingBlockTeijiInfo(param);
-					}
-					// 結果判定
-					if (sameParkingBlockList.size() > 0) {
-						LogUtils.debugByMsg("入居、退居提示データなし、区画2駐車場利用者あり");
-						// I_SKF_3092メッセージ設定(現在駐車場利用者がいます。（社員番号：{0}　社員氏名：{1}）利用者の駐車場利用終了日を確認してください。)
-						setMsgBox(MessageFormat.format(
-								PropertyUtils.getValue(MessageIdConstant.I_SKF_3092),
-								sameParkingBlockList.get(0).getShainNo(),
-								sameParkingBlockList.get(0).getShainName()), comDto);
-					} else {
-						LogUtils.debugByMsg("入居、退居提示データなし、駐車場利用者なし");
-						// メッセージボックス非表示
-						setMsgBox(null, comDto);
-					}
-				}
-			}
+			//メッセージボックスの設定
+			setMessageBoxTeijiDate(comDto,CodeConstant.NYUTAIKYO_KBN_NYUKYO);
+
 		}
 	}
 
@@ -7511,4 +7437,384 @@ public class Skf3022Sc006SharedService {
 		}
 	}
 	//共益費日割計算対応 2021/5/14 add end
+	
+	/**
+	 * 提示データ登録画面の初期表示メッセージボックス設定
+	 * 使用料計算の戻り値をDTOに設定する
+	 * 「※」項目はアドレスとして戻り値になる。
+	 * 
+	 * @param comDto DTO
+	 * @param NyutaikyoYoteiKbn 入退居予定区分
+	 * @return	なし
+	 */
+	public void setMessageBoxTeijiDate(Skf3022Sc006CommonDto comDto, String NyutaikyoYoteiKbn) {
+
+		String mesShainNo = null;
+		String mesShainName = null;
+		String mesNyukyoYoteiDate = null;
+		String mesTaikyoYoteiDate = null;
+		String mesParkingDate1 = null;
+		String mesParkingDate2 = null;
+		String taikyoHenkyakuDate = null; //日付判定用
+		
+		if(CodeConstant.NYUTAIKYO_KBN_TAIKYO.equals(NyutaikyoYoteiKbn)){
+			/** 退居　社宅の場合 */
+			// 入居の提示データを取得
+			List<Skf3022Sc006GetSameRoomTeijiInfoExp> sameRoomTeijiList = new ArrayList<Skf3022Sc006GetSameRoomTeijiInfoExp>();
+			Skf3022Sc006GetSameRoomTeijiInfoExpParameter sameRoomParam = new Skf3022Sc006GetSameRoomTeijiInfoExpParameter();
+			Long shatakuKanriNoOld = CheckUtils.isEmpty(comDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(comDto.getHdnShatakuKanriNoOld());
+			Long shatakuRoomKanriNoOld = CheckUtils.isEmpty(comDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(comDto.getHdnRoomKanriNoOld());
+			sameRoomParam.setShatakuKanriNo(shatakuKanriNoOld);
+			sameRoomParam.setShatakuRoomKanriNo(shatakuRoomKanriNoOld);
+			sameRoomParam.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_NYUKYO);
+			if (shatakuKanriNoOld != null && shatakuRoomKanriNoOld != null) {
+				sameRoomTeijiList = skf3022Sc006GetSameRoomTeijiInfoExpRepository.getSameRoomTeijiInfo(sameRoomParam);
+			}
+			// 結果判定 取得できた場合はメッセージを表示
+			if (sameRoomTeijiList.size() > 0) {
+				LogUtils.debugByMsg("退居、入居提示データあり");
+				
+				if (CodeConstant.PRESENTATION_SITUATION_SHONIN.equals(sameRoomTeijiList.get(0).getShatakuTeijiStatus())) {
+					LogUtils.debugByMsg("退居、入居提示データあり　社宅提示ステータス：承認");
+					//社宅提示ステータスが5(承認）の場合は社宅管理台帳情報から表示用メッセージを設定
+					List<Skf3022Sc006GetSameRoomLedgerInfoExp> sameRoomLedgerList = new ArrayList<Skf3022Sc006GetSameRoomLedgerInfoExp>();
+					Skf3022Sc006GetSameRoomLedgerInfoExpParameter sameLedgerParam = new Skf3022Sc006GetSameRoomLedgerInfoExpParameter();
+					sameLedgerParam.setShainNo(sameRoomTeijiList.get(0).getShainNo());
+					sameLedgerParam.setShatakuKanriNo(shatakuKanriNoOld);
+					sameLedgerParam.setShatakuRoomKanriNo(shatakuRoomKanriNoOld);
+					sameRoomLedgerList =  skf3022Sc006GetSameRoomLedgerInfoExpRepository.getSameRoomLedgerInfo(sameLedgerParam);
+					
+					if(sameRoomLedgerList.size() > 0){
+						//取得できた場合は、表示用メッセージを設定
+						mesShainNo = sameRoomLedgerList.get(0).getShainNo();
+						mesShainName = sameRoomLedgerList.get(0).getShainName();	
+						if (NfwStringUtils.isNotEmpty(sameRoomLedgerList.get(0).getNyukyoYoteiDate())) {
+							mesNyukyoYoteiDate = skfDateFormatUtils.dateFormatFromString(sameRoomLedgerList.get(0).getNyukyoYoteiDate(),
+									SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+						}
+					}
+							
+				}else{
+					LogUtils.debugByMsg("退居、入居提示データあり　社宅提示ステータス：承認以外");
+					//社宅提示ステータスが承認以外の場合は提示データから表示用メッセージを設定する。
+					mesShainNo = sameRoomTeijiList.get(0).getShainNo();
+					mesShainName = sameRoomTeijiList.get(0).getShainName();	
+					if (NfwStringUtils.isNotEmpty(sameRoomTeijiList.get(0).getNyukyoYoteiDate())) {
+						mesNyukyoYoteiDate = skfDateFormatUtils.dateFormatFromString(sameRoomTeijiList.get(0).getNyukyoYoteiDate(),
+								SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+					}
+				}
+				
+				//メッセージの表示
+				if(NfwStringUtils.isNotEmpty(mesShainNo)&&
+				   NfwStringUtils.isNotEmpty(mesShainName) &&
+				   NfwStringUtils.isNotEmpty(mesNyukyoYoteiDate)){					
+					//表示項目が全てNULLではない場合メッセージ表示
+					// I_SKF_3085メッセージ設定(退居後に新しい入居者がいます。（社員番号：{0}　社員氏名：{1}　入居予定日：{2})
+					setMsgBox(MessageFormat.format(
+							PropertyUtils.getValue(MessageIdConstant.I_SKF_3085),
+							mesShainNo,
+							mesShainName, 
+							mesNyukyoYoteiDate),comDto);
+				}else{
+					// メッセージボックス非表示
+					setMsgBox(null, comDto);
+				}
+									
+			} else {
+				LogUtils.debugByMsg("退居、入居提示データなし");
+				// メッセージボックス非表示
+				setMsgBox(null, comDto);
+			}			
+			
+		} else {	
+			/** 入居　社宅の場合 */
+			// 退居の提示データを取得
+			List<Skf3022Sc006GetSameRoomTeijiInfoExp> sameRoomTeijiList = new ArrayList<Skf3022Sc006GetSameRoomTeijiInfoExp>();
+			Skf3022Sc006GetSameRoomTeijiInfoExpParameter sameRoomParam = new Skf3022Sc006GetSameRoomTeijiInfoExpParameter();
+			Long shatakuKanriNoOld = CheckUtils.isEmpty(comDto.getHdnShatakuKanriNoOld()) ? null : Long.parseLong(comDto.getHdnShatakuKanriNoOld());
+			Long shatakuRoomKanriNoOld = CheckUtils.isEmpty(comDto.getHdnRoomKanriNoOld()) ? null : Long.parseLong(comDto.getHdnRoomKanriNoOld());
+			sameRoomParam.setShatakuKanriNo(shatakuKanriNoOld);
+			sameRoomParam.setShatakuRoomKanriNo(shatakuRoomKanriNoOld);
+			sameRoomParam.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_TAIKYO);
+			if (shatakuKanriNoOld != null && shatakuRoomKanriNoOld != null) {
+				sameRoomTeijiList = skf3022Sc006GetSameRoomTeijiInfoExpRepository.getSameRoomTeijiInfo(sameRoomParam);
+			}
+			
+			// 結果判定 取得できた場合はメッセージを表示
+			if (sameRoomTeijiList.size() > 0) {
+				/** 入居　社宅　提示データありの場合 */
+				LogUtils.debugByMsg("入居、退居提示データあり");
+								
+				if (CodeConstant.PRESENTATION_SITUATION_SHONIN.equals(sameRoomTeijiList.get(0).getShatakuTeijiStatus())) {
+					LogUtils.debugByMsg("入居、退居提示データあり　社宅提示ステータス：承認");
+					//社宅提示ステータスが5(承認）の場合は社宅管理台帳情報から表示用メッセージを設定
+					List<Skf3022Sc006GetSameRoomLedgerInfoExp> sameRoomLedgerList = new ArrayList<Skf3022Sc006GetSameRoomLedgerInfoExp>();
+					Skf3022Sc006GetSameRoomLedgerInfoExpParameter sameLedgerParam = new Skf3022Sc006GetSameRoomLedgerInfoExpParameter();
+					sameLedgerParam.setShainNo(sameRoomTeijiList.get(0).getShainNo());
+					sameLedgerParam.setShatakuKanriNo(shatakuKanriNoOld);
+					sameLedgerParam.setShatakuRoomKanriNo(shatakuRoomKanriNoOld);
+					sameRoomLedgerList =  skf3022Sc006GetSameRoomLedgerInfoExpRepository.getSameRoomLedgerInfo(sameLedgerParam);
+					
+					if(sameRoomLedgerList.size() > 0){
+						mesShainNo = sameRoomLedgerList.get(0).getShainNo();
+						mesShainName = sameRoomLedgerList.get(0).getShainName();	
+						if (NfwStringUtils.isNotEmpty(sameRoomLedgerList.get(0).getTaikyoYoteiDate())) {
+							//退居予定日の表示用メッセージを設定
+							taikyoHenkyakuDate = sameRoomLedgerList.get(0).getTaikyoYoteiDate();
+							mesTaikyoYoteiDate = skfDateFormatUtils.dateFormatFromString(sameRoomLedgerList.get(0).getTaikyoYoteiDate(),
+									SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+						}
+					}
+				}else{
+					LogUtils.debugByMsg("入居、退居提示データあり　社宅提示ステータス：承認以外");
+					//社宅提示ステータスが承認以外の場合は提示データから表示用メッセージを設定する。
+					mesShainNo = sameRoomTeijiList.get(0).getShainNo();
+					mesShainName = sameRoomTeijiList.get(0).getShainName();	
+					if (NfwStringUtils.isNotEmpty(sameRoomTeijiList.get(0).getTaikyoYoteiDate())) {
+						taikyoHenkyakuDate = sameRoomTeijiList.get(0).getTaikyoYoteiDate();
+						mesTaikyoYoteiDate = skfDateFormatUtils.dateFormatFromString(sameRoomTeijiList.get(0).getTaikyoYoteiDate(),
+								SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+					}
+				}
+				
+				//メッセージボックス表示判定
+				String NyukyoYoteiDate = null;
+				if(NfwStringUtils.isNotEmpty(comDto.getSc006NyukyoYoteiDay())){
+					NyukyoYoteiDate = comDto.getSc006NyukyoYoteiDay();
+				}
+				//日付でメッセージボックスを表示するか判定する（退居予定日が基準日より未来にある場合メッセージ表示）
+				boolean result = isPossibleDisplayMessageBox(NyukyoYoteiDate, taikyoHenkyakuDate);
+			
+				//メッセージの表示
+				if(NfwStringUtils.isNotEmpty(mesShainNo)&&
+						   NfwStringUtils.isNotEmpty(mesShainName) &&
+						   NfwStringUtils.isNotEmpty(mesTaikyoYoteiDate) &&
+						   result){					
+							//表示項目が全てNULLではないかつ退居予定日が基準日より未来にある場合メッセージ表示
+							// I_SKF_3086メッセージ設定(現在入居者がいます。（社員番号：{0}　社員氏名：{1} 退居予定日：{2}）)
+							setMsgBox(MessageFormat.format(
+									PropertyUtils.getValue(MessageIdConstant.I_SKF_3086),
+									mesShainNo,
+									mesShainName,
+									mesTaikyoYoteiDate)
+									, comDto);
+				}else{
+					// メッセージボックス非表示
+					setMsgBox(null, comDto);
+				}
+				
+
+			}else{
+				/** 入居　社宅　提示データなしの場合 */
+				
+				// 同じ駐車場区画１の提示データ情報を取得
+				List<Skf3022Sc006GetSameParkingBlockTeijiInfoExp> sameParkingBlockList = new ArrayList<Skf3022Sc006GetSameParkingBlockTeijiInfoExp>();
+				Skf3022Sc006GetSameParkingBlockTeijiInfoExpParameter param = new Skf3022Sc006GetSameParkingBlockTeijiInfoExpParameter();
+				Long parkingKanriNoOld1 = CheckUtils.isEmpty(comDto.getHdnChushajoNoOneOld()) ? null : Long.parseLong(comDto.getHdnChushajoNoOneOld());
+				param.setNyutaikyoKbn(CodeConstant.NYUTAIKYO_KBN_TAIKYO);
+				param.setShatakuKanriNo(shatakuKanriNoOld);
+				param.setParkingKanriNo(parkingKanriNoOld1);
+				if (shatakuKanriNoOld != null && parkingKanriNoOld1 != null) {
+					sameParkingBlockList = skf3022Sc006GetSameParkingBlockTeijiInfoExpRepository.getSameParkingBlockTeijiInfo(param);
+				}	
+				
+				// 結果判定
+				if (sameParkingBlockList.size() > 0) {
+					LogUtils.debugByMsg("入居、退居提示データなし、区画1駐車場利用者あり");
+					if (CodeConstant.PRESENTATION_SITUATION_SHONIN.equals(sameParkingBlockList.get(0).getShatakuTeijiStatus())) {
+						LogUtils.debugByMsg("入居、退居提示データなし、区画1駐車場利用者あり　社宅提示ステータス：承認");
+						
+						//社宅提示ステータスが5(承認）の場合は社宅管理台帳情報から表示用メッセージを設定	
+						//対象駐車場管理番号の使用履歴の最大月取得
+						String yearMonth = skfBaseBusinessLogicUtils.getMaxParkingRirekiNenGetsu
+														(sameParkingBlockList.get(0).getShainNo(),
+														 shatakuKanriNoOld,
+														 parkingKanriNoOld1);
+						
+						List<Skf3022Sc006GetSameParkingBlockLedgerInfoExp> sameParkingLedgerList = new ArrayList<Skf3022Sc006GetSameParkingBlockLedgerInfoExp>();
+						Skf3022Sc006GetSameParkingBlockLedgerInfoExpParameter sameParkingParam = new Skf3022Sc006GetSameParkingBlockLedgerInfoExpParameter();
+						sameParkingParam.setShainNo(sameParkingBlockList.get(0).getShainNo());
+						sameParkingParam.setShatakuKanriNo(shatakuKanriNoOld);
+						sameParkingParam.setParkingKanriNo(parkingKanriNoOld1);
+						sameParkingParam.setYearMonth(yearMonth);					
+						sameParkingLedgerList =  skf3022Sc006GetSameParkingBlockLedgerInfoExpRepository.getSameParkingBlockLedgerInfo(sameParkingParam);
+						
+						if(sameParkingLedgerList.size() > 0){
+							//取得できた場合は、表示用メッセージを設定
+							mesShainNo = sameParkingLedgerList.get(0).getShainNo();
+							mesShainName = sameParkingLedgerList.get(0).getShainName();
+							if (NfwStringUtils.isNotEmpty(sameParkingLedgerList.get(0).getParkingEndDate())) {
+								taikyoHenkyakuDate = sameParkingLedgerList.get(0).getParkingEndDate();
+								mesParkingDate1 = skfDateFormatUtils.dateFormatFromString(sameParkingLedgerList.get(0).getParkingEndDate(),
+										SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+							}	
+						}
+						
+					}else{
+						LogUtils.debugByMsg("入居、退居提示データなし、区画1駐車場利用者あり　社宅提示ステータス：承認以外");
+						//社宅提示ステータスが承認以外の場合は提示データから表示用メッセージを設定する。					
+						mesShainNo = sameParkingBlockList.get(0).getShainNo();
+						mesShainName = sameParkingBlockList.get(0).getShainName();
+						if (NfwStringUtils.isNotEmpty(sameParkingBlockList.get(0).getParkingEndDate())) {
+							taikyoHenkyakuDate = sameParkingBlockList.get(0).getParkingEndDate();
+							mesParkingDate1 = skfDateFormatUtils.dateFormatFromString(sameParkingBlockList.get(0).getParkingEndDate(),
+									SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+						}	
+					}
+					
+					//メッセージ表示判定基準日設定
+					String parkingStartDate= null;
+					if(NfwStringUtils.isNotEmpty(comDto.getSc006RiyouStartDayOne())){
+						parkingStartDate = comDto.getSc006RiyouStartDayOne();
+					}
+					//日付でメッセージボックスを表示するか判定する（退居予定日が基準日より未来にある場合メッセージ表示）
+					boolean result = isPossibleDisplayMessageBox(parkingStartDate, taikyoHenkyakuDate);
+								
+					//メッセージの表示
+					if(NfwStringUtils.isNotEmpty(mesShainNo)&&
+					   NfwStringUtils.isNotEmpty(mesShainName) &&
+					   NfwStringUtils.isNotEmpty(mesParkingDate1) &&
+					   result){					
+						//表示項目が全てNULLではないかつ退居予定日が基準日より未来にある場合メッセージ表示
+						// I_SKF_3092メッセージ設定(現在駐車場利用者がいます。（社員番号：{0}　社員氏名：{1}　利用終了日：{2}）利用者の駐車場利用終了日を確認してください。。)// I_SKF_3086メッセージ設定(現在入居者がいます。（社員番号：{0}　社員氏名：{1} 退居予定日：{2}）)
+						setMsgBox(MessageFormat.format(
+								PropertyUtils.getValue(MessageIdConstant.I_SKF_3092),
+								mesShainNo ,
+								mesShainName,
+								mesParkingDate1), comDto);
+					}else{
+						// メッセージボックス非表示
+						setMsgBox(null, comDto);
+					}
+						
+				} else {
+					sameParkingBlockList.clear();
+					
+					// 同じ駐車場区画２の提示データ情報を取得
+					Long parkingKanriNoOld2 = CheckUtils.isEmpty(comDto.getHdnChushajoNoTwoOld()) ? null : Long.parseLong(comDto.getHdnChushajoNoTwoOld());
+					param.setParkingKanriNo(parkingKanriNoOld2);
+					if (shatakuKanriNoOld != null && parkingKanriNoOld2 != null) {
+						sameParkingBlockList = skf3022Sc006GetSameParkingBlockTeijiInfoExpRepository.getSameParkingBlockTeijiInfo(param);
+					}
+					
+					// 結果判定
+					if (sameParkingBlockList.size() > 0) {
+						LogUtils.debugByMsg("入居、退居提示データなし、区画2駐車場利用者あり");
+						
+						if (CodeConstant.PRESENTATION_SITUATION_SHONIN.equals(sameParkingBlockList.get(0).getShatakuTeijiStatus())) {
+							LogUtils.debugByMsg("入居、退居提示データなし、区画2駐車場利用者あり　社宅提示ステータス：承認");
+							//社宅提示ステータスが5(承認）の場合は社宅管理台帳情報から表示用メッセージを設定
+							//対象駐車場管理番号の使用履歴の最大月取得
+							String yearMonth = skfBaseBusinessLogicUtils.getMaxParkingRirekiNenGetsu
+															(sameParkingBlockList.get(0).getShainNo(),
+															 shatakuKanriNoOld,
+															 parkingKanriNoOld2);
+							
+							List<Skf3022Sc006GetSameParkingBlockLedgerInfoExp> sameParkingLedgerList = new ArrayList<Skf3022Sc006GetSameParkingBlockLedgerInfoExp>();
+							Skf3022Sc006GetSameParkingBlockLedgerInfoExpParameter sameParkingParam = new Skf3022Sc006GetSameParkingBlockLedgerInfoExpParameter();
+							sameParkingParam.setShainNo(sameParkingBlockList.get(0).getShainNo());
+							sameParkingParam.setShatakuKanriNo(shatakuKanriNoOld);
+							sameParkingParam.setParkingKanriNo(parkingKanriNoOld2);
+							sameParkingParam.setYearMonth(yearMonth);					
+							sameParkingLedgerList =  skf3022Sc006GetSameParkingBlockLedgerInfoExpRepository.getSameParkingBlockLedgerInfo(sameParkingParam);
+							
+							if(sameParkingLedgerList.size() > 0){
+								//取得できた場合は、表示用メッセージを設定
+								mesShainNo = sameParkingLedgerList.get(0).getShainNo();
+								mesShainName = sameParkingLedgerList.get(0).getShainName();
+								if (NfwStringUtils.isNotEmpty(sameParkingLedgerList.get(0).getParkingEndDate())) {
+									taikyoHenkyakuDate = sameParkingLedgerList.get(0).getParkingEndDate();
+									mesParkingDate2 = skfDateFormatUtils.dateFormatFromString(sameParkingLedgerList.get(0).getParkingEndDate(),
+											SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+								}	
+							}
+							
+						}else{
+							LogUtils.debugByMsg("入居、退居提示データなし、区画2駐車場利用者あり　社宅提示ステータス：承認以外");
+							//社宅提示ステータスが承認以外の場合は提示データから表示用メッセージを設定する。	
+							mesShainNo = sameParkingBlockList.get(0).getShainNo();
+							mesShainName = sameParkingBlockList.get(0).getShainName();
+							if (NfwStringUtils.isNotEmpty(sameParkingBlockList.get(0).getParkingEndDate())) {
+								taikyoHenkyakuDate = sameParkingBlockList.get(0).getParkingEndDate();
+								mesParkingDate2 = skfDateFormatUtils.dateFormatFromString(sameParkingBlockList.get(0).getParkingEndDate(),
+										SkfCommonConstant.YMD_STYLE_YYYYMMDD_JP_STR);
+							}	
+						}
+						
+						//メッセージ表示判定基準日設定
+						String parkingStartDate= null;
+						if(NfwStringUtils.isNotEmpty(comDto.getSc006RiyouStartDayTwo())){
+							parkingStartDate = comDto.getSc006RiyouStartDayTwo();
+						}
+						//日付でメッセージボックスを表示するか判定する（退居予定日が基準日より未来にある場合メッセージ表示）
+						boolean result = isPossibleDisplayMessageBox(parkingStartDate, taikyoHenkyakuDate);						
+					
+						//メッセージの表示
+						if(NfwStringUtils.isNotEmpty(mesShainNo)&&
+						   NfwStringUtils.isNotEmpty(mesShainName) &&
+						   NfwStringUtils.isNotEmpty(mesParkingDate2) &&
+						   result){					
+							//表示項目が全てNULLではないかつ退居予定日が基準日より未来にある場合メッセージ表示
+							// I_SKF_3092メッセージ設定(現在駐車場利用者がいます。（社員番号：{0}　社員氏名：{1}　利用終了日：{2}）利用者の駐車場利用終了日を確認してください。。)// I_SKF_3086メッセージ設定(現在入居者がいます。（社員番号：{0}　社員氏名：{1} 退居予定日：{2}）)
+							setMsgBox(MessageFormat.format(
+									PropertyUtils.getValue(MessageIdConstant.I_SKF_3092),
+									mesShainNo ,
+									mesShainName,
+									mesParkingDate2), comDto);
+						}else{
+							// メッセージボックス非表示
+							setMsgBox(null, comDto);
+						}
+
+					} else {
+						LogUtils.debugByMsg("入居、退居提示データなし、駐車場利用者なし");
+						// メッセージボックス非表示
+						setMsgBox(null, comDto);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * メッセージボックス表示可否の日付判定を行う
+	 * 
+	 * @param nyukyoYoteiDate 入居予定日
+	 * @param taikyoYoteiDate 退居予定日
+	 * @return 判定結果　（true：表示）
+	 * @throws Exception
+	 */
+	public boolean isPossibleDisplayMessageBox(String sNyukyoYoteiDate,String sTaikyoYoteiDate) {
+		
+		LogUtils.debugByMsg("メッセージボックス表示可否の日付判定を行う");
+		boolean result = false;
+		
+		//入居予定日がnullの場合処理終了
+		if (NfwStringUtils.isEmpty(sNyukyoYoteiDate)) {
+			return false;
+		}
+		//退居予定日がnullの場合処理終了
+		if (NfwStringUtils.isEmpty(sTaikyoYoteiDate)) {
+			return false;
+		}
+
+		//入居予定日を比較用基準日に変換
+		String addXDay = PropertyUtils.getValue("skf.common.settings.nyukyo_indicates_base_date");  
+		String sReferenceDate = skfDateFormatUtils.addYearMonthDay(sNyukyoYoteiDate, Integer.parseInt(addXDay));
+		
+		//基準日を日付型に変換
+		Date referenceDate = skfDateFormatUtils.formatStringToDate(sReferenceDate);
+		//退居日を日付型に変換
+		Date taikyoYoteiDate = skfDateFormatUtils.formatStringToDate(sTaikyoYoteiDate); 
+		
+		LogUtils.debugByMsg("基準日" + referenceDate + "退居日" + taikyoYoteiDate);
+		
+		//退居予定日が基準日より未来にある場合はtrue
+		if(taikyoYoteiDate.compareTo(referenceDate) >= 0){
+			result = true;
+		}
+		
+		return result;
+	}
 }
