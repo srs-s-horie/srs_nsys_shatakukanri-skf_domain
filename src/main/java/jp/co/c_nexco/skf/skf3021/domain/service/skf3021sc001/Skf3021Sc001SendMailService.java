@@ -106,7 +106,7 @@ public class Skf3021Sc001SendMailService extends SkfServiceAbstract<Skf3021Sc001
 		//'送信失敗件数
 		int mailFailCnt = 0;
 		//メインメニューURL
-		String urlBase = "/skf/Skf1010Sc001/init?menuFlg=1";
+		String urlBase = "/skf/Skf1010Sc001/init?menuFlg=1&tokenCheck=0";
 		//日付形式
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		
