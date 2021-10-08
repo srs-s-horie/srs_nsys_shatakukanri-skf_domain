@@ -1164,7 +1164,7 @@ public class Skf2040Sc002SharedService {
 		applInfo.put("applShainNo", shainNo);
 
 		// URL
-		String urlBase = "skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 		// 送付者
 		String sendUser = CodeConstant.DOUBLE_QUOTATION;
 		// 案内
