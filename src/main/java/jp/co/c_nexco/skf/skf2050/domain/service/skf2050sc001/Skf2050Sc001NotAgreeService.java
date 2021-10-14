@@ -81,9 +81,9 @@ public class Skf2050Sc001NotAgreeService extends SkfServiceAbstract<Skf2050Sc001
 		applInfo.put(CodeConstant.KEY_APPL_STATUS, newApplStatus);
 		applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, applShainNo);
 
-		String urlBase = "/skf/Skf2010Sc005/init?SKF2010_SC005&menuflg=1&tokenCheck=0";
+		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC005 + "/init?SKF2010_SC005&menuflg=1";
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, notAgreeDto.getCommentNote(), null,
-				null, null, urlBase);
+				null, null, baseUrl);
 
 		// 前の画面に遷移する
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);

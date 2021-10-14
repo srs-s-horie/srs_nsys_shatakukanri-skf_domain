@@ -85,9 +85,9 @@ public class Skf2050Sc002RevisionService extends SkfServiceAbstract<Skf2050Sc002
 		applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_KAKUNIN_IRAI);
 		applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, revDto.getShainNo());
 
-		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+		String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init?SKF2010_SC003&menuflg=1";
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.BIHIN_HENKYAKU_ANNAI, applInfo, revDto.getCommentNote(), null,
-				revDto.getShainNo(), null, urlBase);
+				revDto.getShainNo(), null, baseUrl);
 
 		// 社宅管理データ連携処理実行
 		String shainNo = revDto.getShainNo();

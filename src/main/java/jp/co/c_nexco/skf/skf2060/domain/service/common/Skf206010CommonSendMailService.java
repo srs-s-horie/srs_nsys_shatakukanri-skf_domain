@@ -84,11 +84,11 @@ public class Skf206010CommonSendMailService {
 		String comment = this.getApproveCommentStr(applInfoExp.getApplNo());
 
 		// メールに記載するURLを生成
-		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+		String url = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 
 		// URLを設定
 		this.sendKariageTeijiMail(applInfoExp.getApplNo(), applInfoExp.getApplDate(), shainInfoExp.getName(), comment,
-				urlBase, shainInfoExp.getMailAddress(), applName);
+				url, shainInfoExp.getMailAddress(), applName);
 	}
 
 	/**

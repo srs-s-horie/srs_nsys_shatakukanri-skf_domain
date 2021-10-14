@@ -90,9 +90,9 @@ public class Skf2050Sc002AgreeService extends SkfServiceAbstract<Skf2050Sc002Agr
 			applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_HANSYUTSU_MACHI);
 			applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, agreeDto.getShainNo());
 
-			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+			String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
 			skfMailUtils.sendApplTsuchiMail(CodeConstant.SHONIN_KANRYO_TSUCHI, applInfo, agreeDto.getCommentNote(),
-					null, agreeDto.getShainNo(), null, urlBase);
+					null, agreeDto.getShainNo(), null, baseUrl);
 		}
 
 		// 社宅管理データ連携処理実行
