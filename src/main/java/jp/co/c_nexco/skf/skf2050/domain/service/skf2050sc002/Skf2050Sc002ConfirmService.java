@@ -86,7 +86,7 @@ public class Skf2050Sc002ConfirmService extends SkfServiceAbstract<Skf2050Sc002C
 
 		String baseUrl = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HANSYUTSU_MACHI_TSUCHI, applInfo, confDto.getCommentNote(), null,
-				confDto.getShainNo(), null, baseUrl );
+				confDto.getShainNo(), null, baseUrl);
 
 		// 社宅管理データ連携処理実行
 		String shainNo = confDto.getShainNo();
