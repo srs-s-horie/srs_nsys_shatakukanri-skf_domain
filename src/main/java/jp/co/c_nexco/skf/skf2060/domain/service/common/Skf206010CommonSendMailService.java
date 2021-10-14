@@ -88,7 +88,7 @@ public class Skf206010CommonSendMailService {
 
 		// URLを設定
 		this.sendKariageTeijiMail(applInfoExp.getApplNo(), applInfoExp.getApplDate(), shainInfoExp.getName(), comment,
-				url , shainInfoExp.getMailAddress(), applName);
+				url, shainInfoExp.getMailAddress(), applName);
 	}
 
 	/**
