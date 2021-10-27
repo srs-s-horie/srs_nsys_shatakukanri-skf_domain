@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetCompanyAgencyNameExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetRouterShiyoryoMeisaiDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetRouterShiyoryoMeisaiDataExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetRouterShiyoryoRirekiJoinDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuHeyaDataExp;
@@ -61,14 +64,20 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.Skf
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsOutputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRireki;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiMeisai;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TParkingRirekiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050TMonthlyManageData;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteNyutaikyoDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteRouterYoteiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTeijiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004DeleteTenninshaDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetCompanyAgencyNameExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetDataForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetRouterShiyoryoRirekiJoinDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShainSoshikiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuHeyaDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetShatakuKanriDaityoSogoriyoDataExpRepository;
@@ -86,6 +95,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuSyozokuRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004GetTsukibetuTyusyajyoRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004InsertGetsujiSyoriKanriDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004InsertRouterRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004InsertTsukibetuBihinSiyoryoMeisaiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004InsertTsukibetuShiyoryoRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004InsertTsukibetuSougoriyoRirekiDataExpRepository;
@@ -99,6 +109,8 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TParkingRirekiRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -205,10 +217,27 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 	private Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004GetTeijiJoinDataCntExpRepository skf3050Bt004GetTeijiJoinDataCntExpRepository;
+	
 	//共益費日割計算対応 2021/5/14 add start 
 	@Autowired
 	private SkfKyoekihiCalcUtils skfKyoekihiCalcUtils;
 	//共益費日割計算対応 2021/5/14 add end
+	
+	//モバイルルーター機能追加対応 2021/9 add start
+	@Autowired
+	private Skf3050Bt004GetRouterShiyoryoRirekiJoinDataExpRepository skf3050Bt004GetRouterShiyoryoRirekiJoinDataExpRepository;
+	@Autowired
+	private Skf2100TMobileRouterRentalRirekiRepository skf2100TMobileRouterRentalRirekiRepository;
+	@Autowired
+	private Skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository;
+	@Autowired
+	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
+	@Autowired
+	private Skf3050Bt004DeleteRouterYoteiDataExpRepository skf3050Bt004DeleteRouterYoteiDataExpRepository;
+	@Autowired
+	private Skf3050Bt004InsertRouterRirekiDataExpRepository skf3050Bt004InsertRouterRirekiDataExpRepository;
+	private static final String ERRMSG_ROUTERMEISAI_0 = "モバイルルーター使用料明細（当月）";
+	//モバイルルーター機能追加対応 2021/9 add end
 
 	private static final String BATCH_NAME = "POSITIVE連携データ確定";
 	private static final String ERRMSG_TSUKIBETSUSHOZOKU_0 = "月別所属履歴（当月）";
@@ -310,13 +339,16 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 			errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 			return errMsg;
 		} else {
-			if (NfwStringUtils.isEmpty(renkeiKbnData.getBillingActKbn()) || 
+			// 202109 モバイルルーター機能追加対応 edit start
+			if (!CodeConstant.BILLINGACTKBN_JIKKO_SUMI.equals(renkeiKbnData.getBillingActKbn()) || 
+				!CodeConstant.BILLINGACTKBN_JIKKO_SUMI.equals(renkeiKbnData.getMobileRouterBillingActKbn()) || 
 				!CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCreateKbn()) || 
 				CodeConstant.LINKDATA_COMMIT_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
-				//締め処理＝Null、またはHR連携データ作成≠実行済、またはHR連携データ確定実行区分＝実行済の場合エラー
+				//締め処理≠実行済、またはモバイルルーター締め処理≠実行済、またはHR連携データ作成≠実行済、またはHR連携データ確定実行区分＝実行済の場合エラー
 				errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 				return errMsg;
 			}
+			// 202109 モバイルルーター機能追加対応 edit end
 		}
 		return errMsg;
 	}
@@ -743,6 +775,77 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 				}
 			}
 		}
+		
+		//モバイルルーター機能追加対応 2021/09 add start
+		// モバイルルーター使用料履歴取得
+		List<Skf3050Bt004GetRouterShiyoryoRirekiJoinDataExp> routerJoinDtList = 
+				skf3050Bt004GetRouterShiyoryoRirekiJoinDataExpRepository.getRouterShiyoryoRirekiJoinData(paramShoriNengetsu);
+
+		for (Skf3050Bt004GetRouterShiyoryoRirekiJoinDataExp routerJoinDt : routerJoinDtList) {
+			Long routerKnairId = routerJoinDt.getMobileRouterKanriId();
+
+			//次月データ作成可否フラグがFalseの場合、次ループへ
+			if (!checkRouterJigetsuDataSakusei(routerJoinDt, paramShoriNengetsu)) {
+				continue;
+			}
+
+			// 次月のモバイルルーター使用料履歴データ取得
+			Skf2100TMobileRouterRentalRirekiKey rirekiKey = new Skf2100TMobileRouterRentalRirekiKey();
+			rirekiKey.setMobileRouterKanriId(routerKnairId);
+			rirekiKey.setYearMonth(nextShoriNengetsu);
+			Skf2100TMobileRouterRentalRireki nextRireki = skf2100TMobileRouterRentalRirekiRepository.selectByPrimaryKey(rirekiKey);
+			if(nextRireki == null){
+				// データなしの場合、次月領域作成
+				Skf2100TMobileRouterRentalRireki setRirekiData = new Skf2100TMobileRouterRentalRireki();
+				setRirekiData.setMobileRouterKanriId(routerKnairId);
+				setRirekiData.setYearMonth(nextShoriNengetsu);
+				setRirekiData.setMobileRouterGenbutuGoukei(routerJoinDt.getMobileRouterGenbutuGoukei());
+				setRirekiData.setInsertUserId(paramUserId);
+				setRirekiData.setInsertProgramId(confirmPositiveDataBatchPrgId);
+				skf3050Bt004InsertRouterRirekiDataExpRepository.insertRouterRireki(setRirekiData);
+			}
+			
+			// 次月のモバイルルーター使用料明細データ取得
+			Skf3050Bt004GetRouterShiyoryoMeisaiDataExpParameter nextMeisaiParam = new Skf3050Bt004GetRouterShiyoryoMeisaiDataExpParameter();
+			nextMeisaiParam.setMobileRouterKanriId(routerKnairId);
+			nextMeisaiParam.setYearMonth(nextShoriNengetsu);
+			List<Skf3050Bt004GetRouterShiyoryoMeisaiDataExp> nextMeisaiDL = 
+					skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository.getRouterShiyoryoMeisaiData(nextMeisaiParam);
+			
+			if(nextMeisaiDL == null || nextMeisaiDL.size() <= 0){
+				//次月データなし
+				// 当月のモバイルルーター使用料明細データ取得
+				Skf3050Bt004GetRouterShiyoryoMeisaiDataExpParameter meisaiParam = new Skf3050Bt004GetRouterShiyoryoMeisaiDataExpParameter();
+				meisaiParam.setMobileRouterKanriId(routerKnairId);
+				meisaiParam.setYearMonth(paramShoriNengetsu);
+				List<Skf3050Bt004GetRouterShiyoryoMeisaiDataExp> meisaiDL = 
+						skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository.getRouterShiyoryoMeisaiData(meisaiParam);
+				
+				if(meisaiDL != null){
+					// 取得データ分次月領域作成
+					for(Skf3050Bt004GetRouterShiyoryoMeisaiDataExp meisai : meisaiDL){
+						Skf2100TMobileRouterRentalRirekiMeisai inData = new Skf2100TMobileRouterRentalRirekiMeisai();
+						inData.setMobileRouterKanriId(routerKnairId);
+						inData.setYearMonth(nextShoriNengetsu);
+						inData.setGeneralEquipmentCd(meisai.getGeneralEquipmentCd());
+						inData.setMobileRouterGenbutsuGaku(meisai.getMobileRouterGenbutsuGaku());
+						inData.setMobileRouterApplKbn(meisai.getMobileRouterApplKbn());
+						inData.setMobileRouterReturnKbn(meisai.getMobileRouterReturnKbn());
+						inData.setInsertUserId(paramUserId);
+						inData.setInsertProgramId(confirmPositiveDataBatchPrgId);
+						skf3050Bt004InsertRouterRirekiDataExpRepository.insertRouterRirekiMeisai(inData);
+					}
+				}else{
+					LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_ROUTERMEISAI_0,
+							routerKnairId.toString());
+					return false;
+				}
+			}
+			
+
+
+		}
+		//モバイルルーター機能追加対応 2021/09 add end
 		//▲▲▲次月領域作成 END▲▲▲
 
 		return true;
@@ -1154,6 +1257,11 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 //			return false;
 //		}
 		skf3050Bt004DeleteTenninshaDataExpRepository.deleteTenninshaData();
+		
+		// 202109 モバイルルーター機能追加対応 add start
+		// 承認済みモバイルルーター貸出予定データ削除
+		skf3050Bt004DeleteRouterYoteiDataExpRepository.deleteRouterYoteiData();
+		// 202109 モバイルルーター機能追加対応 add end
 
 		return true;
 	}
@@ -1192,6 +1300,10 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 		param.setInsertUserId(insertUser);
 		param.setBillingActDate("0");
 		param.setBillingActKbn("0");
+		// 202109 モバイルルーター機能追加対応 add start
+		param.setMobileRouterBillingActDate("0");
+		param.setMobileRouterBillingActKbn("0");
+		// 202109 モバイルルーター機能追加対応 add end
 		param.setLinkdataCreateDate("0");
 		param.setLinkdataCreateKbn("0");
 		param.setLinkdataCommitDate("0");
@@ -2663,4 +2775,39 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 
 		return outDate;
 	}
+	
+	//モバイルルーター機能追加対応 2021/09 add start
+	/**
+	 * 次月データ作成可否チェック
+	 * 
+	 * @param routerJoinDt
+	 *            モバイルルーター使用料履歴データ
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @return 次月データ作成可否フラグ（True:作成する, False:作成しない）
+	 */
+	private boolean checkRouterJigetsuDataSakusei(Skf3050Bt004GetRouterShiyoryoRirekiJoinDataExp routerJoinDt,String shoriNengetsu) {
+
+		//次月データ作成フラグ
+		boolean jigetsuFlg = false;
+
+		//以下条件に当てはまる場合のみ後続処理を行う
+		if (NfwStringUtils.isEmpty(routerJoinDt.getUseStopDay())) {
+			//利用停止日が処理年月の翌月以上、または利用停止日がNULLの場合
+			jigetsuFlg = true;
+
+		} else {
+			String taikyoYymm = routerJoinDt.getUseStopDay().substring(0, 6);
+			String nextShoriNengetsu = skfDateFormatUtils.addYearMonth(shoriNengetsu, 1);
+
+			if (Integer.parseInt(taikyoYymm) >= Integer.parseInt(nextShoriNengetsu)) {
+				////利用停止日が処理年月+1以上
+				jigetsuFlg = true;
+
+			} 
+		}
+
+		return jigetsuFlg;
+	}
+	//モバイルルーター機能追加対応 2021/09 add end
 }

@@ -52,6 +52,8 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 	private String templateFilePropertyKeyR0103 = "skf2010.skf2010_sc005.r0103_csv";
 	private String templateFilePropertyKeyR0104 = "skf2010.skf2010_sc005.r0104_csv";
 	private String templateFilePropertyKeyR0105 = "skf2010.skf2010_sc005.r0105_csv";
+	private String templateFilePropertyKeyR0107 = "skf2010.skf2010_sc005.r0107_csv";
+	private String templateFilePropertyKeyR0108 = "skf2010.skf2010_sc005.r0108_csv";
 
 	private final String FILE_TEMPLETE_FUNCTION_CD = "skf2010fl001";
 
@@ -90,6 +92,12 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 		List<String[]> r0104List = new ArrayList<String[]>();
 		// 備品返却確認
 		List<String[]> r0105List = new ArrayList<String[]>();
+		// モバイルルーター機能追加対応 2021/9 add start
+		// モバイルルーター借用希望申請
+		List<String[]> r0107List = new ArrayList<String[]>();
+		// モバイルルーター返却申請
+		List<String[]> r0108List = new ArrayList<String[]>();
+		// モバイルルーター機能追加対応 2021/9 add end
 		// 備品申請
 		List<SkfBihinInfoUtilsGetBihinInfoExp> bihinInfoList = new ArrayList<SkfBihinInfoUtilsGetBihinInfoExp>();
 
@@ -161,6 +169,16 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 				}
 
 				break;
+			// モバイルルーター機能追加対応 2021/9 add start
+			case "R0107":
+				rowData = setApplDataForCsv(applData, applData.getApplId(), null);
+				r0107List.add(rowData);
+				break;
+			case "R0108":
+				rowData = setApplDataForCsv(applData, applData.getApplId(), null);
+				r0108List.add(rowData);
+				break;
+			// モバイルルーター機能追加対応 2021/9 add end
 			}
 		}
 
@@ -173,6 +191,12 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 				FILE_TEMPLETE_FUNCTION_CD, 2, null);
 		BeanOutputCsv beanOutputCsvR0105 = new FileOutput().new BeanOutputCsv(r0105List, templateFilePropertyKeyR0105,
 				FILE_TEMPLETE_FUNCTION_CD, 2, null);
+		// モバイルルーター機能追加対応 2021/9 add start
+		BeanOutputCsv beanOutputCsvR0107 = new FileOutput().new BeanOutputCsv(r0107List, templateFilePropertyKeyR0107,
+				FILE_TEMPLETE_FUNCTION_CD, 2, null);
+		BeanOutputCsv beanOutputCsvR0108 = new FileOutput().new BeanOutputCsv(r0108List, templateFilePropertyKeyR0108,
+				FILE_TEMPLETE_FUNCTION_CD, 2, null);
+		// モバイルルーター機能追加対応 2021/9 add end
 		List<BeanOutputCsv> beanOutputCsvList = new ArrayList<BeanOutputCsv>();
 
 		/** データがある書類のみ作成 */
@@ -188,6 +212,14 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 		if (beanOutputCsvR0105.getCsvDataList().size() > 0) {
 			beanOutputCsvList.add(beanOutputCsvR0105);
 		}
+		// モバイルルーター機能追加対応 2021/9 add start
+		if (beanOutputCsvR0107.getCsvDataList().size() > 0) {
+			beanOutputCsvList.add(beanOutputCsvR0107);
+		}
+		if (beanOutputCsvR0108.getCsvDataList().size() > 0) {
+			beanOutputCsvList.add(beanOutputCsvR0108);
+		}
+		// モバイルルーター機能追加対応 2021/9 add end
 		// CSVファイルを作成し、Zipファイルに圧縮する
 		String fileName = "CSVファイル.zip";
 		OutputFileCsvProperties properties = new FileOutput().new OutputFileCsvProperties(
@@ -266,6 +298,12 @@ public class Skf2010Sc005DownloadService extends SkfServiceAbstract<Skf2010Sc005
 			// 備品申請件数分行を作成
 			skf2010Sc005SharedService.setTBihinHenkyakuShinsei(companyCd, applData.getApplNo(), bihinInfo, titleList,
 					tmpList);
+			break;
+		case "R0107":
+			skf2010Sc005SharedService.setTRouterKiboShinsei(companyCd, applData.getApplNo(), titleList, tmpList);
+			break;
+		case "R0108":
+			skf2010Sc005SharedService.setTRouterHenkyakuShinsei(companyCd, applData.getApplNo(), titleList, tmpList);
 			break;
 		}
 

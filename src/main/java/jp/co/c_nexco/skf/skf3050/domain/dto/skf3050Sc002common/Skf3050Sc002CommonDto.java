@@ -61,4 +61,15 @@ public class Skf3050Sc002CommonDto extends FileDownloadDto {
 	private String hdnBihinHenkyakuWarnContinueFlg;
 	/** チェック処理等で表示する警告メッセージ */
 	private String hdnWarnMsg;
+	
+	/** 「モバイルルーター締め処理」ボタン非活性判定用 */
+	private boolean hdnBtnRouterShimeShoriDisabled;
+	/** 「モバイルルーター締め解除」ボタン非活性判定用 */
+	private boolean hdnBtnRouterShimeKaijoDisabled;
+	/** 「モバイルルーター締め処理」ボタン押下時のメッセージ */
+	private String hdnRouterShimeShoriBtnMsg;
+	/** 「モバイルルーター締め解除」ボタン押下時のメッセージ */
+	private String hdnRouterShimeKaijoBtnMsg;
+	/** 実行指示予定カラム(ルーター用) */
+	private String hdnJikkouShijiYoteiRouterShoriCol;
 }

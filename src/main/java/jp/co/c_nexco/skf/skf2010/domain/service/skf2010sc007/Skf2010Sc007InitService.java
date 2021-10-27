@@ -26,6 +26,10 @@ public class Skf2010Sc007InitService extends SkfServiceAbstract<Skf2010Sc007Init
 	private static final String NYUKYO = "1";
 	// 画面表示判定 退居（自動車の保管場所返還）届
 	private static final String TAIKYO = "2";
+	// 画面表示判定 モバイルルーター借用希望申請書
+	private static final String ROUTER_KIBO = "3";
+	// 画面表示判定 モバイルルーター返却申請書
+	private static final String ROUTER_HENKYAKU = "4";
 	// 基準会社コード
 	private String companyCd = CodeConstant.C001;
 	// 画面メッセージ
@@ -77,6 +81,17 @@ public class Skf2010Sc007InitService extends SkfServiceAbstract<Skf2010Sc007Init
 			applName = "社宅（自動車保管場所）退居届";
 			initDto.setApplId(FunctionIdConstant.R0103);
 		}
+		// モバイルルーター機能追加対応 2021/9 add start
+		else if (ROUTER_KIBO.equals(initDto.getConfirmationKbn())) {
+			// 区分がルーター借用希望だった場合はメッセージを「モバイルルーター借用希望申請書」に設定
+			applName = "モバイルルーター借用希望申請書";
+			initDto.setApplId(FunctionIdConstant.R0107);
+		} else if (ROUTER_HENKYAKU.equals(initDto.getConfirmationKbn())) {
+			// 区分がルーター返却だった場合はメッセージを「モバイルルーター返却申請書」に設定
+			applName = "モバイルルーター返却申請書";
+			initDto.setApplId(FunctionIdConstant.R0108);
+		}
+		// モバイルルーター機能追加対応 2021/9 add end
 		// 申請条件確認用のメッセージを設定
 		initDto.setApplYoken(MessageFormat.format(MES, applName));
 

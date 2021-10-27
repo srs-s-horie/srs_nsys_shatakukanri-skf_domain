@@ -101,6 +101,22 @@ public class Skf2010Sc003CancelService extends SkfServiceAbstract<Skf2010Sc003Ca
 			skfRollBackExpRepository.rollBack();
 			throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
 		}
+		
+		// モバイルルーター機能追加対応 2021/9 add start
+		// 申請書類IDがR0107（モバイルルーター借用希望申請書）、R0108（モバイルルーター返却申請書）の場合
+		if(FunctionIdConstant.R0107.equals(applId) || FunctionIdConstant.R0108.equals(applId)){
+			// モバイルルーター貸出予定テーブル更新
+			String userId = loginUserInfo.get("userCd");
+			int updCount = 0;
+			updCount = skf2010Sc003SharedService.updateRouterLendingYotei(shainNo,applId,applNo,userId);
+			if (updCount <= 0) {
+				skfRollBackExpRepository.rollBack();
+				ServiceHelper.addErrorResultMessage(cancelDto, null, MessageIdConstant.E_SKF_1075);
+				throwBusinessExceptionIfErrors(cancelDto.getResultMessages());
+			}
+		}
+		// モバイルルーター機能追加対応 2021/9 add end
+		
 
 		// 表示データ取得
 		List<Skf2010Sc003GetApplHistoryStatusInfoExp> resultList = getApplHistoryList(cancelDto);

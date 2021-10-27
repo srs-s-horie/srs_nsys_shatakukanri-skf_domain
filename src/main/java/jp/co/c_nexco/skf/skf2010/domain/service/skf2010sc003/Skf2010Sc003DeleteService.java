@@ -183,7 +183,16 @@ public class Skf2010Sc003DeleteService extends SkfServiceAbstract<Skf2010Sc003De
 			// 備品返却確認
 			// 備品申請
 			tableList.add("skf2030_t_bihin");
+		// モバイルルーター機能追加対応 2021/9 add start
+		case FunctionIdConstant.R0107:
+			// モバイルルーター借用希望申請書
+			tableList.add("skf2100_t_mobile_router_kibo_shinsei");
+		case FunctionIdConstant.R0108:
+			// モバイルルーター返却申請書
+			// 備品申請
+			tableList.add("skf2100_t_mobile_router_henkyaku_shinsei");
 		}
+		// モバイルルーター機能追加対応 2021/9 add end
 
 		// 添付ファイル管理テーブル
 		tableList.add("skf2010_t_attached_file");

@@ -51,6 +51,14 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReportKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinsei;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinseiKey;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100MMobileRouterWithBLOBs;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterHenkyakuShinsei;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterKiboShinsei;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterLedger;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRireki;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiMeisai;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TRouterLendingYoteiData;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MGeneralEquipmentItem;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetAffiliation1ListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetAffiliation2ListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc005.Skf2010Sc005GetAgencyNameExpRepository;
@@ -73,6 +81,11 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsu
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinseiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2050TBihinHenkyakuShinseiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100MMobileRouterRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterLedgerRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MGeneralEquipmentItemRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
@@ -83,11 +96,14 @@ import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.batch.SkfBatchUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
@@ -176,6 +192,23 @@ public class Skf2010Sc005SharedService {
 	private Skf2030Fc001BihinKiboShinseiDataImport skf2030Fc001BihinKiboShinseiDataImport;
 	@Autowired
 	private Skf2050Fc001BihinHenkyakuSinseiDataImport skf2050Fc001BihinHenkyakuSinseiDataImport;
+	
+	@Autowired
+	private SkfShinseiUtils skfShinseiUtils;
+	@Autowired
+	private SkfRouterInfoUtils skfRouterInfoUtils;
+	@Autowired
+	private SkfBaseBusinessLogicUtils skfBaseBusinessLogicUtils;
+	@Autowired
+	private Skf2100TMobileRouterLedgerRepository skf2100TMobileRouterLedgerRepository;
+	@Autowired
+	private Skf2100TMobileRouterRentalRirekiRepository skf2100TMobileRouterRentalRirekiRepository;
+	@Autowired
+	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
+	@Autowired
+	private Skf3050MGeneralEquipmentItemRepository skf3050MGeneralEquipmentItemRepository;
+	@Autowired
+	private Skf2100MMobileRouterRepository skf2100MMobileRouterRepository;
 
 	private String companyCd = CodeConstant.C001;
 	private MenuScopeSessionBean menuScopeSessionBean;
@@ -462,18 +495,52 @@ public class Skf2010Sc005SharedService {
 
 		}
 
+		// モバイルルーター機能追加対応 2021/9 add start
+		// 申請書類IDが"R0107"【モバイルルーター借用希望申請】の場合
+		if (tApplHistoryData.getApplId().equals(FunctionIdConstant.R0107)){
+			
+			boolean updresult = updateKiboShinsei(companyCd, tApplHistoryData.getShainNo(), applNo, nextStatus);
+			if(!updresult){
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+				skfRollBackExpRepository.rollBack();
+				return false;
+			}
+			
+		}
+		// 申請書類IDが"R0108"【モバイルルーター返却申請】かつ次のステータスが承認済の場合
+		if (tApplHistoryData.getApplId().equals(FunctionIdConstant.R0108)
+				&& CodeConstant.STATUS_SHONIN_ZUMI.equals(nextStatus)) {
+			
+			boolean updresult = updateHenkyakuShinsei(companyCd, tApplHistoryData.getShainNo(), applNo, nextStatus);
+			if(!updresult){
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+				skfRollBackExpRepository.rollBack();
+				return false;
+			}
+		}
+		// モバイルルーター機能追加対応 2021/9 add end
+		
 		// 次階層のステータスが”31”【承認中】の場合、承認中コメントを削除
 		if (nextStatus.equals(CodeConstant.STATUS_SHONIN1)) {
 
-			Skf2010TApplCommentKey key = new Skf2010TApplCommentKey();
-			key.setCompanyCd(companyCd);
-			key.setApplNo(applNo);
-			key.setApplStatus(nextStatus);
-			Map<String, String> errorMsg = new HashMap<String, String>();
-
-			boolean delComRes = skfCommentUtils.deleteComment(companyCd, applNo, nextStatus, errorMsg);
-			if (!delComRes) {
-				return false;
+			Skf2010Sc005GetCommentInfoForUpdateExp applCommentData = new Skf2010Sc005GetCommentInfoForUpdateExp();
+			Skf2010Sc005GetCommentInfoForUpdateExpParameter tApplCommentParam = new Skf2010Sc005GetCommentInfoForUpdateExpParameter();
+			tApplCommentParam.setCompanyCd(companyCd);
+			tApplCommentParam.setApplNo(applNo);
+			tApplCommentParam.setApplStatus(nextStatus);
+			applCommentData = skf2010Sc005GetCommentInfoForUpdateExpRepository
+					.getCommentInfoForUpdate(tApplCommentParam);
+			if (applCommentData != null) {
+				Skf2010TApplCommentKey key = new Skf2010TApplCommentKey();
+				key.setCompanyCd(companyCd);
+				key.setApplNo(applNo);
+				key.setApplStatus(nextStatus);
+				Map<String, String> errorMsg = new HashMap<String, String>();
+	
+				boolean delComRes = skfCommentUtils.deleteComment(companyCd, applNo, nextStatus, errorMsg);
+				if (!delComRes) {
+					return false;
+				}
 			}
 		}
 		// 次階層のステータスが”40”【承認済】の場合、承認中コメントを承認済みコメントに更新
@@ -506,14 +573,28 @@ public class Skf2010Sc005SharedService {
 			String furikomiStartDate = CodeConstant.NONE;
 			String sendUser = applInfo.get("applShainNo");
 			Map<String, String> errMsg = new HashMap<String, String>();
-			if (!sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId,
-					errMsg)) {
-				if (NfwStringUtils.isEmpty(errMsg.get("val"))) {
-					ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"));
-				} else {
-					ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"), errMsg.get("val"), null);
+			// モバイルルーター機能追加対応 2021/9 edit start
+			if (tApplHistoryData.getApplId().equals(FunctionIdConstant.R0107) || 
+					tApplHistoryData.getApplId().equals(FunctionIdConstant.R0108)){
+				if (!sendApplTsuchiMailForRouter(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId,
+						errMsg,tApplHistoryData.getApplId())) {
+					if (NfwStringUtils.isEmpty(errMsg.get("val"))) {
+						ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"));
+					} else {
+						ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"), errMsg.get("val"), null);
+					}
+				}
+			}else{
+				if (!sendApplTsuchiMail(mailKbn, applInfo, comment, annai, furikomiStartDate, sendUser, sendGroupId,
+						errMsg)) {
+					if (NfwStringUtils.isEmpty(errMsg.get("val"))) {
+						ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"));
+					} else {
+						ServiceHelper.addWarnResultMessage(dto, errMsg.get("error"), errMsg.get("val"), null);
+					}
 				}
 			}
+			// モバイルルーター機能追加対応 2021/9 edit end
 		}
 		Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>> forUpdateListMap = (Map<String, Map<String, List<SkfBatchUtilsGetMultipleTablesUpdateDateExp>>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2010SC005);
@@ -535,6 +616,8 @@ public class Skf2010Sc005SharedService {
 			skfRollBackExpRepository.rollBack();
 			return false;
 		}
+		
+
 
 		return true;
 	}
@@ -1467,6 +1550,17 @@ public class Skf2010Sc005SharedService {
 			if (!CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHONIN1)) {
 				return false;
 			}
+		} else if (FunctionIdConstant.R0107.equals(tmpData.getApplId())
+				|| FunctionIdConstant.R0108.equals(tmpData.getApplId())) {
+			// 「申請書類ID」が「モバイルルーター借用希望申請」「モバイルルーター返却申請」のいずれかであり、
+			// 「ステータス」が搬入済/承認中いずれでもない場合
+			switch (applStatus) {
+			case CodeConstant.STATUS_HANNYU_ZUMI:
+			case CodeConstant.STATUS_SHONIN1:
+				break;
+			default:
+				return false;
+			}
 		} else {
 			// 「申請書類ID」が前述のいずれでもなく、「ステータス」が審査中/承認中のいずれでもない場合
 			switch (applStatus) {
@@ -1655,7 +1749,15 @@ public class Skf2010Sc005SharedService {
 				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_DOI_SHINAI)) {
 			// 申請書類IDが”R0105”【備品返却確認】かつ、
 			// 現在のステータスが”21”【同意しない】の場合、処理を継続する。
-		} else {
+		} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0107)
+				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSEICHU)) {
+			// 申請書類IDが”R0107”【モバイルルーター借用希望申請書】かつ、
+			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
+		}else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0108)
+				&& CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSEICHU)) {
+			// 申請書類IDが”R0108”【モバイルルーター返却申請書】かつ、
+			// 現在のステータスが”01”【申請中】の場合、処理を継続する。
+		}else {
 			statusUpdateFlg = false;
 		}
 
@@ -1837,10 +1939,431 @@ public class Skf2010Sc005SharedService {
 			resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, status, userId,
 					pageId);
 			break;
+		// モバイルルーター機能追加対応 2021/9 add start
+		case FunctionIdConstant.R0107:
+		case FunctionIdConstant.R0108:
+			//　何もせず正常終了
+			resultBatch = null;
+		// モバイルルーター機能追加対応 2021/9 add end
 		default:
 			break;
 		}
 
 		return resultBatch;
 	}
+	
+	
+	// モバイルルーター機能追加対応 2021/9 add start
+	/**
+	 * モバイルルーター借用希望申請関連テーブルを更新する
+	 * 
+	 * @param companyCd
+	 * @param shainNo
+	 * @param applId
+	 * @param nextStatus
+	 * @return 更新処理成否
+	 */
+	@SuppressWarnings("unchecked")
+	private boolean updateKiboShinsei(String companyCd,String shainNo,String applNo,String nextStatus){
+		
+		// モバイルルーター貸出予定テーブルのステータス情報を更新する
+		boolean updresult = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, nextStatus, null, null,null);
+		if(!updresult){
+			// 更新失敗
+			return false;
+		}
+		
+		// モバイルルーター借用希望申請情報取得
+		Skf2100TMobileRouterKiboShinsei shinseiData = skfShinseiUtils.getSksRouterKiboShinseiInfo(companyCd,applNo);
+		
+		if(shinseiData == null){
+			// 取得失敗
+			return false;
+		}
+		
+		// 次のステータスが「40:承認済み」の場合、貸出管理簿、使用料履歴を登録する
+		if(CodeConstant.STATUS_SHONIN_ZUMI.equals(nextStatus)){
+			// 予定データから管理簿ID取得
+			Skf2100TRouterLendingYoteiData yoteiData = skfRouterInfoUtils.getRouterLYoteiData(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO);
+			
+			// モバイルルーター貸出管理簿IDの取得
+			Long newKanriId = yoteiData.getMobileRouterKanriId();
+			
+			Skf2100TMobileRouterLedger routerLRecord = new Skf2100TMobileRouterLedger();
+			routerLRecord.setMobileRouterKanriId(newKanriId);
+			routerLRecord.setReceivedDate(shinseiData.getReceivedDate());
+			
+			int inCount = skf2100TMobileRouterLedgerRepository.updateByPrimaryKeySelective(routerLRecord);
+			if(inCount <= 0){
+				// 登録失敗
+				return false;
+			}
+			// モバイルルーター貸出予定データ更新
+			updresult = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, 
+					CodeConstant.STATUS_SHONIN_ZUMI, CodeConstant.ROUTER_LEND_JOKYO_USE, null,null);
+			if(!updresult){
+				// 更新失敗
+				return false;
+			}
+			
+			
+			// 月次処理月管理テーブルを読み込み当月処理月取得
+			String yearMonth = skfBaseBusinessLogicUtils.getSystemProcessNenGetsu();
+			
+			// 月別モバイルルーター使用料明細、月別モバイルルーター使用料履歴登録
+			// 汎用備品項目設定取得
+			Skf3050MGeneralEquipmentItem equipment = new Skf3050MGeneralEquipmentItem();
+			equipment = skf3050MGeneralEquipmentItemRepository.selectByPrimaryKey(CodeConstant.GECD_MOBILEROUTER);
+			if(equipment == null){
+				// 取得失敗
+				return false;
+			}
+			
+			// 月別モバイルルーター使用料明細登録
+			Skf2100TMobileRouterRentalRirekiMeisai meisaiRecord = new Skf2100TMobileRouterRentalRirekiMeisai();
+			meisaiRecord.setMobileRouterKanriId(newKanriId);
+			meisaiRecord.setYearMonth(yearMonth);
+			meisaiRecord.setGeneralEquipmentCd(equipment.getGeneralEquipmentCd());
+			meisaiRecord.setMobileRouterGenbutsuGaku(equipment.getEquipmentPayment());
+			meisaiRecord.setMobileRouterApplKbn(CodeConstant.BIHIN_SHINSEI_KBN_ARI);//申請有
+			meisaiRecord.setMobileRouterReturnKbn(CodeConstant.BIHIN_HENKYAKU_SURU);//要返却
+			
+			inCount = skf2100TMobileRouterRentalRirekiMeisaiRepository.insertSelective(meisaiRecord);
+			if(inCount <= 0){
+				// 登録失敗
+				return false;
+			}
+			
+			// 月別モバイルルーター使用料登録
+			Skf2100TMobileRouterRentalRireki rirekiRecord = new Skf2100TMobileRouterRentalRireki();
+			rirekiRecord.setMobileRouterKanriId(newKanriId);
+			rirekiRecord.setYearMonth(yearMonth);
+			rirekiRecord.setMobileRouterGenbutuGoukei(equipment.getEquipmentPayment());
+			inCount = skf2100TMobileRouterRentalRirekiRepository.insertSelective(rirekiRecord);
+			if(inCount <= 0){
+				// 登録失敗
+				return false;
+			}
+			
+			// モバイルルーターマスタ更新
+			Skf2100MMobileRouterWithBLOBs routerRecord  = new Skf2100MMobileRouterWithBLOBs();
+			routerRecord.setGeneralEquipmentCd(equipment.getGeneralEquipmentCd());
+			routerRecord.setMobileRouterNo(shinseiData.getMobileRouterNo());
+			routerRecord.setRouterLendingJudgment(CodeConstant.ROUTER_LENDING_JUDGMENT_USE);//使用中
+			inCount = skf2100MMobileRouterRepository.updateByPrimaryKeySelective(routerRecord);
+			if(inCount <= 0){
+				// 更新失敗
+				return false;
+			}
+			
+		}
+		
+		return true;
+		
+	}
+	
+	/**
+	 * モバイルルーター返却申請関連テーブルを更新する
+	 * 
+	 * @param companyCd
+	 * @param shainNo
+	 * @param applId
+	 * @param nextStatus
+	 * @return 更新処理成否
+	 */
+	@SuppressWarnings("unchecked")
+	private boolean updateHenkyakuShinsei(String companyCd,String shainNo,String applNo,String nextStatus){
+		boolean result = false;
+		
+		// モバイルルーター返却申請情報取得
+		Skf2100TMobileRouterHenkyakuShinsei shinseiData = skfShinseiUtils.getSksRouterHenkyakuShinseiInfo(companyCd,applNo);
+		if(shinseiData == null){
+			// 取得失敗
+			return false;
+		}
+		
+		
+		//モバイルルーター貸出管理簿IDの取得
+		Skf2100TRouterLendingYoteiData yoteiData = skfRouterInfoUtils.getRouterLYoteiData(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU);
+		if(yoteiData == null){
+			// 取得失敗
+			return false;
+		}
+		
+		Long routerKanriId = yoteiData.getMobileRouterKanriId();
+		
+		// モバイルルーター貸出管理簿テーブルのデータ更新する
+		Skf2100TMobileRouterLedger routerLRecord = new Skf2100TMobileRouterLedger();
+		routerLRecord.setMobileRouterKanriId(routerKanriId);
+		routerLRecord.setUseStopDay(shinseiData.getLastUseDay());// 利用停止日
+		routerLRecord.setHansyutuTel(shinseiData.getTel());// 搬出電話番号
+		routerLRecord.setReturnDay(shinseiData.getReturnDay());// 窓口返却日
+		routerLRecord.setHanshutuApplDay(shinseiData.getApplDate());// 搬出本人申請日
+		
+		int updCount = skf2100TMobileRouterLedgerRepository.updateByPrimaryKeySelective(routerLRecord);
+		if(updCount <= 0){
+			// 更新失敗
+			return false;
+		}
+		// モバイルルーター貸出予定テーブルのデータを更新する
+		result = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU, 
+				nextStatus,CodeConstant.ROUTER_LEND_JOKYO_TAIYO,null,null);
+		if(!result){
+			// 更新失敗
+			return false;
+		}
+		
+		// モバイルルーターマスタの更新
+		result = skfRouterInfoUtils.updateMobileRouterLJudment(shinseiData.getMobileRouterNo(), 
+				CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO, shinseiData.getFaultFlag());
+		if(!result){
+			// 更新失敗
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	/*
+	 * モバイルルーター借用希望申請書のデータをマッピングします
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @param titleList
+	 * @param strList
+	 */
+	public void setTRouterKiboShinsei(String companyCd, String applNo, List<String> titleList, List<String> strList) {
+
+		// モバイルルーター借用希望申請情報取得
+		Skf2100TMobileRouterKiboShinsei result = skfShinseiUtils.getSksRouterKiboShinseiInfo(companyCd,applNo);
+		
+		if (result != null) {
+
+			// 日付にスラッシュを追加
+			String useStartHopeDay = CodeConstant.NONE;
+			if (result.getUseStartHopeDay() != null) {
+				useStartHopeDay = skfDateFormatUtils.dateFormatFromString(result.getUseStartHopeDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+
+			String shippingDate = CodeConstant.NONE;
+			if (result.getShippingDate() != null) {
+				shippingDate = skfDateFormatUtils.dateFormatFromString(result.getShippingDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+
+			String receivedDate = CodeConstant.NONE;
+			if (result.getReceivedDate() != null) {
+				receivedDate = skfDateFormatUtils.dateFormatFromString(result.getReceivedDate(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+
+			titleList.add("company_cd");
+			strList.add(result.getCompanyCd());
+			titleList.add("appl_no");
+			strList.add(result.getApplNo());
+			titleList.add("agency");
+			strList.add(result.getAgency());
+			titleList.add("affiliation1");
+			strList.add(result.getAffiliation1());
+			titleList.add("affiliation2");
+			strList.add(result.getAffiliation2());
+
+			titleList.add("tel");
+			strList.add(result.getTel());
+			titleList.add("mailaddress");
+			strList.add(result.getMailaddress());
+			titleList.add("mobile_router_no");
+			String strRouterNo = CodeConstant.NONE;
+			if (result.getMobileRouterNo() != null) {
+				strRouterNo = result.getMobileRouterNo().toString();
+			}
+			strList.add(strRouterNo);
+			titleList.add("iccid");
+			strList.add(result.getIccid());
+			titleList.add("imei");
+			strList.add(result.getImei());
+			titleList.add("use_start_hope_day");
+			strList.add(useStartHopeDay);
+			titleList.add("shipping_date");
+			strList.add(shippingDate);
+			titleList.add("received_date");
+			strList.add(receivedDate);			
+			titleList.add("body_receipt_ceheck_flag");
+			strList.add(result.getBodyReceiptCheckFlag());
+			titleList.add("handbook_receipt_check_flag");
+			strList.add(result.getHandbookReceiptCheckFlag());
+			titleList.add("materials_received_check_flag");
+			strList.add(result.getMaterialsReceivedCheckFlag());
+			
+		}
+		return;
+	}
+	
+	/*
+	 * モバイルルーター返却申請書のデータをマッピングします
+	 * 
+	 * @param companyCd
+	 * @param applNo
+	 * @param titleList
+	 * @param strList
+	 */
+	public void setTRouterHenkyakuShinsei(String companyCd, String applNo, List<String> titleList, List<String> strList) {
+
+		// モバイルルーター返却申請情報取得
+		Skf2100TMobileRouterHenkyakuShinsei result = skfShinseiUtils.getSksRouterHenkyakuShinseiInfo(companyCd,applNo);
+		
+		if (result != null) {
+
+			// 日付にスラッシュを追加
+			String lastUseDay = CodeConstant.NONE;
+			if (result.getLastUseDay() != null) {
+				lastUseDay = skfDateFormatUtils.dateFormatFromString(result.getLastUseDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+
+			String returnDay = CodeConstant.NONE;
+			if (result.getReturnDay() != null) {
+				returnDay = skfDateFormatUtils.dateFormatFromString(result.getReturnDay(),
+						SkfCommonConstant.YMD_STYLE_YYYYMMDD_SLASH);
+			}
+			
+			titleList.add("company_cd");
+			strList.add(result.getCompanyCd());
+			titleList.add("appl_no");
+			strList.add(result.getApplNo());
+			titleList.add("agency");
+			strList.add(result.getAgency());
+			titleList.add("affiliation1");
+			strList.add(result.getAffiliation1());
+			titleList.add("affiliation2");
+			strList.add(result.getAffiliation2());
+
+			titleList.add("tel");
+			strList.add(result.getTel());
+			titleList.add("mobile_router_no");
+			String strRouterNo = CodeConstant.NONE;
+			if (result.getMobileRouterNo() != null) {
+				strRouterNo = result.getMobileRouterNo().toString();
+			}
+			strList.add(strRouterNo);
+			titleList.add("iccid");
+			strList.add(result.getIccid());
+			titleList.add("imei");
+			strList.add(result.getImei());
+			titleList.add("last_use_day");
+			strList.add(lastUseDay);
+			titleList.add("return_day");
+			strList.add(returnDay);		
+			titleList.add("fault_flag");
+			strList.add(result.getFaultFlag());
+			
+		}
+		return;
+	}
+	
+	/**
+	 * 申請通知メール送信のメイン処理を行います(モバイルルーター申請用） 
+	 * 
+	 * @param sendMailKbn
+	 * @param applInfo
+	 * @param comment
+	 * @param annai
+	 * @param furikomiStartDate
+	 * @param sendUser
+	 * @param sendGroundId
+	 * @throws Exception
+	 */
+	private boolean sendApplTsuchiMailForRouter(String sendMailKbn, Map<String, String> applInfo, String comment, String annai,
+			String furikomiStartDate, String sendUser, String sendGroundId, Map<String, String> errMsg,String applId)
+			throws Exception {
+
+		// 申請書類名を取得
+		Skf2010MApplication skf2010MApplication = new Skf2010MApplication();
+		Skf2010MApplicationKey key = new Skf2010MApplicationKey();
+		key.setCompanyCd(companyCd);
+		key.setApplId(applInfo.get("applId"));
+		skf2010MApplication = skf2010MApplicationRepository.selectByPrimaryKey(key);
+		if (skf2010MApplication == null) {
+			// 申請書類名が取れない時はエラーログを出力
+			return false;
+		}
+		String applName = skf2010MApplication.getApplName();
+
+		// 申請社員名、申請日を取得
+		String applShainName = CodeConstant.NONE;
+		String applDate = CodeConstant.NONE;
+		String applAgencyCd = CodeConstant.NONE;
+
+		// 申請通知メール情報の取得
+		Skf2010Sc005GetSendApplMailInfoExp skfMShainData = new Skf2010Sc005GetSendApplMailInfoExp();
+		List<Skf2010Sc005GetSendApplMailInfoExp> skfMShainList = new ArrayList<Skf2010Sc005GetSendApplMailInfoExp>();
+		Skf2010Sc005GetSendApplMailInfoExpParameter mShainParam = new Skf2010Sc005GetSendApplMailInfoExpParameter();
+		mShainParam.setCompanyCd(companyCd);
+		mShainParam.setShainNo(applInfo.get("applShainNo"));
+		mShainParam.setApplNo(applInfo.get("applNo"));
+		skfMShainList = skf2010Sc005GetSendApplMailInfoExpRepository.getSendApplMailInfo(mShainParam);
+		if (skfMShainList == null || skfMShainList.size() <= 0) {
+			// 申請通知メール情報が取れない時はエラーログを出力
+			errMsg.put("error", MessageIdConstant.E_SKF_1066);
+			errMsg.put("val", "通知メール情報の取得");
+			return false;
+		}
+		skfMShainData = skfMShainList.get(0);
+
+		if (!CheckUtils.isEmpty(skfMShainData.getName())) {
+			applShainName = skfMShainData.getName();
+		}
+		if (skfMShainData.getApplDate() != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			applDate = sdf.format(skfMShainData.getApplDate());
+		}
+		if (!CheckUtils.isEmpty(skfMShainData.getAgencyCd())) {
+			applAgencyCd = skfMShainData.getAgencyCd();
+		}
+
+		//モバイルルーター貸出管理簿IDの取得
+		String thKbn = "";
+		if(FunctionIdConstant.R0107.equals(applId)){
+			thKbn = CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO;
+		}else if(FunctionIdConstant.R0108.equals(applId)){
+			thKbn = CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU;
+		}
+			
+		Skf2100TRouterLendingYoteiData yoteiData = skfRouterInfoUtils.getRouterLYoteiData(sendUser,thKbn);
+		if(yoteiData == null){
+			// 取得失敗
+			return false;
+		}
+		
+		Long routerKanriId = yoteiData.getMobileRouterKanriId();
+		
+		// 通知用メールアドレスの設定
+		Skf2100TMobileRouterLedger ledgerData = skf2100TMobileRouterLedgerRepository.selectByPrimaryKey(routerKanriId);
+		if(ledgerData == null){
+			// メールアドレスが設定されていない場合は処理を中断する。
+			errMsg.put("error", MessageIdConstant.E_SKF_1041);
+			errMsg.put("val", sendUser);
+			return false;
+		}
+		String mailAddress = ledgerData.getHannyuMailaddress();
+		
+		// メール送信
+//		String mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
+//		if (NfwStringUtils.isEmpty(mailAddress)) {
+//			// メールアドレスが設定されていない場合は処理を中断する。
+//			errMsg.put("error", MessageIdConstant.E_SKF_1041);
+//			errMsg.put("val", sendUser);
+//			return false;
+//		}
+
+		// URLを設定
+		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+		sendApplTsuchiMailExist(companyCd, sendMailKbn, applInfo.get("applNo"), applDate, applShainName, comment, annai,
+				furikomiStartDate, urlBase, sendUser, mailAddress, null, applName);
+
+		return true;
+	}
+	// モバイルルーター機能追加対応 2021/9 add end
 }

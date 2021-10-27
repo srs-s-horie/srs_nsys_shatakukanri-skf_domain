@@ -161,7 +161,59 @@ public class Skf2010Sc007TransferService extends SkfServiceAbstract<Skf2010Sc007
 				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
 				break;
 			}
-
+		// モバイルルーター機能追加対応 2021/9 add start
+		case FunctionIdConstant.R0107:
+			// モバイルルーター借用希望申請書
+			boolean resultK = true;
+			int cntK = 0;
+			// 申請可能かのチェック
+			resultK = skfShinseiUtils.checkRouterShinseiStatus(transferDto.getShainNo(), applID, transferDto.getApplNo());
+			
+			//未返却ルーター確認
+			cntK = skfShinseiUtils.getSksRouterLedgerCount(transferDto.getShainNo());
+			if(cntK > 0){
+				resultK = false;
+			}
+			
+			if (resultK) {
+				// 申請可能な場合は次の処理へ
+				TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2100_SC001);
+				transferDto.setTransferPageInfo(nextPage);
+				break;
+			} else {
+				// 申請不可の場合、申請条件確認画面にメッセージを表示する。
+				transferDto.setResultMessages(null);
+				if(cntK > 0){
+					ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "貸与中のモバイルルーターが存在し",
+							"モバイルルーターの返却申請を", "");
+				}else{
+					ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
+							"「社宅申請状況一覧」から確認", "");
+				}
+				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
+				break;
+			}
+		case FunctionIdConstant.R0108:
+			// モバイルルーター返却申請書
+			boolean resultH = true;
+			// 申請可能かのチェック
+			resultH = skfShinseiUtils.checkRouterShinseiStatus(transferDto.getShainNo(), applID, transferDto.getApplNo());
+			
+			if (resultH) {
+				// 申請可能な場合は次の処理へ
+				TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2100_SC003);
+				transferDto.setTransferPageInfo(nextPage);
+				break;
+			} else {
+				// 申請不可の場合、申請条件確認画面にメッセージを表示する。
+				transferDto.setResultMessages(null);
+				ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
+						"「社宅申請状況一覧」から確認", "");
+				
+				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
+				break;
+			}
+		// モバイルルーター機能追加対応 2021/9 add end
 		}
 	}
 }

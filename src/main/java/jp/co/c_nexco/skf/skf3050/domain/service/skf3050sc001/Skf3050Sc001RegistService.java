@@ -15,11 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoJissekiCountExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoRouterJissekiCountExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainShozokuInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc001.Skf3050Sc001UpdateShatakuShainNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3030TShozokuRireki;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoJissekiCountExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShainBangoRouterJissekiCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001GetShatakuShainShozokuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc001.Skf3050Sc001UpdateShainNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
@@ -53,6 +55,8 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 	@Autowired
 	private Skf3050Sc001GetShainBangoJissekiCountExpRepository skf3050Sc001GetShainBangoJissekiCountExpRepository;
 	@Autowired
+	private Skf3050Sc001GetShainBangoRouterJissekiCountExpRepository skf3050Sc001GetShainBangoRouterJissekiCountExpRepository;
+	@Autowired
 	private Skf3050Sc001UpdateShainNoExpRepository skf3050Sc001UpdateShainNoExpRepository;
 	@Autowired
 	private Skf3050Sc001GetShatakuShainShozokuInfoExpRepository skf3050Sc001GetShatakuShainShozokuInfoExpRepository;
@@ -76,6 +80,7 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 	 * @throws Exception 例外
 	 */
 	@Override
+	@Transactional
 	public Skf3050Sc001RegistDto index(Skf3050Sc001RegistDto registDto) throws Exception {
 		 		
 		// 操作ログを出力する
@@ -121,7 +126,6 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 	 * @param shainListData
 	 * @return 更新件数/エラー番号
 	 */
-	@Transactional
 	private Map<String,Object> updateShainNo(String shainListData){
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		
@@ -137,6 +141,8 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 		int updateCountSS = 0;
 		//所属履歴データ更新件数
 		int updateCountSR = 0;
+		//モバイルルーター貸出管理簿更新件数
+		int updateCountRL = 0;
 		
 		//更新件数
 		int count = 0;
@@ -196,6 +202,17 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 				return resultMap;
 			}
 			
+			// 202109 モバイルルーター機能追加対応 add start
+			//モバイルルーター貸出管理簿テーブルの社員番号存在チェック
+			List<Skf3050Sc001GetShainBangoRouterJissekiCountExp> taRL = new ArrayList<Skf3050Sc001GetShainBangoRouterJissekiCountExp>();
+			taRL = skf3050Sc001GetShainBangoRouterJissekiCountExpRepository.getShainBangoRouterJissekiCount(txtShainNo);
+			if(taRL.size() > 0){
+				resultMap.put("errorShainNo", txtShainNo);
+				resultMap.put("errorNo", -3);
+				return resultMap;
+			}
+			// 202109 モバイルルーター機能追加対応 add end
+			
 			//社員番号
 			String shainBangoStr = CodeConstant.DOUBLE_QUOTATION;
 			if(shainNo.endsWith(CodeConstant.ASTERISK)){
@@ -233,7 +250,29 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 					resultMap.put("errorNo", -2);
 					return resultMap;
 				}
+				
 			}
+			
+			// 202109 モバイルルーター機能追加対応 add start
+			//モバイルルーター貸出管理簿テーブルの社員番号存在チェック(更新対象有無）
+			taRL = new ArrayList<Skf3050Sc001GetShainBangoRouterJissekiCountExp>();
+			taRL = skf3050Sc001GetShainBangoRouterJissekiCountExpRepository.getShainBangoRouterJissekiCount(shainBangoStr);
+			if(taRL.size() > 0){
+				// 更新対象社員番号有の場合更新処理実行
+				Skf3050Sc001UpdateShatakuShainNoExp updSLRecord = new Skf3050Sc001UpdateShatakuShainNoExp();
+				updSLRecord.setShainNo(txtShainNo);
+				updSLRecord.setKeyShainNo(shainBangoStr);
+				updSLRecord.setUpdateUserId(updateUserId);
+				updSLRecord.setUpdateProgramId(updateProgramId);
+				updateCountRL = skf3050Sc001UpdateShainNoExpRepository.updateRouterShainNo(updSLRecord);
+				if(updateCountRL <= 0){
+					//排他エラーメッセージ
+					resultMap.put("errorNo", -1);
+					return resultMap;
+				}
+			}
+			// 202109 モバイルルーター機能追加対応 add end
+			
 			
 			if(!SkfCheckUtils.isNullOrEmpty(companyCd)){
 				//旧社員番号を変更した場合／一括変更後の社員（HR連携データ確定処理されるまで ）を変更した場合
@@ -342,7 +381,8 @@ public class Skf3050Sc001RegistService extends SkfServiceAbstract<Skf3050Sc001Re
 				0 < updateCountSL ||
 				0 < updateCountNY ||
 				0 < updateCountSS ||
-				0 < updateCountSR){
+				0 < updateCountSR ||
+				0 < updateCountRL){
 				count += 1;
 			}
 		}
