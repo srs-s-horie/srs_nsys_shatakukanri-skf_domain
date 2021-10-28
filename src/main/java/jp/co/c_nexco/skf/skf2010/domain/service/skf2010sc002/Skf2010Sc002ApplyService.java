@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -60,11 +61,13 @@ public class Skf2010Sc002ApplyService extends SkfServiceAbstract<Skf2010Sc002App
 		// 申請書類IDの有無チェック
 		if (applyDto.getApplId() == null) {
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1078, "");
+			LogUtils.infoByMsg("申請ボタン押下時： 申請書IDがNULL  社員番号：" + applyDto.getShainNo() + " 申請書番号：" + applyDto.getApplNo());
 			return applyDto;
 		}
 		// ステータスの有無チェック
 		if (applyDto.getApplStatus() == null) {
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1078, "");
+			LogUtils.infoByMsg("申請ボタン押下時： 申請ステータスがNULL  社員番号：" + applyDto.getShainNo()+ "　申請書番号：" + applyDto.getApplNo());
 			return applyDto;
 		}
 
@@ -102,14 +105,13 @@ public class Skf2010Sc002ApplyService extends SkfServiceAbstract<Skf2010Sc002App
 		if ("updateError".equals(res)) {
 			// 更新エラー
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1075);
+			LogUtils.infoByMsg("申請ボタン押下時： updateError　申請書類履歴またはコメントテーブル更新時にエラー　　社員番号：" + applyDto.getShainNo()+ "　申請書番号" +applyDto.getApplNo());
 			return applyDto;
 		} else if ("exclusiveError".equals(res)) {
 			// 排他チェックエラー
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.E_SKF_1134, "skf2010_t_appl_history");
 			return applyDto;
 		}
-
-		// TODO 支社担当者、事務所担当者にメールを送付→承認権限がないため不要と思われる
 
 		// 社宅管理データ連携処理実行
 		// ユーザIDの取得

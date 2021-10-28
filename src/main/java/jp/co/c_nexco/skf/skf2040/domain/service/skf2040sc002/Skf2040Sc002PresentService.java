@@ -158,6 +158,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			if ("updateError".equals(resultUpdateApplInfo)) {
 				// 更新エラー
 				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
+				LogUtils.infoByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下：  申請書類履歴が更新できなかった  社員番号：" + preDto.getShainNo()+ " 申請書番号： " + preDto.getApplNo());
 				return preDto;
 			} else if ("exclusiveError".equals(resultUpdateApplInfo)) {
 				// 排他チェックエラー
@@ -204,6 +205,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				if ("updateError".equals(resultBihinShinsei)) {
 					// 更新エラー
 					ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
+					LogUtils.infoByMsg("退居（自動車の保管場所返還）届(アウトソース用）提示ボタン押下：  申請書類履歴が更新できなかった  社員番号：" + preDto.getShainNo()+ " 申請書番号： " + preDto.getApplNo());
 					return preDto;
 				} else if ("exclusiveError".equals(resultBihinShinsei)) {
 					// 排他チェックエラー

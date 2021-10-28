@@ -18,6 +18,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc003.Skf3020Sc003
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3020Sc003.Skf3020Sc003GetTenninshaInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3020TTenninshaChoshoDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf3020.domain.service.common.Skf302010CommonSharedService;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -106,6 +107,7 @@ public class Skf3020Sc003SharedService {
 		switch (result) {
 		case Skf302010CommonSharedService.DB_ERR_MINUS_1:
 			outMsg = MessageIdConstant.E_SKF_1075;
+			LogUtils.infoByMsg("転任者調書確認共通処理： 転任者調書データ更新失敗  社員番号：" + tenninshaInfo.getShainNo() + " 更新日：　" + tenninshaInfo.getUpdateDate());
 			return outMsg;
 		case Skf302010CommonSharedService.DB_ERR_0:
 			outMsg = MessageIdConstant.E_SKF_1009;

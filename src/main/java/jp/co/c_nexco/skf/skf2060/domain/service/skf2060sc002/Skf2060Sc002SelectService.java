@@ -28,6 +28,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepo
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageBukkenRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2060TKariageTeijiDetailRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -135,9 +136,9 @@ public class Skf2060Sc002SelectService extends SkfServiceAbstract<Skf2060Sc002Se
 		//申請書類情報を取得(更新用)
 		Skf2060Sc002GetApplHistoryInfoForUpdateExp applHistoryData = this.getApplHistoryInfoForUpdate(companyCd, applNo);
 		if(applHistoryData == null){
-			ServiceHelper.addErrorResultMessage(selectDto, null, MessageIdConstant.E_SKF_1078);
-
-
+			ServiceHelper.addErrorResultMessage(selectDto, null, MessageIdConstant.E_SKF_1078,"");
+			LogUtils.infoByMsg("借上候補物件確認画面検索処理：申請書類履歴更新失敗   申請書番号：" + selectDto.getApplNo());
+			return selectDto;
 		}
 		
 		// 楽観的排他チェック

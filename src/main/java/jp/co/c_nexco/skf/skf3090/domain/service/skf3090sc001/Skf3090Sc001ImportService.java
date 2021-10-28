@@ -245,6 +245,7 @@ public class Skf3090Sc001ImportService extends SkfServiceAbstract<Skf3090Sc001Im
 				// 項目数エラー
 				ServiceHelper.addErrorResultMessage(importDto, null, MessageIdConstant.E_SKF_1095, (i + 2) + "行目 項目数",
 						cellDataBeanList.size());
+				LogUtils.infoByMsg("現物支給価額マスタ取込：項目数エラー " + (i + 2) + "行目 項目数: "+ cellDataBeanList.size());
 				// 取り込み不可カウンタをインクリメント
 				impNgRecordCount += 1;
 				// 次の行へ

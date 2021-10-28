@@ -15,6 +15,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGe
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -134,6 +135,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 		if (resultUpdateApplInfo.equals("updateError")) {
 			// 更新エラー
 			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.E_SKF_1075);
+			LogUtils.infoByMsg("退居（自動車の保管場所返還）届(アウトソース用）承認ボタン押下時：  申請書類履歴が更新できなかった  社員番号：" + appDto.getShainNo()+ " 申請書番号：" + appDto.getApplNo());
 			return appDto;
 		} else if (resultUpdateApplInfo.equals("exclusiveError")) {
 			// 排他チェックエラー
