@@ -97,7 +97,7 @@ public class Skf2010Sc002InitService extends SkfServiceAbstract<Skf2010Sc002Init
 		String prePageId = beforeForm.getPrePageId();
 		initDto.setPrePageId(prePageId);
 
-		// 申請書類履歴情報を取得取得
+		// 申請書類履歴情報を取得
 		Skf2010Sc002GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc002GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc002SharedService.getApplHistoryInfoByParameter(initDto.getApplNo());
 		if (tApplHistoryData != null) {
@@ -109,6 +109,7 @@ public class Skf2010Sc002InitService extends SkfServiceAbstract<Skf2010Sc002Init
 					tApplHistoryData.getUpdateDate());
 		} else {
 			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
+			LogUtils.infoByMsg("申請書類確認画面の初期表示：  更新対象の申請情報を取得出来なかった  社員番号：" + initDto.getShainNo()+ "申請書番号：" + initDto.getApplNo());
 			return initDto;
 		}
 

@@ -514,6 +514,7 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 		// 提示ボタン
 		initDto.setBtnPresentDisabeld(sTrue);
 		ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
+		LogUtils.infoByMsg("退居（自動車の保管場所返還（アウトソース用））届： 初期表示エラー 社員番号：" + initDto.getShainNo()+ " 申請書番号 ：" +initDto.getApplNo());
 	}
 
 	/**

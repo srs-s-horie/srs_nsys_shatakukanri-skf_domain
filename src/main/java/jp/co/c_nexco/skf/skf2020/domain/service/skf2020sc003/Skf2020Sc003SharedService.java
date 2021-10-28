@@ -53,6 +53,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinse
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -420,6 +421,7 @@ public class Skf2020Sc003SharedService {
 
 		if (shatakuNyukyoKiboInfo == null) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+			LogUtils.infoByMsg("社宅入居希望等調書（アウトソース用）共通処理： 入居希望等調書申請情報を取得失敗   申請書番号：" + dto.getApplNo());
 			// 更新処理を行わせないようボタンを使用不可に
 			// 差戻しのみ使用可能に
 			// 備品申請要否の非活性制御
@@ -1516,7 +1518,9 @@ public class Skf2020Sc003SharedService {
 			List<Map<String, Object>> attachedFileList, int applTacFlg,
 			Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo, Map<String, String> errorMsg) {
 		// 添付ファイルの更新は削除→登録で行う
-		skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
+		if(!skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg)){
+			return false;
+		}
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
@@ -1743,7 +1747,7 @@ public class Skf2020Sc003SharedService {
 		String taiyoHitsuyo = dto.getTaiyoHituyo();
 		dto.setEditBtnVisible(true);
 		dto.setApproverBtnViewFlag(true);
-		if (!taiyoHitsuyo.equals(CodeConstant.ASKED_SHATAKU_HITSUYO)) {
+		if (!CodeConstant.ASKED_SHATAKU_HITSUYO.equals(taiyoHitsuyo)) {
 			dto.setEditBtnVisible(false);
 		}
 		

@@ -276,6 +276,7 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 			ServiceHelper.addResultMessage(confirmPositiveCoopDto, MessageIdConstant.I_SKF_3090, targetNengetsu);
 		} else {
 			ServiceHelper.addErrorResultMessage(confirmPositiveCoopDto, null, MessageIdConstant.E_SKF_1079);
+			LogUtils.infoByMsg("異常終了:トランザクションB　POSITIVE連携データ確定処理で失敗 :" + BATCH_NAME);
 		}
 		skf3050Sc002SharedService.outputManagementLogEndProc(endList);
 		//管理ログ終了処理

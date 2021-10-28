@@ -461,6 +461,7 @@ public class Skf2010Sc004AgreeAsyncService extends SkfAsyncServiceAbstract<Skf20
 			nyukyoChoshoTsuchi = skf2010Sc004SharedService.getNyukyoChoshoTsuchiInfo(applNo);
 			if (nyukyoChoshoTsuchi == null) {
 				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
+				LogUtils.infoByMsg("同意するボタン押下時： 社宅入居希望等申請情報を取得失敗 　 申請書番号：" + agreeDto.getApplNo());
 				return;
 			}
 
@@ -476,6 +477,7 @@ public class Skf2010Sc004AgreeAsyncService extends SkfAsyncServiceAbstract<Skf20
 			taikyoReport = skf2010Sc004SharedService.getTaikkyoReportInfo(applNo);
 			if (taikyoReport == null) {
 				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
+				LogUtils.infoByMsg("同意するボタン押下時： 退居申請情報を取得失敗 　 申請書番号：" + agreeDto.getApplNo());
 				return;
 			}
 			// 退居日

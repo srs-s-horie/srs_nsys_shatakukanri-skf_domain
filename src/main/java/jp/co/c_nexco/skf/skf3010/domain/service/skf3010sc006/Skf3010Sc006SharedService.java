@@ -2129,7 +2129,8 @@ public class Skf3010Sc006SharedService {
 		getShatakuParkingInfo(shatakuKanriNo, getShatakuParkingInfoTableData);
 		
 		if(getShatakuParkingInfoTableData.size() <= 0){
-			ServiceHelper.addResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"駐車場情報初期化");
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"駐車場情報初期化");
+			logger.info("getShatakuParkingInfoTableData, 駐車場情報初期化エラーが発生しました。 社宅管理番号:"+ shatakuKanriNo);
 			return;
 		}
 		
@@ -2608,7 +2609,8 @@ public class Skf3010Sc006SharedService {
 		getKihonInfo(shatakuKanriNo, getKihonInfoListTableData);
 		
 		if(getKihonInfoListTableData.size() <= 0){
-			ServiceHelper.addResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"基本情報初期化");
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"基本情報初期化");
+			logger.info("getKihonInfo, 基本情報初期化エラーが発生しました。 社宅管理番号:"+ shatakuKanriNo);
 			return;
 		}
 		

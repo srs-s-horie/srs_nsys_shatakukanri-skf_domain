@@ -46,6 +46,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsu
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -485,6 +486,7 @@ public class Skf2010Sc006SharedService {
 		applInfo = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(companyCd, shainNo, applNo, applId);
 		if (applInfo == null) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+			LogUtils.infoByMsg("申請書類承認／修正依頼／通知 修正依頼共通処理： 申請情報を取得失敗  社員番号：" + dto.getShainNo() + " 申請書番号：" + dto.getApplNo());
 			return false;
 		}
 
@@ -522,6 +524,7 @@ public class Skf2010Sc006SharedService {
 					errorMsg);
 			if (!resultUpdateApplInfo) {
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+				LogUtils.infoByMsg("申請書類承認／修正依頼／通知 修正依頼共通処理： 申請情報更新失敗  社員番号：" + dto.getShainNo() + " 申請書番号：" + dto.getApplNo());
 				return false;
 			}
 

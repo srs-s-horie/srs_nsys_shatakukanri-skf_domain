@@ -14,6 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc002.Skf2010Sc002GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc002.Skf2010Sc002GetTeijiShatakuInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
@@ -65,11 +66,13 @@ public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002P
 		// 申請書類IDの有無チェック
 		if (preDto.getApplId() == null) {
 			ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1078, "");
+			LogUtils.infoByMsg("提示ボタン押下時： 申請書IDがNULL  社員番号：" + preDto.getShainNo() + " 申請書番号：" + preDto.getApplNo());
 			return preDto;
 		}
 		// ステータスの有無チェック
 		if (preDto.getApplStatus() == null) {
 			ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1078, "");
+			LogUtils.infoByMsg("提示ボタン押下時： 申請書IDがNULL  社員番号：" + preDto.getShainNo() + " 申請書番号：" + preDto.getApplNo());
 			return preDto;
 		}
 
@@ -101,6 +104,7 @@ public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002P
 		if ("updateError".equals(res)) {
 			// 更新エラー
 			ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
+			LogUtils.infoByMsg("提示ボタン押下時： updateError　申請書類履歴またはコメントテーブル更新時にエラー　　社員番号：" + preDto.getShainNo()+ "　申請書番号　" +preDto.getApplNo());
 			return preDto;
 		} else if ("exclusiveError".equals(res)) {
 			// 排他チェックエラー

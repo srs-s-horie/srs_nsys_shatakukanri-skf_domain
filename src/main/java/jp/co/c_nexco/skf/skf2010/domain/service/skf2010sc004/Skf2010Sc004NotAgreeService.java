@@ -17,6 +17,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2020TNyukyoChoshoTsuchi;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -186,6 +187,7 @@ public class Skf2010Sc004NotAgreeService extends SkfServiceAbstract<Skf2010Sc004
 			nyukyoChoshoTsuchi = skf2010Sc004SharedService.getNyukyoChoshoTsuchiInfo(applNo);
 			if (nyukyoChoshoTsuchi == null) {
 				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
+				LogUtils.infoByMsg("同意しないボタン押下時： 社宅入居希望等申請情報を取得失敗  社員番号：" + agreeDto.getShainNo() + " 申請書番号：" + agreeDto.getApplNo());
 				return;
 			}
 
@@ -201,6 +203,7 @@ public class Skf2010Sc004NotAgreeService extends SkfServiceAbstract<Skf2010Sc004
 			taikyoReport = skf2010Sc004SharedService.getTaikkyoReportInfo(applNo);
 			if (taikyoReport == null) {
 				ServiceHelper.addErrorResultMessage(agreeDto, null, MessageIdConstant.E_SKF_1078, "初期表示中に");
+				LogUtils.infoByMsg("同意しないボタン押下時： 退居届申請情報を取得失敗  社員番号：" + agreeDto.getShainNo() + " 申請書番号：" + agreeDto.getApplNo());
 				return;
 			}
 			// 退居日
