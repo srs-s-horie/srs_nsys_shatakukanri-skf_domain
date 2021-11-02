@@ -14,7 +14,8 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetNewRoomKanriNoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetShatakuInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuContract;
@@ -26,6 +27,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuParkingWithB
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoom;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuRoomBihin;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3010MShatakuWithBLOBs;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002UpdateMshatakuParkingTableDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc002.Skf3010Sc002UpdateMshatakuTableDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006GetNewRoomKanriNoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006UpdateMShatakuExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3010Sc006.Skf3010Sc006UpdateMShatakuParkingExpRepository;
@@ -94,6 +97,11 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 	private Skf3010Sc006UpdateMShatakuExpRepository skf3010Sc006UpdateMShatakuExpRepository;
 	@Autowired
 	private Skf3010Sc006UpdateMShatakuParkingExpRepository skf3010Sc006UpdateMShatakuParkingExpRepository;
+	@Autowired
+	private Skf3010Sc002UpdateMshatakuTableDataExpRepository skf3010Sc002UpdateMshatakuTableDataExpRepository;
+	@Autowired
+	private Skf3010Sc002UpdateMshatakuParkingTableDataExpRepository skf3010Sc002UpdateMshatakuParkingTableDataExpRepository;
+	
 	/** ロガー。 */
 	private static Logger logger = LogUtils.getLogger(SkfFileOutputUtils.class);
 
@@ -136,11 +144,11 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 
 		/** 更新用パラメータ */
 		// 社宅基本
-		Skf3010MShatakuWithBLOBs mShataku = new Skf3010MShatakuWithBLOBs();
+		Skf3010Sc002MShatakuTableDataExpParameter mShataku = new Skf3010Sc002MShatakuTableDataExpParameter();
 		// 社宅部屋
 		Skf3010MShatakuRoom mShatakuRoom = new Skf3010MShatakuRoom();
 		// 社宅駐車場
-		Skf3010MShatakuParkingWithBLOBs mShatakuParking = new Skf3010MShatakuParkingWithBLOBs();
+		Skf3010Sc002MShatakuParkingTableDataExpParameter mShatakuParking = new Skf3010Sc002MShatakuParkingTableDataExpParameter();
 		// 駐車場区画情報
 		Skf3010MShatakuParkingBlock mShatakuParkingBlock = new Skf3010MShatakuParkingBlock();
 		// 社宅管理者情報リスト
@@ -274,9 +282,9 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 	 */
 	private int updateKariageShatakuInfo(
 			List<Map<String, Object>> drpDwnSelectedList,
-			Skf3010MShatakuWithBLOBs mShataku, 
+			Skf3010Sc002MShatakuTableDataExpParameter mShataku, 
 			Skf3010MShatakuRoom mShatakuRoom, 
-			Skf3010MShatakuParkingWithBLOBs mShatakuParking,
+			Skf3010Sc002MShatakuParkingTableDataExpParameter mShatakuParking,
 			Skf3010MShatakuParkingBlock mShatakuParkingBlock,
 			List<Skf3010MShatakuRoomBihin> mShatakuBihinList,
 			List<Skf3010MShatakuManege> mShatakuManageList,
@@ -302,7 +310,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		mShataku.setUpdateUserId(userName);
 		// プログラムID設定
 		mShataku.setUpdateProgramId(pageId);
-		updateCnt = skf3010Sc006UpdateMShatakuExpRepository.updateByPrimaryKeySelective(mShataku);
+		updateCnt = skf3010Sc002UpdateMshatakuTableDataExpRepository.updateShatakuKihon(mShataku);
 		// 更新カウント判定
 		if (updateCnt < 1) {
 			LogUtils.infoByMsg("updateKariageShatakuInfo, 社宅基本更新失敗");
@@ -324,7 +332,7 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		mShatakuParking.setUpdateUserId(userName);
 		// プログラムID設定
 		mShatakuParking.setUpdateProgramId(pageId);
-		updateCnt = skf3010Sc006UpdateMShatakuParkingExpRepository.updateByPrimaryKeySelective(mShatakuParking);
+		updateCnt = skf3010Sc002UpdateMshatakuParkingTableDataExpRepository.updateShatakuParking(mShatakuParking);
 		// 更新カウント判定
 		if (updateCnt < 1) {
 			LogUtils.infoByMsg("updateKariageShatakuInfo, 社宅駐車場更新失敗");
@@ -511,9 +519,9 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 	 * @param pageId					ページID(プログラムID)
 	 * @return	登録件数
 	 */
-	private int insertKariageShatakuInfo(Skf3010MShatakuWithBLOBs mShataku, 
+	private int insertKariageShatakuInfo(Skf3010Sc002MShatakuTableDataExpParameter mShataku, 
 			Skf3010MShatakuRoom mShatakuRoom,
-			Skf3010MShatakuParkingWithBLOBs mShatakuParking,
+			Skf3010Sc002MShatakuParkingTableDataExpParameter mShatakuParking,
 			Skf3010MShatakuParkingBlock mShatakuParkingBlock,
 			List<Skf3010MShatakuRoomBihin> mShatakuBihinList, List<Skf3010MShatakuManege> mShatakuManageList,
 			Skf3010MShatakuContract mShatakuContract, Skf3010MShatakuParkingContract mShatakuParkingContract, 
@@ -538,7 +546,16 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		/** 社宅基本登録 */
 		// 社宅管理番号設定
 		mShataku.setShatakuKanriNo(shatakuKanriNo);
-		updateCnt = skf3010MShatakuRepository.insertSelective(mShataku);
+		// ユーザーID取得
+		String userId = LoginUserInfoUtils.getUserCd();
+		// ユーザーID設定
+		mShataku.setUpdateUserId(userId);
+		mShataku.setInsertUserId(userId);
+		// プログラムID設定
+		mShataku.setUpdateProgramId(pageId);
+		mShataku.setInsertProgramId(pageId);
+		updateCnt = skf3010Sc002UpdateMshatakuTableDataExpRepository.insertShatakuKihon(mShataku);
+
 		// 更新カウント判定
 		if (updateCnt < 1) {
 			LogUtils.infoByMsg("insertKariageShatakuInfo, 社宅基本登録失敗");
@@ -559,7 +576,13 @@ public class Skf3010Sc006RegistService extends SkfServiceAbstract<Skf3010Sc006Re
 		/** 社宅駐車場登録 */
 		// 社宅管理番号設定
 		mShatakuParking.setShatakuKanriNo(shatakuKanriNo);
-		updateCnt = skf3010MShatakuParkingRepository.insertSelective(mShatakuParking);
+		//　ユーザーID設定
+		mShatakuParking.setUpdateUserId(userId);
+		mShatakuParking.setInsertUserId(userId);
+		// プログラムID設定
+		mShatakuParking.setUpdateProgramId(pageId);
+		mShatakuParking.setInsertProgramId(pageId);
+		updateCnt = skf3010Sc002UpdateMshatakuParkingTableDataExpRepository.insertShatakuParking(mShatakuParking);		
 		// 更新カウント判定
 		if (updateCnt < 1) {
 			LogUtils.infoByMsg("insertKariageShatakuInfo, 社宅駐車場登録失敗");

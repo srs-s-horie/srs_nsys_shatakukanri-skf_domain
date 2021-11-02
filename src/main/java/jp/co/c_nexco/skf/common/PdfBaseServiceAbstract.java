@@ -293,8 +293,11 @@ public abstract class PdfBaseServiceAbstract<DTO extends FileDownloadDto> extend
 		} else {
 			// PDF作成処理の戻り値が0以外である場合は、処理中で何らかのエラーが発生している(出力ファイルは生成されない)
 			resultMessage = this.integratePdf.lastMessage();
+			LogUtils.infoByMsg(resultMessage);
+			LogUtils.infoByMsg("outputPdf: PDF出力失敗。処理中エラー発生。");
 		}
 		LogUtils.debugByMsg(resultMessage);
+		
 	}
 
 	/**
