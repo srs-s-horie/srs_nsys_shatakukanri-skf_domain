@@ -22,6 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
@@ -617,10 +618,10 @@ public class Skf2010Sc006SharedService {
 				return false;
 			}
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
+				SkfAttachedFileUtilsInsertAttachedFileExpParameter insertData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
-				int res = skf2010TAttachedFileRepository.insertSelective(insertData);
-				if (res <= 0) {
+				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
+				if (!insRes) {
 					return false;
 				}
 			}
@@ -628,9 +629,18 @@ public class Skf2010Sc006SharedService {
 		return true;
 	}
 
-	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	/**
+	 * 
+	 * 添付ファイル情報をパラメータに設定する
+	 * 
+	 * @param attachedFileMap
+	 * @param applNo
+	 * @param shainNo
+	 * @return
+	 */
+	private SkfAttachedFileUtilsInsertAttachedFileExpParameter mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
-		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
+		SkfAttachedFileUtilsInsertAttachedFileExpParameter resultData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
 
 		// 会社コード
 		resultData.setCompanyCd(companyCd);
@@ -649,7 +659,12 @@ public class Skf2010Sc006SharedService {
 		resultData.setFileStream((byte[]) attachedFileMap.get("fileStream"));
 		// ファイルサイズ
 		resultData.setFileSize(attachedFileMap.get("fileSize").toString());
-
+		//　登録者
+		String userCd = LoginUserInfoUtils.getUserCd();
+		resultData.setUserId(userCd);
+		// 登録機能
+		resultData.setProgramId(FunctionIdConstant.SKF2010_SC006);
+		
 		return resultData;
 	}
 

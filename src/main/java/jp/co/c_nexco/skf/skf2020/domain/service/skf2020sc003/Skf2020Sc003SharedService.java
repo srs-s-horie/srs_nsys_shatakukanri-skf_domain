@@ -28,6 +28,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiCreateKbnExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
@@ -54,6 +55,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -1524,9 +1526,12 @@ public class Skf2020Sc003SharedService {
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
+				SkfAttachedFileUtilsInsertAttachedFileExpParameter insertData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
-				skf2010TAttachedFileRepository.insertSelective(insertData);
+				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
+					if (!insRes) {
+						return false;
+					}
 			}
 		}
 		// 申請書類履歴テーブルの添付書類有無を更新
@@ -1546,9 +1551,10 @@ public class Skf2020Sc003SharedService {
 		return true;
 	}
 
-	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	private SkfAttachedFileUtilsInsertAttachedFileExpParameter mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
-		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
+		
+		SkfAttachedFileUtilsInsertAttachedFileExpParameter resultData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
 
 		// 会社コード
 		resultData.setCompanyCd(companyCd);
@@ -1573,6 +1579,11 @@ public class Skf2020Sc003SharedService {
 			fileSize = attachedFileMap.get("attachedFileSize").toString();
 		}
 		resultData.setFileSize(fileSize);
+		//　登録者
+		String userCd = LoginUserInfoUtils.getUserCd();
+		resultData.setUserId(userCd);
+		// 登録機能
+		resultData.setProgramId(FunctionIdConstant.SKF2010_SC006);
 
 		return resultData;
 	}
