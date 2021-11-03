@@ -1522,7 +1522,7 @@ public class Skf2020Sc003SharedService {
 			Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo, Map<String, String> errorMsg) {
 		// 添付ファイルの更新は削除→登録で行う
 		if(!skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg)){
-			LogUtils.infoByMsg(" 添付ファイルの更新削除失敗 ");
+			LogUtils.infoByMsg("添付ファイルの更新削除失敗 ");
 			return false;
 		}
 		// 添付ファイル管理テーブルを更新する
@@ -1532,7 +1532,7 @@ public class Skf2020Sc003SharedService {
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
 				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
 					if (!insRes) {
-						LogUtils.infoByMsg(" 添付ファイル管理テーブルを登録失敗");
+						LogUtils.infoByMsg("添付ファイル管理テーブル登録失敗");
 						return false;
 					}
 			}
@@ -1587,7 +1587,6 @@ public class Skf2020Sc003SharedService {
 		resultData.setUserId(userCd);
 		// 登録機能
 		resultData.setProgramId(FunctionIdConstant.SKF2010_SC006);
-		LogUtils.debugByMsg(" パラメーター追加完了");
 		return resultData;
 	}
 
