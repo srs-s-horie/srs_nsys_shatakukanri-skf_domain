@@ -28,7 +28,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiCreateKbnExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
@@ -365,6 +365,7 @@ public class Skf2020Sc003SharedService {
 		boolean resultUpdateFile = updateAttachedFileInfo(newStatus, applNo, shainNo, attachedFileList, applTacFlg,
 				applInfo, errorMsg);
 		if (!resultUpdateFile) {
+			LogUtils.infoByMsg("添付ファイル管理テーブル更新処理失敗 " + resultUpdateFile);
 			return false;
 		}
 
@@ -1521,15 +1522,17 @@ public class Skf2020Sc003SharedService {
 			Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo, Map<String, String> errorMsg) {
 		// 添付ファイルの更新は削除→登録で行う
 		if(!skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg)){
+			LogUtils.infoByMsg("添付ファイルの更新削除失敗 ");
 			return false;
 		}
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				SkfAttachedFileUtilsInsertAttachedFileExpParameter insertData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
+				SkfAttachedFileUtilsInsertAttachedFileExp insertData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
 				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
 					if (!insRes) {
+						LogUtils.infoByMsg("添付ファイル管理テーブル登録失敗");
 						return false;
 					}
 			}
@@ -1551,10 +1554,10 @@ public class Skf2020Sc003SharedService {
 		return true;
 	}
 
-	private SkfAttachedFileUtilsInsertAttachedFileExpParameter mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	private SkfAttachedFileUtilsInsertAttachedFileExp mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
 		
-		SkfAttachedFileUtilsInsertAttachedFileExpParameter resultData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
+		SkfAttachedFileUtilsInsertAttachedFileExp resultData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 
 		// 会社コード
 		resultData.setCompanyCd(companyCd);
@@ -1584,7 +1587,6 @@ public class Skf2020Sc003SharedService {
 		resultData.setUserId(userCd);
 		// 登録機能
 		resultData.setProgramId(FunctionIdConstant.SKF2010_SC006);
-
 		return resultData;
 	}
 

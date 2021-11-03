@@ -22,7 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetH
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
@@ -865,7 +865,7 @@ public class Skf2040Sc002SharedService {
 			// 添付ファイルの更新は削除→登録で行う
 			skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				SkfAttachedFileUtilsInsertAttachedFileExpParameter insertData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
+				SkfAttachedFileUtilsInsertAttachedFileExp insertData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
 				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
 				if (!insRes) {
@@ -901,15 +901,15 @@ public class Skf2040Sc002SharedService {
 	/**
 	 * 添付ファイル管理テーブルの登録値を設定する
 	 * 
-	 * @param SkfAttachedFileUtilsInsertAttachedFileExpParameter
+	 * @param SkfAttachedFileUtilsInsertAttachedFileExp
 	 * @param applNo
 	 * @param shainNo
 	 * @return
 	 */
-	private SkfAttachedFileUtilsInsertAttachedFileExpParameter mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	private SkfAttachedFileUtilsInsertAttachedFileExp mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
 		
-		SkfAttachedFileUtilsInsertAttachedFileExpParameter resultData = new SkfAttachedFileUtilsInsertAttachedFileExpParameter();
+		SkfAttachedFileUtilsInsertAttachedFileExp resultData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 
 		// 会社コード
 		resultData.setCompanyCd(CodeConstant.C001);
