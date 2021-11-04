@@ -2252,12 +2252,12 @@ public class Skf2010Sc005SharedService {
 			strList.add(result.getIccid());
 			titleList.add("imei");
 			strList.add(result.getImei());
+			titleList.add("fault_flag");
+			strList.add(result.getFaultFlag());
 			titleList.add("last_use_day");
 			strList.add(lastUseDay);
 			titleList.add("return_day");
-			strList.add(returnDay);		
-			titleList.add("fault_flag");
-			strList.add(result.getFaultFlag());
+			strList.add(returnDay);	
 			
 		}
 		return;
