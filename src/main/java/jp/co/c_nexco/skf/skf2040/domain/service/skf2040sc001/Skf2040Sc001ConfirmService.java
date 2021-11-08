@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2040TTaikyoReport;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.app.BaseForm;
 import jp.co.c_nexco.nfw.webcore.app.FormHelper;
@@ -103,6 +104,9 @@ public class Skf2040Sc001ConfirmService extends SkfServiceAbstract<Skf2040Sc001C
 
 			// 申請履歴、退居届の登録
 			isExecSave = skf2040Sc001SharedService.saveNewTaikyoData(confirmDto);
+			if(!isExecSave){
+				throwBusinessExceptionIfErrors(confirmDto.getResultMessages());
+			}
 
 			// 退居社宅がある場合は備品返却の作成 ※旧システムでは駐車場返還のみの場合でも備品返却情報を作成している
 			// 備品返却申請テーブル登録処理
@@ -117,6 +121,7 @@ public class Skf2040Sc001ConfirmService extends SkfServiceAbstract<Skf2040Sc001C
 				// 退居届情報が見つからなかった場合エラーメッセージを表示して処理終了
 				skf2040Sc001SharedService.setDisableBtn(confirmDto);
 				ServiceHelper.addErrorResultMessage(confirmDto, null, MessageIdConstant.E_SKF_1077);
+				LogUtils.infoByMsg("申請内容を確認ボタン押下時： 退居届情報を取得失敗  社員番号：" + confirmDto.getShainNo() + " 申請書番号：" + confirmDto.getApplNo());
 				return false;
 			}
 

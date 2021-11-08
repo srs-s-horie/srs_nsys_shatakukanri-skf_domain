@@ -22,6 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetH
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002GetTeijiDataInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
@@ -48,6 +49,7 @@ import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.DateUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -863,9 +865,12 @@ public class Skf2040Sc002SharedService {
 			// 添付ファイルの更新は削除→登録で行う
 			skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
+				SkfAttachedFileUtilsInsertAttachedFileExp insertData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
-				skf2010TAttachedFileRepository.insertSelective(insertData);
+				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
+				if (!insRes) {
+					return false;
+				}
 			}
 		}
 
@@ -896,14 +901,15 @@ public class Skf2040Sc002SharedService {
 	/**
 	 * 添付ファイル管理テーブルの登録値を設定する
 	 * 
-	 * @param attachedFileMap
+	 * @param SkfAttachedFileUtilsInsertAttachedFileExp
 	 * @param applNo
 	 * @param shainNo
 	 * @return
 	 */
-	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	private SkfAttachedFileUtilsInsertAttachedFileExp mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
-		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
+		
+		SkfAttachedFileUtilsInsertAttachedFileExp resultData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 
 		// 会社コード
 		resultData.setCompanyCd(CodeConstant.C001);
@@ -922,6 +928,11 @@ public class Skf2040Sc002SharedService {
 		resultData.setFileStream((byte[]) attachedFileMap.get("fileStream"));
 		// ファイルサイズ
 		resultData.setFileSize(attachedFileMap.get("fileSize").toString());
+		//　登録者
+		String userCd = LoginUserInfoUtils.getUserCd();
+		resultData.setUserId(userCd);
+		// 登録機能
+		resultData.setProgramId(FunctionIdConstant.SKF2010_SC006);
 
 		return resultData;
 	}

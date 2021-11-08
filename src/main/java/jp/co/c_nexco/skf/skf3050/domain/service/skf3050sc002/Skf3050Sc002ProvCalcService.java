@@ -99,6 +99,7 @@ public class Skf3050Sc002ProvCalcService extends SkfServiceAbstract<Skf3050Sc002
 			ServiceHelper.addResultMessage(provCalcDto, MessageIdConstant.I_SKF_3091, targetNengetsu);
 		} else {
 			ServiceHelper.addErrorResultMessage(provCalcDto, null, MessageIdConstant.E_SKF_1079);
+			LogUtils.infoByMsg("異常終了:トランザクションB　月次運用管理画面の仮計算処理処理　月別処理管理、月次処理管理を更新失敗");
 		}
 
 		LogUtils.info(MessageIdConstant.I_SKF_1023, BATCH_NAME);

@@ -18,6 +18,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeij
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2050TBihinHenkyakuShinsei;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -100,6 +101,7 @@ public class Skf2050Sc002SharedService {
 		if (applHistoryList == null || applHistoryList.size() <= 0) {
 			// データ件数0件の場合はメッセージ
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1078, NO_DATA_MESSAGE);
+			LogUtils.infoByMsg("備品返却確認共通処理：申請書類履歴取得失敗：　" + " 申請書番号：　" + applNo);
 			return false;
 		}
 		SkfApplHistoryInfoUtilsGetApplHistoryInfoExp applHistory = applHistoryList.get(0);
@@ -119,6 +121,7 @@ public class Skf2050Sc002SharedService {
 		bihinHenkyaku = skfBihinInfoUtils.getBihinHenkyakuShinseiInfo(companyCd, applNo);
 		if (bihinHenkyaku == null) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1078, NO_DATA_MESSAGE);
+			LogUtils.infoByMsg("備品返却確認共通処理：申請書類履歴取得失敗：" + dto.getShainNo() + " 申請書番号：" + applNo);
 			return false;
 		} else {
 			setDispItem(applStatus, bihinHenkyaku, dto, viewMode);

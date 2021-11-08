@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MSoshikiKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MSoshikiRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -42,6 +43,10 @@ public class Skf3090Sc007DeleteService extends SkfServiceAbstract<Skf3090Sc007De
 		// 削除が失敗した場合
 		if (!(deleteCheck)) {
 			ServiceHelper.addErrorResultMessage(deleteDto, null, MessageIdConstant.E_SKF_1076);
+			LogUtils.infoByMsg("組織マスタ削除ボタン押下時削除失敗　会社コード： "+deleteDto.getRegistCompanyCd()
+				+" 機関コード： "+deleteDto.getRegistAgencyCd()
+				+" 部等コード： "+deleteDto.getRegistAffiliation1Cd()
+				+" 室・課コード： " +deleteDto.getRegistAffiliation2Cd());
 		} else {
 			// 画面遷移
 			deleteDto.setTransferPageInfo(TransferPageInfo.prevPage(FunctionIdConstant.SKF3090_SC006));

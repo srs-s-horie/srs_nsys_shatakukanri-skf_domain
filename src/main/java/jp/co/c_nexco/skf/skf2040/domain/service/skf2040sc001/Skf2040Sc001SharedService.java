@@ -499,7 +499,7 @@ public class Skf2040Sc001SharedService {
 		// 取得に失敗した場合
 		if (newApplNo == null) {
 			// エラーメッセージを表示用に設定
-			ServiceHelper.addResultMessage(dto, null, MessageIdConstant.E_SKF_1094);
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1024);
 			// 保存処理を終了
 			return false;
 		}

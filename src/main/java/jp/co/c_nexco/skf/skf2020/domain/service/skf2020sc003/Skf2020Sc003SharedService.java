@@ -28,6 +28,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetTeijiCreateKbnExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003UpdateApplHistoryExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfTeijiDataInfoUtils.SkfTeijiDataInfoUtilsGetTeijiDataInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
@@ -53,6 +54,8 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinKiboShinse
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2030TBihinRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -362,6 +365,7 @@ public class Skf2020Sc003SharedService {
 		boolean resultUpdateFile = updateAttachedFileInfo(newStatus, applNo, shainNo, attachedFileList, applTacFlg,
 				applInfo, errorMsg);
 		if (!resultUpdateFile) {
+			LogUtils.infoByMsg("添付ファイル管理テーブル更新処理失敗 " + resultUpdateFile);
 			return false;
 		}
 
@@ -420,6 +424,7 @@ public class Skf2020Sc003SharedService {
 
 		if (shatakuNyukyoKiboInfo == null) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+			LogUtils.infoByMsg("社宅入居希望等調書（アウトソース用）共通処理： 入居希望等調書申請情報を取得失敗   申請書番号：" + dto.getApplNo());
 			// 更新処理を行わせないようボタンを使用不可に
 			// 差戻しのみ使用可能に
 			// 備品申請要否の非活性制御
@@ -1516,13 +1521,20 @@ public class Skf2020Sc003SharedService {
 			List<Map<String, Object>> attachedFileList, int applTacFlg,
 			Skf2020Sc003GetApplHistoryInfoForUpdateExp applInfo, Map<String, String> errorMsg) {
 		// 添付ファイルの更新は削除→登録で行う
-		skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
+		if(!skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg)){
+			LogUtils.infoByMsg("添付ファイルの更新削除失敗 ");
+			return false;
+		}
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
+				SkfAttachedFileUtilsInsertAttachedFileExp insertData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
-				skf2010TAttachedFileRepository.insertSelective(insertData);
+				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
+					if (!insRes) {
+						LogUtils.infoByMsg("添付ファイル管理テーブル登録失敗");
+						return false;
+					}
 			}
 		}
 		// 申請書類履歴テーブルの添付書類有無を更新
@@ -1542,9 +1554,10 @@ public class Skf2020Sc003SharedService {
 		return true;
 	}
 
-	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	private SkfAttachedFileUtilsInsertAttachedFileExp mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
-		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
+		
+		SkfAttachedFileUtilsInsertAttachedFileExp resultData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 
 		// 会社コード
 		resultData.setCompanyCd(companyCd);
@@ -1569,7 +1582,11 @@ public class Skf2020Sc003SharedService {
 			fileSize = attachedFileMap.get("attachedFileSize").toString();
 		}
 		resultData.setFileSize(fileSize);
-
+		//　登録者
+		String userCd = LoginUserInfoUtils.getUserCd();
+		resultData.setUserId(userCd);
+		// 登録機能
+		resultData.setProgramId(FunctionIdConstant.SKF2010_SC006);
 		return resultData;
 	}
 
@@ -1743,7 +1760,7 @@ public class Skf2020Sc003SharedService {
 		String taiyoHitsuyo = dto.getTaiyoHituyo();
 		dto.setEditBtnVisible(true);
 		dto.setApproverBtnViewFlag(true);
-		if (!taiyoHitsuyo.equals(CodeConstant.ASKED_SHATAKU_HITSUYO)) {
+		if (!CodeConstant.ASKED_SHATAKU_HITSUYO.equals(taiyoHitsuyo)) {
 			dto.setEditBtnVisible(false);
 		}
 		

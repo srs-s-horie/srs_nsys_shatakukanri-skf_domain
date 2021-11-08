@@ -31,6 +31,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetP
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuContExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatakuContractInfoTableDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002GetShatkuInfoTableDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuParkingTableDataExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc002.Skf3010Sc002MShatakuTableDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetBihinInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetBihinInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3010Sc006.Skf3010Sc006GetKihonInfoExp;
@@ -2129,7 +2131,8 @@ public class Skf3010Sc006SharedService {
 		getShatakuParkingInfo(shatakuKanriNo, getShatakuParkingInfoTableData);
 		
 		if(getShatakuParkingInfoTableData.size() <= 0){
-			ServiceHelper.addResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"駐車場情報初期化");
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"駐車場情報初期化");
+			logger.info("getShatakuParkingInfoTableData, 駐車場情報初期化エラーが発生しました。 社宅管理番号:"+ shatakuKanriNo);
 			return;
 		}
 		
@@ -2608,7 +2611,8 @@ public class Skf3010Sc006SharedService {
 		getKihonInfo(shatakuKanriNo, getKihonInfoListTableData);
 		
 		if(getKihonInfoListTableData.size() <= 0){
-			ServiceHelper.addResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"基本情報初期化");
+			ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.E_SKF_1078,"基本情報初期化");
+			logger.info("getKihonInfo, 基本情報初期化エラーが発生しました。 社宅管理番号:"+ shatakuKanriNo);
 			return;
 		}
 		
@@ -3722,7 +3726,7 @@ public class Skf3010Sc006SharedService {
 	 * @param comDto				DTO
 	 */
 	public void setUpdateColumShatakuKihon(
-			Skf3010MShatakuWithBLOBs mShataku, 
+			Skf3010Sc002MShatakuTableDataExpParameter mShataku, 
 			List<Map<String, Object>> labelList, Skf3010Sc006CommonDto comDto) {
 
 		Map <String, Object> labelMap = labelList.get(0);
@@ -3741,6 +3745,10 @@ public class Skf3010Sc006SharedService {
 		String shatakuSupplementName1 = ("".equals(comDto.getShatakuHosokuFileName1())) ? null : comDto.getShatakuHosokuFileName1();
 		String shatakuSupplementName2 = ("".equals(comDto.getShatakuHosokuFileName2())) ? null : comDto.getShatakuHosokuFileName2();
 		String shatakuSupplementName3 = ("".equals(comDto.getShatakuHosokuFileName3())) ? null : comDto.getShatakuHosokuFileName3();
+		// 社宅補足ファイルサイズ
+		String shatakuSupplementSize1 = ("".equals(comDto.getShatakuHosokuSize1())) ? null : comDto.getShatakuHosokuSize1();
+		String shatakuSupplementSize2 = ("".equals(comDto.getShatakuHosokuSize2())) ? null : comDto.getShatakuHosokuSize2();
+		String shatakuSupplementSize3 = ("".equals(comDto.getShatakuHosokuSize3())) ? null : comDto.getShatakuHosokuSize3();
 
 		// 社宅名
 		mShataku.setShatakuName(comDto.getShatakuName());
@@ -3777,6 +3785,9 @@ public class Skf3010Sc006SharedService {
 		mShataku.setShatakuSupplementName2(shatakuSupplementName2);
 		mShataku.setShatakuSupplementName3(shatakuSupplementName3);
 		// 社宅補足ファイルサイズ
+		mShataku.setShatakuSupplementSize1(shatakuSupplementSize1);
+		mShataku.setShatakuSupplementSize2(shatakuSupplementSize2);
+		mShataku.setShatakuSupplementSize3(shatakuSupplementSize3);
 		// 社宅補足ファイル
 		if(!SkfCheckUtils.isNullOrEmpty(shatakuSupplementName1)){
 			mShataku.setShatakuSupplementSize1(comDto.getShatakuHosokuSize1());
@@ -3904,7 +3915,7 @@ public class Skf3010Sc006SharedService {
 	 * @param comDto				DTO
 	 */
 	public void setUpdateColumParking(
-			Skf3010MShatakuParkingWithBLOBs mShatakuParking, 
+			Skf3010Sc002MShatakuParkingTableDataExpParameter mShatakuParking, 
 			List<Map<String, Object>> labelList, Skf3010Sc006CommonDto comDto) {
 
 		Map <String, Object> labelMap = labelList.get(0);

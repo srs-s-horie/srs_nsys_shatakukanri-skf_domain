@@ -22,6 +22,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetT
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentListExp;
@@ -46,6 +47,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2020TNyukyoChoshoTsu
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2040TTaikyoReportRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
@@ -485,6 +487,7 @@ public class Skf2010Sc006SharedService {
 		applInfo = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(companyCd, shainNo, applNo, applId);
 		if (applInfo == null) {
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+			LogUtils.infoByMsg("申請書類承認／修正依頼／通知 修正依頼共通処理： 申請情報を取得失敗  社員番号：" + dto.getShainNo() + " 申請書番号：" + dto.getApplNo());
 			return false;
 		}
 
@@ -522,6 +525,7 @@ public class Skf2010Sc006SharedService {
 					errorMsg);
 			if (!resultUpdateApplInfo) {
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+				LogUtils.infoByMsg("申請書類承認／修正依頼／通知 修正依頼共通処理： 申請情報更新失敗  社員番号：" + dto.getShainNo() + " 申請書番号：" + dto.getApplNo());
 				return false;
 			}
 
@@ -614,10 +618,10 @@ public class Skf2010Sc006SharedService {
 				return false;
 			}
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
+				SkfAttachedFileUtilsInsertAttachedFileExp insertData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
-				int res = skf2010TAttachedFileRepository.insertSelective(insertData);
-				if (res <= 0) {
+				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
+				if (!insRes) {
 					return false;
 				}
 			}
@@ -625,9 +629,18 @@ public class Skf2010Sc006SharedService {
 		return true;
 	}
 
-	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	/**
+	 * 
+	 * 添付ファイル情報をパラメータに設定する
+	 * 
+	 * @param attachedFileMap
+	 * @param applNo
+	 * @param shainNo
+	 * @return
+	 */
+	private SkfAttachedFileUtilsInsertAttachedFileExp mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
-		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
+		SkfAttachedFileUtilsInsertAttachedFileExp resultData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 
 		// 会社コード
 		resultData.setCompanyCd(companyCd);
@@ -646,7 +659,12 @@ public class Skf2010Sc006SharedService {
 		resultData.setFileStream((byte[]) attachedFileMap.get("fileStream"));
 		// ファイルサイズ
 		resultData.setFileSize(attachedFileMap.get("fileSize").toString());
-
+		//　登録者
+		String userCd = LoginUserInfoUtils.getUserCd();
+		resultData.setUserId(userCd);
+		// 登録機能
+		resultData.setProgramId(FunctionIdConstant.SKF2010_SC006);
+		
 		return resultData;
 	}
 

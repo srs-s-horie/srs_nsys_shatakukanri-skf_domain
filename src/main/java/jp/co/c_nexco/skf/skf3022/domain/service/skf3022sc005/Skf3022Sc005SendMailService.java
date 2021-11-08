@@ -34,6 +34,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3022TTeijiDataRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwSendMailUtils;
+import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -328,7 +329,7 @@ public class Skf3022Sc005SendMailService extends SkfServiceAbstract<Skf3022Sc005
 			
 			// 短縮URL作成
 			if (urlBase != null) {
-				String url = BaseUrl.get() + "/" + urlBase.replaceFirst("^/", "");
+				String url = PropertyUtils.getValue("skf.common.baseUrl") + urlBase.replaceFirst("^/", "");
 				replaceMap.put("【url】", url);
 			}
 			

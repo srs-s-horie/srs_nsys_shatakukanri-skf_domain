@@ -74,6 +74,7 @@ public class Skf3050Sc002CreatePositiveCooperationDataService extends SkfService
 		} else {
 			endFlg = SkfCommonConstant.ABNORMAL;
 			ServiceHelper.addErrorResultMessage(createPositiveCoopDto, null, MessageIdConstant.E_SKF_1079);
+			LogUtils.infoByMsg("異常終了:トランザクションB　月次運用管理画面のPOSITIVE連携データ作成処理　POSITIVE連携データをエクセルに出力失敗");
 		}
 
 		//トランザクションCの開始
