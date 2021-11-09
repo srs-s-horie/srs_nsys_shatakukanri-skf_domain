@@ -37,6 +37,11 @@ public abstract class SkfServiceAbstract<DTO extends BaseDto> extends BaseServic
 		try {
 			outputDto = super.executeService(inDto);
 		} catch (Exception e) {
+			//inDtoがnullの場合Throwする
+			if(inDto == null || inDto.getResultMessages() == null || inDto.getResultMessages().getList() ==null ){
+				throw e;
+			}
+			
 			String errMsg = getGyomuErrMsg(inDto.getResultMessages());
 			if( !CodeConstant.NONE.equals(errMsg) ){
 				//業務エラーメッセージが設定されていた場合、skf_logger.logにエラーログを出力する
