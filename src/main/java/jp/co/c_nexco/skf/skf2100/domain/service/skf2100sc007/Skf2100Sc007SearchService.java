@@ -69,6 +69,7 @@ public class Skf2100Sc007SearchService extends SkfServiceAbstract<Skf2100Sc007Se
 
 		Skf2100Sc007GetListTableDataExpParameter searchParam = skf2100Sc007SharedService
 				.createSearchParam(inDto);
+		inDto.setSearchParam(searchParam);
 
 		long searchCount = skf2100Sc007SharedService.getRouterListCount(searchParam);
 		long maxCnt = Long.parseLong(maxSearchCount);

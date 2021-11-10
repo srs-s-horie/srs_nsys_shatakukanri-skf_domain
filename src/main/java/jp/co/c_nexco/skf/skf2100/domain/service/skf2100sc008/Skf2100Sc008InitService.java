@@ -59,7 +59,7 @@ public class Skf2100Sc008InitService extends SkfServiceAbstract<Skf2100Sc008Init
 	@Override
 	public Skf2100Sc008InitDto index(Skf2100Sc008InitDto initDto) throws Exception {
 		
-		initDto.setPageTitleKey(MessageIdConstant.SKF2100_SC006_TITLE);
+		initDto.setPageTitleKey(MessageIdConstant.SKF2100_SC008_TITLE);
  		
 		// デバッグログ
 		LogUtils.debugByMsg("初期表示");

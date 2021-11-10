@@ -79,15 +79,17 @@ public class Skf2100Sc007InitService extends SkfServiceAbstract<Skf2100Sc007Init
 			
 		}
 		
+		initDto.setResultMessages(null);
+		initDto.setSearchParam(null);
+		
 		// 一覧情報取得
 		Skf2100Sc007GetListTableDataExpParameter searchParam = skf2100Sc007SharedService
 				.createSearchParam(initDto);
+		initDto.setSearchParam(searchParam);
 
 		long searchCount = skf2100Sc007SharedService.getRouterListCount(searchParam);
 		long maxCnt = Long.parseLong(maxSearchCount);
 
-		initDto.setResultMessages(null);
-		initDto.setSearchParam(null);
 		initDto = (Skf2100Sc007InitDto) skf2100Sc007SharedService.setDropDownSelect(initDto);
 
 		if (searchCount == 0) {

@@ -352,11 +352,11 @@ public class Skf2100Sc008SharedService {
 		if(!SkfCheckUtils.isNullOrEmpty(getDateText(comDto.getContractStartDate()))){
 			// 契約開始日入力有りの場合
 			if(validateDateCorrelation(comDto.getContractStartDate(),comDto.getContractEndDate())){
-				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_3061, "ルーター契約終了日","ルーター契約開始日");
-				comDto.setContractEndDateErr(CodeConstant.NFW_VALIDATION_ERROR);
+				ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_3061, "ルーター契約開始日","ルーター契約終了日");
+				comDto.setContractStartDateErr(CodeConstant.NFW_VALIDATION_ERROR);
 				errMsg.append("整合性チェックNG：契約終了日");
 			}else{
-				comDto.setContractEndDateErr("");
+				comDto.setContractStartDateErr("");
 			}
 		}
 
