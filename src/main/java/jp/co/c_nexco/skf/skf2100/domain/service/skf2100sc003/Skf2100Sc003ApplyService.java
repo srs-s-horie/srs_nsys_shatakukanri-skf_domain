@@ -40,7 +40,9 @@ public class Skf2100Sc003ApplyService extends SkfServiceAbstract<Skf2100Sc003App
 	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
 	
-	
+	// 電話番号チェック正規表現
+	private static final String TELNO_CHECK_REG = "^[0-9-]*$";
+		
 	/**
 	 * サービス処理を行う。
 	 * 
@@ -142,6 +144,12 @@ public class Skf2100Sc003ApplyService extends SkfServiceAbstract<Skf2100Sc003App
 			result = false;
 		}
 		
+		// 電話番号
+		String telNo = (applyDto.getTel() != null) ? applyDto.getTel() : "";
+		if( !SkfCheckUtils.isNullOrEmpty(telNo) && !telNo.matches(TELNO_CHECK_REG)){
+			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "tel" }, MessageIdConstant.E_SKF_1003 , "電話番号");
+			result = false;
+		}
 
 		return result;
 	}
