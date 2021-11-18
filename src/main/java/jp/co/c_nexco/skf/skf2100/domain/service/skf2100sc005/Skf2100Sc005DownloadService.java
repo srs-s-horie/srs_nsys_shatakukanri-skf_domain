@@ -110,6 +110,7 @@ public class Skf2100Sc005DownloadService extends SkfServiceAbstract<Skf2100Sc005
 		inDto = (Skf2100Sc005DownloadDto) skf2100Sc005SharedService.setDropDownSelect(inDto);
 
 		inDto.setResultMessages(null);
+		inDto.setFileData(null);
 
 		String sysNengetsu = skf2100Sc005SharedService.getSystemProcessNenGetsu();
 		String yearMonth = inDto.getHdnYearSelect() + inDto.getHdnMonthSelect();
