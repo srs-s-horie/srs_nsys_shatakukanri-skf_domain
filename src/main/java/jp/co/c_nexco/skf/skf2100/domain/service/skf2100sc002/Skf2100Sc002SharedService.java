@@ -64,6 +64,7 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
+import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100Sc001common.Skf2100Sc001CommonDto;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100Sc002common.Skf2100Sc002CommonDto;
 /**
  * Skf2100Sc002 モバイルルーター借用希望申請書（アウトソース用)共通処理クラス
@@ -512,6 +513,57 @@ public class Skf2100Sc002SharedService {
 		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
 	}
 
+	/**
+	 * DTO情報のクリア
+	 * 
+	 * @param dto
+	 */
+	protected void setClearInfo(Skf2100Sc002CommonDto dto) {
+		
+		// 機関
+		dto.setAgency(null);
+		// 部等
+		dto.setAffiliation1(null);
+		// 室・課等
+		dto.setAffiliation2(null);
+		// 社員番号
+		dto.setShainNo(null);
+		// 氏名
+		dto.setName(null);
+		// 電話番号
+		dto.setTel(null);
+		// メールアドレス
+		dto.setMailAddress(null);
+		// 利用開始希望日
+		dto.setUseStartHopeDay(null);
+		dto.setUseStartHopeDaylbl(null);
+		// 原籍会社
+		dto.setOriginalCompanyCd(null);
+		dto.setOriginalCompany(null);
+		// 給与支給会社
+		dto.setPayCompanyCd(null);
+		dto.setPayCompany(null);
+		// 通しNo
+		dto.setMobileRouterNo(null);
+		// ICCID
+		dto.setIccid(null);
+		// IMEI
+		dto.setImei(null);
+		// 発送日
+		dto.setShippingDate(null);
+		dto.setShippingDatelbl(null);
+		// 受領日
+		dto.setReceivedDate(null);
+		dto.setReceivedDatelbl(null);
+		// モバイルルーター本体受領チェックフラグ
+		dto.setBodyReceiptCheckFlag(null);
+		// モバイルルーター手引き受領チェックフラグ
+		dto.setHandbookReceiptCheckFlag(null);
+		// 返却資材受領チェックフラグ
+		dto.setMaterialsReceivedCheckFlag(null);
+		// 「添付資料」欄
+		dto.setAttachedFileList(null);
+	}
 	
 	/**
 	 * 表示項目の活性制御または表示制御を行う。

@@ -49,6 +49,9 @@ public class Skf2100Sc002InitService extends SkfServiceAbstract<Skf2100Sc002Init
 		skf2100Sc002SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		// セッション情報初期化
 		skf2100Sc002SharedService.clearMenuScopeSessionBean();
+		
+		//DTOリセット
+		skf2100Sc002SharedService.setClearInfo(initDto);
 
 		// タイトル設定
 		initDto.setPageTitleKey(MessageIdConstant.SKF2100_SC002_TITLE);
