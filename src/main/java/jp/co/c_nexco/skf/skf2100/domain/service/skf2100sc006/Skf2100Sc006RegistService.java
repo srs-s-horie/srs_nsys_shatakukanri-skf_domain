@@ -104,7 +104,14 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 				//登録した内容を画面に反映する
 				//取得した管理簿IDをhdnに設定
 				registDto.setHdnRouterKanriId(routerKanriId);
-
+				// モバイルルーター貸出管理簿情報を取得
+				Long routerKanriIdL = Long.parseLong(routerKanriId);
+				
+				Skf2100TMobileRouterLedger routerLdata = skf2100TMobileRouterLedgerRepository.selectByPrimaryKey(routerKanriIdL);
+				if(routerLdata != null){
+					// 更新日時
+					registDto.addLastUpdateDate(Skf2100Sc006CommonDto.ROUTER_KEY_LAST_UPDATE_DATE, routerLdata.getUpdateDate());
+				}
 				//画面項目
 				skf2100Sc006SharedService.setControlStatus(registDto);
 		
@@ -115,6 +122,14 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 			if( skf2100Sc006SharedService.validateInput(registDto) ){
 
 				registClickUpdate(registDto);
+				
+				// モバイルルーター貸出管理簿情報を取得
+				Long routerKanriIdL = Long.parseLong(registDto.getHdnRouterKanriId());
+				Skf2100TMobileRouterLedger routerLdata = skf2100TMobileRouterLedgerRepository.selectByPrimaryKey(routerKanriIdL);
+				if(routerLdata != null){
+					// 更新日時更新
+					registDto.addLastUpdateDate(Skf2100Sc006CommonDto.ROUTER_KEY_LAST_UPDATE_DATE, routerLdata.getUpdateDate());
+				}
 				//画面項目
 				skf2100Sc006SharedService.setControlStatus(registDto);
 			}

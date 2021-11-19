@@ -423,13 +423,32 @@ public class Skf2100Sc004SharedService {
 	 */
 	protected void setClearInfo(Skf2100Sc004CommonDto dto) {
 
-		// 前画面が申請内容確認以外の場合はクリア
-		if (NfwStringUtils.isNotEmpty(dto.getPrePageId())
-				&& !FunctionIdConstant.SKF2010_SC002.equals(dto.getPrePageId())) {
-			// 受領日
-			dto.setReturnDay(null);
-
-		}
+		// 機関
+		dto.setAgency(null);
+		// 部等
+		dto.setAffiliation1(null);
+		// 室・課等
+		dto.setAffiliation2(null);
+		// 社員番号
+		dto.setShainNo(null);
+		// 氏名
+		dto.setName(null);
+		// 電話番号
+		dto.setTel(null);
+		// 通しNo
+		dto.setMobileRouterNo(null);
+		// ICCID
+		dto.setIccid(null);
+		// IMEI
+		dto.setImei(null);
+		// 故障フラグ
+		dto.setHdnChkFaultSelect(null);
+		// 最終利用日
+		dto.setLastUseDay(null);
+		dto.setLastUseDaylbl(null);
+		// 返却日
+		dto.setReturnDay(null);
+	
 	}
 
 	
