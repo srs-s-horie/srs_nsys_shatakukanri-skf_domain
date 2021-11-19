@@ -822,7 +822,7 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 				List<Skf3050Bt004GetRouterShiyoryoMeisaiDataExp> meisaiDL = 
 						skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository.getRouterShiyoryoMeisaiData(meisaiParam);
 				
-				if(meisaiDL != null){
+				if(meisaiDL != null && meisaiDL.size() > 0){
 					// 取得データ分次月領域作成
 					for(Skf3050Bt004GetRouterShiyoryoMeisaiDataExp meisai : meisaiDL){
 						Skf2100TMobileRouterRentalRirekiMeisai inData = new Skf2100TMobileRouterRentalRirekiMeisai();
