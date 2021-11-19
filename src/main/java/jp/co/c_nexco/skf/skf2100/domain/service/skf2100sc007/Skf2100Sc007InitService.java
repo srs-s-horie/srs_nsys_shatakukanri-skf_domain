@@ -96,7 +96,6 @@ public class Skf2100Sc007InitService extends SkfServiceAbstract<Skf2100Sc007Init
 			// 0件の場合
 			List<Map<String, Object>> searchDataList = new ArrayList<Map<String, Object>>();
 			initDto.setSearchDataList(searchDataList);
-			//ServiceHelper.addErrorResultMessage(initDto, null, MessageIdConstant.W_SKF_1007);
 			return initDto;
 
 		} else if (searchCount > maxCnt) {
