@@ -980,7 +980,8 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 			String parkingHenkanDateText = skfDateFormatUtils.dateFormatFromString(parkingHenkanDate, "yyyy年MM月dd日");
 			initDto.setParkingHenkanDate(parkingHenkanDateText);
 		}
-
+        // 駐車場変更フラグ
+        initDto.setParkingEDateFlg(taikyoReport.getParkingEDateFlg());
 		// 退居理由
 		initDto.setTaikyoRiyu(taikyoReport.getTaikyoRiyu());
 		// 退居後の連絡先

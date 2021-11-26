@@ -14,6 +14,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc002.Skf3022Sc002GetC
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc002.Skf3022Sc002GetChushajoInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc002.Skf3022Sc002GetChushajoInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -82,18 +83,19 @@ public class Skf3022Sc002SharedService {
 
 		
 		listTableData.clear();
-		listTableData.addAll(createListTable(resultList));
+        listTableData.addAll(createListTable(resultList,chushajo));
 		
 		return parkingcount;
 	}
 
 	/**
-	 * 申請情報からリストテーブルのデータを作成します
+	 * 駐車場情報からリストテーブルのデータを作成します
 	 * 
-	 * @param shainInfoList
+	 * @param parkingInfoList 
+     * @param chushajo 空き駐車場フラグ　true:空き false:貸与中
 	 * @return
 	 */
-	public List<Map<String, Object>> createListTable(List<Skf3022Sc002GetChushajoInfoExp> parkingInfoList) {
+    public List<Map<String, Object>> createListTable(List<Skf3022Sc002GetChushajoInfoExp> parkingInfoList, boolean chushajo) {
 		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
 		if (parkingInfoList.size() <= 0) {
 			return returnList;
@@ -108,13 +110,30 @@ public class Skf3022Sc002SharedService {
 		genericCodeLendJokyo = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_LENDJOKYO);
 		for (int i = 0; i < parkingInfoList.size(); i++) {
 			Skf3022Sc002GetChushajoInfoExp tmpData = parkingInfoList.get(i);
+			
+            //貸与状況が「なし」かつ使用者の名前が取得できたかつ空き駐車場のチェックが入っている場合はスキップする
+            if(CodeConstant.LEND_JOKYO_NASHI.equals(tmpData.getParkingLendJokyo())&&
+                    NfwStringUtils.isNotBlank(tmpData.getName())&&chushajo){            
+                continue;
+            }
 
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 			tmpMap.put("colSelect", tmpData.getChushajoState()); 
+			tmpMap.put("colhdnSelect", tmpData.getChushajoState()); 
 			tmpMap.put("colParkingBlock", tmpData.getParkingBlock()); 
 			String lendKbn = tmpData.getParkingLendKbn();
 			tmpMap.put("colLendKbn", genericCodeLendKbn.get(lendKbn));
-			String lendJokyo = tmpData.getParkingLendJokyo();
+			//貸与状況が「なし」かつ    使用者の名前が取得できた場合は「貸与中」で設定する
+            String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
+            if(CodeConstant.LEND_JOKYO_NASHI.equals(tmpData.getParkingLendJokyo())&&	
+                    NfwStringUtils.isNotBlank(tmpData.getName())){
+                lendJokyo = CodeConstant.LEND_JOKYO_TAIYOCHU;
+                //貸与中の場合は駐車場選択を不可に変更に設定する
+                tmpMap.put("colSelect", CodeConstant.STRING_ZERO); 
+                tmpMap.put("colhdnSelect", CodeConstant.STRING_ZERO); 
+            }else{
+                lendJokyo = tmpData.getParkingLendJokyo();
+            }		
 			tmpMap.put("collendJokyo", genericCodeLendJokyo.get(lendJokyo));
 			tmpMap.put("colShiyosha", tmpData.getName()); 
 			tmpMap.put("colBiko", tmpData.getParkingBiko()); 
@@ -124,7 +143,7 @@ public class Skf3022Sc002SharedService {
 			tmpMap.put("colhdnEndDate2", tmpData.getEndDateOne()); 
 			tmpMap.put("colhdnEndDate3", tmpData.getEndDateTwo()); 
 			String hdnEndDate=CodeConstant.DOUBLE_QUOTATION;
-//			  Dim tempDate As String = String.Empty
+
 			String hdnEndDate1 = createObjToString(tmpData.getEndDate());
 			String hdnEndDate2 = createObjToString(tmpData.getEndDateOne());
 			String hdnEndDate3 = createObjToString(tmpData.getEndDateTwo());
@@ -140,7 +159,7 @@ public class Skf3022Sc002SharedService {
 				hdnEndDate = hdnEndDate3;
 			}
 			tmpMap.put("colhdnEndDate", hdnEndDate); 
-			tmpMap.put("colhdnSelect", tmpData.getChushajoState()); 
+
 
 			returnList.add(tmpMap);
 		}
