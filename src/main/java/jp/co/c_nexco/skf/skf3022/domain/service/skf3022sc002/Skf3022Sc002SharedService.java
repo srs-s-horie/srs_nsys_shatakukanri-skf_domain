@@ -140,6 +140,7 @@ public class Skf3022Sc002SharedService {
 				hdnEndDate = hdnEndDate3;
 			}
 			tmpMap.put("colhdnEndDate", hdnEndDate); 
+			tmpMap.put("colhdnSelect", tmpData.getChushajoState()); 
 
 
 			returnList.add(tmpMap);
