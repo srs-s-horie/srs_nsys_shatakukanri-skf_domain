@@ -14,12 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinGenbutsuShikyugokeigakuExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinMeisaiExp;
@@ -3873,6 +3875,7 @@ public class Skf3050Sc002SharedService {
 		List<String> lockResult = skf3050Bt005GetDataForUpdateExpRepository
 				.getSkf2100TMobileRouterRentalRirekiData(paramShoriNengetsu);
 		if (lockResult.size() == 0) {
+			LogUtils.infoByMsg("モバイルルーター締め処理：更新行ロック取得エラー:" + paramShoriNengetsu);
 			return SkfCommonConstant.ABNORMAL;
 		}
 
@@ -4146,7 +4149,8 @@ public class Skf3050Sc002SharedService {
 		param.setUpdateUserId(updateUser);
 		param.setYearMonth(shoriNengetsu);
 		param.setUpdateProgramId(routerCloseBatchPrgId);
-
+		LogUtils.infoByMsg("モバイルルーター締め処理：月別使用料履歴更新（現物算定額初期化）:" + shoriNengetsu);
+		
 		skf3050Bt005UpdateRouterGenbutsuGoukeiExpRepository.updateRouterGenbutsuGoukei(param);
 	}
 	
@@ -4191,6 +4195,7 @@ public class Skf3050Sc002SharedService {
 		// 行ロック
 		boolean canLock = canLockTableData(paramShoriNengetsu);
 		if(!canLock){
+			LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新行ロック取得エラー:" + paramShoriNengetsu);
 			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.ABNORMAL);
 			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, "ロック取得エラー");
 			return rtnMap;
@@ -4215,6 +4220,7 @@ public class Skf3050Sc002SharedService {
 		if (updateCnt > 0) {
 			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.COMPLETE);
 		} else {
+			LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新件数0以下エラー:" + paramShoriNengetsu);
 			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.ABNORMAL);
 			skfRollBackExpRepository.rollBack();
 		}
@@ -4261,7 +4267,8 @@ public class Skf3050Sc002SharedService {
 
 		param.setCycleBillingYymm(shoriNengetsu);
 		param.setUpdateProgramId(routerCloseCanselBatchPrgId);
-
+		LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新（給与連携作成済）:" + shoriNengetsu);
+		
 		Integer updateCnt = skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository
 				.updateGetsujiShoriKanriPositiveSakuseiZumi(param);
 
@@ -4289,7 +4296,8 @@ public class Skf3050Sc002SharedService {
 
 		param.setCycleBillingYymm(shoriNengetsu);
 		param.setUpdateProgramId(routerCloseCanselBatchPrgId);
-
+		LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新（給与連携未作成）:" + shoriNengetsu);
+		
 		Integer updateCnt = skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository
 				.updateGetsujiShoriKanriPositiveMiSakusei(param);
 

@@ -115,14 +115,15 @@ public class Skf2100Sc008RegistService extends SkfServiceAbstract<Skf2100Sc008Re
 	@Transactional
 	public boolean registClickInsert(Skf2100Sc008RegistDto registDto){
 		
-		
 		// モバイルルーターマスタ登録
 		// データ設定
 		Skf2100MMobileRouterWithBLOBs routerData = skf2100Sc008SharedService.setRouterData(registDto);
 		
+		LogUtils.infoByMsg("モバイルルーターマスタ登録:通しNo" + registDto.getRouterNo());
 		int inCount = skf2100MMobileRouterRepository.insertSelective(routerData);
 		if(inCount <= 0){
 			// 登録失敗
+			LogUtils.infoByMsg("モバイルルーターマスタ登録異常:更新件数" + inCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -152,9 +153,11 @@ public class Skf2100Sc008RegistService extends SkfServiceAbstract<Skf2100Sc008Re
 		// 排他用最終更新日設定
 		routerData.setLastUpdateDate(registDto.getLastUpdateDate(Skf2100Sc008CommonDto.ROUTER_KEY_LAST_UPDATE_DATE));
 		
+		LogUtils.infoByMsg("モバイルルーターマスタ更新:通しNo" + registDto.getRouterNo());
 		int updCount = skf2100Sc008UpdateMMobileRouterExpRepository.updateByPrimaryKeySelective(routerData);
 		if(updCount <= 0){
 			// 更新失敗
+			LogUtils.infoByMsg("モバイルルーターマスタ更新異常:更新件数" + updCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());

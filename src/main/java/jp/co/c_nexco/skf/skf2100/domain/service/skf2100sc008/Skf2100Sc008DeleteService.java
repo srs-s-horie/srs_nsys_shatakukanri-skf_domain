@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100MMobileRouterKey;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100MMobileRouterRepository;
+import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -110,10 +111,11 @@ public class Skf2100Sc008DeleteService extends SkfServiceAbstract<Skf2100Sc008De
 		Skf2100MMobileRouterKey delKey = new  Skf2100MMobileRouterKey();
 		delKey.setGeneralEquipmentCd(CodeConstant.GECD_MOBILEROUTER);
 		delKey.setMobileRouterNo(mobileRouterNo);
-
+		LogUtils.infoByMsg("モバイルルーターマスタ削除:通しNo" + mobileRouterNo);
 		int delCount = skf2100MMobileRouterRepository.deleteByPrimaryKey(delKey);
 		if(delCount <= 0){
 			// 削除失敗
+			LogUtils.infoByMsg("モバイルルーターマスタ削除異常：削除件数" + delCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(delDto, null, MessageIdConstant.E_SKF_1076);
 			throwBusinessExceptionIfErrors(delDto.getResultMessages());
