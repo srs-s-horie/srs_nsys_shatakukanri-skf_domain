@@ -72,8 +72,6 @@ public class Skf2100Sc002InitService extends SkfServiceAbstract<Skf2100Sc002Init
 		// 操作ガイドの設定
 		initDto.setOperationGuide(skfOperationGuideUtils.getOperationGuide(FunctionIdConstant.SKF2100_SC002));
 
-		
-
 		// バナー戻るボタン遷移先調整
 		String backUrl = "skf/" + FunctionIdConstant.SKF2010_SC005 + "/init"; // デフォルトは申請状況一覧へ
 		initDto.setBackUrl(backUrl);
