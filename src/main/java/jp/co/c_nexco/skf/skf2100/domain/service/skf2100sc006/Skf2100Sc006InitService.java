@@ -117,8 +117,8 @@ public class Skf2100Sc006InitService extends SkfServiceAbstract<Skf2100Sc006Init
 		initialize(initDto);
 		
 		// 運用ガイドのパスを設定
-		initDto.setOperationGuidePath("/skf/template/skf3022/skf3022mn006/"
-				+ PropertyUtils.getValue("skf3022.skf3022_sc006.operationGuideFile"));
+		initDto.setOperationGuidePath("/skf/template/skf2100/skf2100mn006/"
+				+ PropertyUtils.getValue("skf2100.skf2100_sc006.operationGuideFile"));
 		
 		
 		return initDto;
@@ -467,7 +467,7 @@ public class Skf2100Sc006InitService extends SkfServiceAbstract<Skf2100Sc006Init
 		// ドロップダウンリスト設定
 		initDto.setOriginalCompanyList(originalCompanyList);
 		initDto.setPayCompanyList(payCompanyList);
-
+		
 	}
 	
 

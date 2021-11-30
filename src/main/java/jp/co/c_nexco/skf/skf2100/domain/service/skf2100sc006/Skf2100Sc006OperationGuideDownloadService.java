@@ -44,8 +44,8 @@ public class Skf2100Sc006OperationGuideDownloadService extends SkfServiceAbstrac
 		// デバッグログ
 		LogUtils.debugByMsg("運用ガイド");
 		// ファイル出力処理
-		FileOutput.fileDownloadPublic("skf/template/skf3022/skf3022mn006/",
-				PropertyUtils.getValue("skf3022.skf3022_sc006.operationGuideFile"), dto);
+		FileOutput.fileDownloadPublic("skf/template/skf2100/skf2100mn006/",
+				PropertyUtils.getValue("skf2100.skf2100_sc006.operationGuideFile"), dto);
 
 		return dto;
 	}
