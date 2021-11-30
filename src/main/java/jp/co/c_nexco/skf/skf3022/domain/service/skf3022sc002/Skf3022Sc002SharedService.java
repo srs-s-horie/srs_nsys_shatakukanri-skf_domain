@@ -124,7 +124,7 @@ public class Skf3022Sc002SharedService {
 			tmpMap.put("colhdnEndDate2", tmpData.getEndDateOne()); 
 			tmpMap.put("colhdnEndDate3", tmpData.getEndDateTwo()); 
 			String hdnEndDate=CodeConstant.DOUBLE_QUOTATION;
-//			  Dim tempDate As String = String.Empty
+
 			String hdnEndDate1 = createObjToString(tmpData.getEndDate());
 			String hdnEndDate2 = createObjToString(tmpData.getEndDateOne());
 			String hdnEndDate3 = createObjToString(tmpData.getEndDateTwo());
@@ -141,6 +141,7 @@ public class Skf3022Sc002SharedService {
 			}
 			tmpMap.put("colhdnEndDate", hdnEndDate); 
 			tmpMap.put("colhdnSelect", tmpData.getChushajoState()); 
+
 
 			returnList.add(tmpMap);
 		}
