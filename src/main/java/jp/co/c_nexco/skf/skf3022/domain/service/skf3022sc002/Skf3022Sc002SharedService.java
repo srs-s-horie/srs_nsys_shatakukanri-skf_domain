@@ -108,30 +108,13 @@ public class Skf3022Sc002SharedService {
 		genericCodeLendJokyo = skfGenericCodeUtils.getGenericCode(FunctionIdConstant.GENERIC_CODE_LENDJOKYO);
 		for (int i = 0; i < parkingInfoList.size(); i++) {
 			Skf3022Sc002GetChushajoInfoExp tmpData = parkingInfoList.get(i);
-			
-            //貸与状況が「なし」かつ使用者の名前が取得できたかつ空き駐車場のチェックが入っている場合はスキップする
-            if(CodeConstant.LEND_JOKYO_NASHI.equals(tmpData.getParkingLendJokyo())&&
-                    NfwStringUtils.isNotBlank(tmpData.getName())&&chushajo){            
-                continue;
-            }
 
 			Map<String, Object> tmpMap = new HashMap<String, Object>();
 			tmpMap.put("colSelect", tmpData.getChushajoState()); 
-			tmpMap.put("colhdnSelect", tmpData.getChushajoState()); 
 			tmpMap.put("colParkingBlock", tmpData.getParkingBlock()); 
 			String lendKbn = tmpData.getParkingLendKbn();
 			tmpMap.put("colLendKbn", genericCodeLendKbn.get(lendKbn));
-			//貸与状況が「なし」かつ    使用者の名前が取得できた場合は「貸与中」で設定する
-            String lendJokyo = CodeConstant.DOUBLE_QUOTATION;
-            if(CodeConstant.LEND_JOKYO_NASHI.equals(tmpData.getParkingLendJokyo())&&	
-                    NfwStringUtils.isNotBlank(tmpData.getName())){
-                lendJokyo = CodeConstant.LEND_JOKYO_TAIYOCHU;
-                //貸与中の場合は駐車場選択を不可に変更に設定する
-                tmpMap.put("colSelect", CodeConstant.STRING_ZERO); 
-                tmpMap.put("colhdnSelect", CodeConstant.STRING_ZERO); 
-            }else{
-                lendJokyo = tmpData.getParkingLendJokyo();
-            }		
+			String lendJokyo = tmpData.getParkingLendJokyo();
 			tmpMap.put("collendJokyo", genericCodeLendJokyo.get(lendJokyo));
 			tmpMap.put("colShiyosha", tmpData.getName()); 
 			tmpMap.put("colBiko", tmpData.getParkingBiko()); 
