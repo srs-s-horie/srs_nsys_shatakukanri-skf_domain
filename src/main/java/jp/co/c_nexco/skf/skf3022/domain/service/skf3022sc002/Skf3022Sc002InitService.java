@@ -53,7 +53,7 @@ public class Skf3022Sc002InitService extends SkfServiceAbstract<Skf3022Sc002Init
 
 		// 初期表示では検索結果は0件表示
 		List<Skf3022Sc002GetChushajoInfoExp> parkingInfoList = new ArrayList<Skf3022Sc002GetChushajoInfoExp>();
-        initDto.setListTableList(skf3022Sc002SharedService.createListTable(parkingInfoList, true));
+		initDto.setListTableList(skf3022Sc002SharedService.createListTable(parkingInfoList));
 
 		return initDto;
 	}

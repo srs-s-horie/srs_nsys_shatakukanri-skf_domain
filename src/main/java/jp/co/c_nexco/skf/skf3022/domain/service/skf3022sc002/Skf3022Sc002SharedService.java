@@ -14,7 +14,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc002.Skf3022Sc002GetC
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc002.Skf3022Sc002GetChushajoInfoExpParameter;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc002.Skf3022Sc002GetChushajoInfoExpRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
-import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
@@ -83,19 +82,18 @@ public class Skf3022Sc002SharedService {
 
 		
 		listTableData.clear();
-        listTableData.addAll(createListTable(resultList,chushajo));
+		listTableData.addAll(createListTable(resultList));
 		
 		return parkingcount;
 	}
 
 	/**
-	 * 駐車場情報からリストテーブルのデータを作成します
+	 * 申請情報からリストテーブルのデータを作成します
 	 * 
-	 * @param parkingInfoList 
-     * @param chushajo 空き駐車場フラグ　true:空き false:貸与中
+	 * @param shainInfoList
 	 * @return
 	 */
-    public List<Map<String, Object>> createListTable(List<Skf3022Sc002GetChushajoInfoExp> parkingInfoList, boolean chushajo) {
+	public List<Map<String, Object>> createListTable(List<Skf3022Sc002GetChushajoInfoExp> parkingInfoList) {
 		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
 		if (parkingInfoList.size() <= 0) {
 			return returnList;
