@@ -79,10 +79,12 @@ public class Skf2100Sc004CommonDto extends Skf2100CommonDto {
 	/** エラー */
 	// 窓口返却日
 	private String returnDayErr;
-
 	
 	// 社員番号
 	private String hdnApplShainNo;
 	// 申請書類履歴テーブル申請日
 	private Date applHistoryDate;
+	
+	// 閲覧フラグ
+	private boolean viewFlag;
 }

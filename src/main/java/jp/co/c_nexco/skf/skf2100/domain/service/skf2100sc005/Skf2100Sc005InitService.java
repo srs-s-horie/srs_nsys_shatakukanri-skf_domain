@@ -163,9 +163,10 @@ public class Skf2100Sc005InitService extends SkfServiceAbstract<Skf2100Sc005Init
 
 		// 契約区分ドロップダウンリスト
 		List<Map<String, Object>> contractKbnDropDownList = skfDropDownUtils
-				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_ROUTER_CONTRACT_KBN, "", true);
+				.getGenericForDoropDownList(FunctionIdConstant.GENERIC_CODE_ROUTER_CONTRACT_KBN, "1", true);
 		initDto.setContractKbnDropDownList(contractKbnDropDownList);
-		initDto.setHdnContractKbnSelect("");
+		// 初期値契約中を選択
+		initDto.setHdnContractKbnSelect("1");
 
 
 		List<Map<String, Object>> serchDataList = new ArrayList<Map<String, Object>>();

@@ -110,4 +110,7 @@ public class Skf2100Sc002CommonDto extends Skf2100CommonDto {
 	private String hdnIccid;
 	private String hdnImei;
 	private String jsonLabelList;
+	
+	// 閲覧フラグ
+	private boolean viewFlag;
 }

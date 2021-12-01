@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2100Sc008.Skf2100Sc008GetSameImeiDataCountExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetTaiyoRouterDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100MMobileRouterWithBLOBs;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2100Sc008.Skf2100Sc008GetSameImeiDataCountExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
@@ -35,7 +36,6 @@ public class Skf2100Sc008SharedService {
 	private SkfRouterInfoUtils skfRouterInfoUtils;
 	@Autowired
 	private Skf2100Sc008GetSameImeiDataCountExpRepository skf2100Sc008GetSameImeiDataCountExpRepository;
-	
 	
 	private static final int DATE_LEN = 8;
 	// 電話番号チェック正規表現
@@ -531,6 +531,24 @@ public class Skf2100Sc008SharedService {
 			errMsg.append("重複チェックNG：IMEI");
 		}
 		
+		
+		
+		String contractKbn = comDto.getContractKbnSelect();
+		if(CodeConstant.ROUTER_CONTRACT_KBN_KAIYAKU.equals(contractKbn)){
+			// 契約区分が解約済みの場合、貸与中ルーター情報取得
+			// 貸与中モバイルルーター情報取得
+			SkfRouterInfoUtilsGetTaiyoRouterDataExp routerInfo = new SkfRouterInfoUtilsGetTaiyoRouterDataExp();
+			routerInfo = skfRouterInfoUtils.getTaiyoRouterDataById(Long.parseLong(comDto.getRouterNo()));
+			if(routerInfo != null){
+				//貸与中ルーター有り
+				ServiceHelper.addErrorResultMessage(comDto, new String[] { "contractKbnSelect" }, MessageIdConstant.E_SKF_3062);
+				comDto.setContractKbnSelectErr(CodeConstant.NFW_VALIDATION_ERROR);
+				errMsg.append("解約済設定：貸与中チェックNG");
+			}
+		}
+		
+		
+		
 		//エラーが存在する場合
 		if (0 < errMsg.toString().length()){
 			LogUtils.infoByMsg("checkDuplicate, " + errMsg.toString());
@@ -606,4 +624,5 @@ public class Skf2100Sc008SharedService {
 		
 		return routerData;
 	}
+	
 }

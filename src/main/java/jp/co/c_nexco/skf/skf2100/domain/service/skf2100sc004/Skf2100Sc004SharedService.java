@@ -144,6 +144,8 @@ public class Skf2100Sc004SharedService {
 		boolean returnValue = true;
 
 		dto.setBtnApproveDisabled(null);
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		
 		/**
 		 * 申請書類履歴テーブル情報の取得
@@ -163,6 +165,13 @@ public class Skf2100Sc004SharedService {
 		dto.setHdnApplShainNo(applHistoryList.get(0).getShainNo());
 		dto.setApplHistoryDate(applHistoryList.get(0).getApplDate());
 
+		String agreeName1 = applHistoryList.get(0).getAgreName1();
+		// 承認者１がログインユーザーと同じ場合は閲覧のみ
+		dto.setViewFlag(false);
+		if (CheckUtils.isEqual(agreeName1, loginUserInfo.get("userName"))) {
+			dto.setViewFlag(true); 
+		}
+		
 		// 添付書類有無が取得できた場合は設定
 		if (NfwStringUtils.isNotEmpty(applHistoryList.get(0).getApplTacFlg())) {
 			dto.setApplTacFlg(applHistoryList.get(0).getApplTacFlg());
@@ -288,8 +297,6 @@ public class Skf2100Sc004SharedService {
 		}
 		
 		
-		// ログインユーザー情報取得
-		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
 		// 承認可能ロールのみの処理		
 		boolean result = skfLoginUserInfoUtils.isAgreeAuthority( CodeConstant.C001, FunctionIdConstant.R0108, loginUserInfo.get("roleId"), dto.getApplStatus());
 		if(!result){
@@ -448,6 +455,8 @@ public class Skf2100Sc004SharedService {
 		dto.setLastUseDaylbl(null);
 		// 返却日
 		dto.setReturnDay(null);
+		// コメント
+		dto.setCommentNote(null);
 	
 	}
 
@@ -491,7 +500,11 @@ public class Skf2100Sc004SharedService {
 				break;
 		}
 	
-
+		if(dto.isViewFlag()){
+			// 閲覧のみ
+			//前の画面へとコメントボタン以外非表示
+			dto.setAllButtonEscape(true);
+		}
 	
 	}
 	
@@ -632,15 +645,18 @@ public class Skf2100Sc004SharedService {
 		// 申請書類履歴テーブル更新処理（利用クラス：SkfApplHistoryInfoUtils、利用メソッド：UpdateApplHistoryAgreeStatus）
 		Map<String, String> errorMsg = new HashMap<String, String>();
 		SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp updApplInfo = new SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp();
+		LogUtils.infoByMsg("申請書類履歴取得:applNo:" + applInfo.get("applNo"));
 		updApplInfo = skfApplHistoryInfoUtils.getApplHistoryInfoForUpdate(companyCd, applInfo.get("applShainNo"),
 				applInfo.get("applNo"), applInfo.get("applId"));
 		if (updApplInfo == null) {
+			LogUtils.infoByMsg("申請書類履歴取得異常(NULL):applNo:" + applInfo.get("applNo"));
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return false;
 		}
 		// 楽観的排他チェック（申請情報履歴）
 		if (!CheckUtils.isEqual(updApplInfo.getUpdateDate(),
 				dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE))) {
+			LogUtils.infoByMsg("申請書類履歴排他チェックエラー:" + applInfo.get("applNo"));
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return false;
 		}
@@ -650,10 +666,12 @@ public class Skf2100Sc004SharedService {
 			shoninName1 = updApplInfo.getAgreName1();
 		}
 		Date lastUpdateDate = dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE);
+		LogUtils.infoByMsg("申請書類履歴更新:applNo:" + applInfo.get("applNo") + ",ステータス:" + updateStatus);
 		result = skfApplHistoryInfoUtils.updateApplHistoryAgreeStatusForBihin(companyCd, applInfo.get("applShainNo"),
 				applInfo.get("applNo"), applInfo.get("applId"), null, null, updateStatus, agreDate, shoninName1,
 				shoninName2, lastUpdateDate, errorMsg);
 		if (!result) {
+			LogUtils.infoByMsg("申請書類履歴更新エラー:" + applInfo.get("applNo"));
 			// エラーメッセージ（メッセージID：.E_SKF_1075)）を設定
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			return false;
@@ -730,6 +748,7 @@ public class Skf2100Sc004SharedService {
 		henkyakuShinsei = skfShinseiUtils.getSksRouterHenkyakuShinseiInfo(companyCd,applNo);
 		if(henkyakuShinsei == null){
 			// 取得失敗
+			LogUtils.infoByMsg("モバイルルーター返却申請情報取得エラー:applNo:" + applNo);
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			return false;
 		}
@@ -742,6 +761,7 @@ public class Skf2100Sc004SharedService {
 				Date lastUpdateDateRouterShinsei = dto.getLastUpdateDate(ROUTER_HENKYAKU_KEY_LAST_UPDATE_DATE);
 				if (!CheckUtils.isEqual(henkyakuShinsei.getUpdateDate(), lastUpdateDateRouterShinsei)) {
 					// 排他チェックエラー
+					LogUtils.infoByMsg("モバイルルーター返却申請排他チェックエラー:applNo:" + applNo);
 					ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 					return false;
 				}
@@ -752,9 +772,11 @@ public class Skf2100Sc004SharedService {
 				updData.setReturnDay(dto.getReturnDay());
 				updData.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 				updData.setUpdateProgramId(FunctionIdConstant.SKF2100_SC004);
+				LogUtils.infoByMsg("モバイルルーター返却申請書更新(承認中):applNo:" + applNo);
 				int updCount = skf2100TMobileRouterHenkyakuShinseiRepository.updateByPrimaryKeySelective(updData);
 				
 				if (updCount <= 0) {
+					LogUtils.infoByMsg("モバイルルーター返却申請書更新異常:applNo:" + applNo);
 					// エラーメッセージ（メッセージID：E_SKF_1075）を設定
 					ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 					return false;
@@ -788,9 +810,13 @@ public class Skf2100Sc004SharedService {
 				routerLRecord.setReturnDay(henkyakuShinsei.getReturnDay());
 				routerLRecord.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 				routerLRecord.setUpdateProgramId(FunctionIdConstant.SKF2100_SC004);
+				LogUtils.infoByMsg("モバイルルーター貸出管理簿更新(返却承認):管理簿ID:" + routerKanriId
+						+",最終利用日:"+henkyakuShinsei.getLastUseDay());
+				
 				int inCount = skf2100TMobileRouterLedgerRepository.updateByPrimaryKeySelective(routerLRecord);
 				if(inCount <= 0){
 					// 登録失敗
+					LogUtils.infoByMsg("モバイルルーター貸出管理簿更新異常:管理簿ID:" + routerKanriId);
 					// エラーメッセージを設定
 					ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 					return false;

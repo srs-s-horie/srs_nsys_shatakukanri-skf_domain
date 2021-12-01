@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetCompanyAgencyListExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetReturnDayDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetTaiyoRouterDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050TMonthlyManageData;
@@ -40,7 +42,10 @@ import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDropDownUtils;
+import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
+import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100Sc006common.Skf2100Sc006CommonDto;
+import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 
 /**
  * Skf2100Sc006SharedService モバイルルーター貸出管理簿登録共通処理Service
@@ -60,7 +65,8 @@ public class Skf2100Sc006SharedService {
 	private Skf3050TMonthlyManageDataRepository skf3050TMonthlyManageDataRepository;
 	@Autowired
 	private Skf3022Sc006GetCompanyAgencyListExpRepository skf3022Sc006GetCompanyAgencyListExpRepository;
-	
+	@Autowired
+	private SkfRouterInfoUtils skfRouterInfoUtils;
 	
 	private static final int DATE_LEN = 8;
 	// ステータス文字色
@@ -351,7 +357,20 @@ public class Skf2100Sc006SharedService {
 			setActivateFalse(comDto);
 		}
 		
-	
+		
+		// 操作ガイドファイル有無チェック
+		//ファイル存在チェック
+		try{
+			String templateFilePath = SkfFileOutputUtils.getTemplateFilePath("skf2100mn006", "skf2100.skf2100_sc006.operationGuideFile");
+			PublicStorage storage = SkfFileOutputUtils.getFilePublicStorage(templateFilePath);
+			if (storage == null) {
+				//ファイルが存在しません
+				comDto.setBtnUnyonGuideDisableFlg(true);
+			}
+		}
+		catch(Exception e){
+			comDto.setBtnUnyonGuideDisableFlg(true);
+		}
 	}
 	
 	/**
@@ -683,6 +702,22 @@ public class Skf2100Sc006SharedService {
 				comDto.setUseStopDayErr("");
 			}
 		}
+		
+		// 他管理簿データの窓口返却日前の納品日は登録不可
+		Long routerKanriId = 0L;
+		if(comDto.getHdnRouterKanriId() != null){
+			routerKanriId = Long.parseLong(comDto.getHdnRouterKanriId());
+		}
+		Long routerNo = Long.parseLong(comDto.getRouterNo());
+		String receivedDate = getRegistDateText(comDto.getReceivedDate());
+		SkfRouterInfoUtilsGetReturnDayDataExp data  = skfRouterInfoUtils.getReturnDayData(routerKanriId,routerNo,receivedDate);
+		if(data != null && !SkfCheckUtils.isNullOrEmpty(data.getReturnDay())){
+			//返却日が後のデータ有り
+			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1009, "納品日（受領日）","返却済みモバイルルーターの窓口返却日("+setDispDateStr(data.getReturnDay())+")");
+			comDto.setReceivedDateErr(CodeConstant.NFW_VALIDATION_ERROR);
+			errMsg.append("整合性チェックNG：返却済チェックNG");
+		}
+		
 
 	
 	}

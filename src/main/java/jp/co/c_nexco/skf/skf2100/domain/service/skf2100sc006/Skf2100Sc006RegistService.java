@@ -158,6 +158,7 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		
 		// モバイルルーター貸出管理簿IDの取得
 		Long newKanriId = skfRouterInfoUtils.getMaxRouterKanriId();
+		LogUtils.infoByMsg("モバイルルーター管理簿登録:新規貸出管理簿ID" + newKanriId);
 		
 		// モバイルルーター貸出管理簿登録
 		Skf2100TMobileRouterLedger routerLRecord = new Skf2100TMobileRouterLedger();
@@ -176,9 +177,11 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		routerLRecord.setReturnDay(skf2100Sc006SharedService.getRegistDateText(registDto.getReturnDay()));
 		routerLRecord.setBiko(registDto.getBiko());
 		
+		LogUtils.infoByMsg("モバイルルーター管理簿登録:貸出管理簿ID:" + newKanriId +",社員番号:" + registDto.getHdnShainNo() + ",通しNo" + registDto.getRouterNo());
 		int inCount = skf2100TMobileRouterLedgerRepository.insertSelective(routerLRecord);
 		if(inCount <= 0){
 			// 登録失敗
+			LogUtils.infoByMsg("モバイルルーター管理簿登録異常:更新件数" + inCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -207,9 +210,11 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		meisaiRecord.setMobileRouterApplKbn(CodeConstant.BIHIN_SHINSEI_KBN_NASHI);//申請無
 		meisaiRecord.setMobileRouterReturnKbn(CodeConstant.BIHIN_HENKYAKU_SURU);//要返却
 		
+		LogUtils.infoByMsg("月別モバイルルーター使用料明細登録:貸出管理簿ID:" + newKanriId +",処理年月:" + yearMonth);
 		inCount = skf2100TMobileRouterRentalRirekiMeisaiRepository.insertSelective(meisaiRecord);
 		if(inCount <= 0){
 			// 登録失敗
+			LogUtils.infoByMsg("月別モバイルルーター使用料明細登録異常:更新件数" + inCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -220,9 +225,11 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		rirekiRecord.setMobileRouterKanriId(newKanriId);
 		rirekiRecord.setYearMonth(yearMonth);
 		rirekiRecord.setMobileRouterGenbutuGoukei(equipment.getEquipmentPayment());
+		LogUtils.infoByMsg("月別モバイルルーター使用料履歴登録:貸出管理簿ID:" + newKanriId +",処理年月:" + yearMonth);
 		inCount = skf2100TMobileRouterRentalRirekiRepository.insertSelective(rirekiRecord);
 		if(inCount <= 0){
 			// 登録失敗
+			LogUtils.infoByMsg("月別モバイルルーター使用料履歴登録異常:更新件数" + inCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1073);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -287,9 +294,11 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		routerLRecord.setUpdateUserId(LoginUserInfoUtils.getUserCd());
 		routerLRecord.setLastUpdateDate(registDto.getLastUpdateDate(Skf2100Sc006CommonDto.ROUTER_KEY_LAST_UPDATE_DATE));
 		
+		LogUtils.infoByMsg("モバイルルーター管理簿更新:貸出管理簿ID:" + routerKanriId +",社員番号:" + registDto.getHdnShainNo() + ",通しNo" + registDto.getRouterNo());
 		int inCount = skf2100Sc006UpdateTMobileRouterLedgerExpRepository.updateByPrimaryKeySelective(routerLRecord);
 		if(inCount <= 0){
 			// 更新失敗
+			LogUtils.infoByMsg("モバイルルーター管理簿更新異常:更新件数" + inCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -317,10 +326,11 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		meisaiRecord.setMobileRouterGenbutsuGaku(equipment.getEquipmentPayment());
 		meisaiRecord.setMobileRouterApplKbn(CodeConstant.BIHIN_SHINSEI_KBN_NASHI);//申請無
 		meisaiRecord.setMobileRouterReturnKbn(CodeConstant.BIHIN_HENKYAKU_SURU);//要返却
-		
+		LogUtils.infoByMsg("月別モバイルルーター使用料明細更新:貸出管理簿ID:" + routerKanriId +",処理年月:" + yearMonth);
 		inCount = skf2100TMobileRouterRentalRirekiMeisaiRepository.updateByPrimaryKeySelective(meisaiRecord);
 		if(inCount <= 0){
 			// 更新失敗
+			LogUtils.infoByMsg("月別モバイルルーター使用料明細更新異常:更新件数" + inCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());
@@ -331,9 +341,11 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		rirekiRecord.setMobileRouterKanriId(routerKanriId);
 		rirekiRecord.setYearMonth(yearMonth);
 		rirekiRecord.setMobileRouterGenbutuGoukei(equipment.getEquipmentPayment());
+		LogUtils.infoByMsg("月別モバイルルーター使用料履歴更新:貸出管理簿ID:" + routerKanriId +",処理年月:" + yearMonth);
 		inCount = skf2100TMobileRouterRentalRirekiRepository.updateByPrimaryKeySelective(rirekiRecord);
 		if(inCount <= 0){
 			// 更新失敗
+			LogUtils.infoByMsg("月別モバイルルーター使用料履歴更新異常:更新件数" + inCount);
 			// エラーメッセージを設定
 			ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.E_SKF_1075);
 			throwBusinessExceptionIfErrors(registDto.getResultMessages());

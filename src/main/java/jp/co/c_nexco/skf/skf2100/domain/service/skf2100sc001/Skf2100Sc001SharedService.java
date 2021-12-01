@@ -37,10 +37,12 @@ import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfCommentUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
+import jp.co.c_nexco.skf.common.util.SkfFileOutputUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100Sc001common.Skf2100Sc001CommonDto;
+import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 
 /**
  * Skf2100Sc001 モバイルルーター借用希望申請書（申請者用)共通処理クラス
@@ -431,6 +433,8 @@ public class Skf2100Sc001SharedService {
 			dto.setHdnBodyReceiptChecked(null);
 			dto.setHdnHandbookReceiptChecked(null);
 			dto.setHdnMaterialsReceivedChecked(null);
+			// コメント
+			dto.setCommentNote(null);
 			
 			// 一時保存
 			dto.setBtnSaveDisabled(null);
@@ -522,6 +526,24 @@ public class Skf2100Sc001SharedService {
 			break;
 		}
 
+		// 機能ID
+		String functionId = "skfapplrequirement";
+
+		//ファイル存在チェック
+		dto.setBtnCheckDisabled(null);
+		try{
+			String templateFilePath = SkfFileOutputUtils.getTemplateFilePath(functionId, "skf.skf_appl_requirement.FileId_RouterKibo");
+			PublicStorage storage = SkfFileOutputUtils.getFilePublicStorage(templateFilePath);
+			if (storage == null) {
+				//テンプレートファイルが存在しません
+				dto.setBtnCheckDisabled("true");
+			}
+		}
+		catch(Exception e){
+			dto.setBtnCheckDisabled("true");
+		}
+
+		
 	}
 	
 	
@@ -756,8 +778,10 @@ public class Skf2100Sc001SharedService {
 		int resCount= 0;
 		if(checkData != null){
 			//更新
+			LogUtils.infoByMsg("モバイルルーター貸出予定データ更新:申請書類管理番号:" + newApplNo + ",社員番号:" + dto.getShainNo());
 			resCount = skf2100TRouterLendingYoteiDataRepository.updateByPrimaryKeySelective(yoteiData);
 			if(resCount <= 0){
+				LogUtils.infoByMsg("モバイルルーター貸出予定データ更新異常:申請書類管理番号:" + newApplNo + ",社員番号:" + dto.getShainNo());
 				// エラーメッセージを表示用に設定
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 				// 保存処理を終了
@@ -765,8 +789,10 @@ public class Skf2100Sc001SharedService {
 			}
 		}else{
 			//登録
+			LogUtils.infoByMsg("モバイルルーター貸出予定データ登録:申請書類管理番号:" + newApplNo + ",社員番号:" + dto.getShainNo());
 			resCount = skf2100TRouterLendingYoteiDataRepository.insertSelective(yoteiData);
 			if(resCount <= 0){
+				LogUtils.infoByMsg("モバイルルーター貸出予定データ登録異常:申請書類管理番号:" + newApplNo + ",社員番号:" + dto.getShainNo());
 				// エラーメッセージを表示用に設定
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1073);
 				// 保存処理を終了
@@ -801,6 +827,8 @@ public class Skf2100Sc001SharedService {
 		setValue.setApplStatus(applInfo.get("newStatus"));
 		setValue.setApplTacFlg(applInfo.get("applTacFlg"));
 		setValue.setComboFlg(NO_UPDATE_FLG);
+		LogUtils.infoByMsg("申請書類履歴テーブル登録:申請書類管理番号:" + applInfo.get("applNo") + ",社員番号:" + dto.getShainNo());
+		
 		// 登録
 		int registCount = 0;
 		registCount = skf2010TApplHistoryRepository.insertSelective(setValue);
@@ -810,6 +838,7 @@ public class Skf2100Sc001SharedService {
 		dto.setApplStatus(applInfo.get("newStatus"));
 		
 		if(registCount<=0){
+			LogUtils.infoByMsg("申請書類履歴テーブル登録異常:申請書類管理番号:" + applInfo.get("applNo") + ",社員番号:" + dto.getShainNo());
 			//登録件数0以下はエラー
 			return false;
 		}
@@ -921,11 +950,14 @@ public class Skf2100Sc001SharedService {
 		// 登録処理
 		setValue.setInsertUserId(dto.getUserId());
 		setValue.setInsertProgramId(FunctionIdConstant.SKF2100_SC001);
+		LogUtils.infoByMsg("モバイルルーター借用希望申請書登録:申請書類管理番号:" + setValue.getApplNo()+ ",社員番号:" + setValue.getShainNo());
+		
 		int registCount = 0;
 		registCount = skf2100TMobileRouterKiboShinseiRepository.insertSelective(setValue);
 		LogUtils.debugByMsg("モバイルルーター借用希望申請書テーブル登録件数：" + registCount + "件");
 
 		if(registCount<=0){
+			LogUtils.infoByMsg("モバイルルーター借用希望申請書テーブル登録異常 件数：" + registCount + "件");
 			return false;
 		}
 		
@@ -948,8 +980,12 @@ public class Skf2100Sc001SharedService {
 		Skf2100TMobileRouterKiboShinsei routerKiboInfo = new Skf2100TMobileRouterKiboShinsei();
 		routerKiboInfo = skfShinseiUtils.getSksRouterKiboShinseiInfo(CodeConstant.C001, dto.getApplNo());
 
+		LogUtils.infoByMsg("モバイルルーター借用希望申請書更新:申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
+		
 		// 楽観的排他チェック（モバイルルーター借用希望申請書テーブル）
 		if (!CheckUtils.isEqual(routerKiboInfo.getUpdateDate(), dto.getLastUpdateDate(ROUTER_KIBO_KEY_LAST_UPDATE_DATE))) {
+			LogUtils.infoByMsg("モバイルルーター借用希望申請書更新排他チェックエラー:申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
+			
 			// エラー時は戻り値をfalseに設定
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134,
 					"skf2100_t_mobile_router_kibo_shinsei");
@@ -961,6 +997,7 @@ public class Skf2100Sc001SharedService {
 		// 更新処理
 		int updateCnt = skf2100TMobileRouterKiboShinseiRepository.updateByPrimaryKeySelective(setValue);
 		if (updateCnt == 0) {
+			LogUtils.infoByMsg("モバイルルーター借用希望申請書テーブル更新異常 件数：" + updateCnt + "件");
 			// 更新できなかった場合はは戻り値をfalseに設定
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			return false;
@@ -983,6 +1020,7 @@ public class Skf2100Sc001SharedService {
 		// 排他制御比較用更新日取得
 		Skf2010TApplHistory resultUpdateDate = selectByApplHistoryPrimaryKey(setValue, dto);
 		if (resultUpdateDate == null) {
+			LogUtils.infoByMsg("申請書履歴更新日取得エラー（NULL):申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			return false;
 		}
@@ -991,15 +1029,18 @@ public class Skf2100Sc001SharedService {
 		if (!CheckUtils.isEqual(resultUpdateDate.getUpdateDate(),
 				dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE))) {
 			// 排他チェックエラー
+			LogUtils.infoByMsg("申請書履歴排他チェックエラー:申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134,"skf2010_t_appl_history");
 			return false;
 		}
 
 		// 更新値の設定
 		setValue = setUpdateApplHistoryAgreeStatusIchiji(setValue, dto, applInfo);
+		LogUtils.infoByMsg("申請書履歴更新:申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
 		// 更新
 		int resultCnt = skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(setValue);
 		if (resultCnt == 0) {
+			LogUtils.infoByMsg("申請書履歴更新異常:申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			return false;
 		}
@@ -1022,6 +1063,7 @@ public class Skf2100Sc001SharedService {
 		// 排他制御比較用更新日取得
 		Skf2010TApplHistory resultUpdateDate = selectByApplHistoryPrimaryKey(setValue, dto);
 		if (resultUpdateDate == null) {
+			LogUtils.infoByMsg("申請書履歴更新日取得エラー（NULL):申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			return false;
 		}
@@ -1030,6 +1072,7 @@ public class Skf2100Sc001SharedService {
 		if (!CheckUtils.isEqual(resultUpdateDate.getUpdateDate(),
 				dto.getLastUpdateDate(APPL_HISTORY_KEY_LAST_UPDATE_DATE))) {
 			// 排他チェックエラー
+			LogUtils.infoByMsg("申請書履歴排他チェックエラー:申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1134);
 			return false;
 		}
@@ -1039,6 +1082,7 @@ public class Skf2100Sc001SharedService {
 		// 更新
 		int resultCnt = skf2020Sc002UpdateApplHistoryAgreeStatusExpRepository.updateApplHistoryAgreeStatus(setValue);
 		if (resultCnt == 0) {
+			LogUtils.infoByMsg("申請書履歴更新異常:申請書類管理番号:" + dto.getApplNo() + ",社員番号:" + dto.getShainNo());
 			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 			return false;
 		}
