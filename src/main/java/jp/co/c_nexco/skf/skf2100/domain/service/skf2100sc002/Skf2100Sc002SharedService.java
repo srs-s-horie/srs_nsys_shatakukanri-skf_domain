@@ -24,9 +24,9 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetC
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfAttachedFileUtils.SkfAttachedFileUtilsInsertAttachedFileExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfCommentUtils.SkfCommentUtilsGetCommentInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TApplHistory;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010TAttachedFile;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100MMobileRouterWithBLOBs;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterKiboShinsei;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterLedger;
@@ -38,7 +38,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002UpdateApplHistoryApplTacFlgExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetCompanyAgencyListExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TAttachedFileRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterLedgerRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiRepository;
@@ -46,6 +45,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MGeneralEquipmen
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -64,7 +64,6 @@ import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
-import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100Sc001common.Skf2100Sc001CommonDto;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100Sc002common.Skf2100Sc002CommonDto;
 /**
  * Skf2100Sc002 モバイルルーター借用希望申請書（アウトソース用)共通処理クラス
@@ -132,8 +131,6 @@ public class Skf2100Sc002SharedService {
 	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
 	@Autowired
 	private Skf3050MGeneralEquipmentItemRepository skf3050MGeneralEquipmentItemRepository;
-	@Autowired
-	private Skf2010TAttachedFileRepository skf2010TAttachedFileRepository;
 
 	@Autowired
 	private SkfGenericCodeUtils skfGenericCodeUtils;
@@ -1319,16 +1316,22 @@ public class Skf2100Sc002SharedService {
 			SkfApplHistoryInfoUtilsGetApplHistoryInfoForUpdateExp applInfo, Map<String, String> errorMsg, String userId,
 			String pageId) throws IllegalAccessException, Exception {
 
+		// 添付ファイルの更新は削除→登録で行う
+		if(!skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg)){
+			LogUtils.infoByMsg("添付ファイルの更新削除失敗 ");
+			return false;
+		}
+		
 		// 添付ファイル管理テーブルを更新する
 		if (attachedFileList != null && attachedFileList.size() > 0) {
-			LogUtils.debugByMsg("添付ファイル管理テーブルを登録");
-			// 添付ファイルの更新は削除→登録で行う
-			skfAttachedFileUtils.deleteAttachedFile(applNo, shainNo, errorMsg);
 			for (Map<String, Object> attachedFileMap : attachedFileList) {
-				Skf2010TAttachedFile insertData = new Skf2010TAttachedFile();
+				SkfAttachedFileUtilsInsertAttachedFileExp insertData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 				insertData = mappingTAttachedFile(attachedFileMap, applNo, shainNo);
-				LogUtils.infoByMsg("添付ファイル管理テーブル登録:申請No" +applNo + ",添付番号:" + insertData.getAttachedNo());
-				skf2010TAttachedFileRepository.insertSelective(insertData);
+				boolean insRes = skfAttachedFileUtils.insertAttachedFile(insertData,errorMsg);
+					if (!insRes) {
+						LogUtils.infoByMsg(" 添付ファイル管理テーブルを登録失敗");
+						return false;
+					}
 			}
 		}
 
@@ -1364,9 +1367,9 @@ public class Skf2100Sc002SharedService {
 	 * @param shainNo
 	 * @return
 	 */
-	private Skf2010TAttachedFile mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
+	private SkfAttachedFileUtilsInsertAttachedFileExp mappingTAttachedFile(Map<String, Object> attachedFileMap, String applNo,
 			String shainNo) {
-		Skf2010TAttachedFile resultData = new Skf2010TAttachedFile();
+		SkfAttachedFileUtilsInsertAttachedFileExp resultData = new SkfAttachedFileUtilsInsertAttachedFileExp();
 
 		// 会社コード
 		resultData.setCompanyCd(CodeConstant.C001);
@@ -1384,8 +1387,18 @@ public class Skf2100Sc002SharedService {
 		// ファイル
 		resultData.setFileStream((byte[]) attachedFileMap.get("fileStream"));
 		// ファイルサイズ
-		resultData.setFileSize(attachedFileMap.get("fileSize").toString());
-
+		String fileSize = CodeConstant.NONE;
+		if (attachedFileMap.get("fileSize") != null) {
+			fileSize = attachedFileMap.get("fileSize").toString();
+		} else if (attachedFileMap.get("attachedFileSize") != null) {
+			fileSize = attachedFileMap.get("attachedFileSize").toString();
+		}
+		resultData.setFileSize(fileSize);
+		// 登録者
+		String userCd = LoginUserInfoUtils.getUserCd();
+		resultData.setUserId(userCd);
+		// 登録機能
+		resultData.setProgramId(FunctionIdConstant.SKF2100_SC002);
 		return resultData;
 	}
 	
