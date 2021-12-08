@@ -108,6 +108,9 @@ public class Skf2050Sc002RevisionService extends SkfServiceAbstract<Skf2050Sc002
 		BaseForm form = new BaseForm();
 		CopyUtils.copyProperties(form, revDto);
 		FormHelper.setFormBean(FunctionIdConstant.SKF2010_SC005, form);
+		
+		//画面遷移前にデータの初期化を行う
+		FormHelper.removeFormBean(FunctionIdConstant.SKF2050_SC002);
 
 		// 前の画面に遷移する
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);

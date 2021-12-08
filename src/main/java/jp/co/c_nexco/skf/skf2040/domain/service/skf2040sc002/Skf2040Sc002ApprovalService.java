@@ -16,6 +16,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2040Sc002.Skf2040Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplCommentRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -191,6 +192,9 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 			skfRollBackExpRepository.rollBack();
 			return appDto;
 		}
+		
+		//画面遷移前にデータの初期化を行う
+		FormHelper.removeFormBean(FunctionIdConstant.SKF2040_SC002);
 
 		// 終了メッセージ出力
 		// 承認一覧に画面遷移
