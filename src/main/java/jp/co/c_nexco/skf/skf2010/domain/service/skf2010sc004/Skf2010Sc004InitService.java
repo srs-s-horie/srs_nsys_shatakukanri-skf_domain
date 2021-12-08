@@ -950,9 +950,9 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 		initDto.setAddress(tTaikyoReport.getAddress());
 		// 氏名
 		initDto.setName(tTaikyoReport.getName());
+		// 自動車の保管場所返還取消線フラグ
 		tTaikyoReport.getShatakuTaikyoKbn();
 
-		// 自動車の保管場所返還取消線フラグ
 		// 社宅
 		if ("1".equals(tTaikyoReport.getTaikyoShataku())) {
 			initDto.setTaikyoArea(tTaikyoReport.getTaikyoArea());

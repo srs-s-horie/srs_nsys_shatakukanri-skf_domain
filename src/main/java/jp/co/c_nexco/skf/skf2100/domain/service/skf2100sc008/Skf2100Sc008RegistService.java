@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100MMobileRouterWithBLOBs;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2100Sc008.Skf2100Sc008InsertMMobileRouterExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2100Sc008.Skf2100Sc008UpdateMMobileRouterExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100MMobileRouterRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -41,10 +42,10 @@ public class Skf2100Sc008RegistService extends SkfServiceAbstract<Skf2100Sc008Re
 	@Autowired
 	private Skf2100Sc008SharedService skf2100Sc008SharedService;
 	@Autowired
-	private Skf2100MMobileRouterRepository skf2100MMobileRouterRepository;
-	@Autowired
 	private Skf2100Sc008UpdateMMobileRouterExpRepository skf2100Sc008UpdateMMobileRouterExpRepository;
-
+	@Autowired
+	private Skf2100Sc008InsertMMobileRouterExpRepository skf2100Sc008InsertMMobileRouterExpRepository;
+	
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -118,9 +119,12 @@ public class Skf2100Sc008RegistService extends SkfServiceAbstract<Skf2100Sc008Re
 		// モバイルルーターマスタ登録
 		// データ設定
 		Skf2100MMobileRouterWithBLOBs routerData = skf2100Sc008SharedService.setRouterData(registDto);
+		String userCd = LoginUserInfoUtils.getUserCd();
+		routerData.setInsertUserId(userCd);
+		routerData.setInsertProgramId(FunctionIdConstant.SKF2100_SC008);
 		
 		LogUtils.infoByMsg("モバイルルーターマスタ登録:通しNo" + registDto.getRouterNo());
-		int inCount = skf2100MMobileRouterRepository.insertSelective(routerData);
+		int inCount = skf2100Sc008InsertMMobileRouterExpRepository.insertSelective(routerData);
 		if(inCount <= 0){
 			// 登録失敗
 			LogUtils.infoByMsg("モバイルルーターマスタ登録異常:更新件数" + inCount);
