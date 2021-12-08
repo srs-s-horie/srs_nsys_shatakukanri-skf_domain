@@ -134,7 +134,7 @@ public class Skf2010Sc007TransferService extends SkfServiceAbstract<Skf2010Sc007
 				// 申請不可の場合、申請条件確認画面にメッセージを表示する。
 				transferDto.setResultMessages(null);
 				ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-						"「社宅申請状況一覧」から確認", "");
+						"「申請状況一覧」から確認", "");
 				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
 				break;
 			}
@@ -157,7 +157,7 @@ public class Skf2010Sc007TransferService extends SkfServiceAbstract<Skf2010Sc007
 				// 申請不可の場合、申請条件確認画面にメッセージを表示する。
 				transferDto.setResultMessages(null);
 				ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-						"「社宅申請状況一覧」から確認", "");
+						"「申請状況一覧」から確認", "");
 				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
 				break;
 			}
@@ -188,7 +188,7 @@ public class Skf2010Sc007TransferService extends SkfServiceAbstract<Skf2010Sc007
 							"モバイルルーターの返却申請を", "");
 				}else{
 					ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-							"「社宅申請状況一覧」から確認", "");
+							"「申請状況一覧」から確認", "");
 				}
 				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
 				break;
@@ -208,7 +208,7 @@ public class Skf2010Sc007TransferService extends SkfServiceAbstract<Skf2010Sc007
 				// 申請不可の場合、申請条件確認画面にメッセージを表示する。
 				transferDto.setResultMessages(null);
 				ServiceHelper.addErrorResultMessage(transferDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-						"「社宅申請状況一覧」から確認", "");
+						"「申請状況一覧」から確認", "");
 				
 				throwBusinessExceptionIfErrors(transferDto.getResultMessages());
 				break;

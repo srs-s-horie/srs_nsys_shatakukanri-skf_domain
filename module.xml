@@ -9,15 +9,15 @@
   <dependencies>
     <dependency>
   		<module-id>jp.co.c_nexco.skf_web</module-id>
-  		<verified-version min="1.0.0">1.2.0</verified-version>
+  		<verified-version min="1.2.0">1.2.0</verified-version>
   	</dependency>
   	<dependency>
   		<module-id>jp.co.c_nexco.skf_storage</module-id>
-  		<verified-version min="1.0.0">1.2.0</verified-version>
+  		<verified-version min="1.2.0">1.2.0</verified-version>
   	</dependency>
   	<dependency>
   		<module-id>jp.co.c_nexco.skf_share</module-id>
-  		<verified-version min="1.0.0">1.2.0</verified-version>
+  		<verified-version min="1.2.0">1.2.0</verified-version>
   	</dependency>
   </dependencies>
 </module>
