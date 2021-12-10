@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -72,6 +73,9 @@ public class Skf2030Sc002RevisionService extends SkfServiceAbstract<Skf2030Sc002
 			throwBusinessExceptionIfErrors(revDto.getResultMessages());
 			return revDto;
 		}
+		
+		//画面遷移前にデータの初期化を行う
+		FormHelper.removeFormBean(FunctionIdConstant.SKF2030_SC002);
 
 		// 前の画面に遷移する
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);
