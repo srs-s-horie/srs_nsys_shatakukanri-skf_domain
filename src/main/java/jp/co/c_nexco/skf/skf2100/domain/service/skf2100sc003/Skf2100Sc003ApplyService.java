@@ -238,7 +238,7 @@ public class Skf2100Sc003ApplyService extends SkfServiceAbstract<Skf2100Sc003App
 		
 		if(!result){
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-						"「社宅申請状況一覧」から確認", "");
+						"「申請状況一覧」から確認", "");
 		}
 
 		return result;
