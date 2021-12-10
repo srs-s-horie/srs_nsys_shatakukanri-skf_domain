@@ -16,9 +16,11 @@ import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100MMobileRouterWithBLO
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2100Sc008.Skf2100Sc008GetSameImeiDataCountExpRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
+import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
@@ -532,7 +534,7 @@ public class Skf2100Sc008SharedService {
 		}
 		
 		
-		
+		// 貸与中の場合、解約済に更新させない
 		String contractKbn = comDto.getContractKbnSelect();
 		if(CodeConstant.ROUTER_CONTRACT_KBN_KAIYAKU.equals(contractKbn)){
 			// 契約区分が解約済みの場合、貸与中ルーター情報取得
@@ -540,7 +542,7 @@ public class Skf2100Sc008SharedService {
 			SkfRouterInfoUtilsGetTaiyoRouterDataExp routerInfo = new SkfRouterInfoUtilsGetTaiyoRouterDataExp();
 			routerInfo = skfRouterInfoUtils.getTaiyoRouterDataById(Long.parseLong(comDto.getRouterNo()));
 			if(routerInfo != null){
-				//貸与中ルーター有り
+				//貸与中ルーター有りのため、更新させない
 				ServiceHelper.addErrorResultMessage(comDto, new String[] { "contractKbnSelect" }, MessageIdConstant.E_SKF_3062);
 				comDto.setContractKbnSelectErr(CodeConstant.NFW_VALIDATION_ERROR);
 				errMsg.append("解約済設定：貸与中チェックNG");
@@ -621,6 +623,10 @@ public class Skf2100Sc008SharedService {
 			routerData.setRouterSupplementSize3(null);
 			routerData.setRouterSupplementFile3(null);
 		}
+		
+		String userCd = LoginUserInfoUtils.getUserCd();
+		routerData.setUpdateUserId(userCd);
+		routerData.setUpdateProgramId(FunctionIdConstant.SKF2100_SC008);
 		
 		return routerData;
 	}
