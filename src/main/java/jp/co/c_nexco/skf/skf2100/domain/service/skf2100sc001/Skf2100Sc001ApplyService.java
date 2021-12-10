@@ -136,13 +136,13 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 			return result;
 		}
 		
-		// メールアドレス
-		String mailAddress = (applyDto.getMailAddress() != null) ? applyDto.getMailAddress() : "";
-		if(!mailAddress.matches(MAIL_ADDRESS_CHECK_REG) ){
-			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" }, MessageIdConstant.E_SKF_3032,
-					"メールアドレス");
-			result = false;
-		}
+//		// メールアドレス
+//		String mailAddress = (applyDto.getMailAddress() != null) ? applyDto.getMailAddress() : "";
+//		if(!mailAddress.matches(MAIL_ADDRESS_CHECK_REG) ){
+//			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" }, MessageIdConstant.E_SKF_3032,
+//					"メールアドレス");
+//			result = false;
+//		}
 		
 		// 利用開始希望日
 		if (!SkfCheckUtils.isSkfDateFormat(applyDto.getUseStartHopeDay().trim(), CheckUtils.DateFormatType.YYYYMMDD)) {
@@ -177,13 +177,13 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 				result = false;
 			}
 			
-			// メールアドレス(255バイト)
-			if (CheckUtils.isMoreThanByteSize(applyDto.getMailAddress(), 255)) {
-				errorTarget.add("mailAddress");
-				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" }, MessageIdConstant.E_SKF_1071,
-						"メールアドレス", "255");
-				result = false;
-			}
+//			// メールアドレス(255バイト)
+//			if (CheckUtils.isMoreThanByteSize(applyDto.getMailAddress(), 255)) {
+//				errorTarget.add("mailAddress");
+//				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" }, MessageIdConstant.E_SKF_1071,
+//						"メールアドレス", "255");
+//				result = false;
+//			}
 			
 			// コメント(4000バイト
 			int commentMaxCnt = Integer.parseInt(PropertyUtils.getValue("skf2100.skf2100_sc001.comment_max_count"));
@@ -218,13 +218,13 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 			result = false;
 		}
 		
-		// メールアドレス
-		if (NfwStringUtils.isEmpty(applyDto.getMailAddress())) {
-			errorTarget.add("mailAddress");
-			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" },
-					MessageIdConstant.E_SKF_1048, "メールアドレス");
-			result = false;
-		}
+//		// メールアドレス
+//		if (NfwStringUtils.isEmpty(applyDto.getMailAddress())) {
+//			errorTarget.add("mailAddress");
+//			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" },
+//					MessageIdConstant.E_SKF_1048, "メールアドレス");
+//			result = false;
+//		}
 		
 		// 利用開始希望日
 		if (NfwStringUtils.isEmpty(applyDto.getUseStartHopeDay())) {
@@ -264,7 +264,7 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 						"モバイルルーターの返却申請を", "");
 			}else{
 				ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-						"「社宅申請状況一覧」から確認", "");
+						"「申請状況一覧」から確認", "");
 			}
 		}
 
