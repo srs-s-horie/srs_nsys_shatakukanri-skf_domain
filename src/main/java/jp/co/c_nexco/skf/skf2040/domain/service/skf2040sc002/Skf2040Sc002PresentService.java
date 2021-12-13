@@ -21,6 +21,7 @@ import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.CopyUtils;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -305,6 +306,9 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				return preDto;
 			}
 		}
+		
+		//画面遷移前にデータの初期化を行う
+		FormHelper.removeFormBean(FunctionIdConstant.SKF2040_SC002);
 
 		// 終了メッセージ出力
 		// 承認一覧に画面遷移

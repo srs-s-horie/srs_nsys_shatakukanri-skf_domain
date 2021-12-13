@@ -15,6 +15,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100sc001.Skf2100Sc001SaveDto;
 
 /**
@@ -29,7 +30,8 @@ public class Skf2100Sc001SaveService extends SkfServiceAbstract<Skf2100Sc001Save
 	private Skf2100Sc001SharedService skf2100Sc001SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
-
+	@Autowired
+	private SkfShinseiUtils skfShinseiUtils;
 
 	
 	/**
@@ -44,6 +46,11 @@ public class Skf2100Sc001SaveService extends SkfServiceAbstract<Skf2100Sc001Save
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("一時保存", CodeConstant.C001, FunctionIdConstant.SKF2100_SC001);
 
+		// 申請可否チェック
+		if(!checkShinsei(saveDto)){
+			return saveDto;
+		}
+		
 		// 申請書情報の取得
 		Map<String, String> applInfo = new HashMap<String, String>();
 		applInfo = skf2100Sc001SharedService.getSkfApplInfo(saveDto);
@@ -76,5 +83,35 @@ public class Skf2100Sc001SaveService extends SkfServiceAbstract<Skf2100Sc001Save
 		return saveDto;
 	}
 
+	/**
+	 * 申請可否チェックを行う
+	 * 
+	 * @param applyDto
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean checkShinsei(Skf2100Sc001SaveDto saveDto ) throws Exception {
+		boolean result = true;
+		
+		// 申請可能かのチェック
+		result = skfShinseiUtils.checkRouterShinseiStatus(saveDto.getShainNo(), FunctionIdConstant.R0107, saveDto.getApplNo());
+		
+		//未返却ルーター確認
+		int cnt = skfShinseiUtils.getSksRouterLedgerCount(saveDto.getShainNo());
+		if(cnt > 0){
+			result = false;
+		}
+		
+		if(!result){
+			if(cnt > 0){
+				ServiceHelper.addErrorResultMessage(saveDto, null, MessageIdConstant.I_SKF_1005, "貸与中のモバイルルーターが存在し",
+						"モバイルルーターの返却申請を", "");
+			}else{
+				ServiceHelper.addErrorResultMessage(saveDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
+						"「申請状況一覧」から確認", "");
+			}
+		}
 
+		return result;
+	}
 }

@@ -17,6 +17,7 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackEx
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
+import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -173,6 +174,9 @@ public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002P
 				}
 
 			}
+			
+			//画面遷移前にデータの初期化を行う
+			FormHelper.removeFormBean(FunctionIdConstant.SKF2020_SC003);
 
 			// 画面遷移（承認一覧へ）
 			TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005, "init");

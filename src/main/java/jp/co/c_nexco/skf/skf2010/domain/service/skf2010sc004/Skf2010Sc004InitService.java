@@ -274,6 +274,11 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 		return;
 	}
 
+	/**
+	 * 表示用データ設定
+	 * 
+	 * @param initDto
+	 */
 	private void setDisplayData(Skf2010Sc004InitDto initDto) {
 		String applNo = initDto.getApplNo();
 		String applId = initDto.getApplId();
@@ -926,9 +931,22 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 		// 自動車保管場所（２台目）の使用開始予定日
 		initDto.setParkingKanoDate2(
 				skfDateFormatUtils.dateFormatFromString(tNyukyoChoshoTsuchi.getParkingKanoDate2(), "yyyy年MM月dd日"));
+		
+		// 入居日変更フラグ
+		initDto.setNyukyoDateFlg(tNyukyoChoshoTsuchi.getNyukyoDateFlg());
+		// 駐車場使用開始日変更フラグ
+		initDto.setParkingSDateFlg(tNyukyoChoshoTsuchi.getParkingSDateFlg());
+		
 		return;
 	}
 
+	/**
+	 * 
+	 * 退居（自動車の保管場所変換）届表示のマッピングを行います
+	 * 
+	 * @param initDto
+	 * @param tTaikyoReport
+	 */
 	private void mappingTaikyoReport(Skf2010Sc004InitDto initDto, Skf2040TTaikyoReport tTaikyoReport) {
 		// 申請書類タイトル表記設定
 		initDto.setShatakuTaikyoKbn(tTaikyoReport.getShatakuTaikyoKbn()); // 社宅退居

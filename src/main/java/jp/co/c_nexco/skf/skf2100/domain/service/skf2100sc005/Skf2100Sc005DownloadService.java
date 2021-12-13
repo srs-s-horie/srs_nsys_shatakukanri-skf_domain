@@ -69,20 +69,23 @@ public class Skf2100Sc005DownloadService extends SkfServiceAbstract<Skf2100Sc005
 		WPA_KEY("F", "ＭＳ Ｐゴシック", "11"), // WPA Key
 		ROUTER_ARRIVAL_DATE("G", "ＭＳ Ｐゴシック", "11"), // ルーター入荷日
 		ROUTER_CONTRACT_END_DATE("H", "ＭＳ Ｐゴシック", "11"), // モバイルルーター契約終了日
-		HANNYU_APPL_DAY("I", "ＭＳ Ｐゴシック", "11"), // 本人申請日
-		USE_START_HOPE_DAY("J", "ＭＳ Ｐゴシック", "11"), // 貸出開始希望日
-		SHIPPING_DATE("K", "ＭＳ Ｐゴシック", "11"), // 発送日
-		RECEIVED_DATE("L", "ＭＳ Ｐゴシック", "11"), // 納品日(受領日）
-		HANSHUTU_APPL_DAY("M", "ＭＳ Ｐゴシック", "11"), // 利用停止申請日
-		USE_STOP_DAY("N", "ＭＳ Ｐゴシック", "11"), // 利用停止日（最終利用日）
-		RETURN_DAY("O", "ＭＳ Ｐゴシック", "11"), // 窓口返却日
-		SHAIN_NO("P", "ＭＳ Ｐゴシック", "11"), // 対象者社員番号
-		SHAIN_NAME("Q", "ＭＳ Ｐゴシック", "11"), // 対象者氏名
-		SHAIN_NAMEKK("R", "ＭＳ Ｐゴシック", "11"), // 対象者フリガナ
-		SHAIN_TEL("S", "ＭＳ Ｐゴシック", "11"), // 連絡先
-		FAULT_FLAG("T", "ＭＳ Ｐゴシック", "11"), // 故障
-		ROUTER_CONTRACT_KBN("U", "ＭＳ Ｐゴシック", "11"), // 契約区分
-		ROUTER_LENDING_JUDGMENT("V", "ＭＳ Ｐゴシック", "11"); // 貸出可否判定
+		ROUTER_BIKO("I", "ＭＳ Ｐゴシック", "11"), // ルーターマスタ備考
+		HANNYU_APPL_DAY("J", "ＭＳ Ｐゴシック", "11"), // 本人申請日
+		USE_START_HOPE_DAY("K", "ＭＳ Ｐゴシック", "11"), // 貸出開始希望日
+		SHIPPING_DATE("L", "ＭＳ Ｐゴシック", "11"), // 発送日
+		RECEIVED_DATE("M", "ＭＳ Ｐゴシック", "11"), // 納品日(受領日）
+		HANSHUTU_APPL_DAY("N", "ＭＳ Ｐゴシック", "11"), // 利用停止申請日
+		USE_STOP_DAY("O", "ＭＳ Ｐゴシック", "11"), // 利用停止日（最終利用日）
+		RETURN_DAY("P", "ＭＳ Ｐゴシック", "11"), // 窓口返却日
+		SHAIN_NO("Q", "ＭＳ Ｐゴシック", "11"), // 対象者社員番号
+		SHAIN_NAME("R", "ＭＳ Ｐゴシック", "11"), // 対象者氏名
+		SHAIN_NAMEKK("S", "ＭＳ Ｐゴシック", "11"), // 対象者フリガナ
+		SHAIN_TEL("T", "ＭＳ Ｐゴシック", "11"), // 連絡先
+		FAULT_FLAG("U", "ＭＳ Ｐゴシック", "11"), // 故障
+		ROUTER_CONTRACT_KBN("V", "ＭＳ Ｐゴシック", "11"), // 契約区分
+		ROUTER_LENDING_JUDGMENT("W", "ＭＳ Ｐゴシック", "11"), // 貸出可否判定
+		LEDGER_BIKO("X", "ＭＳ Ｐゴシック", "11"); // 貸出管理簿備考
+		
 
 		public String col;
 		public String font;
@@ -333,6 +336,13 @@ public class Skf2100Sc005DownloadService extends SkfServiceAbstract<Skf2100Sc005
 				rowData.addCellDataBean(Rp001Info.ROUTER_LENDING_JUDGMENT.col + tagetRowIdx,
 						lendJudgment.get(data.getRouterLendingJudgment()));
 
+			// 貸出管理簿備考
+			rowData.addCellDataBean(Rp001Info.LEDGER_BIKO.col + tagetRowIdx,
+						skf2100Sc005SharedService.cnvEmptyStrToNull(data.getLedgerBiko()));
+			// ルーターマスタ備考
+			rowData.addCellDataBean(Rp001Info.ROUTER_BIKO.col + tagetRowIdx,
+					skf2100Sc005SharedService.cnvEmptyStrToNull(data.getRouterBiko()));
+			
 			rowDataBeanList.add(rowData);
 
 		}
