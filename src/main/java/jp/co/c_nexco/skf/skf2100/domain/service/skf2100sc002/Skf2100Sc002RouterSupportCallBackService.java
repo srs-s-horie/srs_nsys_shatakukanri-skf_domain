@@ -49,6 +49,9 @@ public class Skf2100Sc002RouterSupportCallBackService extends SkfServiceAbstract
 		
 		skf2100Sc002SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		
+		// セッション添付資料情報初期化
+		skf2100Sc002SharedService.clearMenuScopeSessionBean();
+		
 		// 申請情報設定
 		Map<String, String> applInfo = new HashMap<String, String>();
 		applInfo.put("status", dto.getApplStatus());

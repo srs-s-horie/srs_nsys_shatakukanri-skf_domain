@@ -1054,14 +1054,17 @@ public class Skf2100Sc002SharedService {
 			return false;
 		}
 
-		// 添付ファイル管理テーブル更新処理
-		boolean resultUpdateFile = updateAttachedFileInfo(updateStatus, applInfo.get("applNo"),
+		// 押下されたボタンが確認依頼の場合
+		if (UPDATE_TYPE_PRESENT.equals(execName)) {
+			// 添付ファイル管理テーブル更新処理
+			boolean resultUpdateFile = updateAttachedFileInfo(updateStatus, applInfo.get("applNo"),
 				dto.getShainNo(), attachedFileList, applTacFlg, updApplInfo, errorMsg, loginUserInfo.get("userCd"),
 				FunctionIdConstant.SKF2100_SC002);
-		if (!resultUpdateFile) {
-			// 更新エラー
-			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
-			return false;
+			if (!resultUpdateFile) {
+				// 更新エラー
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+				return false;
+			}
 		}
 
 		// 差戻完了通知・修正依頼完了通知・承認完了の場合のみ

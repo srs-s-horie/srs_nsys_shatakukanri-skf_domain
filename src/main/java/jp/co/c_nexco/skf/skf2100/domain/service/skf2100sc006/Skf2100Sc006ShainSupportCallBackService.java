@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3022Sc006.Skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MShainRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
@@ -38,6 +41,8 @@ public class Skf2100Sc006ShainSupportCallBackService extends SkfServiceAbstract<
 	private Skf2100Sc006SharedService skf2100Sc006SharedService;
 	@Autowired
 	private Skf3022Sc006GetIdmPreUserMasterInfoExpRepository skf3022Sc006GetIdmPreUserMasterInfoExpRepository;
+	@Autowired
+	private Skf1010MShainRepository skf1010MShainRepository;
 
 	/** IdM_プレユーザマスタ（従業員区分）定数 */
 	// 役員
@@ -82,7 +87,18 @@ public class Skf2100Sc006ShainSupportCallBackService extends SkfServiceAbstract<
 		
 		//セッションの社員情報を設定されている場合
 		if(!SkfCheckUtils.isNullOrEmpty(initDto.getHdnShainNo())){
-			String shainNoChangeFlag = skf2100Sc006SharedService.getShainNoChangeFlag(initDto.getHdnShainNo());
+			// 社員マスタ情報取得
+			String shainNoChangeFlag = CodeConstant.DOUBLE_QUOTATION;
+			String mailAddress = CodeConstant.DOUBLE_QUOTATION;
+			Skf1010MShainKey key = new Skf1010MShainKey();
+			key.setCompanyCd(CodeConstant.C001);
+			key.setShainNo(initDto.getHdnShainNo());
+			Skf1010MShain selectShain = skf1010MShainRepository.selectByPrimaryKey(key);
+			if(selectShain != null){
+				shainNoChangeFlag = selectShain.getShainNoChangeFlg();
+				mailAddress = selectShain.getMailAddress();
+			}
+//			String shainNoChangeFlag = skf2100Sc006SharedService.getShainNoChangeFlag(initDto.getHdnShainNo());
 			if("1".equals(shainNoChangeFlag)){
 				initDto.setShainNo(initDto.getHdnShainNo() + CodeConstant.ASTERISK);
 			}else{
@@ -90,6 +106,8 @@ public class Skf2100Sc006ShainSupportCallBackService extends SkfServiceAbstract<
 			}
 			//社員名
 			initDto.setShainName(initDto.getHdnShainName());
+			// メールアドレス
+			initDto.setHannyuMailaddress(mailAddress);
 			
 			// 原籍会社を初期設定
 			initDto.setOriginalCompanySelect(CodeConstant.DOUBLE_QUOTATION);

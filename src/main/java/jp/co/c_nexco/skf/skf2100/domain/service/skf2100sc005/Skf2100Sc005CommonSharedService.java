@@ -26,6 +26,7 @@ public class Skf2100Sc005CommonSharedService {
 	public static final String SEARCH_COL_USE_STOP_DAY_KEY = "col11";
 	public static final String SEARCH_COL_ROUTER_KANRI_ID_KEY = "col12";
 	public static final String SEARCH_COL_STATUS_CODE_KEY = "col13";
+	public static final String SEARCH_COL_ROUTER_BIKO_KEY = "col14";
 
 	/** 「モバイルルーター貸出管理簿登録」画面へ渡すセッション情報mapのkey */
 	public static final String SEARCH_INFO_ROUTER_NO_KEY = "skf2100sc005RouterNoKey";

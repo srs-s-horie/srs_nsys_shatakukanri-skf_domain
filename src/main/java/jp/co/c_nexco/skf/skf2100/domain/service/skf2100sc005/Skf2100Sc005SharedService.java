@@ -481,6 +481,10 @@ public class Skf2100Sc005SharedService {
 			// 管理簿ID
 			targetMap.put(Skf2100Sc005CommonSharedService.SEARCH_COL_ROUTER_KANRI_ID_KEY, routerLInfo.getMobileRouterKanriId());
 
+			//モバイルルーターマスタ備考
+			targetMap.put(Skf2100Sc005CommonSharedService.SEARCH_COL_ROUTER_BIKO_KEY, routerLInfo.getRouterBiko());
+
+			
 			rtnList.add(targetMap);
 		}
 
