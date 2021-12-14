@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3022Sc006.Skf3022Sc006GetCompanyAgencyListExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetReturnDayDataExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetTaiyoRouterDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050TMonthlyManageData;
@@ -73,8 +72,6 @@ public class Skf2100Sc006SharedService {
 	public static final String FONT_COLOR_GREEN = "color:green;";
 	public static final String FONT_COLOR_BLUE = "color:blue;";
 	private static final String NO_KANRI_ID = "0";
-	// メールアドレスチェック正規表現
-	private static final String MAIL_ADDRESS_CHECK_REG = "[!-~]+@[!-~]+\\.[!-~]+";
 	// 電話番号チェック正規表現
 	private static final String TELNO_CHECK_REG = "^[0-9-]*$";
 
@@ -537,14 +534,6 @@ public class Skf2100Sc006SharedService {
 			comDto.setHannyuTelErr(CodeConstant.NFW_VALIDATION_ERROR);
 			errMsg.append("必須チェックNG:本人連絡先（搬入）");
 		}
-		
-//		// 搬入本人メールアドレス未入力
-//		comDto.setHannyuMailaddressErr("");
-//		if(SkfCheckUtils.isNullOrEmpty(comDto.getHannyuMailaddress())){
-//			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1048, "本人メールアドレス");
-//			comDto.setHannyuMailaddressErr(CodeConstant.NFW_VALIDATION_ERROR);
-//			errMsg.append("必須チェックNG:メールアドレス");
-//		}
 
 		// 発送日未入力
 		comDto.setShippingDateErr("");
@@ -621,14 +610,6 @@ public class Skf2100Sc006SharedService {
 			errMsg.append("バイト数チェックNG:本人連絡先（搬入）");
 		}
 		
-//		// メールアドレス(255バイト)
-//		if (!SkfCheckUtils.isNullOrEmpty(comDto.getHannyuMailaddress())
-//				&& CheckUtils.isMoreThanByteSize(comDto.getHannyuMailaddress(), 255)) {
-//			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_1071 , "本人メールアドレス","255");
-//			comDto.setHannyuMailaddressErr(CodeConstant.NFW_VALIDATION_ERROR);
-//			errMsg.append("バイト数チェックNG:本人メールアドレス");
-//		}
-		
 		// 本人連絡先（搬出）(13バイト)
 		if (!SkfCheckUtils.isNullOrEmpty(comDto.getHansyutuTel())
 			&& CheckUtils.isMoreThanByteSize(comDto.getHansyutuTel(), 13)) {
@@ -664,15 +645,6 @@ public class Skf2100Sc006SharedService {
 			errMsg.append("形式チェックNG:本人連絡先（搬入）");
 		
 		}
-		
-//		// メールアドレス
-//		String mailAddress = (comDto.getHannyuMailaddress() != null) ? comDto.getHannyuMailaddress() : "";
-//		if( !SkfCheckUtils.isNullOrEmpty(mailAddress) && !mailAddress.matches(MAIL_ADDRESS_CHECK_REG)){
-//			ServiceHelper.addErrorResultMessage(comDto, null, MessageIdConstant.E_SKF_3032);
-//			comDto.setHannyuMailaddressErr(CodeConstant.NFW_VALIDATION_ERROR);
-//			errMsg.append("形式チェックNG:本人メールアドレス");
-//			
-//		}
 		
 		// 本人連絡先（搬入）
 		telNo = (comDto.getHansyutuTel() != null) ? comDto.getHansyutuTel() : "";

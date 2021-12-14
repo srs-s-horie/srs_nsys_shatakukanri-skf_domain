@@ -14,12 +14,10 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterI
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterLedger;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiMeisai;
-import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MGeneralEquipmentItem;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2100Sc006.Skf2100Sc006UpdateTMobileRouterLedgerExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterLedgerRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MGeneralEquipmentItemRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
 import jp.co.c_nexco.nfw.common.utils.LoginUserInfoUtils;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
@@ -58,8 +56,6 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 	private Skf2100TMobileRouterRentalRirekiRepository skf2100TMobileRouterRentalRirekiRepository;
 	@Autowired
 	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
-	@Autowired
-	private Skf3050MGeneralEquipmentItemRepository skf3050MGeneralEquipmentItemRepository;
 	@Autowired
 	private Skf2100Sc006UpdateTMobileRouterLedgerExpRepository skf2100Sc006UpdateTMobileRouterLedgerExpRepository;
 
@@ -193,8 +189,6 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		
 		// 月別モバイルルーター使用料明細、月別モバイルルーター使用料履歴登録
 		// 汎用備品項目設定取得
-//		Skf3050MGeneralEquipmentItem equipment = new Skf3050MGeneralEquipmentItem();
-//		equipment = skf3050MGeneralEquipmentItemRepository.selectByPrimaryKey(CodeConstant.GECD_MOBILEROUTER);
 		SkfRouterInfoUtilsGetEquipmentPaymentExp equipment = new SkfRouterInfoUtilsGetEquipmentPaymentExp();
 		equipment = skfRouterInfoUtils.getEquipmentPayment(CodeConstant.GECD_MOBILEROUTER, yearMonth);
 		if(equipment == null){
@@ -312,8 +306,6 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		
 		// 月別モバイルルーター使用料明細、月別モバイルルーター使用料履歴登録
 		// 汎用備品項目設定取得
-//		Skf3050MGeneralEquipmentItem equipment = new Skf3050MGeneralEquipmentItem();
-//		equipment = skf3050MGeneralEquipmentItemRepository.selectByPrimaryKey(CodeConstant.GECD_MOBILEROUTER);
 		SkfRouterInfoUtilsGetEquipmentPaymentExp equipment = new SkfRouterInfoUtilsGetEquipmentPaymentExp();
 		equipment = skfRouterInfoUtils.getEquipmentPayment(CodeConstant.GECD_MOBILEROUTER, yearMonth);
 		if(equipment == null){

@@ -110,7 +110,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TParkingRirekiRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -118,8 +117,8 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -232,8 +231,6 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 	private Skf2100TMobileRouterRentalRirekiRepository skf2100TMobileRouterRentalRirekiRepository;
 	@Autowired
 	private Skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository;
-	@Autowired
-	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
 	@Autowired
 	private Skf3050Bt004DeleteRouterYoteiDataExpRepository skf3050Bt004DeleteRouterYoteiDataExpRepository;
 	@Autowired

@@ -1238,8 +1238,6 @@ public class Skf2100Sc002SharedService {
 				
 				// 月別モバイルルーター使用料明細、月別モバイルルーター使用料履歴登録
 				// 汎用備品項目設定取得
-//				Skf3050MGeneralEquipmentItem equipment = new Skf3050MGeneralEquipmentItem();
-//				equipment = skf3050MGeneralEquipmentItemRepository.selectByPrimaryKey();
 				SkfRouterInfoUtilsGetEquipmentPaymentExp equipment = new SkfRouterInfoUtilsGetEquipmentPaymentExp();
 				equipment = skfRouterInfoUtils.getEquipmentPayment(CodeConstant.GECD_MOBILEROUTER, yearMonth);
 				if(equipment == null){
