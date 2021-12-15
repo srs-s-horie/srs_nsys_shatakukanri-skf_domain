@@ -10,10 +10,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2100Sc006.Skf2100Sc006GetTaiyoKanriDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2100Sc006.Skf2100Sc006GetTaiyoKanriDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetEquipmentPaymentExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterLedger;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiMeisai;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2100Sc006.Skf2100Sc006GetTaiyoKanriDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2100Sc006.Skf2100Sc006UpdateTMobileRouterLedgerExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterLedgerRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
@@ -58,7 +61,10 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
 	@Autowired
 	private Skf2100Sc006UpdateTMobileRouterLedgerExpRepository skf2100Sc006UpdateTMobileRouterLedgerExpRepository;
-
+	@Autowired
+	private Skf2100Sc006GetTaiyoKanriDataExpRepository skf2100Sc006GetTaiyoKanriDataExpRepository;
+	
+	
 	/**
 	 * サービス処理を行う。　
 	 * 
@@ -233,10 +239,26 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		}
 		
 		// モバイルルーターマスタ更新
+		// 初期値：使用中
 		String setLendingJudgment = CodeConstant.ROUTER_LENDING_JUDGMENT_USE;
 		if(!SkfCheckUtils.isNullOrEmpty(registDto.getReturnDay())){
 			// 窓口返却日設定有
-			setLendingJudgment = CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO;
+			//他管理簿で貸与中がないかチェック
+			Skf2100Sc006GetTaiyoKanriDataExpParameter listParam = new Skf2100Sc006GetTaiyoKanriDataExpParameter();
+			listParam.setYearMonth(yearMonth);
+			listParam.setMobileRouterKanriId(newKanriId);
+			listParam.setMobileRouterNo(Long.parseLong(registDto.getRouterNo()));
+			
+			List<Skf2100Sc006GetTaiyoKanriDataExp> listData = new ArrayList<Skf2100Sc006GetTaiyoKanriDataExp>();
+			listData = skf2100Sc006GetTaiyoKanriDataExpRepository.getTaiyoKanriData(listParam);
+			String receivedDate = CodeConstant.DOUBLE_QUOTATION;
+			if(listData != null && listData.size() > 0){
+				receivedDate = listData.get(0).getReceivedDate();
+			}
+			if(SkfCheckUtils.isNullOrEmpty(receivedDate)){
+				// 窓口返却日設定有、他貸与中ルーターなし、貸与可に設定
+				setLendingJudgment = CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO;
+			}
 		}
 		if(CodeConstant.ROUTER_FAULT_FLAG_FAULT.equals(registDto.getHdnFaultFlag())){
 			// 故障中
@@ -352,7 +374,22 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		String setLendingJudgment = CodeConstant.ROUTER_LENDING_JUDGMENT_USE;
 		if(!SkfCheckUtils.isNullOrEmpty(registDto.getReturnDay())){
 			// 窓口返却日設定有
-			setLendingJudgment = CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO;
+			//他管理簿で貸与中がないかチェック
+			Skf2100Sc006GetTaiyoKanriDataExpParameter listParam = new Skf2100Sc006GetTaiyoKanriDataExpParameter();
+			listParam.setYearMonth(yearMonth);
+			listParam.setMobileRouterKanriId(routerKanriId);
+			listParam.setMobileRouterNo(Long.parseLong(registDto.getRouterNo()));
+			
+			List<Skf2100Sc006GetTaiyoKanriDataExp> listData = new ArrayList<Skf2100Sc006GetTaiyoKanriDataExp>();
+			listData = skf2100Sc006GetTaiyoKanriDataExpRepository.getTaiyoKanriData(listParam);
+			String receivedDate = CodeConstant.DOUBLE_QUOTATION;
+			if(listData != null && listData.size() > 0){
+				receivedDate = listData.get(0).getReceivedDate();
+			}
+			if(SkfCheckUtils.isNullOrEmpty(receivedDate)){
+				// 窓口返却日設定有、他貸与中ルーターなし、貸与可に設定
+				setLendingJudgment = CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO;
+			}
 		}
 		if(CodeConstant.ROUTER_FAULT_FLAG_FAULT.equals(registDto.getHdnFaultFlag())){
 			// 故障中
