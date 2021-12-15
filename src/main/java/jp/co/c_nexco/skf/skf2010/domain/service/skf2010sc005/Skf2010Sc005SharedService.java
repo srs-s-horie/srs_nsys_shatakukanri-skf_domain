@@ -2014,8 +2014,6 @@ public class Skf2010Sc005SharedService {
 			
 			// 月別モバイルルーター使用料明細、月別モバイルルーター使用料履歴登録
 			// 汎用備品項目設定取得
-//			Skf3050MGeneralEquipmentItem equipment = new Skf3050MGeneralEquipmentItem();
-//			equipment = skf3050MGeneralEquipmentItemRepository.selectByPrimaryKey(CodeConstant.GECD_MOBILEROUTER);
 			SkfRouterInfoUtilsGetEquipmentPaymentExp equipment = new SkfRouterInfoUtilsGetEquipmentPaymentExp();
 			equipment = skfRouterInfoUtils.getEquipmentPayment(CodeConstant.GECD_MOBILEROUTER, yearMonth);
 			if(equipment == null){
@@ -2354,13 +2352,16 @@ public class Skf2010Sc005SharedService {
 		String mailAddress = ledgerData.getHannyuMailaddress();
 		
 		// メール送信
-//		String mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
-//		if (NfwStringUtils.isEmpty(mailAddress)) {
-//			// メールアドレスが設定されていない場合は処理を中断する。
-//			errMsg.put("error", MessageIdConstant.E_SKF_1041);
-//			errMsg.put("val", sendUser);
-//			return false;
-//		}
+		if (NfwStringUtils.isEmpty(mailAddress)) {
+			//管理簿のアドレスなしの場合、社員マスタより取得
+			mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
+			if (NfwStringUtils.isEmpty(mailAddress)) {
+				// メールアドレスが設定されていない場合は処理を中断する。
+				errMsg.put("error", MessageIdConstant.E_SKF_1041);
+				errMsg.put("val", sendUser);
+				return false;
+			}
+		}
 
 		// URLを設定
 		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
