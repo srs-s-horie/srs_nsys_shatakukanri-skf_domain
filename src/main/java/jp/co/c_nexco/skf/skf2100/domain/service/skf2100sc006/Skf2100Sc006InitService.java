@@ -194,6 +194,7 @@ public class Skf2100Sc006InitService extends SkfServiceAbstract<Skf2100Sc006Init
 			}
 			// 社員番号
 			if(!SkfCheckUtils.isNullOrEmpty(selShainNo)){
+				selShainNo = selShainNo.replace(CodeConstant.ASTERISK, "");
 				initDto.setShainNo(selShainNo);
 				initDto.setHdnShainNo(selShainNo);
 			}
