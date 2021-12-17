@@ -58,19 +58,15 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 		
 		// 入力チェック
 		if (!checkDispInfo(applyDto)) {
-//			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			return applyDto;
 		}
 		
 		
 		// ログインユーザー情報取得
-//		Map<String, String> loginUserInfo = skfLoginUserInfoUtils
-//				.getSkfLoginUserInfoFromAlterLogin(menuScopeSessionBean);
 		skf2100Sc001SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		
 		// 申請可否チェック
 		if(!checkShinsei(applyDto)){
-//			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			return applyDto;
 		}
 		
@@ -136,14 +132,6 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 			return result;
 		}
 		
-//		// メールアドレス
-//		String mailAddress = (applyDto.getMailAddress() != null) ? applyDto.getMailAddress() : "";
-//		if(!mailAddress.matches(MAIL_ADDRESS_CHECK_REG) ){
-//			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" }, MessageIdConstant.E_SKF_3032,
-//					"メールアドレス");
-//			result = false;
-//		}
-		
 		// 利用開始希望日
 		if (!SkfCheckUtils.isSkfDateFormat(applyDto.getUseStartHopeDay().trim(), CheckUtils.DateFormatType.YYYYMMDD)) {
 			errorTarget.add("useStartHopeDay");
@@ -177,14 +165,6 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 				result = false;
 			}
 			
-//			// メールアドレス(255バイト)
-//			if (CheckUtils.isMoreThanByteSize(applyDto.getMailAddress(), 255)) {
-//				errorTarget.add("mailAddress");
-//				ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" }, MessageIdConstant.E_SKF_1071,
-//						"メールアドレス", "255");
-//				result = false;
-//			}
-			
 			// コメント(4000バイト
 			int commentMaxCnt = Integer.parseInt(PropertyUtils.getValue("skf2100.skf2100_sc001.comment_max_count"));
 			if (NfwStringUtils.isNotEmpty(applyDto.getCommentNote())
@@ -217,14 +197,6 @@ public class Skf2100Sc001ApplyService extends SkfServiceAbstract<Skf2100Sc001App
 					"電話番号");
 			result = false;
 		}
-		
-//		// メールアドレス
-//		if (NfwStringUtils.isEmpty(applyDto.getMailAddress())) {
-//			errorTarget.add("mailAddress");
-//			ServiceHelper.addErrorResultMessage(applyDto, new String[] { "mailAddress" },
-//					MessageIdConstant.E_SKF_1048, "メールアドレス");
-//			result = false;
-//		}
 		
 		// 利用開始希望日
 		if (NfwStringUtils.isEmpty(applyDto.getUseStartHopeDay())) {

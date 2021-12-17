@@ -64,6 +64,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.Skf
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.SkfBaseBusinessLogicUtilsShatakuRentCalcOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsOutputExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetEquipmentPaymentExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRireki;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiMeisai;
@@ -109,7 +110,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateTsukibetuShiyoryoRirekiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt004.Skf3050Bt004UpdateshatakuTyusyajyoKukakuJyohoTaiyojyokyoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3030TParkingRirekiRepository;
 import jp.co.c_nexco.nfw.common.utils.LogUtils;
@@ -117,8 +117,8 @@ import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
 import jp.co.c_nexco.nfw.common.utils.PropertyUtils;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
-import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
@@ -127,6 +127,7 @@ import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfKyoekihiCalcUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
 import jp.co.c_nexco.skf.skf3050.domain.dto.skf3050sc002.Skf3050Sc002ConfirmPositiveCooperationTaskExecutionDto;
 
 /**
@@ -231,11 +232,11 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 	@Autowired
 	private Skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository skf3050Bt004GetRouterShiyoryoMeisaiDataExpRepository;
 	@Autowired
-	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
-	@Autowired
 	private Skf3050Bt004DeleteRouterYoteiDataExpRepository skf3050Bt004DeleteRouterYoteiDataExpRepository;
 	@Autowired
 	private Skf3050Bt004InsertRouterRirekiDataExpRepository skf3050Bt004InsertRouterRirekiDataExpRepository;
+	@Autowired
+	private SkfRouterInfoUtils skfRouterInfoUtils;
 	private static final String ERRMSG_ROUTERMEISAI_0 = "モバイルルーター使用料明細（当月）";
 	//モバイルルーター機能追加対応 2021/9 add end
 
@@ -825,11 +826,19 @@ public class Skf3050Sc002ConfirmPositiveCooperationTaskExecutionService extends 
 				if(meisaiDL != null && meisaiDL.size() > 0){
 					// 取得データ分次月領域作成
 					for(Skf3050Bt004GetRouterShiyoryoMeisaiDataExp meisai : meisaiDL){
+						// 次月の汎用備品項目設定取得
+						SkfRouterInfoUtilsGetEquipmentPaymentExp equipment = new SkfRouterInfoUtilsGetEquipmentPaymentExp();
+						equipment = skfRouterInfoUtils.getEquipmentPayment(meisai.getGeneralEquipmentCd(), nextShoriNengetsu);
+						if(equipment == null){
+							LogUtils.info(MessageIdConstant.E_SKF_1106, "汎用備品項目設定",
+									routerKnairId.toString());
+							return false;
+						}
 						Skf2100TMobileRouterRentalRirekiMeisai inData = new Skf2100TMobileRouterRentalRirekiMeisai();
 						inData.setMobileRouterKanriId(routerKnairId);
 						inData.setYearMonth(nextShoriNengetsu);
 						inData.setGeneralEquipmentCd(meisai.getGeneralEquipmentCd());
-						inData.setMobileRouterGenbutsuGaku(meisai.getMobileRouterGenbutsuGaku());
+						inData.setMobileRouterGenbutsuGaku(equipment.getEquipmentPayment());
 						inData.setMobileRouterApplKbn(meisai.getMobileRouterApplKbn());
 						inData.setMobileRouterReturnKbn(meisai.getMobileRouterReturnKbn());
 						inData.setInsertUserId(paramUserId);

@@ -37,6 +37,7 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetS
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2020Sc003.Skf2020Sc003GetShatakuNyukyoKiboInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfRouterInfoUtils.SkfRouterInfoUtilsGetEquipmentPaymentExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShain;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MShainKey;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2010MApplication;
@@ -2013,8 +2014,8 @@ public class Skf2010Sc005SharedService {
 			
 			// 月別モバイルルーター使用料明細、月別モバイルルーター使用料履歴登録
 			// 汎用備品項目設定取得
-			Skf3050MGeneralEquipmentItem equipment = new Skf3050MGeneralEquipmentItem();
-			equipment = skf3050MGeneralEquipmentItemRepository.selectByPrimaryKey(CodeConstant.GECD_MOBILEROUTER);
+			SkfRouterInfoUtilsGetEquipmentPaymentExp equipment = new SkfRouterInfoUtilsGetEquipmentPaymentExp();
+			equipment = skfRouterInfoUtils.getEquipmentPayment(CodeConstant.GECD_MOBILEROUTER, yearMonth);
 			if(equipment == null){
 				// 取得失敗
 				return false;
@@ -2024,7 +2025,7 @@ public class Skf2010Sc005SharedService {
 			Skf2100TMobileRouterRentalRirekiMeisai meisaiRecord = new Skf2100TMobileRouterRentalRirekiMeisai();
 			meisaiRecord.setMobileRouterKanriId(newKanriId);
 			meisaiRecord.setYearMonth(yearMonth);
-			meisaiRecord.setGeneralEquipmentCd(equipment.getGeneralEquipmentCd());
+			meisaiRecord.setGeneralEquipmentCd(CodeConstant.GECD_MOBILEROUTER);
 			meisaiRecord.setMobileRouterGenbutsuGaku(equipment.getEquipmentPayment());
 			meisaiRecord.setMobileRouterApplKbn(CodeConstant.BIHIN_SHINSEI_KBN_ARI);//申請有
 			meisaiRecord.setMobileRouterReturnKbn(CodeConstant.BIHIN_HENKYAKU_SURU);//要返却
@@ -2048,7 +2049,7 @@ public class Skf2010Sc005SharedService {
 			
 			// モバイルルーターマスタ更新
 			Skf2100MMobileRouterWithBLOBs routerRecord  = new Skf2100MMobileRouterWithBLOBs();
-			routerRecord.setGeneralEquipmentCd(equipment.getGeneralEquipmentCd());
+			routerRecord.setGeneralEquipmentCd(CodeConstant.GECD_MOBILEROUTER);
 			routerRecord.setMobileRouterNo(shinseiData.getMobileRouterNo());
 			routerRecord.setRouterLendingJudgment(CodeConstant.ROUTER_LENDING_JUDGMENT_USE);//使用中
 			inCount = skf2100MMobileRouterRepository.updateByPrimaryKeySelective(routerRecord);
@@ -2351,13 +2352,16 @@ public class Skf2010Sc005SharedService {
 		String mailAddress = ledgerData.getHannyuMailaddress();
 		
 		// メール送信
-//		String mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
-//		if (NfwStringUtils.isEmpty(mailAddress)) {
-//			// メールアドレスが設定されていない場合は処理を中断する。
-//			errMsg.put("error", MessageIdConstant.E_SKF_1041);
-//			errMsg.put("val", sendUser);
-//			return false;
-//		}
+		if (NfwStringUtils.isEmpty(mailAddress)) {
+			//管理簿のアドレスなしの場合、社員マスタより取得
+			mailAddress = getSendMailAddressByShainNo(companyCd, sendUser);
+			if (NfwStringUtils.isEmpty(mailAddress)) {
+				// メールアドレスが設定されていない場合は処理を中断する。
+				errMsg.put("error", MessageIdConstant.E_SKF_1041);
+				errMsg.put("val", sendUser);
+				return false;
+			}
+		}
 
 		// URLを設定
 		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";

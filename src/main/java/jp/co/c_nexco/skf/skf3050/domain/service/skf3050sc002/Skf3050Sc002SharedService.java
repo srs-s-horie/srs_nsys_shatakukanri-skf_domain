@@ -140,8 +140,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetShatakuKanriTaikyoExistExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf1010MCompanyRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiMeisaiRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterRentalRirekiRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050MAccountRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf3050TMonthlyManageDataRepository;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
@@ -277,11 +275,7 @@ public class Skf3050Sc002SharedService {
 	@Autowired
 	private Skf3050Bt005GetRouterRirekiMeisaiListExpRepository skf3050Bt005GetRouterRirekiMeisaiListExpRepository;
 	@Autowired
-	private Skf2100TMobileRouterRentalRirekiMeisaiRepository skf2100TMobileRouterRentalRirekiMeisaiRepository;
-	@Autowired
 	private Skf3050Bt005GetRouterGenbutsuGoukeiExpRepository skf3050Bt005GetRouterGenbutsuGoukeiExpRepository;
-	@Autowired
-	private Skf2100TMobileRouterRentalRirekiRepository skf2100TMobileRouterRentalRirekiRepository;
 	@Autowired
 	private Skf3050Bt005UpdateGetsujiShoriKanriDataExpRepository skf3050Bt005UpdateGetsujiShoriKanriDataExpRepository;
 	@Autowired
