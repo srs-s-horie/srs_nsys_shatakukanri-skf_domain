@@ -611,6 +611,7 @@ public class Skf2100Sc004SharedService {
 				mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
 				shoninName1 = CodeConstant.NONE;
 				shoninName2 = loginUserInfo.get("userName");
+				sendUserId = applInfo.get("applShainNo");
 				agreDate = sysDateTime;
 				break;
 			}
