@@ -82,6 +82,8 @@ public class Skf2100Sc005SharedService {
 	public static final String POSITIVE_LINKDATA_JIKKOUZUMI = "実行済";
 	public static final String POSITIVE_LINKDATA_KAKUTEIZUMI = "確定済";
 	public static final String POSITIVE_LINKDATA_MIJIKKOU = "未実行";
+	
+	public static final String STATUS_STR_ICHIJIHOZON = "一時保存";
 
 	public static final String SHIME_SHORI_TXT_KEY = "txtShimeShoriKey";
 	public static final String POSITIVE_RENKEI_TXT_KEY = "txtPositiveRenkeiKey";
@@ -464,6 +466,10 @@ public class Skf2100Sc005SharedService {
 					applStatus = HYPHEN;
 				} else {
 					applStatus = getTargetDropDownLabel(entityApplStatus,statusDropDownList);
+					if(STATUS_STR_ICHIJIHOZON.equals(applStatus)){
+						//一時保存の場合
+						applStatus = HYPHEN;
+					}
 				}
 			}
 			targetMap.put(Skf2100Sc005CommonSharedService.SEARCH_COL_STATUS_KEY, applStatus);

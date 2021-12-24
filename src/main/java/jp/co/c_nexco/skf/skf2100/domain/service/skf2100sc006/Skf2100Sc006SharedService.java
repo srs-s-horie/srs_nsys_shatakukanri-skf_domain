@@ -74,6 +74,8 @@ public class Skf2100Sc006SharedService {
 	private static final String NO_KANRI_ID = "0";
 	// 電話番号チェック正規表現
 	private static final String TELNO_CHECK_REG = "^[0-9-]*$";
+	// 一時保存
+	public static final String STATUS_STR_ICHIJIHOZON = "一時保存";
 
 	
 	/**
@@ -249,6 +251,10 @@ public class Skf2100Sc006SharedService {
 				applStatus = CodeConstant.HYPHEN;
 			} else {
 				applStatus = getTargetDropDownLabel(entityApplStatus,statusDropDownList);
+				if(STATUS_STR_ICHIJIHOZON.equals(applStatus)){
+					//一時保存の場合
+					applStatus = CodeConstant.HYPHEN;
+				}
 			}
 		}
 		
@@ -336,8 +342,9 @@ public class Skf2100Sc006SharedService {
 		
 		// 社員番号設定有り
 		if(CodeConstant.STATUS_SHONIN_ZUMI.equals(comDto.getHdnApplStatus())
-			|| SkfCheckUtils.isNullOrEmpty(comDto.getHdnApplStatus())){
-			// 申請状況が「承認済み」もしくは空（予定データなし)
+			|| SkfCheckUtils.isNullOrEmpty(comDto.getHdnApplStatus())
+			|| CodeConstant.STATUS_ICHIJIHOZON.equals(comDto.getHdnApplStatus())){
+			// 申請状況が「承認済み」もしくは空（予定データなし)、または一時保存
 			// 管理簿ID未設定
 			if(NO_KANRI_ID.equals(comDto.getHdnRouterKanriId())){
 				// 新規登録
