@@ -1110,7 +1110,7 @@ public class Skf2100Sc002SharedService {
 		String applNo = applInfo.get("applNo");
 		
 		// モバイルルーター貸出予定テーブルのステータス情報を更新する
-		result = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, nextStatus,null,null,null);
+		result = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, nextStatus,null,null,null,null);
 		if(!result){
 			// 更新失敗					
 			// エラーメッセージ（メッセージID：E_SKF_1075）を設定
@@ -1179,7 +1179,7 @@ public class Skf2100Sc002SharedService {
 				// モバイルルーター貸出予定データテーブルのデータを更新する
 				// モバイルルーター貸出予定テーブルのステータス情報を更新する
 				result = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, 
-						nextStatus, CodeConstant.ROUTER_LEND_JOKYO_TEIJI, dto.getMobileRouterNo(),newKanriId);
+						nextStatus, CodeConstant.ROUTER_LEND_JOKYO_TEIJI, dto.getMobileRouterNo(),newKanriId,null);
 				if(!result){
 					// 更新失敗
 					// エラーメッセージ（メッセージID：E_SKF_1075）を設定
@@ -1225,7 +1225,7 @@ public class Skf2100Sc002SharedService {
 				}
 				// モバイルルーター貸出予定データ更新
 				result = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, 
-						CodeConstant.STATUS_SHONIN_ZUMI, CodeConstant.ROUTER_LEND_JOKYO_USE, null,null);
+						CodeConstant.STATUS_SHONIN_ZUMI, CodeConstant.ROUTER_LEND_JOKYO_USE, null,null,null);
 				if(!result){
 					// 更新失敗
 					// エラーメッセージを設定

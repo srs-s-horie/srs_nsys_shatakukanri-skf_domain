@@ -611,6 +611,7 @@ public class Skf2100Sc001SharedService {
 			throws UnsupportedEncodingException {
 
 		Map<String, String> errorMsg = new HashMap<String, String>();
+		Long updRouterNo = null;
 		
 		// 画面表示項目の保持
 		setDispInfo(dto);
@@ -663,13 +664,43 @@ public class Skf2100Sc001SharedService {
 				}
 			}
 			
-			//モバイルルーター貸出予定データのステータス更新
-			if(!skfRouterInfoUtils.updateRouterLYoteiStatus(dto.getShainNo(), CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO
-					, applInfo.get("newStatus"), null,null,null)){
-				// 更新に失敗した場合は、戻り値をfalseとし処理中断
-				// エラーメッセージを表示用に設定
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
-				return false;
+			// モバイルルーター貸出予定データテーブルの登録状態チェック
+			Skf2100TRouterLendingYoteiData checkData = skfRouterInfoUtils.getRouterLYoteiData(dto.getShainNo(),CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO);
+			int resCount= 0;
+			if(checkData != null){
+				if( CodeConstant.STATUS_SHINSEICHU.equals(applInfo.get("newStatus"))){
+					//申請時はルーター通しNo、管理簿IDをリセット
+					updRouterNo = 0L;
+				}
+				//モバイルルーター貸出予定データのステータス更新
+				if(!skfRouterInfoUtils.updateRouterLYoteiStatus(dto.getShainNo(), CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO
+						, applInfo.get("newStatus"), null,updRouterNo,updRouterNo,applInfo.get("applNo"))){
+					// 更新に失敗した場合は、戻り値をfalseとし処理中断
+					// エラーメッセージを表示用に設定
+					ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+					return false;
+				}
+			}else{
+				//登録
+				// 登録値設定
+				Skf2100TRouterLendingYoteiData yoteiData = new Skf2100TRouterLendingYoteiData();
+				yoteiData.setShainNo(dto.getShainNo());
+				yoteiData.setTaiyoHenkyakuKbn(CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO);
+				yoteiData.setApplNo(applInfo.get("applNo"));
+				yoteiData.setName(dto.getName());
+				yoteiData.setRouterApplStatus(applInfo.get("newStatus"));
+				yoteiData.setGeneralEquipmentCd(CodeConstant.GECD_MOBILEROUTER);
+				yoteiData.setMobileRouterNo(0L);
+				yoteiData.setMobileRouterKanriId(0L);
+				LogUtils.infoByMsg("モバイルルーター貸出予定データ登録:申請書類管理番号:" + applInfo.get("applNo") + ",社員番号:" + dto.getShainNo());
+				resCount = skf2100TRouterLendingYoteiDataRepository.insertSelective(yoteiData);
+				if(resCount <= 0){
+					LogUtils.infoByMsg("モバイルルーター貸出予定データ登録異常:申請書類管理番号:" + applInfo.get("applNo") + ",社員番号:" + dto.getShainNo());
+					// エラーメッセージを表示用に設定
+					ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1073);
+					// 保存処理を終了
+					return false;
+				}
 			}
 
 			// モバイルルーター借用希望申請書テーブルの更新処理
@@ -772,6 +803,8 @@ public class Skf2100Sc001SharedService {
 		yoteiData.setName(dto.getName());
 		yoteiData.setRouterApplStatus(applInfo.get("newStatus"));
 		yoteiData.setGeneralEquipmentCd(CodeConstant.GECD_MOBILEROUTER);
+		yoteiData.setMobileRouterNo(0L);
+		yoteiData.setMobileRouterKanriId(0L);
 		
 		// モバイルルーター貸出予定データテーブルの登録状態チェック
 		Skf2100TRouterLendingYoteiData checkData = skfRouterInfoUtils.getRouterLYoteiData(dto.getShainNo(),CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO);
