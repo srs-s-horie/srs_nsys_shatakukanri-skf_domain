@@ -561,13 +561,39 @@ public class Skf2100Sc003SharedService {
 				}
 			}
 			
-			//モバイルルーター貸出予定データのステータス更新
-			if(!skfRouterInfoUtils.updateRouterLYoteiStatus(dto.getShainNo(), CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU
-					, applInfo.get("newStatus"), null,null,null)){
-				// 更新に失敗した場合は、戻り値をfalseとし処理中断
-				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
-				return false;
+			// モバイルルーター貸出予定データテーブルの登録状態チェック
+			Skf2100TRouterLendingYoteiData checkData = skfRouterInfoUtils.getRouterLYoteiData(dto.getShainNo(),CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU);
+			int resCount= 0;
+			if(checkData != null){
+				//モバイルルーター貸出予定データのステータス更新
+				if(!skfRouterInfoUtils.updateRouterLYoteiStatus(dto.getShainNo(), CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU
+						, applInfo.get("newStatus"), null,null,null,applInfo.get("applNo"))){
+					// 更新に失敗した場合は、戻り値をfalseとし処理中断
+					ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
+					return false;
+				}
+			}else{
+				//登録
+				// 登録値設定
+				Skf2100TRouterLendingYoteiData yoteiData = new Skf2100TRouterLendingYoteiData();
+				yoteiData.setShainNo(dto.getShainNo());
+				yoteiData.setTaiyoHenkyakuKbn(CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU);
+				yoteiData.setApplNo(applInfo.get("applNo"));
+				yoteiData.setName(dto.getName());
+				yoteiData.setRouterApplStatus(applInfo.get("newStatus"));
+				yoteiData.setRouterLendJokyo(CodeConstant.ROUTER_LEND_JOKYO_HENKYAKU);
+				yoteiData.setMobileRouterNo(dto.getMobileRouterNo());
+				yoteiData.setMobileRouterKanriId(Long.parseLong(dto.getHdnRouterKanriId()));
+				yoteiData.setGeneralEquipmentCd(CodeConstant.GECD_MOBILEROUTER);
+				resCount = skf2100TRouterLendingYoteiDataRepository.insertSelective(yoteiData);
+				if(resCount <= 0){
+					// エラーメッセージを表示用に設定
+					ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1073);
+					// 保存処理を終了
+					return false;
+				}
 			}
+
 
 			// モバイルルーター返却申請書テーブルの更新処理
 			if (!updateRouterHenkyakuShinsei(dto, applInfo)) {

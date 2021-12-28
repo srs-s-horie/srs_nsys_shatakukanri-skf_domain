@@ -1969,7 +1969,7 @@ public class Skf2010Sc005SharedService {
 	private boolean updateKiboShinsei(String companyCd,String shainNo,String applNo,String nextStatus){
 		
 		// モバイルルーター貸出予定テーブルのステータス情報を更新する
-		boolean updresult = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, nextStatus, null, null,null);
+		boolean updresult = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, nextStatus, null, null,null,null);
 		if(!updresult){
 			// 更新失敗
 			return false;
@@ -2002,7 +2002,7 @@ public class Skf2010Sc005SharedService {
 			}
 			// モバイルルーター貸出予定データ更新
 			updresult = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO, 
-					CodeConstant.STATUS_SHONIN_ZUMI, CodeConstant.ROUTER_LEND_JOKYO_USE, null,null);
+					CodeConstant.STATUS_SHONIN_ZUMI, CodeConstant.ROUTER_LEND_JOKYO_USE, null,null,null);
 			if(!updresult){
 				// 更新失敗
 				return false;
@@ -2109,7 +2109,7 @@ public class Skf2010Sc005SharedService {
 		}
 		// モバイルルーター貸出予定テーブルのデータを更新する
 		result = skfRouterInfoUtils.updateRouterLYoteiStatus(shainNo, CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU, 
-				nextStatus,CodeConstant.ROUTER_LEND_JOKYO_TAIYO,null,null);
+				nextStatus,CodeConstant.ROUTER_LEND_JOKYO_TAIYO,null,null,null);
 		if(!result){
 			// 更新失敗
 			return false;
