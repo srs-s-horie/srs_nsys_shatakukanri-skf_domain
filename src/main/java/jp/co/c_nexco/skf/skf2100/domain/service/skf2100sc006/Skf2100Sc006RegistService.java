@@ -32,6 +32,7 @@ import jp.co.c_nexco.skf.common.util.SkfBaseBusinessLogicUtils;
 import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.SkfRouterInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfShinseiUtils;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100Sc006common.Skf2100Sc006CommonDto;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100sc006.Skf2100Sc006RegistDto;
 import jp.co.intra_mart.mirage.integration.guice.Transactional;
@@ -51,6 +52,8 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfRouterInfoUtils skfRouterInfoUtils;
+	@Autowired
+	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private Skf2100Sc006SharedService skf2100Sc006SharedService;
 	@Autowired
@@ -100,23 +103,31 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 		
 		// 「貸出管理簿ID」が”0”の場合
 		if (Skf2100Sc006CommonDto.NO_KANRI_ID.equals(registDto.getHdnRouterKanriId()) ){
+			
 			//共通チェック
 			if (skf2100Sc006SharedService.validateInput(registDto) ){
 				
-				String routerKanriId = registClickInsert(registDto);
-				//登録した内容を画面に反映する
-				//取得した管理簿IDをhdnに設定
-				registDto.setHdnRouterKanriId(routerKanriId);
-				// モバイルルーター貸出管理簿情報を取得
-				Long routerKanriIdL = Long.parseLong(routerKanriId);
-				
-				Skf2100TMobileRouterLedger routerLdata = skf2100TMobileRouterLedgerRepository.selectByPrimaryKey(routerKanriIdL);
-				if(routerLdata != null){
-					// 更新日時
-					registDto.addLastUpdateDate(Skf2100Sc006CommonDto.ROUTER_KEY_LAST_UPDATE_DATE, routerLdata.getUpdateDate());
+				//未返却ルーター確認
+				int cnt = skfShinseiUtils.getSksRouterLedgerCount(registDto.getHdnShainNo());
+				if(cnt > 0){
+					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.I_SKF_1005, "貸与中のモバイルルーターが存在し",
+							"モバイルルーターの返却申請を", "");
+				}else{
+					String routerKanriId = registClickInsert(registDto);
+					//登録した内容を画面に反映する
+					//取得した管理簿IDをhdnに設定
+					registDto.setHdnRouterKanriId(routerKanriId);
+					// モバイルルーター貸出管理簿情報を取得
+					Long routerKanriIdL = Long.parseLong(routerKanriId);
+					
+					Skf2100TMobileRouterLedger routerLdata = skf2100TMobileRouterLedgerRepository.selectByPrimaryKey(routerKanriIdL);
+					if(routerLdata != null){
+						// 更新日時
+						registDto.addLastUpdateDate(Skf2100Sc006CommonDto.ROUTER_KEY_LAST_UPDATE_DATE, routerLdata.getUpdateDate());
+					}
+					//画面項目
+					skf2100Sc006SharedService.setControlStatus(registDto);
 				}
-				//画面項目
-				skf2100Sc006SharedService.setControlStatus(registDto);
 		
 			}
 		}else{
