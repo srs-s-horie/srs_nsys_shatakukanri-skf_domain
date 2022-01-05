@@ -385,10 +385,7 @@ public class Skf3020Sc002ImportService extends SkfServiceAbstract<Skf3020Sc002Im
 	 */
 	private RowDataBean getStartRow(List<RowDataBean> rowDataBeanList) {
 		int startIdx = -1;
-		int serchCnt = NAME_SERCH_CNT; // 検索回数
-		if (rowDataBeanList.size() < NAME_SERCH_CNT) {
-			serchCnt = NAME_SERCH_CNT - rowDataBeanList.size();
-		}
+		int serchCnt = rowDataBeanList.size(); // 検索回数
 
 		// 開始行を探す
 		for (int i = 0; i < serchCnt; i++) {
