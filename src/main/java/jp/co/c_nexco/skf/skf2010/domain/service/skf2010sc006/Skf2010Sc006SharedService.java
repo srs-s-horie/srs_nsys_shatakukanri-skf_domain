@@ -346,15 +346,6 @@ public class Skf2010Sc006SharedService {
 
 		// 添付ファイル管理テーブル更新処理
 
-		// 承認完了通知の場合のみ
-		if (mailKbn.equals(CodeConstant.SHONIN_KANRYO_TSUCHI)) {
-			// メール送付
-			String annai = CodeConstant.NONE;
-			String sendUser = applInfo.get("applShainNo");
-			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
-			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, comment, annai, sendUser, sendGroupId, urlBase);
-		}
-
 		return true;
 	}
 

@@ -1009,6 +1009,7 @@ public class Skf2040Sc002SharedService {
 			boolean resutInsertApplInfo = insertApplHistory(dto.getShainNo(), dto.getHdnBihinHenkyakuApplNo(), applId,
 					CodeConstant.STATUS_KAKUNIN_IRAI, applTacFlg, SkfCommonConstant.NOT_RENKEI);
 			if (!resutInsertApplInfo) {
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1075);
 				return false;
 			}
 		}

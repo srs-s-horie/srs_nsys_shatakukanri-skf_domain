@@ -136,17 +136,6 @@ public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002P
 				annai = getAnnaiShatakuManage(CodeConstant.HOYU, tSkSTeijiShatakuInfo, annai);
 			}
 
-			// 同意確認通知のメールを送信する
-			Map<String, String> applInfoAnnai = new HashMap<String, String>();
-			applInfoAnnai.put("applNo", preDto.getApplNo());
-			applInfoAnnai.put("applId", FunctionIdConstant.R0100);
-			applInfoAnnai.put("applShainNo", preDto.getShainNo());
-
-			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
-
-			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, comment, annai,
-					preDto.getShainNo(), CodeConstant.NONE, urlBase);
-
 			// 社宅管理データ連携処理実行
 			// ユーザIDの取得
 			UserContext userContext = Contexts.get(UserContext.class);
@@ -174,6 +163,17 @@ public class Skf2010Sc002PresentService extends SkfServiceAbstract<Skf2010Sc002P
 				}
 
 			}
+			
+			// 同意確認通知のメールを送信する
+			Map<String, String> applInfoAnnai = new HashMap<String, String>();
+			applInfoAnnai.put("applNo", preDto.getApplNo());
+			applInfoAnnai.put("applId", FunctionIdConstant.R0100);
+			applInfoAnnai.put("applShainNo", preDto.getShainNo());
+
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+
+			skfMailUtils.sendApplTsuchiMail(CodeConstant.TEJI_TSUCHI, applInfoAnnai, comment, annai,
+					preDto.getShainNo(), CodeConstant.NONE, urlBase);
 			
 			//画面遷移前にデータの初期化を行う
 			FormHelper.removeFormBean(FunctionIdConstant.SKF2020_SC003);
