@@ -333,6 +333,8 @@ public class Skf3021Sc001CreateTeijiDataService extends SkfServiceAbstract<Skf30
 		
 		//メッセージ変更の判定値
 		boolean messageChange = false;
+		//登録された提示データの件数カウント
+		int insTeijiCnt = 0;
 		//登録された提示データの件数カウント（メッセージ表示用）
 		int insTeijiMesCnt = 0;
 		
@@ -579,8 +581,12 @@ public class Skf3021Sc001CreateTeijiDataService extends SkfServiceAbstract<Skf30
 					Skf3022TTeijiData teijiData = getColumnInfoListOfTeijiData(null,dtSL2Row, dtNCT, shainNo, nyutaikyoKbn, name, applKbn, applNo
 							, taikyoYoteiDate, companyCd, yearMonth, hdnNowAffiliation, hdnNewAffiliation, teijiNo);
 
-					insTeijiMesCnt = insertTeijiDataInfo(teijiData);
-					insCount = insCount + insTeijiMesCnt;
+					//登録された提示データ登録のカウント
+					insTeijiCnt = insertTeijiDataInfo(teijiData);
+					//提示データ登録件数
+					insCount = insCount + insTeijiCnt;
+					//登録された提示データの件数カウント（メッセージ表示用）
+					insTeijiMesCnt = insTeijiCnt + insTeijiMesCnt;
 					
 				}
 
@@ -590,8 +596,12 @@ public class Skf3021Sc001CreateTeijiDataService extends SkfServiceAbstract<Skf30
 						,nyutaikyoKbn,name,applKbn,applNo,taikyoYoteiDate,companyCd,yearMonth
 						,parking1StartDate,parking2StartDate, hdnNowAffiliation, hdnNewAffiliation, teijiNo,nyutaikyoKbnOfSameShainNo,rentalPatternId);
 
-				insTeijiMesCnt = insertTeijiDataInfo(teijiData);
-				insCount = insCount + insTeijiMesCnt;
+				//登録された提示データ登録のカウント
+				insTeijiCnt = insertTeijiDataInfo(teijiData);
+				//提示データ登録件数
+				insCount = insCount + insTeijiCnt;
+				//登録された提示データの件数カウント（メッセージ表示用）
+				insTeijiMesCnt = insTeijiCnt + insTeijiMesCnt;
 				if(teijiData.getRentalPatternId() != null){
 					rentalPatternId = teijiData.getRentalPatternId().toString();
 				}
@@ -655,18 +665,16 @@ public class Skf3021Sc001CreateTeijiDataService extends SkfServiceAbstract<Skf30
 			}
 		}
 		
-
-		if(updCount <= 0 && insCount <= 0){
-			//登録エラーメッセージ
-			return -2;
-		}
-		
 		if(messageChange){
 			//同社宅、同部屋、同社員の提示データが作成済が1件でもあった場合専用メッセージ設定。戻り値は0
 			ServiceHelper.addResultMessage(teijiDto, MessageIdConstant.I_SKF_1017,"提示データ登録件数", insTeijiMesCnt + " 件");
 			return 0;
 		}
-		
+
+		if(updCount <= 0 && insCount <= 0){
+			//登録エラーメッセージ
+			return -2;
+		}
 		
 		return updCount + insCount;
 	}
