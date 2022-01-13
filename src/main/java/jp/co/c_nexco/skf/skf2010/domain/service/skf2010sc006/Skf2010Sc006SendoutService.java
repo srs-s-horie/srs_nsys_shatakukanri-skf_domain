@@ -94,20 +94,6 @@ public class Skf2010Sc006SendoutService extends SkfServiceAbstract<Skf2010Sc006S
 			return soDto;
 		}
 
-		// 修正依頼通知メール送信
-		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("applNo", soDto.getApplNo());
-		applInfo.put("applId", soDto.getApplId());
-		applInfo.put("applShainNo", soDto.getShainNo());
-
-		String commentNote = soDto.getCommentNote();
-
-		// メールの記載URLは「申請状況一覧画面」
-		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
-
-		skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-				applInfo.get("applShainNo"), CodeConstant.NONE, urlBase);
-
 		// 社宅管理データ連携処理実行（オンラインバッチ）
 		Skf2010Sc006GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc006GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc006SharedService.getApplHistoryInfo(applNo);
@@ -128,6 +114,20 @@ public class Skf2010Sc006SendoutService extends SkfServiceAbstract<Skf2010Sc006S
 			throwBusinessExceptionIfErrors(soDto.getResultMessages());
 			return soDto;
 		}
+
+		// 修正依頼通知メール送信
+		Map<String, String> applInfo = new HashMap<String, String>();
+		applInfo.put("applNo", soDto.getApplNo());
+		applInfo.put("applId", soDto.getApplId());
+		applInfo.put("applShainNo", soDto.getShainNo());
+
+		String commentNote = soDto.getCommentNote();
+
+		// メールの記載URLは「申請状況一覧画面」
+		String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+
+		skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
+				applInfo.get("applShainNo"), CodeConstant.NONE, urlBase);
 
 		// 画面遷移
 

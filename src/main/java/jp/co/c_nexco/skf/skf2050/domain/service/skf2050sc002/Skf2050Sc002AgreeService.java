@@ -82,19 +82,6 @@ public class Skf2050Sc002AgreeService extends SkfServiceAbstract<Skf2050Sc002Agr
 			return agreeDto;
 		}
 
-		// 新ステータスが「40：承認済」の時のみメールを送信する
-		if (CheckUtils.isEqual(newApplStatus, CodeConstant.STATUS_SHONIN_ZUMI)) {
-			Map<String, String> applInfo = new HashMap<String, String>();
-			applInfo.put(CodeConstant.KEY_APPL_ID, agreeDto.getApplId());
-			applInfo.put(CodeConstant.KEY_APPL_NO, agreeDto.getApplNo());
-			applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_HANSYUTSU_MACHI);
-			applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, agreeDto.getShainNo());
-
-			String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
-			skfMailUtils.sendApplTsuchiMail(CodeConstant.SHONIN_KANRYO_TSUCHI, applInfo, agreeDto.getCommentNote(),
-					null, agreeDto.getShainNo(), null, baseUrl);
-		}
-
 		// 社宅管理データ連携処理実行
 		String shainNo = agreeDto.getShainNo();
 		String applNo = agreeDto.getApplNo();
@@ -108,6 +95,20 @@ public class Skf2050Sc002AgreeService extends SkfServiceAbstract<Skf2050Sc002Agr
 			throwBusinessExceptionIfErrors(agreeDto.getResultMessages());
 			return agreeDto;
 		}
+
+		// 新ステータスが「40：承認済」の時のみメールを送信する
+		if (CheckUtils.isEqual(newApplStatus, CodeConstant.STATUS_SHONIN_ZUMI)) {
+			Map<String, String> applInfo = new HashMap<String, String>();
+			applInfo.put(CodeConstant.KEY_APPL_ID, agreeDto.getApplId());
+			applInfo.put(CodeConstant.KEY_APPL_NO, agreeDto.getApplNo());
+			applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_HANSYUTSU_MACHI);
+			applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, agreeDto.getShainNo());
+
+			String baseUrl = "skf/" + FunctionIdConstant.SKF2010_SC003 + "/init";
+			skfMailUtils.sendApplTsuchiMail(CodeConstant.SHONIN_KANRYO_TSUCHI, applInfo, agreeDto.getCommentNote(),
+					null, agreeDto.getShainNo(), null, baseUrl);
+		}
+
 		// フォームデータを設定
 		agreeDto.setPrePageId(FunctionIdConstant.SKF1010_SC001); // TOPページを指定
 		BaseForm form = new BaseForm();
