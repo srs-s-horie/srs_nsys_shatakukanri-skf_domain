@@ -185,7 +185,11 @@ public class Skf2020Sc002SharedService {
 				setShainList(dto);
 			} else {
 				// データが取得できなかった場合は更新ボタンを使用不可にする
-				setInitializeError(dto);
+				// 一時保存
+				dto.setBtnSaveDisabeld(sTrue);
+				// 申請内容を確認
+				dto.setBtnCheckDisabled(sTrue);
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_2005);
 			}
 			// 社宅情報の設定
 			setShatakuInfo(dto, NO_UPDATE_FLG);
@@ -225,7 +229,12 @@ public class Skf2020Sc002SharedService {
 		if (initializeErrorFlg) {
 			// データが取得できなかった場合は更新ボタンを使用不可にする
 			if (nyukyoChoshoList == null) {
-				setInitializeError(dto);
+				// 更新処理を行わせないよ う一時保存、申請内容を確認ボタンを使用不可に
+				// 一時保存
+				dto.setBtnSaveDisabeld(sTrue);
+				// 申請内容を確認
+				dto.setBtnCheckDisabled(sTrue);
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
 			}
 		}
 
@@ -737,19 +746,6 @@ public class Skf2020Sc002SharedService {
 		}
 	}
 
-	/**
-	 * 初期表示エラー時の処理 更新処理を行わせないようボタンを使用不可にする。
-	 * 
-	 * @param dto Skf2020Sc002CommonDto
-	 */
-	private void setInitializeError(Skf2020Sc002CommonDto dto) {
-		// 更新処理を行わせないよ う一時保存、申請要件を確認ボタンを使用不可に
-		// 一時保存
-		dto.setBtnSaveDisabeld(sTrue);
-		// 申請内容を確認
-		dto.setBtnCheckDisabled(sTrue);
-		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
-	}
 
 	/**
 	 * 社員情報の設定

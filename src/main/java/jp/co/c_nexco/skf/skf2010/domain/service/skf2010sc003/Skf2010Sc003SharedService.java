@@ -555,20 +555,24 @@ public class Skf2010Sc003SharedService {
 				Long routerNo = data.getMobileRouterNo();
 				String generalEquipmentCd = data.getGeneralEquipmentCd();
 				
-				if(Objects.nonNull(routerNo)){
-					//「モバイルルーター通しNo」が設定されている場合、モバイルルーターマスタ情報の貸出可否判定を「貸与可」に更新する
-					Skf2100MMobileRouterWithBLOBs updParam = new Skf2100MMobileRouterWithBLOBs();
-					updParam.setGeneralEquipmentCd(generalEquipmentCd);
-					updParam.setMobileRouterNo(routerNo);
-					updParam.setRouterLendingJudgment(CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO);//貸与可
-					skf2100MMobileRouterRepository.updateByPrimaryKeySelective(updParam);
+				if(routerNo>0){
+					if( Objects.nonNull(routerNo)){
+						//「モバイルルーター通しNo」が設定されている場合、モバイルルーターマスタ情報の貸出可否判定を「貸与可」に更新する
+						Skf2100MMobileRouterWithBLOBs updParam = new Skf2100MMobileRouterWithBLOBs();
+						updParam.setGeneralEquipmentCd(generalEquipmentCd);
+						updParam.setMobileRouterNo(routerNo);
+						updParam.setRouterLendingJudgment(CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO);//貸与可
+						skf2100MMobileRouterRepository.updateByPrimaryKeySelective(updParam);
+					}
 				}
 				
 				//モバイルルーター管理簿IDを取得
 				Long kanriId = data.getMobileRouterKanriId();
-				if(Objects.nonNull(kanriId)){
-					//モバイルルーター管理簿IDが設定されている場合、管理簿データ削除
-					skf2100TMobileRouterLedgerRepository.deleteByPrimaryKey(kanriId);
+				if(kanriId > 0){
+					if(Objects.nonNull(kanriId)){
+						//モバイルルーター管理簿IDが設定されている場合、管理簿データ削除
+						skf2100TMobileRouterLedgerRepository.deleteByPrimaryKey(kanriId);
+					}
 				}
 			}
 		}
