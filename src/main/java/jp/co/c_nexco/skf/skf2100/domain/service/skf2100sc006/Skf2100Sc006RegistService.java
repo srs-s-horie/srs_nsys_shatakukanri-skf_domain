@@ -111,7 +111,7 @@ public class Skf2100Sc006RegistService extends SkfServiceAbstract<Skf2100Sc006Re
 				int cnt = skfShinseiUtils.getSksRouterLedgerCount(registDto.getHdnShainNo());
 				if(cnt > 0){
 					ServiceHelper.addErrorResultMessage(registDto, null, MessageIdConstant.I_SKF_1005, "貸与中のモバイルルーターが存在し",
-							"モバイルルーターの返却申請を", "");
+							"貸与中のモバイルルーターを確認", "");
 				}else{
 					String routerKanriId = registClickInsert(registDto);
 					//登録した内容を画面に反映する
