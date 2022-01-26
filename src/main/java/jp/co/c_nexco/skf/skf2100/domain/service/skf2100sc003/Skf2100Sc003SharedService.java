@@ -160,6 +160,7 @@ public class Skf2100Sc003SharedService {
 				setInitializeError(dto);
 				// エラーメッセージ表示
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_2005);
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1091,"貸与中のモバイルルーター");
 			}
 		}
 	}

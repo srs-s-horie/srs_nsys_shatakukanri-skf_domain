@@ -190,6 +190,7 @@ public class Skf2020Sc002SharedService {
 				// 申請内容を確認
 				dto.setBtnCheckDisabled(sTrue);
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_2005);
+				return;
 			}
 			// 社宅情報の設定
 			setShatakuInfo(dto, NO_UPDATE_FLG);
@@ -202,7 +203,7 @@ public class Skf2020Sc002SharedService {
 	 * @param dto
 	 * @param initializeErrorFlg 初期表示エラー判定フラグ true:実行 false:何もしない
 	 */
-	protected void setSinseiInfo(Skf2020Sc002CommonDto dto, boolean initializeErrorFlg) {
+	protected boolean setSinseiInfo(Skf2020Sc002CommonDto dto, boolean initializeErrorFlg) {
 
 		/**
 		 * 申請書類履歴テーブル情報の取得
@@ -235,6 +236,7 @@ public class Skf2020Sc002SharedService {
 				// 申請内容を確認
 				dto.setBtnCheckDisabled(sTrue);
 				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1135);
+				return false;
 			}
 		}
 
@@ -683,6 +685,8 @@ public class Skf2020Sc002SharedService {
 			LogUtils.debugByMsg("更新日時" + nyukyoChoshoList.getUpdateDate());
 			dto.addLastUpdateDate(KEY_LAST_UPDATE_DATE_NYUKYO, nyukyoChoshoList.getUpdateDate());
 		}
+		
+		return true;
 	}
 
 	/**
