@@ -178,6 +178,8 @@ public class Skf2100Sc001SharedService {
 			// データが取得できなかった場合は更新ボタンを使用不可にする
 			if (routerKiboInfo == null) {
 				setInitializeError(dto);
+				ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+				return;
 			}
 		}
 		if (routerKiboInfo != null) {
@@ -359,7 +361,7 @@ public class Skf2100Sc001SharedService {
 		// 取下げ
 		dto.setBtnCancelDisabled(sTrue);
 		
-		ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.E_SKF_1077);
+		
 	}
 	
 	
