@@ -69,7 +69,7 @@ public class Skf2020Sc002SaveService extends SkfServiceAbstract<Skf2020Sc002Save
 		// ドロップダウンの設定
 		skf2020Sc002SharedService.setControlDdl(saveDto);
 		// 登録済みデータの情報設定
-		skf2020Sc002SharedService.setSinseiInfo(saveDto, true);
+		boolean result = skf2020Sc002SharedService.setSinseiInfo(saveDto, true);
 		// 社宅情報の設定
 		skf2020Sc002SharedService.setShatakuInfo(saveDto, UPDATE_FLG);
 		// 返却備品の設定
@@ -77,6 +77,11 @@ public class Skf2020Sc002SaveService extends SkfServiceAbstract<Skf2020Sc002Save
 		// 画面表示制御再設定
 		skf2020Sc002SharedService.setControlValue(saveDto);
 
+		//登録済みデータの情報設定が取得出来なかった場合
+		if(!result){
+			return saveDto;
+		}
+		
 		// 正常終了
 		if (CodeConstant.STATUS_MISAKUSEI.equals(applInfo.get("status"))) {
 			ServiceHelper.addResultMessage(saveDto, MessageIdConstant.I_SKF_1012);

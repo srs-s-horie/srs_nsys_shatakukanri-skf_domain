@@ -144,12 +144,15 @@ public class Skf3050Sc002CreatePositiveCooperationDataAsyncService extends SkfAs
 			return errMsg;
 		
 		} else {
+			// 202109 モバイルルーター機能追加対応 edit start
 			if (!CodeConstant.BILLINGACTKBN_JIKKO_SUMI.equals(renkeiKbnData.getBillingActKbn()) || 
+				!CodeConstant.BILLINGACTKBN_JIKKO_SUMI.equals(renkeiKbnData.getMobileRouterBillingActKbn()) || 
 				CodeConstant.LINKDATA_COMMIT_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
-				//締め処理≠実行済、またはHR連携データ確定実行区分＝実行済の場合エラー
+				//締め処理≠実行済、またはモバイルルーター締め処理≠実行済、またはHR連携データ確定実行区分＝実行済の場合エラー
 				errMsg = Skf3050Sc002SharedService.ERRMSG_SHIME_IMPOSSIBLE;
 				return errMsg;
 			}
+			// 202109 モバイルルーター機能追加対応 edit end
 		}
 		return errMsg;
 	}

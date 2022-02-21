@@ -88,6 +88,16 @@ public class Skf2010Sc005TransferService extends SkfServiceAbstract<Skf2010Sc005
 					// ページ遷移先は「備品返却申請（アウトソース用）」
 					tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2050_SC002);
 					break;
+				// モバイルルーター機能追加対応 2021/9 add start
+				case FunctionIdConstant.R0107:
+					// ページ遷移先は「モバイルルーター借用希望申請書（アウトソース用）」
+					tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2100_SC002);
+					break;
+				case FunctionIdConstant.R0108:
+					// ページ遷移先は「モバイルルーター返却申請書（アウトソース用）」
+					tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2100_SC004);
+					break;
+				// モバイルルーター機能追加対応 2021/9 add end
 				default:
 					// 申請書類承認／差戻し／通知
 					tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC006);
@@ -182,7 +192,16 @@ public class Skf2010Sc005TransferService extends SkfServiceAbstract<Skf2010Sc005
 				} else {
 					nextPageId = FunctionIdConstant.SKF2050_SC002;
 				}
+			} 
+			// モバイルルーター機能追加対応 2021/9 add start
+			else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0107)) {
+				// モバイルルーター借用希望申請
+				nextPageId = FunctionIdConstant.SKF2100_SC002;
+			} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0108)) {
+				// モバイルルーター返却申請
+				nextPageId = FunctionIdConstant.SKF2100_SC004;
 			}
+			// モバイルルーター機能追加対応 2021/9 add end
 
 			if (NfwStringUtils.isEmpty(nextPageId)) {
 				nextPageId = FunctionIdConstant.SKF2010_SC006;
@@ -194,9 +213,19 @@ public class Skf2010Sc005TransferService extends SkfServiceAbstract<Skf2010Sc005
 				nextPageId = FunctionIdConstant.SKF2030_SC002;
 			} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0105)) {
 				nextPageId = FunctionIdConstant.SKF2050_SC002;
-			} else {
-				nextPageId = FunctionIdConstant.SKF2010_SC006;
+			} 
+			// モバイルルーター機能追加対応 2021/9 add start
+			else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0107)) {
+				// モバイルルーター借用希望申請
+				nextPageId = FunctionIdConstant.SKF2100_SC002;
+			} else if (CheckUtils.isEqual(applId, FunctionIdConstant.R0108)) {
+				// モバイルルーター返却申請
+				nextPageId = FunctionIdConstant.SKF2100_SC004;
 			}
+			// モバイルルーター機能追加対応 2021/9 add end
+			else {
+				nextPageId = FunctionIdConstant.SKF2010_SC006;
+			} 
 			tpi = TransferPageInfo.nextPage(nextPageId);
 		}
 		attribute.put("applNo", applNo);

@@ -218,10 +218,6 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			// 備品返却を提示データで更新する
 			setTeijiDataInfo(preDto);
 
-			// メール送信処理
-			skf2040Sc002SharedService.sendMail(preDto.getApplNo(), preDto.getApplId(), preDto.getShainNo(), comment,
-					preDto.getMailKbn(), true);
-
 			// 退居届データ連携
 			// menuScopeSessionBeanからオブジェクトを取得
 			Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
@@ -242,6 +238,10 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				return preDto;
 			}
 
+			// メール送信処理
+			skf2040Sc002SharedService.sendMail(preDto.getApplNo(), preDto.getApplId(), preDto.getShainNo(), comment,
+					preDto.getMailKbn(), true);
+
 			break;
 
 		case FunctionIdConstant.R0105:
@@ -257,7 +257,6 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			if (!skf2040Sc002SharedService.insertOrUpdateApplHistoryForBihinHenkyaku(nextStatus, applTacFlg, preDto,
 					agreDate, shoninName1, shoninName2, FunctionIdConstant.R0105, userInfo.get("userCd"))) {
 				// エラーがある場合、処理を中断
-				ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.E_SKF_1075);
 				return preDto;
 			}
 
@@ -286,10 +285,6 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				throwBusinessExceptionIfErrors(preDto.getResultMessages());
 			}
 
-			// メール送信処理
-			skf2040Sc002SharedService.sendMail(preDto.getApplNo(), preDto.getApplId(), preDto.getShainNo(), comment,
-					preDto.getMailKbn(), true);
-
 			break;
 		}
 
@@ -305,6 +300,14 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 				skfRollBackExpRepository.rollBack();
 				return preDto;
 			}
+			
+			// 備品返却希望時はメール送信を行う
+			if (FunctionIdConstant.R0105.equals(preDto.getApplId())) {
+				// メール送信処理
+				skf2040Sc002SharedService.sendMail(preDto.getApplNo(), preDto.getApplId(), preDto.getShainNo(), comment,
+						preDto.getMailKbn(), true);
+			}
+			
 		}
 		
 		//画面遷移前にデータの初期化を行う

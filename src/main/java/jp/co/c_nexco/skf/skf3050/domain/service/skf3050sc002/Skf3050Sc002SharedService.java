@@ -14,12 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import edu.emory.mathcs.backport.java.util.Arrays;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinGenbutsuShikyugokeigakuExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinMeisaiExp;
@@ -50,9 +52,20 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetP
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveGenbutsuSanteiSakuseiSyoriDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiBihinDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiBihinDataExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiSyoriDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiSyoriDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt003.Skf3050Bt003UpdateGetsujiShoriKanriExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterGenbutsuGoukeiExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterRirekiListExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterRirekiListExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterRirekiMeisaiListExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterRirekiMeisaiListExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt005.Skf3050Bt005UpdateGetsujiShoriKanriDataExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt005.Skf3050Bt005UpdateRouterGenbutuGoukeiExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt006.Skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Bt006.Skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetBatchStartupCntExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinHenkyakuDataExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinTaiyoDataExp;
@@ -69,6 +82,8 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBaseBusinessLogicUtils.Skf
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsInputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfKyoekihiCalcUtils.SkfKyoekihiCalcUtilsOutputExp;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf1010MCompany;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRireki;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TMobileRouterRentalRirekiMeisai;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050MAccount;
 import jp.co.c_nexco.businesscommon.entity.skf.table.Skf3050TMonthlyManageData;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt001.Skf3050Bt001GetBihinGenbutsuShikyugokeigakuExpRepository;
@@ -94,8 +109,19 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt001.Skf3050Bt001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt003.Skf3050Bt003GetGetsujiShoriKanriForUpdateExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveGenbutsuSanteiSakuseiSyoriDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiBihinDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt003.Skf3050Bt003GetPositiveRenkeiDataSakuseiSyoriDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt003.Skf3050Bt003UpdateGetsujiShoriKanriExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt005.Skf3050Bt005GetDataForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterGenbutsuGoukeiExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterRirekiListExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt005.Skf3050Bt005GetRouterRirekiMeisaiListExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt005.Skf3050Bt005UpdateGetsujiShoriKanriDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt005.Skf3050Bt005UpdateRouterGenbutsuGoukeiExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt005.Skf3050Bt005UpdateRouterRirekiExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt006.Skf3050Bt006GetPositiveRenkeiSakuseiJikkouKbnExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt006.Skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Bt006.Skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetBatchStartupCntExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinHenkyakuDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetBihinTaiyoDataExpRepository;
@@ -103,6 +129,9 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetHenkanShainBangoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetKariShainBangoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetParkingRirekiDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetRirekiShainBangoExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetRouterHenkyakuExistExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetRouterKiboExistExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetShatakuKanriNyukyoExistExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetShatakuKanriParking1RiyoKaishiExistExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf3050Sc002.Skf3050Sc002GetShatakuKanriParking2RiyoKaishiExistExpRepository;
@@ -230,6 +259,36 @@ public class Skf3050Sc002SharedService {
 	private Skf3050Bt001GetDataForUpdateExpRepository skf3050Bt001GetDataForUpdateExpRepository;
 	@Autowired
 	private SkfRollBackExpRepository skfRollBackExpRepository;
+	// 202109 モバイルルーター機能追加対応 add start 
+	@Autowired
+	private Skf3050Sc002GetRouterKiboExistExpRepository skf3050Sc002GetRouterKiboExistExpRepository;
+	@Autowired
+	private Skf3050Sc002GetRouterHenkyakuExistExpRepository skf3050Sc002GetRouterHenkyakuExistExpRepository;
+	@Autowired
+	private Skf3050Sc002GetRirekiShainBangoExpRepository skf3050Sc002GetRirekiShainBangoExpRepository;
+	@Autowired
+	private Skf3050Bt005UpdateRouterGenbutsuGoukeiExpRepository skf3050Bt005UpdateRouterGenbutsuGoukeiExpRepository;
+	@Autowired
+	private Skf3050Bt005GetDataForUpdateExpRepository skf3050Bt005GetDataForUpdateExpRepository;
+	@Autowired
+	private Skf3050Bt005GetRouterRirekiListExpRepository skf3050Bt005GetRouterRirekiListExpRepository;
+	@Autowired
+	private Skf3050Bt005GetRouterRirekiMeisaiListExpRepository skf3050Bt005GetRouterRirekiMeisaiListExpRepository;
+	@Autowired
+	private Skf3050Bt005GetRouterGenbutsuGoukeiExpRepository skf3050Bt005GetRouterGenbutsuGoukeiExpRepository;
+	@Autowired
+	private Skf3050Bt005UpdateGetsujiShoriKanriDataExpRepository skf3050Bt005UpdateGetsujiShoriKanriDataExpRepository;
+	@Autowired
+	private Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExpRepository skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExpRepository;
+	@Autowired
+	private Skf3050Bt006GetPositiveRenkeiSakuseiJikkouKbnExpRepository skf3050Bt006GetPositiveRenkeiSakuseiJikkouKbnExpRepository;
+	@Autowired
+	private Skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository;
+	@Autowired
+	private Skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository;
+	@Autowired
+	private Skf3050Bt005UpdateRouterRirekiExpRepository skf3050Bt005UpdateRouterRirekiExpRepository;
+	// 202109 モバイルルーター機能追加対応 add end
 	
 	//共益費日割計算対応 2021/5/14 add start 
 	@Autowired
@@ -240,6 +299,7 @@ public class Skf3050Sc002SharedService {
 	public static final String GRID_SHIME_SHORI = "col2";
 	public static final String GRID_POSITIVE_DATA = "col3";
 	public static final String GRID_HDN_SHORINENGETSU = "col4";
+	public static final String GRID_ROUTER_SHIME_SHORI = "col2_2";
 
 	public static final String BILLING_ACT_KBN_MI_JIKKO = "0";
 	public static final String BILLING_ACT_KBN_JIKKO_SUMI = "1";
@@ -252,6 +312,7 @@ public class Skf3050Sc002SharedService {
 
 	public static final String NENGETSU_LIST_SHIME_JIKKOUSUMI = "実行済";
 	public static final String SHIME_SHORI_ON = "1";
+	public static final String ROUTER_SHIME_SHORI_ON = "2";
 
 	public static final String ERRMSG_DOUBLE_START = "二重起動チェックエラーのため";
 	public static final String ERRMSG_SHIME_IMPOSSIBLE = "締め状態が変更されているため";
@@ -266,6 +327,7 @@ public class Skf3050Sc002SharedService {
 	public static final int PARAMETER_NUM = 4;
 
 	public static final String SHIME_SHORI_BATCH_NAME = "締め処理";
+	public static final String ROUTER_SHIME_SHORI_BATCH_NAME = "モバイルルーター締め処理";
 	public static final String CREATE_POSITIVE_DATA_BATCH_NAME = "POSITIVE連携データ作成";
 
 	public static final String BATCH_PRG_ID_KEY = "batchPrgId";
@@ -276,7 +338,9 @@ public class Skf3050Sc002SharedService {
 	public static final String SHORI_RESULT_STS_KEY = "shoriSts";
 	public static final String SHORI_RESULT_SIYO_UPD_CNT_KEY = "shiyouUpdCount";
 	public static final String SHORI_RESULT_GEN_UPD_CNT_KEY = "genUpdCount";
-
+	private static final String UPDATE_GETSUJI_DATA_RESULT_KEY = "updateGetsujiDataResult";
+	private static final String UPDATE_GETSUJI_DATA_MSG_KEY = "updateGetsujiDatamsg";
+	
 	public static final int RETURN_STATUS_OK = 0;
 	public static final int RETURN_STATUS_NG = 9;
 
@@ -332,6 +396,16 @@ public class Skf3050Sc002SharedService {
 	private static final String ERRMSG_PARAM_SAI_0 = "月別使用料履歴（再計算）";
 	private static final String ERRMSG_PARAM_GEN_0 = "月別使用料履歴（現物算定額）";
 	private static final String[] INFO_SKF1030_PARAM = { "月別使用料履歴（再計算）", "月別使用料履歴（現物算定額）" };
+	
+	private static final String ERRMSG_ROUTER_SHIME_KARISHAIN = "モバイルルーター貸出管理簿に仮社員番号の社員が存在するため";
+	private static final String ERRMSG_ROUTER_SHIME_KARISHAIN_CHG = "モバイルルーター貸出管理簿に社員番号変更が必要な社員が存在するため";
+	private static final String ERRMSG_ROUTER_SHIME_KIBO_SHISEI = "当月貸与予定のデータがモバイルルーター貸出管理簿に反映されていないため";
+	private static final String ERRMSG_ROUTER_SHIME_HENKYAKU_SHISEI = "当月返却予定のデータがモバイルルーター貸出管理簿に反映されていないため";
+	private static final String ERRMSG_ROUTER_SHIME_SHAINNO = "社員マスタに未登録の社員がいるため";
+	private static final String ERRMSG_ROUTERRIREKI_0 = "モバイルルーター使用料明細";
+	private static final String ERRMSG_ROUTERKANRIID_1 = "モバイルルーター貸出管理簿ID";
+	private static final String ERRMSG_PARAM_ROUTERRIREKI = "モバイルルーター使用料履歴";
+	private static final String[] INFO_SKF1030_PARAM_ROUTER = { "モバイルルーター月別使用料履歴" };
 
 	private static final String ACCOUNT_ID_1 = "1";
 	private static final String ACCOUNT_ID_2 = "2";
@@ -342,6 +416,9 @@ public class Skf3050Sc002SharedService {
 	private static final String KEIJOU_KAMOKU_ACNT_NM_KEY = "accountName";
 	private static final String KEIJOU_KAMOKU_RTN_STS_KEY = "returnStatus";
 	private static final String KEIJOU_KAMOKU_ERR_MSG_KEY = "errMsg";
+	
+	private static final String PARAM_1_POSITIVERENKEI = "POSITIVE連携";
+	private static final String PARAM_1_SHIME = "締め処理";
 
 	private static final String TAISHOUNENDO_NENDO = "年度　";
 	private static final String LIST_CNT_KEY = "skf3050.skf3050sc002.list_max_cnt";
@@ -354,6 +431,10 @@ public class Skf3050Sc002SharedService {
 	private String createPositiveDataBatchPrgId;
 	@Value("${skf3050.skf3050_bt004.batch_prg_id}")
 	private String confirmPositiveDataBatchPrgId;
+	@Value("${skf3050.skf3050_bt005.batch_prg_id}")
+	private String routerCloseBatchPrgId;
+	@Value("${skf3050.skf3050_bt006.batch_prg_id}")
+	private String routerCloseCanselBatchPrgId;
 
 	/**
 	 * 年月リストの一覧情報取得
@@ -1009,6 +1090,12 @@ public class Skf3050Sc002SharedService {
 		// 連携データ備品を取得
 		List<Skf3050Bt003GetPositiveRenkeiDataSakuseiBihinDataExp> bihinDataList = getPositiveRenkeiDataSakuseiBihinData(
 				shoriNengetsu, kyuyoCompanyCd);
+		
+		// 202109 モバイルルーター機能追加対応 add start
+		// 連携データモバイルルーターを取得
+		List<Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExp> routerDataList = getPositiveRenkeiDataSakuseiRouterData(
+				shoriNengetsu, kyuyoCompanyCd);
+		// 202109 モバイルルーター機能追加対応 add end
 
 		// 該当データが存在する場合
 		if (bihinDataList.size() > 0) {
@@ -1046,6 +1133,53 @@ public class Skf3050Sc002SharedService {
 
 			}
 		}
+		
+		// 202109 モバイルルーター機能追加対応 add start
+		// モバイルルーター該当データが存在する場合
+		if (routerDataList.size() > 0) {
+
+			// 取得した情報分繰り返す
+			for (int i = 0; i < routerDataList.size(); i++) {
+				Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExp routerData = routerDataList.get(i);
+
+				String shainNo = "";
+				if (!NfwStringUtils.isEmpty(routerData.getShainNo())) {
+					shainNo = routerData.getShainNo();
+				} else {
+					continue;
+				}
+
+				// 社員番号リスト存在確認
+				if (!shainRowMap.containsKey(shainNo)) {
+					// 存在していないため、Mapに追加
+					Skf3050Sc002PositiveRenkeiInfoExp newExp = new Skf3050Sc002PositiveRenkeiInfoExp();
+					newExp.setShainNo(shainNo);
+					newExp.setShoriNengetsu(shoriNengetsu);
+					shainRowMap.put(shainNo, newExp);
+				}
+
+				Skf3050Sc002PositiveRenkeiInfoExp setExp = shainRowMap.get(shainNo);
+
+				// 貸与備品レンタル額
+				String bihinGenbutuGoukei = "";
+				String genbutuGoukei = "";
+				if (routerData.getRouterGenbutuGoukei() != null) {
+					genbutuGoukei =  routerData.getRouterGenbutuGoukei().toString();
+					bihinGenbutuGoukei = setExp.getBihingenbutuShaho();
+					//備品現物支給額がある場合、ルーターと現物支給合計額を合計する
+					if(!NfwStringUtils.isEmpty(bihinGenbutuGoukei)){
+						Integer goukei = routerData.getRouterGenbutuGoukei() + Integer.parseInt(bihinGenbutuGoukei);
+						genbutuGoukei = goukei.toString();
+					}
+					
+					setExp.setBihingenbutuShaho(genbutuGoukei);
+				}
+
+				shainRowMap.replace(shainNo, setExp);
+
+			}
+		}
+		// 202109 モバイルルーター機能追加対応 add end
 
 		return shainRowMap;
 	}
@@ -1151,6 +1285,7 @@ public class Skf3050Sc002SharedService {
 			String kyuyoMonth = editKyuyoMonth(setData.getSort());
 
 			if ("1".equals(kyuyoMonth)) {
+				// 翌月が1月の場合「翌」年を付与
 				nengetsu = setData.getNengetsu() + "(" + NENGETSU_KYUUYO_1_MONTH_HEDDERWORD + kyuyoMonth
 						+ NENGETSU_KYUUYO_WORD + ")";
 			} else {
@@ -1161,6 +1296,9 @@ public class Skf3050Sc002SharedService {
 			targetMap.put(Skf3050Sc002SharedService.GRID_SHIME_SHORI, setData.getShimeshori());
 			targetMap.put(Skf3050Sc002SharedService.GRID_POSITIVE_DATA, setData.getPositiveRenkei());
 			targetMap.put(Skf3050Sc002SharedService.GRID_HDN_SHORINENGETSU, setData.getSort());
+			// 202109 モバイルルーター機能追加対応 add start
+			targetMap.put(Skf3050Sc002SharedService.GRID_ROUTER_SHIME_SHORI, setData.getRouterShimeshori());
+			// 202109 モバイルルーター機能追加対応 add end
 			rtnList.add(targetMap);
 		}
 
@@ -1212,14 +1350,29 @@ public class Skf3050Sc002SharedService {
 			if (Objects.equals(sysDateYyyymm, gridViewData.get(Skf3050Sc002SharedService.GRID_HDN_SHORINENGETSU))) {
 				inDto.setHdnJikkouShijiYoteiShoriIdx(String.valueOf(i));
 
-				if (!NENGETSU_LIST_SHIME_JIKKOUSUMI.equals(gridViewData.get(GRID_SHIME_SHORI))) {
+				// 202109  モバイルルーター機能追加対応 edit start
+				if (!NENGETSU_LIST_SHIME_JIKKOUSUMI.equals(gridViewData.get(GRID_SHIME_SHORI)) 
+					&& !NENGETSU_LIST_SHIME_JIKKOUSUMI.equals(gridViewData.get(GRID_ROUTER_SHIME_SHORI))) {
+					// 締め処理、モバイルルーター締め処理が実行済以外
 					inDto.setHdnJikkouShijiYoteiShoriCol(GRID_SHIME_SHORI);
+					inDto.setHdnJikkouShijiYoteiRouterShoriCol(GRID_ROUTER_SHIME_SHORI);
 					break;
-
-				} else {
+				} else if (!NENGETSU_LIST_SHIME_JIKKOUSUMI.equals(gridViewData.get(GRID_SHIME_SHORI))) {
+					// 締め処理が実行済以外
+					inDto.setHdnJikkouShijiYoteiShoriCol(GRID_SHIME_SHORI);
+					inDto.setHdnJikkouShijiYoteiRouterShoriCol("");
+					break;
+				} else if (!NENGETSU_LIST_SHIME_JIKKOUSUMI.equals(gridViewData.get(GRID_ROUTER_SHIME_SHORI))) {
+					// モバイルルーター締め処理が実行済以外
+					inDto.setHdnJikkouShijiYoteiShoriCol("");
+					inDto.setHdnJikkouShijiYoteiRouterShoriCol(GRID_ROUTER_SHIME_SHORI);
+					break;
+				}else {
 					inDto.setHdnJikkouShijiYoteiShoriCol(GRID_POSITIVE_DATA);
+					inDto.setHdnJikkouShijiYoteiRouterShoriCol("");
 					break;
 				}
+				// 202109  モバイルルーター機能追加対応 edit end
 			}
 		}
 
@@ -1235,22 +1388,53 @@ public class Skf3050Sc002SharedService {
 	public Skf3050Sc002CommonDto changeButtonStatus(Skf3050Sc002CommonDto inDto) {
 
 		if (Skf3050Sc002SharedService.GRID_SHIME_SHORI.equals(inDto.getHdnJikkouShijiYoteiShoriCol())) {
+			// 実行指示が締め処理
 			inDto = setButtonStatus(inDto, false, false, true, true, true);
+			// 202109  モバイルルーター機能追加対応 add start
+			// モバイルルーター分
+			if (Skf3050Sc002SharedService.GRID_ROUTER_SHIME_SHORI.equals(inDto.getHdnJikkouShijiYoteiRouterShoriCol())) {
+				// 実行指示がモバイルルーター締め処理
+				inDto.setHdnBtnRouterShimeShoriDisabled(false);
+				inDto.setHdnBtnRouterShimeKaijoDisabled(true);
+			}else{
+				inDto.setHdnBtnRouterShimeShoriDisabled(true);
+				inDto.setHdnBtnRouterShimeKaijoDisabled(false);
+			}
+			// 202109  モバイルルーター機能追加対応 add end
 
 		} else if (Skf3050Sc002SharedService.GRID_POSITIVE_DATA.equals(inDto.getHdnJikkouShijiYoteiShoriCol())) {
+			// 実行指示が給与連携
 			Skf3050TMonthlyManageData renkeiData = getShimePositiveRenkeiKbn(inDto.getHdnJikkouShijiYoteiNengetsu());
 
 			if (renkeiData != null
 					&& CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiData.getLinkdataCreateKbn())) {
+				// 連携データ作成済み
 				inDto = setButtonStatus(inDto, true, true, false, false, false);
-
+				// 202109  モバイルルーター機能追加対応 add 
+				inDto.setHdnBtnRouterShimeShoriDisabled(true);
+				inDto.setHdnBtnRouterShimeKaijoDisabled(false);
 			} else {
+				// 連携データ未作成
 				inDto = setButtonStatus(inDto, true, true, false, false, true);
+				// 202109  モバイルルーター機能追加対応 add 
+				inDto.setHdnBtnRouterShimeShoriDisabled(true);
+				inDto.setHdnBtnRouterShimeKaijoDisabled(false);
 			}
 
-		} else {
+		}else if (Skf3050Sc002SharedService.GRID_ROUTER_SHIME_SHORI.equals(inDto.getHdnJikkouShijiYoteiRouterShoriCol())) {
+			// 実行指示がモバイルルーター締め処理
+			inDto = setButtonStatus(inDto, true, true, true, false, true);
+			inDto.setHdnBtnRouterShimeShoriDisabled(false);
+			inDto.setHdnBtnRouterShimeKaijoDisabled(true);
+		}  else {
+			// その他
 			inDto = setButtonStatus(inDto, true, true, true, true, true);
+			// 202109  モバイルルーター機能追加対応 add 
+			inDto.setHdnBtnRouterShimeShoriDisabled(true);
+			inDto.setHdnBtnRouterShimeKaijoDisabled(true);
 		}
+		
+
 
 		return inDto;
 	}
@@ -1425,6 +1609,20 @@ public class Skf3050Sc002SharedService {
 			return false;
 		}
 
+		// 202109  モバイルルーター機能追加対応 add start
+		// モバイルルーター締め処理バッチ二重起動チェック
+		int routerShimeShoriBatchCnt = getBatchStartupCnt(routerCloseBatchPrgId);
+		if (routerShimeShoriBatchCnt > 0) {
+			return false;
+		}
+
+		// モバイルルーター締め解除バッチ二重起動チェック
+		int routerShimeKaijoBatchCnt = getBatchStartupCnt(routerCloseCanselBatchPrgId);
+		if (routerShimeKaijoBatchCnt > 0) {
+			return false;
+		}
+		// 202109  モバイルルーター機能追加対応 add end
+		
 		// 上記のバッチ全てが起動していない場合のみ正常とする
 		return true;
 	}
@@ -1772,7 +1970,7 @@ public class Skf3050Sc002SharedService {
 	 * @return 処理結果Map
 	 * @throws ParseException
 	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = Exception.class)
 	public String updateTsukibetsuTsukiji(Map<String, String> parameter, List<String> endList) throws ParseException {
 
 		String rtn = SkfCommonConstant.COMPLETE;
@@ -3387,7 +3585,15 @@ public class Skf3050Sc002SharedService {
 
 		String renkeiDataKakuteiMsg = editMsg(MessageIdConstant.I_SKF_3010, targetNengetsu);
 		inDto.setHdnRenkeiDataKakuteiBtnMsg(renkeiDataKakuteiMsg);
+		
+		// 202109 モバイルルーター機能追加対応 add start
+		String routerShimeShoriMsg = targetNengetsu + "のモバイルルーター締め処理を実行します。よろしいですか？締め処理には1分～2分くらいかかります。しばらくお待ちください。";
+		inDto.setHdnRouterShimeShoriBtnMsg(routerShimeShoriMsg);
 
+		String routerShimeKaijoMsg = targetNengetsu + "のモバイルルーター締め処理を解除します。よろしいですか？";
+		inDto.setHdnRouterShimeKaijoBtnMsg(routerShimeKaijoMsg);
+		// 202109 モバイルルーター機能追加対応 add end
+		
 		return inDto;
 	}
 
@@ -3472,4 +3678,624 @@ public class Skf3050Sc002SharedService {
 		LogUtils.info(MessageIdConstant.I_SKF_1023, batchName);
 	}
 	
+	
+	// 202109 モバイルルーター機能追加対応 add start 
+	/**
+	 * 終了ログリスト作成
+	 * 
+	 * @return 終了ログリスト
+	 */
+	public List<String> setEndListRouter() {
+
+		List<String> kanriInfoList = new ArrayList<String>();
+
+		for (int i = 0; i < INFO_SKF1030_PARAM_ROUTER.length; i++) {
+			String[] replaceStrArry = { INFO_SKF1030_PARAM_ROUTER[i], "0" };
+			String addMsg = editMsg(MessageIdConstant.I_SKF_1030, replaceStrArry);
+
+			kanriInfoList.add(addMsg);
+		}
+		return kanriInfoList;
+	}
+	
+	/**
+	 * POSITIVE連携モバイルルーターデータ取得
+	 * 
+	 * @param shoriNengetsu 処理年月
+	 * @param kyuyoCompanyCd 給与支給会社コード
+	 * @return POSITIVE連携備品データ
+	 */
+	private List<Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExp> getPositiveRenkeiDataSakuseiRouterData(
+			String shoriNengetsu, String kyuyoCompanyCd) {
+
+		Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExpParameter param = new Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExpParameter();
+
+		param.setYearMonth(shoriNengetsu);
+
+		if (kyuyoCompanyCd == null) {
+			param.setPayCompanyCd(null);
+		} else {
+			param.setPayCompanyCd(kyuyoCompanyCd);
+		}
+
+		List<Skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExp> outData = skf3050Bt003GetPositiveRenkeiDataSakuseiRouterDataExpRepository
+				.getPositiveRenkeiDataSakuseiRouterData(param);
+
+		return outData;
+	}
+	
+	
+	/**
+	 * モバイルルーター締め処理実行チェック
+	 * 
+	 * @param jikkouShijiYoteiNengetsu 実行指示予定年月
+	 * @return エラーメッセージ
+	 */
+	public String checkRouterShimeShori(String jikkouShijiYoteiNengetsu, String closeBatchFlg) {
+
+		String rtnErrMsg = "";
+
+		// ▼二重起動チェック
+		boolean notDoubleStartup = checkDoubleStartup();
+		if (!notDoubleStartup) {
+			rtnErrMsg = ERRMSG_DOUBLE_START;
+			LogUtils.infoByMsg("checkShimeShori, 二重起動");
+			return rtnErrMsg;
+		}
+
+		// ▼締め処理可能チェック
+		Skf3050TMonthlyManageData renkeiKbnData = getShimePositiveRenkeiKbn(jikkouShijiYoteiNengetsu);
+		if (renkeiKbnData == null) {
+			// 月次処理管理データが取得できない場合エラー
+			rtnErrMsg = ERRMSG_SHIME_IMPOSSIBLE;
+			LogUtils.infoByMsg("checkShimeShori, 月次処理管理データ取得失敗");
+			return rtnErrMsg;
+
+		} else {
+			if (Skf3050Sc002SharedService.BILLING_ACT_KBN_JIKKO_SUMI.equals(renkeiKbnData.getMobileRouterBillingActKbn())
+					|| CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(renkeiKbnData.getLinkdataCommitKbn())) {
+				// モバイルルーター締め処理＝実行済、または連携データ確定実行区分＝実行済の場合エラー
+				rtnErrMsg = ERRMSG_SHIME_IMPOSSIBLE;
+				LogUtils.infoByMsg("checkShimeShori, 締め処理状態が変更されている為実施不可");
+				return rtnErrMsg;
+			}
+		}
+
+		// 締め処理の場合はチェックを行う
+		if (SHIME_SHORI_ON.equals(closeBatchFlg)) {
+
+			// ▼仮社員番号チェック
+			List<String> kariShainNoList = getRouterKariShainBango(jikkouShijiYoteiNengetsu);
+			if (kariShainNoList.size() > 0) {
+				// 仮社員データが存在する場合エラー
+				rtnErrMsg = ERRMSG_ROUTER_SHIME_KARISHAIN;
+				LogUtils.infoByMsg("checkShimeShori, 仮社員データが存在します：" + Integer.toString(kariShainNoList.size()) + "件");
+				return rtnErrMsg;
+			}
+
+			// ▼社員番号変更対象者チェック
+			// 社員番号変更対象者の取得
+			List<String> henkanShainBangoList = getRouterHenkanShainBango(jikkouShijiYoteiNengetsu);
+			if (henkanShainBangoList.size() > 0) {
+				// 社員番号変更対象者が存在する場合エラー
+				rtnErrMsg = ERRMSG_ROUTER_SHIME_KARISHAIN_CHG;
+				LogUtils.infoByMsg(
+						"checkShimeShori, 社員番号変更対象者が存在します：" + Integer.toString(henkanShainBangoList.size()) + "件");
+				return rtnErrMsg;
+			}
+
+			// 未承認の当月希望申請存在チェック
+			List<String> routerKiboList = getRouterKiboExists(jikkouShijiYoteiNengetsu);
+			if (routerKiboList.size() > 0) {
+				// 処理年月内で未承認希望申請有の場合エラー
+				rtnErrMsg = ERRMSG_ROUTER_SHIME_KIBO_SHISEI;
+				LogUtils.infoByMsg(
+						"checkShimeShori, 当月貸与予定のデータがモバイルルーター貸出管理簿が未反映：" + Integer.toString(routerKiboList.size()) + "件");
+				return rtnErrMsg;
+			}
+
+			// 未承認の当月返却申請存在チェック
+			List<String> routerHenkyakuList = getRouterHenkyakuExists(jikkouShijiYoteiNengetsu);
+			if (routerHenkyakuList.size() > 0) {
+				// 処理年月内で未承認返却申請有の場合エラー
+				rtnErrMsg = ERRMSG_ROUTER_SHIME_HENKYAKU_SHISEI;
+				LogUtils.infoByMsg(
+						"checkShimeShori, 当月返却予定のデータがモバイルルーター貸出管理簿が未反映：" + Integer.toString(routerHenkyakuList.size()) + "件");
+				return rtnErrMsg;
+			}
+
+			// 社員番号存在チェック
+			boolean chk = checkRirekiShainExist(jikkouShijiYoteiNengetsu);
+			if (!chk) {
+				// 処理年月内で存在しない社員番号がある場合エラー
+				rtnErrMsg = ERRMSG_ROUTER_SHIME_SHAINNO;
+				LogUtils.infoByMsg("checkShimeShori, 社員マスタに未登録の社員がいるため");
+				return rtnErrMsg;
+			}
+		}
+
+		return rtnErrMsg;
+	}
+	
+	/**
+	 * 仮社員番号を取得する。
+	 * 
+	 * @param taishouNendo 対象年度
+	 * @return 仮社員番号データ
+	 */
+	public List<String> getRouterKariShainBango(String taishouNendo) {
+
+		Skf3050Sc002GetKariShainBangoExpParameter param = new Skf3050Sc002GetKariShainBangoExpParameter();
+		param.setYearMonth(taishouNendo);
+		param.setShainNo(KARI_SHAIN_NO_RECOG_CD);
+
+		List<String> rtnData = skf3050Sc002GetKariShainBangoExpRepository.getRouterKariShainBango(param);
+
+		return rtnData;
+	}
+
+	/**
+	 * 社員番号変換対象者情報を取得する。
+	 * 
+	 * @param taishoNengetsu 対象年月
+	 * @return 社員番号変換対象者情報
+	 */
+	public List<String> getRouterHenkanShainBango(String taishoNengetsu) {
+
+		Skf3050Sc002GetHenkanShainBangoExpParameter param = new Skf3050Sc002GetHenkanShainBangoExpParameter();
+		param.setTaishoNengetsu(taishoNengetsu);
+		param.setShainNoChangeFlg(SHAIN_NO_CHG_AVAILABLE);
+
+		List<String> rtnData = skf3050Sc002GetHenkanShainBangoExpRepository.getRouterHenkanShainBango(param);
+
+		return rtnData;
+	}
+	
+	/**
+	 * モバイルルーター使用料履歴を更新
+	 * 
+	 * @param parameter パラメータ
+	 * @param endList 出力ログリスト
+	 * @return 処理結果
+	 * @throws ParseException
+	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = Exception.class)
+	public String updateRouterRireki(Map<String, String> parameter, List<String> endList) throws ParseException {
+
+		String rtn = SkfCommonConstant.COMPLETE;
+		String paramUserId = parameter.get(USER_ID_KEY);
+		String paramShoriNengetsu = parameter.get(SHORI_NENGETSU_KEY);
+
+		List<String> lockResult = skf3050Bt005GetDataForUpdateExpRepository
+				.getSkf2100TMobileRouterRentalRirekiData(paramShoriNengetsu);
+		if (lockResult.size() == 0) {
+			LogUtils.infoByMsg("モバイルルーター締め処理：更新行ロック取得エラー:" + paramShoriNengetsu);
+			return SkfCommonConstant.ABNORMAL;
+		}
+
+		// ▼月別使用料履歴の現物算定額の初期化▼
+		updateRouterGenbutsuGoukei(paramUserId, paramShoriNengetsu);
+
+		// 対象履歴の取得
+		
+		List<Skf3050Bt005GetRouterRirekiListExp> renRirekiDtList = getRouterRirekiList(paramShoriNengetsu);
+
+		int shiyouUpdCount = 0;
+
+		// 取得した情報分繰り返す（処理年月のモバイルルーター使用料履歴テーブル．モバイルルーター貸出管理簿ID分）
+		for (int i = 0; i < renRirekiDtList.size(); i++) {
+			
+			
+			Skf3050Bt005GetRouterRirekiListExp renRirekiRow = renRirekiDtList.get(i);
+
+			// 対象の管理簿IDに紐づく明細から、汎用備品コードと現物支給額取得
+			List<Skf3050Bt005GetRouterRirekiMeisaiListExp> meisakiDt = 
+					getRouterRirekiMeisaiList(paramShoriNengetsu,renRirekiRow.getMobileRouterKanriId());
+
+			if (meisakiDt.size() <= 0) {
+				// 対応する明細情報無し
+				LogUtils.info(MessageIdConstant.E_SKF_1106, ERRMSG_ROUTERRIREKI_0,
+						ERRMSG_ROUTERKANRIID_1 + CodeConstant.COLON + renRirekiRow.getMobileRouterKanriId());
+				rtn = SkfCommonConstant.ABNORMAL;
+				break;
+			}
+			
+			// 明細の現物支給額更新
+			for(Skf3050Bt005GetRouterRirekiMeisaiListExp meisai : meisakiDt){
+				// 取得した明細分更新
+				updateRouterRirekiMeisai(meisai.getGeneralEquipmentCd(),meisai.getEquipmentPayment(),paramUserId,
+						renRirekiRow.getMobileRouterKanriId(),paramShoriNengetsu );
+			}
+			
+			// モバイルルーター現物支給額合計で履歴を更新
+			// 合計額取得
+			BigDecimal routerGoukei = getRouterGenbutsuGoukei(paramShoriNengetsu,renRirekiRow.getMobileRouterKanriId());
+			BigDecimal routerGenbutsuGoukei = BigDecimal.ZERO;
+			if (routerGoukei != null) {
+				routerGenbutsuGoukei = routerGoukei;
+			}
+			
+			// 使用料履歴テーブル更新
+			shiyouUpdCount += updateRouterRireki( routerGenbutsuGoukei.intValue(),  paramUserId, renRirekiRow.getMobileRouterKanriId(),
+					 paramShoriNengetsu);
+			
+		}
+
+		// 締め処理の場合は月次処理管理データを更新
+		if (SHIME_SHORI.equals(parameter.get(SHIME_SHORI_FLG))) {
+			List<String> lockGetsujiShoriKanriResult = skf3050Bt005GetDataForUpdateExpRepository
+					.getSkf3050TMonthlyManageData(paramShoriNengetsu);
+			if (lockGetsujiShoriKanriResult.size() == 0) {
+				skfRollBackExpRepository.rollBack();
+				return SkfCommonConstant.ABNORMAL;
+			}
+			// ▼月次処理管理データ更新▼
+			updateRouterGetsujiShoriKanriData(paramUserId, paramShoriNengetsu);
+		}
+
+		// エラーなくここまで来ていれば、コミット⇒エラー有の場合ロールバック
+		if (SkfCommonConstant.ABNORMAL.equals(rtn)) {
+			skfRollBackExpRepository.rollBack();
+		}
+
+		LogUtils.info(MessageIdConstant.I_SKF_1030, ERRMSG_PARAM_ROUTERRIREKI, shiyouUpdCount);
+
+		return rtn;
+	}
+	
+	/**
+	 * 対象年月のモバイルルーター使用料履歴から管理簿ID取得
+	 * 
+	 * @param yearMonth 処理年月
+	 * @return モバイルルーター使用料履歴データ
+	 */
+	public List<Skf3050Bt005GetRouterRirekiListExp> getRouterRirekiList(String yearMonth){
+		
+		
+		Skf3050Bt005GetRouterRirekiListExpParameter param = new Skf3050Bt005GetRouterRirekiListExpParameter();
+		param.setYearMonth(yearMonth);
+		List<Skf3050Bt005GetRouterRirekiListExp> rtnList = skf3050Bt005GetRouterRirekiListExpRepository.getRouterRirekiList(param);
+		
+		return rtnList;
+
+	}
+	
+	/**
+	 * 対象年月のモバイルルーター使用料明細から対象備品コード、金額取得
+	 * 
+	 * @param yearMonth 処理年月
+	 * @return モバイルルーター使用料データ
+	 */
+	public List<Skf3050Bt005GetRouterRirekiMeisaiListExp> getRouterRirekiMeisaiList(String yearMonth,Long kanriId){
+		
+		Skf3050Bt005GetRouterRirekiMeisaiListExpParameter param = new Skf3050Bt005GetRouterRirekiMeisaiListExpParameter();
+		param.setYearMonth(yearMonth);
+		param.setMobileRouterKanriId(kanriId);
+	
+		List<Skf3050Bt005GetRouterRirekiMeisaiListExp> rtnList = skf3050Bt005GetRouterRirekiMeisaiListExpRepository.getRouterRirekiMeisaiList(param);
+		
+		return rtnList;
+		
+	}
+	
+
+	/**
+	 * モバイルルーター使用料明細の更新
+	 * 
+	 * @param generalEquipmentCd 汎用備品コード
+	 * @param equipmentPayment 現物支給額
+	 * @param updateUser 更新ユーザ
+	 * @param routerKanriId モバイルルーター貸出管理簿ID
+	 * @param shoriNengetsu 処理年月
+	 */
+	private void updateRouterRirekiMeisai(String generalEquipmentCd, int equipmentPayment, String updateUser, Long routerKanriId,
+			String shoriNengetsu) {
+
+		Skf2100TMobileRouterRentalRirekiMeisai param = new Skf2100TMobileRouterRentalRirekiMeisai();
+
+		param.setMobileRouterKanriId(routerKanriId);
+		param.setGeneralEquipmentCd(generalEquipmentCd);
+		param.setYearMonth(shoriNengetsu);
+		// モバイルルーター現物支給額
+		param.setMobileRouterGenbutsuGaku(equipmentPayment);
+		
+		param.setUpdateUserId(updateUser);
+		param.setUpdateProgramId(routerCloseBatchPrgId);
+		
+		skf3050Bt005UpdateRouterRirekiExpRepository.updateRouterRirekiMeisai(param);
+	}
+	
+	/**
+	 * 対象年月のモバイルルーター使用料明細から対象備品コード、金額取得
+	 * 
+	 * @param yearMonth 処理年月
+	 * @return モバイルルーター使用料データ
+	 */
+	public BigDecimal getRouterGenbutsuGoukei(String yearMonth,Long kanriId){
+		
+		Skf3050Bt005GetRouterGenbutsuGoukeiExpParameter param = new Skf3050Bt005GetRouterGenbutsuGoukeiExpParameter();
+		param.setYearMonth(yearMonth);
+		param.setMobileRouterKanriId(kanriId);
+		
+		BigDecimal goukei = skf3050Bt005GetRouterGenbutsuGoukeiExpRepository.getRouterGenbutsuGoukei(param);
+		
+		return goukei;
+		
+	}
+	
+	/**
+	 * モバイルルーター使用料履歴の更新
+	 * 
+	 * @param equipmentPayment 現物支給額合計
+	 * @param updateUser 更新ユーザ
+	 * @param routerKanriId モバイルルーター貸出管理簿ID
+	 * @param shoriNengetsu 処理年月
+	 */
+	private int updateRouterRireki(Integer mobileRouterGenbutuGoukei, String updateUser, Long routerKanriId,
+			String shoriNengetsu) {
+		int updCOunt = 0;
+		Skf2100TMobileRouterRentalRireki param = new Skf2100TMobileRouterRentalRireki();
+
+		param.setMobileRouterKanriId(routerKanriId);
+		param.setYearMonth(shoriNengetsu);
+		// モバイルルーター現物支給額合計
+		param.setMobileRouterGenbutuGoukei(mobileRouterGenbutuGoukei);
+		
+		param.setUpdateUserId(updateUser);
+		param.setUpdateProgramId(routerCloseBatchPrgId);
+		
+		updCOunt = skf3050Bt005UpdateRouterRirekiExpRepository.updateRouterRireki(param);
+		
+		return updCOunt;
+	}
+	
+	/**
+	 * 月次処理管理テーブル（モバイルルーター締め処理実行区分）更新
+	 * 
+	 * @param updateUser 更新ユーザ
+	 * @param shoriNengetsu 処理年月
+	 * @return 更新件数
+	 */
+	private int updateRouterGetsujiShoriKanriData(String updateUser, String shoriNengetsu) {
+
+		Skf3050Bt005UpdateGetsujiShoriKanriDataExpParameter param = new Skf3050Bt005UpdateGetsujiShoriKanriDataExpParameter();
+
+		if (updateUser == null) {
+			param.setUpdateUser(null);
+		} else {
+			param.setUpdateUser(updateUser);
+		}
+
+		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateProgramId(routerCloseBatchPrgId);
+
+		int updateCnt = skf3050Bt005UpdateGetsujiShoriKanriDataExpRepository.updateGetsujiShoriKanriData(param);
+
+		return updateCnt;
+	}
+	
+	
+	/**
+	 * 未承認ルーター希望申請データを取得する。
+	 * 
+	 * @param shoriNengetsu 処理年月
+	 * @return 未承認希望申請
+	 */
+	public List<String> getRouterKiboExists(String shoriNengetsu) {
+
+		List<String> rtnData = skf3050Sc002GetRouterKiboExistExpRepository
+				.getRouterKiboExist(shoriNengetsu);
+
+		return rtnData;
+	}
+	
+	/**
+	 * 未承認ルーター返却データを取得する。
+	 * 
+	 * @param shoriNengetsu 処理年月
+	 * @return 未承認返却申請
+	 */
+	public List<String> getRouterHenkyakuExists(String shoriNengetsu) {
+
+		List<String> rtnData = skf3050Sc002GetRouterHenkyakuExistExpRepository
+				.getRouterHenkyakuExist(shoriNengetsu);
+
+		return rtnData;
+	}
+	
+	
+	/**
+	 * モバイルルーター貸出管理簿に存在する社員番号の存在チェック。
+	 * 
+	 * @param shoriNengetsu 処理年月
+	 * @return 提示データ当月駐車場利用終了データ
+	 */
+	public boolean checkRirekiShainExist(String shoriNengetsu) {
+
+		List<String> shainDataList = skf3050Sc002GetRirekiShainBangoExpRepository
+				.getRirekiShainBango(shoriNengetsu);
+		
+		// 取得した社員番号の存在チェック
+		for(String shainNo : shainDataList){
+			
+			int count = skf3050Sc002GetRirekiShainBangoExpRepository.getRirekiShainBangoExist(shainNo);
+			if(count <= 0){
+				// 社員番号が存在しない
+				LogUtils.debugByMsg("社員マスタに未登録の社員:" + shainNo);
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	
+	/**
+	 * 月別使用料履歴更新（現物算定額）
+	 * 
+	 * @param updateUser 更新ユーザ
+	 * @param shoriNengetsu 処理年月
+	 * @return 更新件数
+	 */
+	public void updateRouterGenbutsuGoukei(String updateUser, String shoriNengetsu) {
+
+		Skf3050Bt005UpdateRouterGenbutuGoukeiExpParameter param = new Skf3050Bt005UpdateRouterGenbutuGoukeiExpParameter();
+		param.setUpdateUserId(updateUser);
+		param.setYearMonth(shoriNengetsu);
+		param.setUpdateProgramId(routerCloseBatchPrgId);
+		LogUtils.infoByMsg("モバイルルーター締め処理：月別使用料履歴更新（現物算定額初期化）:" + shoriNengetsu);
+		
+		skf3050Bt005UpdateRouterGenbutsuGoukeiExpRepository.updateRouterGenbutsuGoukei(param);
+	}
+	
+	/**
+	 * 対象のテーブルのロック制御
+	 * 
+	 * @param key
+	 *            主キー
+	 * @return 結果
+	 */
+	public boolean canLockTableData(String key) {
+
+		List<String> shatakuRentalRirekiData = skf3050Bt005GetDataForUpdateExpRepository
+				.getSkf2100TMobileRouterRentalRirekiData(key);
+		if (shatakuRentalRirekiData.size() == 0) {
+			return false;
+		}
+
+		List<String> monthlyManageData = skf3050Bt005GetDataForUpdateExpRepository
+				.getSkf3050TMonthlyManageData(key);
+		if (monthlyManageData.size() == 0) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * 月次処理月管理データを更新する。
+	 * 
+	 * @param parameter
+	 *            パラメータ
+	 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = Exception.class)
+	public Map<String, String> updateCancelGetsujiData(Map<String, String> parameter) {
+
+		Map<String, String> rtnMap = new HashMap<String, String>();
+
+		String paramUserId = parameter.get(Skf3050Sc002SharedService.USER_ID_KEY);
+		String paramShoriNengetsu = parameter.get(Skf3050Sc002SharedService.SHORI_NENGETSU_KEY);
+		
+		// 行ロック
+		boolean canLock = canLockTableData(paramShoriNengetsu);
+		if(!canLock){
+			LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新行ロック取得エラー:" + paramShoriNengetsu);
+			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.ABNORMAL);
+			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, "ロック取得エラー");
+			return rtnMap;
+		}
+		
+		//▼連携作成区分取得▼
+		int updateCnt = 0;
+		String hrRenkeiSakuseiKbn = getHrRenkeiSakuseiJikkouKbn(paramShoriNengetsu);
+
+		if (CodeConstant.LINKDATA_CREATE_KBN_JIKKO_SUMI.equals(hrRenkeiSakuseiKbn)) {
+			//▼連携作成区分＝実行済の場合▼
+			updateCnt = updateGetsujiShoriKanriHrSakuseiZumi(paramUserId, paramShoriNengetsu);
+			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, PARAM_1_POSITIVERENKEI);
+
+		} else if (CodeConstant.LINKDATA_CREATE_KBN_MI_JIKKO.equals(hrRenkeiSakuseiKbn)
+				|| CodeConstant.LINKDATA_CREATE_KBN_KAIJO_CHU.equals(hrRenkeiSakuseiKbn)) {
+			//▼連携作成区分＝未行済または解除中の場合▼
+			updateCnt = updateGetsujiShoriKanriHrMiSakusei(paramUserId, paramShoriNengetsu);
+			rtnMap.put(UPDATE_GETSUJI_DATA_MSG_KEY, PARAM_1_SHIME);
+		}
+
+		if (updateCnt > 0) {
+			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.COMPLETE);
+		} else {
+			LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新件数0以下エラー:" + paramShoriNengetsu);
+			rtnMap.put(UPDATE_GETSUJI_DATA_RESULT_KEY, SkfCommonConstant.ABNORMAL);
+			skfRollBackExpRepository.rollBack();
+		}
+
+		return rtnMap;
+	}
+	/**
+	 * POSITIVE連携作成実行区分
+	 * 
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @return POSITIVE連携作成実行区分
+	 */
+	private String getHrRenkeiSakuseiJikkouKbn(String shoriNengetsu) {
+
+		String rtnVal = skf3050Bt006GetPositiveRenkeiSakuseiJikkouKbnExpRepository
+				.getPositiveRenkeiSakuseiJikkouKbn(shoriNengetsu);
+
+		if (NfwStringUtils.isEmpty(rtnVal)) {
+			rtnVal = "";
+		}
+
+		return rtnVal;
+	}
+
+	/**
+	 * 月次処理管理テーブル更新（POSITIVE連携作成済）
+	 * 
+	 * @param updateUser
+	 *            更新ユーザ
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @return 更新件数
+	 */
+	private Integer updateGetsujiShoriKanriHrSakuseiZumi(String updateUser, String shoriNengetsu) {
+
+		Skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpParameter param = new Skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpParameter();
+
+		if (updateUser == null) {
+			param.setUpdateUserId(null);
+		} else {
+			param.setUpdateUserId(updateUser);
+		}
+
+		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateProgramId(routerCloseCanselBatchPrgId);
+		LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新（給与連携作成済）:" + shoriNengetsu);
+		
+		Integer updateCnt = skf3050Bt006UpdateGetsujiShoriKanriPositiveSakuseiZumiExpRepository
+				.updateGetsujiShoriKanriPositiveSakuseiZumi(param);
+
+		return updateCnt;
+	}
+
+	/**
+	 * 月次処理管理テーブル更新（POSITIVE連携未作成）
+	 * 
+	 * @param updateUser
+	 *            更新ユーザ
+	 * @param shoriNengetsu
+	 *            処理年月
+	 * @return 更新件数
+	 */
+	private Integer updateGetsujiShoriKanriHrMiSakusei(String updateUser, String shoriNengetsu) {
+
+		Skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpParameter param = new Skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpParameter();
+
+		if (updateUser == null) {
+			param.setUpdateUserId(null);
+		} else {
+			param.setUpdateUserId(updateUser);
+		}
+
+		param.setCycleBillingYymm(shoriNengetsu);
+		param.setUpdateProgramId(routerCloseCanselBatchPrgId);
+		LogUtils.infoByMsg("ルーター締め処理解除:月次処理管理更新（給与連携未作成）:" + shoriNengetsu);
+		
+		Integer updateCnt = skf3050Bt006UpdateGetsujiShoriKanriPositiveMiSakuseiExpRepository
+				.updateGetsujiShoriKanriPositiveMiSakusei(param);
+
+		return updateCnt;
+	}
+	// 202109 モバイルルーター機能追加対応 add end
 }

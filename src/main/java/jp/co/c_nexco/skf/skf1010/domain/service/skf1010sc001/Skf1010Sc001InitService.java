@@ -212,7 +212,6 @@ public class Skf1010Sc001InitService extends SkfServiceAbstract<Skf1010Sc001Init
 			initDto.setLevel2_5(level2_5);
 			initDto.setLevel2_6(level2_6);
 			initDto.setLevel3(level3);
-			initDto.setLevel4_1(level4_1);
 			initDto.setLevel5(level5);
 
 		}

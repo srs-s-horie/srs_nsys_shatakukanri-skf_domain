@@ -169,10 +169,6 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 			return appDto;
 		}
 
-		// メール送信処理
-		skf2040Sc002SharedService.sendMail(appDto.getApplNo(), appDto.getApplId(), appDto.getShainNo(), commentNote,
-				appDto.getMailKbn(), false);
-
 		// 退居届データ連携
 		// menuScopeSessionBeanからオブジェクトを取得
 		Object forUpdateObject = menuScopeSessionBean.get(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2040SC002);
@@ -192,7 +188,11 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 			skfRollBackExpRepository.rollBack();
 			return appDto;
 		}
-		
+
+		// メール送信処理
+		skf2040Sc002SharedService.sendMail(appDto.getApplNo(), appDto.getApplId(), appDto.getShainNo(), commentNote,
+				appDto.getMailKbn(), false);
+
 		//画面遷移前にデータの初期化を行う
 		FormHelper.removeFormBean(FunctionIdConstant.SKF2040_SC002);
 

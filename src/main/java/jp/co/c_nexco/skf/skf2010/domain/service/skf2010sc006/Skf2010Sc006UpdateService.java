@@ -18,6 +18,8 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006UpdateDto;
@@ -40,6 +42,10 @@ public class Skf2010Sc006UpdateService extends SkfServiceAbstract<Skf2010Sc006Up
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfMailUtils skfMailUtils;
 
 	private String companyCd = CodeConstant.C001;
 
@@ -108,6 +114,26 @@ public class Skf2010Sc006UpdateService extends SkfServiceAbstract<Skf2010Sc006Up
 			skfRollBackExpRepository.rollBack();
 			throwBusinessExceptionIfErrors(updDto.getResultMessages());
 			return updDto;
+		}
+
+		//メール送信処理を行う
+		String mailKbn = "";
+		String sendGroupId = "";
+		Map<String, String> applInfo = new HashMap<String, String>();
+		// 申請情報設定
+		applInfo.put("applId", tApplHistoryData.getApplId());
+		applInfo.put("applNo", applNo);
+		applInfo.put("applStatus", tApplHistoryData.getApplStatus());
+		applInfo.put("applShainNo", tApplHistoryData.getShainNo());
+		String nowApplStatus = tApplHistoryData.getApplStatus();
+		if (CodeConstant.STATUS_SHONIN_ZUMI.equals(nowApplStatus)) {
+			mailKbn = CodeConstant.SHONIN_KANRYO_TSUCHI;
+			// 承認完了通知の場合のみ
+			// メール送付
+			String annai = CodeConstant.NONE;
+			String sendUser = applInfo.get("applShainNo");
+			String urlBase = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, comment, annai, sendUser, sendGroupId, urlBase);
 		}
 
 		// 次のステータスを設定する

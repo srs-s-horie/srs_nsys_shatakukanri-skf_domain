@@ -108,17 +108,6 @@ public class Skf2010Sc004NotAgreeService extends SkfServiceAbstract<Skf2010Sc004
 			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
 		}
 
-		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put("applShainNo", shainNo);
-		applInfo.put("applNo", applNo);
-		applInfo.put("applId", applId);
-
-		String urlBase = "skf/Skf2010Sc005/init?SKF2010_SC005&menuflg=1&tokenCheck=0";
-
-		// 送信メールにコメントが表示されないようになっている（メール本文に表記箇所が無い）
-		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
-				null, CodeConstant.NONE, urlBase);
-
 		// 社宅管理データ連携処理実行
 		Skf2010Sc004GetApplHistoryInfoByParameterExp tApplHistoryData = new Skf2010Sc004GetApplHistoryInfoByParameterExp();
 		tApplHistoryData = skf2010Sc004SharedService.getApplHistoryInfo(applNo);
@@ -138,6 +127,17 @@ public class Skf2010Sc004NotAgreeService extends SkfServiceAbstract<Skf2010Sc004
 			throwBusinessExceptionIfErrors(notAgreeDto.getResultMessages());
 			return notAgreeDto;
 		}
+
+		Map<String, String> applInfo = new HashMap<String, String>();
+		applInfo.put("applShainNo", shainNo);
+		applInfo.put("applNo", applNo);
+		applInfo.put("applId", applId);
+
+		String urlBase = "skf/Skf2010Sc005/init?SKF2010_SC005&menuflg=1&tokenCheck=0";
+
+		// 送信メールにコメントが表示されないようになっている（メール本文に表記箇所が無い）
+		skfMailUtils.sendApplTsuchiMail(CodeConstant.HUDOI_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
+				null, CodeConstant.NONE, urlBase);
 
 		// ページ遷移先は「申請状況一覧」
 		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC003);

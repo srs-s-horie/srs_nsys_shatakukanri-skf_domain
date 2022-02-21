@@ -22,7 +22,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc003.Skf2010Sc003TransferDto;
 
 /**
- * Skf2010Sc003 申請状況一覧取下げ処理クラス
+ * Skf2010Sc003 申請状況一覧画面遷移処理クラス
  *
  * @author NEXCOシステムズ
  */
@@ -74,6 +74,12 @@ public class Skf2010Sc003TransferService extends SkfServiceAbstract<Skf2010Sc003
 				break;
 			case FunctionIdConstant.R0106:
 				nextPageId = FunctionIdConstant.SKF2060_SC002;
+				break;
+			case FunctionIdConstant.R0107:
+				nextPageId = FunctionIdConstant.SKF2100_SC001;
+				break;
+			case FunctionIdConstant.R0108:
+				nextPageId = FunctionIdConstant.SKF2100_SC003;
 				break;
 			}
 		}

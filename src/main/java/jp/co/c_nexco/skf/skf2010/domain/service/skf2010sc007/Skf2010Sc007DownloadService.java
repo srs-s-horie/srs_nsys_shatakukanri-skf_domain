@@ -37,6 +37,10 @@ public class Skf2010Sc007DownloadService extends SkfServiceAbstract<Skf2010Sc007
 	private static final String NYUKYO = "1";
 	// 画面表示判定 退居（自動車の保管場所返還）届
 	private static final String TAIKYO = "2";
+	// 画面表示判定 モバイルルーター借用希望申請書
+	private static final String ROUTER_KIBO = "3";
+	// 画面表示判定 モバイルルーター返却申請書
+	private static final String ROUTER_HENKYAKU = "4";
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 
@@ -57,6 +61,16 @@ public class Skf2010Sc007DownloadService extends SkfServiceAbstract<Skf2010Sc007
 			// 区分が退居だった場合
 			// ダウンロードファイル名
 			downloadFileName = "skf.skf_appl_requirement.FileId_Taikyo";
+
+		} else if (ROUTER_KIBO.equals(dto.getConfirmationKbn())) {
+			// 区分がルーター借用希望だった場合
+			// ダウンロードファイル名
+			downloadFileName = "skf.skf_appl_requirement.FileId_RouterKibo";
+
+		} else if (ROUTER_HENKYAKU.equals(dto.getConfirmationKbn())) {
+			// 区分がルーター返却だった場合
+			// ダウンロードファイル名
+			downloadFileName = "skf.skf_appl_requirement.FileId_RouterHenkyaku";
 
 		}
 

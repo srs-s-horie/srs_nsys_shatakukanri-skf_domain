@@ -1,0 +1,87 @@
+/*
+ * Copyright(c) 2021 NEXCO Systems company limited All rights reserved.
+ */
+package jp.co.c_nexco.skf.skf2100.domain.service.skf2100sc004;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
+import jp.co.c_nexco.skf.common.SkfServiceAbstract;
+import jp.co.c_nexco.skf.common.constants.CodeConstant;
+import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
+import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100sc004.Skf2100Sc004SendbackDto;
+
+/**
+ * Skf2100Sc004 モバイルルーター返却申請書（アウトソース)差戻（否認）処理クラス
+ *
+ * @author NEXCOシステムズ
+ */
+@Service
+public class Skf2100Sc004SendbackService extends SkfServiceAbstract<Skf2100Sc004SendbackDto> {
+
+	@Autowired
+	private Skf2100Sc004SharedService skf2100Sc004SharedService;
+
+	@Autowired
+	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	
+	/**
+	 * サービス処理を行う。
+	 * 
+	 * @param dto DTO
+	 * @return 処理結果
+	 * @throws Exception 例外
+	 */
+	@Override
+	public Skf2100Sc004SendbackDto index(Skf2100Sc004SendbackDto dto) throws Exception {
+		// 操作ログ出力
+		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, FunctionIdConstant.SKF2100_SC004);
+		
+		// ログインユーザー情報取得
+		Map<String, String> loginUserInfo = skfLoginUserInfoUtils.getSkfLoginUserInfo();
+		skf2100Sc004SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
+		
+		// 申請情報設定
+		Map<String, String> applInfo = new HashMap<String, String>();
+		applInfo.put("status", dto.getApplStatus());
+		applInfo.put("applNo", dto.getApplNo());
+		applInfo.put("applId", dto.getApplId());
+
+		
+		// 入力チェック
+		boolean validateResult = skf2100Sc004SharedService.validateReason(dto, true);
+		if (!validateResult) {
+//			throwBusinessExceptionIfErrors(dto.getResultMessages());
+			return dto;
+		}
+		
+		// 処理名設定
+		String execName = "sendback";
+
+		// 更新処理
+		boolean updResult = skf2100Sc004SharedService.updateDispInfo(execName, dto, applInfo, loginUserInfo);
+		if (!updResult) {
+			throwBusinessExceptionIfErrors(dto.getResultMessages());
+			return dto;
+		}
+
+		
+		// 前の画面に遷移する
+		TransferPageInfo tpi = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005);
+		tpi.addResultMessage(MessageIdConstant.I_SKF_2033);
+		dto.setTransferPageInfo(tpi);
+
+		return dto;
+	}
+
+
+}

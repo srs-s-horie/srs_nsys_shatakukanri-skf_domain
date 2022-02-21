@@ -3641,7 +3641,7 @@ public class Skf3010Sc002SharedService {
 			// 調整金額
 			mShatakuParkingBlock.setParkingRentalAdjust(Integer.parseInt(parkingMap.get("parkingRentalAdjust").toString()));
 			// 備考
-			String biko = ("".equals(parkingMap.get("parkingBiko").toString())) ? null: parkingMap.get("parkingBiko").toString();
+			String biko = (parkingMap.get("parkingBiko").toString());
 			mShatakuParkingBlock.setParkingBiko(biko);
 			// 更新日時
 			if (parkingMap.get("updateDate") != null && parkingMap.get("updateDate").toString().length() > 0) {
@@ -3678,22 +3678,22 @@ public class Skf3010Sc002SharedService {
 		// 管理者区分
 		domitoryLeaderMap.setManegeKbn(Skf3010Sc002CommonDto.MANAGE_KBN_DOMITRY_LEADER);
 		// 部屋番号：寮長・自治会長
-		roomNo = ("".equals(comDto.getDormitoryLeaderRoomNo())) ? null: comDto.getDormitoryLeaderRoomNo();
+		roomNo = (comDto.getDormitoryLeaderRoomNo());
 		domitoryLeaderMap.setManegeShatakuNo(roomNo);
 		// 氏名：寮長・自治会長
-		name = ("".equals(comDto.getDormitoryLeaderName())) ? null: comDto.getDormitoryLeaderName();
+		name = (comDto.getDormitoryLeaderName());
 		domitoryLeaderMap.setManegeName(name);
 		// 電子メールアドレス：寮長・自治会長
-		mailAddress = ("".equals(comDto.getDormitoryLeaderMailAddress())) ? null: comDto.getDormitoryLeaderMailAddress();
+		mailAddress = (comDto.getDormitoryLeaderMailAddress());
 		domitoryLeaderMap.setManegeMailAddress(mailAddress);
 		// 電話番号：寮長・自治会長
-		telNumber = ("".equals(comDto.getDormitoryLeaderTelNumber())) ? null: comDto.getDormitoryLeaderTelNumber();
+		telNumber = (comDto.getDormitoryLeaderTelNumber());
 		domitoryLeaderMap.setManegeTelNo(telNumber);
 		// 内線番号：寮長・自治会長
-		extensionNo = ("".equals(comDto.getDormitoryLeaderExtentionNo())) ? null: comDto.getDormitoryLeaderExtentionNo();
+		extensionNo = (comDto.getDormitoryLeaderExtentionNo());
 		domitoryLeaderMap.setManegeExtensionNo(extensionNo);
 		// 備考：寮長・自治会長
-		biko = ("".equals(comDto.getDormitoryLeaderBiko())) ? null: comDto.getDormitoryLeaderBiko();
+		biko = (comDto.getDormitoryLeaderBiko());
 		domitoryLeaderMap.setBiko(biko);
 		// 更新日時
 		domitoryLeaderMap.setLastUpdateDate(comDto.getDormitoryLeaderUpdateDate());
@@ -3703,22 +3703,22 @@ public class Skf3010Sc002SharedService {
 		// 管理者区分
 		keyMngMap.setManegeKbn(Skf3010Sc002CommonDto.MANAGE_KBN_KEY_MANAGER);
 		// 部屋番号 ：鍵管理者
-		roomNo = ("".equals(comDto.getKeyManagerRoomNo())) ? null: comDto.getKeyManagerRoomNo();
+		roomNo = (comDto.getKeyManagerRoomNo());
 		keyMngMap.setManegeShatakuNo(roomNo);
 		// 氏名：鍵管理者
-		name = ("".equals(comDto.getKeyManagerName())) ? null: comDto.getKeyManagerName();
+		name = (comDto.getKeyManagerName());
 		keyMngMap.setManegeName(name);
 		// 電子メールアドレス：鍵管理者
-		mailAddress = ("".equals(comDto.getKeyManagerMailAddress())) ? null: comDto.getKeyManagerMailAddress();
+		mailAddress = (comDto.getKeyManagerMailAddress());
 		keyMngMap.setManegeMailAddress(mailAddress);
 		// 電話番号：鍵管理者
-		telNumber = ("".equals(comDto.getKeyManagerTelNumber())) ? null: comDto.getKeyManagerTelNumber();
+		telNumber = (comDto.getKeyManagerTelNumber());
 		keyMngMap.setManegeTelNo(telNumber);
 		// 内線番号：鍵管理者
-		extensionNo = ("".equals(comDto.getKeyManagerExtentionNo())) ? null: comDto.getKeyManagerExtentionNo();
+		extensionNo = (comDto.getKeyManagerExtentionNo());
 		keyMngMap.setManegeExtensionNo(extensionNo);
 		// 備考：鍵管理者
-		biko = ("".equals(comDto.getKeyManagerBiko())) ? null: comDto.getKeyManagerBiko();
+		biko = (comDto.getKeyManagerBiko());
 		keyMngMap.setBiko(biko);
 		// 更新日時
 		keyMngMap.setLastUpdateDate(comDto.getKeyManagerUpdateDate());
@@ -3728,22 +3728,22 @@ public class Skf3010Sc002SharedService {
 		// 管理者区分
 		matronMap.setManegeKbn(Skf3010Sc002CommonDto.MANAGE_KBN_MATRON);
 		// 部屋番号 ：鍵管理者
-		roomNo = ("".equals(comDto.getMatronRoomNo())) ? null: comDto.getMatronRoomNo();
+		roomNo = (comDto.getMatronRoomNo());
 		matronMap.setManegeShatakuNo(roomNo);
 		// 氏名：鍵管理者
-		name = ("".equals(comDto.getMatronName())) ? null: comDto.getMatronName();
+		name = (comDto.getMatronName());
 		matronMap.setManegeName(name);
 		// 電子メールアドレス：鍵管理者
-		mailAddress = ("".equals(comDto.getMatronMailAddress())) ? null: comDto.getMatronMailAddress();
+		mailAddress = (comDto.getMatronMailAddress());
 		matronMap.setManegeMailAddress(mailAddress);
 		// 電話番号：鍵管理者
-		telNumber = ("".equals(comDto.getMatronTelNumber())) ? null: comDto.getMatronTelNumber();
+		telNumber = (comDto.getMatronTelNumber());
 		matronMap.setManegeTelNo(telNumber);
 		// 内線番号：鍵管理者
-		extensionNo = ("".equals(comDto.getMatronExtentionNo())) ? null: comDto.getMatronExtentionNo();
+		extensionNo = (comDto.getMatronExtentionNo());
 		matronMap.setManegeExtensionNo(extensionNo);
 		// 備考：鍵管理者
-		biko = ("".equals(comDto.getMatronBiko())) ? null: comDto.getMatronBiko();
+		biko = (comDto.getMatronBiko());
 		matronMap.setBiko(biko);
 		// 更新日時
 		matronMap.setLastUpdateDate(comDto.getMatronUpdateDate());

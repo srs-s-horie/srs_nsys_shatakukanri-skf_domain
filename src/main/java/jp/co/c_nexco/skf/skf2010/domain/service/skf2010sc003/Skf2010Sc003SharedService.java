@@ -5,23 +5,38 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteApplHistoryExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteDocTableExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteRouterLendingYoteiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoForUpdateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoForUpdateExpParameter;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetRouterLendingYoteiDataExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003GetRouterLendingYoteiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateApplHistoryAgreeStatusExp;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateRouterLendingYoteiDataExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinShinseiInfoExp;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100MMobileRouterWithBLOBs;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TRouterLendingYoteiData;
+import jp.co.c_nexco.businesscommon.entity.skf.table.Skf2100TRouterLendingYoteiDataKey;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteApplHistoryExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteDocTableExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003DeleteRouterLendingYoteiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003GetApplHistoryStatusInfoForUpdateExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003GetRouterLendingYoteiDataExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateApplHistoryAgreeStatusExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2010Sc003.Skf2010Sc003UpdateRouterLendingYoteiDataExpRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100MMobileRouterRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TMobileRouterLedgerRepository;
+import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2100TRouterLendingYoteiDataRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
 import jp.co.c_nexco.nfw.common.utils.CheckUtils;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
@@ -32,6 +47,7 @@ import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
 import jp.co.c_nexco.skf.common.util.SkfApplHistoryInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfBihinInfoUtils;
+import jp.co.c_nexco.skf.common.util.SkfCheckUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfGenericCodeUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
@@ -59,6 +75,16 @@ public class Skf2010Sc003SharedService {
 	private Skf2010Sc003DeleteDocTableExpRepository skf2010Sc003DeleteDocTableExpRepository;
 	@Autowired
 	private Skf2010Sc003DeleteApplHistoryExpRepository skf2010Sc003DeleteApplHistoryExpRepository;
+	@Autowired
+	private Skf2010Sc003UpdateRouterLendingYoteiDataExpRepository skf2010Sc003UpdateRouterLendingYoteiDataExpRepository;
+	@Autowired
+	private Skf2010Sc003GetRouterLendingYoteiDataExpRepository skf2010Sc003GetRouterLendingYoteiDataExpRepository;
+	@Autowired
+	private Skf2100MMobileRouterRepository skf2100MMobileRouterRepository;
+	@Autowired
+	private Skf2100TMobileRouterLedgerRepository skf2100TMobileRouterLedgerRepository;
+	@Autowired
+	private Skf2010Sc003DeleteRouterLendingYoteiDataExpRepository skf2010Sc003DeleteRouterLendingYoteiDataExpRepository;
 	@Autowired
 	private SkfApplHistoryInfoUtils skfApplHistoryInfoUtils;
 	@Autowired
@@ -328,6 +354,13 @@ public class Skf2010Sc003SharedService {
 					delCount++;
 				}
 			}
+			
+			// 対象の申請書類IDがR0107（モバイルルーター借用希望申請書）、R0108（モバイルルーター返却申請書）の場合
+			if (CheckUtils.isEqual(applId, FunctionIdConstant.R0107) ||
+					CheckUtils.isEqual(applId, FunctionIdConstant.R0108)) {
+				//貸出予定データから書類管理IDが紐づくデータの削除
+				deleteRouterLendingYotei(applId, applNo);
+			}
 
 			if (delCount <= 0) {
 				return false;
@@ -407,6 +440,10 @@ public class Skf2010Sc003SharedService {
 			resultBatch = skf2050Fc001BihinHenkyakuSinseiDataImport.doProc(companyCd, shainNo, applNo, applStatus,
 					userId, pageId);
 			break;
+		case FunctionIdConstant.R0107:
+		case FunctionIdConstant.R0108:
+			// 正常
+			resultBatch = null;
 		default:
 			break;
 		}
@@ -448,4 +485,110 @@ public class Skf2010Sc003SharedService {
 
 		return null;
 	}
+	
+	
+	// モバイルルーター機能追加対応 2021/9 add start
+	/**
+	 * モバイルルーター貸出予定データテーブルを更新する
+	 * 
+	 * @param shainNo 社員番号
+	 * @param appId 申請書類ID
+	 * @param applNo 申請書類管理番号
+	 * @return 更新成否
+	 */
+	
+	public int updateRouterLendingYotei(String shainNo,String applId, String applNo,String userId){
+		String taiyoHenkyakuKbn = CodeConstant.DOUBLE_QUOTATION;
+		// 貸与返却区分設定
+		if(FunctionIdConstant.R0107.equals(applId)){
+			// 貸与:1
+			taiyoHenkyakuKbn = CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO;
+		}else{
+			// 返却:2
+			taiyoHenkyakuKbn = CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU;
+		}
+		
+		//更新値設定
+		Skf2010Sc003UpdateRouterLendingYoteiDataExpParameter updateData = new  Skf2010Sc003UpdateRouterLendingYoteiDataExpParameter();
+		updateData.setShainNo(shainNo);
+		updateData.setApplNo(applNo);
+		updateData.setTaiyoHenkyakuKbn(taiyoHenkyakuKbn);
+		updateData.setRouterApplStatus(CodeConstant.STATUS_ICHIJIHOZON);// ステータス:一時保存
+		updateData.setMobileRouterKanriId(null);
+		updateData.setMobileRouterNo(null);
+		updateData.setRouterLendJokyo(null);
+		
+		
+		int updCount = skf2010Sc003UpdateRouterLendingYoteiDataExpRepository.updateRouterLendingYoteiData(updateData);
+		
+		return updCount;
+	}
+	
+	/**
+	 * モバイルルーター貸出予定データを取得する
+	 * ・借用希望申請の場合、書類管理番号が紐づくモバイルルーター貸出予定データ取得
+	 *　・・モバイルルーター通しNoが付与されている場合は、モバイルルーターマスタを更新
+	 * ・書類管理番号が紐づくモバイルルーター貸出予定データ削除
+	 * 
+	 * @param shainNo 社員番号
+	 * @param appId 申請書類ID
+	 * @param applNo 申請書類管理番号
+	 * @return 削除件数
+	 */
+	private int deleteRouterLendingYotei(String applId, String applNo){
+		int result = 0;
+		String taiyoHenkyakuKbn = CodeConstant.DOUBLE_QUOTATION;
+		// 貸与返却区分設定
+		if(FunctionIdConstant.R0107.equals(applId)){
+			// 貸与:1
+			taiyoHenkyakuKbn = CodeConstant.TAIYO_HENKYAKU_KBN_TAIYO;
+
+			//モバイルルーター貸出予定データ取得
+			Skf2010Sc003GetRouterLendingYoteiDataExpParameter param = new Skf2010Sc003GetRouterLendingYoteiDataExpParameter();
+			param.setApplNo(applNo);
+			param.setTaiyoHenkyakuKbn(taiyoHenkyakuKbn);
+			
+			List<Skf2010Sc003GetRouterLendingYoteiDataExp> dataList = skf2010Sc003GetRouterLendingYoteiDataExpRepository.getRouterLendingYoteiData(param);
+			
+			for(Skf2010Sc003GetRouterLendingYoteiDataExp data : dataList){
+				//モバイルルーター通しNoを取得
+				Long routerNo = data.getMobileRouterNo();
+				String generalEquipmentCd = data.getGeneralEquipmentCd();
+				
+				if(routerNo>0){
+					if( Objects.nonNull(routerNo)){
+						//「モバイルルーター通しNo」が設定されている場合、モバイルルーターマスタ情報の貸出可否判定を「貸与可」に更新する
+						Skf2100MMobileRouterWithBLOBs updParam = new Skf2100MMobileRouterWithBLOBs();
+						updParam.setGeneralEquipmentCd(generalEquipmentCd);
+						updParam.setMobileRouterNo(routerNo);
+						updParam.setRouterLendingJudgment(CodeConstant.ROUTER_LENDING_JUDGMENT_TAIYO);//貸与可
+						skf2100MMobileRouterRepository.updateByPrimaryKeySelective(updParam);
+					}
+				}
+				
+				//モバイルルーター管理簿IDを取得
+				Long kanriId = data.getMobileRouterKanriId();
+				if(kanriId > 0){
+					if(Objects.nonNull(kanriId)){
+						//モバイルルーター管理簿IDが設定されている場合、管理簿データ削除
+						skf2100TMobileRouterLedgerRepository.deleteByPrimaryKey(kanriId);
+					}
+				}
+			}
+		}
+		else{
+			// 返却:2
+			taiyoHenkyakuKbn = CodeConstant.TAIYO_HENKYAKU_KBN_HENKYAKU;
+		}
+		
+		//モバイルルーター貸出予定データ削除
+		Skf2010Sc003DeleteRouterLendingYoteiDataExpParameter delParam = new Skf2010Sc003DeleteRouterLendingYoteiDataExpParameter();
+		delParam.setApplNo(applNo);
+		delParam.setTaiyoHenkyakuKbn(taiyoHenkyakuKbn);
+		result = skf2010Sc003DeleteRouterLendingYoteiDataExpRepository.deleteRouterLendingYoteiData(delParam);
+		
+		
+		return result;
+	}
+	// モバイルルーター機能追加対応 2021/9 add end
 }

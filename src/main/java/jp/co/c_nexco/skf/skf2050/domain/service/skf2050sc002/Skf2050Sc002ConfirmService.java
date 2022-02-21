@@ -77,17 +77,6 @@ public class Skf2050Sc002ConfirmService extends SkfServiceAbstract<Skf2050Sc002C
 			return confDto;
 		}
 
-		// メールを送信する
-		Map<String, String> applInfo = new HashMap<String, String>();
-		applInfo.put(CodeConstant.KEY_APPL_ID, confDto.getApplId());
-		applInfo.put(CodeConstant.KEY_APPL_NO, confDto.getApplNo());
-		applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_HANSYUTSU_MACHI);
-		applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, confDto.getShainNo());
-
-		String baseUrl = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
-		skfMailUtils.sendApplTsuchiMail(CodeConstant.HANSYUTSU_MACHI_TSUCHI, applInfo, confDto.getCommentNote(), null,
-				confDto.getShainNo(), null, baseUrl);
-
 		// 社宅管理データ連携処理実行
 		String shainNo = confDto.getShainNo();
 		String applNo = confDto.getApplNo();
@@ -101,6 +90,17 @@ public class Skf2050Sc002ConfirmService extends SkfServiceAbstract<Skf2050Sc002C
 			throwBusinessExceptionIfErrors(confDto.getResultMessages());
 			return confDto;
 		}
+
+		// メールを送信する
+		Map<String, String> applInfo = new HashMap<String, String>();
+		applInfo.put(CodeConstant.KEY_APPL_ID, confDto.getApplId());
+		applInfo.put(CodeConstant.KEY_APPL_NO, confDto.getApplNo());
+		applInfo.put(CodeConstant.KEY_APPL_STATUS, CodeConstant.STATUS_HANSYUTSU_MACHI);
+		applInfo.put(CodeConstant.KEY_APPL_SHAIN_NO, confDto.getShainNo());
+
+		String baseUrl = "/skf/Skf2010Sc003/init?SKF2010_SC003&menuflg=1&tokenCheck=0";
+		skfMailUtils.sendApplTsuchiMail(CodeConstant.HANSYUTSU_MACHI_TSUCHI, applInfo, confDto.getCommentNote(), null,
+				confDto.getShainNo(), null, baseUrl);
 
 		// フォームデータを設定
 		confDto.setPrePageId(FunctionIdConstant.SKF1010_SC001); // TOPページを指定

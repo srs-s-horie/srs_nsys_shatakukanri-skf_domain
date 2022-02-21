@@ -29,5 +29,8 @@ public class Skf2010Sc007CommonDto extends Skf201050CommonDto {
 	private String shainNo;
 	// 申請書ID
 	private String applId;
+	
+	// 申請要件を確認ボタン
+	private String btnCheckDisabled;
 
 }

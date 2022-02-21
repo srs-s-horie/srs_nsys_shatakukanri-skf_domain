@@ -771,6 +771,21 @@ public class Skf2030Sc002SharedService {
 			return false;
 		}
 
+		// ステータス値を更新
+		applInfo.put("status", updateStatus);
+		dto.setApplStatus(updateStatus);
+
+		// 社宅データ連携
+		String shainNo = dto.getShainNo();
+		String applNo = dto.getApplNo();
+		String pageId = FunctionIdConstant.SKF2030_SC002;
+		List<String> resultBatch = doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, updateStatus, pageId);
+		if (resultBatch != null) {
+			skf2030Fc001BihinKiboShinseiDataImport.addResultMessageForDataLinkage(dto, resultBatch);
+			skfRollBackExpRepository.rollBack();
+			return false;
+		}
+
 		// 承認完了通知・修正依頼完了通知の場合のみ
 		if (mailKbn != null) {
 			switch (mailKbn) {
@@ -786,20 +801,6 @@ public class Skf2030Sc002SharedService {
 				break;
 
 			}
-		}
-		// ステータス値を更新
-		applInfo.put("status", updateStatus);
-		dto.setApplStatus(updateStatus);
-
-		// 社宅データ連携
-		String shainNo = dto.getShainNo();
-		String applNo = dto.getApplNo();
-		String pageId = FunctionIdConstant.SKF2030_SC002;
-		List<String> resultBatch = doShatakuRenkei(menuScopeSessionBean, shainNo, applNo, updateStatus, pageId);
-		if (resultBatch != null) {
-			skf2030Fc001BihinKiboShinseiDataImport.addResultMessageForDataLinkage(dto, resultBatch);
-			skfRollBackExpRepository.rollBack();
-			return false;
 		}
 
 		return true;
