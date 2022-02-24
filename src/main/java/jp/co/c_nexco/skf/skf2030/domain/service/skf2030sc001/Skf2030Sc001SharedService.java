@@ -21,8 +21,6 @@ import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetN
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetNyukyobiInfoExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetSKSDairininInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetSKSDairininInfoExpParameter;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExp;
-import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExpParameter;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfApplHistoryInfoUtils.SkfApplHistoryInfoUtilsGetApplHistoryInfoExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBatchUtils.SkfBatchUtilsGetMultipleTablesUpdateDateExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.SkfBihinInfoUtils.SkfBihinInfoUtilsGetBihinInfoExp;
@@ -40,7 +38,6 @@ import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetNYDStatusCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetNyukyobiInfoExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetSKSDairininInfoExpRepository;
-import jp.co.c_nexco.businesscommon.repository.skf.exp.Skf2030Sc001.Skf2030Sc001GetTeijiStatusCountExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010MApplicationRepository;
 import jp.co.c_nexco.businesscommon.repository.skf.table.Skf2010TApplHistoryRepository;
@@ -97,8 +94,6 @@ public class Skf2030Sc001SharedService {
 	private Skf2030Sc001GetApplHistoryInfoInDescendingOrderExpRepository skf2030Sc001GetApplHistoryInfoInDescendingOrderExpRepository;
 	@Autowired
 	private Skf2030Sc001GetNYDStatusCountExpRepository skf2030Sc001GetNYDStatusCountExpRepository;
-	@Autowired
-	private Skf2030Sc001GetTeijiStatusCountExpRepository skf2030Sc001GetTeijiStatusCountExpRepository;
 	@Autowired
 	private Skf2030Sc001GetBihinTeijiStatusCountExpRepository skf2030Sc001GetBihinTeijiStatusCountExpRepository;
 
@@ -587,9 +582,9 @@ public class Skf2030Sc001SharedService {
 
 		boolean btnDisabled = false;
 
-		// 初期値：０の時は「希望する」にチェックが入るようにする
+		// 初期値：０の時は「希望しない」にチェックが入るようにする
 		if (CheckUtils.isEqual(bihinAppl, CodeConstant.BIHIN_APPL_DEFAULT)) {
-			bihinAppl = CodeConstant.BIHIN_APPL_WISH;
+			bihinAppl = CodeConstant.BIHIN_APPL_NOT_WISH;
 		}
 		// 入力可否制御
 		if (CheckUtils.isEqual(bihinWish, CodeConstant.BIHIN_KIBO_FUKA)) {
@@ -911,53 +906,22 @@ public class Skf2030Sc001SharedService {
 			applNo = CodeConstant.HYPHEN;
 		}
 
-		switch (applId) {
-		case FunctionIdConstant.R0100:
-		case FunctionIdConstant.R0104:
-			nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_NYUKYO;
+		nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_NYUKYO;
+		// 以下の条件に当てはまる入退居予定データが存在する場合、新規申請不可
+		// ①社員番号
+		// ②入退居区分
+		// ③入退居申請状況区分が'40'（承認）以外
+		// かつ申請書類管理番号が異なる場合
+		listCount += getSKSNYDStatusInfo(shainNo, nyutaikyoKbn, applNo);
 
-			// 以下の条件に当てはまる入退居予定データが存在する場合、新規申請不可
-			// ①社員番号
-			// ②入退居区分
-			// ③入退居申請状況区分が'40'（承認）以外
-			// かつ申請書類管理番号が異なる場合
-			listCount += getSKSNYDStatusInfo(shainNo, nyutaikyoKbn, applNo);
-			break;
-		case FunctionIdConstant.R0103:
-		case FunctionIdConstant.R0105:
-			nyutaikyoKbn = CodeConstant.NYUTAIKYO_KBN_TAIKYO;
-			break;
-		}
-
-		switch (applId) {
-		case FunctionIdConstant.R0100:
-		case FunctionIdConstant.R0103:
-		case FunctionIdConstant.R0105:
-			// R0100: 社宅入居希望等調書
-			// R0103: 退居（自動車の保管場所返還）届
-			// R0105: 備品返却申請
-
-			// 以下の条件に当てはまる提示データが存在する場合、新規申請不可
-			// ①社員番号
-			// ②入退居区分
-			// ③備品貸与区分<>'1'（必要）以外の場合、社宅提示ステータス<>'5'（承認）
-			// 備品貸与区分＝'1'（必要）の場合、備品提示ステータス<>'9'（承認）
-
-			listCount += getSKSTeijiStatusInfo(shainNo, nyutaikyoKbn);
-			break;
-		case FunctionIdConstant.R0104:
-
-			// R0104: 備品希望申請
-			//
-			// 以下の条件に当てはまる提示データが存在する場合、新規申請不可
-			// ①社員番号
-			// ②入退居区分
-			// ③備品貸与区分<>'1'（必要）以外の場合、社宅提示ステータス<>'5'（承認）
-			// 備品貸与区分＝'1'（必要）の場合、備品提示ステータス<>'0'（未作成）かつ <>'9'（承認）
-
-			listCount += getSKSBihinTeijiStatusInfo(shainNo, nyutaikyoKbn);
-			break;
-		}
+		// R0104: 備品希望申請
+		//
+		// 以下の条件に当てはまる提示データが存在する場合、新規申請不可
+		// ①社員番号
+		// ②入退居区分
+		// ③備品貸与区分<>'1'（必要）以外の場合、社宅提示ステータス<>'5'（承認）
+		// 備品貸与区分＝'1'（必要）の場合、備品提示ステータス<>'0'（未作成）かつ <>'9'（承認）
+		listCount += getSKSBihinTeijiStatusInfo(shainNo, nyutaikyoKbn);
 
 		if (listCount > 0) {
 			return true;
@@ -1005,18 +969,6 @@ public class Skf2030Sc001SharedService {
 			return data.getNydCount();
 		}
 
-		return 0;
-	}
-
-	private long getSKSTeijiStatusInfo(String shainNo, String nyutaikyoKbn) {
-		Skf2030Sc001GetTeijiStatusCountExp data = new Skf2030Sc001GetTeijiStatusCountExp();
-		Skf2030Sc001GetTeijiStatusCountExpParameter param = new Skf2030Sc001GetTeijiStatusCountExpParameter();
-		param.setShainNo(shainNo);
-		param.setNyutaikyoKbn(nyutaikyoKbn);
-		data = skf2030Sc001GetTeijiStatusCountExpRepository.GetTeijiStatusCount(param);
-		if (data != null) {
-			return data.getNydCount();
-		}
 		return 0;
 	}
 
