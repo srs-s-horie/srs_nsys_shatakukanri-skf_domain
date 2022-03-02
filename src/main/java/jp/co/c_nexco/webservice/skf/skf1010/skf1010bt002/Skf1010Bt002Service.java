@@ -534,25 +534,17 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 	 * @throws Exception
 	 */
 	private boolean updateShatakuShain() throws Exception {
-		// １．ワーク社宅社員マスタ(skf1010_w_shain)のデータを全件削除する。
-		if (0 > deleteShatakuShainMasterInfoWk()) {
-			return false;
-		}
-		// ２．ワーク社宅社員マスタ(skf1010_w_shain)に社宅社員マスタ(skf1010_m_shain)をコピーする。
-		if (0 > insertShatakuShainMasterInfoWk()) {
-			return false;
-		}
 
-		// ３．IdM_プレユーザマスタより、社宅社員マスタデータを準備する。
+		// 1．IdM_プレユーザマスタより、社宅社員マスタデータを準備する。
 		List<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp> baseShainInfoList = new ArrayList<SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp>();
 		// 人事連携用従業員データの取得
 		baseShainInfoList = getSkfIamPreUserMasterInfo();
-
-		// ４．社宅社員マスタ(SKF1010_M_SHAIN)から、３で取得した社員を物理削除する。
+		
+		// 2．社宅社員マスタ(SKF1010_M_SHAIN)から、1で取得した社員を物理削除する。
 		if (baseShainInfoList != null && baseShainInfoList.size() > 0) {
 			Skf1010MShainRepository shainRepository = (Skf1010MShainRepository) SpringContext
 					.getBean("skf1010MShainRepository");
-			// ５．（３）で取得した社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)に登録する。
+			// 3．1で取得した社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)に登録する。
 			for (SkfPerssonalBatchUtilsGetSkfIamPreUserMasterInfo2Exp idmShain : baseShainInfoList) {
 				// 社員番号で社員情報を削除する
 				if (0 > deleteShatakuShainMasterInfo(idmShain.getShainNo(), false)) {
@@ -566,7 +558,7 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				}
 			}
 		}
-		// ５．２でバックアップした社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)を更新する。
+		// 3．バックアップした社員一覧の情報で、社宅社員マスタ(skf1010_m_shain)を更新する。
 		List<SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExp> wShainList = new ArrayList<SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExp>();
 		SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExpRepository wkShainRepository = (SkfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExpRepository) SpringContext
 				.getBean("skfPerssonalBatchUtilsGetWorkShatakuShainMasterInfoExpRepository");
@@ -580,6 +572,10 @@ public class Skf1010Bt002Service extends BaseWebServiceAbstract {
 				}
 			}
 		}
+		
+		// 社員マスタ登録件数
+		setLog(INFO, MessageIdConstant.I_SKF_3094, baseShainInfoList.size());
+		
 		return true;
 	}
 
