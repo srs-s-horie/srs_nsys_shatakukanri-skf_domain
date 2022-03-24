@@ -134,15 +134,15 @@ public class Skf2010Sc005TransferService extends SkfServiceAbstract<Skf2010Sc005
 		}
 
 		// 承認一覧を条件から取得
-		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
-		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
-		param = skf2010Sc005SharedService.setParam(transDto);
-		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
-		// 最新の検索結果をセッションに保存
-		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
-		// グリッド表示（リストテーブル）作成
-		List<Map<String, Object>> dispList = skf2010Sc005SharedService.createListTable(tApplHistoryData, transDto);
-		transDto.setLtResultList(dispList);
+//		List<Skf2010Sc005GetShoninIchiranShoninExp> tApplHistoryData = new ArrayList<Skf2010Sc005GetShoninIchiranShoninExp>();
+//		Skf2010Sc005GetShoninIchiranShoninExpParameter param = new Skf2010Sc005GetShoninIchiranShoninExpParameter();
+//		param = skf2010Sc005SharedService.setParam(transDto);
+//		tApplHistoryData = skf2010Sc005SharedService.searchApplList(param);
+//		// 最新の検索結果をセッションに保存
+//		menuScopeSessionBean.put(SessionCacheKeyConstant.SKF2010SC005_SEARCH_RESULT_SESSION_KEY, tApplHistoryData);
+//		// グリッド表示（リストテーブル）作成
+//		List<Map<String, Object>> dispList = skf2010Sc005SharedService.createListTable(tApplHistoryData, transDto);
+//		transDto.setLtResultList(dispList);
 
 		if (!CheckUtils.isEqual(applStatus, defaultApplStatus)
 				&& !CheckUtils.isEqual(applStatus, CodeConstant.STATUS_SHINSACHU)) {
