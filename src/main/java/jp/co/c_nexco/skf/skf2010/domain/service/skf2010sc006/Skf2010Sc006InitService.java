@@ -161,8 +161,6 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 				param.setRoomKanriNo(initDto.getCheckRoomKanriNo());
 				// 申請書類ID（退居申請固定）
 				param.setApplId(FunctionIdConstant.R0103);
-				// 申請書ステータス（承認固定）
-				param.setApplStatus(CodeConstant.NYUTAIKYO_APPL_STATUS_SHONIN_ZUMI);
 				// 社宅を退居するフラグ(社宅を退居。駐車場のみは含まない）
 				param.setTaikyoShataku(CodeConstant.LEAVE);
 

@@ -25,7 +25,7 @@ import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc001.Skf2030Sc001ApplyDto;
 
 /**
- * Skf2030Sc001 備品希望申請（申請者用)搬入完了処理クラス
+ * Skf2030Sc001 備品希望申請（申請者用)申請処理クラス
  *
  * @author NEXCOシステムズ
  */

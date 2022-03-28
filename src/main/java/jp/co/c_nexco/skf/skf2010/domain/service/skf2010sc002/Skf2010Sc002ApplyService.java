@@ -75,7 +75,7 @@ public class Skf2010Sc002ApplyService extends SkfServiceAbstract<Skf2010Sc002App
 		if (!skfShinseiUtils.checkSKSTeijiStatus(applyDto.getShainNo(), applyDto.getApplId(), applyDto.getApplNo())) {
 			// 申請不可の場合
 			ServiceHelper.addErrorResultMessage(applyDto, null, MessageIdConstant.I_SKF_1005, "承認されていない申請書類が存在し",
-					"「社宅申請状況一覧」から確認", "");
+					"「申請状況一覧」から確認", "");
 			throwBusinessExceptionIfErrors(applyDto.getResultMessages());
 			return applyDto;
 		}
