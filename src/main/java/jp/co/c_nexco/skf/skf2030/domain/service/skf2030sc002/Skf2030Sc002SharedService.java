@@ -47,6 +47,7 @@ import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2030Fc001BihinKiboShinseiDataImport;
 import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030Sc002common.Skf2030Sc002CommonDto;
+import jp.co.c_nexco.skf.skf2030.domain.dto.skf2030sc002.Skf2030Sc002InitDto;
 
 /**
  * Skf2030Sc002 備品希望申請（アウトソース用)共通処理クラス
@@ -994,5 +995,65 @@ public class Skf2030Sc002SharedService {
 		menuScopeSessionBean.remove(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC002);
 		return resultBatch;
 	}
+
+	/**
+	 * 表示項目のクリア
+	 * @param dto
+	 */
+	public void setClearInfo(Skf2030Sc002CommonDto dto) {
+		// TODO 自動生成されたメソッド・スタブ
+		// 所属
+		// 機関	
+			dto.setAgency(null);
+		// 部等
+			dto.setAffiliation1(null);
+		// 室、チームまたは課	
+			dto.setAffiliation2(null);
+		// 勤務先のTEL ※入力項目	
+			dto.setTel(null);
+		// 【 申請者 】
+		// 社員番号	
+			dto.setShainNo(null);
+		// 氏名	
+			dto.setName(null);
+		// 等級	
+			dto.setTokyu(null);
+		// 性別	
+			dto.setGender(null);
+		// 【 入居社宅 】
+		// 社宅名	
+			dto.setShatakuName(null);
+		// 室番号	
+			dto.setShatakuNo(null);
+		// 規格(間取り)	
+			dto.setShatakuKikaku(null);
+		// 面積	
+			dto.setShatakuMenseki(null);
+			
+		// 【 代理人 】
+		// 代理受取人	
+			dto.setDairiName(null);
+		// 代理連絡先	
+			dto.setDairiRenrakusaki(null);
+
+		// 【 備品搬入 】
+		// 備品搬入希望日 ※入力項目			
+			dto.setSessionDay(null);
+		// 備品搬入希望時間 ※入力項目	
+			dto.setSessionTimeText(null);
+		// 【 連絡先 】 ※入力項目
+			dto.setRenrakuSaki(null);
+		// 【 備品搬入完了 】
+		// 備品搬入完了日 ※入力項目
+			dto.setCompletionDay(null);
+		//  申請するセットフラグ
+			dto.setBihinCheckFlag(null);
+		// 備品申請情報一覧
+			dto.setBihinList(null);
+		//コメント
+			dto.setCommentNote(null);	
+	}
+	
+	
 
 }

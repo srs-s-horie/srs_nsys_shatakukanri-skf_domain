@@ -134,6 +134,9 @@ public class Skf2040Sc002SharedService {
 	protected static final String KEY_LAST_UPDATE_DATE_HISTORY_BIHIN = "skf2010_t_appl_history";
 	// 備品申請テーブルの最終更新日付のキャッシュキー
 	protected static final String KEY_LAST_UPDATE_DATE_BIHIN = "skf2030_t_bihin";
+	
+	//添付ファイルセッション競合チェック用
+	private String sessionConflictKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY;
 
 	/**
 	 * セッション情報を取得
@@ -155,6 +158,7 @@ public class Skf2040Sc002SharedService {
 		}
 		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
 				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		menuScopeSessionBean.remove(sessionConflictKey);
 	}
 
 	/**
@@ -163,10 +167,11 @@ public class Skf2040Sc002SharedService {
 	 * @param dto
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<Map<String, Object>> setAttachedFileList() {
+	protected List<Map<String, Object>> setAttachedFileList(String applNo) {
 		// セッションの添付資料情報を取得
 		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean
 				.get(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		menuScopeSessionBean.put(sessionConflictKey, applNo); //添付ファイル競合チェック用
 		return attachedFileList;
 	}
 
@@ -1200,6 +1205,54 @@ public class Skf2040Sc002SharedService {
 					CodeConstant.DOUBLE_QUOTATION, urlBase);
 		}
 
+	}
+
+	/**
+	 * 表示項目のクリア
+	 * @param dto
+	 */
+	public void setClearInfo(Skf2040Sc002CommonDto dto) {
+		// TODO 自動生成されたメソッド・スタブ			
+		// 機関
+		dto.setNowAgency(null);
+		// 部等
+		dto.setNowAffiliation1(null);
+		// 室・課等
+		dto.setNowAffiliation2(null);
+		// 現住所
+		dto.setAddress(null);
+		// 氏名
+		dto.setName(null);
+		// 社宅退居区分
+		// 社宅
+		dto.setTaikyoArea(null);
+		// 駐車場1
+		dto.setParkingAddress1(null);
+		// 駐車場2
+		dto.setParkingAddress2(null);
+		// 退居日変更フラグ
+		dto.setTaikyoDateFlg(null);		
+		// 退居日
+		dto.setTaikyoDate(null);	
+		// 駐車場返還日変更フラグ
+		dto.setParkingEDateFlg(null);
+		// 駐車場返還日
+		dto.setParkingHenkanDate(null);
+		// 退居（返還）理由
+		dto.setTaikyoRiyu(null);
+		// 退居後の連絡先
+		dto.setTaikyogoRenrakusaki(null);	
+		//返却備品リスト
+		dto.setHenkyakuList(null);
+		//社宅の状態
+		dto.setShatakuJotai(null);
+		//コメント
+		dto.setCommentNote(null);
+		// 返却立会希望日時の表示
+		dto.setSessionDay(null);
+		//連絡先
+		dto.setRenrakuSaki(null);
+		
 	}
 
 }

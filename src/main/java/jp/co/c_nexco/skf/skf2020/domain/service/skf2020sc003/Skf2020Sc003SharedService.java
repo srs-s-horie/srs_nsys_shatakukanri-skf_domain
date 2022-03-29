@@ -78,6 +78,7 @@ import jp.co.c_nexco.skf.common.util.SkfTeijiDataInfoUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.Skf2020Fc001NyukyoKiboSinseiDataImport;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020Sc003common.Skf2020Sc003CommonDto;
+import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003InitDto;
 
 /**
  * Skf2020Sc003 社宅入居希望等調書（アウトソース用）内部処理クラス
@@ -181,6 +182,7 @@ public class Skf2020Sc003SharedService {
 		}
 		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
 				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY);
 	}
 
 	/**
@@ -1096,6 +1098,7 @@ public class Skf2020Sc003SharedService {
 					shatakuAttachedFileList);
 		}
 		menuScopeSessionBean.put(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY, shatakuAttachedFileList);
+		menuScopeSessionBean.put(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY, applNo);
 
 		dto.setAttachedFileList(shatakuAttachedFileList);
 		return true;
@@ -1976,6 +1979,212 @@ public class Skf2020Sc003SharedService {
 				applStatus, userId, pageId);
 
 		return resultBatch;
+	}
+
+
+	/**
+	 * 表示項目のクリア
+	 * @param initDto
+	 */
+	public void setClearInfo(Skf2020Sc003CommonDto dto) {
+		//入居希望申請
+				// 所属 機関
+					dto.setAgencyName(null);
+				// 所属 部等
+					dto.setAffiliation1Name(null);
+				// 所属 室・課等
+				    dto.setAffiliation2Name(null);
+				// 所属 勤務先のTEL
+					dto.setTel(null);
+				// 申請者 社員番号
+					dto.setShainNo(null);
+				// 申請者 氏名
+					dto.setName(null);
+				// 申請者 等級	
+					dto.setTokyu(null);
+				// 社宅を必要としますか？
+					dto.setTaiyoHituyo(null);
+				// 社宅を必要とする理由
+					dto.setHitsuyoRiyu(null);
+				// 社宅を必要としない理由
+					dto.setFuhitsuyoRiyu(null);
+				// 新所属 機関
+					dto.setNewAgency(null);
+				// 新所属 部等
+					dto.setNewAffiliation1(null);
+				// 新所属 室・課等
+					dto.setNewAffiliation2(null);
+				// 必要とする社宅
+					dto.setHitsuyoShataku(null);
+				// 同居家族 家族1
+					dto.setDokyoName1(null);
+					dto.setDokyoRelation1(null);
+					dto.setDokyoAge1(null);
+				// 同居家族 家族2
+					dto.setDokyoName2(null);
+					dto.setDokyoRelation2(null);
+					dto.setDokyoAge2(null);
+				// 同居家族 家族3
+					dto.setDokyoName3(null);
+					dto.setDokyoRelation3(null);
+					dto.setDokyoAge3(null);
+				// 同居家族 家族4
+					dto.setDokyoName4(null);
+					dto.setDokyoRelation4(null);
+					dto.setDokyoAge4(null);
+				// 同居家族 家族5
+					dto.setDokyoName5(null);
+					dto.setDokyoRelation5(null);
+					dto.setDokyoAge5(null);
+				// 同居家族 家族6
+					dto.setDokyoName6(null);
+					dto.setDokyoRelation6(null);
+					dto.setDokyoAge6(null);
+				// 入居希望日
+					dto.setNyukyoYoteiDate(null);
+				// １台目
+				// 自動者の保管場所
+					dto.setParkingUmu(null);
+				// 自動車の登録番号の入力フラグ
+					dto.setCarNoInputFlg(null);
+				// 自動車の車名
+					dto.setCarName(null);
+				// 自動車の登録番号
+					dto.setCarNo(null);
+				// 車検の有効期間満了日
+					dto.setCarExpirationDate(null);
+				// 自動車の使用者
+					dto.setCarUser(null);
+				// 自動車の保管場所 使用開始日(予定日)
+					dto.setParkingUseDate(null);
+				// ２台目
+				// 自動車の登録番号の入力フラグ
+					dto.setCarNoInputFlg2(null);
+				// 自動車の車名
+					dto.setCarName2(null);
+				// 自動車の登録番号
+					dto.setCarNo2(null);
+				// 車検の有効期間満了日
+					dto.setCarExpirationDate2(null);
+				// 自動車の使用者
+					dto.setCarUser2(null);
+				// 自動車の保管場所 使用開始日(予定日)
+					dto.setParkingUseDate2(null);
+				// 現居住宅
+					dto.setNowShataku(null);
+				// 現居住宅 保有社宅名
+					dto.setNowShatakuName(null);
+				// 現居住宅 室番号
+					dto.setNowShatakuNo(null);
+				// 現居住宅 規格(間取り)
+					dto.setNowShatakuKikaku(null);
+				// 現居住宅 面積
+					dto.setNowShatakuMenseki(null);
+				// 駐車場 １台目 保管場所
+					dto.setParking1stPlace(null);			
+				// 駐車場 ２台目 保管場所
+					dto.setParking2stPlace(null);			
+				// 特殊事情など
+					dto.setTokushuJijo(null);
+				// 現保有の社宅（退居予定）
+					dto.setTaikyoYotei(null);
+				// 現保有の社宅 社宅管理番号
+					dto.setNowShatakuKanriNo(null);
+				// 現保有の社宅 部屋管理番号
+					dto.setNowShatakuRoomKanriNo(null);
+				// 退居予定日
+					dto.setTaikyoYoteiDate(null);
+				// 社宅の状態
+					dto.setShatakuJotai(null);
+				// 退居理由
+					dto.setTaikyoRiyu(null);
+				// 退居後の連絡先
+					dto.setTaikyogoRenrakuSaki(null);
+				// 返却立会希望日
+					dto.setSessionDay(null);
+				// 連絡先
+					dto.setRenrakuSaki(null);
+				// 申請者 性別
+					dto.setGender(null);
+				// 備品希望申請を希望する/しない ラジオボタン
+					dto.setBihinKibo(null);
+				//返却備品情報
+					dto.setReturnEquipment(null);
+				
+				//提示情報
+				// 社宅情報 社宅所在地
+							dto.setNewShozaichi(null);
+				// 社宅情報 社宅名
+							dto.setNewShatakuName(null);
+				// 社宅情報 室番号
+					dto.setNewShatakuNo(null);
+				// 規格間取り
+					dto.setNewShatakuKikaku(null);
+				// 社宅情報 面積
+					dto.setNewShatakuMenseki(null);
+				// 社宅情報 使用料(月)
+					dto.setNewRental(null);
+				// 個人負担金共益費協議中フラグ
+					dto.setKyoekihiKyogichuFlg(null);
+				// 社宅情報 共益費
+					dto.setNewKyoekihi(null);
+				// 社宅情報 入居可能日
+					dto.setNyukyoKanoDate(null);
+				// 社宅情報 寮長・自治会長 部屋名称
+					dto.setManegeShatakuNo1(null);
+				// 社宅情報 寮長・自治会長 氏名
+					dto.setManegeName1(null);
+				// 社宅情報 寮長・自治会長 電子メールアドレス
+					dto.setManegeMailAddress1(null);
+				// 社宅情報 寮長・自治会長 電話番号
+					dto.setManegeTelNo1(null);
+				// 社宅情報 寮長・自治会長 内線番号
+					dto.setManegeExtensionNo1(null);
+				// 社宅情報 鍵管理者 部屋名称
+					dto.setManegeShatakuNo2(null);
+				// 社宅情報 鍵管理者 氏名
+					dto.setManegeName2(null);
+				// 社宅情報 鍵管理者 電子メールアドレス
+					dto.setManegeMailAddress2(null);
+				// 社宅情報 鍵管理者 電話番号
+					dto.setManegeTelNo2(null);
+				// 社宅情報 鍵管理者 内線番号
+					dto.setManegeExtensionNo2(null);
+				// 社宅情報 寮母・管理会社 部屋名称
+					dto.setManegeShatakuNo3(null);
+				// 社宅情報 寮母・管理会社 氏名
+					dto.setManegeName3(null);
+				// 社宅情報 寮母・管理会社 電子メールアドレス
+					dto.setManegeMailAddress3(null);
+				// 社宅情報 寮母・管理会社 電話番号
+					dto.setManegeTelNo3(null);
+				// 社宅情報 寮母・管理会社 内線番号
+					dto.setManegeExtensionNo3(null);
+				// 駐車場情報 １台目 自動車の保管場所
+					dto.setParkingAddress1(null);
+				// 駐車場情報 １台目 位置番号等
+					dto.setCarIchiNo1(null);
+				// 駐車場情報 １台目 自動車の保管場所に係わる使用料(月)
+					dto.setParkingRental1(null);
+				// 駐車場情報 １台目 使用開始可能日
+					dto.setParking1StartDate(null);
+				// 駐車場情報 ２台目 自動車の保管場所
+					dto.setParkingAddress2(null);
+				// 駐車場情報 ２台目 位置番号等
+					dto.setCarIchiNo2(null);
+				// 駐車場情報 ２台目 自動車の保管場所に係わる使用料(月)
+					dto.setParkingRental2(null);
+				// 駐車場情報 ２台目 使用開始可能日
+					dto.setParking2StartDate(null);
+				// 社宅管理番号
+					dto.setNewShatakuKanriNo(null);
+				// 部屋管理番号
+					dto.setNewShatakuRoomKanriNo(null);
+				// 備品希望申請の必要社宅は申請情報のものを使用
+					dto.setBihinHitsuyoShataku(null);
+				//添付ファイルリスト
+					dto.setAttachedFileList(null);
+		
 	}
 
 }

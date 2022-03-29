@@ -47,13 +47,11 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
-	private SkfAttachedFileUtils skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
 	private Skf2040Fc001TaikyoTodokeDataImport skf2040Fc001TaikyoTodokeDataImport;
-	@Autowired
-	private Skf2010TApplCommentRepository skf2010TApplCommentRepository;
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
@@ -61,6 +59,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 
 	private String sFalse = "false";
 	Map<String, String> errorMsg = new HashMap<String, String>();
+	
 
 	@Override
 	protected BaseDto index(Skf2040Sc002ApprovalDto appDto) throws Exception {
@@ -75,8 +74,22 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 		param.setApplNo(appDto.getApplNo());
 		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
 		// 一般添付資料取得
-		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
+		List<Map<String, Object>> attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean,
 				appDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+			
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(appDto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY);
+			ServiceHelper.addErrorResultMessage(appDto, null, MessageIdConstant.I_SKF_1005,"セッション情報が異なっ","ブラウザを閉じて操作をやり直","");
+			throwBusinessExceptionIfErrors(appDto.getResultMessages());
+			return appDto;
+		}	
+			
 		String applTacFlg = CodeConstant.NONE;
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			// 添付ファイルあり
@@ -90,7 +103,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 		// コメント入力欄のチェック
 		if (!skf2040Sc002SharedService.checkValidation(appDto, sFalse)) {
 			// 添付資料だけはセッションから再取得の必要あり
-			List<Map<String, Object>> reAttachedFileList = skf2040Sc002SharedService.setAttachedFileList();
+			List<Map<String, Object>> reAttachedFileList = skf2040Sc002SharedService.setAttachedFileList(appDto.getApplNo());
 			appDto.setAttachedFileList(reAttachedFileList);
 			return appDto;
 		}

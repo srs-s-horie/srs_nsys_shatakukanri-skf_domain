@@ -25,6 +25,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfDateFormatUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationGuideUtils;
@@ -59,6 +60,7 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 	@Autowired
 	private SkfShatakuInfoUtils skfShatakuInfoUtils;
 
+
 	private String companyCd = CodeConstant.C001;
 
 	private final String KYOGICHU_TEXT = "協議中";
@@ -82,6 +84,11 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 
 		String applId = initDto.getApplId();
 		String applStatus = initDto.getApplStatus();
+		
+		// セッション情報引き渡し
+		skf2010Sc004SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
+		// セッション情報初期化
+		skf2010Sc004SharedService.clearMenuScopeSessionBean();
 
 		// 表示情報セット
 		setDisplayData(initDto);
@@ -906,6 +913,9 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 		initDto.setParkingRental(parkingRental);
 
 		// 自動車２台目
+		initDto.setParkingArea2(null);
+		initDto.setCarIchiNo2(null);
+		initDto.setParkingRental2(null);
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarNo2())
 				|| NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getCarUser2())) {
 			// 自動車の保管場所
@@ -972,24 +982,29 @@ public class Skf2010Sc004InitService extends SkfServiceAbstract<Skf2010Sc004Init
 		tTaikyoReport.getShatakuTaikyoKbn();
 
 		// 社宅
+		initDto.setTaikyoArea(null);
 		if ("1".equals(tTaikyoReport.getTaikyoShataku())) {
 			initDto.setTaikyoArea(tTaikyoReport.getTaikyoArea());
 		}
 		// 駐車場1
+		initDto.setParkingAddress1(null);
 		if ("1".equals(tTaikyoReport.getTaikyoParking1())) {
 			initDto.setParkingAddress1(tTaikyoReport.getParkingAddress1());
 		}
 		// 駐車場2
+		initDto.setParkingAddress1(null);
 		if ("1".equals(tTaikyoReport.getTaikyoParking2())) {
 			initDto.setParkingAddress2(tTaikyoReport.getParkingAddress2());
 		}
 		// 退居日 社宅等
+		initDto.setTaikyoDate(null);
 		if ("1".equals(tTaikyoReport.getTaikyoShataku())) {
 			String taikyoDate = tTaikyoReport.getTaikyoDate();
 			String taikyoDateText = skfDateFormatUtils.dateFormatFromString(taikyoDate, "yyyy年MM月dd日");
 			initDto.setTaikyoDate(taikyoDateText);
 		}
 		// 退居日 駐車場
+		initDto.setParkingHenkanDate(null);
 		if ("1".equals(tTaikyoReport.getTaikyoParking1()) || "1".equals(tTaikyoReport.getTaikyoParking2())) {
 			String parkingHenkanDate = tTaikyoReport.getParkingHenkanDate();
 			String parkingHenkanDateText = skfDateFormatUtils.dateFormatFromString(parkingHenkanDate, "yyyy年MM月dd日");

@@ -156,8 +156,6 @@ public class Skf2010Sc004SharedService {
 	@Autowired
 	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
-	private SkfCommentUtils skfCommentUtils;
-	@Autowired
 	private SkfShinseiUtils skfShinseiUtils;
 	@Autowired
 	private SkfBihinInfoUtils skfBihinInfoUtils;
@@ -913,6 +911,29 @@ public class Skf2010Sc004SharedService {
 		}
 
 		return result;
+	}
+
+	/**
+	 * セッション情報を取得
+	 * 
+	 * @param bean
+	 */
+	protected void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
+		menuScopeSessionBean = bean;
+	}
+	
+	/**
+	 * セッションの添付資料情報の初期化
+	 * 
+	 * @param bean
+	 */
+	protected void clearMenuScopeSessionBean() {
+		if (menuScopeSessionBean == null) {
+			return;
+		}
+		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY);
 	}
 
 }

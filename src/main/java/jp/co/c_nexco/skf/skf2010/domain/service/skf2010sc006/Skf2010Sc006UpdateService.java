@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc005.Skf2010Sc005GetShoninIchiranShoninExp;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.bean.MenuScopeSessionBean;
+import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -18,6 +20,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -43,13 +46,15 @@ public class Skf2010Sc006UpdateService extends SkfServiceAbstract<Skf2010Sc006Up
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 	@Autowired
-	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
-	@Autowired
 	private SkfMailUtils skfMailUtils;
+	@Autowired
+	private SkfAttachedFileUtils skfAttachedFileUtils;
+	
 
 	private String companyCd = CodeConstant.C001;
 
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
+	private String sessionConflictKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -57,7 +62,20 @@ public class Skf2010Sc006UpdateService extends SkfServiceAbstract<Skf2010Sc006Up
 
 		// 操作ログ出力
 		skfOperationLogUtils.setAccessLog("承認", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
-
+		
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(updDto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(sessionKey);
+			menuScopeSessionBean.remove(sessionConflictKey);
+			ServiceHelper.addErrorResultMessage(updDto, null, MessageIdConstant.I_SKF_1005,"セッション情報が異なっ","ブラウザを閉じて操作をやり直","");
+			throwBusinessExceptionIfErrors(updDto.getResultMessages());
+			return updDto;
+		}	
+		
 		// 添付ファイル有無を取得
 		String applTacFlag = "0";
 		List<Map<String, Object>> attachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
@@ -136,12 +154,17 @@ public class Skf2010Sc006UpdateService extends SkfServiceAbstract<Skf2010Sc006Up
 			skfMailUtils.sendApplTsuchiMail(mailKbn, applInfo, comment, annai, sendUser, sendGroupId, urlBase);
 		}
 
+		
+		//画面遷移前にデータの初期化を行う
+		FormHelper.removeFormBean(FunctionIdConstant.SKF2040_SC002);
+		
 		// 次のステータスを設定する
-
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005, "init");
 		nextPage.addResultMessage(MessageIdConstant.I_SKF_2047);
 		updDto.setTransferPageInfo(nextPage);
 
+		
+		
 		return updDto;
 	}
 
