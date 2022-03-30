@@ -19,6 +19,8 @@ import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100sc002.Skf2100Sc002PresentDto;
@@ -38,6 +40,8 @@ public class Skf2100Sc002PresentService extends SkfServiceAbstract<Skf2100Sc002P
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	
 	/**
 	 * サービス処理を行う。
@@ -76,6 +80,19 @@ public class Skf2100Sc002PresentService extends SkfServiceAbstract<Skf2100Sc002P
 				 dto.getPayCompanyCd(), payCompanySelectList);
 		 dto.setOriginalCompanySelectList(originalCompanySelectList);
 		 dto.setPayCompanySelectList(payCompanySelectList);
+		 
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,dto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY);
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.I_SKF_1005,"セッション情報が異なっ","ブラウザを閉じて操作をやり直","");
+			throwBusinessExceptionIfErrors(dto.getResultMessages());
+			return dto;
+		}	
 		
 		// 入力チェック
 		boolean validateResult = validateCheck(dto);

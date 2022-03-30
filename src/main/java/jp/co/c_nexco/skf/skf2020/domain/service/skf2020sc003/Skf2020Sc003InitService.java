@@ -64,6 +64,10 @@ public class Skf2020Sc003InitService extends SkfServiceAbstract<Skf2020Sc003Init
 		skf2020sc003SharedService.setMenuScopeSessionBean(menuScopeSessionBean);
 		// セッション情報初期化
 		skf2020sc003SharedService.clearMenuScopeSessionBean();
+		//　申請書項目リセット
+		skf2020sc003SharedService.setClearInfo(initDto); 
+		
+		
 		// 初期情報セット
 		boolean res = skf2020sc003SharedService.setDispInfo(initDto);
 		if (!res) {

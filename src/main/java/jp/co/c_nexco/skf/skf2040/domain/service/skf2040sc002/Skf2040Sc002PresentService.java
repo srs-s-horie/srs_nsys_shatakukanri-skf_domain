@@ -58,7 +58,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
-	private SkfAttachedFileUtils skfAttachedFileUtiles;
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private Skf2040Sc002GetApplHistoryInfoForUpdateExpRepository skf2040Sc002GetApplHistoryInfoForUpdateExpRepository;
 	@Autowired
@@ -90,10 +90,24 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(preDto.getApplNo());
 		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
+		
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,preDto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY);
+			ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.I_SKF_1005,"セッション情報が異なっ","ブラウザを閉じて操作をやり直","");
+			throwBusinessExceptionIfErrors(preDto.getResultMessages());
+			return preDto;
+		}	
 
 		// 一般添付資料取得
-		List<Map<String, Object>> attachedFileList = skfAttachedFileUtiles.getAttachedFileInfo(menuScopeSessionBean,
+		List<Map<String, Object>> attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean,
 				preDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		
 		String applTacFlg = CodeConstant.DOUBLE_QUOTATION;
 		if (attachedFileList != null && attachedFileList.size() > 0) {
 			// 添付ファイルあり
@@ -106,7 +120,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 		boolean validate = skf2040Sc002SharedService.checkValidation(preDto, sFalse);
 		if (!validate) {
 			// 添付資料だけはセッションから再取得の必要あり
-			List<Map<String, Object>> reAttachedFileList = skf2040Sc002SharedService.setAttachedFileList();
+			List<Map<String, Object>> reAttachedFileList = skf2040Sc002SharedService.setAttachedFileList(preDto.getApplNo());
 			preDto.setAttachedFileList(reAttachedFileList);
 			return preDto;
 		}

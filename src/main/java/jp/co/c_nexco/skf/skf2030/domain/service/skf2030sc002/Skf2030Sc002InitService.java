@@ -71,6 +71,9 @@ public class Skf2030Sc002InitService extends SkfServiceAbstract<Skf2030Sc002Init
 				.getUpdateDateForUpdateSQL(initDto.getShainNo());
 		menuScopeSessionBean.put(SessionCacheKeyConstant.DATA_LINKAGE_KEY_SKF2030SC002, forUpdateMap);
 
+		//　申請書項目リセット
+		skf2030Sc002SharedService.setClearInfo(initDto); 
+		
 		// 初期表示
 		boolean result = skf2030Sc002SharedService.setDisplayData(initDto, loginUserInfo, applInfo);
 		if (!result) {
