@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jp.co.c_nexco.businesscommon.entity.skf.exp.Skf2010Sc006.Skf2010Sc006GetApplHistoryInfoByParameterExp;
 import jp.co.c_nexco.businesscommon.repository.skf.exp.SkfRollBack.SkfRollBackExpRepository;
 import jp.co.c_nexco.nfw.common.utils.NfwStringUtils;
+import jp.co.c_nexco.nfw.webcore.app.FormHelper;
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
 import jp.co.c_nexco.nfw.webcore.domain.model.BaseDto;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
@@ -65,7 +66,7 @@ public class Skf2010Sc006SendoutService extends SkfServiceAbstract<Skf2010Sc006S
 			// セッション情報の削除
 			menuScopeSessionBean.remove(sessionKey);
 			menuScopeSessionBean.remove(sessionConflictKey);
-			ServiceHelper.addErrorResultMessage(soDto, null, MessageIdConstant.I_SKF_1005,"セッション情報が異なっ","ブラウザを閉じて操作をやり直","");
+			ServiceHelper.addErrorResultMessage(soDto, null, MessageIdConstant.I_SKF_1005,"画面(タブ)の二重起動は禁止され","一度ブラウザを閉じて、初めからやり直","");
 			throwBusinessExceptionIfErrors(soDto.getResultMessages());
 			return soDto;
 		}	
@@ -147,6 +148,9 @@ public class Skf2010Sc006SendoutService extends SkfServiceAbstract<Skf2010Sc006S
 
 		skfMailUtils.sendApplTsuchiMail(CodeConstant.HININ_KANRYO_TSUCHI, applInfo, commentNote, CodeConstant.NONE,
 				applInfo.get("applShainNo"), CodeConstant.NONE, urlBase);
+		
+		//画面遷移前にデータの初期化を行う
+		FormHelper.removeFormBean(FunctionIdConstant.SKF2010_SC006);
 
 		// 画面遷移
 

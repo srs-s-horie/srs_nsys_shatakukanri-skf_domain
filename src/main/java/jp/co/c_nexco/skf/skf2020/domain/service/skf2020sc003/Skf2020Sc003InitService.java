@@ -42,6 +42,8 @@ public class Skf2020Sc003InitService extends SkfServiceAbstract<Skf2020Sc003Init
 	private SkfCommentUtils skfCommentUtils;
 	@Autowired
 	private SkfBatchUtils skfBatchUtils;
+	//添付ファイルセッション競合チェック用
+	private String sessionConflictKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY;
 
 	// カンマ区切りフォーマット
 	NumberFormat nfNum = NumberFormat.getNumberInstance();
@@ -73,6 +75,10 @@ public class Skf2020Sc003InitService extends SkfServiceAbstract<Skf2020Sc003Init
 		if (!res) {
 			throwBusinessExceptionIfErrors(initDto.getResultMessages());
 		}
+		
+		//添付ファイルセッション競合対応
+		menuScopeSessionBean.put(sessionConflictKey, initDto.getApplNo());
+		
 		// コメントボタン表示チェック
 		boolean commentFlg = checkComment(initDto);
 		initDto.setCommentViewFlag(commentFlg);

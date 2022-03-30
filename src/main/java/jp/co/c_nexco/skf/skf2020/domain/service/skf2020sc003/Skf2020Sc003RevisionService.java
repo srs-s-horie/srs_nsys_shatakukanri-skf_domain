@@ -17,6 +17,8 @@ import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfMailUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
@@ -38,6 +40,13 @@ public class Skf2020Sc003RevisionService extends SkfServiceAbstract<Skf2020Sc003
 	private SkfMailUtils skfMailUtils;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	
+	@Autowired
+	private SkfAttachedFileUtils skfAttachedFileUtils;
+	
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
+	//添付ファイルセッション競合チェック用
+	private String sessionConflictKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY;
 
 	// カンマ区切りフォーマット
 	NumberFormat nfNum = NumberFormat.getNumberInstance();
@@ -53,6 +62,19 @@ public class Skf2020Sc003RevisionService extends SkfServiceAbstract<Skf2020Sc003
 	public BaseDto index(Skf2020Sc003RevisionDto rvsDto) throws Exception {
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("修正依頼", CodeConstant.C001, FunctionIdConstant.SKF2020_SC003);
+		
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,rvsDto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(sessionKey);
+			menuScopeSessionBean.remove(sessionConflictKey);
+			ServiceHelper.addErrorResultMessage(rvsDto, null, MessageIdConstant.I_SKF_1005,"画面(タブ)の二重起動は禁止され","一度ブラウザを閉じて、初めからやり直","");
+			throwBusinessExceptionIfErrors(rvsDto.getResultMessages());
+			return rvsDto;
+		}	
 
 		boolean validate = skf2020sc003SharedService.checkValidation(rvsDto);
 		if (!validate) {

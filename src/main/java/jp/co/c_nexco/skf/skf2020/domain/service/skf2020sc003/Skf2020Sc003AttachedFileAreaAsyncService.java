@@ -43,6 +43,7 @@ public class Skf2020Sc003AttachedFileAreaAsyncService
 		// 一般添付資料取得
 		List<Map<String, Object>> attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean,
 				applNo, SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		
 		// 社宅向け添付資料が無い場合配列のインスタンス化だけ行う
 		if (attachedFileList == null) {
 			attachedFileList = new ArrayList<Map<String, Object>>();
