@@ -156,7 +156,7 @@ public class Skf2010Sc006UpdateService extends SkfServiceAbstract<Skf2010Sc006Up
 
 		
 		//画面遷移前にデータの初期化を行う
-		FormHelper.removeFormBean(FunctionIdConstant.SKF2040_SC002);
+		FormHelper.removeFormBean(FunctionIdConstant.SKF2010_SC006);
 		
 		// 次のステータスを設定する
 		TransferPageInfo nextPage = TransferPageInfo.nextPage(FunctionIdConstant.SKF2010_SC005, "init");
