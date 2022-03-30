@@ -2113,9 +2113,9 @@ public class Skf2020Sc003SharedService {
 				
 				//提示情報
 				// 社宅情報 社宅所在地
-							dto.setNewShozaichi(null);
+					dto.setNewShozaichi(null);
 				// 社宅情報 社宅名
-							dto.setNewShatakuName(null);
+					dto.setNewShatakuName(null);
 				// 社宅情報 室番号
 					dto.setNewShatakuNo(null);
 				// 規格間取り

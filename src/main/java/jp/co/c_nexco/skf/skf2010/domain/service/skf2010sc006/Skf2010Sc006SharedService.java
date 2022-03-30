@@ -801,27 +801,4 @@ public class Skf2010Sc006SharedService {
 		menuScopeSessionBean.remove(sessionConflictKey);
 	}
 	
-//	/**
-//	 * 添付ファイルセッションの競合のチェック
-//	 * @param shainNo
-//	 * @param bean
-//	 */
-//	protected boolean attachedFileSessionConflictCheck(String applNo) {
-//		
-//		if (menuScopeSessionBean == null) {
-//			return true;
-//		}
-//		
-//		//複数タブによるセッション情報変更のチェック
-//		String nowApplNo = null;
-//		nowApplNo = (String) menuScopeSessionBean.get(sessionConflictKey);		
-//						
-//		//申請書管理番号が一致しない
-//		if (!(applNo.equals(nowApplNo))) {			
-//			return false;
-//		}	
-//		
-//		return true;
-//	}
-
 }
