@@ -1001,16 +1001,17 @@ public class Skf2030Sc002SharedService {
 	 * @param dto
 	 */
 	public void setClearInfo(Skf2030Sc002CommonDto dto) {
-		// TODO 自動生成されたメソッド・スタブ
-		// 所属
+		
+		// 【所属】
 		// 機関	
 			dto.setAgency(null);
 		// 部等
 			dto.setAffiliation1(null);
 		// 室、チームまたは課	
 			dto.setAffiliation2(null);
-		// 勤務先のTEL ※入力項目	
+		// 勤務先のTEL 
 			dto.setTel(null);
+			
 		// 【 申請者 】
 		// 社員番号	
 			dto.setShainNo(null);
@@ -1020,6 +1021,7 @@ public class Skf2030Sc002SharedService {
 			dto.setTokyu(null);
 		// 性別	
 			dto.setGender(null);
+			
 		// 【 入居社宅 】
 		// 社宅名	
 			dto.setShatakuName(null);
