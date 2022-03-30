@@ -62,7 +62,7 @@ public class Skf2100Sc002ApprovalService extends SkfServiceAbstract<Skf2100Sc002
 		applInfo.put("applId", dto.getApplId());
 		
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtiles.attachedFileSessionConflictCheck(dto.getApplNo());
+		boolean checkResults = skfAttachedFileUtiles.attachedFileSessionConflictCheck(menuScopeSessionBean,dto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			

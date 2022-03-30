@@ -78,7 +78,7 @@ public class Skf2040Sc002ApprovalService extends SkfServiceAbstract<Skf2040Sc002
 				appDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 			
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(appDto.getApplNo());
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,appDto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			

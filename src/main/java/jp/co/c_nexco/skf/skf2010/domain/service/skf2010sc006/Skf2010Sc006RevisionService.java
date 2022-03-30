@@ -57,7 +57,7 @@ public class Skf2010Sc006RevisionService extends SkfServiceAbstract<Skf2010Sc006
 		skfOperationLogUtils.setAccessLog("修正依頼", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
 		
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(reDto.getApplNo());
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,reDto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			

@@ -82,7 +82,7 @@ public class Skf2100Sc002PresentService extends SkfServiceAbstract<Skf2100Sc002P
 		 dto.setPayCompanySelectList(payCompanySelectList);
 		 
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(dto.getApplNo());
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,dto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			

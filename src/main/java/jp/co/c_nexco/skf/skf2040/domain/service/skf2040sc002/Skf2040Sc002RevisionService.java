@@ -58,7 +58,7 @@ public class Skf2040Sc002RevisionService extends SkfServiceAbstract<Skf2040Sc002
 		}
 		
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(rvsDto.getApplNo());
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,rvsDto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			

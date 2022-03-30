@@ -62,7 +62,7 @@ public class Skf2100Sc002RevisionService extends SkfServiceAbstract<Skf2100Sc002
 		applInfo.put("applId", revDto.getApplId());
 		
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(revDto.getApplNo());
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,revDto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			

@@ -58,7 +58,7 @@ public class Skf2010Sc006SendoutService extends SkfServiceAbstract<Skf2010Sc006S
 		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
 		
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(soDto.getApplNo());
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,soDto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			

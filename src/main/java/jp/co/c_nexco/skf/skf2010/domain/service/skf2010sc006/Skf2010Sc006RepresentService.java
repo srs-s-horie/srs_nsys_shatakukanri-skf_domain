@@ -54,7 +54,7 @@ public class Skf2010Sc006RepresentService extends SkfServiceAbstract<Skf2010Sc00
 		skfOperationLogUtils.setAccessLog("再提示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
 		
 		//複数タブによる添付ファイルセッションチェック		
-		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(reDto.getApplNo());
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,reDto.getApplNo());
 		
 		//申請書管理番号が一致しない
 		if (!checkResults) {			
