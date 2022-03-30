@@ -1212,7 +1212,7 @@ public class Skf2040Sc002SharedService {
 	 * @param dto
 	 */
 	public void setClearInfo(Skf2040Sc002CommonDto dto) {
-		// TODO 自動生成されたメソッド・スタブ			
+					
 		// 機関
 		dto.setNowAgency(null);
 		// 部等

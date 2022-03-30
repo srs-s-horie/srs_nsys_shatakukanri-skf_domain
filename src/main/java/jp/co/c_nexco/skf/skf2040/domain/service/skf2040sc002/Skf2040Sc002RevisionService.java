@@ -47,15 +47,6 @@ public class Skf2040Sc002RevisionService extends SkfServiceAbstract<Skf2040Sc002
 
 		// 操作ログを出力する
 		skfOperationLogUtils.setAccessLog("修正依頼", CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
-
-		// コメント欄チェック
-		boolean validate = skf2040sc002SharedService.checkValidation(rvsDto, sTrue);
-		if (!validate) {
-			// 添付資料だけはセッションから再取得の必要あり
-			List<Map<String, Object>> reAttachedFileList = skf2040sc002SharedService.setAttachedFileList(rvsDto.getApplNo());
-			rvsDto.setAttachedFileList(reAttachedFileList);
-			return rvsDto;
-		}
 		
 		//複数タブによる添付ファイルセッションチェック		
 		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,rvsDto.getApplNo());
@@ -70,6 +61,15 @@ public class Skf2040Sc002RevisionService extends SkfServiceAbstract<Skf2040Sc002
 			return rvsDto;
 		}	
 
+		// コメント欄チェック
+		boolean validate = skf2040sc002SharedService.checkValidation(rvsDto, sTrue);
+		if (!validate) {
+			// 添付資料だけはセッションから再取得の必要あり
+			List<Map<String, Object>> reAttachedFileList = skf2040sc002SharedService.setAttachedFileList(rvsDto.getApplNo());
+			rvsDto.setAttachedFileList(reAttachedFileList);
+			return rvsDto;
+		}
+		
 		// 申請書類履歴保存の処理
 		Map<String, String> errorMsg = new HashMap<String, String>();
 		boolean result = skf2040sc002SharedService.saveApplInfo(CodeConstant.STATUS_SASHIMODOSHI, rvsDto, errorMsg);

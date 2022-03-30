@@ -204,10 +204,12 @@ public class Skf2010Sc006SharedService {
 			}
 			
 			// 取得した添付ファイル情報をセッションに保持
-			menuScopeSessionBean.put(sessionKey, resultAttachedFileList);
-			menuScopeSessionBean.put(sessionConflictKey, applNo);
-			
+			menuScopeSessionBean.put(sessionKey, resultAttachedFileList);			
 		}
+		
+		//添付ファイルセッション情報判定用
+		menuScopeSessionBean.put(sessionConflictKey, applNo);
+		
 		return resultAttachedFileList;
 	}
 

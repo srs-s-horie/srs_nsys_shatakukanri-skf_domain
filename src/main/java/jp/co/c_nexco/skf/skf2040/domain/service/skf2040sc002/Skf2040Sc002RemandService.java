@@ -48,15 +48,6 @@ public class Skf2040Sc002RemandService extends SkfServiceAbstract<Skf2040Sc002Re
 
 		// 操作ログ出力メソッドを呼び出す
 		skfOperationLogUtils.setAccessLog("差戻し", CodeConstant.C001, FunctionIdConstant.SKF2040_SC002);
-
-		// コメント欄チェック
-		boolean validate = skf2040sc002SharedService.checkValidation(remDto, sTrue);
-		if (!validate) {
-			// 添付資料だけはセッションから再取得の必要あり
-			List<Map<String, Object>> reAttachedFileList = skf2040sc002SharedService.setAttachedFileList(remDto.getApplNo());
-			remDto.setAttachedFileList(reAttachedFileList);
-			return remDto;
-		}
 		
 		//複数タブによる添付ファイルセッションチェック		
 		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,remDto.getApplNo());
@@ -71,6 +62,15 @@ public class Skf2040Sc002RemandService extends SkfServiceAbstract<Skf2040Sc002Re
 			return remDto;
 		}	
 
+		// コメント欄チェック
+		boolean validate = skf2040sc002SharedService.checkValidation(remDto, sTrue);
+		if (!validate) {
+			// 添付資料だけはセッションから再取得の必要あり
+			List<Map<String, Object>> reAttachedFileList = skf2040sc002SharedService.setAttachedFileList(remDto.getApplNo());
+			remDto.setAttachedFileList(reAttachedFileList);
+			return remDto;
+		}
+		
 		// 申請書類履歴保存の処理
 		Map<String, String> errorMsg = new HashMap<String, String>();
 		boolean result = skf2040sc002SharedService.saveApplInfo(CodeConstant.STATUS_HININ, remDto, errorMsg);

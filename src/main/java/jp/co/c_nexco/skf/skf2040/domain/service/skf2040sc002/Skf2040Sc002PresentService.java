@@ -90,10 +90,6 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 		param.setCompanyCd(CodeConstant.C001);
 		param.setApplNo(preDto.getApplNo());
 		applInfo = skf2040Sc002GetApplHistoryInfoForUpdateExpRepository.getApplHistoryInfoForUpdate(param);
-
-		// 一般添付資料取得
-		List<Map<String, Object>> attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean,
-				preDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 		
 		//複数タブによる添付ファイルセッションチェック		
 		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,preDto.getApplNo());
@@ -107,6 +103,10 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			throwBusinessExceptionIfErrors(preDto.getResultMessages());
 			return preDto;
 		}	
+
+		// 一般添付資料取得
+		List<Map<String, Object>> attachedFileList = skfAttachedFileUtils.getAttachedFileInfo(menuScopeSessionBean,
+				preDto.getApplNo(), SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 		
 		String applTacFlg = CodeConstant.DOUBLE_QUOTATION;
 		if (attachedFileList != null && attachedFileList.size() > 0) {
