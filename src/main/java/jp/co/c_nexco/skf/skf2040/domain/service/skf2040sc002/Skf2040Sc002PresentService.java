@@ -99,7 +99,7 @@ public class Skf2040Sc002PresentService extends SkfServiceAbstract<Skf2040Sc002P
 			// セッション情報の削除
 			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
 			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY);
-			ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.I_SKF_1005,"セッション情報が異なっ","ブラウザを閉じて操作をやり直","");
+			ServiceHelper.addErrorResultMessage(preDto, null, MessageIdConstant.I_SKF_1005,"画面(タブ)の二重起動は禁止され","一度ブラウザを閉じて、初めからやり直","");
 			throwBusinessExceptionIfErrors(preDto.getResultMessages());
 			return preDto;
 		}	
