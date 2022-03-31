@@ -765,7 +765,8 @@ public class Skf2010Sc006InitService extends SkfServiceAbstract<Skf2010Sc006Init
 		initDto.setNowShatakuName(tNyukyoChoshoTsuchi.getNowShatakuName());
 		// 保有社宅号室
 		initDto.setNowShatakuNo(tNyukyoChoshoTsuchi.getNowShatakuNo());
-		// 保有社宅企画
+		// 保有社宅規格
+		initDto.setNowShatakuKikaku(null);
 		if (NfwStringUtils.isNotEmpty(tNyukyoChoshoTsuchi.getNowShatakuKikaku())) {
 			initDto.setNowShatakuKikaku(
 					skfShatakuInfoUtils.getShatakuKikakuByCode(tNyukyoChoshoTsuchi.getNowShatakuKikaku()));
