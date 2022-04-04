@@ -721,7 +721,7 @@ public class Skf2010Sc005SharedService {
 	 * @return
 	 */
 	public String getAgencyName(String companyCd, String agencyCd) {
-		String agencyName = CodeConstant.NONE;
+		String agencyName = null;
 		Skf2010Sc005GetAgencyNameExp agencyData = new Skf2010Sc005GetAgencyNameExp();
 		Skf2010Sc005GetAgencyNameExpParameter param = new Skf2010Sc005GetAgencyNameExpParameter();
 		param.setCompanyCd(companyCd);
@@ -745,7 +745,7 @@ public class Skf2010Sc005SharedService {
 	 */
 	public String getAffiliation1Name(String companyCd, String agencyCd, String affiliation1Cd) {
 		List<Skf2010Sc005GetAffiliation1ListExp> affiliation1MapList = new ArrayList<Skf2010Sc005GetAffiliation1ListExp>();
-		String affiliation1Name = CodeConstant.NONE;
+		String affiliation1Name = null;
 
 		if (affiliation1Cd == null || CheckUtils.isEmpty(affiliation1Cd)) {
 			return affiliation1Name;
@@ -775,7 +775,7 @@ public class Skf2010Sc005SharedService {
 	 */
 	public String getAffiliation2Name(String companyCd, String agencyCd, String affiliation1Cd, String affiliation2Cd) {
 		List<Skf2010Sc005GetAffiliation2ListExp> affiliation2MapList = new ArrayList<Skf2010Sc005GetAffiliation2ListExp>();
-		String affiliation2Name = CodeConstant.NONE;
+		String affiliation2Name = null;
 
 		if (affiliation1Cd == null || CheckUtils.isEmpty(affiliation1Cd)) {
 			return affiliation2Name;
