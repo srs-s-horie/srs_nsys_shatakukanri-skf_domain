@@ -85,20 +85,11 @@ public class Skf2010Sc006SharedService {
 	@Autowired
 	private Skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExpRepository skf2010Sc006UpdateNyukyoChoshoTsuchiRentalExpRepository;
 	@Autowired
-	private Skf2010Sc006GetSendApplMailInfoExpRepository skf2010Sc006GetSendApplMailInfoExpRepository;
-	@Autowired
 	private Skf2010Sc006GetBKSApplStatusInfoExpRepository skf2010Sc006GetBKSApplStatusInfoExpRepository;
 	@Autowired
 	private Skf2010Sc006GetBHSApplStatusInfoExpRepository skf2010Sc006GetBHSApplStatusInfoExpRepository;
 	@Autowired
 	private Skf2010Sc006GetAttachedFileInfoExpRepository skf2010Sc006GetAttachedFileInfoExpRepository;
-
-	@Autowired
-	private Skf2010MApplicationRepository skf2010MApplicationRepository;
-	@Autowired
-	private Skf1010MShainRepository skf1010MShainRepository;
-	@Autowired
-	private Skf2010TAttachedFileRepository skf2010TAttachedFileRepository;
 
 	@Autowired
 	private Skf2020Fc001NyukyoKiboSinseiDataImport skf2020Fc001NyukyoKiboSinseiDataImport;
@@ -115,13 +106,14 @@ public class Skf2010Sc006SharedService {
 	private SkfAttachedFileUtils skfAttachedFileUtils;
 	@Autowired
 	private SkfCommentUtils skfCommentUtils;
-	@Autowired
-	private SkfMailUtils skfMailUtils;
+
 
 	@Autowired
 	private MenuScopeSessionBean menuScopeSessionBean;
 
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
+	//添付ファイルセッション競合チェック用
+	private String sessionConflictKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY;
 
 	protected final String KEY_LAST_UPDATE_DATE_HISTORY = "skf2010_t_appl_history";
 
@@ -171,6 +163,7 @@ public class Skf2010Sc006SharedService {
 
 		if (useSessionFlg) {
 			resultAttachedFileList = (List<Map<String, Object>>) menuScopeSessionBean.get(sessionKey);
+			menuScopeSessionBean.put(sessionConflictKey, applNo);
 			if (resultAttachedFileList != null) {
 				return resultAttachedFileList;
 			}
@@ -204,15 +197,19 @@ public class Skf2010Sc006SharedService {
 				// ファイルタイプ
 				String fileType = skfAttachedFileUtils.getFileTypeInfo(attachedFileInfo.getAttachedName());
 				attachedFileMap.put("fileType", fileType);
-
+		
 				resultAttachedFileList.add(attachedFileMap);
 
 				attachedNo++;
 			}
-
+			
 			// 取得した添付ファイル情報をセッションに保持
-			menuScopeSessionBean.put(sessionKey, resultAttachedFileList);
+			menuScopeSessionBean.put(sessionKey, resultAttachedFileList);			
 		}
+		
+		//添付ファイルセッション情報判定用
+		menuScopeSessionBean.put(sessionConflictKey, applNo);
+		
 		return resultAttachedFileList;
 	}
 
@@ -782,5 +779,28 @@ public class Skf2010Sc006SharedService {
 
 		return resultBatch;
 	}
-
+	
+	/**
+	 * セッション情報を取得
+	 * 
+	 * @param bean
+	 */
+	protected void setMenuScopeSessionBean(MenuScopeSessionBean bean) {
+		menuScopeSessionBean = bean;
+	}
+	
+	/**
+	 * セッションの添付資料情報の初期化
+	 * 
+	 * @param bean
+	 */
+	protected void clearMenuScopeSessionBean() {
+		if (menuScopeSessionBean == null) {
+			return;
+		}
+		skfAttachedFileUtils.clearAttachedFileBySessionData(menuScopeSessionBean,
+				SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+		menuScopeSessionBean.remove(sessionConflictKey);
+	}
+	
 }

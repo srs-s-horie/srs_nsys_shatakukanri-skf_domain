@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jp.co.c_nexco.nfw.webcore.app.TransferPageInfo;
+import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfLoginUserInfoUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2100.domain.dto.skf2100sc002.Skf2100Sc002ApprovalDto;
@@ -33,6 +36,8 @@ public class Skf2100Sc002ApprovalService extends SkfServiceAbstract<Skf2100Sc002
 	private SkfOperationLogUtils skfOperationLogUtils;
 	@Autowired
 	private SkfLoginUserInfoUtils skfLoginUserInfoUtils;
+	@Autowired
+	private SkfAttachedFileUtils skfAttachedFileUtiles;
 	
 	/**
 	 * サービス処理を行う。
@@ -55,6 +60,19 @@ public class Skf2100Sc002ApprovalService extends SkfServiceAbstract<Skf2100Sc002
 		applInfo.put("status", dto.getApplStatus());
 		applInfo.put("applNo", dto.getApplNo());
 		applInfo.put("applId", dto.getApplId());
+		
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtiles.attachedFileSessionConflictCheck(menuScopeSessionBean,dto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY);
+			menuScopeSessionBean.remove(SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY);
+			ServiceHelper.addErrorResultMessage(dto, null, MessageIdConstant.I_SKF_1005,"画面(タブ)の二重起動は禁止され","一度ブラウザを閉じて、初めからやり直","");
+			throwBusinessExceptionIfErrors(dto.getResultMessages());
+			return dto;
+		}	
 
 		
 		// 入力チェック

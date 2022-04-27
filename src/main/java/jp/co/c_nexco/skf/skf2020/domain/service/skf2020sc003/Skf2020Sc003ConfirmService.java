@@ -18,7 +18,10 @@ import jp.co.c_nexco.skf.common.SkfServiceAbstract;
 import jp.co.c_nexco.nfw.webcore.domain.service.ServiceHelper;
 import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
+import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
+import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
 import jp.co.c_nexco.skf.common.constants.SkfCommonConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.skf2020.domain.dto.skf2020sc003.Skf2020Sc003ConfirmDto;
 
@@ -34,7 +37,13 @@ public class Skf2020Sc003ConfirmService extends SkfServiceAbstract<Skf2020Sc003C
 	private Skf2020Sc003SharedService skf2020sc003SharedService;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfAttachedFileUtils skfAttachedFileUtils;
+	
 	private String companyCd = CodeConstant.C001;
+	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
+	//添付ファイルセッション競合チェック用
+	private String sessionConflictKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY;
 
 	// カンマ区切りフォーマット
 	NumberFormat nfNum = NumberFormat.getNumberInstance();
@@ -51,6 +60,19 @@ public class Skf2020Sc003ConfirmService extends SkfServiceAbstract<Skf2020Sc003C
 
 		// 操作ログ出力メソッドを呼び出す
 		skfOperationLogUtils.setAccessLog("提示内容を確認", companyCd, FunctionIdConstant.SKF2020_SC003);
+		
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,confDto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(sessionKey);
+			menuScopeSessionBean.remove(sessionConflictKey);
+			ServiceHelper.addErrorResultMessage(confDto, null, MessageIdConstant.I_SKF_1005,"画面(タブ)の二重起動は禁止され","一度ブラウザを閉じて、初めからやり直","");
+			throwBusinessExceptionIfErrors(confDto.getResultMessages());
+			return confDto;
+		}	
 
 		confirmClickProcess(confDto);
 

@@ -17,6 +17,7 @@ import jp.co.c_nexco.skf.common.constants.CodeConstant;
 import jp.co.c_nexco.skf.common.constants.FunctionIdConstant;
 import jp.co.c_nexco.skf.common.constants.MessageIdConstant;
 import jp.co.c_nexco.skf.common.constants.SessionCacheKeyConstant;
+import jp.co.c_nexco.skf.common.util.SkfAttachedFileUtils;
 import jp.co.c_nexco.skf.common.util.SkfOperationLogUtils;
 import jp.co.c_nexco.skf.common.util.datalinkage.SkfBatchBusinessLogicUtils;
 import jp.co.c_nexco.skf.skf2010.domain.dto.skf2010sc006.Skf2010Sc006RepresentDto;
@@ -37,9 +38,13 @@ public class Skf2010Sc006RepresentService extends SkfServiceAbstract<Skf2010Sc00
 	private SkfRollBackExpRepository skfRollBackExpRepository;
 	@Autowired
 	private SkfOperationLogUtils skfOperationLogUtils;
+	@Autowired
+	private SkfAttachedFileUtils skfAttachedFileUtils;
 
 	private String companyCd = CodeConstant.C001;
 	private String sessionKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_SESSION_KEY;
+	//添付ファイルセッション競合チェック用
+	private String sessionConflictKey = SessionCacheKeyConstant.COMMON_ATTACHED_FILE_CONFLICT_SESSION_KEY;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -47,6 +52,19 @@ public class Skf2010Sc006RepresentService extends SkfServiceAbstract<Skf2010Sc00
 
 		// 操作ログ出力
 		skfOperationLogUtils.setAccessLog("再提示", CodeConstant.C001, FunctionIdConstant.SKF2010_SC006);
+		
+		//複数タブによる添付ファイルセッションチェック		
+		boolean checkResults = skfAttachedFileUtils.attachedFileSessionConflictCheck(menuScopeSessionBean,reDto.getApplNo());
+		
+		//申請書管理番号が一致しない
+		if (!checkResults) {			
+			// セッション情報の削除
+			menuScopeSessionBean.remove(sessionKey);
+			menuScopeSessionBean.remove(sessionConflictKey);
+			ServiceHelper.addErrorResultMessage(reDto, null, MessageIdConstant.I_SKF_1005,"画面(タブ)の二重起動は禁止され","一度ブラウザを閉じて、初めからやり直","");
+			throwBusinessExceptionIfErrors(reDto.getResultMessages());
+			return reDto;
+		}	
 
 		// 添付ファイル有無を取得
 		String applTacFlag = "0";

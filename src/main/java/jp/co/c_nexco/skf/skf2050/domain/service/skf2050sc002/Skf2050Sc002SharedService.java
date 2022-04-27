@@ -530,4 +530,62 @@ public class Skf2050Sc002SharedService {
 		return retKikakuName;
 	}
 
+	/**
+	 * 表示項目のクリア
+	 * @param initDto
+	 */
+	public void setClearInfo(Skf2050Sc002CommonDto dto) {
+
+		// 【所属】
+		// 機関	
+			dto.setAgency(null);
+		// 部等
+			dto.setAffiliation1(null);
+		// 室・課等	
+			dto.setAffiliation2(null);
+		// 勤務先のTEL	
+			dto.setTel(null);
+			
+		// 【 申請者 】
+		// 社員番号	
+			dto.setShainNo(null);
+		// 氏名	
+			dto.setName(null);
+		// 等級	
+			dto.setTokyu(null);
+		// 性別	
+			dto.setGender(null);
+		// 【 入居社宅 】
+		// 社宅名	
+			dto.setShatakuName(null);
+		// 室番号	
+			dto.setShatakuNo(null);
+		// 規格(間取り)	
+			dto.setShatakuKikaku(null);
+		// 面積	
+			dto.setShatakuMenseki(null);
+		//連絡先
+			dto.setRenrakuSaki(null);
+		// 【 代理人 】
+		// 代理受取人	
+			dto.setDairininName(null);
+		// 代理連絡先	
+			dto.setDairiRenrakuSaki(null);
+			
+		// 【 備品搬出 】
+		// 搬出立会日			
+			dto.setSessionDay(null);
+		// 搬出立会時刻	
+			dto.setSessionTime(null);
+		// 備品返却完了日
+			dto.setCompletionDay(null);
+		//　備品返却立会日時
+		dto.setSessionDate(null);
+			
+		// 備品申請情報一覧
+			dto.setBihinInfoList(null);
+		//コメント
+			dto.setCommentNote(null);
+	}
+
 }

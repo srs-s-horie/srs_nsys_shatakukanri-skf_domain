@@ -108,6 +108,9 @@ public class Skf2040Sc002InitService extends SkfServiceAbstract<Skf2040Sc002Init
 		skf2040Sc002ShareService.setMenuScopeSessionBean(menuScopeSessionBean);
 		// セッション情報初期化
 		skf2040Sc002ShareService.clearMenuScopeSessionBean();
+		
+		//　申請書項目リセット
+		skf2040Sc002ShareService.setClearInfo(initDto); 
 
 		// 画面内容の設定
 		if (setDisplayData(initDto)) {
